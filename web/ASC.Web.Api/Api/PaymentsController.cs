@@ -153,9 +153,9 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/quota")]
-    public async Task<QuotaDto> GetQuotaAsync()
+    public async Task<QuotaDto> GetQuotaAsync(bool refresh)
     {
-        return await _quotaHelper.GetCurrentQuotaAsync();
+        return await _quotaHelper.GetCurrentQuotaAsync(refresh);
     }
 
     [HttpPost("payment/request")]
@@ -173,8 +173,8 @@ public class PaymentController : ControllerBase
 
         CheckCache("salesrequest");
 
-         await _studioNotifyService.SendMsgToSalesAsync(inDto.Email, inDto.UserName, inDto.Message);
-         await _messageService.SendAsync(MessageAction.ContactSalesMailSent);
+        await _studioNotifyService.SendMsgToSalesAsync(inDto.Email, inDto.UserName, inDto.Message);
+        await _messageService.SendAsync(MessageAction.ContactSalesMailSent);
     }
 
     internal void CheckCache(string basekey)
