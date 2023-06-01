@@ -90,15 +90,15 @@ public class ClearEventsService : IHostedService, IDisposable
 
     private async Task GetOldEventsAsync<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
+        List<T> ids;
         var compile = func.Compile();
-
-        using var scope = _serviceScopeFactory.CreateScope();
-        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-        var table = compile.Invoke(ef);
-        int count;
         do
         {
-            count = await table
+            using var scope = _serviceScopeFactory.CreateScope();
+            await using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+            var table = compile.Invoke(ef);
+
+            var ae = table
                 .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
                 .Select(r => new
                 {
@@ -109,13 +109,21 @@ public class ClearEventsService : IHostedService, IDisposable
                 })
                 .Where(r => r.Date < DateTime.UtcNow.AddDays(-Convert.ToDouble(
                     ef.WebstudioSettings
-                    .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                    .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
-                    .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
-                .Select(r => r.ef)
-                .Take(1000)
-                .ExecuteDeleteAsync();
-        }
-        while(count == 1000);
+                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
+                        .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
+                        .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
+                .Take(1000);
+
+            ids = await ae.Select(r => r.ef).ToListAsync();
+
+            if (!ids.Any())
+            {
+                return;
+            }
+
+            table.RemoveRange(ids);
+            await ef.SaveChangesAsync();
+
+        } while (ids.Any());
     }
 }
