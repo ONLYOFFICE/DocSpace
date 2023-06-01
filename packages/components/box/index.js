@@ -1,26 +1,53 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import getCorrectFourValuesStyle from "../utils/getCorrectFourValuesStyle";
+import getCorrectTextAlign from "../utils/getCorrectTextAlign";
+import getCorrectBorderRadius from "../utils/getCorrectBorderRadius";
 
 const alignContentStyle = (alignContent) => `align-content: ${alignContent};`;
 const alignItemsStyle = (alignItems) => `align-items: ${alignItems};`;
 const alignSelfStyle = (alignSelf) => `align-self: ${alignSelf};`;
 const backgroundStyle = (backgroundProp) => `background: ${backgroundProp};`;
 
-const borderStyle = (borderProp) => {
+const borderStyle = (borderProp, interfaceDirection = "ltr") => {
   const styles = [];
 
   if (typeof borderProp === "string") {
     return `border: ${borderProp};`;
   }
 
-  if (borderProp.style) styles.push(`border-style: ${borderProp.style};`);
+  if (borderProp.style)
+    styles.push(
+      `border-style: ${getCorrectFourValuesStyle(
+        borderProp.style,
+        interfaceDirection
+      )};`
+    );
 
-  if (borderProp.width) styles.push(`border-width: ${borderProp.width};`);
+  if (borderProp.width)
+    styles.push(
+      `border-width: ${getCorrectFourValuesStyle(
+        borderProp.width,
+        interfaceDirection
+      )};`
+    );
 
-  if (borderProp.color) styles.push(`border-color: ${borderProp.color};`);
+  if (borderProp.color)
+    styles.push(
+      `border-color: ${getCorrectFourValuesStyle(
+        borderProp.color,
+        interfaceDirection
+      )};`
+    );
 
-  if (borderProp.radius) styles.push(`border-radius: ${borderProp.radius};`);
+  if (borderProp.radius)
+    styles.push(
+      `border-radius: ${getCorrectBorderRadius(
+        borderProp.radius,
+        interfaceDirection
+      )};`
+    );
 
   return styles.join("\n");
 };
@@ -48,7 +75,9 @@ const StyledBox = styled.div`
   ${(props) => props.alignItems && alignItemsStyle(props.alignItems)}
   ${(props) => props.alignSelf && alignSelfStyle(props.alignSelf)}
   ${(props) => props.backgroundProp && backgroundStyle(props.backgroundProp)}
-  ${(props) => props.borderProp && borderStyle(props.borderProp)}
+  ${(props) =>
+    props.borderProp &&
+    borderStyle(props.borderProp, props.theme.interfaceDirection)}
   box-sizing: border-box;
   ${(props) => props.displayProp && displayStyle(props.displayProp)}
   ${(props) => props.flexBasis && flexBasisStyle(props.flexBasis)}
@@ -61,11 +90,29 @@ const StyledBox = styled.div`
     props.justifyContent && justifyContentStyle(props.justifyContent)}
   ${(props) => props.justifyItems && justifyItemsStyle(props.justifyItems)}
   ${(props) => props.justifySelf && justifySelfStyle(props.justifySelf)}
-  ${(props) => props.marginProp && marginStyle(props.marginProp)}
+  ${(props) =>
+    props.marginProp &&
+    marginStyle(
+      getCorrectFourValuesStyle(
+        props.marginProp,
+        props.theme.interfaceDirection
+      )
+    )}
   outline: none;
   ${(props) => props.overflowProp && overflowStyle(props.overflowProp)}
-  ${(props) => props.paddingProp && paddingStyle(props.paddingProp)}
-  ${(props) => props.textAlign && textAlignStyle(props.textAlign)}
+  ${(props) =>
+    props.paddingProp &&
+    paddingStyle(
+      getCorrectFourValuesStyle(
+        props.paddingProp,
+        props.theme.interfaceDirection
+      )
+    )}
+  ${(props) =>
+    props.textAlign &&
+    textAlignStyle(
+      getCorrectTextAlign(props.textAlign, props.theme.interfaceDirection)
+    )}
   ${(props) => props.widthProp && widthStyle(props.widthProp)}
 `;
 
