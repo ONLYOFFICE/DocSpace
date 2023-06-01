@@ -441,7 +441,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
             return null;
         }
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         string result;
         if (id.StartsWith(Id))
@@ -450,10 +450,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
         }
         else
         {
-            result = await filesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.HashId == id)
-                    .Select(r => r.Id)
-                    .FirstOrDefaultAsync();
+            result = await Queries.IdAsync(filesDbContext, id);
         }
         if (saveIfNotExist)
         {
@@ -632,4 +629,12 @@ static file class Queries
         AllTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.Tag.AsQueryable());
+    
+    public static readonly Func<FilesDbContext, string, Task<string>>
+        IdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.HashId == hashId)
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
 }
