@@ -104,7 +104,7 @@ public class TokenHelper
             ModifiedOn = DateTime.UtcNow
         };
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         await filesDbContext.AddOrUpdateAsync(q => q.ThirdpartyApp, dbFilesThirdpartyApp);
         await filesDbContext.SaveChangesAsync();
     }
@@ -117,13 +117,8 @@ public class TokenHelper
     public async Task<Token> GetTokenAsync(string app, Guid userId)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var oAuth20Token = await filesDbContext.ThirdpartyApp
-            .Where(r => r.TenantId == tenant.Id)
-            .Where(r => r.UserId == userId)
-            .Where(r => r.App == app)
-            .Select(r => r.Token)
-            .FirstOrDefaultAsync();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var oAuth20Token = await Queries.TokenAsync(filesDbContext, tenant.Id, userId, app);
 
         if (oAuth20Token == null)
         {
@@ -136,12 +131,8 @@ public class TokenHelper
     public async Task DeleteTokenAsync(string app, Guid? userId = null)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await filesDbContext.ThirdpartyApp
-            .Where(r => r.TenantId == tenant.Id)
-            .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
-            .Where(r => r.App == app)
-            .ExecuteDeleteAsync();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await Queries.DeleteTokenAsync(filesDbContext, tenant.Id, userId ?? _authContext.CurrentAccount.ID, app);
     }
 
     private string EncryptToken(OAuth20Token token)
@@ -155,4 +146,24 @@ public class TokenHelper
     {
         return string.IsNullOrEmpty(token) ? null : OAuth20Token.FromJson(_instanceCrypto.Decrypt(token));
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, Guid, string, Task<string>> TokenAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
+            ctx.ThirdpartyApp
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .Where(r => r.App == app)
+                .Select(r => r.Token)
+                .FirstOrDefault());
+    
+    public static readonly Func<FilesDbContext, int, Guid, string, Task<int>> DeleteTokenAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
+            ctx.ThirdpartyApp
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .Where(r => r.App == app)
+                .ExecuteDelete());
 }
