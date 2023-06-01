@@ -128,9 +128,14 @@ public class ExternalShare
         return string.IsNullOrEmpty(passwordKey) ? null : Signature.Read<string>(passwordKey, _global.GetDocDbKey());
     }
 
-    public string GetQueryKey()
+    public string GetKey()
     {
-        var key = _httpContextAccessor.HttpContext?.Request.Query.GetRequestValue(FilesLinkUtility.FolderShareKey);
+        var key = _httpContextAccessor.HttpContext?.Request.Headers[HttpRequestExtensions.RequestTokenHeader].FirstOrDefault();
+
+        if (string.IsNullOrEmpty(key))
+        {
+            key = _httpContextAccessor.HttpContext?.Request.Query.GetRequestValue(FilesLinkUtility.FolderShareKey);
+        }
 
         return string.IsNullOrEmpty(key) ? null : key;
     }
@@ -151,7 +156,7 @@ public class ExternalShare
             return true;
         }
 
-        var key = _httpContextAccessor.HttpContext?.Request.Query.GetRequestValue(FilesLinkUtility.FolderShareKey);
+        var key = GetKey();
 
         if (string.IsNullOrEmpty(key))
         {
