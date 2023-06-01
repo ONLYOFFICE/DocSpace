@@ -1879,6 +1879,7 @@ const Base = {
       height: "36px",
       padding: "0 12px",
       marginBottom: "16px",
+      background: "#fff",
       tablet: {
         height: "44px",
         padding: "0 12px",
