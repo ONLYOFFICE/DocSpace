@@ -113,6 +113,9 @@ const StyledHistoryBlockMessage = styled.div`
 
   strong {
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .main-message {
