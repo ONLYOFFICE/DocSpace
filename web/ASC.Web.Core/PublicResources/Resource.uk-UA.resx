@@ -59,19 +59,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
-    <value>Поле коду перевірки не може бути порожнім
-</value>
+    <value>Поле коду перевірки не може бути порожнім</value>
   </data>
   <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
-    <value>Введіть номер мобільного телефону
-</value>
+    <value>Введіть номер мобільного телефону</value>
   </data>
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
     <value>Сповіщення адміністраторів</value>
   </data>
   <data name="AdminMessageSent" xml:space="preserve">
-    <value>Повідомлення було успішно надіслано. Адміністратор порталу зв'яжеться з вами.
-</value>
+    <value>Повідомлення було успішно надіслано. Адміністратор порталу зв'яжеться з вами.</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>Посилання для підтвердження операції було відправлено ​​на: email (адреса електронної пошти власника порталу).</value>
@@ -101,8 +98,7 @@
     <value>Невірні ключі</value>
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
-    <value>Ваш профіль заблоковано
-</value>
+    <value>Ваш профіль заблоковано</value>
   </data>
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>{!User} з такою адресою email вже зареєстрований</value>
@@ -123,12 +119,10 @@
     <value>Завантажуваний файл не знайдений</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Завеликий файл зображення
-</value>
+    <value>Завеликий файл зображення</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
-    <value>Ваш тарифний план не підтримує цей параметр
-</value>
+    <value>Ваш тарифний план не підтримує цей параметр</value>
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
     <value>Неправильна адреса електронної пошти</value>
@@ -167,8 +161,7 @@
     <value>Перевищено максимальний розмір файлу</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
-    <value>Примітка. Розмір файлу не може перевищувати {1}{0}{2}
-</value>
+    <value>Примітка. Розмір файлу не може перевищувати {1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>байт,Кб,Мб,Гб,Тб</value>
@@ -180,13 +173,13 @@
     <value>Сервер не зміг зберегти налаштування.</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>Занадто багато операцій LDAP</value>
+    <value>Занадто багато операцій LDAP.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Невірна ліцензія</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Термін дії ліцензії минув</value>
+    <value>Термін дії ліцензії минув.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Кількість порталів перевищує кількість дозволених ліцензією</value>
@@ -216,12 +209,10 @@
     <value>Азіатсько-Тихоокеанський регіон (Сінгапур)</value>
   </data>
   <data name="SmsAuthenticationMessageError" xml:space="preserve">
-    <value>Неправильний код
-</value>
+    <value>Неправильний код</value>
   </data>
   <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
-    <value>Код для входу на портал: {0}
-</value>
+    <value>Код для входу на портал: {0}</value>
   </data>
   <data name="SmsAuthenticationTimeout" xml:space="preserve">
     <value>Термін дії коду закінчився. Будь ласка, запитайте нове текстове повідомлення.</value>
@@ -254,11 +245,10 @@
     <value>Налаштування успішно оновлені</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Інструкції з видалення профілю були відправлені на вашу адресу електронної пошти</value>
+    <value>Інструкції з видалення профілю були відправлені на вашу адресу електронної пошти {0}</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
-    <value>Регіон Заходу США (Орегон)
-</value>
+    <value>Регіон Заходу США (Орегон)</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Новеньке</value>
@@ -325,5 +315,212 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Кількість адміністраторів / досвідчених користувачів:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>логін</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Підключіть службу Bitly, щоб скоротити посилання на портальні запрошення та спільні посилання в модулі Документи.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>ID скриньки</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Ключ скриньки</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Підключіть програму для управління файлами та папками пошти.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Увімкніть програму для двофакторної аутентифікації за допомогою Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Ключ DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Підключіть програму, щоб додати до документів електронний знак DocuSign.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Кінцева точка аутентифікації DocuSign</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Підключіть програму для управління файлами та папками Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Підключіть програму для входу на портал за допомогою облікового запису Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Ключ Facebook</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Опорний пункт</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Ключ веб-API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Ключ сервера</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Підключіть Firebase Cloud Messaging, щоб отримувати сповіщення про повідомлення, надіслані вам.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Таємний DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID відправника</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID проекту</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Підключіть проект до входу на портал за допомогою облікового запису Google і управління файлами та папками Google Диска.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Підключіть програму для входу на портал за допомогою облікового запису LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Ключ Linkedin</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Таємниця клієнта</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Підключіть програму для управління файлами та папками OneDrive.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Увімкніть програму для двофакторної аутентифікації за допомогою SMS-центру.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Пароль або пароль MD5 хеш у нижньому регістрі</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Додайте Twilio, щоб мати змогу дзвонити за допомогою CRM-контактів прямо з браузера.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Номер телефону від Twilio (необхідний для авторизації SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Підключіть програму для входу на портал за допомогою облікового запису Twitter та пошуку контактів.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Увімкніть додаток для імпорту контактів Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Невідомий тип файлу зображення</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Розмір зображення перевищує дозволені параметри</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Доступ до порталу обмежений</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ім'я</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Прізвище</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Помилка підключення</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Користувачів неможливо створити, отримана дата невірна.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Сервер не зміг отримати налаштування.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Неправильний логін або пароль.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Домен LDAP не знайдено.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Неможливо знайти групи.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Невірне значення фільтра користувача.</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Ключ DropBox</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Ключі Google</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Смс-центр</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Логін</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Аккаунт Sid</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
   </data>
 </root>

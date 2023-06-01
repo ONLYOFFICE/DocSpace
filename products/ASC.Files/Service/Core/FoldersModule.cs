@@ -92,7 +92,7 @@ public class FoldersModule : FeedModule
             targetCond = true;
         }
 
-        return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
+        return targetCond && await _fileSecurity.CanReadAsync(folder, userId);
     }
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)

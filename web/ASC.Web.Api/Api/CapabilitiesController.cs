@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers;
 
-[DefaultRoute]
+[DefaultRoute, DefaultRoute("{.format}")]
 [ApiController]
 [AllowAnonymous]
 public class CapabilitiesController : ControllerBase

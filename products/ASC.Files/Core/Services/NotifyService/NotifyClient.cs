@@ -25,8 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using Actions = ASC.Web.Studio.Core.Notify.Actions;
-using Context = ASC.Notify.Context;
 using ConfigurationConstants = ASC.Core.Configuration.Constants;
+using Context = ASC.Notify.Context;
 
 namespace ASC.Files.Core.Services.NotifyService;
 
@@ -46,6 +46,7 @@ public class NotifyClient
     private readonly Context _notifyContext;
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly FileSecurity _fileSecurity;
 
     public NotifyClient(
         Context notifyContext,
@@ -60,7 +61,8 @@ public class NotifyClient
         UserManager userManager,
         TenantManager tenantManager,
         StudioNotifyHelper studioNotifyHelper,
-        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper)
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
+        FileSecurity fileSecurity)
     {
         _notifyContext = notifyContext;
         _notifyEngineQueue = notifyEngineQueue;
@@ -75,6 +77,7 @@ public class NotifyClient
         _tenantManager = tenantManager;
         _studioNotifyHelper = studioNotifyHelper;
         _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
+        _fileSecurity = fileSecurity;
     }
 
     public async Task SendDocuSignCompleteAsync<T>(File<T> file, string sourceTitle)
@@ -208,12 +211,20 @@ public class NotifyClient
 
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 
-        var folderDao = _daoFactory.GetFolderDao<T>();
+        var folderDao = _daoFactory.GetFolderDao<int>();
+
         var (roomId, roomTitle) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
         var roomUrl = _pathProvider.GetRoomsUrl(roomId);       
 
+        var room = await folderDao.GetFolderAsync(roomId);
+
         foreach (var recipientId in recipientIds)
         {
+            if (!await _fileSecurity.CanReadAsync(room, recipientId))
+            {
+                continue;
+            };
+
             var u = _userManager.GetUsers(recipientId);
 
             if (!await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.RoomsActivity))
@@ -221,7 +232,7 @@ public class NotifyClient
                 continue;
             }
 
-            var recipient = await recipientsProvider.GetRecipientAsync(u.Id.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(recipientId.ToString());
 
             var disabledRooms = await _roomsNotificationSettingsHelper.GetDisabledRoomsForUserAsync(recipientId);
 

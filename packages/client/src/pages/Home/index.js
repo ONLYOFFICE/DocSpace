@@ -37,24 +37,25 @@ import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 import MediaViewer from "./MediaViewer";
 import SelectionArea from "./SelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 const PureHome = (props) => {
-  const {
-    fetchFiles,
-    fetchRooms,
-    alreadyFetchingRooms,
-    setAlreadyFetchingRooms,
-    //homepage,
-    setIsLoading,
-    setFirstLoad,
-    setToPreviewFile,
-    playlist,
+    const {
+      fetchFiles,
+      fetchRooms,
+      alreadyFetchingRooms,
+      setAlreadyFetchingRooms,
+      //homepage,
+      setIsLoading,
+      setFirstLoad,
+      setToPreviewFile,
+      playlist,
 
-    getFileInfo,
-    gallerySelected,
-    setIsUpdatingRowItem,
-    setIsPreview,
-    selectedFolderStore,
+      getFileInfo,
+      gallerySelected,
+      setIsUpdatingRowItem,
+      setIsPreview,
+      selectedFolderStore,
     t,
     startUpload,
     setDragging,
@@ -80,6 +81,7 @@ const PureHome = (props) => {
     files,
     selection,
     filesList,
+    removeFirstUrl,
 
     createFile,
     createFolder,
@@ -130,7 +132,9 @@ const PureHome = (props) => {
     if (isAccountsPage || isSettingsPage) return;
 
     if (!window.location.href.includes("#preview")) {
-      localStorage.removeItem("isFirstUrl");
+      // localStorage.removeItem("isFirstUrl");
+      // Media viewer
+      removeFirstUrl();
     }
 
     const categoryType = getCategoryType(location);
@@ -175,6 +179,12 @@ const PureHome = (props) => {
 
       if (!filterObj) {
         setIsLoading(true);
+
+        if (window.location.pathname.indexOf("/rooms/archived") !== -1) {
+          fetchArchiveDefaultRooms();
+
+          return;
+        }
         fetchDefaultRooms();
 
         return;
@@ -334,7 +344,27 @@ const PureHome = (props) => {
     });
   };
 
+  const fetchArchiveDefaultRooms = () => {
+    const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
+
+    const filter = RoomsFilter.getDefault();
+    filter.searchArea = RoomSearchArea.Archive;
+
+    fetchRooms(null, filter).finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
+
   const onDrop = (files, uploadToFolder) => {
+    const {
+      t,
+      startUpload,
+      setDragging,
+      dragging,
+      uploadEmptyFolders,
+      disableDrag,
+    } = this.props;
     dragging && setDragging(false);
 
     if (disableDrag) return;
@@ -355,30 +385,44 @@ const PureHome = (props) => {
     switch (type) {
       case "move":
         if (qty > 1) {
-          return toastr.success(
+          return (
+            toastr.success(
             <Trans t={t} i18nKey="MoveItems" ns="Files">
               {{ qty }} elements has been moved
             </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
+        return (
+          toastr.success(
           <Trans t={t} i18nKey="MoveItem" ns="Files">
             {{ title }} moved
           </Trans>
+          ),
+          refreshFiles()
         );
+
       case "duplicate":
         if (qty > 1) {
-          return toastr.success(
+          return (
+            toastr.success(
             <Trans t={t} i18nKey="CopyItems" ns="Files">
               {{ qty }} elements copied
             </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
+        return (
+          toastr.success(
           <Trans t={t} i18nKey="CopyItem" ns="Files">
             {{ title }} copied
           </Trans>
+          ),
+          refreshFiles()
         );
+
       default:
         break;
     }
@@ -399,14 +443,6 @@ const PureHome = (props) => {
   React.useEffect(() => {
     if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
       setHeaderVisible(isHeaderVisible);
-    }
-
-    if (isProgressFinished !== prevProps.current.isProgressFinished) {
-      if (!isAccountsPage && !isSettingsPage) {
-        setTimeout(() => {
-          refreshFiles();
-        }, 100);
-      }
     }
 
     if (
@@ -598,29 +634,29 @@ const PureHome = (props) => {
   sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
   sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
 
-  return (
-    <>
+    return (
+      <>
       {isSettingsPage ? (
         <></>
       ) : isAccountsPage ? (
         <AccountsDialogs />
       ) : (
         <>
-          <DragTooltip />
-          <SelectionArea />
+        <DragTooltip />
+        <SelectionArea />
         </>
       )}
       <MediaViewer />
       <Section {...sectionProps}>
         {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
-          <Section.SectionHeader>
-            {isFrame ? (
-              showTitle && <SectionHeaderContent />
-            ) : (
-              <SectionHeaderContent />
-            )}
-          </Section.SectionHeader>
-        )}
+            <Section.SectionHeader>
+              {isFrame ? (
+                showTitle && <SectionHeaderContent />
+              ) : (
+                <SectionHeaderContent />
+              )}
+            </Section.SectionHeader>
+          )}
 
         {((!isEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
           !isSettingsPage && (
@@ -633,25 +669,25 @@ const PureHome = (props) => {
             </Section.SectionFilter>
           )}
 
-        <Section.SectionBody>
+          <Section.SectionBody>
           <Outlet />
-        </Section.SectionBody>
+          </Section.SectionBody>
 
-        <Section.InfoPanelHeader>
-          <InfoPanelHeaderContent />
-        </Section.InfoPanelHeader>
-        <Section.InfoPanelBody>
-          <InfoPanelBodyContent />
-        </Section.InfoPanelBody>
+          <Section.InfoPanelHeader>
+            <InfoPanelHeaderContent />
+          </Section.InfoPanelHeader>
+          <Section.InfoPanelBody>
+            <InfoPanelBodyContent />
+          </Section.InfoPanelBody>
 
         {withPaging && !isSettingsPage && (
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
-        )}
-      </Section>
-    </>
-  );
+            <Section.SectionPaging>
+              <SectionPagingContent tReady={tReady} />
+            </Section.SectionPaging>
+          )}
+        </Section>
+      </>
+    );
 };
 
 const Home = withTranslation(["Files", "People"])(PureHome);
@@ -736,12 +772,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
@@ -750,7 +782,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile, playlist } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist, removeFirstUrl } = mediaViewerDataStore;
 
     const { settingsStore, currentTariffStatusStore } = auth;
 
@@ -835,6 +867,7 @@ export default inject(
       setToPreviewFile,
       setIsPreview,
       playlist,
+      removeFirstUrl,
 
       getFileInfo,
       gallerySelected,

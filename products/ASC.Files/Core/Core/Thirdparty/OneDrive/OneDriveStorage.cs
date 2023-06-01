@@ -87,11 +87,6 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
         IsOpened = false;
     }
 
-    public bool CheckAccess()
-    {
-        return CheckAccessAsync().Result;
-    }
-
     public async Task<bool> CheckAccessAsync()
     {
         var request = await OnedriveClient

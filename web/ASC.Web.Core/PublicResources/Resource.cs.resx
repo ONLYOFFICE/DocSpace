@@ -116,7 +116,7 @@
     <value>Prosím vyplňte všechna pole</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Nebyl nalezen nahraný soubor.</value>
+    <value>Nebyl nalezen nahraný soubor</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Velikost obrázku je příliš velká</value>
@@ -191,7 +191,7 @@
     <value>Server se nepodařilo uložit nastavení.</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
-    <value>Špatné přihlašovací jméno nebo heslo</value>
+    <value>Špatné přihlašovací jméno nebo heslo.</value>
   </data>
   <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
     <value>LDAP doména nebyla nalezena.</value>
@@ -200,7 +200,7 @@
     <value>Nebyly nalezeny žádné skupiny.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Špatná hodnota uživatelského filtru</value>
+    <value>Špatná hodnota uživatelského filtru.</value>
   </data>
   <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
     <value>Neznámá chyba.</value>
@@ -212,7 +212,7 @@
     <value>Nelze získat atribut skupiny pro jednu nebo více skupin.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
-    <value>Nesprávný filter skupiny</value>
+    <value>Nesprávný filter skupiny.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
     <value>Nelze získat atribut názvu skupiny pro jednu nebo více skupin.</value>
@@ -293,7 +293,7 @@
     <value>Licence není správná</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licence vypršela</value>
+    <value>Licence vypršela.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Počet portálů přesahuje počet, který dovoluje licence</value>
@@ -362,7 +362,7 @@
     <value>Nastavení bylo úspěšně aktualizováno</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Pokyny pro smazání Vašeho profilu byly zaslány na {0} emailovou adresu.</value>
+    <value>Pokyny pro smazání Vašeho profilu byly zaslány na {0} emailovou adresu</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Region Západní USA (Oregon)</value>
@@ -431,6 +431,204 @@
     <value>Branding a přizpůsobení</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Počet administrátorů/přístupných uživatelů:</value>
+    <value>Počet správců/oprávněných uživatelů:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Připojte Bitly službu pro zkrácení odkazů pozvánek a sdílených odkazů v modulu Dokumenty.</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Schránka</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Klíč</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě Box souborů a složek.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Povolte aplikaci pro dvoufaktorovou autentizaci přes Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Klíč</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Připojte aplikaci pro přidání elektronického podpisu DocuSign do dokumentů.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Koncový bod autentizace DocuSign</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě Dropbox souborů a složek.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook klíč</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálů pomocí Facebookového účtu.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API klíč</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Serverový klíč</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Připojte službu Firebase Cloud Messaging, abyste přijímali oznámení o odeslaných zprávách.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Tajný klíč DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID odesílatele</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID projektu</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Připojit projekt k přihlášení do portálu pomocí Google účtu a spravujte Google Drive soubory a složky.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálu pomocí LinkedIn účtu.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Klíč</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Klientské tajemství</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Klientské tajemství</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě OneDrive souborů a složek.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Povolte aplikaci pro dvoufaktorové ověřování přes SMS centrum.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Heslo nebo heslo MD5 hash malými písmeny</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Přidat Twilio, aby bylo možné volat CRM kontakty přímo v prohlížeči.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Telefonní číslo od společnosti Twilio (vyžadováno pro autorizaci SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálu pomocí Twitteru a vyhledejte kontakty.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Povolte aplikaci pro import kontaktů Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Neznámý typ souboru obrázku</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Velikost obrázku překročila povolené parametry</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Klíč</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Klíč</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS centrum</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Sid Účtu</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Klientské tajemství</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

@@ -82,6 +82,7 @@ export default function withBadges(WrappedComponent) {
         isPrivacyFolder,
         onFilesClick,
         isAdmin,
+        isVisitor,
         isDesktopClient,
         sectionWidth,
         viewAs,
@@ -105,6 +106,7 @@ export default function withBadges(WrappedComponent) {
           theme={theme}
           item={item}
           isAdmin={isAdmin}
+          isVisitor={isVisitor}
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
@@ -161,7 +163,7 @@ export default function withBadges(WrappedComponent) {
         isArchiveFolderRoot,
         theme,
         isAdmin: auth.isAdmin,
-
+        isVisitor: auth.userStore.user.isVisitor,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
         homepage: config.homepage,

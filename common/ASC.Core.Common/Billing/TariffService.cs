@@ -169,8 +169,6 @@ public class TariffService : ITariffService
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
-                var paymentFound = false;
-
                 try
                 {
                     var currentPayments = _billingClient.GetCurrentPayments(await _coreSettings.GetKeyAsync(tenantId));
@@ -225,8 +223,6 @@ public class TariffService : ITariffService
                     }
 
                     UpdateCache(tariff.Id);
-
-                    paymentFound = true;
                 }
                 catch (Exception error)
                 {
@@ -236,7 +232,7 @@ public class TariffService : ITariffService
                     }
                 }
 
-                if (!paymentFound)
+                if (tariff.Id == 0)
                 {
                     var freeTariff = await tariff.Quotas.ToAsyncEnumerable().FirstOrDefaultAwaitAsync(async tariffRow =>
                     {
@@ -763,7 +759,7 @@ public class TariffService : ITariffService
 
         if (inserted)
         {
-            var t =  await _tenantService.GetTenantAsync(tenant);
+            var t = await _tenantService.GetTenantAsync(tenant);
             if (t != null)
             {
                 // update tenant.LastModified to flush cache in documents
@@ -802,7 +798,7 @@ public class TariffService : ITariffService
 
         if (_trialEnabled)
         {
-            var trial = tariff.Quotas.Exists(q => _quotaService.GetTenantQuotaAsync(q.Id).Result.Trial);
+            var trial = await tariff.Quotas.ToAsyncEnumerable().AnyAwaitAsync(async q => (await _quotaService.GetTenantQuotaAsync(q.Id)).Trial);
             if (trial)
             {
                 setDelay = false;

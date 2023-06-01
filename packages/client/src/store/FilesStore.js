@@ -128,6 +128,7 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
 
   constructor(
     authStore,
@@ -909,9 +910,9 @@ class FilesStore {
     return newSelection;
   };
 
-  setSelected = (selected) => {
+  setSelected = (selected, clearBuffer = true) => {
     if (selected === "close" || selected === "none") {
-      this.setBufferSelection(null);
+      clearBuffer && this.setBufferSelection(null);
       this.setHotkeyCaretStart(null);
       this.setHotkeyCaret(null);
     }
@@ -1100,6 +1101,7 @@ class FilesStore {
           window.DocSpace.location.pathname.includes("accounts/filter"),
         fromSettings: window.DocSpace.location.pathname.includes("settings"),
       },
+      replace: !location.search,
     });
   };
 
@@ -1148,13 +1150,10 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
     }
-
-    this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -1227,6 +1226,7 @@ class FilesStore {
           if (filter && isEmptyList) {
             const {
               authorType,
+              roomId,
               search,
               withSubfolders,
               filterType,
@@ -1234,6 +1234,7 @@ class FilesStore {
             } = filter;
             const isFiltered =
               authorType ||
+              roomId ||
               search ||
               !withSubfolders ||
               filterType ||
@@ -2190,8 +2191,8 @@ class FilesStore {
     return api.rooms.updateRoomMemberRole(id, data);
   }
 
-  getHistory(module, id) {
-    return api.rooms.getHistory(module, id);
+  getHistory(module, id, signal = null) {
+    return api.rooms.getHistory(module, id, signal);
   }
 
   getRoomHistory(id) {
@@ -2758,8 +2759,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3272,6 +3277,10 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
+  };
+
   setMainButtonMobileVisible = (visible) => {
     this.mainButtonMobileVisible = visible;
   };
@@ -3490,8 +3499,14 @@ class FilesStore {
       withoutTags,
     } = this.roomsFilter;
 
-    const { authorType, search, withSubfolders, filterType, searchInContent } =
-      this.filter;
+    const {
+      authorType,
+      roomId,
+      search,
+      withSubfolders,
+      filterType,
+      searchInContent,
+    } = this.filter;
 
     const isFiltered =
       isRoomsFolder || isArchiveFolder
@@ -3503,6 +3518,7 @@ class FilesStore {
           tags ||
           withoutTags
         : authorType ||
+          roomId ||
           search ||
           !withSubfolders ||
           filterType ||

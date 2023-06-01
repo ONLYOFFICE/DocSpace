@@ -63,66 +63,6 @@ public static class WebItemExtension
         return sysname;
     }
 
-    public static string GetDisabledIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
-    {
-        if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.DisabledIconFileName))
-        {
-            return string.Empty;
-        }
-
-        return webImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
-    }
-
-    public static string GetSmallIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
-    {
-        if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.SmallIconFileName))
-        {
-            return string.Empty;
-        }
-
-        return webImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
-    }
-
-    public static string GetIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
-    {
-        if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.IconFileName))
-        {
-            return string.Empty;
-        }
-
-        return webImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
-    }
-
-    public static string GetLargeIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
-    {
-        if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.LargeIconFileName))
-        {
-            return string.Empty;
-        }
-
-        return webImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
-    }
-
-    public static List<string> GetUserOpportunities(this IWebItem item)
-    {
-        return item.Context.UserOpportunities != null ? item.Context.UserOpportunities() : new List<string>();
-    }
-
-    public static List<string> GetAdminOpportunities(this IWebItem item)
-    {
-        return item.Context.AdminOpportunities != null ? item.Context.AdminOpportunities() : new List<string>();
-    }
-
-    public static bool HasComplexHierarchyOfAccessRights(this IWebItem item)
-    {
-        return item.Context.HasComplexHierarchyOfAccessRights;
-    }
-
-    public static bool CanNotBeDisabled(this IWebItem item)
-    {
-        return item.Context.CanNotBeDisabled;
-    }
-
 
     public static async Task<bool> IsDisabledAsync(this IWebItem item, WebItemSecurity webItemSecurity, AuthContext authContext)
     {

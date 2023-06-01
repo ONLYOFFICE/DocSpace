@@ -106,10 +106,10 @@ public class NotifyConfiguration
             "ProductSecurityInterceptor",
              InterceptorPlace.DirectSend,
              InterceptorLifetime.Global,
-             (r, p, scope) =>
+             async (r, p, scope) =>
              {
                  var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
-                 return scopeClass.InterceptAsync(r, p).Result;
+                 return await scopeClass.InterceptAsync(r, p);
              });
         client.AddInterceptor(securityAndCulture);
 
@@ -369,27 +369,19 @@ public class NotifyTransferRequest : INotifyEngineAction
     private async Task AddLetterLogoAsync(NotifyRequest request)
     {
 
-        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
+        try
         {
-            try
-            {
-                var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
+            var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
 
-                if (attachment != null)
-                {
-                    request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                    request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                    return;
-                }
-            }
-            catch (Exception error)
+            if (attachment != null)
             {
-                _log.ErrorAddLetterLogo(error);
+                request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
             }
         }
-
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(await _tenantLogoManager.GetLogoDarkAsync(false));
-
-        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
+        catch (Exception error)
+        {
+            _log.ErrorAddLetterLogo(error);
+        }
     }
 }

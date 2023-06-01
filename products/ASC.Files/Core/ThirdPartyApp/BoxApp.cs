@@ -159,7 +159,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
-        var editable = false;
+        var editable = true;
 
         if (boxFile == null)
         {

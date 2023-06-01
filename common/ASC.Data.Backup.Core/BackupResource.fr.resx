@@ -61,4 +61,7 @@
   <data name="BackupNotFound" xml:space="preserve">
     <value>Le fichier de sauvegarde n'est pas valide. Veuillez utiliser un fichier créé dans ONLYOFFICE v11.5 ou plus récent.</value>
   </data>
+  <data name="ButtonSetPassword" xml:space="preserve">
+    <value>Définir un mot de passe</value>
+  </data>
 </root>

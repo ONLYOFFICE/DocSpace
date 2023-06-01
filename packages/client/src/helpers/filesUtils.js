@@ -158,14 +158,16 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
   if (!openNewTab) {
     return getDataSaveAs(params);
   } else {
-    window.open(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/filehandler.ashx?${params}`
-      ),
-      "_blank"
+    const handlerUrl = combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      config.homepage,
+      window["AscDesktopEditor"] !== undefined //FIX Save as with open new tab on DesktopEditors
+        ? "/Products/Files/HttpHandlers/"
+        : "",
+      `/filehandler.ashx?${params}`
     );
+    //console.log({ handlerUrl });
+    window.open(handlerUrl, "_blank");
   }
 };
 

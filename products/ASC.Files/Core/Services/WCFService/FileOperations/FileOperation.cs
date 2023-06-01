@@ -88,11 +88,25 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
     public override async Task RunJob(DistributedTask _, CancellationToken cancellationToken)
     {
-        ThirdPartyOperation.Publication = PublishChanges;
-        await ThirdPartyOperation.RunJob(_, cancellationToken);
+        if (ThirdPartyOperation.Files.Any() || ThirdPartyOperation.Folders.Any())
+        {
+            ThirdPartyOperation.Publication = PublishChanges;
+            await ThirdPartyOperation.RunJob(_, cancellationToken);
+        }
+        else
+        {
+            ThirdPartyOperation[Finish] = true;
+        }
 
-        DaoOperation.Publication = PublishChanges;
-        await DaoOperation.RunJob(_, cancellationToken);
+        if (DaoOperation.Files.Any() || DaoOperation.Folders.Any())
+        {
+            DaoOperation.Publication = PublishChanges;
+            await DaoOperation.RunJob(_, cancellationToken);
+        }
+        else
+        {
+            DaoOperation[Finish] = true;
+        }
     }
 
     public virtual void PublishChanges(DistributedTask task)
@@ -216,7 +230,6 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
     {
         try
         {
-            //todo check files> 0 or folders > 0
             CancellationToken = cancellationToken;
 
             await using var scope = _serviceProvider.CreateAsyncScope();

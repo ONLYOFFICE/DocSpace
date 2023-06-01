@@ -343,7 +343,7 @@ public class DocumentServiceConnector
 
         var urlRewriterQuery = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
         var query = HttpUtility.ParseQueryString(uri.Query);
-        query[HttpRequestExtensions.UrlRewriterHeader] = urlRewriterQuery;
+        //        query[HttpRequestExtensions.UrlRewriterHeader] = urlRewriterQuery;
         uri.Query = query.ToString();
 
         var communityUrl = new UriBuilder(docServicePortalUrl);
@@ -384,7 +384,7 @@ public class DocumentServiceConnector
 
         var urlRewriterQuery = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":" + uri.Port;
         var query = HttpUtility.ParseQueryString(uri.Query);
-        query[HttpRequestExtensions.UrlRewriterHeader] = urlRewriterQuery;
+        //query[HttpRequestExtensions.UrlRewriterHeader] = urlRewriterQuery;
         uri.Query = query.ToString();
 
         var communityUrl = new UriBuilder(docServicePortalUrl);

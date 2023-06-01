@@ -228,7 +228,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     {
         var sendResponces = new List<SendResponse>();
 
-        var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
+        var response = await CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
         if (response != null)
         {
             sendResponces.Add(response);
@@ -252,9 +252,9 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return result;
     }
 
-    private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
+    private async Task<SendResponse> CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
     {
-        return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
+        return await request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
     }
 
     private async Task<List<SendResponse>> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
@@ -290,7 +290,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         {
             if (request.Recipient is IRecipientsGroup)
             {
-                var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
+                var checkresp = await CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
                 if (checkresp != null)
                 {
                     responces.Add(checkresp);
@@ -341,7 +341,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
 
         var responses = new List<SendResponse>();
-        var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
+        var response = await CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
         if (response != null)
         {
             responses.Add(response);
@@ -411,7 +411,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
 
         request.CurrentMessage = noticeMessage;
-        var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
+        var preventresponse = await CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
         if (preventresponse != null)
         {
             return preventresponse;

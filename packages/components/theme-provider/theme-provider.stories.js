@@ -6,6 +6,7 @@ import Base from "../themes/base";
 import Dark from "../themes/dark";
 import Heading from "../heading";
 import Checkbox from "../checkbox";
+import { ColorTheme, ThemeType } from "../ColorTheme";
 import ThemeProvider from "./";
 
 export default {
@@ -92,3 +93,32 @@ const DarkTemplate = (args) => {
   );
 };
 export const DarkTheme = DarkTemplate.bind({});
+
+const ColorTemplate = (args) => {
+  const currentColorScheme = {
+    id: 7,
+    main: {
+      accent: "#ef22ad",
+      buttons: "#f426a3",
+    },
+    name: "",
+    text: {
+      accent: "#fffff",
+      buttons: "#fffff",
+    },
+  };
+
+  return (
+    <ThemeProvider
+      {...args}
+      theme={Base}
+      currentColorScheme={currentColorScheme}
+    >
+      <ColorTheme themeId={ThemeType.Button} primary>
+        Button
+      </ColorTheme>
+    </ThemeProvider>
+  );
+};
+
+export const CurrentColorTheme = ColorTemplate.bind({});

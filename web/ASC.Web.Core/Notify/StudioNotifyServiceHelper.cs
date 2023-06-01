@@ -54,6 +54,11 @@ public class StudioNotifyServiceHelper
         await SendNoticeToAsync(action, null, recipients, senderNames, false, args);
     }
 
+    public async Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, string baseUri, params ITagValue[] args)
+    {
+        await SendNoticeToAsync(action, null, recipients, senderNames, false, baseUri, args);
+    }
+
     public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
         await SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
@@ -87,7 +92,12 @@ public class StudioNotifyServiceHelper
         await SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
     }
 
-    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
+    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubscription, params ITagValue[] args)
+    {
+        await SendNoticeToAsync(action, objectID, recipients, senderNames, checkSubscription, null, args);
+    }
+
+    public async Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, string baseUri, params ITagValue[] args)
     {
         var item = new NotifyItem
         {
@@ -95,7 +105,7 @@ public class StudioNotifyServiceHelper
             UserId = _authContext.CurrentAccount.ID.ToString(),
             Action = (NotifyAction)action,
             CheckSubsciption = checkSubsciption,
-            BaseUrl = _commonLinkUtility.GetFullAbsolutePath("")
+            BaseUrl = baseUri ?? _commonLinkUtility.GetFullAbsolutePath("")
         };
 
         if (objectID != null)

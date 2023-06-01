@@ -100,21 +100,10 @@ class UserStore {
     this.withSendAgain = withSendAgain;
   };
 
-  sendActivationLink = (t) => {
+  sendActivationLink = async () => {
     const { email, id } = this.user;
-
-    return api.people.resendUserInvites([id]).then(() => {
-      toastr.success(
-        <Trans
-          i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-          ns="People"
-          t={t}
-        >
-          The email activation instructions have been sent to the
-          <strong>{{ email: email }}</strong> email address
-        </Trans>
-      );
-    });
+    await api.people.resendUserInvites([id]);
+    return email;
   };
 
   updateAvatarInfo = (avatar, avatarSmall, avatarMedium, avatarMax) => {

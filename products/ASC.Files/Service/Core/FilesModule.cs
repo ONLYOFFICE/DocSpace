@@ -95,7 +95,7 @@ public class FilesModule : FeedModule
             targetCond = true;
         }
 
-        return targetCond && _fileSecurity.CanReadAsync(file, userId).Result;
+        return targetCond && await _fileSecurity.CanReadAsync(file, userId);
     }
 
     public override async Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)

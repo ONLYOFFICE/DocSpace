@@ -1,6 +1,6 @@
 import React from "react";
 
-import Tags from "@docspace/common/components/Tags";
+import Tags from "@docspace/components/Tags";
 
 //import { RoomsTypeTranslations } from "@docspace/common/constants";
 import Text from "@docspace/components/text";

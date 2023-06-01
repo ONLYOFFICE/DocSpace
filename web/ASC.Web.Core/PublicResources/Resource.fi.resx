@@ -83,7 +83,7 @@
     <value>Virheellinen sähköpostiosoite</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Ei käyttöoikeuksia tämän toiminnon suorittamiseen. </value>
+    <value>Ei käyttöoikeuksia tämän toiminnon suorittamiseen</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
     <value>Portaaliin pääsy on rajoitettu.</value>
@@ -92,28 +92,28 @@
     <value>Virheelliset avaimet</value>
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
-    <value>Käyttäjätunnuksesi on poistettu käytöstä.</value>
+    <value>Käyttäjätunnuksesi on poistettu käytöstä</value>
   </data>
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>Antamasi sähköpostiosoite on jo toisen käyttäjän käytössä. Pelottavaa!</value>
+    <value>Antamasi sähköpostiosoite on jo toisen käyttäjän käytössä. Pelottavaa</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Sähköposteja tästä verkkotunnuksesta ei ole sallittu rekisteröintiin</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
-    <value>Sähköpostiosoite on tyhjä. </value>
+    <value>Sähköpostiosoite on tyhjä</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
-    <value>Nykyinen sähköposti ja uusi sähköposti ovat sama. Nyt ei jokin tässä täsmää...</value>
+    <value>Nykyinen sähköposti ja uusi sähköposti ovat sama. Nyt ei jokin tässä täsmää</value>
   </data>
   <data name="ErrorEmptyFields" xml:space="preserve">
-    <value>Täytä kaikki kentät. Please!</value>
+    <value>Täytä kaikki kentät</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Lisättyä tiedostoa ei löytynyt. Ei sitten millään.</value>
+    <value>Lisättyä tiedostoa ei löytynyt. Ei sitten millään</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Kuvatiedoston koko on liian suuri. Ei pysty.</value>
+    <value>Kuvatiedoston koko on liian suuri. Ei pysty</value>
   </data>
   <data name="ErrorIpSecurity" xml:space="preserve">
     <value>Portaaliin pääsy on rajoitettu</value>
@@ -122,7 +122,7 @@
     <value>Sinun hintavaihtoehtosi ei tue tätä mahdollisuutta</value>
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
-    <value>Sähköpostiosoite ei kelpaa. Jokin siinä mättää.</value>
+    <value>Sähköpostiosoite ei kelpaa. Jokin siinä mättää</value>
   </data>
   <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
     <value>Virheellinen verkkotunnuksen nimi</value>
@@ -146,10 +146,10 @@
     <value>isot kirjaimet</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>Käyttäjää ei löytynyt. Minne lie kadonnut.</value>
+    <value>Käyttäjää ei löytynyt. Minne lie kadonnut</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>Käyttäjä, jonka sähköposti on {0} ei löytynyt. Outoa.</value>
+    <value>Käyttäjä, jonka sähköposti on {0} ei löytynyt. Outoa</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
     <value>EU (Frankfurt)</value>
@@ -191,13 +191,13 @@
     <value>Ei löydy ryhmiä.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Virheellinen käyttäjän suodattimen arvo</value>
+    <value>Virheellinen käyttäjän suodattimen arvo.</value>
   </data>
   <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
     <value>Tuntematon virhe.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Ei löydy mitään käyttäjää</value>
+    <value>Ei löydy mitään käyttäjää.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Ei voitu saada Ryhmän attribuutin arvoa yhdelle tai useammalle ryhmälle.</value>
@@ -239,7 +239,7 @@
     <value>Ladattu onnistuneesti</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Sähköpostin muutosohjeet on lähetetty {0} sähköpostiosoitteeseen</value>
+    <value>Sähköpostin muutosohjeet on lähetetty sähköpostiosoitteeseen</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Numeron vaihtamiseksi, sinun tulee poistaa nykyinen puhelinnumerosi</value>
@@ -285,5 +285,215 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Uutta</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Käyttäjien kirjautumisten &amp; toiminnan seuranta</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimi tiedostokoko</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Tiedoston koko ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Ylläpitäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Ylläpitäjien määrä</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automaattinen varmuuskopiointi &amp; palautus</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Rajoittamaton aktiivisten huoneiden määrä</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Huoneiden määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} muistin tila</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Käytetyn muistin koko ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Muistin tila</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Huoneet:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Käytetty muistin tila:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Käyttäjiä huoneessa:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Rajattu käyttäjien määrä</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Käyttäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Käyttäjiä huoneessa</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Huoneessa olevien käyttäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Brändäys &amp; räätälöinti</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>API avain</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>sisäänkirjautuminen</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Yhdistä Bitly palveluun, jotta voit lyhentää portaalin kutsun linkkejä ja jaettuja linkkejä asiakirjojen moduulissa.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Laatikon tunnus</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Laatikon avain</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voi hallita Laatikon tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>API avain</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Avain</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Yhdistä sovellus, jotta voit lisätä sähköisen DocuSign allekirjoituksen asiakirjoihin.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign valtuutuksen päätepiste</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit hallita Dropbox tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook avain</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua portaaliin Facebook tilin kautta.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Salainen tunnus</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Yhdistä projekti, jotta voi kirjautua sisään käyttämällä Google tiliä ja hallinnoida Google Drive tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua sisään käyttämällä LinkedIn tiliä.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin avain</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit hallita OneDrive tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Yhdistä Twilio ja voit soittaa Asiakkuudenhallinnan kontakteja suoraan selaimessa.</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua sisään käyttämällä Twitter tiliä ja etsiä kontakteja.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Tuntematon kuvatiedoston tyyppi</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Kuvan koko ylitti sallitut parametrit</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox avain</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google avain</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Sisäänkirjautuminen</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Tilin Sid arvo</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Valtuutuksen merkkijono</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Salasana</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
   </data>
 </root>

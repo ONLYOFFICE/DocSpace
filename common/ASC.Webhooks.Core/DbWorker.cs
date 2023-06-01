@@ -31,6 +31,13 @@ namespace ASC.Webhooks.Core;
 [Scope]
 public class DbWorker
 {
+    public static readonly IReadOnlyList<string> MethodList = new List<string>
+    {
+        "POST",
+        "PUT",
+        "DELETE"
+    };
+
     private readonly IDbContextFactory<WebhooksDbContext> _dbContextFactory;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;

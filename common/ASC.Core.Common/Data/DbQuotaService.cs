@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Data;
 
-[Scope]
+[Scope(Additional = typeof(DbQuotaServiceExtensions))]
 class DbQuotaService : IQuotaService
 {
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
@@ -88,7 +88,7 @@ class DbQuotaService : IQuotaService
         dbTenantQuotaRow.UserId = row.UserId;
 
         var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
-        
+
         if (exist == null)
         {
             await coreDbContext.QuotaRows.AddAsync(dbTenantQuotaRow);
@@ -124,6 +124,14 @@ class DbQuotaService : IQuotaService
         }
 
         return await q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToListAsync();
+    }
+}
+
+public static class DbQuotaServiceExtensions
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<TenantQuotaPriceResolver>();
     }
 }
 
