@@ -159,7 +159,7 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return tenantDbContext.Tenants
             .Where(r => r.Id == id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
@@ -188,7 +188,7 @@ public class DbTenantService : ITenantService
 
         domain = domain.ToLowerInvariant();
 
-        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return tenantDbContext.Tenants
             .Where(r => r.Alias == domain || r.MappedDomain == domain)
@@ -200,7 +200,7 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenantForStandaloneWithoutAlias(string ip)
     {
-        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return tenantDbContext.Tenants
             .OrderBy(a => a.Status)

@@ -99,7 +99,6 @@ public class EFUserService : IUserService
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
-        await using
         await using var userDbContext = _dbContextFactory.CreateDbContext();
         if (Guid.TryParse(login, out var userId))
         {
