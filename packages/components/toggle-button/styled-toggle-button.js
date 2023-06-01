@@ -68,6 +68,8 @@ const ToggleButtonContainer = styled.label`
               }
             }
           `}
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
   }
 
   .toggle-button {
@@ -82,7 +84,9 @@ const ToggleButtonContainer = styled.label`
   }
 `;
 
-ToggleButtonContainer.defaultProps = { theme: Base };
+ToggleButtonContainer.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const HiddenInput = styled.input`
   opacity: 0.0001;
