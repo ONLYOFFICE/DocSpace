@@ -43,7 +43,8 @@ internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, Driv
         IFileDao<int> fileDao,
         IDaoBase<DriveFile, DriveFile, DriveFile> dao,
         TempPath tempPath,
-        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
+        SetupInfo setupInfo,
+        TenantManager tenantManager) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, tenantManager)
     {
         _tempPath = tempPath;
         _setupInfo = setupInfo;
