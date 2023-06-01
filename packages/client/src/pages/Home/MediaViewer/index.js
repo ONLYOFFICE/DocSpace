@@ -181,6 +181,8 @@ const FilesMediaViewer = (props) => {
       return;
     }
 
+    console.log(url);
+
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
