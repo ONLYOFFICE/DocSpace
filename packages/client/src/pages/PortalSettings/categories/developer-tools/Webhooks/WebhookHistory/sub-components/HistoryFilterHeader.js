@@ -26,16 +26,20 @@ const ListHeading = styled(Text)`
 `;
 
 const FilterButton = styled.div`
+  position: relative;
   display: flex;
   box-sizing: border-box;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 
+  box-sizing: border-box;
+
   width: 32px;
   height: 32px;
 
-  border: 1px solid #d0d5da;
+  border: 1px solid;
+  border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};
   border-radius: 3px;
   cursor: pointer;
 
@@ -50,6 +54,17 @@ const FilterButton = styled.div`
         fill: ${(props) => props.theme.iconButton.hoverColor};
       }
     }
+  }
+
+  span {
+    z-index: 201;
+    width: 8px;
+    height: 8px;
+    background-color: #4781d1;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
   }
 `;
 
@@ -79,6 +94,7 @@ const HistoryFilterHeader = (props) => {
 
         <FilterButton onClick={openFiltersModal}>
           <IconButton iconName={FilterReactSvrUrl} size={16} />
+          <span hidden={historyFilters === null}></span>
         </FilterButton>
       </ListHeader>
       {historyFilters !== null && <StatusBar applyFilters={applyFilters} />}
