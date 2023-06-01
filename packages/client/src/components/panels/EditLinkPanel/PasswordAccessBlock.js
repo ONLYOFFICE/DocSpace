@@ -16,6 +16,7 @@ const PasswordAccessBlock = (props) => {
     passwordValue,
     setPasswordValue,
     isPasswordValid,
+    setIsPasswordValid,
   } = props;
 
   const passwordInputRef = useRef(null);
@@ -36,6 +37,7 @@ const PasswordAccessBlock = (props) => {
 
   const onChangePassword = (e) => {
     setPasswordValue(e.target.value);
+    setIsPasswordValid(true);
   };
 
   return (
@@ -44,22 +46,21 @@ const PasswordAccessBlock = (props) => {
         <div>
           <div className="edit-link_password-block">
             <FieldContainer
-              labelText={t("Common:Password")}
-              isRequired
               isVertical
               hasError={!isPasswordValid}
               errorMessage={t("Common:RequiredField")}
               className="edit-link_password-block"
             >
               <PasswordInput
-                className="edit-link_password-input"
-                ref={passwordInputRef}
                 // scale //doesn't work
-                simpleView
-                isDisabled={isLoading}
                 // tabIndex={3}
                 // simpleView
                 // passwordSettings={{ minLength: 0 }}
+                className="edit-link_password-input"
+                ref={passwordInputRef}
+                simpleView
+                isDisabled={isLoading}
+                hasError={!isPasswordValid}
                 inputValue={passwordValue}
                 onChange={onChangePassword}
               />

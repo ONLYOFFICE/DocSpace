@@ -43,15 +43,14 @@ const EditLinkPanel = (props) => {
     link,
   } = props;
 
-  const title = props.title ?? t("ExternalLink");
-
   const [isLoading, setIsLoading] = useState(false);
 
-  const [linkNameValue, setLinkNameValue] = useState(title);
+  const [linkNameValue, setLinkNameValue] = useState("");
   const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState("");
 
   const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isLinkNameValid, setIsLinkNameValid] = useState(true);
 
   const [linkValue, setLinkValue] = useState(shareLink);
   const [hasChanges, setHasChanges] = useState(false);
@@ -75,12 +74,23 @@ const EditLinkPanel = (props) => {
 
   const onClose = () => setIsVisible(false);
   const onSave = () => {
+    let err = false;
+
     const isPasswordValid = !!passwordValue.trim();
 
     if (!isPasswordValid && passwordAccessIsChecked) {
-      setIsPasswordValid(isPasswordValid);
-      return;
+      setIsPasswordValid(false);
+      err = true;
     }
+
+    const isLinkNameValid = !!linkNameValue.trim();
+
+    if (!isLinkNameValid) {
+      setIsLinkNameValid(false);
+      err = true;
+    }
+
+    if (err) return;
 
     // const passwordHash = passwordAccessIsChecked
     //   ? createPasswordHash(passwordValue, hashSettings)
@@ -115,7 +125,6 @@ const EditLinkPanel = (props) => {
   };
 
   const initState = {
-    linkNameValue: title,
     passwordValue: password,
     //expirationDate
     passwordAccessIsChecked: isLocked,
@@ -125,7 +134,6 @@ const EditLinkPanel = (props) => {
 
   useEffect(() => {
     const data = {
-      linkNameValue,
       passwordValue,
       //expirationDate,
       passwordAccessIsChecked,
@@ -178,6 +186,8 @@ const EditLinkPanel = (props) => {
               setLinkNameValue={setLinkNameValue}
               linkValue={linkValue}
               setLinkValue={setLinkValue}
+              isLinkNameValid={isLinkNameValid}
+              setIsLinkNameValid={setIsLinkNameValid}
             />
             <PasswordAccessBlock
               t={t}
@@ -188,6 +198,7 @@ const EditLinkPanel = (props) => {
               isPasswordValid={isPasswordValid}
               passwordValue={passwordValue}
               setPasswordValue={setPasswordValue}
+              setIsPasswordValid={setIsPasswordValid}
               onChange={onPasswordAccessChange}
             />
             <LimitTimeBlock
@@ -252,7 +263,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setIsVisible: setEditLinkPanelIsVisible,
     isEdit,
     linkId: link?.sharedTo?.id ?? template?.sharedTo?.id,
-    title: link?.sharedTo?.title,
+
     disabled: link?.sharedTo?.disabled,
     editExternalLink,
     roomId: selectionParentRoom.id,

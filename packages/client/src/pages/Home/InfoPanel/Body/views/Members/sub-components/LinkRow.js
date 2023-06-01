@@ -27,7 +27,6 @@ const LinkRow = (props) => {
     link,
     roomId,
     setLinkParams,
-    canLinkDelete,
     setExternalLink,
     editExternalLink,
     setEditLinkPanelIsVisible,
@@ -120,24 +119,24 @@ const LinkRow = (props) => {
         onClick: onEmbeddingClick,
       },
       disabled
-        ? canLinkDelete && {
+        ? {
             key: "enable-link-key",
             label: t("Files:EnableLink"),
             icon: LoadedReactSvgUrl,
             onClick: onDisableLink,
           }
-        : canLinkDelete && {
+        : {
             key: "disable-link-key",
             label: t("Files:DisableLink"),
             icon: OutlineReactSvgUrl,
             onClick: onDisableLink,
           },
 
-      canLinkDelete && {
+      {
         key: "delete-link-separator",
         isSeparator: true,
       },
-      canLinkDelete && {
+      {
         key: "delete-link-key",
         label: t("Common:Delete"),
         icon: TrashReactSvgUrl,
@@ -213,7 +212,6 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLink,
-    canLinkDelete: links.length > 1,
     setEditLinkPanelIsVisible,
     setDeleteLinkDialogVisible,
     setEmbeddingPanelIsVisible,

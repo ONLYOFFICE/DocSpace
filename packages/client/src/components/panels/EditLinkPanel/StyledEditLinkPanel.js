@@ -9,6 +9,10 @@ const StyledEditLinkPanel = styled.div`
     }
   }
 
+  .field-label-icon {
+    display: none;
+  }
+
   .edit-link_body {
     padding: 22px 0px 20px;
 
@@ -17,10 +21,6 @@ const StyledEditLinkPanel = styled.div`
 
       .edit-link-text {
         margin-bottom: 4px;
-      }
-
-      .edit-link_name-input {
-        margin-bottom: 16px;
       }
 
       .edit-link_link-input {
@@ -42,8 +42,8 @@ const StyledEditLinkPanel = styled.div`
           margin-right: 28px;
         }
       }
-      .edit-link-toggle-description {
-        margin-bottom: 14px;
+      .edit-link_password-block {
+        margin-top: 8px;
       }
 
       .password-field-wrapper {
@@ -60,7 +60,7 @@ const StyledEditLinkPanel = styled.div`
       }
 
       .edit-link_generate-icon {
-        margin: 32px 0px 0px 8px;
+        margin: 16px 0px 0px 8px;
       }
     }
   }
@@ -68,7 +68,7 @@ const StyledEditLinkPanel = styled.div`
   .edit-link_password-links {
     display: flex;
     gap: 12px;
-    margin-top: 8px;
+    margin-top: -8px;
   }
 
   .edit-link_header {

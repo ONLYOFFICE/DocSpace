@@ -603,7 +603,7 @@ const SectionHeaderContent = (props) => {
           onClick: () => {
             roomLinks[0]?.onClick();
           },
-          disabled: !isPublicRoomType,
+          disabled: !isPublicRoomType || roomLinks[0]?.disabled,
         };
 
     if (isArchiveFolder) {

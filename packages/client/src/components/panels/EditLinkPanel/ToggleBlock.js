@@ -27,6 +27,7 @@ const ToggleBlock = ({
         className="edit-link-toggle-description"
         fontSize="12px"
         fontWeight={400}
+        color="#A3A9AE"
       >
         {bodyText}
       </Text>
