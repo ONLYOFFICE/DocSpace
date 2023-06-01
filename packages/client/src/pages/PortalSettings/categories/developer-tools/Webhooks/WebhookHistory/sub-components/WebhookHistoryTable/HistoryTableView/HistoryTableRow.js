@@ -67,7 +67,16 @@ const HistoryTableRow = (props) => {
     [item],
   );
 
-  const onChange = () => {
+  const onChange = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".type-combobox") ||
+      e.target.closest(".table-container_row-context-menu-wrapper") ||
+      e.detail === 0
+    ) {
+      return;
+    }
     toggleEventId(item.id);
   };
 
