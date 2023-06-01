@@ -333,7 +333,7 @@ public class DocumentServiceHelper
         }
 
         configuration.Document.SharedLinkParam = FilesLinkUtility.FolderShareKey;
-        configuration.Document.SharedLinkKey = _externalShare.GetQueryKey();
+        configuration.Document.SharedLinkKey = _externalShare.GetKey();
 
         return (file, configuration, locatedInPrivateRoom);
     }

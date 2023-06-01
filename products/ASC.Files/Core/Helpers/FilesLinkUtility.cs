@@ -459,7 +459,7 @@ public class FilesLinkUtility
             return url;
         }
 
-        var key = _externalShare.GetQueryKey();
+        var key = _externalShare.GetKey();
 
         if (!string.IsNullOrEmpty(key))
         {
