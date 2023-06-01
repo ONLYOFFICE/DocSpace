@@ -135,6 +135,7 @@ function ImageViewer({
 
   const changeSource = React.useCallback(
     (src) => {
+      if (!window.DocSpaceConfig.imageThumbnails) return;
       changeSourceTimeoutRef.current = setTimeout(() => {
         if (imgRef.current && !unmountRef.current) {
           if (!src) return;
@@ -153,11 +154,12 @@ function ImageViewer({
   );
 
   React.useEffect(() => {
+    if (!window.DocSpaceConfig.imageThumbnails) return;
     if (!thumbnailSrc) setIsLoading(true);
   }, []);
 
   const loadImage = React.useCallback(async () => {
-    if (!src) return;
+    if (!src || !window.DocSpaceConfig.imageThumbnails) return;
 
     if (isTiff) {
       return changeSource(src);
@@ -182,7 +184,8 @@ function ImageViewer({
   }, [src, version]);
 
   useEffect(() => {
-    if (!imageId || thumbnailSrc) return;
+    if (!imageId || thumbnailSrc || !window.DocSpaceConfig.imageThumbnails)
+      return;
 
     indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
       if (result && result.version === version) {
@@ -985,7 +988,13 @@ function ImageViewer({
         <ViewerLoader isLoading={isLoading} />
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
-            src={thumbnailSrc ? `${thumbnailSrc}&size=1280x720` : ""}
+            src={
+              !window.DocSpaceConfig.imageThumbnails
+                ? src
+                : thumbnailSrc
+                ? `${thumbnailSrc}&size=1280x720`
+                : ""
+            }
             ref={imgRef}
             style={style}
             onDoubleClick={handleDoubleTapOrClick}
