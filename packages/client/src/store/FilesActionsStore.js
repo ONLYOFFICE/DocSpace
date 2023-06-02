@@ -252,7 +252,6 @@ class FilesActionStore {
     newSelection = null,
     withoutDialog = false
   ) => {
-    console.log("deleteAction");
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
