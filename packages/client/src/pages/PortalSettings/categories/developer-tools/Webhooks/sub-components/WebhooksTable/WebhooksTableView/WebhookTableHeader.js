@@ -60,7 +60,7 @@ const WebhookTableHeader = (props) => {
 
   const [columns, setColumns] = useState(getColumns(defaultColumns.current, userId));
 
-  const onColumnChange = (key, e, userId) => {
+  const onColumnChange = (key, e) => {
     const columnIndex = columns.findIndex((c) => c.key === key);
 
     if (columnIndex === -1) return;
