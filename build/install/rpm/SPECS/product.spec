@@ -14,6 +14,7 @@ AutoReqProv:    no
 
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
+Packager:       %{packager}
 License:        AGPLv3
 
 Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz#/%{sourcename}.tar.gz
