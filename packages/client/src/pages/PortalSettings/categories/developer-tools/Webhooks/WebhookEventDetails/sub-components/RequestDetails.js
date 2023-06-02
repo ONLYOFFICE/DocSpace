@@ -36,6 +36,8 @@ const ErrorMessageTooltip = styled.div`
 
   margin-bottom: 16px;
 
+  color: black;
+
   img {
     margin-right: 8px;
   }
