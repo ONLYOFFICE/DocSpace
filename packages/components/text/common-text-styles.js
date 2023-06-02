@@ -1,5 +1,5 @@
 import { css } from "styled-components";
-import getCorrectTextAlign from "../utils/getCorrectTextAlign";
+import { getCorrectTextAlign } from "../utils/rtlUtils";
 
 const commonTextStyles = css`
   font-family: ${(props) => props.theme.fontFamily};

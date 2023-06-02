@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import getCorrectFourValuesStyle from "../utils/getCorrectFourValuesStyle";
-import getCorrectTextAlign from "../utils/getCorrectTextAlign";
-import getCorrectBorderRadius from "../utils/getCorrectBorderRadius";
+import {
+  getCorrectBorderRadius,
+  getCorrectFourValuesStyle,
+  getCorrectTextAlign,
+} from "../utils/rtlUtils";
 
 const alignContentStyle = (alignContent) => `align-content: ${alignContent};`;
 const alignItemsStyle = (alignItems) => `align-items: ${alignItems};`;
