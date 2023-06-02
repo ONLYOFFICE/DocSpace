@@ -23,6 +23,7 @@ import {
 } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
+import { getUnexpectedErrorText } from "SRC_DIR/helpers/filesUtils";
 
 const UPLOAD_LIMIT_AT_ONCE = 5;
 
@@ -1614,6 +1615,10 @@ class UploadDataStore {
       setTimeout(async () => {
         try {
           await getProgress().then((res) => {
+            if (!res || res.length === 0) {
+              reject(getUnexpectedErrorText());
+            }
+
             const currentItem = res.find((x) => x.id === id);
             if (currentItem?.error) {
               reject(currentItem.error);
