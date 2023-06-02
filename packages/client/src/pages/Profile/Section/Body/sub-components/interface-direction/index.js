@@ -8,12 +8,9 @@ import { StyledInterfaceDirection } from "./StyledInterfaceDirection";
 const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
   const onChangeDirection = (e) => {
     const isChecked = e.currentTarget.checked;
+    const newDirection = isChecked ? "rtl" : "ltr";
 
-    if (isChecked) {
-      setInterfaceDirection("rtl");
-    } else {
-      setInterfaceDirection("ltr");
-    }
+    setInterfaceDirection(newDirection);
   };
 
   return (

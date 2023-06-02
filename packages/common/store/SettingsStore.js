@@ -13,6 +13,7 @@ import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import { getFromLocalStorage } from "@docspace/client/src/pages/PortalSettings/utils";
 
 const themes = {
   Dark: Dark,
@@ -148,7 +149,8 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
 
-  interfaceDirection = "ltr";
+  interfaceDirection =
+    (window && localStorage.getItem("interfaceDirection")) || "ltr";
 
   constructor() {
     makeAutoObservable(this);
@@ -813,6 +815,7 @@ class SettingsStore {
 
   setInterfaceDirection = (direction) => {
     this.interfaceDirection = direction;
+    localStorage.setItem("interfaceDirection", direction);
   };
 }
 
