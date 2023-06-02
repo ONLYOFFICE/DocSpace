@@ -43,6 +43,9 @@ const StyledContainer = styled.div`
 
   .title-container {
     display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .navigation-header-separator {
