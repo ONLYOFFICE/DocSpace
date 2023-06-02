@@ -29,7 +29,6 @@ import UnmuteReactSvgUrl from "PUBLIC_DIR/images/unmute.react.svg?url";
 import MuteReactSvgUrl from "PUBLIC_DIR/images/mute.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
-import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import { makeAutoObservable } from "mobx";
@@ -551,10 +550,6 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickCopyExternalLink = () => {
-    toastr.success("TODO: onClickCopyExternalLink");
-  };
-
   onClickInviteUsers = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
 
@@ -938,14 +933,6 @@ class ContextOptionsStore {
         label: t("LinkForRoomMembers"),
         icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onCopyLink(item, t),
-        disabled: false,
-      },
-      {
-        id: "option_copy-external-link",
-        key: "external-link",
-        label: t("SharingPanel:CopyExternalLink"),
-        icon: CopyToReactSvgUrl,
-        onClick: this.onClickCopyExternalLink,
         disabled: false,
       },
       {

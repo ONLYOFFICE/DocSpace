@@ -11,7 +11,6 @@ import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
 import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
-import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
@@ -566,7 +565,7 @@ const SectionHeaderContent = (props) => {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         onClick: onCopyLinkAction,
-        disabled: isRecycleBinFolder || isPersonalRoom || isPublicRoom,
+        disabled: isRecycleBinFolder || isPersonalRoom,
         icon: InvitationLinkReactSvgUrl,
       },
       {
@@ -608,14 +607,6 @@ const SectionHeaderContent = (props) => {
         icon: SettingsReactSvgUrl,
         onClick: () => onClickEditRoom(selectedFolder),
         disabled: !isRoom || !security?.EditRoom,
-      },
-      {
-        id: "header_option_copy-external-link",
-        key: "copy-external-link",
-        label: t("SharingPanel:CopyExternalLink"),
-        icon: CopyToReactSvgUrl,
-        onClick: () => onClickCopyExternalLink(),
-        disabled: !isPublicRoom,
       },
       {
         id: "header_option_invite-users-to-room",
@@ -971,14 +962,8 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const {
-      title,
-      id,
-      roomType,
-      pathParts,
-      navigationPath,
-      security,
-    } = selectedFolderStore;
+    const { title, id, roomType, pathParts, navigationPath, security } =
+      selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 
@@ -986,7 +971,6 @@ export default inject(
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
-    const isPublicRoom = roomType === RoomsType.PublicRoom;
 
     const {
       onClickEditRoom,
@@ -995,7 +979,6 @@ export default inject(
       onClickArchive,
       onClickReconnectStorage,
       onCopyLink,
-      onClickCopyExternalLink,
     } = contextOptionsStore;
 
     const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
@@ -1097,7 +1080,6 @@ export default inject(
       selectedFolder,
 
       onClickEditRoom,
-      onClickCopyExternalLink,
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,

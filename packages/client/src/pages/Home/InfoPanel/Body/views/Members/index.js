@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
+import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg?url";
@@ -9,14 +10,12 @@ import EmailPlusReactSvgUrl from "PUBLIC_DIR/images/e-mail+.react.svg?url";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
-import { RoomsType, ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights } from "@docspace/common/constants";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
 import MembersHelper from "../../helpers/MembersHelper";
-
-import PublicRoomBlock from "./sub-components/PublicRoomBlock";
 
 const Members = ({
   t,
@@ -41,7 +40,6 @@ const Members = ({
   setInviteUsersWarningDialogVisible,
   changeUserType,
   isGracePeriod,
-  isPublicRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -169,14 +167,8 @@ const Members = ({
     (member) => member.id === selfId
   );
 
-  const onCopyLink = () => {
-    toastr.success("onCopyLink");
-  };
-
   return (
     <>
-      {isPublicRoom && <PublicRoomBlock t={t} onCopyLink={onCopyLink} />}
-
       <StyledUserTypeHeader>
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
@@ -193,6 +185,7 @@ const Members = ({
           />
         )}
       </StyledUserTypeHeader>
+
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
@@ -213,6 +206,7 @@ const Members = ({
           />
         ))}
       </StyledUserList>
+
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("PendingInvitations")}</Text>
@@ -228,6 +222,7 @@ const Members = ({
           )}
         </StyledUserTypeHeader>
       )}
+
       <StyledUserList>
         {Object.values(members.expected).map((user, i) => (
           <User
@@ -254,7 +249,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogStore,
+    dialogsStore,
+    accessRightsStore,
+  }) => {
     const {
       setIsMobileHidden,
       selectionParentRoom,
@@ -281,10 +283,6 @@ export default inject(
     } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
-    const { roomType } = selectedFolderStore;
-
-    // const isPublicRoom = roomType === RoomsType.CustomRoom;
-    const isPublicRoom = true;
 
     return {
       setView,
@@ -308,7 +306,6 @@ export default inject(
       resendEmailInvitations,
       changeUserType,
       isGracePeriod,
-      isPublicRoom,
     };
   }
 )(
@@ -319,6 +316,5 @@ export default inject(
     "People",
     "PeopleTranslations",
     "Settings",
-    "CreateEditRoomDialog",
   ])(observer(Members))
 );

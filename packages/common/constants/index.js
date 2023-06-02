@@ -114,7 +114,6 @@ export const RoomsType = Object.freeze({
   // ReviewRoom: 3, //TODO: Restore when certs will be done
   // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
-  PublicRoom: 6, //TODO: see enum on backend
 });
 
 export const RoomsTypeValues = Object.freeze(
