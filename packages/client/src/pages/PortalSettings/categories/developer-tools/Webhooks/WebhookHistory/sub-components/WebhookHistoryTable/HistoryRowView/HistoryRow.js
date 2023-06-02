@@ -24,6 +24,19 @@ const HistoryRow = (props) => {
     toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
   };
   const handleOnSelect = () => toggleEventId(historyItem.id);
+  const handleRowClick = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".type-combobox") ||
+      e.target.closest(".table-container_row-context-menu-wrapper") ||
+      e.target.closest(".row_context-menu-wrapper") ||
+      e.detail === 0
+    ) {
+      return;
+    }
+    toggleEventId(historyItem.id);
+  };
 
   const contextOptions = [
     {
@@ -49,7 +62,7 @@ const HistoryRow = (props) => {
       checked={isIdChecked(historyItem.id)}
       onSelect={handleOnSelect}
       className={isIdChecked(historyItem.id) ? "selected-row-item" : ""}
-      onClick={handleOnSelect}>
+      onClick={handleRowClick}>
       <HistoryRowContent sectionWidth={sectionWidth} historyItem={historyItem} />
     </Row>
   );
