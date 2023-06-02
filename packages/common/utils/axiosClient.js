@@ -151,6 +151,20 @@ class AxiosClient {
               // window.location.href = this.paymentsURL;
             }
             break;
+          case 403:
+            const pathname = window.location.pathname;
+            const isArchived = pathname.indexOf("/rooms/archived") !== -1;
+
+            const isRooms =
+              pathname.indexOf("/rooms/shared") !== -1 || isArchived;
+
+            if (!isRooms) return;
+
+            setTimeout(() => {
+              window.DocSpace.navigate(isArchived ? "/archived" : "/");
+            }, 1000);
+
+            break;
           default:
             break;
         }

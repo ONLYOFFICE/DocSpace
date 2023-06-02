@@ -90,9 +90,9 @@ public class Builder<T>
     {
         try
         {
-            _tenantManager.SetCurrentTenant(fileData.TenantId);
+            await _tenantManager.SetCurrentTenantAsync(fileData.TenantId);
 
-            _dataStore = _storageFactory.GetStorage(fileData.TenantId, FileConstant.StorageModule, (IQuotaController)null);
+            _dataStore = await _storageFactory.GetStorageAsync(fileData.TenantId, FileConstant.StorageModule, (IQuotaController)null);
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
@@ -194,7 +194,7 @@ public class Builder<T>
 
             using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
             {
-                await Crop(fileDao, file, streamThumb);
+                await CropAsync(fileDao, file, streamThumb);
             }
         }
         finally
@@ -279,11 +279,11 @@ public class Builder<T>
 
     private async Task<(int, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
     {
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var fileExtension = file.ConvertedExtension;
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
         var thumbnail = new ThumbnailData
         {
             Aspect = 2,
@@ -369,13 +369,13 @@ public class Builder<T>
 
         using (var stream = await fileDao.GetFileStreamAsync(file))
         {
-            await Crop(fileDao, file, stream);
+            await CropAsync(fileDao, file, stream);
         }
 
         _logger.DebugCropImageSuccessfullySaved(file.Id.ToString());
     }
 
-    private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
+    private async Task CropAsync(IFileDao<T> fileDao, File<T> file, Stream stream)
     {
         using var sourceImg = await Image.LoadAsync(stream);
 

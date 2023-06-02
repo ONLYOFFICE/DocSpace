@@ -310,16 +310,11 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<strin
         return Task.FromResult(false);
     }
 
-    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(fileStream);
 
-        return InternalSaveFileAsync(file, fileStream);
-    }
-
-    private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
-    {
         TFile newFile = null;
         var storage = await ProviderInfo.StorageAsync;
 

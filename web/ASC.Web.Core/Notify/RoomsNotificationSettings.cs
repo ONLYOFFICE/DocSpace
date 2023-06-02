@@ -57,9 +57,9 @@ public class RoomsNotificationSettingsHelper
         _settingsManager = settingsManager;
     }
 
-    public List<int> GetDisabledRoomsForUser(Guid userId)
+    public async Task<List<int>> GetDisabledRoomsForUserAsync(Guid userId)
     {
-        var settings = _settingsManager.Load<RoomsNotificationSettings>(userId);
+        var settings = await _settingsManager.LoadAsync<RoomsNotificationSettings>(userId);
         var disabledRooms = settings.DisabledRooms;
         return disabledRooms;
     }

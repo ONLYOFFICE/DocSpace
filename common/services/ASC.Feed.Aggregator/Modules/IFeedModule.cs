@@ -36,7 +36,7 @@ public interface IFeedModule
 
     Task<IEnumerable<Tuple<Feed, object>>> GetFeeds(FeedFilter filter);
 
-    bool VisibleFor(Feed feed, object data, Guid userId);
+    Task<bool> VisibleForAsync(Feed feed, object data, Guid userId);
 
-    Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId);
+    Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId);
 }

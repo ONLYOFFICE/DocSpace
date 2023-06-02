@@ -70,29 +70,29 @@ public class HostedSolution
         Region = region;
     }
 
-    public List<Tenant> GetTenants(DateTime from)
+    public async Task<List<Tenant>> GetTenantsAsync(DateTime from)
     {
-        return TenantService.GetTenants(from).Select(AddRegion).ToList();
+        return (await TenantService.GetTenantsAsync(from)).Select(AddRegion).ToList();
     }
 
-    public List<Tenant> FindTenants(string login)
+    public async Task<List<Tenant>> FindTenantsAsync(string login, string passwordHash = null)
     {
-        return FindTenants(login, null);
-    }
-
-    public List<Tenant> FindTenants(string login, string passwordHash)
-    {
-        if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null)
+        if (!string.IsNullOrEmpty(passwordHash) && await UserService.GetUserByPasswordHashAsync(Tenant.DefaultTenant, login, passwordHash) == null)
         {
             throw new SecurityException("Invalid login or password.");
         }
 
-        return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
+        return (await TenantService.GetTenantsAsync(login, passwordHash)).Select(AddRegion).ToList();
     }
 
-    public Tenant GetTenant(string domain)
+    public async Task<Tenant> GetTenantAsync(string domain)
     {
-        return AddRegion(TenantService.GetTenant(domain));
+        return AddRegion(await TenantService.GetTenantAsync(domain));
+    }
+
+    public async Task<Tenant> GetTenantAsync(int id)
+    {
+        return AddRegion(await TenantService.GetTenantAsync(id));
     }
 
     public Tenant GetTenant(int id)
@@ -100,12 +100,12 @@ public class HostedSolution
         return AddRegion(TenantService.GetTenant(id));
     }
 
-    public void CheckTenantAddress(string address)
+    public async Task CheckTenantAddressAsync(string address)
     {
-        TenantService.ValidateDomain(address);
+        await TenantService.ValidateDomainAsync(address);
     }
 
-    public void RegisterTenant(TenantRegistrationInfo registrationInfo, out Tenant tenant)
+    public async Task<Tenant> RegisterTenantAsync(TenantRegistrationInfo registrationInfo)
     {
         ArgumentNullException.ThrowIfNull(registrationInfo);
 
@@ -136,7 +136,7 @@ public class HostedSolution
         }
 
         // create tenant
-        tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
+        var tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
         {
             Name = registrationInfo.Name,
             Language = registrationInfo.Culture.Name,
@@ -149,7 +149,7 @@ public class HostedSolution
             Calls = registrationInfo.Calls
         };
 
-        tenant = TenantService.SaveTenant(CoreSettings, tenant);
+        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
 
         // create user
         var user = new UserInfo
@@ -163,83 +163,84 @@ public class HostedSolution
             ActivationStatus = registrationInfo.ActivationStatus
         };
 
-        user = UserService.SaveUser(tenant.Id, user);
-        UserService.SetUserPasswordHash(tenant.Id, user.Id, registrationInfo.PasswordHash);
-        UserService.SaveUserGroupRef(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+        user = await UserService.SaveUserAsync(tenant.Id, user);
+        await UserService.SetUserPasswordHashAsync(tenant.Id, user.Id, registrationInfo.PasswordHash);
+        await UserService.SaveUserGroupRefAsync(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
         // save tenant owner
         tenant.OwnerId = user.Id;
-        tenant = TenantService.SaveTenant(CoreSettings, tenant);
+        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
+        return tenant;
     }
 
-    public Tenant SaveTenant(Tenant tenant)
+    public async Task<Tenant> SaveTenantAsync(Tenant tenant)
     {
-        return TenantService.SaveTenant(CoreSettings, tenant);
+        return await TenantService.SaveTenantAsync(CoreSettings, tenant);
     }
 
-    public void RemoveTenant(Tenant tenant)
+    public async Task RemoveTenantAsync(Tenant tenant)
     {
-        TenantService.RemoveTenant(tenant.Id);
+        await TenantService.RemoveTenantAsync(tenant.Id);
     }
 
-    public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
+    public async Task<string> CreateAuthenticationCookieAsync(CookieStorage cookieStorage, int tenantId, Guid userId)
     {
-        var u = UserService.GetUser(tenantId, userId);
+        var u = await UserService.GetUserAsync(tenantId, userId);
 
-        return CreateAuthenticationCookie(cookieStorage, tenantId, u);
+        return await CreateAuthenticationCookieAsync(cookieStorage, tenantId, u);
     }
 
-    private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, UserInfo user)
+    private async Task<string> CreateAuthenticationCookieAsync(CookieStorage cookieStorage, int tenantId, UserInfo user)
     {
         if (user == null)
         {
             return null;
         }
 
-        var tenantSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, Guid.Empty);
+        var tenantSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, Guid.Empty);
         var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-        var userSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, user.Id);
+        var userSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, user.Id);
 
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }
 
-    public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetTariffAsync(int tenant, bool withRequestToPaymentSystem = true)
     {
-        return TariffService.GetTariff(tenant, withRequestToPaymentSystem);
+        return await TariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
     }
 
-    public TenantQuota GetTenantQuota(int tenant)
+    public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        return ClientTenantManager.GetTenantQuota(tenant);
+        return await ClientTenantManager.GetTenantQuotaAsync(tenant);
     }
 
-    public IEnumerable<TenantQuota> GetTenantQuotas()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return ClientTenantManager.GetTenantQuotas();
+        return await ClientTenantManager.GetTenantQuotasAsync();
     }
 
-    public TenantQuota SaveTenantQuota(TenantQuota quota)
+    public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
-        return ClientTenantManager.SaveTenantQuota(quota);
+        return await ClientTenantManager.SaveTenantQuotaAsync(quota);
     }
 
-    public void SetTariff(int tenant, bool paid)
+    public async Task SetTariffAsync(int tenant, bool paid)
     {
-        var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
+        var quota = (await QuotaService.GetTenantQuotasAsync()).FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            TariffService.SetTariff(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
+            await TariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 
-    public void SetTariff(int tenant, Tariff tariff)
+    public async Task SetTariffAsync(int tenant, Tariff tariff)
     {
-        TariffService.SetTariff(tenant, tariff);
+        await TariffService.SetTariffAsync(tenant, tariff);
     }
 
-    public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)
+    public async Task<IEnumerable<UserInfo>> FindUsersAsync(IEnumerable<Guid> userIds)
     {
-        return UserService.GetUsersAllTenants(userIds);
+        return await UserService.GetUsersAllTenantsAsync(userIds);
     }
 
     private Tenant AddRegion(Tenant tenant)

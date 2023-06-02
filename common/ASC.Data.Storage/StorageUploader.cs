@@ -152,14 +152,14 @@ public class MigrateOperation : DistributedTaskProgress
             var tempPath = scope.ServiceProvider.GetService<TempPath>();
             var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
             var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
-            var tenant = tenantManager.GetTenant(_tenantId);
+            var tenant = await tenantManager.GetTenantAsync(_tenantId);
             tenantManager.SetCurrentTenant(tenant);
 
-            securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);
 
             foreach (var module in _modules)
             {
-                var oldStore = storageFactory.GetStorage(_tenantId, module);
+                var oldStore = await storageFactory.GetStorageAsync(_tenantId, module);
                 var store = storageFactory.GetStorageFromConsumer(_tenantId, module, storageSettingsHelper.DataStoreConsumer(_settings));
                 var domains = _storageFactoryConfig.GetDomainList(module).ToList();
 
@@ -194,9 +194,9 @@ public class MigrateOperation : DistributedTaskProgress
                 MigrationPublish();
             }
 
-            settingsManager.Save(_settings);
+            await settingsManager.SaveAsync(_settings);
             tenant.SetStatus(TenantStatus.Active);
-            tenantManager.SaveTenant(tenant);
+            await tenantManager.SaveTenantAsync(tenant);
 
             Status = DistributedTaskStatus.Completed;
         }

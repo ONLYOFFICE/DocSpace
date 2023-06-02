@@ -24,51 +24,48 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Aggregator.Service;
+using Microsoft.AspNetCore.Builder;
 
-[Singletone]
-public class FeedCleanerService : FeedBaseService
+namespace ASC.Core;
+
+public class CustomSynchronizationContext
 {
-    protected override string LoggerName { get; set; } = "ASC.Feed.Cleaner";
+    public IPrincipal CurrentPrincipal { get; set; }
 
-    public FeedCleanerService(
-        FeedSettings feedSettings,
-        IServiceScopeFactory serviceScopeFactory,
-        ILoggerProvider optionsMonitor)
-        : base(feedSettings, serviceScopeFactory, optionsMonitor)
+    private readonly static AsyncLocal<CustomSynchronizationContext> _context = new AsyncLocal<CustomSynchronizationContext>();
+    public static CustomSynchronizationContext CurrentContext => _context.Value;
+
+    public static void CreateContext()
     {
+        if (CurrentContext == null)
+        {
+            var context = new CustomSynchronizationContext();
+            _context.Value = context;
+        }
+    }
+}
+
+
+public class SynchronizationContextMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public SynchronizationContextMiddleware(RequestDelegate next)
+    {
+        _next = next;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task Invoke(HttpContext context)
     {
-        _logger.InformationFeedCleanerRunning();
-
-        var cfg = _feedSettings;
-
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(cfg.RemovePeriod, stoppingToken);
-
-            await RemoveFeedsAsync(cfg.AggregateInterval);
-        }
-
-        _logger.InformationFeedCleanerStopping();
+        CustomSynchronizationContext.CreateContext();
+        await _next.Invoke(context);
     }
+}
 
-    private async Task RemoveFeedsAsync(object interval)
+public static class SynchronizationContextMiddlewareExtensions
+{
+    public static IApplicationBuilder UseSynchronizationContextMiddleware(this IApplicationBuilder builder)
     {
-        try
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
-
-            _logger.DebugStartRemoving();
-
-            await feedAggregateDataProvider.RemoveFeedAggregateAsync(DateTime.UtcNow.Subtract((TimeSpan)interval));
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorRemoveFeeds(ex);
-        }
+        return builder.UseMiddleware<SynchronizationContextMiddleware>();
     }
 }

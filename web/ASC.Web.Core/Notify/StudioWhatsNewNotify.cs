@@ -101,7 +101,7 @@ public class StudioWhatsNewNotify
 
     }
 
-    public async Task SendMsgWhatsNew(DateTime scheduleDate, WhatsNewType whatsNewType)
+    public async Task SendMsgWhatsNewAsync(DateTime scheduleDate, WhatsNewType whatsNewType)
     {
         var products = _webItemManager.GetItemsAll<IProduct>();
 
@@ -113,36 +113,36 @@ public class StudioWhatsNewNotify
 
         _log.InformationStartSendWhatsNew();
 
-        var tenants = GetChangedTenants(scheduleDate, whatsNewType);
+        var tenants = await GetChangedTenantsAsync(scheduleDate, whatsNewType);
 
         foreach (var tenantid in tenants)
         {
-            await SendMsgWhatsNew(tenantid, scheduleDate, whatsNewType, products);
+            await SendMsgWhatsNewAsync(tenantid, scheduleDate, whatsNewType, products);
         }
     }
 
-    private IEnumerable<int> GetChangedTenants(DateTime date, WhatsNewType whatsNewType)
+    private async Task<IEnumerable<int>> GetChangedTenantsAsync(DateTime date, WhatsNewType whatsNewType)
     {
         switch (whatsNewType)
         {
             case WhatsNewType.DailyFeed:
-                return _auditEventsRepository.GetTenants(date.Date.AddDays(-1), date.Date.AddSeconds(-1));
+                return await _auditEventsRepository.GetTenantsAsync(date.Date.AddDays(-1), date.Date.AddSeconds(-1));
             case WhatsNewType.RoomsActivity:
-                return _auditEventsRepository.GetTenants(date.AddHours(-1), date.AddSeconds(-1));
+                return await _auditEventsRepository.GetTenantsAsync(date.AddHours(-1), date.AddSeconds(-1));
             default:
                 return Enumerable.Empty<int>();
         }
     }
 
-    private async Task SendMsgWhatsNew(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
+    private async Task SendMsgWhatsNewAsync(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
     {
         try
         {
-            var tenant = _tenantManager.GetTenant(tenantid);
+            var tenant = await _tenantManager.GetTenantAsync(tenantid);
             if (tenant == null ||
                 tenant.Status != TenantStatus.Active ||
                 !TimeToSendWhatsNew(_tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate), whatsNewType) || //ToDo
-                TariffState.NotPaid <= _tariffService.GetTariff(tenantid).State)
+                TariffState.NotPaid <= (await _tariffService.GetTariffAsync(tenantid)).State)
             {
                 return;
             }
@@ -151,23 +151,23 @@ public class StudioWhatsNewNotify
             var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
             _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
-            foreach (var user in _userManager.GetUsers())
+            foreach (var user in await _userManager.GetUsersAsync())
             {
                 _log.Debug($"SendMsgWhatsNew start checking subscription: {user.Email}");//temp
 
-                if (!CheckSubscription(user, whatsNewType))
+                if (!await CheckSubscriptionAsync(user, whatsNewType))
                 {
                     continue;
                 }
 
                 _log.Debug($"SendMsgWhatsNew checking subscription complete: {user.Email}");//temp
 
-                _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
+                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(tenant.Id, user.Id));
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
 
                 var auditEvents = new List<ActivityInfo>();
 
@@ -193,7 +193,7 @@ public class StudioWhatsNewNotify
                 if (userActivities.Any())
                 {
                     _log.InformationSendWhatsNewTo(user.Email);
-                    client.SendNoticeAsync(
+                    await client.SendNoticeAsync(
                         Actions.SendWhatsNew, null, user,
                         new TagValue(Tags.Activities, userActivities),
                         new TagValue(Tags.Date, DateToString(scheduleDate, whatsNewType, culture)),
@@ -321,15 +321,15 @@ public class StudioWhatsNewNotify
         return true;
     }
 
-    private bool CheckSubscription(UserInfo user, WhatsNewType whatsNewType)
+    private async Task<bool> CheckSubscriptionAsync(UserInfo user, WhatsNewType whatsNewType)
     {
         if (whatsNewType == WhatsNewType.DailyFeed &&
-            _studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
+            await _studioNotifyHelper.IsSubscribedToNotifyAsync(user, Actions.SendWhatsNew))
         {
             return true;
         }
         else if (whatsNewType == WhatsNewType.RoomsActivity &&
-            _studioNotifyHelper.IsSubscribedToNotify(user, Actions.RoomsActivity))
+            await _studioNotifyHelper.IsSubscribedToNotifyAsync(user, Actions.RoomsActivity))
         {
             return true;
         }

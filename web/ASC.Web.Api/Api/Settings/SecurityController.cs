@@ -91,7 +91,7 @@ public class SecurityController : BaseSettingsController
 
         foreach (var r in ids)
         {
-            var i = _webItemSecurity.GetSecurityInfo(r);
+            var i = await _webItemSecurity.GetSecurityInfoAsync(r);
 
             var s = new SecurityDto
             {
@@ -105,7 +105,7 @@ public class SecurityController : BaseSettingsController
 
             foreach (var e in i.Users)
             {
-                s.Users.Add(await _employeeHelperDto.Get(e));
+                s.Users.Add(await _employeeHelperDto.GetAsync(e));
             }
 
             yield return s;
@@ -114,11 +114,11 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpGet("security/{id}")]
-    public bool GetWebItemSecurityInfo(Guid id)
+    public async Task<bool> GetWebItemSecurityInfoAsync(Guid id)
     {
         var module = WebItemManager[id];
 
-        return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
+        return module != null && !await module.IsDisabledAsync(_webItemSecurity, _authContext);
     }
 
     [HttpGet("security/modules")]
@@ -138,26 +138,26 @@ public class SecurityController : BaseSettingsController
     [HttpGet("security/password")]
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-    public PasswordSettings GetPasswordSettings()
+    public async Task<PasswordSettings> GetPasswordSettingsAsync()
     {
-        return _settingsManager.Load<PasswordSettings>();
+        return await _settingsManager.LoadAsync<PasswordSettings>();
     }
 
     [HttpPut("security/password")]
-    public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto model)
+    public async Task<PasswordSettings> UpdatePasswordSettingsAsync(PasswordSettingsRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
+        var userPasswordSettings = await _settingsManager.LoadAsync<PasswordSettings>();
 
         userPasswordSettings.MinLength = model.MinLength;
         userPasswordSettings.UpperCase = model.UpperCase;
         userPasswordSettings.Digits = model.Digits;
         userPasswordSettings.SpecSymbols = model.SpecSymbols;
 
-        _settingsManager.Save(userPasswordSettings);
+        await _settingsManager.SaveAsync(userPasswordSettings);
 
-        _messageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.PasswordStrengthSettingsUpdated);
 
         return userPasswordSettings;
 
@@ -166,9 +166,9 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security")]
     public async Task<IEnumerable<SecurityDto>> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
+        await _webItemSecurity.SetSecurityAsync(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
         var securityInfo = await GetWebItemSecurityInfo(new List<string> { inDto.Id }).ToListAsync();
 
         if (inDto.Subjects == null)
@@ -180,7 +180,7 @@ public class SecurityController : BaseSettingsController
 
         if (!inDto.Subjects.Any())
         {
-            _messageService.Send(MessageAction.ProductAccessOpened, productName);
+            await _messageService.SendAsync(MessageAction.ProductAccessOpened, productName);
         }
         else
         {
@@ -188,11 +188,11 @@ public class SecurityController : BaseSettingsController
             {
                 if (info.Groups.Any())
                 {
-                    _messageService.Send(MessageAction.GroupsOpenedProductAccess, productName, info.Groups.Select(x => x.Name));
+                    await _messageService.SendAsync(MessageAction.GroupsOpenedProductAccess, productName, info.Groups.Select(x => x.Name));
                 }
                 if (info.Users.Any())
                 {
-                    _messageService.Send(MessageAction.UsersOpenedProductAccess, productName, info.Users.Select(x => HttpUtility.HtmlDecode(x.DisplayName)));
+                    await _messageService.SendAsync(MessageAction.UsersOpenedProductAccess, productName, info.Users.Select(x => HttpUtility.HtmlDecode(x.DisplayName)));
                 }
             }
         }
@@ -203,7 +203,7 @@ public class SecurityController : BaseSettingsController
     [HttpPut("security/access")]
     public async Task<IEnumerable<SecurityDto>> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var itemList = new ItemDictionary<string, bool>();
 
@@ -215,7 +215,7 @@ public class SecurityController : BaseSettingsController
             }
         }
 
-        var defaultPageSettings = _settingsManager.Load<StudioDefaultPageSettings>();
+        var defaultPageSettings = await _settingsManager.LoadAsync<StudioDefaultPageSettings>();
 
         foreach (var item in itemList)
         {
@@ -226,7 +226,7 @@ public class SecurityController : BaseSettingsController
             {
                 if (WebItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
                 {
-                    var productInfo = _webItemSecurity.GetSecurityInfo(item.Key);
+                    var productInfo = await _webItemSecurity.GetSecurityInfoAsync(item.Key);
                     var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
                     var selectedUsers = productInfo.Users.Select(user => user.Id).ToList();
                     selectedUsers.AddRange(selectedGroups);
@@ -238,13 +238,13 @@ public class SecurityController : BaseSettingsController
             }
             else if (productId == defaultPageSettings.DefaultProductID)
             {
-                _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
+                await _settingsManager.SaveAsync(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
-            _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);
+            await _webItemSecurity.SetSecurityAsync(item.Key, item.Value, subjects);
         }
 
-        _messageService.Send(MessageAction.ProductsListUpdated);
+        await _messageService.SendAsync(MessageAction.ProductsListUpdated);
 
         return await GetWebItemSecurityInfo(itemList.Keys.ToList()).ToListAsync();
     }
@@ -252,27 +252,27 @@ public class SecurityController : BaseSettingsController
     [HttpGet("security/administrator/{productid}")]
     public async IAsyncEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
-        var admins = _webItemSecurity.GetProductAdministrators(productid);
+        var admins = await _webItemSecurity.GetProductAdministratorsAsync(productid);
 
         foreach (var a in admins)
         {
-            yield return await _employeeHelperDto.Get(a);
+            yield return await _employeeHelperDto.GetAsync(a);
         }
     }
 
     [HttpGet("security/administrator")]
-    public object IsProductAdministrator(Guid productid, Guid userid)
+    public async Task<object> IsProductAdministratorAsync(Guid productid, Guid userid)
     {
-        var result = _webItemSecurity.IsProductAdministrator(productid, userid);
+        var result = await _webItemSecurity.IsProductAdministratorAsync(productid, userid);
         return new { ProductId = productid, UserId = userid, Administrator = result };
     }
 
     [HttpPut("security/administrator")]
     public async Task<object> SetProductAdministrator(SecurityRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && _tenantManager.GetCurrentTenantQuota().Free;
+        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && (await _tenantManager.GetCurrentTenantQuotaAsync()).Free;
         if (isStartup)
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Administrator");
@@ -280,26 +280,26 @@ public class SecurityController : BaseSettingsController
 
         await _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
 
-        var admin = _userManager.GetUsers(inDto.UserId);
+        var admin = await _userManager.GetUsersAsync(inDto.UserId);
 
         if (inDto.ProductId == Guid.Empty)
         {
             var messageAction = inDto.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), admin.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(messageAction, _messageTarget.Create(admin.Id), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
         else
         {
             var messageAction = inDto.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), GetProductName(inDto.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(messageAction, _messageTarget.Create(admin.Id), GetProductName(inDto.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
     }
 
     [HttpPut("security/loginSettings")]
-    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
+    public async Task<LoginSettingsDto> UpdateLoginSettingsAsync(LoginSettingsRequestDto loginSettingsRequestDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var attemptsCount = loginSettingsRequestDto.AttemptCount;
         var checkPeriod = loginSettingsRequestDto.CheckPeriod;
@@ -325,17 +325,17 @@ public class SecurityController : BaseSettingsController
             BlockTime = blockTime
         };
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
 
     [HttpGet("security/loginSettings")]
-    public LoginSettingsDto GetLoginSettings()
+    public async Task<LoginSettingsDto> GetLoginSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<LoginSettings>();
+        var settings = await _settingsManager.LoadAsync<LoginSettings>();
 
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }

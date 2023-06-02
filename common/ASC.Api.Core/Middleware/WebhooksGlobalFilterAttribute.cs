@@ -51,7 +51,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        var skip = await Skip(context.HttpContext);
+        var skip = await SkipAsync(context.HttpContext);
 
         if (!skip)
         {
@@ -106,7 +106,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
         return (method, routePattern);
     }
 
-    private async Task<bool> Skip(HttpContext context)
+    private async Task<bool> SkipAsync(HttpContext context)
     {
         var (method, routePattern) = GetData(context);
 
@@ -121,7 +121,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
         }
 
         var webhook = await _dbWorker.GetWebhookAsync(method, routePattern);
-        if (webhook == null || _settingsManager.Load<WebHooksSettings>().Ids.Contains(webhook.Id))
+        if (webhook == null || (await _settingsManager.LoadAsync<WebHooksSettings>()).Ids.Contains(webhook.Id))
         {
             return true;
         }

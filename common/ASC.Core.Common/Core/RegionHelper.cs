@@ -46,10 +46,10 @@ public class RegionHelper
         _userManager = userManager;
     }
 
-    public RegionInfo GetCurrentRegionInfo(IDictionary<string, Dictionary<string, decimal>> priceInfo = null)
+    public async Task<RegionInfo> GetCurrentRegionInfoAsync(IDictionary<string, Dictionary<string, decimal>> priceInfo = null)
     {
         var defaultRegion = GetDefaultRegionInfo();
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
+        var geoinfo = await _geolocationHelper.GetIPGeolocationFromHttpContextAsync();
 
         var countryCode = _httpContextAccessor.HttpContext?.Request.Query["country"];
 
@@ -76,7 +76,7 @@ public class RegionHelper
 
         if (currentRegion != null && !currentRegion.Name.Equals(defaultRegion.Name))
         {
-            priceInfo ??= _tenantManager.GetProductPriceInfo();
+            priceInfo ??= await _tenantManager.GetProductPriceInfoAsync();
 
             if (priceInfo.Values.Any(value => value.ContainsKey(currentRegion.ISOCurrencySymbol)))
             {
@@ -97,10 +97,10 @@ public class RegionHelper
         return GetRegionInfo("US");
     }
 
-    public string GetCurrencyFromRequest()
+    public async Task<string> GetCurrencyFromRequestAsync()
     {
         var defaultRegion = GetDefaultRegionInfo();
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
+        var geoinfo = await _geolocationHelper.GetIPGeolocationFromHttpContextAsync();
 
         if (!string.IsNullOrEmpty(geoinfo.Key))
         {
@@ -110,7 +110,7 @@ public class RegionHelper
 
                 if (currentRegion != null && !currentRegion.Name.Equals(defaultRegion.Name))
                 {
-                    var priceInfo = _tenantManager.GetProductPriceInfo();
+                    var priceInfo = await _tenantManager.GetProductPriceInfoAsync();
 
                     if (priceInfo.Values.Any(value => value.ContainsKey(currentRegion.ISOCurrencySymbol)))
                     {

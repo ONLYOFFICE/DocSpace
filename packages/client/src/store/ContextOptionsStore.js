@@ -220,9 +220,9 @@ class ContextOptionsStore {
   };
 
   finalizeVersion = (id) => {
-    this.filesActionsStore
-      .finalizeVersionAction(id)
-      .catch((err) => toastr.error(err));
+    this.filesActionsStore.finalizeVersionAction(id).catch((err) => {
+      toastr.error(err);
+    });
   };
 
   onClickFavorite = (e, id, t) => {
@@ -253,7 +253,9 @@ class ContextOptionsStore {
           : toastr.success(t("Translations:FileLocked"))
       )
       .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
-      .catch((err) => toastr.error(err));
+      .catch((err) => {
+        toastr.error(err);
+      });
   };
 
   onClickLinkForPortal = (item, t) => {

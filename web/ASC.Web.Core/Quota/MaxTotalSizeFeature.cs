@@ -44,13 +44,13 @@ public class MaxTotalSizeStatistic : ITenantQuotaFeatureStat<MaxTotalSizeFeature
         _serviceProvider = serviceProvider;
     }
 
-    public Task<long> GetValue()
+    public async Task<long> GetValueAsync()
     {
         var tenantManager = _serviceProvider.GetService<TenantManager>();
-        var tenant = tenantManager.GetCurrentTenant().Id;
+        var tenant = (await tenantManager.GetCurrentTenantAsync()).Id;
 
-        return Task.FromResult(tenantManager.FindTenantQuotaRows(tenant)
+        return (await tenantManager.FindTenantQuotaRowsAsync(tenant))
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
-            .Sum(r => r.Counter));
+            .Sum(r => r.Counter);
     }
 }

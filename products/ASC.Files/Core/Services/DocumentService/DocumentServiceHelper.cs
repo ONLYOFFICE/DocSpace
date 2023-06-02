@@ -264,7 +264,7 @@ public class DocumentServiceHelper
                     strError = string.Format(!coauth
                                                  ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                  : FilesCommonResource.ErrorMassage_EditingMobile,
-                                             _global.GetUserName(editingBy, true));
+                                             await _global.GetUserNameAsync(editingBy, true));
                 }
                 rightToEdit = editPossible = reviewPossible = fillFormsPossible = commentPossible = false;
             }
@@ -277,7 +277,7 @@ public class DocumentServiceHelper
             fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
-        var docKey = GetDocKey(fileStable);
+        var docKey = await GetDocKeyAsync(fileStable);
         var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
         if (file.ParentId != null)
@@ -370,14 +370,14 @@ public class DocumentServiceHelper
     }
 
 
-    public string GetDocKey<T>(File<T> file)
+    public async Task<string> GetDocKeyAsync<T>(File<T> file)
     {
-        return GetDocKey(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
+        return await GetDocKeyAsync(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
     }
 
-    public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
+    public async Task<string> GetDocKeyAsync<T>(T fileId, int fileVersion, DateTime modified)
     {
-        var str = $"teamlab_{fileId}_{fileVersion}_{modified.GetHashCode()}_{_global.GetDocDbKey()}";
+        var str = $"teamlab_{fileId}_{fileVersion}_{modified.GetHashCode()}_{await _global.GetDocDbKeyAsync()}";
 
         var keyDoc = Encoding.UTF8.GetBytes(str)
                              .ToList()
@@ -400,7 +400,7 @@ public class DocumentServiceHelper
 
         foreach (var uid in _fileTracker.GetEditingBy(file.Id))
         {
-            if (!_userManager.UserExists(uid) && !sharedLink)
+            if (!await _userManager.UserExistsAsync(uid) && !sharedLink)
             {
                 usersDrop.Add(uid.ToString());
                 continue;
@@ -428,14 +428,14 @@ public class DocumentServiceHelper
             fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
-        var docKey = GetDocKey(fileStable);
+        var docKey = await GetDocKeyAsync(fileStable);
 
         await DropUserAsync(docKey, usersDrop.ToArray(), file.Id);
     }
 
-    public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
+    public async Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
     {
-        return _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
     }
 
     public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)
@@ -451,7 +451,7 @@ public class DocumentServiceHelper
         }
 
         var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
-        var docKeyForTrack = GetDocKey(fileStable);
+        var docKeyForTrack = await GetDocKeyAsync(fileStable);
 
         var meta = new MetaData { Title = file.Title };
 

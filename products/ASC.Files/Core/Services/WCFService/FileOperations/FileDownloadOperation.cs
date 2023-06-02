@@ -95,10 +95,10 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
             else
             {
-                fileName = string.Format(@"{0}-{1}-{2}{3}", tenantManager.GetCurrentTenant().Alias.ToLower(), FileConstant.DownloadTitle, DateTime.UtcNow.ToString("yyyy-MM-dd"), archiveExtension);
+                fileName = string.Format(@"{0}-{1}-{2}{3}", (await tenantManager.GetCurrentTenantAsync()).Alias.ToLower(), FileConstant.DownloadTitle, DateTime.UtcNow.ToString("yyyy-MM-dd"), archiveExtension);
             }
 
-            var store = globalStore.GetStore();
+            var store = await globalStore.GetStoreAsync();
             var path = string.Format(@"{0}\{1}", ((IAccount)_principal.Identity).ID, fileName);
 
             if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
@@ -196,17 +196,17 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
             var key = file.Id;
             if (_files.ContainsKey(key) && !string.IsNullOrEmpty(_files[key]))
             {
-                _ = filesMessageService.Send(file, _headers, MessageAction.FileDownloadedAs, file.Title, _files[key]);
+                _ = filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloadedAs, file.Title, _files[key]);
             }
             else
             {
-                _ = filesMessageService.Send(file, _headers, MessageAction.FileDownloaded, file.Title);
+                _ = filesMessageService.SendAsync(file, _headers, MessageAction.FileDownloaded, file.Title);
             }
         }
 
         foreach (var folder in folderForSend)
         {
-            _ = filesMessageService.Send(folder, _headers, MessageAction.FolderDownloaded, folder.Title);
+            _ = filesMessageService.SendAsync(folder, _headers, MessageAction.FolderDownloaded, folder.Title);
         }
     }
 
@@ -389,7 +389,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                         compressTo.CreateEntry(newtitle, file.ModifiedOn);
                         try
                         {
-                            if (fileConverter.EnableConvert(file, convertToExt))
+                            if (await fileConverter.EnableConvertAsync(file, convertToExt))
                             {
                                 //Take from converter
                                 using (var readStream = await fileConverter.ExecAsync(file, convertToExt))

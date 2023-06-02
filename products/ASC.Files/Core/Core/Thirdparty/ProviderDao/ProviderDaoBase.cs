@@ -100,7 +100,7 @@ internal class ProviderDaoBase : ThirdPartyProviderDao
         var fromSelector = _selectorFactory.GetSelector(fromFileId);
         await using var scope = _serviceProvider.CreateAsyncScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        tenantManager.SetCurrentTenant(TenantID);
+        await tenantManager.SetCurrentTenantAsync(TenantID);
 
         return await _crossDao.PerformCrossDaoFileCopyAsync(
             fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
