@@ -137,7 +137,7 @@ jobs:
           %_gpg_path $HOME/.gnupg
           %__gpg /usr/bin/gpg
           EOF
-          gpg --export --armor --output onlyoficce-gpgkey.pub
+          gpg --export --armor --output onlyoffice-gpgkey.pub
           rpm --import onlyoffice-gpgkey.pub
           rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
