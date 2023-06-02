@@ -38,7 +38,7 @@ const HistoryBlockMessage = ({
     if (!folderTitle) return "";
 
     return (
-      <span className="folderLabel">
+      <span className="folder-label">
         {` ${t("FeedLocationLabel", { folderTitle })}`}
       </span>
     );
@@ -46,7 +46,7 @@ const HistoryBlockMessage = ({
 
   return (
     <StyledHistoryBlockMessage className="message">
-      {message}
+      <span className="main-message">{message}</span>
       {getFolderLabel()}
     </StyledHistoryBlockMessage>
   );

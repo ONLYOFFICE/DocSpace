@@ -91,15 +91,15 @@ public class TfaManager
         _machinePseudoKeys = machinePseudoKeys;
     }
 
-    public SetupCode GenerateSetupCode(UserInfo user)
+    public async Task<SetupCode> GenerateSetupCodeAsync(UserInfo user)
     {
-        return _tfa.GenerateSetupCode(_setupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
+        return _tfa.GenerateSetupCode(_setupInfo.TfaAppSender, user.Email, await GenerateAccessTokenAsync(user), false, 4);
     }
 
-    public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
+    public async Task<bool> ValidateAuthCodeAsync(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
     {
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings
-            || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            || !(await _settingsManager.LoadAsync<TfaAppAuthSettings>()).EnableSetting)
         {
             return false;
         }
@@ -118,7 +118,7 @@ public class TfaManager
 
         int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
 
-        var loginSettings = _settingsManager.Load<LoginSettings>();
+        var loginSettings = await _settingsManager.LoadAsync<LoginSettings>();
         var attemptsCount = loginSettings.AttemptCount;
 
         if (++counter > attemptsCount)
@@ -127,11 +127,11 @@ public class TfaManager
         }
         Cache.Insert("tfa/" + user.Id, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
-        if (!_tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
+        if (!_tfa.ValidateTwoFactorPIN(await GenerateAccessTokenAsync(user), code))
         {
-            if (checkBackup && TfaAppUserSettings.BackupCodesForUser(_settingsManager, user.Id).Any(x => x.GetEncryptedCode(_instanceCrypto, _signature) == code && !x.IsUsed))
+            if (checkBackup && (await TfaAppUserSettings.BackupCodesForUserAsync(_settingsManager, user.Id)).Any(x => x.GetEncryptedCode(_instanceCrypto, _signature) == code && !x.IsUsed))
             {
-                TfaAppUserSettings.DisableCodeForUser(_settingsManager, _instanceCrypto, _signature, user.Id, code);
+                await TfaAppUserSettings.DisableCodeForUserAsync(_settingsManager, _instanceCrypto, _signature, user.Id, code);
             }
             else
             {
@@ -144,19 +144,19 @@ public class TfaManager
         if (!_securityContext.IsAuthenticated)
         {
             var action = isEntryPoint ? MessageAction.LoginSuccessViaApiTfa : MessageAction.LoginSuccesViaTfaApp;
-            _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
         }
 
-        if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+        if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
         {
-            GenerateBackupCodes();
+            await GenerateBackupCodesAsync();
             return true;
         }
 
         return false;
     }
 
-    public IEnumerable<BackupCode> GenerateBackupCodes()
+    public async Task<IEnumerable<BackupCode>> GenerateBackupCodesAsync()
     {
         var count = _setupInfo.TfaAppBackupCodeCount;
         var length = _setupInfo.TfaAppBackupCodeLength;
@@ -181,16 +181,16 @@ public class TfaManager
             code.SetEncryptedCode(_instanceCrypto, result.ToString());
             list.Add(code);
         }
-        var settings = _settingsManager.LoadForCurrentUser<TfaAppUserSettings>();
+        var settings = await _settingsManager.LoadForCurrentUserAsync<TfaAppUserSettings>();
         settings.CodesSetting = list;
-        _settingsManager.SaveForCurrentUser(settings);
+        await _settingsManager.SaveForCurrentUserAsync(settings);
 
         return list;
     }
 
-    private string GenerateAccessToken(UserInfo user)
+    private async Task<string> GenerateAccessTokenAsync(UserInfo user)
     {
-        var userSalt = TfaAppUserSettings.GetSalt(_settingsManager, user.Id);
+        var userSalt = await TfaAppUserSettings.GetSaltAsync(_settingsManager, user.Id);
 
         //from Signature.Create
         var machineSalt = Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant());

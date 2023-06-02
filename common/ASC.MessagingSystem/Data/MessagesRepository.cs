@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using IsolationLevel = System.Data.IsolationLevel;
-
 namespace ASC.MessagingSystem.Data;
 
 [Singletone(Additional = typeof(MessagesRepositoryExtension))]
@@ -52,7 +50,7 @@ public class MessagesRepository : IDisposable
         _logger = logger;
         _serviceScopeFactory = serviceScopeFactory;
 
-        _timer = new Timer(FlushCache);
+        _timer = new Timer(async state => await FlushCacheAsync(state));
 
         _mapper = mapper;
 
@@ -65,7 +63,7 @@ public class MessagesRepository : IDisposable
 
     ~MessagesRepository()
     {
-        FlushCache(true);
+        FlushCache();
     }
 
     private bool ForseSave(EventMessage message)
@@ -79,7 +77,7 @@ public class MessagesRepository : IDisposable
         return _forceSaveAuditActions.Contains(message.Action);
     }
 
-    public int Add(EventMessage message)
+    public async Task<int> AddAsync(EventMessage message)
     {
         if (ForseSave(message))
         {
@@ -101,11 +99,11 @@ public class MessagesRepository : IDisposable
 
             if ((int)message.Action < 2000)
             {
-                id = AddLoginEvent(message, ef);
+                id = await AddLoginEventAsync(message, ef);
             }
             else
             {
-                id = AddAuditEvent(message, ef);
+                id = await AddAuditEventAsync(message, ef);
             }
             return id;
         }
@@ -125,16 +123,16 @@ public class MessagesRepository : IDisposable
         }
         return 0;
     }
-    private void FlushCache(object state)
+    private async Task FlushCacheAsync(object state)
     {
-        FlushCache(false);
+        await FlushCacheAsync();
     }
 
-    private void FlushCache(bool isDisposed = false)
+    private async Task FlushCacheAsync()
     {
         List<EventMessage> events = null;
 
-        if (DateTime.UtcNow > _lastSave.Add(_cacheTime) || _cache.Count > _cacheLimit || isDisposed)
+        if (DateTime.UtcNow > _lastSave.Add(_cacheTime) || _cache.Count > _cacheLimit)
         {
             lock (_cache)
             {
@@ -154,63 +152,113 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-        var strategy = ef.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        var dict = new Dictionary<string, ClientInfo>();
+
+        foreach (var message in events)
         {
-            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-            using var tx = await ef.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
-            var dict = new Dictionary<string, ClientInfo>();
-
-            foreach (var message in events)
+            if (!string.IsNullOrEmpty(message.UAHeader))
             {
-                if (!string.IsNullOrEmpty(message.UAHeader))
+                try
                 {
-                    try
-                    {
-                        MessageSettings.AddInfoMessage(message, dict);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.ErrorFlushCache(message.Id, e);
-                    }
+                    MessageSettings.AddInfoMessage(message, dict);
                 }
-
-                if (!ForseSave(message))
+                catch (Exception e)
                 {
-                    // messages with action code < 2000 are related to login-history
-                    if ((int)message.Action < 2000)
-                    {
-                        AddLoginEvent(message, ef);
-                    }
-                    else
-                    {
-                        AddAuditEvent(message, ef);
-                    }
+                    _logger.ErrorFlushCache(message.Id, e);
                 }
             }
 
-            await tx.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+            if (!ForseSave(message))
+            {
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action < 2000)
+                {
+                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    await ef.LoginEvents.AddAsync(loginEvent);
+                }
+                else
+                {
+                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    await ef.AuditEvents.AddAsync(auditEvent);
+                }
+            }
+        }
+        await ef.SaveChangesAsync();
     }
 
-    private int AddLoginEvent(EventMessage message, MessagesContext dbContext)
+    private void FlushCache()
+    {
+        List<EventMessage> events = null;
+
+        lock (_cache)
+        {
+            _timer.Change(-1, -1);
+            _timerStarted = false;
+
+            events = new List<EventMessage>(_cache.Values);
+            _cache.Clear();
+            _lastSave = DateTime.UtcNow;
+        }
+
+        if (events == null)
+        {
+            return;
+        }
+
+        using var scope = _serviceScopeFactory.CreateScope();
+        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+
+        var dict = new Dictionary<string, ClientInfo>();
+
+        foreach (var message in events)
+        {
+            if (!string.IsNullOrEmpty(message.UAHeader))
+            {
+                try
+                {
+                    MessageSettings.AddInfoMessage(message, dict);
+                }
+                catch (Exception e)
+                {
+                    _logger.ErrorFlushCache(message.Id, e);
+                }
+            }
+
+            if (!ForseSave(message))
+            {
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action < 2000)
+                {
+                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    ef.LoginEvents.Add(loginEvent);
+                }
+                else
+                {
+                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    ef.AuditEvents.Add(auditEvent);
+                }
+            }
+        }
+        ef.SaveChanges();
+    }
+
+    private async Task<int> AddLoginEventAsync(EventMessage message, MessagesContext dbContext)
     {
         var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
 
-        dbContext.LoginEvents.Add(loginEvent);
-        dbContext.SaveChanges();
+        await dbContext.LoginEvents.AddAsync(loginEvent);
+        await dbContext.SaveChangesAsync();
 
         return loginEvent.Id;
     }
 
-    private int AddAuditEvent(EventMessage message, MessagesContext dbContext)
+    private async Task<int> AddAuditEventAsync(EventMessage message, MessagesContext dbContext)
     {
         var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
 
-        dbContext.AuditEvents.Add(auditEvent);
-        dbContext.SaveChanges();
+        await dbContext.AuditEvents.AddAsync(auditEvent);
+        await dbContext.SaveChangesAsync();
 
         return auditEvent.Id;
     }

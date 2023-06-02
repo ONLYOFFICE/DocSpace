@@ -58,9 +58,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("thirdparty")]
-    public bool ChangeAccessToThirdparty(SettingsRequestDto inDto)
+    public async Task<bool> ChangeAccessToThirdpartyAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.ChangeAccessToThirdparty(inDto.Set);
+        return await _fileStorageService.ChangeAccessToThirdpartyAsync(inDto.Set);
     }
 
     /// <summary>
@@ -129,15 +129,15 @@ public class SettingsController : ApiControllerBase
     }
 
     [HttpPut("settings/external")]
-    public bool ExternalShare(DisplayRequestDto inDto)
+    public async Task<bool> ExternalShareAsync(DisplayRequestDto inDto)
     {
-        return _fileStorageService.ChangeExternalShareSettings(inDto.Set);
+        return await _fileStorageService.ChangeExternalShareSettingsAsync(inDto.Set);
     }
 
     [HttpPut("settings/externalsocialmedia")]
-    public bool ExternalShareSocialMedia(DisplayRequestDto inDto)
+    public async Task<bool> ExternalShareSocialMediaAsync(DisplayRequestDto inDto)
     {
-        return _fileStorageService.ChangeExternalShareSocialMediaSettings(inDto.Set);
+        return await _fileStorageService.ChangeExternalShareSocialMediaSettingsAsync(inDto.Set);
     }
 
     /// <summary>
@@ -146,9 +146,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("forcesave")]
-    public bool Forcesave(SettingsRequestDto inDto)
+    public async Task<bool> ForcesaveAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.Forcesave(inDto.Set);
+        return await _fileStorageService.ForcesaveAsync(inDto.Set);
     }
 
     /// <summary>
@@ -192,9 +192,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("storeforcesave")]
-    public bool StoreForcesave(SettingsRequestDto inDto)
+    public async Task<bool> StoreForcesaveAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.StoreForcesave(inDto.Set);
+        return await _fileStorageService.StoreForcesaveAsync(inDto.Set);
     }
 
     /// <summary>
@@ -203,9 +203,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("storeoriginal")]
-    public bool StoreOriginal(SettingsRequestDto inDto)
+    public async Task<bool> StoreOriginalAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.StoreOriginal(inDto.Set);
+        return await _fileStorageService.StoreOriginalAsync(inDto.Set);
     }
 
     /// <summary>
@@ -214,9 +214,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("keepnewfilename")]
-    public bool KeepNewFileName(SettingsRequestDto inDto)
+    public async Task<bool> KeepNewFileNameAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.KeepNewFileName(inDto.Set);
+        return await _fileStorageService.KeepNewFileNameAsync(inDto.Set);
     }
 
     /// <summary>
@@ -225,9 +225,9 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("updateifexist")]
-    public bool UpdateIfExist(SettingsRequestDto inDto)
+    public async Task<bool> UpdateIfExistAsync(SettingsRequestDto inDto)
     {
-        return _fileStorageService.UpdateIfExist(inDto.Set);
+        return await _fileStorageService.UpdateIfExistAsync(inDto.Set);
     }
 
     [HttpPut("settings/autocleanup")]

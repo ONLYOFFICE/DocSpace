@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Threading.Channels;
-
-using ASC.Core.Billing;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
 [Scope]
@@ -71,24 +65,25 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
         {
             return new List<FileData<int>>();
         }
-
-        return result.ToList().Select(r =>
+       
+        return await result.ToAsyncEnumerable().SelectAwait(async r =>
         {
-            var tariff = _tariffService.GetTariff(r.TenantId);
+            var tariff = await _tariffService.GetTariffAsync(r.TenantId);
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
 
             return fileData;
-        });
+        }).ToListAsync();
     }
 
 
     public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            var tariff = _tariffService.GetTariff(@event.TenantId);
+            var tariff = await _tariffService.GetTariffAsync(@event.TenantId);
             var freezingThumbnails = await GetFreezingThumbnailsAsync();
             var data = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl, tariff.State))
                           .Union(freezingThumbnails);

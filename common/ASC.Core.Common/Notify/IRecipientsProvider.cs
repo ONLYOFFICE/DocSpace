@@ -29,9 +29,9 @@ namespace ASC.Notify.Recipients;
 [Scope(typeof(RecipientProviderImpl))]
 public interface IRecipientProvider
 {
-    IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
-    IRecipient GetRecipient(string id);
-    IRecipient[] GetGroupEntries(IRecipientsGroup group);
-    IRecipientsGroup[] GetGroups(IRecipient recipient);
-    string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
+    Task<IDirectRecipient> FilterRecipientAddressesAsync(IDirectRecipient recipient);
+    Task<IRecipient> GetRecipientAsync(string id);
+    Task<IRecipient[]> GetGroupEntriesAsync(IRecipientsGroup group);
+    Task<IRecipientsGroup[]> GetGroupsAsync(IRecipient recipient);
+    Task<string[]> GetRecipientAddressesAsync(IDirectRecipient recipient, string senderName);
 }

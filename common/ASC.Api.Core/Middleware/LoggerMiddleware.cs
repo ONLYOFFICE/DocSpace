@@ -42,7 +42,7 @@ public class LoggerMiddleware
                              CoreSettings coreSettings,
                              ILogger<LoggerMiddleware> logger)
     {
-        var tenant = tenantManager.GetCurrentTenant(false, context);
+        var tenant = await tenantManager.GetCurrentTenantAsync(false, context);
 
         if (tenant == null)
         {

@@ -35,7 +35,7 @@ const ConfirmEmailBar = ({
         isCampaigns={false}
         opacity={1}
         onLoad={onLoad}
-        clickAction={onClose}
+        onAction={onClose}
       />
     )
   );

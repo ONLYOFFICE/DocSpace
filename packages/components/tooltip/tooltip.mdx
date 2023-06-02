@@ -1,4 +1,4 @@
-import { Story, ArgsTable, Canvas, Meta } from "@storybook/addon-docs/blocks";
+import { Story, ArgsTable, Canvas, Meta, Controls } from "@storybook/blocks";
 import * as stories from "./tooltip.stories.js";
 
 import Tooltip from "./";
@@ -20,13 +20,7 @@ Custom tooltip
 #### See documentation: https://github.com/wwayne/react-tooltip
 
 <Canvas>
-  <Story story={stories.basic} name="Default" />
-</Canvas>
-
-<ArgsTable story="Default" />
-
-<Canvas>
-  <Story story={stories.all} name="All" />
+  <Story of={stories.all} />
 </Canvas>
 
 ### Usage with IconButton
@@ -123,12 +117,6 @@ const arrayUsers = [
 />
 ```
 
-### YouComponent Properties
+### Properties
 
-| Props         |   Type   | Required |              Values              | Default | Description                       |
-| ------------- | :------: | :------: | :------------------------------: | :-----: | --------------------------------- |
-| `data-event`  | `string` |    -     |          `click, focus`          |    -    | Custom event to trigger tooltip   |
-| `data-for`    | `string` |    ✅    |                -                 |    -    | Corresponds to the id of Tooltip  |
-| `data-offset` | `string` |    -     | `top`, `left`, `right`, `bottom` |    -    | Offset of current tooltip         |
-| `data-place`  | `string` |    -     | `top`, `right`, `bottom`, `left` |    -    | Tooltip placement                 |
-| `data-tip`    | `string` |    -     |                -                 |    -    | Required if you need to component |
+<Controls />

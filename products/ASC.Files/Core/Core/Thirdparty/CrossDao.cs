@@ -96,7 +96,7 @@ internal class CrossDao //Additional SharpBox
         {
             foreach (var size in _thumbnailSettings.Sizes)
             {
-                await globalStore.GetStore().CopyAsync(String.Empty,
+                await (await globalStore.GetStoreAsync()).CopyAsync(String.Empty,
                                       fromFileDao.GetUniqThumbnailPath(fromFile, size.Width, size.Height),
                                       String.Empty,
                                       toFileDao.GetUniqThumbnailPath(toFile, size.Width, size.Height));

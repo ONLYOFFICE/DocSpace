@@ -29,7 +29,7 @@ using CallContext = ASC.Common.Notify.Engine.CallContext;
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
-public class ProductSecurityFilter : IResourceFilter
+public class ProductSecurityFilter : IAsyncResourceFilter
 {
     private static readonly IDictionary<string, Guid> _products;
     private readonly ILogger<ProductSecurityFilter> _logger;
@@ -74,12 +74,11 @@ public class ProductSecurityFilter : IResourceFilter
         _authContext = authContext;
     }
 
-    public void OnResourceExecuted(ResourceExecutedContext context) { }
-
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
     {
         if (!_authContext.IsAuthenticated)
         {
+            await next();
             return;
         }
 
@@ -93,13 +92,15 @@ public class ProductSecurityFilter : IResourceFilter
                     CallContext.SetData("asc.web.product_id", pid);
                 }
 
-                if (!_webItemSecurity.IsAvailableForMe(pid))
+                if (!await _webItemSecurity.IsAvailableForMeAsync(pid))
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                     _logger.WarningPaymentRequired(controllerActionDescriptor.ControllerName, _authContext.CurrentAccount.ID);
+                    return;
                 }
             }
         }
+        await next();
     }
 
     private static Guid FindProduct(ControllerActionDescriptor method)

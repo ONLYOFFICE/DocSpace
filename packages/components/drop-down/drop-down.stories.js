@@ -28,16 +28,13 @@ When using component, it should be noted that parent must have CSS property _pos
 const Template = (args) => {
   const [isOpen, setIsOpen] = useState(args.open);
 
-  const clickOutsideAction = (e) => {
-    setIsOpen(!isOpen);
-  };
-
   return (
-    <div style={{ height: "200px", position: "relative" }}>
+    <div style={{ height: "200px", position: "relative", padding: "20px" }}>
       <DropDown
         {...args}
         open={isOpen}
-        clickOutsideAction={clickOutsideAction}
+        isDefaultMode={false}
+        clickOutsideAction={() => {}}
         style={{ top: "20px", left: "20px" }}
         onClick={() => {}}
       >

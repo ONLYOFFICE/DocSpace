@@ -164,7 +164,7 @@ const User = ({
               isLoading={isLoading}
               isMobileView={isMobileOnly}
               directionY="both"
-              toggleAction={onToggle}
+              onToggle={onToggle}
               displaySelectedOption
             />
           ) : (

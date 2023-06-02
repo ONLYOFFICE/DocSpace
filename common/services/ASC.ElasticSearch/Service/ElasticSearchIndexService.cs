@@ -93,7 +93,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
     }
 
-    public async Task IndexProduct(IFactoryIndexer product, bool reindex)
+    public async Task IndexProductAsync(IFactoryIndexer product, bool reindex)
     {
         if (reindex)
         {
@@ -105,7 +105,7 @@ public class ElasticSearchIndexService : BackgroundService
                 }
 
                 _logger.DebugProductReindex(product.IndexName);
-                product.ReIndex();
+                await product.ReIndexAsync();
             }
             catch (Exception e)
             {
@@ -122,7 +122,7 @@ public class ElasticSearchIndexService : BackgroundService
 
             _logger.DebugProduct(product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
-            await product.IndexAll();
+            await product.IndexAllAsync();
         }
         catch (Exception e)
         {
@@ -147,7 +147,7 @@ public class ElasticSearchIndexService : BackgroundService
             {
                 await using (var scope = _serviceScopeFactory.CreateAsyncScope())
                 {
-                    await IndexProduct((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
+                    await IndexProductAsync((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
                 }
             });
 

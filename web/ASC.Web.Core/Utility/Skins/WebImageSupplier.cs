@@ -56,21 +56,6 @@ public class WebImageSupplier
         return GetImageAbsoluteWebPath(imgFileName, moduleID);
     }
 
-    public string GetImageFolderAbsoluteWebPath()
-    {
-        return GetImageFolderAbsoluteWebPath(Guid.Empty);
-    }
-
-    public string GetImageFolderAbsoluteWebPath(Guid moduleID)
-    {
-        if (_httpContextAccessor?.HttpContext == null)
-        {
-            return string.Empty;
-        }
-
-        var currentThemePath = GetPartImageFolderRel(moduleID);
-        return _webPath.GetPathAsync(currentThemePath).Result;
-    }
 
     private string GetImageAbsoluteWebPath(string fileName, Guid partID)
     {

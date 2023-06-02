@@ -129,7 +129,7 @@ public class FolderContentDtoHelper
         var foldersTask = GetFoldersDto(folders).ToListAsync();
         var currentTask = _folderDtoHelper.GetAsync(folderItems.FolderInfo);
 
-        var isEnableBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+        var isEnableBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
 
         var result = new FolderContentDto<T>
         {

@@ -329,7 +329,7 @@ const SimpleFilesRow = (props) => {
             isSmallContainer || isRooms ? null : quickButtonsComponent
           }
           onSelect={onContentFileSelect}
-          rowContextClick={fileContextClick}
+          onContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
           onDoubleClick={onDoubleClick}

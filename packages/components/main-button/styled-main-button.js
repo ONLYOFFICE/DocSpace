@@ -87,6 +87,9 @@ const StyledMainButton = styled.div`
   .main-button_img {
     svg {
       padding-bottom: 1px;
+      path {
+        fill: #fff;
+      }
     }
   }
 `;

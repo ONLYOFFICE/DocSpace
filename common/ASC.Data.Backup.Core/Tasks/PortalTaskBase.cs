@@ -96,7 +96,7 @@ public abstract class PortalTaskBase
         var files = new List<BackupFileInfo>();
         foreach (var module in StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed))
         {
-            var store = StorageFactory.GetStorage(tenantId, module);
+            var store = await StorageFactory.GetStorageAsync(tenantId, module);
             var domains = StorageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)
@@ -273,18 +273,13 @@ public abstract class PortalTaskBase
         Logger.DebugCompleteMySQlFile(file);
     }
 
-    protected Task RunMysqlFile(Stream stream, string db, string delimiter = ";")
+    protected async ValueTask RunMysqlFile(Stream stream, string db, string delimiter = ";")
     {
         if (stream == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRunMysqlFile(stream, db, delimiter);
-    }
-
-    private async Task InternalRunMysqlFile(Stream stream, string db, string delimiter = ";")
-    {
         using var reader = new StreamReader(stream, Encoding.UTF8);
         string commandText;
 

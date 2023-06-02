@@ -67,6 +67,16 @@ public class Client
                     .MaximumRetries(10)
                     .ThrowExceptions();
 
+                if (_settings.Authentication != null)
+                {
+                    settings.BasicAuthentication(_settings.Authentication.Username, _settings.Authentication.Password);
+                }
+
+                if (_settings.ApiKey != null)
+                {
+                    settings.ApiKeyAuthentication(_settings.ApiKey.Id, _settings.ApiKey.Value);
+                }
+
                 if (_logger.IsEnabled(LogLevel.Trace))
                 {
                     settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>

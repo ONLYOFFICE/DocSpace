@@ -39,32 +39,32 @@ public class AuthorizationManager
     }
 
 
-    public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId)
+    public async Task<IEnumerable<AzRecord>> GetAcesAsync(Guid subjectId, Guid actionId)
     {
-        var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
+        var aces = await _service.GetAcesAsync(await _tenantManager.GetCurrentTenantIdAsync(), default);
 
         return aces
             .Where(a => a.Action == actionId && (a.Subject == subjectId || subjectId == Guid.Empty))
             .ToList();
     }
 
-    public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
+    public async Task<IEnumerable<AzRecord>> GetAcesAsync(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
     {
-        var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
+        var aces = await _service.GetAcesAsync(await _tenantManager.GetCurrentTenantIdAsync(), default);
 
         return FilterAces(aces, subjectId, actionId, objectId)
             .ToList();
     }
 
-    public IEnumerable<AzRecord> GetAcesWithInherits(Guid subjectId, Guid actionId, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
+    public async Task<IEnumerable<AzRecord>> GetAcesWithInheritsAsync(Guid subjectId, Guid actionId, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
     {
         if (objectId == null)
         {
-            return GetAces(subjectId, actionId, null);
+            return await GetAcesAsync(subjectId, actionId, null);
         }
 
         var result = new List<AzRecord>();
-        var aces = _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
+        var aces = await _service.GetAcesAsync(await _tenantManager.GetCurrentTenantIdAsync(), default);
         result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
         var inherits = new List<AzRecord>();
@@ -81,27 +81,22 @@ public class AuthorizationManager
         return result;
     }
 
-    public void AddAce(AzRecord r)
+    public async Task AddAceAsync(AzRecord r)
     {
-        _service.SaveAce(_tenantManager.GetCurrentTenant().Id, r);
+        await _service.SaveAceAsync(await _tenantManager.GetCurrentTenantIdAsync(), r);
     }
 
-    public void RemoveAce(AzRecord r)
+    public async Task RemoveAceAsync(AzRecord r)
     {
-        _service.RemoveAce(_tenantManager.GetCurrentTenant().Id, r);
+        await _service.RemoveAceAsync(await _tenantManager.GetCurrentTenantIdAsync(), r);
     }
 
-    public void RemoveAllAces(ISecurityObjectId id)
+    public async Task RemoveAllAcesAsync(ISecurityObjectId id)
     {
-        foreach (var r in GetAces(Guid.Empty, Guid.Empty, id))
+        foreach (var r in await GetAcesAsync(Guid.Empty, Guid.Empty, id))
         {
-            RemoveAce(r);
+            await RemoveAceAsync(r);
         }
-    }
-
-    private IEnumerable<AzRecord> GetAcesInternal()
-    {
-        return _service.GetAces(_tenantManager.GetCurrentTenant().Id, default);
     }
 
     private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)

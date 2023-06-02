@@ -113,7 +113,7 @@ const Form: React.FC<ILoginProps> = ({ theme, setTheme, logoUrls }) => {
         <CodeInput
           theme={theme}
           onSubmit={onSubmit}
-          handleChange={handleChange}
+          onChange={handleChange}
           isDisabled={isLoading}
         />
         {(expiredCode || invalidCode) && <Bar t={t} expired={expiredCode} />}

@@ -202,6 +202,39 @@ public class CustomNamingPeople
         return dict;
     }
 
+    public async Task<PeopleNamesItem> GetPeopleNamesAsync(string schemaId)
+    {
+        if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
+        {
+            var settings = await _settingsManager.LoadAsync<PeopleNamesSettings>();
+            var result = settings.Item;
+            if (result == null)
+            {
+                result = new PeopleNamesItem
+                {
+                    Id = PeopleNamesItem.CustomID,
+                    GroupCaption = string.Empty,
+                    GroupHeadCaption = string.Empty,
+                    GroupsCaption = string.Empty,
+                    RegDateCaption = string.Empty,
+                    UserCaption = string.Empty,
+                    UserPostCaption = string.Empty,
+                    UsersCaption = string.Empty,
+                    GuestCaption = string.Empty,
+                    GuestsCaption = string.Empty
+                };
+            }
+
+            result.SchemaName = Resource.CustomNamingPeopleSchema;
+
+            return result;
+        }
+
+        Load();
+
+        return _items.Find(i => i.Id.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase));
+    }
+
     public PeopleNamesItem GetPeopleNames(string schemaId)
     {
         if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
@@ -235,20 +268,20 @@ public class CustomNamingPeople
         return _items.Find(i => i.Id.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public void SetPeopleNames(string schemaId)
+    public async Task SetPeopleNamesAsync(string schemaId)
     {
-        var settings = _settingsManager.Load<PeopleNamesSettings>();
+        var settings = await _settingsManager.LoadAsync<PeopleNamesSettings>();
         settings.ItemId = schemaId;
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
     }
 
-    public void SetPeopleNames(PeopleNamesItem custom)
+    public async Task SetPeopleNamesAsync(PeopleNamesItem custom)
     {
-        var settings = _settingsManager.Load<PeopleNamesSettings>();
+        var settings = await _settingsManager.LoadAsync<PeopleNamesSettings>();
         custom.Id = PeopleNamesItem.CustomID;
         settings.ItemId = PeopleNamesItem.CustomID;
         settings.Item = custom;
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
     }
 
 

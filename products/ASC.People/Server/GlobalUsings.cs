@@ -29,7 +29,7 @@ global using System.Security;
 global using System.Security.Claims;
 global using System.ServiceModel.Security;
 global using System.Web;
-
+global using System.Globalization;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;

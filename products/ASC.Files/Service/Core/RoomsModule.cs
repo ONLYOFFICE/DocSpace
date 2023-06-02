@@ -59,9 +59,9 @@ public class RoomsModule : FeedModule
     public override Guid ProductID => WebItemManager.DocumentsProductID;
     protected override string DbId => Constants.FilesDbId;
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override async Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
             return false;
         }
@@ -79,7 +79,7 @@ public class RoomsModule : FeedModule
             }
 
             var owner = (Guid)feed.Target;
-            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
+            var groupUsers = (await _userManager.GetUsersByGroupAsync(owner)).Select(x => x.Id).ToList();
             if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);
@@ -92,7 +92,7 @@ public class RoomsModule : FeedModule
             targetCond = true;
         }
 
-        return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
+        return targetCond && await _fileSecurity.CanReadAsync(folder, userId);
     }
 
     public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
@@ -115,7 +115,7 @@ public class RoomsModule : FeedModule
         if (shareRecord == null)
         {
             var roomCreatedUtc = _tenantUtil.DateTimeToUtc(room.CreateOn);
-            
+
             return new Feed.Aggregator.Feed(room.CreateBy, roomCreatedUtc)
             {
                 Item = RoomItem,
