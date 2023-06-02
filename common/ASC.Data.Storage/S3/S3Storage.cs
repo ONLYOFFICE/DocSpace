@@ -495,7 +495,14 @@ public class S3Storage : BaseStorage
 
             await client.DeleteObjectAsync(deleteRequest);
 
-            await QuotaUsedDelete(domain, s3Object.Size);
+            if (QuotaController != null)
+            {
+                if (string.IsNullOrEmpty(QuotaController.ExcludePattern) ||
+                    !Path.GetFileName(s3Object.Key).StartsWith(QuotaController.ExcludePattern))
+                {
+                    await QuotaUsedDelete(domain, s3Object.Size);
+                }
+            }
         }
     }
 
