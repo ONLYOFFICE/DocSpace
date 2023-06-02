@@ -29,11 +29,10 @@ const WebhookHistory = (props) => {
         !webhookDetails.status && setIsLoading(true);
       }, 300);
 
-      historyItems.length === 0 &&
-        (await fetchHistoryItems({
-          configId: id,
-          count: 30,
-        }));
+      await fetchHistoryItems({
+        configId: id,
+        count: 30,
+      });
       setIsFetchFinished(true);
 
       clearTimeout(timer);
