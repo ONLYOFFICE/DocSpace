@@ -40,14 +40,11 @@ const HeaderContainer = styled.div`
   ${() =>
     isMobileOnly &&
     css`
-      margin-top: 1px;
-    `}
-
-  ${(props) =>
-    isMobileOnly &&
-    props.isHeaderVisible &&
-    css`
-      top: 48px;
+      margin-top: 7px;
+      margin-left: -14px;
+      padding-left: 14px;
+      margin-right: -14px;
+      padding-right: 14px;
     `}
 
   .arrow-button {
@@ -89,8 +86,9 @@ const HeaderContainer = styled.div`
     ${() =>
       isMobileOnly &&
       css`
+        position: absolute;
         height: 48px;
-        margin: -49px 0 0 -17px;
+        margin: -35px 0 0 -17px;
         width: calc(100% + 32px);
       `}
   }

@@ -22,7 +22,7 @@ const ListHeader = styled.header`
   ${() =>
     isMobileOnly &&
     css`
-      margin-top: -6px;
+      margin-top: 35px;
       padding-right: 8px;
     `}
 `;
