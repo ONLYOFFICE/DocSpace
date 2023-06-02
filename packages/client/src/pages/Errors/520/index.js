@@ -28,7 +28,7 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const Error520 = ({ errorLog, currentColorScheme }) => {
+const Error520 = ({ errorLog, currentColorScheme, FirebaseHelper }) => {
   const { t } = useTranslation(["Common"]);
 
   const [reportDialogVisible, setReportDialogVisible] = useState(false);
@@ -46,6 +46,9 @@ const Error520 = ({ errorLog, currentColorScheme }) => {
   };
 
   ZendeskAPI("webWidget", "show");
+
+  if (!FirebaseHelper.isEnabledDB)
+    return <ErrorContainer headerText={t("SomethingWentWrong")} />;
 
   return (
     <StyledWrapper>
@@ -77,10 +80,11 @@ const Error520 = ({ errorLog, currentColorScheme }) => {
 };
 
 const Error520Wrapper = inject(({ auth }) => {
-  const { currentColorScheme } = auth.settingsStore;
+  const { currentColorScheme, firebaseHelper } = auth.settingsStore;
 
   return {
     currentColorScheme,
+    FirebaseHelper: firebaseHelper,
   };
 })(observer(Error520));
 
