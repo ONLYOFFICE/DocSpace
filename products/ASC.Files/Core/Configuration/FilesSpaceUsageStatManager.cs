@@ -67,14 +67,15 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         _fileMarker = fileMarker;
     }
 
-    public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
+    public override async ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
     {
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var myFiles = filesDbContext.Files
             .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
-            .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.file.TenantId == tenant.Id)
             .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
             .GroupBy(r => r.file.CreateBy)
             .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
@@ -83,19 +84,19 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
             .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
-            .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.file.TenantId == tenant.Id)
             .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
             .GroupBy(r => Constants.LostUser.Id)
             .Select(r => new { CreateBy = Constants.LostUser.Id, Size = r.Sum(a => a.file.ContentLength) });
 
-        return myFiles.Union(commonFiles)
+        return await myFiles.Union(commonFiles)
             .AsAsyncEnumerable()
             .GroupByAwait(
             async r => await Task.FromResult(r.CreateBy),
             async r => await Task.FromResult(r.Size),
             async (userId, items) =>
             {
-                var user = _userManager.GetUsers(userId);
+                var user = await _userManager.GetUsersAsync(userId);
                 var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                 if (user.Equals(Constants.LostUser))
                 {
@@ -120,8 +121,8 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
 
     public async Task<long> GetUserSpaceUsageAsync(Guid userId)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
-        var my = _globalFolder.GetFolderMy(_fileMarker, _daoFactory);
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
+        var my = await _globalFolder.GetFolderMyAsync(_fileMarker, _daoFactory);
         var trash = await _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
@@ -132,10 +133,10 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
 
     public async Task RecalculateUserQuota(int TenantId, Guid userId)
     {
-        _tenantManager.SetCurrentTenant(TenantId);
+        await _tenantManager.SetCurrentTenantAsync(TenantId);
         var size = await GetUserSpaceUsageAsync(userId);
 
-        _tenantManager.SetTenantQuotaRow(
+        await _tenantManager.SetTenantQuotaRowAsync(
            new TenantQuotaRow { Tenant = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
            false);
     }

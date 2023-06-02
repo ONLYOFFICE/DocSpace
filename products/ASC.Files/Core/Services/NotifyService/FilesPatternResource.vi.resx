@@ -104,4 +104,52 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Tài liệu. Đã cấp quyền truy cập cho thư mục: $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__ AuthorName đã nhắc đến bạn trong nhận xét tài liệu
+
+$__AuthorName đã nhắc đến bạn trong nhận xét trong tài liệu "$DocumentTitle":"$DocumentURL"  trong phòng "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName đã xóa một phòng
+
+$__AuthorName đã xóa phòng: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Trạng thái ký tên đã thay đổi</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Được nhắc đến trong tài liệu</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Gửi thư đã xong.</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Đã cấp quyền truy cập vào tài liệu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Đã cấp quyền truy cập vào thư mục: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Đã cấp quyền truy cập vào tài liệu được mã hóa: $DocumentTitle</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Thông báo DocSpace. Đã xóa phòng</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Thông báo DocSpace. Được nhắc đến trong tài liệu</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Tất cả người ký tên đã hoàn thành $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Tài liệu. Tất cả người ký tên đã hoàn thành [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Tài liệu. Đã cấp quyền truy cập vào thư mục: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Tài liệu. Đã cấp quyền truy cập vào tài liệu: [$DocumentTitle]($DocumentURL)</value>
+  </data>
 </root>

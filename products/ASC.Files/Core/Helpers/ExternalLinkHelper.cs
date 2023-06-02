@@ -52,7 +52,7 @@ public class ExternalLinkHelper
             Access = FileShare.Restrict
         };
 
-        var linkId = _externalShare.ParseShareKey(key);
+        var linkId = await _externalShare.ParseShareKeyAsync(key);
 
         var record = await _daoFactory.GetSecurityDao<int>().GetSharesAsync(new[] { linkId }).FirstOrDefaultAsync();
 
@@ -61,7 +61,7 @@ public class ExternalLinkHelper
             return result;
         }
 
-        var status = _externalShare.ValidateRecord(record, password);
+        var status = await _externalShare.ValidateRecordAsync(record, password);
         result.Status = status;
         
         if (status != Status.Ok && status != Status.RequiredPassword)
@@ -92,7 +92,7 @@ public class ExternalLinkHelper
             return result;
         }
         
-        _externalShare.SetAnonymousSessionKey();
+        await _externalShare.SetAnonymousSessionKeyAsync();
 
         return result;
     }

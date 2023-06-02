@@ -119,25 +119,20 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
         return string.Format(" ({0}){1}", index + 1, staticText);
     }
 
-    protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+    protected async ValueTask UpdatePathInDBAsync(string oldValue, string newValue)
     {
         if (oldValue.Equals(newValue))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalUpdatePathInDBAsync(oldValue, newValue);
-    }
-
-    private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
             var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
             .Where(r => r.Id.StartsWith(oldValue))
             .Select(r => r.Id)

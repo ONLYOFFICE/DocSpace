@@ -382,7 +382,7 @@ public class FilesLinkUtility
                                         contentLength,
                                         tenantId,
                                         HttpUtility.UrlEncode(_instanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
-                                        Thread.CurrentThread.CurrentUICulture.Name,
+                                        CultureInfo.CurrentUICulture.Name,
                                         encrypted.ToString().ToLower());
 
         if (fileId != null)
@@ -443,7 +443,7 @@ public class FilesLinkUtility
 
         if (GetUrlSetting(key) != value)
         {
-            _coreSettings.SaveSetting(GetSettingsKey(key), value);
+             _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 
@@ -454,7 +454,7 @@ public class FilesLinkUtility
     
     private string GetUrlWithShare(string url)
     {
-        if (!_externalShare.TryGetLinkId(out _))
+        if (_externalShare.GetLinkId() == default)
         {
             return url;
         }

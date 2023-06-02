@@ -72,14 +72,14 @@ public class BuildVersion
         return _configuration["version:number"] ?? "1.0.0";
     }
 
-    private Task<string> GetDocumentVersionAsync()
+    private async Task<string> GetDocumentVersionAsync()
     {
         if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
         {
             return null;
         }
 
-        return _documentServiceConnector.GetVersionAsync();
+        return await _documentServiceConnector.GetVersionAsync();
     }
 
     private static string GetMailServerVersion()

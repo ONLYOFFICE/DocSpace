@@ -33,6 +33,7 @@ const hoverModernViewButton = css`
 const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
+  gap: ${(props) => props.type && "4px"};
   justify-content: center;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -78,6 +79,7 @@ const StyledComboButton = styled.div`
 
   ${(props) =>
     !props.noBorder &&
+    !props.type &&
     `
     border:  ${props.theme.comboBox.button.border};
     border-radius: ${props.theme.comboBox.button.borderRadius};

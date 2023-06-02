@@ -151,7 +151,7 @@ public class SetupInfo
         AvailableFileSize = GetAppSettings("web:available-file-size", 100L * 1024L * 1024L);
         AvailableFileSize = GetAppSettings("web.available-file-size", 100L * 1024L * 1024L);
 
-        TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
+        TeamlabSiteRedirect = GetAppSettings("web:teamlab-site", string.Empty);
         ChunkUploadSize = GetAppSettings("files:uploader:chunk-size", 10 * 1024 * 1024);
         ProviderMaxUploadSize = GetAppSettings("files:provider:max-upload-size", 1024L * 1024L * 1024L);
         ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web:thirdparty-auth", "true"), "true");
@@ -209,10 +209,10 @@ public class SetupInfo
 
     public async Task<long> MaxChunkedUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        var diskQuota = tenantManager.GetCurrentTenantQuota();
+        var diskQuota = await tenantManager.GetCurrentTenantQuotaAsync();
         if (diskQuota != null)
         {
-            var usedSize = await maxTotalSizeStatistic.GetValue();
+            var usedSize = await maxTotalSizeStatistic.GetValueAsync();
             var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
             return Math.Min(freeSize, diskQuota.MaxFileSize);
         }

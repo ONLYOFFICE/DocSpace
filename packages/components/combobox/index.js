@@ -3,6 +3,7 @@ import React from "react";
 import equal from "fast-deep-equal/react";
 
 import ComboButton from "./sub-components/combo-button";
+
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import StyledComboBox from "./styled-combobox";
@@ -28,14 +29,22 @@ class ComboBox extends React.Component {
 
   stopAction = (e) => e.preventDefault();
 
-  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => {
+    const { setIsOpenItemAccess } = this.props;
+    this.setState({ isOpen: isOpen });
+    setIsOpenItemAccess && setIsOpenItemAccess(isOpen);
+  };
 
   handleClickOutside = (e) => {
+    const { setIsOpenItemAccess } = this.props;
+
     if (this.ref.current.contains(e.target)) return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+      this.props.onToggle && this.props.onToggle(e, this.state.isOpen);
     });
+
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   comboBoxClick = (e) => {
@@ -43,8 +52,9 @@ class ComboBox extends React.Component {
       disableIconClick,
       disableItemClick,
       isDisabled,
-      toggleAction,
+      onToggle,
       isLoading,
+      setIsOpenItemAccess,
     } = this.props;
 
     if (
@@ -57,22 +67,26 @@ class ComboBox extends React.Component {
       return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      toggleAction && toggleAction(e, this.state.isOpen);
+      onToggle && onToggle(e, this.state.isOpen);
     });
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   optionClick = (option) => {
+    const { setIsOpenItemAccess } = this.props;
     this.setState({
       isOpen: !this.state.isOpen,
       selectedOption: option,
     });
-
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
     this.props.onSelect && this.props.onSelect(option);
   };
 
   componentDidUpdate(prevProps) {
+    const { setIsOpenItemAccess } = this.props;
     if (this.props.opened !== prevProps.opened) {
       this.setIsOpen(this.props.opened);
+      setIsOpenItemAccess && setIsOpenItemAccess(this.props.opened);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
@@ -88,6 +102,7 @@ class ComboBox extends React.Component {
       directionY,
       scaled,
       size,
+      type,
       options,
       advancedOptions,
       isDisabled,
@@ -95,7 +110,7 @@ class ComboBox extends React.Component {
       noBorder,
       scaledOptions,
       displayType,
-      toggleAction,
+      onToggle,
       textOverflow,
       showDisabledItems,
       comboIcon,
@@ -117,10 +132,9 @@ class ComboBox extends React.Component {
       withoutPadding,
       isLoading,
       isNoFixedHeightOptions,
+      hideMobileView,
     } = this.props;
-
     const { tabIndex, ...props } = this.props;
-
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -158,7 +172,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 4;
+    const disableMobileView = optionsCount < 4 || hideMobileView;
 
     return (
       <StyledComboBox
@@ -168,7 +182,7 @@ class ComboBox extends React.Component {
         size={size}
         data={selectedOption}
         onClick={this.comboBoxClick}
-        toggleAction={toggleAction}
+        onToggle={onToggle}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
         withoutPadding={withoutPadding}
@@ -191,7 +205,9 @@ class ComboBox extends React.Component {
           fillIcon={fillIcon}
           tabIndex={tabIndex}
           isLoading={isLoading}
+          type={type}
         />
+
         {displayType !== "toggle" && (
           <DropDown
             id={this.props.dropDownId}
@@ -236,6 +252,7 @@ class ComboBox extends React.Component {
                       textOverflow={textOverflow}
                       key={option.key}
                       disabled={disabled}
+                      backgroundColor={option.backgroundColor}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}
@@ -295,7 +312,7 @@ ComboBox.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** The event is triggered by clicking on a component when `displayType: toggle` */
-  toggleAction: PropTypes.func,
+  onToggle: PropTypes.func,
   /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
@@ -332,6 +349,8 @@ ComboBox.propTypes = {
   withoutPadding: PropTypes.bool,
   /** Indicates when the component is loading */
   isLoading: PropTypes.bool,
+  /**Type ComboBox */
+  type: PropTypes.oneOf(["badge", null]),
 };
 
 ComboBox.defaultProps = {

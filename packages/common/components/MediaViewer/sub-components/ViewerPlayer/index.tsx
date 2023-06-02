@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { useGesture } from "@use-gesture/react";
 import { useSpring, animated } from "@react-spring/web";
-import { isMobile, isDesktop } from "react-device-detect";
+import { isMobile, isDesktop, isIOS, isMobileOnly } from "react-device-detect";
 import React, {
   useCallback,
   useEffect,
@@ -48,6 +48,7 @@ function ViewerPlayer({
   isFistImage,
   isFullScreen,
   panelVisible,
+  thumbnailSrc,
   mobileDetails,
   isPreviewFile,
   isOpenContextMenu,
@@ -266,6 +267,7 @@ function ViewerPlayer({
   const onExitFullScreen = () => {
     if (!document.fullscreenElement) {
       setIsFullScreen(false);
+      handleResize();
     }
   };
 
@@ -485,6 +487,15 @@ function ViewerPlayer({
   const toggleVideoFullscreen = useCallback(() => {
     if (!videoRef.current) return;
 
+    if (isIOS && isMobileOnly) {
+      videoRef.current.pause();
+      videoRef.current.playsInline = false;
+      videoRef.current.play();
+      videoRef.current.playsInline = true;
+
+      return;
+    }
+
     if (isFullScreen) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -533,6 +544,7 @@ function ViewerPlayer({
     () => model.filter((item) => !item.disabled).length <= 1,
     [model]
   );
+
   return (
     <>
       {isMobile && panelVisible && mobileDetails}
@@ -544,11 +556,12 @@ function ViewerPlayer({
         >
           <animated.video
             style={lodash.omit(style, ["x", "y"])}
-            src={`${src}#t=0.001`}
+            src={thumbnailSrc ? src : `${src}#t=0.001`}
             playsInline
             ref={videoRef}
             hidden={isAudio}
             preload="metadata"
+            poster={thumbnailSrc && `${thumbnailSrc}&size=1280x720`}
             onClick={handleClickVideo}
             onEnded={handleVideoEnded}
             onDurationChange={handleDurationChange}

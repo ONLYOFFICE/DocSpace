@@ -1,22 +1,22 @@
 {
-  "Ascending": "Augošā",
+  "Ascending": "Augoši",
   "CopyWindowCode": "Kopējiet loga iegulšanas kodu",
   "DataDisplay": "Datu displeja iestatījumi",
-  "Descending": "Dilstošā",
+  "Descending": "Dilstoši",
   "Destroy": "Iznīcināt",
   "EnterCount": "Ievadiet skaitu",
   "EnterHeight": "Ievadiet augstumu",
   "EnterId": "Ievadiet id",
-  "EnterPage": "Ievadiet numuru lapu",
+  "EnterPage": "Ievadiet lapas numuru",
   "EnterWidth": "Ievadiet platumu",
   "FolderId": "Mapes ID",
   "FrameId": "Rāmja ID",
   "Header": "Galvene",
-  "ItemsCount": "Preču skaits",
+  "ItemsCount": "Vienumu skaits",
   "JavascriptSdk": "Javascript sdk",
   "Menu": "Izvēlne",
   "Page": "Lappuse",
   "SearchTerm": "Meklēšanas vienums",
   "SortOrder": "Šķirošanas secība",
-  "WindowParameters": "Logu parametri"
+  "WindowParameters": "Loga parametri"
 }

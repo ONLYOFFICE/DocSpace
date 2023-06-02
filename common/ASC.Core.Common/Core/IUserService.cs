@@ -29,12 +29,13 @@ namespace ASC.Core;
 [Scope(typeof(CachedUserService))]
 public interface IUserService
 {
-    IEnumerable<UserInfo> GetUsers(int tenant);
+    Task<IEnumerable<UserInfo>> GetUsersAsync(int tenant);
     IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
         EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
         string text,
         string sortBy,
         bool sortOrderAsc,
@@ -42,26 +43,29 @@ public interface IUserService
         long offset,
         out int total,
         out int count);
-    byte[] GetUserPhoto(int tenant, Guid id);
-    DateTime GetUserPasswordStamp(int tenant, Guid id);
-    Group GetGroup(int tenant, Guid id);
-    Group SaveGroup(int tenant, Group group);
+    Task<byte[]> GetUserPhotoAsync(int tenant, Guid id);
+    Task<DateTime> GetUserPasswordStampAsync(int tenant, Guid id);
+    Task<Group> GetGroupAsync(int tenant, Guid id);
+    Task<Group> SaveGroupAsync(int tenant, Group group);
+    Task<IDictionary<string, UserGroupRef>> GetUserGroupRefsAsync(int tenant);
     IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant);
-    IEnumerable<Group> GetGroups(int tenant);
-    IEnumerable<UserInfo> GetUsersAllTenants(IEnumerable<Guid> userIds);
+    Task<IEnumerable<Group>> GetGroupsAsync(int tenant);
+    Task<IEnumerable<UserInfo>> GetUsersAllTenantsAsync(IEnumerable<Guid> userIds);
+    Task<UserGroupRef> GetUserGroupRefAsync(int tenant, Guid groupId, UserGroupRefType refType);
     UserGroupRef GetUserGroupRef(int tenant, Guid groupId, UserGroupRefType refType);
-    UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r);
+    Task<UserGroupRef> SaveUserGroupRefAsync(int tenant, UserGroupRef r);
+    Task<UserInfo> GetUserAsync(int tenant, Guid id);
     UserInfo GetUser(int tenant, Guid id);
-    UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
-    UserInfo GetUser(int tenant, string email);
-    UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash);
-    UserInfo GetUserByUserName(int tenant, string userName);
-    UserInfo SaveUser(int tenant, UserInfo user);
-    IEnumerable<int> GetTenantsWithFeeds(DateTime from);
-    void RemoveGroup(int tenant, Guid id);
-    void RemoveUser(int tenant, Guid id);
-    IEnumerable<string> GetDavUserEmails(int tenant);
-    void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType);
-    void SetUserPasswordHash(int tenant, Guid id, string passwordHash);
-    void SetUserPhoto(int tenant, Guid id, byte[] photo);
+    Task<UserInfo> GetUserAsync(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
+    Task<UserInfo> GetUserAsync(int tenant, string email);
+    Task<UserInfo> GetUserByPasswordHashAsync(int tenant, string login, string passwordHash);
+    Task<UserInfo> GetUserByUserName(int tenant, string userName);
+    Task<UserInfo> SaveUserAsync(int tenant, UserInfo user);
+    Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime from);
+    Task RemoveGroupAsync(int tenant, Guid id);
+    Task RemoveUserAsync(int tenant, Guid id);
+    Task<IEnumerable<string>> GetDavUserEmailsAsync(int tenant);
+    Task RemoveUserGroupRefAsync(int tenant, Guid userId, Guid groupId, UserGroupRefType refType);
+    Task SetUserPasswordHashAsync(int tenant, Guid id, string passwordHash);
+    Task SetUserPhotoAsync(int tenant, Guid id, byte[] photo);
 }

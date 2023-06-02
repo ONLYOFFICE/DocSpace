@@ -133,7 +133,7 @@ const QuotasBar = ({
       isCampaigns={false}
       opacity={1}
       onLoad={onLoad}
-      clickAction={onCloseAction}
+      onAction={onCloseAction}
     />
   ) : (
     <></>

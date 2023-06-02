@@ -65,22 +65,22 @@ public class IPRestrictionsService
         _notify = iPRestrictionsServiceCache.Notify;
     }
 
-    public IEnumerable<IPRestriction> Get(int tenant)
+    public async Task<IEnumerable<IPRestriction>> GetAsync(int tenant)
     {
         var key = IPRestrictionsServiceCache.GetCacheKey(tenant);
         var restrictions = _cache.Get<List<IPRestriction>>(key);
         if (restrictions == null)
         {
-            restrictions = _ipRestrictionsRepository.Get(tenant);
+            restrictions = await _ipRestrictionsRepository.GetAsync(tenant);
             _cache.Insert(key, restrictions, _timeout);
         }
 
         return restrictions;
     }
 
-    public IEnumerable<IpRestrictionBase> Save(IEnumerable<IpRestrictionBase> ips, int tenant)
+    public async Task<IEnumerable<IpRestrictionBase>> SaveAsync(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
-        var restrictions = _ipRestrictionsRepository.Save(ips, tenant);
+        var restrictions = await _ipRestrictionsRepository.SaveAsync(ips, tenant);
         _notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
 
         return restrictions;

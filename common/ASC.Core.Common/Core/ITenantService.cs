@@ -29,16 +29,21 @@ namespace ASC.Core;
 [Scope(typeof(CachedTenantService))]
 public interface ITenantService
 {
+    Task<byte[]> GetTenantSettingsAsync(int tenant, string key);
     byte[] GetTenantSettings(int tenant, string key);
-    IEnumerable<Tenant> GetTenants(DateTime from, bool active = true);
-    IEnumerable<Tenant> GetTenants(List<int> ids);
-    IEnumerable<Tenant> GetTenants(string login, string passwordHash);
-    IEnumerable<TenantVersion> GetTenantVersions();
+    Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true);
+    Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids);
+    Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash);
+    Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync();
+    Task<Tenant> GetTenantAsync(int id);
     Tenant GetTenant(int id);
+    Task<Tenant> GetTenantAsync(string domain);
     Tenant GetTenant(string domain);
     Tenant GetTenantForStandaloneWithoutAlias(string ip);
-    Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant);
-    void RemoveTenant(int id, bool auto = false);
+    Task<Tenant> GetTenantForStandaloneWithoutAliasAsync(string ip);
+    Task<Tenant> SaveTenantAsync(CoreSettings coreSettings, Tenant tenant);
+    Task RemoveTenantAsync(int id, bool auto = false);
+    Task SetTenantSettingsAsync(int tenant, string key, byte[] data);
     void SetTenantSettings(int tenant, string key, byte[] data);
-    void ValidateDomain(string domain);
+    Task ValidateDomainAsync(string domain);
 }

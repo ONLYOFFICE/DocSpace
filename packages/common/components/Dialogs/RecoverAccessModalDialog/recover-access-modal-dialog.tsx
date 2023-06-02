@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
-import TextInput from "@docspace/components/text-input";
+import EmailInput from "@docspace/components/email-input";
 import Text from "@docspace/components/text";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Textarea from "@docspace/components/textarea";
@@ -52,9 +52,12 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
 
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
 
   const [description, setDescription] = useState("");
   const [descErr, setDescErr] = useState(false);
+
+  const [isShowError, setIsShowError] = useState(false);
 
   const { t } = useTranslation(["Login", "Common"]);
 
@@ -63,12 +66,23 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
     setEmailErr(false);
     setDescription("");
     setDescErr(false);
+    setIsShowError(false);
     onClose && onClose();
   };
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
+    setIsShowError(false);
+  };
+
+  const onValidateEmail = (res) => {
+    setEmailErr(!res.isValid);
+    setEmailErrorMessage(res.errors[0]);
+  };
+
+  const onBlurEmail = () => {
+    setIsShowError(true);
   };
 
   const onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,24 +91,25 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
   };
 
   const onSendRecoverRequest = () => {
-    if (!email.trim()) {
-      setEmailErr(true);
+    if (!email.trim() || emailErr) {
+      setIsShowError(true);
+      return setEmailErr(true);
     }
     if (!description.trim()) {
-      setDescErr(true);
-    } else {
-      setLoading(true);
-      sendRecoverRequest(email, description)
-        .then((res: string) => {
-          setLoading(false);
-          toastr.success(res);
-        })
-        .catch((error) => {
-          setLoading(false);
-          toastr.error(error);
-        })
-        .finally(onRecoverModalClose);
+      return setDescErr(true);
     }
+
+    setLoading(true);
+    sendRecoverRequest(email, description)
+      .then((res: string) => {
+        setLoading(false);
+        toastr.success(res);
+      })
+      .catch((error) => {
+        setLoading(false);
+        toastr.error(error);
+      })
+      .finally(onRecoverModalClose);
   };
 
   return (
@@ -123,22 +138,28 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           key="e-mail"
           isVertical={true}
           labelVisible={false}
-          hasError={emailErr}
-          errorMessage={t("Common:RequiredField")}
+          hasError={isShowError && emailErr}
+          errorMessage={
+            emailErrorMessage
+              ? t(`Common:${emailErrorMessage}`)
+              : t("Common:RequiredField")
+          }
         >
-          <TextInput
-            hasError={emailErr}
+          <EmailInput
+            hasError={isShowError && emailErr}
+            placeholder={emailPlaceholderText}
+            isAutoFocussed={true}
             id="recover-access-modal_email"
             name="e-mail"
-            type="text"
+            type="email"
             size="base"
             scale={true}
             tabIndex={3}
-            placeholder={emailPlaceholderText}
-            isAutoFocussed={true}
             isDisabled={loading}
             value={email}
             onChange={onChangeEmail}
+            onValidateInput={onValidateEmail}
+            onBlur={onBlurEmail}
           />
         </FieldContainer>
         <FieldContainer

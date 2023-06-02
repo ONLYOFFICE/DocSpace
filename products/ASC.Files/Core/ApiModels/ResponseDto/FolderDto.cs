@@ -165,7 +165,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
 
         if (folder.RootFolderType == FolderType.VirtualRooms)
         {
-            var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+            var isEnabledBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
 
             if (!isEnabledBadges)
             {

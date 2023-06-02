@@ -66,10 +66,9 @@ public class LicenseReader
         _constants = constants;
     }
 
-    public string CustomerId
+    public async Task SetCustomerIdAsync(string value)
     {
-        get => _coreSettings.GetSetting(CustomerIdKey);
-        private set => _coreSettings.SaveSetting(CustomerIdKey, value);
+        await _coreSettings.SaveSettingAsync(CustomerIdKey, value);
     }
 
     private Stream GetLicenseStream(bool temp = false)
@@ -83,7 +82,7 @@ public class LicenseReader
         return File.OpenRead(path);
     }
 
-    public void RejectLicense()
+    public async Task RejectLicenseAsync()
     {
         if (File.Exists(_licensePathTemp))
         {
@@ -95,10 +94,10 @@ public class LicenseReader
             File.Delete(LicensePath);
         }
 
-        _tariffService.DeleteDefaultBillingInfo();
+        await _tariffService.DeleteDefaultBillingInfoAsync();
     }
 
-    public void RefreshLicense()
+    public async Task RefreshLicenseAsync()
     {
         try
         {
@@ -121,7 +120,7 @@ public class LicenseReader
                 var licenseJsonString = reader.ReadToEnd();
                 var license = License.Parse(licenseJsonString);
 
-                LicenseToDB(license);
+                await LicenseToDBAsync(license);
 
                 if (temp)
                 {
@@ -188,13 +187,13 @@ public class LicenseReader
         return license.DueDate.Date;
     }
 
-    private void LicenseToDB(License license)
+    private async Task LicenseToDBAsync(License license)
     {
         Validate(license);
 
-        CustomerId = license.CustomerId;
+        await SetCustomerIdAsync(license.CustomerId);
 
-        var defaultQuota = _tenantManager.GetTenantQuota(Tenant.DefaultTenant);
+        var defaultQuota = await _tenantManager.GetTenantQuotaAsync(Tenant.DefaultTenant);
 
         var quota = new TenantQuota(-1000)
         {
@@ -208,7 +207,7 @@ public class LicenseReader
             Trial = license.Trial
         };
 
-        _tenantManager.SaveTenantQuota(quota);
+        await _tenantManager.SaveTenantQuotaAsync(quota);
 
         var tariff = new Tariff
         {
@@ -216,7 +215,7 @@ public class LicenseReader
             DueDate = license.DueDate,
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        await _tariffService.SetTariffAsync(-1, tariff);
     }
 
     private void LogError(Exception error)

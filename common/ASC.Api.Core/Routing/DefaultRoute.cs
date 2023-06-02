@@ -36,4 +36,5 @@ public class DefaultRouteAttribute : RouteAttribute
     }
 
     public DefaultRouteAttribute() : base(BaseUrl) { }
+    public DefaultRouteAttribute(string template) : base($"{BaseUrl}{template}") { }
 }

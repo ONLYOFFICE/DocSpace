@@ -37,6 +37,7 @@ public class ExternalShare
     private Guid _linkId;
     private Guid _sessionId;
     private string _passwordKey;
+    private string _dbKey;
 
     public ExternalShare(
         Global global, 
@@ -54,7 +55,7 @@ public class ExternalShare
     
     public string GetLink(Guid linkId)
     {
-        var key = CreateShareKey(linkId);
+        var key = CreateShareKeyAsync(linkId);
 
         return _commonLinkUtility.GetFullAbsolutePath($"rooms/share?key={key}");
     }
@@ -63,10 +64,10 @@ public class ExternalShare
     {
         var record = await _daoFactory.GetSecurityDao<int>().GetSharesAsync(new [] { linkId }).FirstOrDefaultAsync();
 
-        return record == null ? Status.Invalid : ValidateRecord(record, null);
+        return record == null ? Status.Invalid : await ValidateRecordAsync(record, null);
     }
     
-    public Status ValidateRecord(FileShareRecord record, string password)
+    public async Task<Status> ValidateRecordAsync(FileShareRecord record, string password)
     {
         if (record.SubjectType != SubjectType.ExternalLink ||
             record.Subject == FileConstant.ShareLinkId ||
@@ -105,9 +106,9 @@ public class ExternalShare
             return Status.RequiredPassword;
         }
 
-        if (CreatePasswordKey(password) == record.Options.Password)
+        if (await CreatePasswordKeyAsync(password) == record.Options.Password)
         {
-            _cookiesManager.SetCookies(CookiesType.ShareLink, record.Options.Password, true, record.Subject.ToString());
+            await _cookiesManager.SetCookiesAsync(CookiesType.ShareLink, record.Options.Password, true, record.Subject.ToString());
             return Status.Ok;
         }
 
@@ -116,16 +117,16 @@ public class ExternalShare
         return Status.InvalidPassword;
     }
     
-    public string CreatePasswordKey(string password)
+    public async Task<string> CreatePasswordKeyAsync(string password)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(password);
 
-        return Signature.Create(password, _global.GetDocDbKey());
+        return Signature.Create(password, await GetDbKeyAsync());
     }
 
-    public string GetPassword(string passwordKey)
+    public async Task<string> GetPasswordAsync(string passwordKey)
     {
-        return string.IsNullOrEmpty(passwordKey) ? null : Signature.Read<string>(passwordKey, _global.GetDocDbKey());
+        return string.IsNullOrEmpty(passwordKey) ? null : Signature.Read<string>(passwordKey, await GetDbKeyAsync());
     }
 
     public string GetKey()
@@ -140,73 +141,79 @@ public class ExternalShare
         return string.IsNullOrEmpty(key) ? null : key;
     }
     
-    public Guid ParseShareKey(string key)
+    public async Task<Guid> ParseShareKeyAsync(string key)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
         
-        return Signature.Read<Guid>(key, _global.GetDocDbKey());
+        return Signature.Read<Guid>(key, await GetDbKeyAsync());
     }
 
-    public bool TryGetLinkId(out Guid linkId)
+    public Guid GetLinkId()
     {
-        linkId = _linkId;
+        return GetLinkIdAsync().Result;
+    }
 
-        if (linkId != default)
+    public async Task<Guid> GetLinkIdAsync()
+    {
+        if (_linkId != default)
         {
-            return true;
+            return _linkId;
         }
-
+        
         var key = GetKey();
-
+        
         if (string.IsNullOrEmpty(key))
         {
-            return false;
+            return default;
         }
-
-        var keyLinkId = ParseShareKey(key);
-
-        if (keyLinkId == default)
+        
+        var linkId = await ParseShareKeyAsync(key);
+        
+        if (linkId == default)
         {
-            return false;
+            return default;
         }
+        
+        _linkId = linkId;
 
-        linkId = _linkId = keyLinkId;
-
-        return true;
+        return linkId;
     }
 
-    public bool TryGetSessionId(out Guid sessionId)
+    public Guid GetSessionId()
     {
-        sessionId = _sessionId;
+        return GetSessionIdAsync().Result;
+    }
 
-        if (sessionId != default)
+    public async Task<Guid> GetSessionIdAsync()
+    {
+        if (_sessionId != default)
         {
-            return true;
+            return _sessionId;
         }
-
+        
         var sessionKey = _cookiesManager.GetCookies(CookiesType.AnonymousSessionKey);
-
+        
         if (string.IsNullOrEmpty(sessionKey))
         {
-            return false;
+            return default;
         }
-
-        var id = Signature.Read<Guid>(sessionKey, _global.GetDocDbKey());
-
+        
+        var id = Signature.Read<Guid>(sessionKey, await GetDbKeyAsync());
+        
         if (id == default)
         {
-            return false;
+            return default;
         }
 
-        sessionId = _sessionId = id;
+        _sessionId = id;
 
-        return true;
+        return id;
     }
-
-    public ExternalShareData GetCurrentShareData()
+    
+    public async Task<ExternalShareData> GetCurrentShareDataAsync()
     {
-        _ = TryGetLinkId(out var linkId);
-        _ = TryGetSessionId(out var sessionId);
+        var linkId = await GetLinkIdAsync();
+        var sessionId = await GetSessionIdAsync();
         var password = string.IsNullOrEmpty(_passwordKey) ? _cookiesManager.GetCookies(CookiesType.ShareLink, _linkId.ToString(), true) : _passwordKey;
 
         return new ExternalShareData(linkId, sessionId, password);
@@ -232,10 +239,10 @@ public class ExternalShare
         }
     }
 
-    public string CreateDownloadSessionKey()
+    public async Task<string> CreateDownloadSessionKeyAsync()
     {
-        _ = TryGetLinkId(out var linkId);
-        _ = TryGetSessionId(out var sessionId);
+        var linkId = await GetLinkIdAsync();
+        var sessionId = await GetSessionIdAsync();
         
         var session = new DownloadSession
         {
@@ -243,12 +250,12 @@ public class ExternalShare
             LinkId = linkId
         };
 
-        return Signature.Create(session, _global.GetDocDbKey());
+        return Signature.Create(session, await GetDbKeyAsync());
     }
 
-    public DownloadSession ParseDownloadSessionKey(string sessionKey)
+    public async Task<DownloadSession> ParseDownloadSessionKeyAsync(string sessionKey)
     {
-        return Signature.Read<DownloadSession>(sessionKey, _global.GetDocDbKey());
+        return Signature.Read<DownloadSession>(sessionKey, await GetDbKeyAsync());
     }
     
     public string GetAnonymousSessionKey()
@@ -256,14 +263,19 @@ public class ExternalShare
         return _cookiesManager.GetCookies(CookiesType.AnonymousSessionKey);
     }
 
-    public void SetAnonymousSessionKey()
+    public async Task SetAnonymousSessionKeyAsync()
     {
-        _cookiesManager.SetCookies(CookiesType.AnonymousSessionKey, Signature.Create(Guid.NewGuid(), _global.GetDocDbKey()), true);
+        await _cookiesManager.SetCookiesAsync(CookiesType.AnonymousSessionKey, Signature.Create(Guid.NewGuid(), await GetDbKeyAsync()), true);
     }
     
-    private string CreateShareKey(Guid linkId)
+    private async Task<string> CreateShareKeyAsync(Guid linkId)
     {
-        return Signature.Create(linkId, _global.GetDocDbKey());
+        return Signature.Create(linkId, await GetDbKeyAsync());
+    }
+
+    private async Task<string> GetDbKeyAsync()
+    {
+        return _dbKey ??= await _global.GetDocDbKeyAsync();
     }
 }
 

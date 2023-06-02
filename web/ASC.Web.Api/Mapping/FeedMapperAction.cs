@@ -54,7 +54,7 @@ public class FeedDtoMappingAction : IMappingAction<FeedResultItem, FeedDto>
 
     public void Process(FeedResultItem source, FeedDto destination, ResolutionContext context)
     {
-        destination.Initiator = _employeeDtoHelper.Get(source.ModifiedBy).Result;
-        destination.Target = source.TargetId is JsonElement doc && doc.TryGetGuid(out var id) ? _employeeDtoHelper.Get(id).Result : null;
+        destination.Initiator = _employeeDtoHelper.GetAsync(source.ModifiedBy).Result;
+        destination.Target = source.TargetId is JsonElement doc && doc.TryGetGuid(out var id) ? _employeeDtoHelper.GetAsync(id).Result : null;
     }
 }

@@ -118,9 +118,9 @@ public abstract class SecurityController<T> : ApiControllerBase
     }
 
     [HttpPut("{fileId}/setacelink")]
-    public Task<bool> SetAceLinkAsync(T fileId, [FromBody] GenerateSharedLinkRequestDto inDto)
+    public async Task<bool> SetAceLinkAsync(T fileId, [FromBody] GenerateSharedLinkRequestDto inDto)
     {
-        return _fileStorageService.SetAceLinkAsync(fileId, inDto.Share);
+        return await _fileStorageService.SetAceLinkAsync(fileId, inDto.Share);
     }
 
     /// <summary>
@@ -168,15 +168,15 @@ public abstract class SecurityController<T> : ApiControllerBase
     }
 
     [HttpGet("file/{fileId}/publickeys")]
-    public Task<List<EncryptionKeyPairDto>> GetEncryptionAccess(T fileId)
+    public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccess(T fileId)
     {
-        return _fileStorageService.GetEncryptionAccessAsync(fileId);
+        return await _fileStorageService.GetEncryptionAccessAsync(fileId);
     }
 
     [HttpPost("file/{fileId}/sendeditornotify")]
-    public Task<List<AceShortWrapper>> SendEditorNotify(T fileId, MentionMessageWrapper mentionMessage)
+    public async Task<List<AceShortWrapper>> SendEditorNotify(T fileId, MentionMessageWrapper mentionMessage)
     {
-        return _fileStorageService.SendEditorNotifyAsync(fileId, mentionMessage);
+        return await _fileStorageService.SendEditorNotifyAsync(fileId, mentionMessage);
     }
 }
 
@@ -289,13 +289,13 @@ public class SecurityControllerCommon : ApiControllerBase
     {
         var ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext?.Request);
         
-        _ = _bruteForceLoginManager.Increment(key, ip, true, out _, FilesCommonResource.ErrorMessage_SharePasswordManyAttempts);
+        await _bruteForceLoginManager.IncrementAsync(key, ip, true, FilesCommonResource.ErrorMessage_SharePasswordManyAttempts);
         
         var validationInfo =  await _externalLinkHelper.ValidateAsync(key, inDto.Password);
 
         if (validationInfo.Status != Status.InvalidPassword)
         {
-            _bruteForceLoginManager.Decrement(key, ip);
+            await _bruteForceLoginManager.DecrementAsync(key, ip);
         }
 
         return _mapper.Map<ValidationInfo, ExternalShareDto>(validationInfo);

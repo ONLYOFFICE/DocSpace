@@ -151,7 +151,7 @@ internal class ProviderAccountDao : IProviderDao
         }
     }
 
-    public virtual Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
+    public virtual async Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
     {
         ProviderTypes prKey;
         try
@@ -163,11 +163,6 @@ internal class ProviderAccountDao : IProviderDao
             throw new ArgumentException("Unrecognize ProviderType");
         }
 
-        return InternalSaveProviderInfoAsync(providerKey, customerTitle, authData, folderType, prKey);
-    }
-
-    private async Task<int> InternalSaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType, ProviderTypes prKey)
-    {
         authData = GetEncodedAccesToken(authData, prKey);
 
         if (!await CheckProviderInfoAsync(ToProviderInfo(0, prKey, customerTitle, authData, _securityContext.CurrentAccount.ID, folderType, _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))))
@@ -429,46 +424,36 @@ internal class ProviderAccountDao : IProviderDao
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
-        {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
-            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
+        var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
-            var entryIDs = await filesDbContext.ThirdpartyIdMapping
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => r.Id.StartsWith(folderId))
-            .Select(r => r.HashId)
-            .ToListAsync();
+        var entryIDs = await filesDbContext.ThirdpartyIdMapping
+        .Where(r => r.TenantId == TenantID)
+        .Where(r => r.Id.StartsWith(folderId))
+        .Select(r => r.HashId)
+        .ToListAsync();
 
-            var forDelete = await filesDbContext.Security
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(a => a == r.EntryId))
-            .ToListAsync();
+        var forDelete = await filesDbContext.Security
+        .Where(r => r.TenantId == TenantID)
+        .Where(r => entryIDs.Any(a => a == r.EntryId))
+        .ToListAsync();
 
-            filesDbContext.Security.RemoveRange(forDelete);
-            await filesDbContext.SaveChangesAsync();
+        filesDbContext.Security.RemoveRange(forDelete);
 
-            var linksForDelete = await filesDbContext.TagLink
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => entryIDs.Any(e => e == r.EntryId))
-            .ToListAsync();
+        var linksForDelete = await filesDbContext.TagLink
+        .Where(r => r.TenantId == TenantID)
+        .Where(r => entryIDs.Any(e => e == r.EntryId))
+        .ToListAsync();
 
-            filesDbContext.TagLink.RemoveRange(linksForDelete);
-            await filesDbContext.SaveChangesAsync();
+        filesDbContext.TagLink.RemoveRange(linksForDelete);
 
-            var accountsForDelete = await filesDbContext.ThirdpartyAccount
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == TenantID)
-            .ToListAsync();
+        var accountsForDelete = await filesDbContext.ThirdpartyAccount
+        .Where(r => r.Id == linkId)
+        .Where(r => r.TenantId == TenantID)
+        .ToListAsync();
 
-            filesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-            await filesDbContext.SaveChangesAsync();
-
-            await tx.CommitAsync();
-        });
+        filesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
+        await filesDbContext.SaveChangesAsync();
     }
 
     private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)

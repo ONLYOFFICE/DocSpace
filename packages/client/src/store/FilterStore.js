@@ -45,6 +45,16 @@ class FilterStore {
   get filterTotal() {
     return this.filter.total;
   }
+
+  get isFiltered() {
+    return (
+      this.filter.activationStatus ||
+      this.filter.employeeStatus ||
+      this.filter.payments ||
+      this.filter.search ||
+      this.filter.role
+    );
+  }
 }
 
 export default FilterStore;

@@ -40,23 +40,23 @@ module.exports = (socket, next) => {
 
     logger.info(`API basePath='${basePath}' Authorization='${cookie}'`);
 
-    const getUser = () => {
-      return request({
-        method: "get",
-        url: "/people/@self.json?fields=id,userName,displayName",
-        headers,
-        basePath,
-      });
-    };
+  const getUser = () => {
+    return request({
+      method: "get",
+      url: "/people/@self?fields=id,userName,displayName",
+      headers,
+      basePath,
+    });
+  };
 
-    const getPortal = () => {
-      return request({
-        method: "get",
-        url: "/portal.json?fields=tenantId,tenantDomain",
-        headers,
-        basePath,
-      });
-    };
+  const getPortal = () => {
+    return request({
+      method: "get",
+      url: "/portal?fields=tenantId,tenantDomain",
+      headers,
+      basePath,
+    });
+  };
 
     return Promise.all([getUser(), getPortal()])
       .then(([user, portal]) => {

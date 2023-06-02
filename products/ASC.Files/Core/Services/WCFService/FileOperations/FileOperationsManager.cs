@@ -259,9 +259,8 @@ public class FileOperationsManager
         }
 
         var externalShare = _serviceProvider.GetRequiredService<ExternalShare>();
-        externalShare.TryGetSessionId(out var sessionId);
 
-        return sessionId;
+        return externalShare.GetSessionId();
     }
 }
 

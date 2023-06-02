@@ -8,6 +8,7 @@ import {
 export const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
+  pdf: 3,
 });
 
 export enum KeyboardEventKeys {
@@ -24,6 +25,7 @@ export enum KeyboardEventKeys {
 }
 
 export enum ToolbarActionType {
+  Panel = 0,
   ZoomIn = 1,
   ZoomOut = 2,
   Prev = 3,
@@ -56,7 +58,12 @@ export const mapSupplied = {
   ".avi": { supply: "m4v", type: mediaTypes.video, convertable: true },
   ".mpeg": { supply: "m4v", type: mediaTypes.video, convertable: true },
   ".mpg": { supply: "m4v", type: mediaTypes.video, convertable: true },
+  ".pdf": { supply: "pdf", type: mediaTypes.pdf },
 } as Record<string, { supply: string; type: number } | undefined>;
+
+export function isVideo(fileExst: string): boolean {
+  return mapSupplied[fileExst]?.type === mediaTypes.video;
+}
 
 export const isNullOrUndefined = (arg: unknown): arg is NullOrUndefined => {
   return arg === undefined || arg === null;

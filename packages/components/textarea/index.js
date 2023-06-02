@@ -7,7 +7,7 @@ import {
   Wrapper,
   Numeration,
 } from "./styled-textarea";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { isJSON, beautifyJSON } from "./utils";

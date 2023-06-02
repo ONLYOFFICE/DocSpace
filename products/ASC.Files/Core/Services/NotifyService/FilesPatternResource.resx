@@ -71,7 +71,7 @@ Sign in to your DocuSign account for more information.</value>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. $__AuthorName mentioned you in the document comment
 
-$__AuthorName mentioned you in the comment to the "$DocumentTitle":"$DocumentURL" documen in the room "$RoomTitle":"$RoomURL":
+$__AuthorName mentioned you in the comment to the "$DocumentTitle":"$DocumentURL" document in the room "$RoomTitle":"$RoomURL":
 
 $Message</value>
   </data>

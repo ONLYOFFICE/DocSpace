@@ -95,14 +95,14 @@ public class ThirdpartyController : ApiControllerBase
 
     [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
-    public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+    public async Task<ICollection<AccountInfoDto>> GetAuthProvidersAsync(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
     {
         ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
         IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
 
         if (_authContext.IsAuthenticated)
         {
-            linkedAccounts = _accountLinker.GetLinkedProfiles(_authContext.CurrentAccount.ID.ToString());
+            linkedAccounts = await _accountLinker.GetLinkedProfilesAsync(_authContext.CurrentAccount.ID.ToString());
         }
 
         fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
@@ -135,19 +135,19 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [HttpPut("thirdparty/linkaccount")]
-    public void LinkAccount(LinkAccountRequestDto inDto)
+    public async Task LinkAccountAsync(LinkAccountRequestDto inDto)
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
-        if (!(_coreBaseSettings.Standalone || _tenantManager.GetCurrentTenantQuota().Oauth))
+        if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetCurrentTenantQuotaAsync()).Oauth))
         {
             throw new Exception("ErrorNotAllowedOption");
         }
 
         if (string.IsNullOrEmpty(profile.AuthorizationError))
         {
-            _accountLinker.AddLink(_securityContext.CurrentAccount.ID.ToString(), profile);
-            _messageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
+            await _accountLinker.AddLinkAsync(_securityContext.CurrentAccount.ID.ToString(), profile);
+            await _messageService.SendAsync(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
         }
         else
         {
@@ -161,7 +161,7 @@ public class ThirdpartyController : ApiControllerBase
 
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]
-    public async Task SignupAccount(SignupAccountRequestDto inDto)
+    public async Task SignupAccountAsync(SignupAccountRequestDto inDto)
     {
         var employeeType = inDto.EmployeeType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
@@ -192,32 +192,32 @@ public class ThirdpartyController : ApiControllerBase
         var userID = Guid.Empty;
         try
         {
-            _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
             var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
             var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
-            _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
             if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
             {
                 await SaveContactImage(userID, thirdPartyProfile.Avatar);
             }
 
-            _accountLinker.AddLink(userID.ToString(), thirdPartyProfile);
+            await _accountLinker.AddLinkAsync(userID.ToString(), thirdPartyProfile);
         }
         finally
         {
             _securityContext.Logout();
         }
 
-        var user = _userManager.GetUsers(userID);
+        var user = await _userManager.GetUsersAsync(userID);
 
-        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
 
-        _studioNotifyService.UserHasJoin();
+        await _studioNotifyService.UserHasJoinAsync();
 
         if (mustChangePassword)
         {
-            _studioNotifyService.UserPasswordChange(user);
+            await _studioNotifyService.UserPasswordChangeAsync(user);
         }
 
         _userHelpTourHelper.IsNewUser = true;
@@ -228,11 +228,11 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [HttpDelete("thirdparty/unlinkaccount")]
-    public void UnlinkAccount(string provider)
+    public async Task UnlinkAccountAsync(string provider)
     {
-        _accountLinker.RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
+        await _accountLinker.RemoveProviderAsync(_securityContext.CurrentAccount.ID.ToString(), provider);
 
-        _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
+        await _messageService.SendAsync(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
     private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
@@ -252,10 +252,10 @@ public class ThirdpartyController : ApiControllerBase
         if (_coreBaseSettings.Personal)
         {
             userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
-            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
+            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : CultureInfo.CurrentUICulture.Name;
         }
 
-        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
+        return await _userManagerWrapper.AddUserAsync(userInfo, passwordHash, true, true, employeeType, fromInviteLink);
     }
 
     private async Task SaveContactImage(Guid userID, string url)

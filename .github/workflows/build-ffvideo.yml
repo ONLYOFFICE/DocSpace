@@ -3,7 +3,8 @@ name: ffvideo build
 on:
   push:
     branches: 
-     - release/v1.0.0
+     - 'hotfix/v**'
+     - 'release/v**'
     paths:
       - 'build/install/docker/**.ffvideo'
 

@@ -32,7 +32,7 @@ public static class SecureHelper
     {
         try
         {
-            return httpContext != null && Uri.UriSchemeHttps.Equals(httpContext.Request.GetUrlRewriter().Scheme, StringComparison.OrdinalIgnoreCase);
+            return httpContext != null && Uri.UriSchemeHttps.Equals(httpContext.Request.Url().Scheme, StringComparison.OrdinalIgnoreCase);
         }
         catch (Exception err)
         {
@@ -51,7 +51,7 @@ public static class SecureHelper
         return Constants.SecureKeyHeader + ':' + ticks + '-' + key;
     }
 
-    public static bool CheckSecureKeyHeader(string queryHeaders, string path, EmailValidationKeyProvider keyProvider)
+    public static async Task<bool> CheckSecureKeyHeader(string queryHeaders, string path, EmailValidationKeyProvider keyProvider)
     {
         if (string.IsNullOrEmpty(queryHeaders))
         {
@@ -72,7 +72,7 @@ public static class SecureHelper
         var ticks = headerKey[..separatorPosition];
         var key = headerKey[(separatorPosition + 1)..];
 
-        var result = keyProvider.ValidateEmailKey(path + '.' + ticks, key);
+        var result = await keyProvider.ValidateEmailKeyAsync(path + '.' + ticks, key);
 
         return result == EmailValidationKeyProvider.ValidationResult.Ok;
     }

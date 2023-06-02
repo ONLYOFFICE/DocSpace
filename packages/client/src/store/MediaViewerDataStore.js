@@ -2,7 +2,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   isNullOrUndefined,
   findNearestIndex,
+  isVideo,
 } from "@docspace/common/components/MediaViewer/helpers";
+import { thumbnailStatuses } from "SRC_DIR/helpers/filesConstants";
+
+const FirstUrlKey = "isFirstUrl";
 
 class MediaViewerDataStore {
   filesStore;
@@ -35,7 +39,12 @@ class MediaViewerDataStore {
       return;
     }
 
-    if (!file.canOpenPlayer) return;
+    if (
+      !file.canOpenPlayer &&
+      !file.fileExst === ".pdf" &&
+      window.DocSpaceConfig.pdfViewer
+    )
+      return;
 
     this.previewFile = file;
     this.id = file.id;
@@ -48,6 +57,18 @@ class MediaViewerDataStore {
 
   setCurrentId = (id) => {
     this.id = id;
+  };
+
+  saveFirstUrl = (url) => {
+    localStorage.setItem(FirstUrlKey, url);
+  };
+
+  getFirstUrl = () => {
+    return localStorage.getItem(FirstUrlKey);
+  };
+
+  removeFirstUrl = () => {
+    localStorage.removeItem(FirstUrlKey);
   };
 
   changeUrl = (id) => {
@@ -118,6 +139,7 @@ class MediaViewerDataStore {
 
     const filesList = [...files];
     const playlist = [];
+    const itemsWithoutThumb = [];
     let id = 0;
 
     if (this.currentItem) {
@@ -137,7 +159,10 @@ class MediaViewerDataStore {
     if (filesList.length > 0) {
       filesList.forEach((file) => {
         const canOpenPlayer =
-          file.viewAccessability.ImageView || file.viewAccessability.MediaView;
+          file.viewAccessability.ImageView ||
+          file.viewAccessability.MediaView ||
+          (file.fileExst === ".pdf" && window.DocSpaceConfig.pdfViewer);
+
         if (canOpenPlayer) {
           playlist.push({
             id: id,
@@ -147,7 +172,19 @@ class MediaViewerDataStore {
             fileExst: file.fileExst,
             fileStatus: file.fileStatus,
             canShare: file.canShare,
+            version: file.version,
+            thumbnailUrl: file.thumbnailUrl,
           });
+
+          const thumbnailIsNotCreated =
+            file.thumbnailStatus === thumbnailStatuses.WAITING;
+
+          const isVideoOrImage =
+            file.viewAccessability.ImageView || isVideo(file.fileExst);
+
+          if (thumbnailIsNotCreated && isVideoOrImage)
+            itemsWithoutThumb.push(file);
+
           id++;
         }
       });
@@ -162,7 +199,17 @@ class MediaViewerDataStore {
         id: id,
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
+        version: this.previewFile.version,
+        thumbnailUrl: this.previewFile.thumbnailUrl,
       });
+
+      if (this.previewFile.viewAccessability.ImageView) {
+        itemsWithoutThumb.push(this.previewFile);
+      }
+    }
+
+    if (itemsWithoutThumb.length > 0) {
+      this.filesStore.createThumbnails(itemsWithoutThumb);
     }
 
     return playlist;

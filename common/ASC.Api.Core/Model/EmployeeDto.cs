@@ -75,31 +75,31 @@ public class EmployeeDtoHelper
         _dictionary = new Dictionary<Guid, EmployeeDto>();
     }
 
-    public async Task<EmployeeDto> Get(UserInfo userInfo)
+    public async Task<EmployeeDto> GetAsync(UserInfo userInfo)
     {
         if (_dictionary.ContainsKey(userInfo.Id))
         {
             return _dictionary[userInfo.Id];
         }
-        var employee = await Init(new EmployeeDto(), userInfo);
+        var employee = await InitAsync(new EmployeeDto(), userInfo);
         _dictionary.Add(userInfo.Id, employee);
 
         return employee;
     }
 
-    public async Task<EmployeeDto> Get(Guid userId)
+    public async Task<EmployeeDto> GetAsync(Guid userId)
     {
         try
         {
-            return await Get(_userManager.GetUsers(userId));
+            return await GetAsync(await _userManager.GetUsersAsync(userId));
         }
         catch (Exception)
         {
-            return await Get(ASC.Core.Users.Constants.LostUser);
+            return await GetAsync(ASC.Core.Users.Constants.LostUser);
         }
     }
 
-    protected async Task<EmployeeDto> Init(EmployeeDto result, UserInfo userInfo)
+    protected async Task<EmployeeDto> InitAsync(EmployeeDto result, UserInfo userInfo)
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);

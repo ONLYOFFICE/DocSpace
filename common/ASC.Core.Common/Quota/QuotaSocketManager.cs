@@ -41,7 +41,7 @@ public class QuotaSocketManager : SocketServiceClient
         _tenantManager = tenantManager;
     }
 
-    public async Task ChangeQuotaUsedValue(string featureId, object value)
+    public async Task ChangeQuotaUsedValueAsync(string featureId, object value)
     {
         var room = GetQuotaRoom();
 

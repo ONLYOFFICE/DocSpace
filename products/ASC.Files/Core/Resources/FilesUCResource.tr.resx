@@ -94,4 +94,7 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>Odalar</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Kişisel</value>
+  </data>
 </root>

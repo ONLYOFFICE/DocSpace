@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Amqp;
-
-using ICSharpCode.SharpZipLib.Core;
-
 namespace ASC.Files.Helpers;
 
 public class UploadControllerHelper : FilesHelperBase
@@ -71,7 +67,7 @@ public class UploadControllerHelper : FilesHelperBase
         _securityContext = securityContext;
     }
 
-    public async Task<object> CreateEditSession<T>(T fileId, long fileSize)
+    public async Task<object> CreateEditSessionAsync<T>(T fileId, long fileSize)
     {
         var file = await _fileUploader.VerifyChunkedUploadForEditing(fileId, fileSize);
 
@@ -99,7 +95,7 @@ public class UploadControllerHelper : FilesHelperBase
             };
         }
 
-        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl(_tenantManager.GetCurrentTenant().Id, file.ParentId, file.Id, file.Title, file.ContentLength, encrypted, _securityContext);
+        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl(await _tenantManager.GetCurrentTenantIdAsync(), file.ParentId, file.Id, file.Title, file.ContentLength, encrypted, _securityContext);
 
         var httpClient = _httpClientFactory.CreateClient();
 
@@ -110,11 +106,11 @@ public class UploadControllerHelper : FilesHelperBase
         };
 
         // hack for uploader.onlyoffice.com in api requests
-        var rewriterHeader = _httpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
-        if (!string.IsNullOrEmpty(rewriterHeader))
-        {
-            request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
-        }
+        //var rewriterHeader = _httpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+        //if (!string.IsNullOrEmpty(rewriterHeader))
+        //{
+        //    request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
+        //}
 
         using var response = await httpClient.SendAsync(request);
         using var responseStream = await response.Content.ReadAsStreamAsync();

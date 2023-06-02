@@ -52,11 +52,11 @@ public class BackupStorageFactory
         _tenantManager = tenantManager;
     }
 
-    public IBackupStorage GetBackupStorage(BackupRecord record)
+    public async Task<IBackupStorage> GetBackupStorageAsync(BackupRecord record)
     {
         try
         {
-            return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+            return await GetBackupStorageAsync(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
         }
         catch (Exception error)
         {
@@ -66,7 +66,7 @@ public class BackupStorageFactory
         }
     }
 
-    public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
+    public async Task<IBackupStorage> GetBackupStorageAsync(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
     {
         var settings = _configuration.GetSetting<BackupSettings>("backup");
 
@@ -75,13 +75,13 @@ public class BackupStorageFactory
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
                 {
-                    _documentsBackupStorage.Init(tenantId);
+                    await _documentsBackupStorage.InitAsync(tenantId);
 
                     return _documentsBackupStorage;
                 }
             case BackupStorageType.DataStore:
                 {
-                    _consumerBackupStorage.Init(tenantId);
+                    await _consumerBackupStorage.InitAsync(tenantId);
 
                     return _consumerBackupStorage;
                 }
@@ -94,8 +94,8 @@ public class BackupStorageFactory
                         return null;
                     }
 
-                    _tenantManager.SetCurrentTenant(tenantId);
-                    _consumerBackupStorage.Init(storageParams);
+                    await _tenantManager.SetCurrentTenantAsync(tenantId);
+                    await _consumerBackupStorage.InitAsync(storageParams);
 
                     return _consumerBackupStorage;
                 }

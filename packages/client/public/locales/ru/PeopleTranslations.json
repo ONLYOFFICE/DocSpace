@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Тип входа в аккаунт",
   "DeleteSelfProfile": "Удалить профиль",
-  "DisableUserButton": "Заблокировать",
   "DisabledEmployeeStatus": "Заблокирован",
+  "DisableUserButton": "Заблокировать",
   "EmailChangeButton": "Изменить email",
   "EnableUserButton": "Разблокировать",
   "InviteLinkTitle": "Пригласительная ссылка",
@@ -12,6 +13,7 @@
   "RemoveData": "Удалить личные данные",
   "ResetAuth": "Сбросить аутентификацию",
   "SendInviteAgain": "Отправить приглашение ещё раз",
+  "StandardLogin": "Стандартный вход",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
   "SuccessSentInvitation": "Приглашение было успешно отправлено",

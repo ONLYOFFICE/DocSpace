@@ -145,9 +145,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpPost("active")]
-    public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
+    public async Task<EmployeeFullDto> AddMemberAsActivatedAsync(MemberRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(inDto.Type), Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
@@ -162,7 +162,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
+                await _userManagerWrapper.CheckPasswordPolicyAsync(inDto.Password);
             }
 
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
@@ -184,29 +184,29 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
+        _cache.Insert("REWRITE_URL" + await _tenantManager.GetCurrentTenantIdAsync(), HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
+        user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     public async Task<EmployeeFullDto> AddMember(MemberRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         var linkData = inDto.FromInviteLink ? await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.Type) : null;
         if (linkData is { IsCorrect: false })
@@ -216,11 +216,11 @@ public class UserController : PeopleControllerBase
 
         if (linkData != null)
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType), Constants.Action_AddRemoveUser);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType), Constants.Action_AddRemoveUser);
         }
         else
         {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
         }
 
         inDto.Type = linkData?.EmployeeType ?? inDto.Type;
@@ -231,7 +231,7 @@ public class UserController : PeopleControllerBase
 
         if (byEmail)
         {
-            user = _userManager.GetUserByEmail(inDto.Email);
+            user = await _userManager.GetUserByEmailAsync(inDto.Email);
 
             if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
@@ -250,7 +250,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
+                await _userManagerWrapper.CheckPasswordPolicyAsync(inDto.Password);
             }
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
@@ -272,18 +272,18 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
+        await UpdateContactsAsync(inDto.Contacts, user, !inDto.FromInviteLink);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + await _tenantManager.GetCurrentTenantIdAsync(), HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
 
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
+        user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && linkData is { IsCorrect: true }, true, true, byEmail);
 
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
 
         if (linkData is { LinkType: InvitationLinkType.CommonWithRoom })
@@ -304,14 +304,14 @@ public class UserController : PeopleControllerBase
 
         if (inDto.IsUser)
         {
-            _messageService.Send(MessageAction.GuestCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+            await _messageService.SendAsync(MessageAction.GuestCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         }
         else
         {
-            _messageService.Send(MessageAction.UserCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
+            await _messageService.SendAsync(MessageAction.UserCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPost("invite")]
@@ -319,25 +319,25 @@ public class UserController : PeopleControllerBase
     {
         foreach (var invite in inDto.Invitations)
         {
-            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
             {
                 continue;
             }
 
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
-            var link = _invitationLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
-            _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+            await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             _logger.Debug(link);
         }
 
         var result = new List<EmployeeDto>();
 
-        var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        var users = (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
 
         foreach (var user in users)
         {
-            result.Add(await _employeeDtoHelper.Get(user));
+            result.Add(await _employeeDtoHelper.GetAsync(user));
         }
 
         return result;
@@ -347,10 +347,10 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
-        _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
+        await _apiContext.AuthByClaimAsync();
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(userid), Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(userid);
+        var user = await _userManager.GetUsersAsync(userid);
 
         if (!_userManager.UserExists(user))
         {
@@ -387,22 +387,22 @@ public class UserController : PeopleControllerBase
 
         if (!string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
-            _messageService.Send(MessageAction.UserUpdatedPassword);
+            await _securityContext.SetUserPasswordHashAsync(userid, inDto.PasswordHash);
+            await _messageService.SendAsync(MessageAction.UserUpdatedPassword);
 
-            await _cookiesManager.ResetUserCookie(userid);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
+            await _cookiesManager.ResetUserCookieAsync(userid);
+            await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
-        return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
+        return await _employeeFullDtoHelper.GetFullAsync(await GetUserInfoAsync(userid.ToString()));
     }
 
     [HttpDelete("{userid}")]
-    public async Task<EmployeeFullDto> DeleteMember(string userid)
+    public async Task<EmployeeFullDto> DeleteMemberAsync(string userid)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
 
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id) || user.IsLDAP())
         {
@@ -414,30 +414,30 @@ public class UserController : PeopleControllerBase
             throw new Exception("The user is not suspended");
         }
 
-        CheckReassignProccess(new[] { user.Id });
+        await CheckReassignProccessAsync(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        await _userPhotoManager.RemovePhoto(user.Id);
-        await _userManager.DeleteUser(user.Id);
+        await _userPhotoManager.RemovePhotoAsync(user.Id);
+        await _userManager.DeleteUserAsync(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
-        _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+        await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public async Task<EmployeeFullDto> DeleteProfile()
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         if (_userManager.IsSystemUser(_securityContext.CurrentAccount.ID))
         {
             throw new SecurityException();
         }
 
-        var user = GetUserInfo(_securityContext.CurrentAccount.ID.ToString());
+        var user = await GetUserInfoAsync(_securityContext.CurrentAccount.ID.ToString());
 
         if (!_userManager.UserExists(user))
         {
@@ -449,21 +449,21 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
+        await _securityContext.AuthenticateMeWithoutCookieAsync(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
-        await _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfoAsync(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
+        await _messageService.SendAsync(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
-        await _cookiesManager.ResetUserCookie(user.Id);
-        _messageService.Send(MessageAction.CookieSettingsUpdated);
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
+        await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
 
         if (_coreBaseSettings.Personal)
         {
-            await _userPhotoManager.RemovePhoto(user.Id);
-            await _userManager.DeleteUser(user.Id);
-            _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
+            await _userPhotoManager.RemovePhotoAsync(user.Id);
+            await _userManager.DeleteUserAsync(user.Id);
+            await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
         else
         {
@@ -471,7 +471,7 @@ public class UserController : PeopleControllerBase
             //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpGet("status/{status}/search")]
@@ -482,22 +482,22 @@ public class UserController : PeopleControllerBase
             throw new MethodAccessException("Method not available");
         }
 
-        var list = _userManager.GetUsers(status).AsEnumerable();
+        var list = (await _userManager.GetUsersAsync(status)).ToAsyncEnumerable();
 
         if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
         {
             var groupId = new Guid(_apiContext.FilterValue);
             //Filter by group
-            list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
+            list = list.WhereAwait(async x => await _userManager.IsUserInGroupAsync(x.Id, groupId));
             _apiContext.SetDataFiltered();
         }
 
         list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
                                 (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
-        foreach (var item in list)
+        await foreach (var item in list)
         {
-            yield return await _employeeFullDtoHelper.GetFull(item);
+            yield return await _employeeFullDtoHelper.GetFullAsync(item);
         }
     }
 
@@ -509,20 +509,20 @@ public class UserController : PeopleControllerBase
 
     [AllowNotPayment]
     [HttpGet("email")]
-    public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
+    public async Task<EmployeeFullDto> GetByEmailAsync([FromQuery] string email)
     {
-        if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
+        if (_coreBaseSettings.Personal && !(await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).IsOwner(Tenant))
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var user = _userManager.GetUserByEmail(email);
+        var user = await _userManager.GetUserByEmailAsync(email);
         if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [AllowNotPayment]
@@ -538,14 +538,14 @@ public class UserController : PeopleControllerBase
         var isInvite = _httpContextAccessor.HttpContext.User.Claims
                .Any(role => role.Type == ClaimTypes.Role && ConfirmTypeExtensions.TryParse(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
 
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
-        var user = _userManager.GetUserByUserName(username);
+        var user = await _userManager.GetUserByUserNameAsync(username);
         if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
             {
-                user = _userManager.GetUsers(userId);
+                user = await _userManager.GetUsersAsync(userId);
             }
             else
             {
@@ -563,7 +563,7 @@ public class UserController : PeopleControllerBase
             return await _employeeFullDtoHelper.GetSimple(user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpGet("status/{status}")]
@@ -581,17 +581,17 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null, null);
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -624,47 +624,127 @@ public class UserController : PeopleControllerBase
             groupId = new Guid(_apiContext.FilterValue);
         }
 
-        var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
+        var users = await _userManager.SearchAsync(query, EmployeeStatus.Active, groupId);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
-            yield return await _employeeDtoHelper.Get(user);
+            yield return await _employeeDtoHelper.GetAsync(user);
         }
     }
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
+    public async Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
     {
         if (!_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
         }
 
-        return InternalRegisterUserOnPersonalAsync(inDto);
+        try
+        {
+            if (_coreBaseSettings.CustomMode)
+            {
+                inDto.Lang = "ru-RU";
+            }
+
+            var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
+
+            if (cultureInfo != null)
+            {
+                CultureInfo.CurrentUICulture = cultureInfo;
+            }
+
+            inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
+
+            if (!inDto.Email.TestEmailRegex())
+            {
+                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            }
+
+            if (!SetupInfo.IsSecretEmail(inDto.Email)
+                && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
+            {
+                var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress.ToString();
+
+                if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
+                    || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
+                {
+                    throw new RecaptchaException(Resource.RecaptchaInvalid);
+                }
+            }
+
+            var newUserInfo = await _userManager.GetUserByEmailAsync(inDto.Email);
+
+            if (await _userManager.UserExistsAsync(newUserInfo.Id))
+            {
+                if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
+                {
+                    await _studioNotifyService.SendAlreadyExistAsync(inDto.Email);
+                    return string.Empty;
+                }
+
+                try
+                {
+                    await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
+                    await _userManager.DeleteUserAsync(newUserInfo.Id);
+                }
+                finally
+                {
+                    _securityContext.Logout();
+                }
+            }
+            if (!inDto.Spam)
+            {
+                try
+                {
+                    //TODO
+                    //const string _databaseID = "com";
+                    //using (var db = DbManager.FromHttpContext(_databaseID))
+                    //{
+                    //    db.ExecuteNonQuery(new SqlInsert("template_unsubscribe", false)
+                    //                           .InColumnValue("email", email.ToLowerInvariant())
+                    //                           .InColumnValue("reason", "personal")
+                    //        );
+                    //    Log.Debug(String.Format("Write to template_unsubscribe {0}", email.ToLowerInvariant()));
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
+                }
+            }
+
+            await _studioNotifyService.SendInvitePersonalAsync(inDto.Email);
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+
+        return string.Empty;
     }
 
     [HttpPut("delete", Order = -1)]
     public async IAsyncEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
 
-        CheckReassignProccess(inDto.UserIds);
+        await CheckReassignProccessAsync(inDto.UserIds);
 
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
+        var users = await inDto.UserIds.ToAsyncEnumerable().SelectAwait(async userId => await _userManager.GetUsersAsync(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP()).ToListAsync();
 
         var userNames = users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)).ToList();
 
@@ -675,35 +755,35 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            await _userPhotoManager.RemovePhoto(user.Id);
-            await _userManager.DeleteUser(user.Id);
+            await _userPhotoManager.RemovePhotoAsync(user.Id);
+            await _userManager.DeleteUserAsync(user.Id);
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
 
-        _messageService.Send(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
+        await _messageService.SendAsync(MessageAction.UsersDeleted, _messageTarget.Create(users.Select(x => x.Id)), userNames);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [AllowNotPayment]
     [HttpPut("invite")]
-    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvitesAsync(UpdateMembersRequestDto inDto)
     {
         IEnumerable<UserInfo> users = null;
 
         if (inDto.ResendAll)
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
-            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
+            users = (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
         }
         else
         {
-            users = inDto.UserIds
+            users = await inDto.UserIds.ToAsyncEnumerable()
                 .Where(userId => !_userManager.IsSystemUser(userId))
-                .Select(userId => _userManager.GetUsers(userId));
+                .SelectAwait(async userId => await _userManager.GetUsersAsync(userId)).ToListAsync();
         }
 
         foreach (var user in users)
@@ -713,14 +793,14 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
             if (viewer == null)
             {
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (_userManager.IsDocSpaceAdmin(viewer) || viewer.Id == user.Id)
+            if (await _userManager.IsDocSpaceAdminAsync(viewer) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -736,65 +816,65 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.GetUserType(user.Id);
+                var type = await _userManager.GetUserTypeAsync(user.Id);
 
-                if (!_permissionContext.CheckPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
+                if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
                 {
                     continue;
                 }
 
-                var link = _invitationLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
-                _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+                var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, type, _authContext.CurrentAccount.ID);
+                await _studioNotifyService.SendDocSpaceInviteAsync(user.Email, link);
             }
             else
             {
-                _studioNotifyService.SendEmailActivationInstructions(user, user.Email);
+                await _studioNotifyService.SendEmailActivationInstructionsAsync(user, user.Email);
             }
         }
 
-        _messageService.Send(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        await _messageService.SendAsync(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [HttpGet("theme")]
-    public DarkThemeSettings GetTheme()
+    public async Task<DarkThemeSettings> GetThemeAsync()
     {
-        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
+        return await _settingsManager.LoadForCurrentUserAsync<DarkThemeSettings>();
     }
 
     [HttpPut("theme")]
-    public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    public async Task<DarkThemeSettings> ChangeThemeAsync(DarkThemeSettingsRequestDto model)
     {
         var darkThemeSettings = new DarkThemeSettings
         {
             Theme = model.Theme
         };
 
-        _settingsManager.SaveForCurrentUser(darkThemeSettings);
+        await _settingsManager.SaveForCurrentUserAsync(darkThemeSettings);
 
         return darkThemeSettings;
     }
 
     [AllowNotPayment]
     [HttpGet("@self")]
-    public async Task<EmployeeFullDto> Self()
+    public async Task<EmployeeFullDto> SelfAsync()
     {
-        var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
+        var user = await _userManager.GetUserAsync(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
-        var result = await _employeeFullDtoHelper.GetFull(user);
+        var result = await _employeeFullDtoHelper.GetFullAsync(user);
 
-        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+        result.Theme = (await _settingsManager.LoadForCurrentUserAsync<DarkThemeSettings>()).Theme;
 
         return result;
     }
 
     [AllowNotPayment]
     [HttpPost("email")]
-    public async Task<object> SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
+    public async Task<object> SendEmailChangeInstructionsAsync(UpdateMemberRequestDto inDto)
     {
         Guid.TryParse(inDto.UserId, out var userid);
 
@@ -815,8 +895,8 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorNotCorrectEmail);
         }
 
-        var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var user = _userManager.GetUsers(userid);
+        var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(userid);
 
         if (user == null)
         {
@@ -828,16 +908,16 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        var existentUser = _userManager.GetUserByEmail(email);
+        var existentUser = await _userManager.GetUserByEmailAsync(email);
 
         if (existentUser.Id != Constants.LostUser.Id)
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!_userManager.IsDocSpaceAdmin(viewer))
+        if (!await _userManager.IsDocSpaceAdminAsync(viewer))
         {
-            _studioNotifyService.SendEmailChangeInstructions(user, email);
+            await _studioNotifyService.SendEmailChangeInstructionsAsync(user, email);
         }
         else
         {
@@ -849,10 +929,10 @@ public class UserController : PeopleControllerBase
             user.Email = email;
             user.ActivationStatus = EmployeeActivationStatus.NotActivated;
             await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-            _studioNotifyService.SendEmailActivationInstructions(user, email);
+            await _studioNotifyService.SendEmailActivationInstructionsAsync(user, email);
         }
 
-        _messageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
+        await _messageService.SendAsync(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
     }
@@ -860,9 +940,9 @@ public class UserController : PeopleControllerBase
     [AllowNotPayment]
     [AllowAnonymous]
     [HttpPost("password")]
-    public object SendUserPassword(MemberRequestDto inDto)
+    public async Task<object> SendUserPasswordAsync(MemberRequestDto inDto)
     {
-        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        var error = await _userManagerWrapper.SendUserPasswordAsync(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
             _logger.ErrorPasswordRecovery(inDto.Email, error);
@@ -876,34 +956,49 @@ public class UserController : PeopleControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
-        _apiContext.AuthByClaim();
+        await _apiContext.AuthByClaimAsync();
 
         foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
-            var u = _userManager.GetUsers(id);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(id), Constants.Action_EditUser);
+            var u = await _userManager.GetUsersAsync(id);
             if (u.Id == Constants.LostUser.Id || u.IsLDAP())
             {
                 continue;
             }
 
             u.ActivationStatus = activationstatus;
-            await _userManager.UpdateUserInfo(u);
-            yield return await _employeeFullDtoHelper.GetFull(u);
+            await _userManager.UpdateUserInfoAsync(u);
+
+            if (activationstatus == EmployeeActivationStatus.Activated
+                && u.IsOwner(_tenantManager.GetCurrentTenant()))
+            {
+                var settings = _settingsManager.Load<FirstEmailConfirmSettings>();
+
+                if (settings.IsFirst)
+                {
+                    await _studioNotifyService.SendAdminWelcomeAsync(u);
+
+                    settings.IsFirst = false;
+                    _settingsManager.Save(settings);
+                }
+            }
+
+            yield return await _employeeFullDtoHelper.GetFullAsync(u);
         }
     }
 
     [HttpPut("{userid}/culture")]
     public async Task<EmployeeFullDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         var curLng = user.CultureName;
 
@@ -915,7 +1010,7 @@ public class UserController : PeopleControllerBase
 
                 try
                 {
-                    await _userManager.UpdateUserInfo(user);
+                    await _userManager.UpdateUserInfoAsync(user);
                 }
                 catch
                 {
@@ -923,25 +1018,25 @@ public class UserController : PeopleControllerBase
                     throw;
                 }
 
-                _messageService.Send(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+                await _messageService.SendAsync(MessageAction.UserUpdatedLanguage, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
             }
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeFullDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
-        var user = GetUserInfo(userid);
+        var user = await GetUserInfoAsync(userid);
 
         if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
         var self = _securityContext.CurrentAccount.ID.Equals(user.Id);
         var resetDate = new DateTime(1900, 01, 01);
 
@@ -949,7 +1044,7 @@ public class UserController : PeopleControllerBase
 
         var isLdap = user.IsLDAP();
         var isSso = user.IsSSO();
-        var isDocSpaceAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         if (!isLdap && !isSso)
         {
@@ -990,61 +1085,56 @@ public class UserController : PeopleControllerBase
         }
 
         //Update contacts
-        UpdateContacts(inDto.Contacts, user);
-        await UpdateDepartments(inDto.Department, user);
+        await UpdateContactsAsync(inDto.Contacts, user);
+        await UpdateDepartmentsAsync(inDto.Department, user);
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            await UpdatePhotoUrl(inDto.Files, user);
+            await UpdatePhotoUrlAsync(inDto.Files, user);
         }
         if (inDto.Disable.HasValue)
         {
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
         }
-        if (self && !isDocSpaceAdmin)
-        {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
-        }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !await _userManager.IsDocSpaceAdminAsync(user) && (await user.GetListAdminModulesAsync(_webItemSecurity, _webItemManager)).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
+        if (inDto.IsUser && !await _userManager.IsUserAsync(user) && canBeGuestFlag)
         {
             await _countUserChecker.CheckAppend();
-            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !inDto.IsUser && _userManager.IsUser(user))
+        if (!self && !inDto.IsUser && await _userManager.IsUserAsync(user))
         {
             await _countPaidUserChecker.CheckAppend();
-            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
+        await _messageService.SendAsync(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
-            await _cookiesManager.ResetUserCookie(user.Id);
-            _messageService.Send(MessageAction.CookieSettingsUpdated);
+            await _cookiesManager.ResetUserCookieAsync(user.Id);
+            await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPut("status/{status}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
+        var users = await inDto.UserIds.ToAsyncEnumerable().SelectAwait(async userId => await _userManager.GetUsersAsync(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP()).ToListAsync();
 
         foreach (var user in users)
         {
@@ -1058,7 +1148,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (!_userManager.IsUser(user))
+                        if (!await _userManager.IsUserAsync(user))
                         {
                             await _countPaidUserChecker.CheckAppend();
                         }
@@ -1077,31 +1167,32 @@ public class UserController : PeopleControllerBase
 
                     await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-                    await _cookiesManager.ResetUserCookie(user.Id);
-                    _messageService.Send(MessageAction.CookieSettingsUpdated);
+                    await _cookiesManager.ResetUserCookieAsync(user.Id);
+                    await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
                     break;
             }
         }
 
-        _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+        await _messageService.SendAsync(MessageAction.UsersUpdatedStatus, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [HttpPut("type/{type}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserTypeAsync(EmployeeType type, UpdateMembersRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
 
-        var users = inDto.UserIds
+        var users = await inDto.UserIds
+            .ToAsyncEnumerable()
             .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
+            .SelectAwait(async userId => await _userManager.GetUsersAsync(userId))
+            .ToListAsync();
 
-        var updatedUsers = new List<UserInfo>(users.Count);
+        var updatedUsers = new List<UserInfo>(users.Count());
 
         foreach (var user in users)
         {
@@ -1111,49 +1202,48 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
+        await _messageService.SendAsync(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
         users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)), users.Select(x => x.Id).ToList(), type);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [HttpGet("recalculatequota")]
-    public void RecalculateQuota()
+    public async Task RecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        _usersQuotaSyncOperation.RecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpGet("checkrecalculatequota")]
-    public TaskProgressDto CheckRecalculateQuota()
+    public async Task<TaskProgressDto> CheckRecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _usersQuotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return _usersQuotaSyncOperation.CheckRecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
     [HttpPut("quota")]
-    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuotaAsync(UpdateMembersQuotaRequestDto inDto)
     {
-        var users = inDto.UserIds
+        var users = inDto.UserIds.ToAsyncEnumerable()
             .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
+            .SelectAwait(async userId => await _userManager.GetUsersAsync(userId));
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
             if (inDto.Quota != -1)
             {
                 var usedSpace = Math.Max(0,
-                    _quotaService.FindUserQuotaRows(
-                            _tenantManager.GetCurrentTenant().Id,
+                    (await _quotaService.FindUserQuotaRowsAsync(
+                            await _tenantManager.GetCurrentTenantIdAsync(),
                             user.Id
-                        )
+                        ))
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
-                var tenanSpaceQuota = _quotaService.GetTenantQuota(Tenant.Id).MaxTotalSize;
+                var tenanSpaceQuota = (await _quotaService.GetTenantQuotaAsync(Tenant.Id)).MaxTotalSize;
 
                 if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
                 {
@@ -1161,18 +1251,18 @@ public class UserController : PeopleControllerBase
                 }
             }
 
-            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+            var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
 
-            _settingsManager.Save(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+            await _settingsManager.SaveAsync(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
 
-    private async Task UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
+    private async Task UpdateDepartmentsAsync(IEnumerable<Guid> department, UserInfo user)
     {
-        if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))
+        if (!await _permissionContext.CheckPermissionsAsync(Constants.Action_EditGroups))
         {
             return;
         }
@@ -1182,33 +1272,33 @@ public class UserController : PeopleControllerBase
             return;
         }
 
-        var groups = _userManager.GetUserGroups(user.Id);
+        var groups = await _userManager.GetUserGroupsAsync(user.Id);
         var managerGroups = new List<Guid>();
         foreach (var groupInfo in groups)
         {
-            await _userManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
-            var managerId = _userManager.GetDepartmentManager(groupInfo.ID);
+            await _userManager.RemoveUserFromGroupAsync(user.Id, groupInfo.ID);
+            var managerId = await _userManager.GetDepartmentManagerAsync(groupInfo.ID);
             if (managerId == user.Id)
             {
                 managerGroups.Add(groupInfo.ID);
-                _userManager.SetDepartmentManager(groupInfo.ID, Guid.Empty);
+                await _userManager.SetDepartmentManagerAsync(groupInfo.ID, Guid.Empty);
             }
         }
         foreach (var guid in department)
         {
-            var userDepartment = _userManager.GetGroupInfo(guid);
+            var userDepartment = await _userManager.GetGroupInfoAsync(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
-                await _userManager.AddUserIntoGroup(user.Id, guid);
+                await _userManager.AddUserIntoGroupAsync(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
-                    _userManager.SetDepartmentManager(guid, user.Id);
+                    await _userManager.SetDepartmentManagerAsync(guid, user.Id);
                 }
             }
         }
     }
 
-    private void CheckReassignProccess(IEnumerable<Guid> userIds)
+    private async Task CheckReassignProccessAsync(IEnumerable<Guid> userIds)
     {
         foreach (var userId in userIds)
         {
@@ -1218,107 +1308,21 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            var userName = _userManager.GetUsers(userId).DisplayUserName(_displayUserSettingsHelper);
+            var userName = (await _userManager.GetUsersAsync(userId)).DisplayUserName(_displayUserSettingsHelper);
 
             throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
         }
     }
 
-    private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
-    {
-        try
-        {
-            if (_coreBaseSettings.CustomMode)
-            {
-                inDto.Lang = "ru-RU";
-            }
-
-            var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
-
-            if (cultureInfo != null)
-            {
-                Thread.CurrentThread.CurrentUICulture = cultureInfo;
-            }
-
-            inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
-
-            if (!inDto.Email.TestEmailRegex())
-            {
-                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
-            }
-
-            if (!SetupInfo.IsSecretEmail(inDto.Email)
-                && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
-            {
-                var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
-
-                if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
-                    || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
-                {
-                    throw new RecaptchaException(Resource.RecaptchaInvalid);
-                }
-            }
-
-            var newUserInfo = _userManager.GetUserByEmail(inDto.Email);
-
-            if (_userManager.UserExists(newUserInfo.Id))
-            {
-                if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
-                {
-                    _studioNotifyService.SendAlreadyExist(inDto.Email);
-                    return string.Empty;
-                }
-
-                try
-                {
-                    _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
-                    await _userManager.DeleteUser(newUserInfo.Id);
-                }
-                finally
-                {
-                    _securityContext.Logout();
-                }
-            }
-            if (!inDto.Spam)
-            {
-                try
-                {
-                    //TODO
-                    //const string _databaseID = "com";
-                    //using (var db = DbManager.FromHttpContext(_databaseID))
-                    //{
-                    //    db.ExecuteNonQuery(new SqlInsert("template_unsubscribe", false)
-                    //                           .InColumnValue("email", email.ToLowerInvariant())
-                    //                           .InColumnValue("reason", "personal")
-                    //        );
-                    //    Log.Debug(String.Format("Write to template_unsubscribe {0}", email.ToLowerInvariant()));
-                    //}
-                }
-                catch (Exception ex)
-                {
-                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
-                }
-            }
-
-            _studioNotifyService.SendInvitePersonal(inDto.Email);
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-
-        return string.Empty;
-    }
-
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
+    private async Task<IQueryable<UserInfo>> GetByFilterAsync(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var isDocSpaceAdmin = _userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID) ||
-                      _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = (await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID)) ||
+                      await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         var includeGroups = new List<List<Guid>>();
         if (groupId.HasValue)
@@ -1374,7 +1378,7 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 

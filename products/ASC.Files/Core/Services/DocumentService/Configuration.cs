@@ -658,7 +658,7 @@ public class CustomerConfig<T>
 
     public string Address => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Address;
 
-    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LoginPage, false).Result);
+    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum.LoginPage, false).Result);
 
     public string Mail => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Email;
 
@@ -776,7 +776,7 @@ public class CustomizationConfig<T>
             {
                 var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().ParentId).Result;
                 if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
-                    && !Equals(_configuration.Document.Info.GetFile().RootId, _globalFolderHelper.FolderMy)
+                    && !Equals(_configuration.Document.Info.GetFile().RootId, _globalFolderHelper.FolderMyAsync.Result)
                     && !_fileSecurity.CanReadAsync(parent).Result)
                 {
                     if (_fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)
@@ -1031,7 +1031,7 @@ public class PluginsConfig
         {
             var plugins = new List<string>();
 
-            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuota().Free)
+            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuotaAsync().Result.Free)
             {
                 var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
                 if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
@@ -1098,7 +1098,6 @@ public static class ConfigurationExtention
         services.TryAdd<EditorConfiguration<string>>();
         services.TryAdd<EditorConfiguration<int>>();
 
-        services.TryAdd<PluginsConfig>();
         services.TryAdd<EmbeddedConfig>();
 
         services.TryAdd<CustomizationConfig<string>>();

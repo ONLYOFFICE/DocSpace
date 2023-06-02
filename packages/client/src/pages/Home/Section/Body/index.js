@@ -40,7 +40,12 @@ const SectionBodyContent = (props) => {
     filesList,
     uploaded,
     onClickBack,
+    movingInProgress,
   } = props;
+
+  useEffect(() => {
+    return () => window?.getSelection()?.removeAllRanges();
+  }, []);
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
@@ -51,7 +56,6 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    window.addEventListener("popstate", onClickBack);
     window.addEventListener("beforeunload", onBeforeunload);
     window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
@@ -62,7 +66,6 @@ const SectionBodyContent = (props) => {
     document.addEventListener("drop", onDropEvent);
 
     return () => {
-      window.removeEventListener("popstate", onClickBack);
       window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -245,12 +248,12 @@ const SectionBodyContent = (props) => {
     }
   };
 
-  //console.log("Files Home SectionBodyContent render", props);
+  if (isEmptyFilesList && movingInProgress) return <></>;
 
   return (
     <Consumer>
       {(context) =>
-        isEmptyFilesList || null ? (
+        isEmptyFilesList ? (
           <>
             <EmptyContainer sectionWidth={context.sectionWidth} />
           </>
@@ -300,6 +303,7 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
+      movingInProgress,
     } = filesStore;
     return {
       dragging,
@@ -324,10 +328,11 @@ export default inject(
       filesList,
       uploaded: uploadDataStore.uploaded,
       onClickBack: filesActionsStore.onClickBack,
+      movingInProgress,
     };
   }
 )(
   withTranslation(["Files", "Common", "Translations"])(
-    withLoader(withHotkeys(observer(SectionBodyContent)))()
+    withHotkeys(observer(SectionBodyContent))
   )
 );

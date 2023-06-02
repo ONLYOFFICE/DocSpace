@@ -164,13 +164,13 @@
     <value>Priimek</value>
   </data>
   <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
-    <value>Ne morem ustvariti uporabnikov, prejeti podatki so morda nepravilni</value>
+    <value>Ne morem ustvariti uporabnikov, prejeti podatki so morda nepravilni.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
-    <value>Strežnik je neuspešno obnovil nastavitve</value>
+    <value>Strežnik je neuspešno obnovil nastavitve.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
-    <value>Strežnik je neuspešno shranil nastavitve</value>
+    <value>Strežnik je neuspešno shranil nastavitve.</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
     <value>Nepravilen vpis ali informacija gesla.</value>
@@ -179,13 +179,13 @@
     <value>Ni mogoče najti skupin.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Nepravilna vrednost filtra uporabnika</value>
+    <value>Nepravilna vrednost filtra uporabnika.</value>
   </data>
   <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
     <value>Neznana napaka.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Ni mogoče najti nobenega uporabnika</value>
+    <value>Ni mogoče najti nobenega uporabnika.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Nepravilna vrednost atributa skupine.</value>
@@ -197,7 +197,7 @@
     <value>Ne morem se povezati s strežnikom LDAP. Prosim preverite, če sta naslov strežnika in številka porta enaka.</value>
   </data>
   <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
-    <value>Nepravilna vrednost uporabnikovega atributa</value>
+    <value>Nepravilna vrednost uporabnikovega atributa.</value>
   </data>
   <data name="LdapSettingsInternalServerError" xml:space="preserve">
     <value>Notranja napaka strežnika.</value>
@@ -333,5 +333,32 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Število skrbnikov/naprednih uporabnikov:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Kľúč</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Pripojte službu Firebase Cloud Messaging ak chcete dostávať notifikácie o správach, ktoré Vám boli zaslané.</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Geslo</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
   </data>
 </root>

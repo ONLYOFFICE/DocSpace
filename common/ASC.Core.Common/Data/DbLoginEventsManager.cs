@@ -61,7 +61,7 @@ public class DbLoginEventsManager
         _mapper = mapper;
     }
 
-    public async Task<LoginEvent> GetById(int id)
+    public async Task<LoginEvent> GetByIdAsync(int id)
     {
         if (id < 0) return null;
 
@@ -70,7 +70,7 @@ public class DbLoginEventsManager
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
-    public async Task<List<BaseEvent>> GetLoginEvents(int tenantId, Guid userId)
+    public async Task<List<BaseEvent>> GetLoginEventsAsync(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
@@ -84,7 +84,7 @@ public class DbLoginEventsManager
         return _mapper.Map<List<LoginEvent>, List<BaseEvent>>(loginInfo);
     }
 
-    public async Task LogOutEvent(int loginEventId)
+    public async Task LogOutEventAsync(int loginEventId)
     {
         using var loginEventContext = _dbContextFactory.CreateDbContext();
 
@@ -92,10 +92,10 @@ public class DbLoginEventsManager
            .Where(r => r.Id == loginEventId)
            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
 
-        ResetCache();
+        await ResetCacheAsync();
     }
 
-    public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsAsync(int tenantId, Guid userId)
     {
         using var loginEventContext = _dbContextFactory.CreateDbContext();
 
@@ -106,7 +106,7 @@ public class DbLoginEventsManager
         ResetCache(tenantId, userId);
     }
 
-    public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
+    public async Task LogOutAllActiveConnectionsForTenantAsync(int tenantId)
     {
         using var loginEventContext = _dbContextFactory.CreateDbContext();
 
@@ -115,7 +115,7 @@ public class DbLoginEventsManager
             .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
     }
 
-    public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsExceptThisAsync(int loginEventId, int tenantId, Guid userId)
     {
         using var loginEventContext = _dbContextFactory.CreateDbContext();
 
@@ -126,9 +126,9 @@ public class DbLoginEventsManager
         ResetCache(tenantId, userId);
     }
 
-    public void ResetCache()
+    public async Task ResetCacheAsync()
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var userId = _authContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }

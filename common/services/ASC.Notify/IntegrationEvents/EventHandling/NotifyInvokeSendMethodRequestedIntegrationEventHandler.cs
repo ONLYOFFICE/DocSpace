@@ -40,7 +40,7 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    private void InvokeSendMethod(NotifyInvoke notifyInvoke)
+    private async Task InvokeSendMethodAsync(NotifyInvoke notifyInvoke)
     {
         var service = notifyInvoke.Service;
         var method = notifyInvoke.Method;
@@ -67,19 +67,20 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
         var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
         var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
 
-        tenantManager.SetCurrentTenant(tenant);
-        tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
+        await tenantManager.SetCurrentTenantAsync(tenant);
+        await tenantWhiteLabelSettingsHelper.ApplyAsync(await settingsManager.LoadAsync<TenantWhiteLabelSettings>(), tenant);
         methodInfo.Invoke(instance, parameters.ToArray());
     }
 
 
     public async Task Handle(NotifyInvokeSendMethodRequestedIntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            InvokeSendMethod(@event.NotifyInvoke);
+            await InvokeSendMethodAsync(@event.NotifyInvoke);
 
             await Task.CompletedTask;
         }

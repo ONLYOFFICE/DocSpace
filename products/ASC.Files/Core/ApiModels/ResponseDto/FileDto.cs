@@ -151,7 +151,7 @@ public class FileDtoHelper : FileEntryDtoHelper
     private async Task<FileDto<T>> GetFileWrapperAsync<T>(File<T> file)
     {
         var result = await GetAsync<FileDto<T>, T>(file);
-        var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+        var isEnabledBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
 
         result.FileExst = FileUtility.GetFileExtension(file.Title);
         result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);

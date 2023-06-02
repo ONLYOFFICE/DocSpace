@@ -8,5 +8,8 @@
     "url": ""
   },
   "wrongPortalNameUrl": "https://teamlab.info/wrongportalname.aspx?Site_Testing=4testing",
-  "thumbnails1280x720": false
+  "thumbnails1280x720": false,
+  "pdfViewer": true,
+  "pdfViewerUrl": "ds-vpath/sdkjs/pdf/src/engine/viewer.js",
+  "imageThumbnails": false
 }

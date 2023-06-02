@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace ASC.Web.Files.Utils;
@@ -386,7 +387,7 @@ public class FileConverter
         return _fileUtility.ExtsMustConvert.Contains(ext);
     }
 
-    public bool EnableConvert<T>(File<T> file, string toExtension)
+    public async Task<bool> EnableConvertAsync<T>(File<T> file, string toExtension)
     {
         if (file == null || string.IsNullOrEmpty(toExtension))
         {
@@ -410,7 +411,7 @@ public class FileConverter
             return true;
         }
 
-        return _fileUtility.ExtsConvertible.ContainsKey(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
+        return (await _fileUtility.GetExtsConvertibleAsync()).ContainsKey(fileExtension) && (await _fileUtility.GetExtsConvertibleAsync())[fileExtension].Contains(toExtension);
     }
 
     public Task<Stream> ExecAsync<T>(File<T> file)
@@ -420,7 +421,7 @@ public class FileConverter
 
     public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)
     {
-        if (!EnableConvert(file, toExtension))
+        if (!await EnableConvertAsync(file, toExtension))
         {
             var fileDao = _daoFactory.GetFileDao<T>();
 
@@ -432,9 +433,9 @@ public class FileConverter
             throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(_setupInfo.AvailableFileSize)));
         }
 
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
-        var docKey = _documentServiceHelper.GetDocKey(file);
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
@@ -466,12 +467,12 @@ public class FileConverter
             }
         }
 
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
         var fileExtension = file.ConvertedExtension;
-        var toExtension = _fileUtility.GetInternalConvertExtension(file.Title);
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var toExtension = _fileUtility.GetInternalExtension(file.Title);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
 
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
@@ -486,14 +487,14 @@ public class FileConverter
             Result = string.Empty,
             Processed = "",
             Id = string.Empty,
-            TenantId = _tenantManager.GetCurrentTenant().Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             Account = _authContext.CurrentAccount.ID,
             Delete = false,
             StartDateTime = DateTime.UtcNow,
-            Url = _httpContextAccesor?.HttpContext?.Request.GetUrlRewriter().ToString(),
+            Url = _httpContextAccesor?.HttpContext?.Request.GetDisplayUrl(),
             Password = null,
             ServerRootPath = _baseCommonLinkUtility.ServerRootPath,
-            ExternalShareData = _externalShare.TryGetLinkId(out _) ? JsonSerializer.Serialize(_externalShare.GetCurrentShareData()) : null
+            ExternalShareData = await _externalShare.GetLinkIdAsync() != default ? JsonSerializer.Serialize(_externalShare.GetCurrentShareDataAsync()) : null
         };
 
         var operationResultError = string.Empty;
@@ -533,8 +534,8 @@ public class FileConverter
 
         await _fileMarker.RemoveMarkAsNewAsync(file);
 
-        _fileConverterQueue.Add(file, password, _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext?.Request.GetUrlRewriter().ToString(), 
-            _baseCommonLinkUtility.ServerRootPath, _externalShare.TryGetLinkId(out _) ? _externalShare.GetCurrentShareData() : null);
+        _fileConverterQueue.Add(file, password, (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext?.Request.GetDisplayUrl(), 
+            _baseCommonLinkUtility.ServerRootPath, await _externalShare.GetLinkIdAsync() != default ? await _externalShare.GetCurrentShareDataAsync() : null);
     }
 
     public bool IsConverting<T>(File<T> file)
@@ -578,7 +579,7 @@ public class FileConverter
         }
         else
         {
-            var folderId = _globalFolderHelper.GetFolderMy<T>();
+            var folderId = await _globalFolderHelper.GetFolderMyAsync<T>();
 
             var parent = await folderDao.GetFolderAsync(file.ParentId);
             if (parent != null
@@ -646,7 +647,7 @@ public class FileConverter
             throw new Exception(errorString);
         }
 
-        _ = _filesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
+        _ = _filesMessageService.SendAsync(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
         var linkDao = _daoFactory.GetLinkDao();
         await linkDao.DeleteAllLinkAsync(file.Id.ToString());
@@ -663,7 +664,7 @@ public class FileConverter
 
         if (markAsTemplate)
         {
-            await tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
+            await tagDao.SaveTagsAsync(Tag.Template(_authContext.CurrentAccount.ID, newFile));
         }
 
         return newFile;
