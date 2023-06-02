@@ -61,6 +61,7 @@ public class SettingsController : BaseSettingsController
     private readonly QuotaUsageManager _quotaUsageManager;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly QuotaSyncOperation _quotaSyncOperation;
+    private readonly ExternalShare _externalShare;
 
     public SettingsController(
         ILoggerProvider option,
@@ -96,7 +97,8 @@ public class SettingsController : BaseSettingsController
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager,
-        TenantDomainValidator tenantDomainValidator
+        TenantDomainValidator tenantDomainValidator, 
+        ExternalShare externalShare
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -129,6 +131,7 @@ public class SettingsController : BaseSettingsController
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
         _quotaUsageManager = quotaUsageManager;
         _tenantDomainValidator = tenantDomainValidator;
+        _externalShare = externalShare;
     }
 
     [HttpGet("")]
@@ -150,8 +153,12 @@ public class SettingsController : BaseSettingsController
             TenantAlias = Tenant.Alias,
             EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync(),
             LegalTerms = _setupInfo.LegalTerms,
-            SocketUrl = _configuration["web:hub:url"] ?? ""
         };
+
+        if (!_authContext.IsAuthenticated && (await _externalShare.GetSessionIdAsync() != default || await _externalShare.GetLinkIdAsync() != default))
+        {
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
+        }
 
         if (_authContext.IsAuthenticated)
         {
@@ -167,6 +174,7 @@ public class SettingsController : BaseSettingsController
             settings.ZendeskKey = _setupInfo.ZendeskKey;
             settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
             settings.DocumentationEmail = _setupInfo.DocumentationEmail;
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
 
             settings.Firebase = new FirebaseDto
             {
