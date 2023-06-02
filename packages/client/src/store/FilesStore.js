@@ -1635,6 +1635,7 @@ class FilesStore {
       const canViewFile = item.viewAccessability.WebView;
 
       const isMasterForm = item.fileExst === ".docxf";
+      const isPdf = item.fileExst === ".pdf";
 
       let fileOptions = [
         //"open",
@@ -1643,6 +1644,7 @@ class FilesStore {
         "edit",
         "preview",
         "view",
+        "pdf-view",
         "make-form",
         "separator0",
         "link-for-room-members",
@@ -1675,6 +1677,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
+        fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
+      }
 
       if (!canLockFile) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -3184,10 +3190,12 @@ class FilesStore {
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
-  createThumbnails = async () => {
-    if (this.viewAs !== "tile" || !this.files) return;
+  createThumbnails = async (files = null) => {
+    if ((this.viewAs !== "tile" || !this.files) && !files) return;
 
-    const newFiles = this.files.filter((f) => {
+    const currentFiles = files || this.files;
+
+    const newFiles = currentFiles.filter((f) => {
       return (
         typeof f.id !== "string" &&
         f?.thumbnailStatus === thumbnailStatuses.WAITING &&
