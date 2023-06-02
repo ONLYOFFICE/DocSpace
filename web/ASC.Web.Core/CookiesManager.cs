@@ -29,6 +29,7 @@ using ASC.Core.Data;
 using Microsoft.Net.Http.Headers;
 
 using Constants = ASC.Core.Users.Constants;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace ASC.Web.Core;
 
@@ -52,6 +53,7 @@ public class CookiesManager
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly MessageService _messageService;
+    private readonly SameSiteMode? _sameSiteMode;
 
     public CookiesManager(
         IHttpContextAccessor httpContextAccessor,
@@ -61,7 +63,8 @@ public class CookiesManager
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         DbLoginEventsManager dbLoginEventsManager,
-        MessageService messageService)
+        MessageService messageService,
+        IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
@@ -71,6 +74,11 @@ public class CookiesManager
         _coreBaseSettings = coreBaseSettings;
         _dbLoginEventsManager = dbLoginEventsManager;
         _messageService = messageService;
+
+        if (Enum.TryParse<SameSiteMode>(configuration["web:samesite"], out var sameSiteMode))
+        {
+            _sameSiteMode = sameSiteMode;
+        }
     }
 
     public void SetCookies(CookiesType type, string value, bool session = false)
@@ -89,10 +97,20 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
+            if (_sameSiteMode.HasValue && _sameSiteMode.Value != SameSiteMode.None)
+            {
+                options.SameSite = _sameSiteMode.Value;
+            }
+
             var urlRewriter = _httpContextAccessor.HttpContext.Request.Url();
             if (urlRewriter.Scheme == "https")
             {
                 options.Secure = true;
+
+                if (_sameSiteMode.HasValue && _sameSiteMode.Value == SameSiteMode.None)
+                {
+                    options.SameSite = _sameSiteMode.Value;
+                }
             }
 
             if (FromCors())
