@@ -63,10 +63,13 @@ class FirebaseHelper {
       this.config["projectId"] &&
       this.config["storageBucket"] &&
       this.config["messagingSenderId"] &&
-      this.config["appId"] &&
-      this.config["dataBaseUrl"] /*&&
+      this.config["appId"] /*&&
       this.config["measurementId"]*/
     );
+  }
+
+  get isEnabledDB() {
+    return this.isEnabled && this.config["databaseUrl"];
   }
 
   async checkMaintenance() {
