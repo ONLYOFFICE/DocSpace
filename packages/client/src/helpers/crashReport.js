@@ -7,7 +7,7 @@ export const getCrashReport = (userId, version, language, error) => {
 
   const report = {
     url: window.origin,
-    id: userId,
+    userId: userId,
     version: version,
     platform: navigator?.platform,
     userAgent: navigator?.userAgent,
