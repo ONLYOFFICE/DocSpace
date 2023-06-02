@@ -69,12 +69,10 @@ const fillFakeData = (n) => {
       mobilePhone: "+" + getRndNumber(10000000000, 99999999999),
       email: getRndString(12) + "@yahoo.com",
       contextOptions: [
-        { key: 1, label: getRndString(6) },
-        { key: 2, label: getRndString(5) },
-        { key: 3, label: getRndString(4) },
-        { key: 4, label: getRndString(3) },
-        { key: 5, label: getRndString(2) },
-        { key: 6, label: getRndString(1) },
+        { key: 1, label: "Profile" },
+        { key: 2, label: "Room list" },
+        { key: 3, label: "Change name" },
+        { key: 4, label: "Change email" },
       ],
     });
   }
@@ -89,7 +87,7 @@ const Template = (args) => {
     <RowContainer
       {...args}
       manualHeight="500px"
-      style={{ width: "95%", padding: "0 20px" }}
+      style={{ width: "95%", padding: "0px 10px" }}
     >
       {fakeData.map((user) => {
         const element = (
@@ -100,7 +98,7 @@ const Template = (args) => {
             source={user.avatar}
           />
         );
-        const nameColor = user.status === "pending" ? "#A3A9AE" : "#333333";
+        const nameColor = user.status === "pending" && "#A3A9AE";
         const sideInfoColor = user.status === "pending" ? "#D0D5DA" : "#A3A9AE";
 
         return (
@@ -118,7 +116,7 @@ const Template = (args) => {
                 title={user.userName}
                 isBold={true}
                 fontSize="15px"
-                color={nameColor}
+                color={nameColor ? nameColor : ""}
               >
                 {user.userName}
               </Link>

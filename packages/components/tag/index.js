@@ -34,6 +34,12 @@ const Tag = ({
 
   const tagRef = React.useRef(null);
   const isMountedRef = React.useRef(true);
+  const onClickOutside = React.useCallback((e) => {
+    if (e?.target?.className?.includes("advanced-tag") || !isMountedRef.current)
+      return;
+
+    setOpenDropdown(false);
+  }, []);
 
   React.useEffect(() => {
     if (openDropdown) {
@@ -50,13 +56,6 @@ const Tag = ({
     return () => {
       isMountedRef.current = false;
     };
-  }, []);
-
-  const onClickOutside = React.useCallback((e) => {
-    if (e?.target?.className?.includes("advanced-tag") || !isMountedRef.current)
-      return;
-
-    setOpenDropdown(false);
   }, []);
 
   const openDropdownAction = (e) => {
