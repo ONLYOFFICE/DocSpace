@@ -36,10 +36,6 @@ const TableWrapper = styled(TableContainer)`
   .table-list-item:has(.selected-table-row) {
     background-color: ${(props) => (props.theme.isBase ? "#f3f4f4" : "#282828")};
   }
-  .div1 > .div2 {
-    background-color: red;
-    width: 50%;
-  }
 `;
 
 TableWrapper.defaultProps = { theme: Base };
