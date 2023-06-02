@@ -13,8 +13,16 @@ const StyledRowContainer = styled(RowContainer)`
 `;
 
 const WebhooksRowView = (props) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, sectionWidth, viewAs, setViewAs } =
-    props;
+  const {
+    webhooks,
+    toggleEnabled,
+    deleteWebhook,
+    editWebhook,
+    sectionWidth,
+    viewAs,
+    setViewAs,
+    setTitleHistory,
+  } = props;
 
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
@@ -36,6 +44,7 @@ const WebhooksRowView = (props) => {
           toggleEnabled={toggleEnabled}
           deleteWebhook={deleteWebhook}
           editWebhook={editWebhook}
+          setTitleHistory={setTitleHistory}
         />
       ))}
     </StyledRowContainer>
@@ -43,7 +52,7 @@ const WebhooksRowView = (props) => {
 };
 
 export default inject(({ webhooksStore, setup }) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook } = webhooksStore;
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, setTitleHistory } = webhooksStore;
 
   const { viewAs, setViewAs } = setup;
 
@@ -54,5 +63,6 @@ export default inject(({ webhooksStore, setup }) => {
     editWebhook,
     viewAs,
     setViewAs,
+    setTitleHistory,
   };
 })(observer(WebhooksRowView));

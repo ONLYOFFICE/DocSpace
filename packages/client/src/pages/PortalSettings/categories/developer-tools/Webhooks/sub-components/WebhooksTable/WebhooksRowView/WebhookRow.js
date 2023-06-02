@@ -21,6 +21,7 @@ export const WebhookRow = ({
   toggleEnabled,
   deleteWebhook,
   editWebhook,
+  setTitleHistory,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation(["Webhooks", "Common"]);
@@ -33,7 +34,6 @@ export const WebhookRow = ({
   const openSettings = () => setIsSettingsOpened(true);
   const onDeleteOpen = () => setIsDeleteOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
-  const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
 
   const handleWebhookUpdate = async (webhookInfo) => {
     editWebhook(webhook, webhookInfo);
@@ -46,6 +46,23 @@ export const WebhookRow = ({
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
     setIsChecked((prevIsChecked) => !prevIsChecked);
+  };
+
+  const redirectToHistory = () => {
+    setTitleHistory();
+    navigate(window.location.pathname + `/${webhook.id}`);
+  };
+  const handleRowClick = (e) => {
+    if (
+      e.target.closest(".table-container_row-context-menu-wrapper") ||
+      e.target.closest(".toggleButton") ||
+      e.target.closest(".row_context-menu-wrapper") ||
+      e.detail === 0
+    ) {
+      return;
+    }
+
+    redirectToHistory();
   };
 
   const contextOptions = [
@@ -79,7 +96,8 @@ export const WebhookRow = ({
         sectionWidth={sectionWidth}
         key={webhook.id}
         data={webhook}
-        contextOptions={contextOptions}>
+        contextOptions={contextOptions}
+        onClick={handleRowClick}>
         <WebhookRowContent
           sectionWidth={sectionWidth}
           webhook={webhook}
