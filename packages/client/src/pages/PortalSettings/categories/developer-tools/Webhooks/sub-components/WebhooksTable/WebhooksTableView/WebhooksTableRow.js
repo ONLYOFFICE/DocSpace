@@ -31,8 +31,10 @@ const StyledTableRow = styled(TableRow)`
   .mr-8 {
     margin-right: 8px;
   }
-  .no-wrap {
+  .textOverflow {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -117,14 +119,19 @@ export const WebhooksTableRow = ({
       <StyledWrapper onClick={handleRowClick}>
         <StyledTableRow contextOptions={contextOptions}>
           <TableCell>
-            <Text as="span" fontWeight={600} className="mr-8 no-wrap">
+            <Text as="span" fontWeight={600} className="mr-8 textOverflow">
               {webhook.name}{" "}
             </Text>
             <StatusBadge status={webhook.status} />
             <NoBoxShadowToast />
           </TableCell>
           <TableCell>
-            <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
+            <Text
+              as="span"
+              fontSize="11px"
+              color="#A3A9AE"
+              fontWeight={600}
+              className="textOverflow">
               {webhook.uri}
             </Text>
           </TableCell>

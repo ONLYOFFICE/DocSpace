@@ -19,8 +19,10 @@ import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import { useTranslation } from "react-i18next";
 
 const StyledTableRow = styled(TableRow)`
-  .no-wrap {
+  .textOverflow {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   ${(props) =>
@@ -96,7 +98,7 @@ const HistoryTableRow = (props) => {
           <StatusBadge status={item.status} />
         </TableCell>
         <TableCell>
-          <Text fontWeight={600} fontSize="11px" className="no-wrap">
+          <Text fontWeight={600} fontSize="11px" className="textOverflow">
             {formattedDelivery}
           </Text>
         </TableCell>

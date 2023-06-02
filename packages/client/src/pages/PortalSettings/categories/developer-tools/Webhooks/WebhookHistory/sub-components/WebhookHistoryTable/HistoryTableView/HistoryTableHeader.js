@@ -15,7 +15,7 @@ const HistoryTableHeader = (props) => {
       enable: true,
       default: true,
       active: true,
-      minWidth: 210,
+      minWidth: 150,
     },
     {
       key: "Status",

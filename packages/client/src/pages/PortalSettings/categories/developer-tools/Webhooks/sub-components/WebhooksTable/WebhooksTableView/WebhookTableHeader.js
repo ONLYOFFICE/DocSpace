@@ -13,6 +13,7 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
       enable: true,
       default: true,
       active: true,
+      minWidth: 150,
     },
     {
       key: "URL",
