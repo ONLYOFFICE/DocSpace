@@ -96,10 +96,12 @@ const HistoryHeader = (props) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
+    setTitleDefault,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
     navigate(-1);
+    setTitleDefault();
   };
   const { t } = useTranslation(["Webhooks", "Common", "InfoPanel"]);
   const { id } = useParams();
@@ -218,6 +220,7 @@ export default inject(({ webhooksStore, auth }) => {
     isIndeterminate,
     areAllIdsChecked,
     fetchHistoryItems,
+    setTitleDefault,
   } = webhooksStore;
 
   const { settingsStore } = auth;
@@ -234,5 +237,6 @@ export default inject(({ webhooksStore, auth }) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
+    setTitleDefault,
   };
 })(observer(HistoryHeader));
