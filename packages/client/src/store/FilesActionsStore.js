@@ -778,6 +778,7 @@ class FilesActionStore {
   deleteItemOperation = (isFile, itemId, translations, isRoom, operationId) => {
     const { addActiveItems, getIsEmptyTrash } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
+    const { isRecycleBinFolder, recycleBinFolderId } = this.treeFoldersStore;
 
     const pbData = {
       icon: "trash",
@@ -787,10 +788,10 @@ class FilesActionStore {
 
     this.filesStore.setOperationAction(true);
 
-    //debugger;
-    console.log("deleteItemOperation");
+    const destFolderId = isRecycleBinFolder ? null : recycleBinFolderId;
+
     if (isFile) {
-      addActiveItems([itemId]);
+      addActiveItems([itemId], null, destFolderId);
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
@@ -832,7 +833,7 @@ class FilesActionStore {
           this.setGroupMenuBlocked(false);
         });
     } else {
-      addActiveItems(null, [itemId]);
+      addActiveItems(null, [itemId], destFolderId);
       return deleteFolder(itemId)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
@@ -1103,7 +1104,7 @@ class FilesActionStore {
       alert: false,
       operationId,
     });
-    //debugger;
+
     const destFolder = action === "archive" ? archiveRoomsId : myRoomsId;
 
     addActiveItems(null, items, destFolder);
