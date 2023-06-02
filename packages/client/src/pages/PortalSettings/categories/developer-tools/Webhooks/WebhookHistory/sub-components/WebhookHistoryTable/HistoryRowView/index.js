@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { useParams } from "react-router-dom";
 
 import RowContainer from "@docspace/components/row-container";
@@ -15,6 +15,10 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-list-item {
     cursor: pointer;
+    padding-right: ${() => (isMobileOnly ? "5px" : "15px")};
+  }
+  .row-item::after {
+    bottom: -3px;
   }
 
   .row-list-item:has(.selected-row-item) {

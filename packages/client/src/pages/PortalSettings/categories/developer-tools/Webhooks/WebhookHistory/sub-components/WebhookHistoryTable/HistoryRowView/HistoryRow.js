@@ -61,7 +61,7 @@ const HistoryRow = (props) => {
       checkbox
       checked={isIdChecked(historyItem.id)}
       onSelect={handleOnSelect}
-      className={isIdChecked(historyItem.id) ? "selected-row-item" : ""}
+      className={isIdChecked(historyItem.id) ? "row-item selected-row-item" : "row-item "}
       onClick={handleRowClick}>
       <HistoryRowContent sectionWidth={sectionWidth} historyItem={historyItem} />
     </Row>
