@@ -436,6 +436,7 @@ class FilesStore {
       tempActionFilesIds.push(this.files[foundIndex].id);
 
       this.setTempActionFilesIds(tempActionFilesIds);
+
       this.debounceRemoveFiles();
 
       // Hide pagination when deleting files
@@ -2241,9 +2242,11 @@ class FilesStore {
     this.scrollToTop();
   };
 
-  removeFiles = (fileIds, folderIds, showToast) => {
+  removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
+    if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
 
     if (newFilter.total <= newFilter.pageCount) {
       const files = fileIds
@@ -2255,7 +2258,6 @@ class FilesStore {
 
       newFilter.total -= deleteCount;
 
-      console.log(" removeFiles files", files, fileIds);
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(files);

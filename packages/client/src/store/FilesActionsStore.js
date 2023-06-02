@@ -371,7 +371,14 @@ class FilesActionStore {
               showToast();
             } else {
               this.updateFilesAfterDelete(operationId);
-              this.filesStore.removeFiles(fileIds, folderIds, showToast);
+
+              this.filesStore.removeFiles(
+                fileIds,
+                folderIds,
+                showToast,
+                destFolderId
+              );
+
               this.uploadDataStore.removeFiles(fileIds);
             }
 
@@ -804,8 +811,11 @@ class FilesActionStore {
             toastr.success(translations.successRemoveFile);
           } else {
             this.updateFilesAfterDelete(operationId);
-            this.filesStore.removeFiles([itemId], null, () =>
-              toastr.success(translations.successRemoveFile)
+            this.filesStore.removeFiles(
+              [itemId],
+              null,
+              () => toastr.success(translations.successRemoveFile),
+              destFolderId
             );
           }
         })
@@ -845,8 +855,11 @@ class FilesActionStore {
             toastr.success(translations.successRemoveFolder);
           } else {
             this.updateFilesAfterDelete(operationId);
-            this.filesStore.removeFiles(null, [itemId], () =>
-              toastr.success(translations.successRemoveFolder)
+            this.filesStore.removeFiles(
+              null,
+              [itemId],
+              () => toastr.success(translations.successRemoveFolder),
+              destFolderId
             );
           }
 
