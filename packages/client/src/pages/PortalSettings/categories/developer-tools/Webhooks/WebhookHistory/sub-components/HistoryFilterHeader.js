@@ -38,6 +38,8 @@ const FilterButton = styled.div`
   width: 32px;
   height: 32px;
 
+  z-index: 202;
+
   border: 1px solid;
   border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};
   border-radius: 3px;
@@ -57,7 +59,7 @@ const FilterButton = styled.div`
   }
 
   span {
-    z-index: 201;
+    z-index: 203;
     width: 8px;
     height: 8px;
     background-color: #4781d1;
