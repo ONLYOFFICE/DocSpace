@@ -303,7 +303,7 @@ class FilesActionStore {
       } else {
         // try to fix with one check later (see onDeleteMediaFile)
         const isActiveFolder = activeFolders.find(
-          (id) => id === selection[i].id
+          (elem) => elem.id === selection[i].id
         );
         !isActiveFolder && folderIds.push(selection[i].id);
       }
@@ -326,7 +326,7 @@ class FilesActionStore {
     const destFolderId = immediately ? null : recycleBinFolderId;
 
     addActiveItems(fileIds, null, destFolderId);
-    addActiveItems(null, folderIds);
+    addActiveItems(null, folderIds, destFolderId);
 
     if (this.dialogsStore.isFolderActions && withoutDialog) {
       folderIds = [];
@@ -1104,7 +1104,9 @@ class FilesActionStore {
       operationId,
     });
     //debugger;
-    addActiveItems(null, items);
+    const destFolder = action === "archive" ? archiveRoomsId : myRoomsId;
+
+    addActiveItems(null, items, destFolder);
 
     switch (action) {
       case "archive":
@@ -1430,7 +1432,7 @@ class FilesActionStore {
 
   checkFileConflicts = (destFolderId, folderIds, fileIds) => {
     this.filesStore.addActiveItems(fileIds, null, destFolderId);
-    this.filesStore.addActiveItems(null, folderIds);
+    this.filesStore.addActiveItems(null, folderIds, destFolderId);
     return checkFileConflicts(destFolderId, folderIds, fileIds);
   };
 

@@ -1640,9 +1640,14 @@ class UploadDataStore {
       (el) => !fileIds?.includes(el.id)
     );
     const newActiveFolders = activeFolders.filter(
-      (el) => !folderIds.includes(el)
+      (el) => !folderIds.includes(el.id)
     );
-    console.log("clearActiveOperations", newActiveFiles);
+    console.log(
+      "clearActiveOperations newActiveFiles",
+      newActiveFiles,
+      "newActiveFolders",
+      newActiveFolders
+    );
     setActiveFiles(newActiveFiles);
     setActiveFolders(newActiveFolders);
   };

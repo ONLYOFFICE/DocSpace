@@ -344,34 +344,28 @@ export default function withFileActions(WrappedFileItem) {
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
+      const isProgress = (index, items) => {
+        if (index === -1) return false;
+        const destFolderId = items[index].destFolderId;
+
+        if (!destFolderId) return true;
+
+        return destFolderId.toString() !== id.toString();
+      };
+
       const activeFileIndex = activeFiles.findIndex((x) => x.id === item.id);
+      const activeFolderIndex = activeFolders.findIndex(
+        (x) =>
+          x.id === item.id &&
+          (item.isFolder || (!item.fileExst && item.id === -1))
+      );
 
-      const isNeedProgressLoader =
-        activeFileIndex !== -1
-          ? activeFiles[activeFileIndex].destFolderId?.toString() !==
-            id.toString()
-          : false;
+      const isFileProgress = isProgress(activeFileIndex, activeFiles);
+      const isFolderProgress = isProgress(activeFolderIndex, activeFolders);
 
-      const inProgress =
-        isNeedProgressLoader ||
-        activeFolders.findIndex(
-          (x) =>
-            x === item.id &&
-            (item.isFolder || (!item.fileExst && item.id === -1))
-        ) !== -1;
+      const inProgress = isFileProgress || isFolderProgress;
 
       let isActive = false;
-
-      // console.log(
-      //   "activeFiles",
-      //   activeFiles,
-      //   item.id,
-      //   activeFiles.some(
-      //     (elem) =>
-      //       elem.id === item.id &&
-      //       elem.destFolderId?.toString() !== id.toString()
-      //   )
-      // );
 
       if (
         bufferSelection &&

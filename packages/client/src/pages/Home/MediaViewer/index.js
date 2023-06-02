@@ -139,7 +139,9 @@ const FilesMediaViewer = (props) => {
       if (file) {
         // try to fix with one check later (see deleteAction)
         const isActiveFile = activeFiles.find((elem) => elem.id === file.id);
-        const isActiveFolder = activeFolders.find((id) => id === file.id);
+        const isActiveFolder = activeFolders.find(
+          (elem) => elem.id === file.id
+        );
 
         if (isActiveFile || isActiveFolder) return;
 

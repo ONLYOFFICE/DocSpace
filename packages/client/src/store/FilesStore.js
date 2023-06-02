@@ -572,9 +572,11 @@ class FilesStore {
   addActiveItems = (files, folders, destFolderId) => {
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
-        this.setActiveFolders(folders);
+        this.setActiveFolders(folders, destFolderId);
       } else {
-        folders.map((item) => this.activeFolders.push(item));
+        folders.map((item) =>
+          this.activeFolders.push({ id: item, destFolderId })
+        );
       }
     }
 
@@ -595,12 +597,17 @@ class FilesStore {
       id,
       destFolderId,
     }));
-    console.log("arrayFormation", arrayFormation);
+
     this.activeFiles = arrayFormation;
   };
 
-  setActiveFolders = (activeFolders) => {
-    this.activeFolders = activeFolders;
+  setActiveFolders = (activeFolders, destFolderId) => {
+    const arrayFormation = activeFolders.map((id) => ({
+      id,
+      destFolderId,
+    }));
+    console.log("arrayFormation", arrayFormation);
+    this.activeFolders = arrayFormation;
   };
 
   setIsLoaded = (isLoaded) => {
@@ -865,9 +872,9 @@ class FilesStore {
 
   getFilesChecked = (file, selected) => {
     if (!file.parentId) {
-      if (this.activeFiles.some((elem) => elem.id === file.id)) return false;
+      if (this.activeFiles.find((elem) => elem.id === file.id)) return false;
     } else {
-      if (this.activeFolders.includes(file.id)) return false;
+      if (this.activeFolders.find((elem) => elem.id === file.id)) return false;
     }
 
     const type = file.fileType;
@@ -977,7 +984,7 @@ class FilesStore {
               this.filesList.find((f) => f.id == id && !f.isFolder)
             );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         const isFound =
           this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
 
@@ -1011,7 +1018,7 @@ class FilesStore {
             (f) => !(f.id == id && !f.isFolder)
           );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         newSelections = newSelections.filter(
           (f) => !(f.id == id && f.isFolder)
         );
