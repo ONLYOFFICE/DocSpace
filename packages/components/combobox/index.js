@@ -41,7 +41,7 @@ class ComboBox extends React.Component {
     if (this.ref.current.contains(e.target)) return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+      this.props.onToggle && this.props.onToggle(e, this.state.isOpen);
     });
 
     setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
@@ -52,7 +52,7 @@ class ComboBox extends React.Component {
       disableIconClick,
       disableItemClick,
       isDisabled,
-      toggleAction,
+      onToggle,
       isLoading,
       setIsOpenItemAccess,
     } = this.props;
@@ -67,7 +67,7 @@ class ComboBox extends React.Component {
       return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      toggleAction && toggleAction(e, this.state.isOpen);
+      onToggle && onToggle(e, this.state.isOpen);
     });
     setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
@@ -110,7 +110,7 @@ class ComboBox extends React.Component {
       noBorder,
       scaledOptions,
       displayType,
-      toggleAction,
+      onToggle,
       textOverflow,
       showDisabledItems,
       comboIcon,
@@ -182,7 +182,7 @@ class ComboBox extends React.Component {
         size={size}
         data={selectedOption}
         onClick={this.comboBoxClick}
-        toggleAction={toggleAction}
+        onToggle={onToggle}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
         withoutPadding={withoutPadding}
@@ -312,7 +312,7 @@ ComboBox.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** The event is triggered by clicking on a component when `displayType: toggle` */
-  toggleAction: PropTypes.func,
+  onToggle: PropTypes.func,
   /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */

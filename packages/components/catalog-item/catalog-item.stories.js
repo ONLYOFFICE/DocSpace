@@ -1,4 +1,5 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import CatalogItem from "./";
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
@@ -17,25 +18,26 @@ export default {
   },
 };
 
+const CatalogWrapper = styled.div`
+  background-color: ${(props) => props.theme.catalogItem.container.background};
+  padding: 15px;
+`;
+
 const Template = (args) => {
   return (
-    <div style={{ width: "250px" }}>
+    <CatalogWrapper style={{ width: "250px" }}>
       <CatalogItem
         {...args}
         icon={args.icon}
         text={args.text}
         showText={args.showText}
         showBadge={args.showBadge}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         isEndOfBlock={args.isEndOfBlock}
         labelBadge={args.labelBadge}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 
@@ -51,14 +53,14 @@ Default.args = {
 
 const OnlyIcon = () => {
   return (
-    <div style={{ width: "52px" }}>
+    <CatalogWrapper style={{ width: "52px" }}>
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
         showText={false}
         showBadge={false}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 
@@ -66,14 +68,14 @@ export const IconWithoutBadge = OnlyIcon.bind({});
 
 const OnlyIconWithBadge = () => {
   return (
-    <div style={{ width: "52px" }}>
+    <CatalogWrapper style={{ width: "52px" }}>
       <CatalogItem
         icon={CatalogGuestReactSvgUrl}
         text={"My documents"}
         showText={false}
         showBadge={true}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 
@@ -81,18 +83,16 @@ export const IconWithBadge = OnlyIconWithBadge.bind({});
 
 const InitialIcon = () => {
   return (
-    <div style={{ width: "52px" }}>
+    <CatalogWrapper style={{ width: "52px" }}>
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"Documents"}
         showText={false}
         showBadge={false}
         showInitial={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 
@@ -100,7 +100,7 @@ export const IconWithInitialText = InitialIcon.bind({});
 
 const WithBadgeIcon = () => {
   return (
-    <div style={{ width: "250px" }}>
+    <CatalogWrapper style={{ width: "250px" }}>
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
@@ -108,7 +108,7 @@ const WithBadgeIcon = () => {
         showBadge={true}
         iconBadge={CatalogTrashReactSvgUrl}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 
@@ -116,35 +116,27 @@ export const ItemWithBadgeIcon = WithBadgeIcon.bind({});
 
 const TwoItem = () => {
   return (
-    <div style={{ width: "250px" }}>
+    <CatalogWrapper style={{ width: "250px" }}>
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"My documents"}
         showText={true}
         showBadge={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         isEndOfBlock={true}
         labelBadge={3}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"Some text"}
         showText={true}
         showBadge={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         iconBadge={CatalogTrashReactSvgUrl}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
-    </div>
+    </CatalogWrapper>
   );
 };
 

@@ -62,25 +62,25 @@ public class TenantQuotaController : IQuotaController
     public void Init(int tenant)
     {
         _tenant = tenant;
-        _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
+        _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRowsAsync(tenant).Result
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
     }
 
-    public void QuotaUsedAdd(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)
+    public async Task QuotaUsedAddAsync(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)
     {
         size = Math.Abs(size);
         if (UsedInQuota(dataTag))
         {
-            QuotaUsedCheck(size, quotaCheckFileSize);
+            await QuotaUsedCheckAsync(size, quotaCheckFileSize);
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true, Guid.Empty);
-        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
+        await SetTenantQuotaRowAsync(module, domain, size, dataTag, true, Guid.Empty);
+        await SetTenantQuotaRowAsync(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
-    public void QuotaUsedDelete(string module, string domain, string dataTag, long size)
+    public async Task QuotaUsedDeleteAsync(string module, string domain, string dataTag, long size)
     {
         size = -Math.Abs(size);
         if (UsedInQuota(dataTag))
@@ -88,11 +88,11 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true, Guid.Empty);
-        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
+        await SetTenantQuotaRowAsync(module, domain, size, dataTag, true, Guid.Empty);
+        await SetTenantQuotaRowAsync(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
-    public void QuotaUsedSet(string module, string domain, string dataTag, long size)
+    public async Task QuotaUsedSetAsync(string module, string domain, string dataTag, long size)
     {
         size = Math.Max(0, size);
         if (UsedInQuota(dataTag))
@@ -100,35 +100,35 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, false, Guid.Empty);
+        await SetTenantQuotaRowAsync(module, domain, size, dataTag, false, Guid.Empty);
     }
 
-    public void QuotaUsedCheck(long size)
+    public async Task QuotaUsedCheckAsync(long size)
     {
-        QuotaUsedCheck(size, true);
+        await QuotaUsedCheckAsync(size, true);
     }
 
-    public void QuotaUsedCheck(long size, bool quotaCheckFileSize)
+    public async Task QuotaUsedCheckAsync(long size, bool quotaCheckFileSize)
     {
-        var quota = _tenantManager.GetTenantQuota(_tenant);
+        var quota = await _tenantManager.GetTenantQuotaAsync(_tenant);
         if (quota != null)
         {
             if (quota.MaxFileSize != 0 && quotaCheckFileSize)
             {
-                _maxFileSizeChecker.CheckAdd(_tenant, size);
+                await _maxFileSizeChecker.CheckAddAsync(_tenant, size);
             }
 
             if (quota.MaxTotalSize != 0)
             {
-                _maxTotalSizeChecker.CheckAdd(_tenant, CurrentSize + size);
+                await _maxTotalSizeChecker.CheckAddAsync(_tenant, CurrentSize + size);
             }
         }
     }
 
 
-    private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
+    private async Task SetTenantQuotaRowAsync(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
     {
-        _tenantManager.SetTenantQuotaRow(
+        await _tenantManager.SetTenantQuotaRowAsync(
             new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag, UserId = userId, LastModified = DateTime.UtcNow },
             exchange);
 

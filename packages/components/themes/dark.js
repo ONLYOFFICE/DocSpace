@@ -238,18 +238,18 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#ED7309",
-    disableBackgroundColor: "#4C3B2D",
-    hoverBackgroundColor: "#FFAD3D",
-    clickBackgroundColor: "#E6842E",
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgba(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgba(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: black,
-    textColorDisabled: black,
+    textColor: white,
+    textColorDisabled: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -1280,6 +1280,10 @@ const Dark = {
     background: "#3D3D3D",
     disableColor: "#858585",
 
+    icon: {
+      color: "#ADADAD",
+    },
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -1289,6 +1293,7 @@ const Dark = {
 
       title: {
         width: "85%",
+        color: "#000",
       },
     },
 
@@ -1869,6 +1874,7 @@ const Dark = {
       width: "100%",
       height: "36px",
       padding: "0 12px",
+      background: "#1b1c1d",
       marginBottom: "16px",
       tablet: {
         height: "44px",

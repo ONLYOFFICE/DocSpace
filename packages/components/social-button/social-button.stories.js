@@ -18,13 +18,13 @@ export default {
     iconName: {
       control: {
         type: "select",
-        options: [
-          ShareGoogleReactSvgUrl,
-          //"ShareFacebookIcon",
-          //"ShareTwitterIcon",
-          ShareLinkedinReactSvgUrl,
-        ],
       },
+      options: [
+        ShareGoogleReactSvgUrl,
+        //"ShareFacebookIcon",
+        //"ShareTwitterIcon",
+        ShareLinkedinReactSvgUrl,
+      ],
     },
   },
 };

@@ -54,19 +54,19 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpGet("reassign/progress")]
-    public ReassignProgressItem GetReassignProgress(Guid userId)
+    public async Task<ReassignProgressItem> GetReassignProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     [HttpPost("reassign/start")]
-    public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
+    public async Task<ReassignProgressItem> StartReassignAsync(StartReassignRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var fromUser = _userManager.GetUsers(inDto.FromUserId);
+        var fromUser = await _userManager.GetUsersAsync(inDto.FromUserId);
 
         if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
         {
@@ -78,14 +78,14 @@ public class ReassignController : ApiControllerBase
             throw new ArgumentException("Can not delete user with id = " + inDto.FromUserId);
         }
 
-        var toUser = _userManager.GetUsers(inDto.ToUserId);
+        var toUser = await _userManager.GetUsersAsync(inDto.ToUserId);
 
         if (toUser == null || toUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
         }
 
-        if (_userManager.IsUser(toUser) || toUser.Status == EmployeeStatus.Terminated)
+        if (await _userManager.IsUserAsync(toUser) || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }
@@ -94,9 +94,9 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpPut("reassign/terminate")]
-    public void TerminateReassign(TerminateRequestDto inDto)
+    public async Task TerminateReassignAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
     }

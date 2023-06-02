@@ -32,5 +32,5 @@ public interface IIndexer
 
     void IndexAll();
 
-    Task ReIndex();
+    Task ReIndexAsync();
 }

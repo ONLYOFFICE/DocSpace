@@ -196,7 +196,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
-      clickAction: () => {
+      onAction: () => {
         setMaintenanceExist(false);
         setSnackbarExist(false);
         Snackbar.close();

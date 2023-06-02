@@ -55,11 +55,10 @@ public class GeolocationHelper
         _cache = cache;
     }
 
-    public IPGeolocationInfo GetIPGeolocation(IPAddress address)
+    public async Task<IPGeolocationInfo> GetIPGeolocationAsync(IPAddress address)
     {
         try
         {
-
             var cacheKey = $"ip_geolocation_info_${address}";
             var fromCache = _cache.Get<IPGeolocationInfo>(cacheKey);
 
@@ -69,7 +68,7 @@ public class GeolocationHelper
 
             var addrType = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? "ipv4" : "ipv6";
 
-            var result = dbContext.DbIPLookup
+            var result = await dbContext.DbIPLookup
                 .Where(r => r.AddrType == addrType && r.IPStart.Compare(address.GetAddressBytes()) <= 0)
                 .OrderByDescending(r => r.IPStart)
                 .Select(r => new IPGeolocationInfo
@@ -82,7 +81,7 @@ public class GeolocationHelper
                     TimezoneName = r.TimezoneName,
                     Continent = r.Continent
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (result != null)
             {
@@ -99,7 +98,7 @@ public class GeolocationHelper
         return IPGeolocationInfo.Default;
     }
 
-    public IPGeolocationInfo GetIPGeolocationFromHttpContext()
+    public async Task<IPGeolocationInfo> GetIPGeolocationFromHttpContextAsync()
     {
         if (_httpContextAccessor.HttpContext?.Request != null)
         {
@@ -109,7 +108,7 @@ public class GeolocationHelper
             {
                 _logger.DebugRemoteIpAddress(ip.ToString());
 
-                return GetIPGeolocation(ip);
+                return await GetIPGeolocationAsync(ip);
             }
         }
 

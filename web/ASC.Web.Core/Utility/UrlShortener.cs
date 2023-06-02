@@ -158,6 +158,6 @@ public class NullShortener : IUrlShortener
 {
     public Task<string> GetShortenLinkAsync(string shareLink)
     {
-        return null;
+        return Task.FromResult<string>(null);
     }
 }

@@ -62,9 +62,10 @@ public class SettingsController : ControllerBase
 
     [HttpGet("get")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult GetSettings([FromQuery] SettingsModel model)
+    public async Task<IActionResult> GetSettingsAsync([FromQuery] SettingsModel model)
     {
-        if (!GetTenant(model, out var tenantId, out var error))
+        (var succ, var tenantId, var error) = await GetTenantAsync(model);
+        if (!succ)
         {
             return BadRequest(error);
         }
@@ -78,7 +79,7 @@ public class SettingsController : ControllerBase
             });
         }
 
-        var settings = CoreSettings.GetSetting(model.Key, tenantId);
+        var settings = await CoreSettings.GetSettingAsync(model.Key, tenantId);
 
         return Ok(new
         {
@@ -88,9 +89,10 @@ public class SettingsController : ControllerBase
 
     [HttpPost("save")]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult SaveSettings([FromBody] SettingsModel model)
+    public async Task<IActionResult> SaveSettingsAsync([FromBody] SettingsModel model)
     {
-        if (!GetTenant(model, out var tenantId, out var error))
+        (var succ, var tenantId, var error) = await GetTenantAsync(model);
+        if (!succ)
         {
             return BadRequest(error);
         }
@@ -115,9 +117,9 @@ public class SettingsController : ControllerBase
 
         Log.LogDebug("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
 
-        CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
+        await CoreSettings.SaveSettingAsync(model.Key, model.Value, tenantId);
 
-        var settings = CoreSettings.GetSetting(model.Key, tenantId);
+        var settings = await CoreSettings.GetSettingAsync(model.Key, tenantId);
 
         return Ok(new
         {
@@ -129,10 +131,10 @@ public class SettingsController : ControllerBase
 
     #region private methods
 
-    private bool GetTenant(SettingsModel model, out int tenantId, out object error)
+    private async Task<(bool, int, object)> GetTenantAsync(SettingsModel model)
     {
-        tenantId = -1;
-        error = null;
+        object error = null;
+        var tenantId = -1;
 
         if (model == null)
         {
@@ -144,16 +146,17 @@ public class SettingsController : ControllerBase
 
             Log.LogError("Model is null");
 
-            return false;
+            return (false, tenantId, error);
         }
 
         if (model.TenantId.HasValue && model.TenantId.Value == -1)
         {
             tenantId = model.TenantId.Value;
-            return true;
+            return (true, tenantId, error);
         }
 
-        if (!CommonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await CommonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             error = new
             {
@@ -163,7 +166,7 @@ public class SettingsController : ControllerBase
 
             Log.LogError("Model without tenant");
 
-            return false;
+            return (false, tenantId, error);
         }
 
         if (tenant == null)
@@ -176,11 +179,11 @@ public class SettingsController : ControllerBase
 
             Log.LogError("Tenant not found");
 
-            return false;
+            return (false, tenantId, error);
         }
 
         tenantId = tenant.Id;
-        return true;
+        return (true, tenantId, error);
     }
 
     #endregion

@@ -38,7 +38,7 @@ public class NotifyServiceSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public Task<NoticeSendResult> Send(NotifyMessage m)
+    public Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         _notifyServiceClient.SendNotifyMessage(m);
 

@@ -29,7 +29,11 @@ export default {
     },
   },
   argTypes: {
-    height: { description: "Property for story" },
+    height: {
+      table: {
+        disable: true,
+      },
+    },
   },
 };
 
@@ -151,27 +155,26 @@ export const Default = Template.bind({});
 Default.args = {
   height: "485px", // container height
   headerLabel: "Room list",
-  onBackClick: () => console.log("back click"),
+  onBackClick: () => {},
   searchPlaceholder: "Search",
   searchValue: "",
   items: renderedItems,
-  onSelect: (item) => console.log("select " + item),
+  onSelect: (item) => {},
   isMultiSelect: false,
   selectedItems: selectedItems,
   acceptButtonLabel: "Add",
-  onAccept: (items, access) => console.log("accept " + items + access),
+  onAccept: (items, access) => {},
   withSelectAll: false,
   selectAllLabel: "All accounts",
   selectAllIcon: ArchiveSvgUrl,
-  onSelectAll: () => console.log("select all"),
+  onSelectAll: () => {},
   withAccessRights: false,
   accessRights,
   selectedAccessRight,
-  onAccessRightsChange: (access) =>
-    console.log("access rights change " + access),
+  onAccessRightsChange: (access) => {},
   withCancelButton: false,
   cancelButtonLabel: "Cancel",
-  onCancel: () => console.log("cancel"),
+  onCancel: () => {},
   emptyScreenImage: EmptyScreenFilter,
   emptyScreenHeader: "No other accounts here yet",
   emptyScreenDescription:

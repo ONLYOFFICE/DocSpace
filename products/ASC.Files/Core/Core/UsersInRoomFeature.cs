@@ -49,7 +49,7 @@ public class UsersInRoomStatistic : ITenantQuotaFeatureStat<UsersInRoomFeature, 
         _serviceProvider = serviceProvider;
     }
 
-    public Task<int> GetValue()
+    public Task<int> GetValueAsync()
     {
         return Task.FromResult(0);
     }

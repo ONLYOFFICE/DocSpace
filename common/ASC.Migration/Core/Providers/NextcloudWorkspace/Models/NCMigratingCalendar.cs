@@ -67,7 +67,7 @@ public class NCMigratingCalendar : MigratingCalendar
         //}
     }
 
-    public override Task Migrate()
+    public override Task MigrateAsync()
     {
         if (!ShouldImport)
         {

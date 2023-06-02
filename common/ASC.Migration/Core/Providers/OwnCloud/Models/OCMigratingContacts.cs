@@ -92,7 +92,7 @@ public class OCMigratingContacts : MigratingContacts
         }*/
     }
 
-    public override Task Migrate()
+    public override Task MigrateAsync()
     {
         return Task.CompletedTask;
         /*

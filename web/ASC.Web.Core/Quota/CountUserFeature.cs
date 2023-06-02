@@ -39,14 +39,14 @@ public class CountUserChecker : TenantQuotaFeatureCheckerCount<CountUserFeature>
         _tariffService = tariffService;
     }
 
-    public override void CheckAdd(int tenantId, int newValue)
+    public override async Task CheckAddAsync(int tenantId, int newValue)
     {
-        if (_tariffService.GetTariff(tenantId).State > TariffState.Paid)
+        if ((await _tariffService.GetTariffAsync(tenantId)).State > TariffState.Paid)
         {
             throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "users");
         }
 
-        base.CheckAdd(tenantId, newValue);
+        await base.CheckAddAsync(tenantId, newValue);
     }
 }
 
@@ -59,9 +59,9 @@ public class CountUserStatistic : ITenantQuotaFeatureStat<CountUserFeature, int>
         _serviceProvider = serviceProvider;
     }
 
-    public Task<int> GetValue()
+    public async Task<int> GetValueAsync()
     {
         var userManager = _serviceProvider.GetService<UserManager>();
-        return Task.FromResult(userManager.GetUsersByGroup(Constants.GroupUser.ID).Length);
+        return (await userManager.GetUsersByGroupAsync(Constants.GroupUser.ID)).Length;
     }
 }

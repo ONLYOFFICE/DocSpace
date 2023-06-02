@@ -29,11 +29,11 @@ namespace ASC.Core;
 [Scope(typeof(CachedQuotaService))]
 public interface IQuotaService
 {
-    IEnumerable<TenantQuota> GetTenantQuotas();
-    IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
-    IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId);
-    TenantQuota GetTenantQuota(int id);
-    TenantQuota SaveTenantQuota(TenantQuota quota);
-    void RemoveTenantQuota(int id);
-    void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
+    Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync();
+    Task<IEnumerable<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId);
+    Task<IEnumerable<TenantQuotaRow>> FindUserQuotaRowsAsync(int tenantId, Guid userId);
+    Task<TenantQuota> GetTenantQuotaAsync(int id);
+    Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota);
+    Task RemoveTenantQuotaAsync(int id);
+    Task SetTenantQuotaRowAsync(TenantQuotaRow row, bool exchange);
 }

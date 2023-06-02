@@ -120,7 +120,7 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
   );
 };
 
-Tag.propTypes = {
+Tags.propTypes = {
   /** Accepts the tags */
   tags: PropTypes.array,
   /** Accepts the tag column count */
