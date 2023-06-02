@@ -69,12 +69,22 @@ const StyledTree = styled(Tree)`
         min-width: 8px;
         max-width: 9px;
         margin-top: -5px;
+        svg {
+          path {
+            fill: ${(props) => props.theme.treeNode.icon.color};
+          }
+        }
       }
       span.rc-tree-node-content-wrapper {
         width: 83%;
         span.rc-tree-iconEle {
           margin-right: 8px;
           vertical-align: 5px;
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.icon.color};
+            }
+          }
         }
         span.rc-tree-title {
           ${NoUserSelect}

@@ -7,7 +7,18 @@ export default {
   component: FloatingButton,
 };
 
-const Template = (args) => <FloatingButton {...args} />;
+const Template = (args) => (
+  <div
+    style={{
+      height: "600px",
+      display: "flex",
+      justifyContent: "flex-start",
+      position: "relative",
+    }}
+  >
+    <FloatingButton {...args} />
+  </div>
+);
 
 export const Default = Template.bind({});
 

@@ -99,6 +99,7 @@ const StyledEveryoneRoleContainer = styled.div`
 
 const StyledTooltip = styled.div`
   background: #f8f7bf;
+  color: #333;
   border-radius: 6px;
   font-weight: 400;
   font-size: 12px;

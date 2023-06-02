@@ -209,10 +209,10 @@ public class SetupInfo
 
     public async Task<long> MaxChunkedUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        var diskQuota = tenantManager.GetCurrentTenantQuota();
+        var diskQuota = await tenantManager.GetCurrentTenantQuotaAsync();
         if (diskQuota != null)
         {
-            var usedSize = await maxTotalSizeStatistic.GetValue();
+            var usedSize = await maxTotalSizeStatistic.GetValueAsync();
             var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
             return Math.Min(freeSize, diskQuota.MaxFileSize);
         }

@@ -2,6 +2,17 @@ import React from "react";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "./";
+import TooltipDocs from "./tooltip.mdx";
+
+export default {
+  title: "Components/Tooltip",
+  component: Tooltip,
+  parameters: {
+    docs: {
+      page: TooltipDocs,
+    },
+  },
+};
 
 const BodyStyle = { marginTop: 100, marginLeft: 200, position: "absolute" };
 

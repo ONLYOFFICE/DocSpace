@@ -317,7 +317,7 @@ const SortButton = ({
       >
         <ComboBox
           opened={isOpen}
-          toggleAction={toggleCombobox}
+          onToggle={toggleCombobox}
           className={"sort-combo-box"}
           options={[]}
           selectedOption={{}}

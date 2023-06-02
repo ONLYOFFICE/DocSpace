@@ -88,11 +88,6 @@ public class BackupProgressItem : BaseBackupProgressItem
 
     protected override async Task DoJob()
     {
-        if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
-        {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-        }
-
         await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
         _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -102,7 +97,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _tempStream = scope.ServiceProvider.GetService<TempStream>();
 
         var dateTime = _coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", _tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
+        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", (await _tenantManager.GetTenantAsync(TenantId)).Alias, dateTime, ArchiveFormat);
 
         var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
         var storagePath = tempFile;
@@ -110,7 +105,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
         try
         {
-            var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
+            var backupStorage = await _backupStorageFactory.GetBackupStorageAsync(_storageType, TenantId, StorageParams);
             var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
 
             _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
@@ -125,7 +120,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             if (writer.NeedUpload)
             {
-                storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
+                storagePath = await backupStorage.UploadAsync(_storageBasePath, tempFile, _userId);
                 hash = BackupWorker.GetBackupHash(tempFile);
             }
             else
@@ -133,11 +128,11 @@ public class BackupProgressItem : BaseBackupProgressItem
                 storagePath = writer.StoragePath;
                 hash = writer.Hash;
             }
-            Link = await backupStorage.GetPublicLink(storagePath);
+            Link = await backupStorage.GetPublicLinkAsync(storagePath);
 
             var repo = _backupRepository;
 
-            repo.SaveBackupRecord(
+            await repo.SaveBackupRecordAsync(
                 new BackupRecord
                 {
                     Id = Guid.Parse(Id),
@@ -158,7 +153,7 @@ public class BackupProgressItem : BaseBackupProgressItem
 
             if (_userId != Guid.Empty && !_isScheduled)
             {
-                _notifyHelper.SendAboutBackupCompleted(TenantId, _userId);
+                await _notifyHelper.SendAboutBackupCompletedAsync(TenantId, _userId);
             }
 
 

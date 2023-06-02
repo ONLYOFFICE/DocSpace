@@ -240,12 +240,12 @@ public class FileTrackerHelper
                 var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
                 var socketManager = scope.ServiceProvider.GetRequiredService<SocketManager>();
 
-                var docKey = helper.GetDocKey(await daoFactory.GetFileDao<T>().GetFileAsync(fileId));
+                var docKey = await helper.GetDocKeyAsync(await daoFactory.GetFileDao<T>().GetFileAsync(fileId));
 
                 if (await tracker.StartTrackAsync(fileId.ToString(), docKey))
                 {
                     _cache.Insert(Tracker + fileId, fileTracker, CacheTimeout, EvictionCallback(fileId, fileTracker));
-                    await socketManager.StartEdit(fileId);
+                    await socketManager.StartEditAsync(fileId);
                 }
             }
             catch (Exception e)

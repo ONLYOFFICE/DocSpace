@@ -80,12 +80,12 @@ public class NotifyClient
         _fileSecurity = fileSecurity;
     }
 
-    public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
+    public async Task SendDocuSignCompleteAsync<T>(File<T> file, string sourceTitle)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignComplete,
             file.UniqID,
             recipient,
@@ -96,13 +96,13 @@ public class NotifyClient
             );
     }
 
-    public void SendDocuSignStatus(string subject, string status)
+    public async Task SendDocuSignStatusAsync(string subject, string status)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignStatus,
             null,
             recipient,
@@ -112,13 +112,13 @@ public class NotifyClient
             );
     }
 
-    public void SendMailMergeEnd(Guid userId, int countMails, int countError)
+    public async Task SendMailMergeEndAsync(Guid userId, int countMails, int countError)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(userId.ToString());
 
-        client.SendNoticeAsync(
+        await client.SendNoticeAsync(
             NotifyConstants.EventMailMergeEnd,
             null,
             recipient,
@@ -173,15 +173,15 @@ public class NotifyClient
 
         foreach (var recipientPair in recipients)
         {
-            var u = _userManager.GetUsers(recipientPair.Key);
+            var u = await _userManager.GetUsersAsync(recipientPair.Key);
             var culture = string.IsNullOrEmpty(u.CultureName)
-                              ? _tenantManager.GetCurrentTenant().GetCulture()
+                              ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture()
                               : CultureInfo.GetCultureInfo(u.CultureName);
 
             var aceString = GetAccessString(recipientPair.Value, culture);
-            var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(u.Id.ToString());
 
-            client.SendNoticeAsync(
+            await client.SendNoticeAsync(
                 action,
                 fileEntry.UniqID,
                 recipient,
@@ -214,7 +214,7 @@ public class NotifyClient
         var folderDao = _daoFactory.GetFolderDao<int>();
 
         var (roomId, roomTitle) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
-        var roomUrl = _pathProvider.GetRoomsUrl(roomId);
+        var roomUrl = _pathProvider.GetRoomsUrl(roomId);       
 
         var room = await folderDao.GetFolderAsync(roomId);
 
@@ -227,21 +227,21 @@ public class NotifyClient
 
             var u = _userManager.GetUsers(recipientId);
 
-            if (!_studioNotifyHelper.IsSubscribedToNotify(u, Actions.RoomsActivity))
+            if (!await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.RoomsActivity))
             {
                 continue;
             }
 
-            var recipient = recipientsProvider.GetRecipient(recipientId.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(recipientId.ToString());
 
-            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(recipientId);
+            var disabledRooms = await _roomsNotificationSettingsHelper.GetDisabledRoomsForUserAsync(recipientId);
 
             if (disabledRooms.Contains(roomId))
             {
                 continue;
             }
 
-            client.SendNoticeAsync(
+            await client.SendNoticeAsync(
                 NotifyConstants.EventEditorMentions,
                 file.UniqID,
                 recipient,
@@ -255,7 +255,7 @@ public class NotifyClient
         }
     }
 
-    public void SendRoomRemoved<T>(FileEntry<T> folder, List<AceWrapper> aces, Guid userId)
+    public async Task SendRoomRemovedAsync<T>(FileEntry<T> folder, List<AceWrapper> aces, Guid userId)
     {
         if (folder == null || folder.FileEntryType != FileEntryType.Folder || aces.Count == 0)
         {
@@ -279,21 +279,21 @@ public class NotifyClient
                 continue;
             }
 
-            if (!_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.RoomsActivity))
+            if (!await _studioNotifyHelper.IsSubscribedToNotifyAsync(userId, Actions.RoomsActivity))
             {
                 continue;
             }
 
-            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(userId).Select(d => d.ToString());
+            var disabledRooms = (await _roomsNotificationSettingsHelper.GetDisabledRoomsForUserAsync(userId)).Select(d => d.ToString());
 
             if (disabledRooms.Contains(folderId))
             {
                 continue;
             }
 
-            var recipient = recipientsProvider.GetRecipient(recepientId.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(recepientId.ToString());
 
-            client.SendNoticeAsync(
+            await client.SendNoticeAsync(
                 NotifyConstants.EventRoomRemoved,
                 folder.UniqID,
                 recipient,

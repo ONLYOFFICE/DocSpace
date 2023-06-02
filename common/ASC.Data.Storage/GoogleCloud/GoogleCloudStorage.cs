@@ -195,7 +195,7 @@ public class GoogleCloudStorage : BaseStorage
 
         if (EnableQuotaCheck(domain))
         {
-            QuotaController.QuotaUsedCheck(buffered.Length);
+            await QuotaController.QuotaUsedCheckAsync(buffered.Length);
         }
 
         var mime = string.IsNullOrEmpty(contentType)
@@ -236,7 +236,7 @@ public class GoogleCloudStorage : BaseStorage
 
         //           InvalidateCloudFront(MakePath(domain, path));
 
-        await QuotaUsedAdd(domain, buffered.Length);
+        await QuotaUsedAddAsync(domain, buffered.Length);
 
         return await GetUriAsync(domain, path);
     }
@@ -250,7 +250,7 @@ public class GoogleCloudStorage : BaseStorage
 
         await storage.DeleteObjectAsync(_bucket, key);
 
-        await QuotaUsedDelete(domain, size);
+        await QuotaUsedDeleteAsync(domain, size);
     }
 
     public override async Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
@@ -273,22 +273,17 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDeleteAsync(domain, Convert.ToInt64(obj.Size));
         }
     }
 
-    public override Task DeleteFilesAsync(string domain, List<string> paths)
+    public async override Task DeleteFilesAsync(string domain, List<string> paths)
     {
         if (paths.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalDeleteFilesAsync(domain, paths);
-    }
-
-    private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
-    {
         var keysToDel = new List<string>();
 
         long quotaUsed = 0;
@@ -327,7 +322,7 @@ public class GoogleCloudStorage : BaseStorage
 
         if (quotaUsed > 0)
         {
-            await QuotaUsedDelete(domain, quotaUsed);
+            await QuotaUsedDeleteAsync(domain, quotaUsed);
         }
     }
 
@@ -341,7 +336,7 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDeleteAsync(domain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -380,17 +375,17 @@ public class GoogleCloudStorage : BaseStorage
 
         await DeleteAsync(srcdomain, srcpath);
 
-        await QuotaUsedDelete(srcdomain, size);
-        await QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
+        await QuotaUsedDeleteAsync(srcdomain, size);
+        await QuotaUsedAddAsync(newdomain, size, quotaCheckFileSize);
 
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
+        var assignedPath = Guid.NewGuid().ToString();
 
-        return SaveAsync(domain, assignedPath, stream);
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)
@@ -457,7 +452,7 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDeleteAsync(domain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -509,7 +504,7 @@ public class GoogleCloudStorage : BaseStorage
                 }
             }
 
-            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
+            await QuotaController.QuotaUsedSetAsync(Modulename, domain, DataList.GetData(domain), size);
 
             return size;
         }
@@ -551,7 +546,7 @@ public class GoogleCloudStorage : BaseStorage
 
         await storage.CopyObjectAsync(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
 
-        await QuotaUsedAdd(newdomain, size);
+        await QuotaUsedAddAsync(newdomain, size);
 
         return await GetUriAsync(newdomain, newpath);
     }
@@ -573,7 +568,7 @@ public class GoogleCloudStorage : BaseStorage
                 DestinationPredefinedAcl = GetDomainACL(newdomain)
             });
 
-            await QuotaUsedAdd(newdomain, Convert.ToInt64(obj.Size));
+            await QuotaUsedAddAsync(newdomain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -736,7 +731,7 @@ public class GoogleCloudStorage : BaseStorage
         if (QuotaController != null)
         {
             var size = await GetFileSizeAsync(domain, path);
-            await QuotaUsedAdd(domain, size);
+            await QuotaUsedAddAsync(domain, size);
         }
 
         return await GetUriAsync(domain, path);
@@ -781,11 +776,11 @@ public class GoogleCloudStorage : BaseStorage
         return StorageClient.Create(credential);
     }
 
-    private Task<StorageClient> GetStorageAsync()
+    private async Task<StorageClient> GetStorageAsync()
     {
         var credential = GoogleCredential.FromJson(_json);
 
-        return StorageClient.CreateAsync(credential);
+        return await StorageClient.CreateAsync(credential);
     }
 
     private string MakePath(string domain, string path)

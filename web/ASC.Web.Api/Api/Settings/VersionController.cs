@@ -57,19 +57,19 @@ public class VersionController : BaseSettingsController
     }
 
     [HttpGet("version")]
-    public TenantVersionDto GetVersions()
+    public async Task<TenantVersionDto> GetVersionsAsync()
     {
-        return new TenantVersionDto(Tenant.Version, _tenantManager.GetTenantVersions());
+        return new TenantVersionDto(Tenant.Version, await _tenantManager.GetTenantVersionsAsync());
     }
 
     [HttpPut("version")]
-    public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
+    public async Task<TenantVersionDto> SetVersionAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _tenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == inDto.VersionId).NotFoundIfNull();
-        _tenantManager.SetTenantVersion(Tenant, inDto.VersionId);
+        (await _tenantManager.GetTenantVersionsAsync()).FirstOrDefault(r => r.Id == inDto.VersionId).NotFoundIfNull();
+        await _tenantManager.SetTenantVersionAsync(Tenant, inDto.VersionId);
 
-        return GetVersions();
+        return await GetVersionsAsync();
     }
 }

@@ -45,7 +45,15 @@ export const data = [
         onRowClick={function noRefCheck() {}}
         onSelect={function noRefCheck() {}}
       >
-        <Text truncate>Sample text</Text>
+        <div
+          style={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            display: "flex",
+          }}
+        >
+          <Text truncate>Sample text</Text>
+        </div>
       </Row>
     ),
   },

@@ -15,19 +15,16 @@ export default {
   },
   argTypes: {
     type: {
-      description: "Accepts room type",
-      control: {
-        type: "select",
-        options: ["EditingRoom", "CustomRoom"],
-      },
+      options: ["Editing Room", "Custom Room"],
+      control: { type: "select" },
     },
   },
 };
 
 const Template = (args) => {
   const RoomType = {
-    EditingRoom: 2,
-    CustomRoom: 5,
+    "Editing Room": 2,
+    "Custom Room": 5,
   };
   return <RoomLogo {...args} type={RoomType[args.type]} />;
 };
@@ -35,7 +32,7 @@ const Template = (args) => {
 export const Default = Template.bind({});
 
 Default.args = {
-  type: "EditingRoom",
+  type: "Editing Room",
   isPrivacy: false,
   isArchive: false,
   withCheckbox: false,

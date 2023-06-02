@@ -56,7 +56,7 @@ public class CustomTagsService
 
     public async Task<string> CreateTagAsync(string name)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -80,14 +80,14 @@ public class CustomTagsService
 
         var savedTag = await tagDao.SaveTagInfoAsync(tagInfo);
 
-        _filesMessageService.Send(Headers, MessageAction.TagCreated, savedTag.Name);
+        await _filesMessageService.SendAsync(Headers, MessageAction.TagCreated, savedTag.Name);
 
         return savedTag.Name;
     }
 
     public async Task DeleteTagsAsync<T>(IEnumerable<string> names)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -103,7 +103,7 @@ public class CustomTagsService
 
         await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
+        await _filesMessageService.SendAsync(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync<T>(T folderId, IEnumerable<string> names)
@@ -128,7 +128,7 @@ public class CustomTagsService
 
         await tagDao.SaveTags(tags);
 
-        _ = _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }
@@ -153,7 +153,7 @@ public class CustomTagsService
 
         await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _ = _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }

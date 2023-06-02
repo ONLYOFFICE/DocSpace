@@ -21,13 +21,16 @@ class InfoPanelStore {
   isMobileHidden = false;
 
   selection = null;
+  selectionHistory = null;
   selectionParentRoom = null;
+  selectionHistory = null;
 
   roomsView = "info_details";
   fileView = "info_history";
 
   updateRoomMembers = null;
   isScrollLocked = false;
+  historyWithFileList = false;
 
   authStore = null;
   settingsStore = null;
@@ -47,6 +50,7 @@ class InfoPanelStore {
     this.isVisible = bool;
     this.isScrollLocked = false;
   };
+
   setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
@@ -59,7 +63,14 @@ class InfoPanelStore {
     this.selection = selection;
     this.isScrollLocked = false;
   };
+
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
+  setSelectionHistory = (obj) => (this.selectionHistory = obj);
+
+  setSelectionHistory = (obj) => {
+    this.selectionHistory = obj;
+    this.historyWithFileList = this.selection.isFolder || this.selection.isRoom;
+  };
 
   setView = (view) => {
     this.roomsView = view;

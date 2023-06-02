@@ -331,7 +331,7 @@ public class UserPhotoManager
 
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
             string photoUrl;
             string fileName;
             if (data == null || data.Length == 0)
@@ -341,7 +341,7 @@ public class UserPhotoManager
             }
             else
             {
-                (photoUrl, fileName) = await SaveOrUpdatePhoto(userID, data, -1, new Size(-1, -1), false);
+                (photoUrl, fileName) = await SaveOrUpdatePhotoAsync(userID, data, -1, new Size(-1, -1), false);
             }
 
             _userPhotoManagerCache.AddToCache(userID, Size.Empty, fileName, _tenantManager.GetCurrentTenant().Id);
@@ -385,7 +385,7 @@ public class UserPhotoManager
 
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
 
             if (data == null || data.Length == 0)
             {
@@ -437,7 +437,7 @@ public class UserPhotoManager
 
         if (!string.IsNullOrEmpty(fileName))
         {
-            var store = GetDataStore();
+            var store = await GetDataStoreAsync();
             var uri = await store.GetUriAsync(fileName);
 
             return uri.ToString();
@@ -453,7 +453,7 @@ public class UserPhotoManager
         {
             try
             {
-                var listFileNames = await GetDataStore().ListFilesRelativeAsync("", "", "*.*", false).ToArrayAsync();
+                var listFileNames = await (await GetDataStoreAsync()).ListFilesRelativeAsync("", "", "*.*", false).ToArrayAsync();
                 foreach (var fileName in listFileNames)
                 {
                     //Try parse fileName
@@ -482,23 +482,23 @@ public class UserPhotoManager
         }
         _semaphore.Release();
     }
-    public void ResetThumbnailSettings(Guid userId)
+    public async Task ResetThumbnailSettingsAsync(Guid userId)
     {
         var thumbSettings = _settingsManager.GetDefault<UserPhotoThumbnailSettings>();
-        _settingsManager.Save(thumbSettings, userId);
+        await _settingsManager.SaveAsync(thumbSettings, userId);
     }
 
     public async Task<(string, string)> SaveOrUpdatePhoto(Guid userID, byte[] data)
     {
-        return await SaveOrUpdatePhoto(userID, data, -1, OriginalFotoSize, true);
+        return await SaveOrUpdatePhotoAsync(userID, data, -1, OriginalFotoSize, true);
     }
 
-    public async Task RemovePhoto(Guid idUser)
+    public async Task RemovePhotoAsync(Guid idUser)
     {
-        _userManager.SaveUserPhoto(idUser, null);
+        await _userManager.SaveUserPhotoAsync(idUser, null);
         try
         {
-            var storage = GetDataStore();
+            var storage = await GetDataStoreAsync();
             await storage.DeleteFilesAsync("", idUser + "*.*", false);
         }
         catch (AggregateException e)
@@ -517,20 +517,20 @@ public class UserPhotoManager
             _log.ErrorRemovePhoto(e);
         }
 
-        _userManager.SaveUserPhoto(idUser, null);
-        _userPhotoManagerCache.ClearCache(idUser, _tenantManager.GetCurrentTenant().Id);
+        await _userManager.SaveUserPhotoAsync(idUser, null);
+        _userPhotoManagerCache.ClearCache(idUser, await _tenantManager.GetCurrentTenantIdAsync());
     }
 
-    public void SyncPhoto(Guid userID, byte[] data)
+    public async Task SyncPhotoAsync(Guid userID, byte[] data)
     {
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
-        _userManager.SaveUserPhoto(userID, data);
-        SetUserPhotoThumbnailSettings(userID, width, height);
-     //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+        await _userManager.SaveUserPhotoAsync(userID, data);
+        await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
+        //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
     }
 
 
-    private async Task<(string, string)> SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext)
+    private async Task<(string, string)> SaveOrUpdatePhotoAsync(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext)
     {
         data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
 
@@ -539,12 +539,12 @@ public class UserPhotoManager
 
         if (saveInCoreContext)
         {
-            _userManager.SaveUserPhoto(userID, data);
-            SetUserPhotoThumbnailSettings(userID, width, height);
-          // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+            await _userManager.SaveUserPhotoAsync(userID, data);
+            await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
+            // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
         }
 
-        var store = GetDataStore();
+        var store = await GetDataStoreAsync();
 
         var photoUrl = GetDefaultPhotoAbsoluteWebPath();
         if (data != null && data.Length > 0)
@@ -565,9 +565,9 @@ public class UserPhotoManager
         return (photoUrl, fileName);
     }
 
-    private void SetUserPhotoThumbnailSettings(Guid userId, int width, int height)
+    private async Task SetUserPhotoThumbnailSettingsAsync(Guid userId, int width, int height)
     {
-        var settings = _settingsManager.Load<UserPhotoThumbnailSettings>(userId);
+        var settings = await _settingsManager.LoadAsync<UserPhotoThumbnailSettings>(userId);
 
         if (!settings.IsDefault)
         {
@@ -583,7 +583,7 @@ public class UserPhotoManager
             width >= height ? new Point(pos, 0) : new Point(0, pos),
             new Size(min, min));
 
-        _settingsManager.Save(settings, userId);
+        await _settingsManager.SaveAsync(settings, userId);
     }
 
     private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out IImageFormat imgFormat, out int width, out int height)
@@ -681,7 +681,7 @@ public class UserPhotoManager
             throw new ImageWeightLimitException();
         }
 
-        var resizeTask = new ResizeWorkerItem(_tenantManager.GetCurrentTenant().Id, userID, data, maxFileSize, size, GetDataStore(), _settingsManager.Load<UserPhotoThumbnailSettings>(userID));
+        var resizeTask = new ResizeWorkerItem(await _tenantManager.GetCurrentTenantIdAsync(), userID, data, maxFileSize, size, await GetDataStoreAsync(), await _settingsManager.LoadAsync<UserPhotoThumbnailSettings>(userID));
         var key = $"{userID}{size}";
         resizeTask["key"] = key;
 
@@ -707,7 +707,7 @@ public class UserPhotoManager
     {
         try
         {
-            _tenantManager.SetCurrentTenant(item.TenantId);
+            await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
             var data = item.Data;
             using var stream = new MemoryStream(data);
@@ -742,7 +742,7 @@ public class UserPhotoManager
 
     public async Task<string> GetTempPhotoAbsoluteWebPath(string fileName)
     {
-        return (await GetDataStore().GetUriAsync(_tempDomainName, fileName)).ToString();
+        return (await (await GetDataStoreAsync()).GetUriAsync(_tempDomainName, fileName)).ToString();
     }
 
     public async Task<string> SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
@@ -751,7 +751,7 @@ public class UserPhotoManager
 
         var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 
-        var store = GetDataStore();
+        var store = await GetDataStoreAsync();
         using var stream = new MemoryStream(data);
         return (await store.SaveAsync(_tempDomainName, fileName, stream)).ToString();
     }
@@ -765,13 +765,13 @@ public class UserPhotoManager
 
         using var stream = new MemoryStream(data);
         var fileName = Guid.NewGuid() + $".{ext}";
-        var store = GetDataStore();
+        var store = await GetDataStoreAsync();
         return (await store.SaveAsync(_tempDomainName, fileName, stream)).ToString();
     }
 
     public async Task<byte[]> GetTempPhotoData(string fileName)
     {
-        using var s = await GetDataStore().GetReadStreamAsync(_tempDomainName, fileName);
+        using var s = await (await GetDataStoreAsync()).GetReadStreamAsync(_tempDomainName, fileName);
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
 
@@ -789,16 +789,16 @@ public class UserPhotoManager
         return data.ToArray();
     }
 
-    public async Task<string> GetSizedTempPhotoAbsoluteWebPath(string fileName, int newWidth, int newHeight)
+    public async Task<string> GetSizedTempPhotoAbsoluteWebPathAsync(string fileName, int newWidth, int newHeight)
     {
-        var store = GetDataStore();
+        var store = await GetDataStoreAsync();
         if (await store.IsFileAsync(_tempDomainName, fileName))
         {
             using var s = await store.GetReadStreamAsync(_tempDomainName, fileName);
             using var img = Image.Load(s);
 
             var imgFormat = img.Metadata.DecodedImageFormat;
-            
+
             byte[] data;
 
             if (img.Width != newWidth || img.Height != newHeight)
@@ -822,36 +822,37 @@ public class UserPhotoManager
         return GetDefaultPhotoAbsoluteWebPath(new Size(newWidth, newHeight));
     }
 
-    public async Task RemoveTempPhoto(string fileName)
+    public async Task RemoveTempPhotoAsync(string fileName)
     {
         var index = fileName.LastIndexOf('.');
         var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
         try
         {
-            var store = GetDataStore();
+            var store = await GetDataStoreAsync();
             await store.DeleteFilesAsync(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
         }
         catch { }
     }
 
 
-    public Image GetPhotoImage(Guid userID, out IImageFormat format)
+    public async Task<(Image, IImageFormat)> GetPhotoImageAsync(Guid userID)
     {
+        IImageFormat format;
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
             if (data != null)
             {
                 var img = Image.Load(data);
-                
+
                 format = img.Metadata.DecodedImageFormat;
 
-                return img;
+                return (img, format);
             }
         }
         catch { }
         format = null;
-        return null;
+        return (null, format);
     }
 
     public async Task<string> SaveThumbnail(Guid userID, Image img, IImageFormat format)
@@ -861,7 +862,7 @@ public class UserPhotoManager
         var size = img.Size;
         var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", moduleID == Guid.Empty ? "" : moduleID.ToString(), userID, img.Width, img.Height, widening);
 
-        var store = GetDataStore();
+        var store = await GetDataStoreAsync();
         string photoUrl;
         using (var s = new MemoryStream(CommonPhotoManager.SaveToBytes(img)))
         {
@@ -879,14 +880,14 @@ public class UserPhotoManager
         {
             var pattern = string.Format("{0}_size_{1}-{2}.*", userId, size.Width, size.Height);
 
-            var fileName = await GetDataStore().ListFilesRelativeAsync("", "", pattern, false).FirstOrDefaultAsync();
+            var fileName = await (await GetDataStoreAsync()).ListFilesRelativeAsync("", "", pattern, false).FirstOrDefaultAsync();
 
             if (string.IsNullOrEmpty(fileName))
             {
                 return null;
             }
 
-            using var s = await GetDataStore().GetReadStreamAsync("", fileName);
+            using var s = await (await GetDataStoreAsync()).GetReadStreamAsync("", fileName);
             var data = new MemoryStream();
             var buffer = new byte[1024 * 10];
             while (true)
@@ -909,9 +910,9 @@ public class UserPhotoManager
     }
 
     private IDataStore _dataStore;
-    private IDataStore GetDataStore()
+    private async ValueTask<IDataStore> GetDataStoreAsync()
     {
-        return _dataStore ??= _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "userPhotos");
+        return _dataStore ??= await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "userPhotos");
     }
 
     public static CacheSize ToCache(Size size)

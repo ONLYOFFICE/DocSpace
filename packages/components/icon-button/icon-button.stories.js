@@ -28,20 +28,20 @@ export default {
     iconName: {
       control: {
         type: "select",
-        options: [
-          SearchReactSvgUrl,
-          EyeReactSvgUrl,
-          InfoReactSvgUrl,
-          MailReactSvgUrl,
-          CatalogPinReactSvgUrl,
-          CrossReactSvgUrl,
-          MediaMuteReactSvgUrl,
-          NavLogoReactSvg,
-          PersonReactSvg,
-          QuestionReactSvg,
-          SettingsReactSvg,
-        ],
       },
+      options: [
+        SearchReactSvgUrl,
+        EyeReactSvgUrl,
+        InfoReactSvgUrl,
+        MailReactSvgUrl,
+        CatalogPinReactSvgUrl,
+        CrossReactSvgUrl,
+        MediaMuteReactSvgUrl,
+        NavLogoReactSvg,
+        PersonReactSvg,
+        QuestionReactSvg,
+        SettingsReactSvg,
+      ],
     },
   },
 };

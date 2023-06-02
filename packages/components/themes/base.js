@@ -241,10 +241,10 @@ const Base = {
   },
 
   mainButton: {
-    backgroundColor: orangeMain,
-    disableBackgroundColor: orangeDisabled,
-    hoverBackgroundColor: orangeHover,
-    clickBackgroundColor: orangePressed,
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgba(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgba(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
@@ -1302,6 +1302,9 @@ const Base = {
         width: "85%",
       },
     },
+    icon: {
+      color: grayMain,
+    },
 
     draggable: {
       color: cyanBlueDarkShade,
@@ -1877,6 +1880,7 @@ const Base = {
       height: "36px",
       padding: "0 12px",
       marginBottom: "16px",
+      background: "#fff",
       tablet: {
         height: "44px",
         padding: "0 12px",

@@ -37,7 +37,7 @@ public class TelegramDao
         _dbContextFactory = dbContextFactory;
     }
 
-    public void RegisterUser(Guid userId, int tenantId, long telegramId)
+    public async Task RegisterUserAsync(Guid userId, int tenantId, long telegramId)
     {
         var user = new TelegramUser
         {
@@ -47,42 +47,42 @@ public class TelegramDao
         };
 
         using var dbContext = _dbContextFactory.CreateDbContext();
-        dbContext.AddOrUpdate(dbContext.Users, user);
-        dbContext.SaveChanges();
+        await dbContext.AddOrUpdateAsync(q => q.Users, user);
+        await dbContext.SaveChangesAsync();
     }
 
-    public TelegramUser GetUser(Guid userId, int tenantId)
+    public async Task<TelegramUser> GetUserAsync(Guid userId, int tenantId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        return dbContext.Users.Find(tenantId, userId);
+        return await dbContext.Users.FindAsync(tenantId, userId);
     }
 
-    public List<TelegramUser> GetUser(long telegramId)
+    public async Task<List<TelegramUser>> GetUsersAsync(long telegramId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        return dbContext.Users
+        return await dbContext.Users
             .AsNoTracking()
             .Where(r => r.TelegramUserId == telegramId)
-            .ToList();
+            .ToListAsync();
     }
 
-    public void Delete(Guid userId, int tenantId)
+    public async Task DeleteAsync(Guid userId, int tenantId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        dbContext.Users
+        await dbContext.Users
             .Where(r => r.PortalUserId == userId)
             .Where(r => r.TenantId == tenantId)
-            .ExecuteDelete();
+            .ExecuteDeleteAsync();
     }
 
-    public void Delete(long telegramId)
+    public async Task DeleteAsync(long telegramId)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        dbContext.Users
+        await dbContext.Users
             .Where(r => r.TelegramUserId == telegramId)
-            .ExecuteDelete();
+            .ExecuteDeleteAsync();
     }
 }

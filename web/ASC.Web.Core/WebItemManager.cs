@@ -226,7 +226,7 @@ public class WebItemManagerSecurity
         var copy = _webItemManager.GetItemsAll().ToList();
         var list = copy.Where(item =>
             {
-                if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(_webItemSecurity, _authContext))
+                if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabledAsync(_webItemSecurity, _authContext).Result)
                 {
                     return false;
                 }

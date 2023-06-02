@@ -40,10 +40,10 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task AddOrUpdate(InstanceRegistration obj)
+    public async Task AddOrUpdateAsync(InstanceRegistration obj)
     {
         using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        var inst = _instanceRegistrationContext.InstanceRegistrations.Find(obj.InstanceRegistrationId);
+        var inst = await _instanceRegistrationContext.InstanceRegistrations.FindAsync(obj.InstanceRegistrationId);
 
         if (inst == null)
         {
@@ -58,7 +58,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
         do
         {
-            saveFailed = false;
+            saveFailed = false; 
 
             try
             {
@@ -81,7 +81,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         while (saveFailed);
     }
 
-    public async Task<IEnumerable<InstanceRegistration>> GetAll()
+    public async Task<IEnumerable<InstanceRegistration>> GetAllAsync()
     {
         using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         return await _instanceRegistrationContext.InstanceRegistrations
@@ -89,10 +89,10 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
                                                 .ToListAsync();
     }
 
-    public async Task Delete(string instanceId)
+    public async Task DeleteAsync(string instanceId)
     {
         using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        var item = _instanceRegistrationContext.InstanceRegistrations.Find(instanceId);
+        var item = await _instanceRegistrationContext.InstanceRegistrations.FindAsync(instanceId);
 
         if (item == null)
         {

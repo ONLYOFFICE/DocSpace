@@ -369,7 +369,7 @@ public class FilesLinkUtility
                                         contentLength,
                                         tenantId,
                                         HttpUtility.UrlEncode(_instanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
-                                        Thread.CurrentThread.CurrentUICulture.Name,
+                                        CultureInfo.CurrentUICulture.Name,
                                         encrypted.ToString().ToLower());
 
         if (fileId != null)
@@ -430,7 +430,7 @@ public class FilesLinkUtility
 
         if (GetUrlSetting(key) != value)
         {
-            _coreSettings.SaveSetting(GetSettingsKey(key), value);
+             _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 

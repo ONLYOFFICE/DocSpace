@@ -69,12 +69,19 @@ public class EncryptionSettingsHelper
         _instanceCrypto = instanceCrypto;
     }
 
-    public void Save(EncryptionSettings encryptionSettings)
+    public async Task SaveAsync(EncryptionSettings encryptionSettings)
     {
         var settings = Serialize(encryptionSettings);
-        _coreConfiguration.SaveSetting(Key, settings);
+        await _coreConfiguration.SaveSettingAsync(Key, settings);
 
         _ascCacheNotify.ClearCache();
+    }
+
+    public async Task<EncryptionSettings> LoadAsync()
+    {
+        var settings = await _coreConfiguration.GetSettingAsync(Key);
+
+        return Deserialize(settings);
     }
 
     public EncryptionSettings Load()
