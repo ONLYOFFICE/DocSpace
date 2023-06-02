@@ -18,8 +18,6 @@ import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
-import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-
 import { StyledHeader } from "./StyledHeader";
 
 const Header = (props) => {
@@ -113,9 +111,9 @@ const Header = (props) => {
       )}
       <Headline className="header-headline" type="content" truncate={true}>
         {t("Profile:MyProfile")}
-        {profile.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
+        {profile?.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
       </Headline>
-      {((isAdmin && !profile.isOwner) || isMe) && (
+      {((isAdmin && !profile?.isOwner) || isMe) && (
         <ContextMenuButton
           className="action-button"
           directionX="right"
@@ -132,7 +130,7 @@ const Header = (props) => {
         <DeleteSelfProfileDialog
           visible={deleteSelfProfileDialog}
           onClose={() => setDeleteSelfProfileDialog(false)}
-          email={profile.email}
+          email={profile?.email}
         />
       )}
 
@@ -178,9 +176,5 @@ export default inject(({ auth, peopleStore }) => {
     setChangeAvatarVisible,
   };
 })(
-  observer(
-    withTranslation(["Profile", "Common", "PeopleTranslations"])(
-      withPeopleLoader(Header)(<Loaders.SectionHeader />)
-    )
-  )
+  observer(withTranslation(["Profile", "Common", "PeopleTranslations"])(Header))
 );

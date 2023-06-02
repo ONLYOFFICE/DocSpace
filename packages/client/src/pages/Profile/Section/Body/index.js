@@ -5,7 +5,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
@@ -92,10 +91,6 @@ export default inject(({ auth }) => {
       "BackupCodesDialog",
       "DeleteSelfProfileDialog",
       "Notifications",
-    ])(
-      withPeopleLoader(SectionBodyContent)(
-        <Loaders.ProfileView isProfileView />
-      )
-    )
+    ])(SectionBodyContent)
   )
 );

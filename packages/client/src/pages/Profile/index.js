@@ -22,10 +22,9 @@ class Profile extends React.Component {
       profile,
       t,
       setDocumentTitle,
-      setFirstLoad,
-      setIsLoading,
+
       setIsEditTargetUser,
-      setLoadedProfile,
+
       isVisitor,
       selectedTreeNode,
       setSelectedNode,
@@ -33,7 +32,6 @@ class Profile extends React.Component {
     } = this.props;
     const userId = "@self";
 
-    setFirstLoad(false);
     setFirstLoadGlobal(false);
     setIsEditTargetUser(false);
 
@@ -54,12 +52,7 @@ class Profile extends React.Component {
     //   toastr.success(t("ChangeEmailSuccess"));
     // }
     if (!profile || profile.userName !== userId) {
-      setIsLoading(true);
-      setLoadedProfile(false);
-      fetchProfile(userId).finally(() => {
-        setIsLoading(false);
-        setLoadedProfile(true);
-      });
+      fetchProfile(userId).finally(() => {});
     }
 
     if (!profile && this.documentElement) {
@@ -70,13 +63,13 @@ class Profile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { fetchProfile, profile, setIsLoading } = this.props;
+    const { fetchProfile, profile } = this.props;
     // const { userId } = match.params;
     // const prevUserId = prevProps.match.params.userId;
 
     // if (userId !== undefined && userId !== prevUserId) {
-    //   setIsLoading(true);
-    //   fetchProfile(userId).finally(() => setIsLoading(false));
+
+    //   fetchProfile(userId);
     // }
 
     if (profile && this.documentElement) {
@@ -121,14 +114,14 @@ Profile.propTypes = {
 export default inject(({ auth, peopleStore, filesStore, treeFoldersStore }) => {
   const { setDocumentTitle, language } = auth;
   const { setFirstLoad: setFirstLoadGlobal } = filesStore;
-  const { targetUserStore, loadingStore } = peopleStore;
+  const { targetUserStore } = peopleStore;
   const {
     getTargetUser: fetchProfile,
     targetUser: profile,
     isEditTargetUser,
     setIsEditTargetUser,
   } = targetUserStore;
-  const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+
   const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
   return {
     setFirstLoadGlobal,
@@ -136,11 +129,10 @@ export default inject(({ auth, peopleStore, filesStore, treeFoldersStore }) => {
     language,
     fetchProfile,
     profile,
-    setFirstLoad,
-    setIsLoading,
+
     isEditTargetUser,
     setIsEditTargetUser,
-    setLoadedProfile,
+
     showCatalog: auth.settingsStore.showCatalog,
     selectedTreeNode,
     setSelectedNode,

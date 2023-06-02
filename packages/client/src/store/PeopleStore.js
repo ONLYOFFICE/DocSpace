@@ -16,7 +16,7 @@ import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
-import LoadingStore from "./LoadingStore";
+
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import {
   isMobile,
@@ -44,7 +44,6 @@ class PeopleStore {
   avatarEditorStore = null;
   inviteLinksStore = null;
   dialogStore = null;
-  loadingStore = null;
   setupStore = null;
   accessRightsStore = null;
   isInit = false;
@@ -64,7 +63,7 @@ class PeopleStore {
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
-    this.loadingStore = new LoadingStore();
+
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
     this.dialogsStore = dialogsStore;
@@ -86,13 +85,10 @@ class PeopleStore {
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
     await this.authStore.tfaStore.getTfaType();
-
-    this.loadingStore.setIsLoaded(true);
   };
 
   reset = () => {
     this.isInit = false;
-    this.loadingStore.setIsLoaded(false);
   };
 
   resetFilter = () => {
