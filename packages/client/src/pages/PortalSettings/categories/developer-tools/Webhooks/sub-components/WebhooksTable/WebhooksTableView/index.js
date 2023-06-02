@@ -8,8 +8,7 @@ import TableContainer from "@docspace/components/table-container/TableContainer"
 import TableBody from "@docspace/components/table-container/TableBody";
 
 import { WebhooksTableRow } from "./WebhooksTableRow";
-
-import { WebhookTableHeader } from "./WebhookTableHeader";
+import WebhookTableHeader from "./WebhookTableHeader";
 
 import { Base } from "@docspace/components/themes";
 
