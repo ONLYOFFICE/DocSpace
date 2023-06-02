@@ -4,6 +4,8 @@ on:
   push:
     branches:
     - release/*
+    - develop
+    - hotfix/*
     paths:
     - build/install/deb**
     - build/install/rpm**
