@@ -50,7 +50,7 @@ const Navigation = ({
   isDesktop: isDesktopClient,
   isRoom,
   hideInfoPanel,
-  showRootFolderTitle = true,
+  showRootFolderTitle,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);

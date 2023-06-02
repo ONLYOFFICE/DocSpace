@@ -196,7 +196,7 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
     pathParts,
-    emptyTrashInProgress
+    emptyTrashInProgress,
   } = props;
 
   const navigate = useNavigate();
@@ -875,6 +875,7 @@ const SectionHeaderContent = (props) => {
                 isEmptyPage={isEmptyPage}
                 isRoom={isRoom}
                 hideInfoPanel={isSettingsPage}
+                showRootFolderTitle={isRoom}
               />
             </div>
           )}
