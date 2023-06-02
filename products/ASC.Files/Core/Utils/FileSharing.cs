@@ -561,7 +561,7 @@ public class FileSharing
             {
                 w.Link = r.SubjectType == SubjectType.InvitationLink ? 
                     _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) : 
-                    _externalShare.GetLink(r.Subject);
+                    await _externalShare.GetLinkAsync(r.Subject);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
                 w.FileShareOptions.Password = await _externalShare.GetPasswordAsync(w.FileShareOptions.Password);
@@ -599,7 +599,7 @@ public class FileSharing
             var externalAceTemplate = new AceWrapper
             {
                 Id = externalId,
-                Link = _externalShare.GetLink(externalId),
+                Link = await _externalShare.GetLinkAsync(externalId),
                 SubjectGroup = true,
                 Access = FileShare.Read,
                 Owner = false,

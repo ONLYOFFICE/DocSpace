@@ -53,9 +53,9 @@ public class ExternalShare
         _commonLinkUtility = commonLinkUtility;
     }
     
-    public string GetLink(Guid linkId)
+    public async Task<string> GetLinkAsync(Guid linkId)
     {
-        var key = CreateShareKeyAsync(linkId);
+        var key = await CreateShareKeyAsync(linkId);
 
         return _commonLinkUtility.GetFullAbsolutePath($"rooms/share?key={key}");
     }
