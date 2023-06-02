@@ -34,7 +34,7 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
       sectionWidth={sectionWidth}
       showSettings={false}
       useReactWindow
-      setHideColumns={true}
+      setHideColumns={() => {}}
       infoPanelVisible={true}
     />
   );

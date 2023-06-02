@@ -39,7 +39,7 @@ const HistoryTableHeader = (props) => {
       showSettings={false}
       style={{ position: "absolute" }}
       useReactWindow
-      setHideColumns={true}
+      setHideColumns={() => {}}
       infoPanelVisible={true}
     />
   );
