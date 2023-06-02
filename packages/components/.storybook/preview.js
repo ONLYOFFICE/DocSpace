@@ -26,9 +26,11 @@ const preview = {
   },
   decorators: [
     (Story, context) => {
-      const theme = context.globals.theme;
+      const theme = context.globals.theme === "Dark" ? Dark : Base;
+      const interfaceDirection = context.globals.direction;
+
       return (
-        <ThemeWrapper theme={theme === "Dark" ? Dark : Base}>
+        <ThemeWrapper theme={{ ...theme, interfaceDirection }}>
           <Story />
         </ThemeWrapper>
       );
