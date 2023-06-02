@@ -73,12 +73,12 @@ const ReportDialog = (props) => {
     downloadJson(report, fileTitle);
   };
 
-  const onClickSend = () => {
+  const onClickSend = async () => {
     try {
       const reportWithDescription = Object.assign(report, {
         description: description,
       });
-      FirebaseHelper.sendCrashReport(reportWithDescription);
+      await FirebaseHelper.sendCrashReport(reportWithDescription);
       toastr.success(t("ErrorReportSuccess"));
       onCloseAction();
     } catch (e) {
