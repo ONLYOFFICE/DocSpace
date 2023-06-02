@@ -4,7 +4,7 @@ import Button from "@docspace/components/button";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import AppLoader from "@docspace/common/components/AppLoader";
 import RoomSelector from "../../components/RoomSelector";
-import SelectFolderDialog from "../../components/panels/SelectFolderDialog";
+import SelectFileDialog from "../../components/panels/SelectFileDialog";
 import {
   frameCallEvent,
   frameCallbackData,
@@ -80,12 +80,14 @@ const Sdk = ({
 
   const onSelect = useCallback(
     (item) => {
+      console.log("onSelectCallback", item);
       frameCallEvent({ event: "onSelectCallback", data: item });
     },
     [frameCallEvent]
   );
 
   const onClose = useCallback(() => {
+    console.log("onCloseCallback");
     frameCallEvent({ event: "onCloseCallback" });
   }, [frameCallEvent]);
 
@@ -99,6 +101,18 @@ const Sdk = ({
           withHeader={false}
           onAccept={onSelect}
           onCancel={onClose}
+        />
+      );
+      break;
+    case "file-selector":
+      component = (
+        <SelectFileDialog
+          isPanelVisible={true}
+          onSelectFile={onSelect}
+          onClose={onClose}
+          filteredType="exceptPrivacyTrashArchiveFolders"
+          withSubfolders={false}
+          displayType="aside"
         />
       );
       break;

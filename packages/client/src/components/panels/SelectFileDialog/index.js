@@ -151,8 +151,11 @@ class SelectFileDialog extends React.Component {
   }
 
   getDisplayType = () => {
-    const displayType =
-      window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+    const displayType = this.props.displayType
+      ? this.props.displayType
+      : window.innerWidth < desktop.match(/\d+/)[0]
+      ? "aside"
+      : "modal";
 
     return displayType;
   };
@@ -286,6 +289,7 @@ class SelectFileDialog extends React.Component {
         filesListTitle={filesListTitle}
         fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
+        displayType={displayType}
       />
     );
   }
