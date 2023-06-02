@@ -3,7 +3,9 @@ name: Build packages
 on:
   push:
     branches:
-    - feature/feature/build_upload_4testing
+    - release/*
+    - develop
+    - hotfix/*
     paths:
     - build/install/deb**
     - build/install/rpm**
