@@ -1,4 +1,5 @@
 %package        backup
+Packager:       %{packager}
 Summary:        Backup
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release 
@@ -8,6 +9,7 @@ AutoReqProv:    no
 Backup
 
 %package        common
+Packager:       %{packager}
 Summary:        Common
 Group:          Applications/Internet
 Requires:       logrotate
@@ -15,6 +17,7 @@ Requires:       logrotate
 Common
 
 %package        files-services
+Packager:       %{packager}
 Summary:        Files-services
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -25,6 +28,7 @@ AutoReqProv:    no
 Files-services
 
 %package        notify
+Packager:       %{packager}
 Summary:        Notify
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -34,6 +38,7 @@ AutoReqProv:    no
 Notify
 
 %package        files
+Packager:       %{packager}
 Summary:        Files
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -43,6 +48,7 @@ AutoReqProv:    no
 Files
 
 %package        proxy
+Packager:       %{packager}
 Summary:        Proxy
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -53,6 +59,7 @@ AutoReqProv:    no
 Proxy
 
 %package        studio-notify
+Packager:       %{packager}
 Summary:        Studio-notify
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -62,6 +69,7 @@ AutoReqProv:    no
 Studio-notify
 
 %package        people-server
+Packager:       %{packager}
 Summary:        People-server
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -71,6 +79,7 @@ AutoReqProv:    no
 People-server
 
 %package        socket
+Packager:       %{packager}
 Summary:        Socket
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -80,6 +89,7 @@ AutoReqProv:    no
 Socket
 
 %package        studio
+Packager:       %{packager}
 Summary:        Studio
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -89,6 +99,7 @@ AutoReqProv:    no
 Studio
 
 %package        api
+Packager:       %{packager}
 Summary:        Api
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -98,6 +109,7 @@ AutoReqProv:    no
 Api
 
 %package        api-system
+Packager:       %{packager}
 Summary:        Api-system
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -107,6 +119,7 @@ AutoReqProv:    no
 Api-system
 
 %package        ssoauth
+Packager:       %{packager}
 Summary:        Ssoauth
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -116,6 +129,7 @@ AutoReqProv:    no
 Ssoauth
 
 %package        clear-events
+Packager:       %{packager}
 Summary:        Clear-events
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -125,6 +139,7 @@ AutoReqProv:    no
 Clear-events
 
 %package        backup-background
+Packager:       %{packager}
 Summary:        Backup-background
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -134,6 +149,7 @@ AutoReqProv:    no
 Backup-background
 
 %package        radicale
+Packager:       %{packager}
 Summary:        Radicale
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -143,6 +159,7 @@ AutoReqProv:    no
 Radicale
 
 %package        doceditor
+Packager:       %{packager}
 Summary:        Doceditor
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -152,6 +169,7 @@ AutoReqProv:    no
 Doceditor
 
 %package        migration-runner
+Packager:       %{packager}
 Summary:        Migration-runner
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -161,6 +179,7 @@ AutoReqProv:    no
 Migration-runner
 
 %package        login
+Packager:       %{packager}
 Summary:        Login
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
@@ -170,6 +189,7 @@ AutoReqProv:    no
 Login
 
 %package        healthchecks
+Packager:       %{packager}
 Summary:        Healthchecks
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release

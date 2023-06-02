@@ -394,6 +394,15 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             Logger.ErrorUpdate(e);
         }
     }
+    public Task<bool> UpdateAsync(T data, UpdateAction action, Expression<Func<T, IList>> field, bool immediately = true)
+    {
+        var t = _serviceProvider.GetService<T>();
+
+        return !Support(t)
+            ? Task.FromResult(false)
+            : Queue(() => _indexer.Update(data, action, field, immediately));
+    }
+
 
     public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {

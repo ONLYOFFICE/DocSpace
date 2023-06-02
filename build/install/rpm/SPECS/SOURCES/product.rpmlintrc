@@ -7,9 +7,6 @@ addFilter(r' W: non-standard-(uid|gid)')
 # This is necessary to ensure that all child packages are updated correctly
 addFilter(r'W: requires-on-release')
 
-# The signature of packages occurs in further stages
-addFilter(r'E: no-signature')
-
 # The basic documentation comes with the common package
 addFilter(r'W: no-documentation')
 
@@ -45,3 +42,18 @@ addFilter(r'non-standard-executable-perm')
 
 # We use this to protect sensitive information (ie passwords) in the config file
 addFilter(r'non-readable')
+
+# No one license from allowed pull AGPLv3, AGPLv3+ worked
+addFilter(r'W: invalid-license AGPLv3')
+
+# Сertain services require write access to the log directory. These services are launched under a user account that is different from the root user.
+addFilter(r'logrotate-user-writable-log-dir')
+
+# The use of the /var/www directory is caused by its past history as the default document root
+addFilter(r'W: non-standard-dir-in-var www')
+
+# Shared libraries centos7-librdkafka.so, libgrpc_csharp_ext.x64.so location of which is hardcoded
+addFilter(r'W: binary-or-shlib-calls-gethostbyname')
+
+# There are the same files, however on a different languages
+addFilter(r'files-duplicate')

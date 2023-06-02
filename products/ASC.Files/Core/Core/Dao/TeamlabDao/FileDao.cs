@@ -559,7 +559,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
         else
         {
-            if(uploadSession != null)
+            if (uploadSession != null)
             {
                 await _chunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
             }
@@ -919,7 +919,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     .OrderByDescending(r => r.Level)
                     .ToListAsync();
 
-                _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+                _ = _factoryIndexer.UpdateAsync(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
         });
 
