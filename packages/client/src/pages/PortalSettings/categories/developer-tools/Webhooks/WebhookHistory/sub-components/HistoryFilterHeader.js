@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import { Base } from "@docspace/components/themes";
@@ -12,11 +12,19 @@ import FilterDialog from "./FilterDialog";
 import StatusBar from "./StatusBar";
 import { useTranslation } from "react-i18next";
 
+import { isMobileOnly } from "react-device-detect";
+
 const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1px;
+
+  ${() =>
+    isMobileOnly &&
+    css`
+      margin-top: -6px;
+      padding-right: 8px;
+    `}
 `;
 
 const ListHeading = styled(Text)`
@@ -38,7 +46,7 @@ const FilterButton = styled.div`
   width: 32px;
   height: 32px;
 
-  z-index: 202;
+  z-index: ${(props) => (props.isHeaderVisible ? 199 : 202)};
 
   border: 1px solid;
   border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};
@@ -73,7 +81,7 @@ const FilterButton = styled.div`
 FilterButton.defaultProps = { theme: Base };
 
 const HistoryFilterHeader = (props) => {
-  const { applyFilters, historyFilters } = props;
+  const { applyFilters, historyFilters, isHeaderVisible } = props;
   const { t } = useTranslation(["Webhooks"]);
   const { id } = useParams();
 
@@ -94,7 +102,7 @@ const HistoryFilterHeader = (props) => {
           {t("Webhook")} {id}
         </ListHeading>
 
-        <FilterButton onClick={openFiltersModal}>
+        <FilterButton onClick={openFiltersModal} isHeaderVisible={isHeaderVisible}>
           <IconButton iconName={FilterReactSvrUrl} size={16} />
           <span hidden={historyFilters === null}></span>
         </FilterButton>
@@ -110,8 +118,9 @@ const HistoryFilterHeader = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { historyFilters } = webhooksStore;
+  const { historyFilters, isHeaderVisible } = webhooksStore;
   return {
     historyFilters,
+    isHeaderVisible,
   };
 })(observer(HistoryFilterHeader));

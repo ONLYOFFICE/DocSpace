@@ -37,6 +37,12 @@ const HeaderContainer = styled.div`
       margin-bottom: 11px;
     `}
 
+  ${() =>
+    isMobileOnly &&
+    css`
+      margin-top: 1px;
+    `}
+
   ${(props) =>
     isMobileOnly &&
     props.isHeaderVisible &&
@@ -50,8 +56,13 @@ const HeaderContainer = styled.div`
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
-      margin-right: 15px;
     }
+
+    ${() =>
+      isMobileOnly &&
+      css`
+        margin-right: 13px;
+      `}
   }
 
   .headline {
@@ -65,7 +76,7 @@ const HeaderContainer = styled.div`
 
     flex: 0 0 auto;
 
-    width: calc(100% + 45px);
+    width: calc(100% + 40px);
     height: 69px;
 
     ${() =>
