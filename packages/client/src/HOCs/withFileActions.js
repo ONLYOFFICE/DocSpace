@@ -333,7 +333,7 @@ export default function withFileActions(WrappedFileItem) {
         withCtrlSelect,
         withShiftSelect,
       } = filesStore;
-
+      const { id } = selectedFolderStore;
       const { startUpload } = uploadDataStore;
 
       const selectedItem = selection.find(
@@ -344,8 +344,16 @@ export default function withFileActions(WrappedFileItem) {
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
+      const activeFileIndex = activeFiles.findIndex((x) => x.id === item.id);
+
+      const isNeedProgressLoader =
+        activeFileIndex !== -1
+          ? activeFiles[activeFileIndex].destFolderId?.toString() !==
+            id.toString()
+          : false;
+
       const inProgress =
-        activeFiles.findIndex((x) => x === item.id) !== -1 ||
+        isNeedProgressLoader ||
         activeFolders.findIndex(
           (x) =>
             x === item.id &&
@@ -353,6 +361,17 @@ export default function withFileActions(WrappedFileItem) {
         ) !== -1;
 
       let isActive = false;
+
+      // console.log(
+      //   "activeFiles",
+      //   activeFiles,
+      //   item.id,
+      //   activeFiles.some(
+      //     (elem) =>
+      //       elem.id === item.id &&
+      //       elem.destFolderId?.toString() !== id.toString()
+      //   )
+      // );
 
       if (
         bufferSelection &&

@@ -252,7 +252,12 @@ class FilesActionStore {
     newSelection = null,
     withoutDialog = false
   ) => {
-    const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
+    console.log("deleteAction");
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      recycleBinFolderId,
+    } = this.treeFoldersStore;
     const {
       addActiveItems,
       getIsEmptyTrash,
@@ -291,7 +296,9 @@ class FilesActionStore {
     while (selection.length !== i) {
       if (selection[i].fileExst || selection[i].contentLength) {
         // try to fix with one check later (see onDeleteMediaFile)
-        const isActiveFile = activeFiles.find((id) => id === selection[i].id);
+        const isActiveFile = activeFiles.find(
+          (elem) => elem.id === selection[i].id
+        );
         !isActiveFile && fileIds.push(selection[i].id);
       } else {
         // try to fix with one check later (see onDeleteMediaFile)
@@ -316,7 +323,9 @@ class FilesActionStore {
       operationId,
     });
 
-    addActiveItems(fileIds);
+    const destFolderId = immediately ? null : recycleBinFolderId;
+
+    addActiveItems(fileIds, null, destFolderId);
     addActiveItems(null, folderIds);
 
     if (this.dialogsStore.isFolderActions && withoutDialog) {
@@ -778,6 +787,8 @@ class FilesActionStore {
 
     this.filesStore.setOperationAction(true);
 
+    //debugger;
+    console.log("deleteItemOperation");
     if (isFile) {
       addActiveItems([itemId]);
       this.isMediaOpen();
@@ -1092,7 +1103,7 @@ class FilesActionStore {
       alert: false,
       operationId,
     });
-
+    //debugger;
     addActiveItems(null, items);
 
     switch (action) {
@@ -1418,7 +1429,7 @@ class FilesActionStore {
   };
 
   checkFileConflicts = (destFolderId, folderIds, fileIds) => {
-    this.filesStore.addActiveItems(fileIds);
+    this.filesStore.addActiveItems(fileIds, null, destFolderId);
     this.filesStore.addActiveItems(null, folderIds);
     return checkFileConflicts(destFolderId, folderIds, fileIds);
   };

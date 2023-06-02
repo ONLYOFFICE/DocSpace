@@ -569,7 +569,7 @@ class FilesStore {
     }
   };
 
-  addActiveItems = (files, folders) => {
+  addActiveItems = (files, folders, destFolderId) => {
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
         this.setActiveFolders(folders);
@@ -580,15 +580,23 @@ class FilesStore {
 
     if (files && files.length) {
       if (!this.activeFiles.length) {
-        this.setActiveFiles(files);
+        this.setActiveFiles(files, destFolderId);
       } else {
-        files.map((item) => this.activeFiles.push(item));
+        files.map((item) => this.activeFiles.push({ id: item, destFolderId }));
       }
     }
   };
 
-  setActiveFiles = (activeFiles) => {
-    this.activeFiles = activeFiles;
+  updateActiveFiles = (items) => {
+    this.activeFiles = items;
+  };
+  setActiveFiles = (activeFiles, destFolderId) => {
+    const arrayFormation = activeFiles.map((id) => ({
+      id,
+      destFolderId,
+    }));
+    console.log("arrayFormation", arrayFormation);
+    this.activeFiles = arrayFormation;
   };
 
   setActiveFolders = (activeFolders) => {
@@ -857,7 +865,7 @@ class FilesStore {
 
   getFilesChecked = (file, selected) => {
     if (!file.parentId) {
-      if (this.activeFiles.includes(file.id)) return false;
+      if (this.activeFiles.some((elem) => elem.id === file.id)) return false;
     } else {
       if (this.activeFolders.includes(file.id)) return false;
     }
@@ -963,7 +971,7 @@ class FilesStore {
         const isFound =
           this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
 
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           isFound &&
             newSelections.push(
               this.filesList.find((f) => f.id == id && !f.isFolder)
@@ -998,7 +1006,7 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           newSelections = newSelections.filter(
             (f) => !(f.id == id && !f.isFolder)
           );
@@ -2240,6 +2248,7 @@ class FilesStore {
 
       newFilter.total -= deleteCount;
 
+      console.log(" removeFiles files", files, fileIds);
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(files);
@@ -2693,8 +2702,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];

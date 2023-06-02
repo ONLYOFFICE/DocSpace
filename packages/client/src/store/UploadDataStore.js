@@ -1636,11 +1636,13 @@ class UploadDataStore {
       setActiveFolders,
     } = this.filesStore;
 
-    const newActiveFiles = activeFiles.filter((el) => !fileIds?.includes(el));
+    const newActiveFiles = activeFiles.filter(
+      (el) => !fileIds?.includes(el.id)
+    );
     const newActiveFolders = activeFolders.filter(
       (el) => !folderIds.includes(el)
     );
-
+    console.log("clearActiveOperations", newActiveFiles);
     setActiveFiles(newActiveFiles);
     setActiveFolders(newActiveFolders);
   };
