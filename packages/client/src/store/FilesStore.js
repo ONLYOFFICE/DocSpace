@@ -607,7 +607,7 @@ class FilesStore {
       id,
       destFolderId,
     }));
-    console.log("arrayFormation", arrayFormation);
+
     this.activeFolders = arrayFormation;
   };
 
