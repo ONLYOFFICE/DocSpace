@@ -1200,12 +1200,7 @@ class FilesStore {
     setSelectedNode([folderId + ""]);
 
     return api.files
-      .getFolder(
-        folderId,
-        filterData,
-        this.filesController.signal,
-        this.publicRoomStore.publicKey
-      )
+      .getFolder(folderId, filterData, this.filesController.signal)
       .then(async (data) => {
         filterData.total = data.total;
 
@@ -2364,12 +2359,7 @@ class FilesStore {
     newFilter.pageCount = deleteCount;
 
     api.files
-      .getFolder(
-        newFilter.folder,
-        newFilter,
-        null,
-        this.publicRoomStore.publicKey
-      )
+      .getFolder(newFilter.folder, newFilter)
       .then((res) => {
         const files = fileIds
           ? this.files.filter((x) => !fileIds.includes(x.id))
@@ -3182,12 +3172,7 @@ class FilesStore {
   removeItemFromFavorite = (id) => api.files.removeFromFavorite(id);
 
   fetchFavoritesFolder = async (folderId) => {
-    const favoritesFolder = await api.files.getFolder(
-      folderId,
-      null,
-      null,
-      this.publicRoomStore.publicKey
-    );
+    const favoritesFolder = await api.files.getFolder(folderId);
     this.setFolders(favoritesFolder.folders);
     this.setFiles(favoritesFolder.files);
 
@@ -3392,12 +3377,7 @@ class FilesStore {
 
     const newFiles = isRooms
       ? await api.rooms.getRooms(newFilter)
-      : await api.files.getFolder(
-          newFilter.folder,
-          newFilter,
-          null,
-          this.publicRoomStore.publicKey
-        );
+      : await api.files.getFolder(newFilter.folder, newFilter);
 
     runInAction(() => {
       this.setFiles([...this.files, ...newFiles.files]);

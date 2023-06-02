@@ -125,10 +125,6 @@ export const openDocEditor = async (
     );
   }
 
-  if (shareKey) {
-    url += share;
-  }
-
   if (tab) {
     url ? (tab.location = url) : tab.close();
   } else {

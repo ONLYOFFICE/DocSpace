@@ -52,11 +52,16 @@ const ssoStore = new SsoFormStore();
 const tagsStore = new TagsStore();
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
-const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
-
-const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
 const publicRoomStore = new PublicRoomStore();
+
+const settingsStore = new SettingsStore(
+  thirdPartyStore,
+  treeFoldersStore,
+  publicRoomStore
+);
+
+const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
 const filesStore = new FilesStore(
   authStore,

@@ -68,13 +68,8 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter, signal, shareKey) {
+export function getFolder(folderId, filter, signal) {
   let params = folderId;
-  const key = shareKey
-    ? filter
-      ? `&share=${shareKey}`
-      : `?share=${shareKey}`
-    : "";
 
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
@@ -88,7 +83,7 @@ export function getFolder(folderId, filter, signal, shareKey) {
 
   const options = {
     method: "get",
-    url: `/files/${params}${key}`,
+    url: `/files/${params}`,
     signal,
   };
 
@@ -803,10 +798,8 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles(shareKey) {
-  const key = shareKey ? `?share=${shareKey}` : "";
-
-  return request({ method: "get", url: `/files/settings${key}` });
+export function getSettingsFiles() {
+  return request({ method: "get", url: `/files/settings` });
 }
 
 export function markAsFavorite(ids) {

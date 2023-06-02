@@ -26,6 +26,15 @@ class AxiosClient {
       };
     }
 
+    const lastKeySymbol = location.search.indexOf("&");
+    const lastIndex =
+      lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
+    const publicKey = location.search.substring(5, lastIndex);
+
+    if (publicKey) {
+      headers = { ...headers, "Request-Token": publicKey };
+    }
+
     const apiBaseURL = combineUrl(origin, proxy, prefix);
     const paymentsURL = combineUrl(
       proxy,

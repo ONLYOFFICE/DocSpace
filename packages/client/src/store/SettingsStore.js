@@ -17,6 +17,7 @@ import {
 class SettingsStore {
   thirdPartyStore;
   treeFoldersStore;
+  publicRoomStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -63,11 +64,12 @@ class SettingsStore {
   html = [".htm", ".mht", ".html"];
   ebook = [".fb2", ".ibk", ".prc", ".epub"];
 
-  constructor(thirdPartyStore, treeFoldersStore) {
+  constructor(thirdPartyStore, treeFoldersStore, publicRoomStore) {
     makeAutoObservable(this);
 
     this.thirdPartyStore = thirdPartyStore;
     this.treeFoldersStore = treeFoldersStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -100,16 +102,17 @@ class SettingsStore {
     this.expandedSetting = expandedSetting;
   };
 
-  getFilesSettings = (shareKey) => {
+  getFilesSettings = () => {
     if (this.isLoadedSettingsTree) return Promise.resolve();
 
     return api.files
-      .getSettingsFiles(shareKey)
+      .getSettingsFiles()
       .then((settings) => {
         this.setFilesSettings(settings);
         this.setIsLoaded(true);
 
-        if (!settings.enableThirdParty || shareKey) return;
+        if (!settings.enableThirdParty || this.publicRoomStore.isPublicRoom)
+          return;
 
         return axios
           .all([

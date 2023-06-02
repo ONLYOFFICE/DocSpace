@@ -71,7 +71,7 @@ const PublicRoom = (props) => {
   };
 
   const fetchRoomFiles = async () => {
-    await getFilesSettings(key);
+    await getFilesSettings();
 
     const filterObj = FilesFilter.getFilter(window.location);
 
