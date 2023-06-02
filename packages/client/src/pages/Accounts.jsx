@@ -26,9 +26,15 @@ const PeopleSection = React.memo(() => {
       />
       <PrivateRoute
         exact
-		withManager
+        withManager
         path={["/accounts"]}
         component={HomeRedirectToFilter}
+      />
+      <PrivateRoute
+        exact
+        withManager
+        path={["/accounts/changeOwner"]}
+        component={RedirectWithChangeOwnerDialog}
       />
       <PrivateRoute
         path={"/accounts/filter"}
@@ -53,6 +59,20 @@ const HomeRedirectToFilter = (props) => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
   return <Redirect to={`/accounts/filter?${urlFilter}`} />;
+};
+
+const RedirectWithChangeOwnerDialog = (props) => {
+  const filter = Filter.getDefault();
+  const urlFilter = filter.toUrlParams();
+  return (
+    <Redirect
+      to={{
+        pathname: "/accounts/filter",
+        search: `?${urlFilter}`,
+        state: { openChangeOwnerDialog: true },
+      }}
+    />
+  );
 };
 
 const PeopleContent = (props) => {
