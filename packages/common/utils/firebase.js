@@ -152,9 +152,13 @@ class FirebaseHelper {
   }
 
   async sendCrashReport(report) {
-    const reportListRef = this.firebaseDB.ref("reports");
-    const neReportRef = reportListRef.push();
-    neReportRef.set(report);
+    try {
+      const reportListRef = this.firebaseDB.ref("reports");
+      const neReportRef = reportListRef.push();
+      neReportRef.set(report);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }
 
