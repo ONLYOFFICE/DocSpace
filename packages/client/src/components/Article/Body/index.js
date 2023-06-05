@@ -214,6 +214,10 @@ const ArticleBodyContent = (props) => {
 
       if (activeItem !== "accounts") return setActiveItem("accounts");
     }
+
+    if (location.pathname.includes("/products/files/#preview")) {
+      setActiveItem(rootFolderId);
+    }
   }, [
     location.pathname,
     activeItem,
