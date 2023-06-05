@@ -45,6 +45,12 @@ const StyledDropdownItem = styled.div`
   padding: ${(props) =>
     props.isModern ? "0 8px" : props.theme.dropDownItem.padding};
   line-height: ${(props) => props.theme.dropDownItem.lineHeight};
+  text-align: left;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      text-align: right;
+    `}
   box-sizing: border-box;
   background: none;
   text-decoration: none;
@@ -100,6 +106,11 @@ const StyledDropdownItem = styled.div`
         background-color: ${(props) =>
           props.theme.dropDownItem.hoverBackgroundColor};
         text-align: left;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            text-align: right;
+          `}
       `}
   }
 
