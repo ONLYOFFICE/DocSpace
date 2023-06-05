@@ -1,48 +1,32 @@
 import React, { useState } from "react";
+import { inject, observer } from "mobx-react";
 
 import Row from "@docspace/components/row";
 
 import { WebhookRowContent } from "./WebhookRowContent";
-import WebhookDialog from "../../WebhookDialog";
-import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 
 import SettingsIcon from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 
-import toastr from "@docspace/components/toast/toastr";
-
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export const WebhookRow = ({
-  webhook,
-  sectionWidth,
-  toggleEnabled,
-  deleteWebhook,
-  editWebhook,
-  setTitleHistory,
-}) => {
+export const WebhookRow = (props) => {
+  const {
+    webhook,
+    sectionWidth,
+    toggleEnabled,
+    setTitleHistory,
+    openSettingsModal,
+    openDeleteModal,
+    setCurrentWebhook,
+  } = props;
   const navigate = useNavigate();
   const { t } = useTranslation(["Webhooks", "Common"]);
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
-  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
-  const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
-  const closeSettings = () => setIsSettingsOpened(false);
-  const openSettings = () => setIsSettingsOpened(true);
-  const onDeleteOpen = () => setIsDeleteOpened(true);
-  const onDeleteClose = () => setIsDeleteOpened(false);
-
-  const handleWebhookUpdate = async (webhookInfo) => {
-    editWebhook(webhook, webhookInfo);
-    toastr.success(t("WebhookEditedSuccessfully"), <b>{t("Common:Done")}</b>);
-  };
-  const handleWebhookDelete = async () => {
-    await deleteWebhook(webhook);
-    toastr.success(t("WebhookRemoved"), <b>{t("Common:Done")}</b>);
-  };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
     setIsChecked((prevIsChecked) => !prevIsChecked);
@@ -65,12 +49,21 @@ export const WebhookRow = ({
     redirectToHistory();
   };
 
+  const onSettingsOpen = () => {
+    setCurrentWebhook(webhook);
+    openSettingsModal();
+  };
+  const onDeleteOpen = () => {
+    setCurrentWebhook(webhook);
+    openDeleteModal();
+  };
+
   const contextOptions = [
     {
       key: "Settings dropdownItem",
       label: t("Common:Settings"),
       icon: SettingsIcon,
-      onClick: openSettings,
+      onClick: onSettingsOpen,
     },
     {
       key: "Webhook history dropdownItem",
@@ -105,20 +98,13 @@ export const WebhookRow = ({
           handleToggleEnabled={handleToggleEnabled}
         />
       </Row>
-      <WebhookDialog
-        visible={isSettingsOpened}
-        onClose={closeSettings}
-        header={t("SettingsWebhook")}
-        isSettingsModal={true}
-        webhook={webhook}
-        onSubmit={handleWebhookUpdate}
-      />
-      <DeleteWebhookDialog
-        visible={isDeleteOpened}
-        onClose={onDeleteClose}
-        header={t("DeleteWebhookForeverQuestion")}
-        handleSubmit={handleWebhookDelete}
-      />
     </>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { toggleEnabled, deleteWebhook, editWebhook, setTitleHistory, setCurrentWebhook } =
+    webhooksStore;
+
+  return { toggleEnabled, deleteWebhook, editWebhook, setTitleHistory, setCurrentWebhook };
+})(observer(WebhookRow));

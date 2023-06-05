@@ -1,5 +1,5 @@
 import Button from "@docspace/components/button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition, Suspense } from "react";
 import WebhookDialog from "./sub-components/WebhookDialog";
 import WebhookInfo from "./sub-components/WebhookInfo";
 import WebhooksTable from "./sub-components/WebhooksTable";
@@ -13,6 +13,10 @@ import { Base } from "@docspace/components/themes";
 import { isMobile } from "@docspace/components/utils/device";
 
 import { useTranslation } from "react-i18next";
+
+import { DeleteWebhookDialog } from "./sub-components/DeleteWebhookDialog";
+import { NoBoxShadowToast } from "./styled-components";
+import toastr from "@docspace/components/toast/toastr";
 
 const MainWrapper = styled.div`
   width: 100%;
@@ -45,64 +49,111 @@ const StyledCreateButton = styled(Button)`
 `;
 
 const Webhooks = (props) => {
-  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty, setDocumentTitle } =
-    props;
+  const {
+    loadWebhooks,
+    addWebhook,
+    isWebhookExist,
+    isWebhooksEmpty,
+    setDocumentTitle,
+    currentWebhook,
+    editWebhook,
+    deleteWebhook,
+  } = props;
 
   const { t, ready } = useTranslation(["Webhooks", "Common"]);
 
+  const [isPending, startTranslation] = useTransition();
+
   setDocumentTitle(t("Webhooks"));
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateOpened, setIsCreateOpened] = useState(false);
+  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
+  const [isDeleteOpened, setIsDeleteOpened] = useState(false);
+
+  const closeCreateModal = () => setIsCreateOpened(false);
+  const openCreateModal = () => setIsCreateOpened(true);
+  const closeSettingsModal = () => setIsSettingsOpened(false);
+  const openSettingsModal = () => setIsSettingsOpened(true);
+  const closeDeleteModal = () => setIsDeleteOpened(false);
+  const openDeleteModal = () => setIsDeleteOpened(true);
 
   const onCreateWebhook = async (webhookInfo) => {
     if (!isWebhookExist(webhookInfo)) {
       await addWebhook(webhookInfo);
-      closeModal();
+      closeCreateModal();
     }
   };
 
-  const closeModal = () => setIsModalOpen(false);
-  const openModal = () => setIsModalOpen(true);
+  const handleWebhookUpdate = async (webhookInfo) => {
+    await editWebhook(currentWebhook, webhookInfo);
+    toastr.success(t("WebhookEditedSuccessfully"), <b>{t("Common:Done")}</b>);
+  };
+  const handleWebhookDelete = async () => {
+    await deleteWebhook(currentWebhook);
+    toastr.success(t("WebhookRemoved"), <b>{t("Common:Done")}</b>);
+  };
 
   useEffect(() => {
-    loadWebhooks();
-  }, []);
+    ready && isWebhooksEmpty && startTranslation(loadWebhooks);
+  }, [ready]);
 
-  return state === "pending" || !ready ? (
-    <WebhookConfigsLoader />
-  ) : state === "success" ? (
-    <MainWrapper>
-      <WebhookInfo />
-      {isMobile() ? (
-        <ButtonSeating>
-          <StyledCreateButton
-            label={t("CreateWebhook")}
-            primary
-            size={"normal"}
-            onClick={openModal}
-          />
-        </ButtonSeating>
-      ) : (
-        <Button label={t("CreateWebhook")} primary size={"small"} onClick={openModal} />
-      )}
+  return (
+    <Suspense fallback={<WebhookConfigsLoader />}>
+      <MainWrapper>
+        <WebhookInfo />
+        {isMobile() ? (
+          <ButtonSeating>
+            <StyledCreateButton
+              label={t("CreateWebhook")}
+              primary
+              size={"normal"}
+              onClick={openCreateModal}
+            />
+          </ButtonSeating>
+        ) : (
+          <Button label={t("CreateWebhook")} primary size={"small"} onClick={openCreateModal} />
+        )}
 
-      {!isWebhooksEmpty && <WebhooksTable />}
-      <WebhookDialog
-        visible={isModalOpen}
-        onClose={closeModal}
-        header={t("CreateWebhook")}
-        onSubmit={onCreateWebhook}
-      />
-    </MainWrapper>
-  ) : state === "error" ? (
-    t("Common:Error")
-  ) : (
-    ""
+        {!isWebhooksEmpty && (
+          <WebhooksTable openSettingsModal={openSettingsModal} openDeleteModal={openDeleteModal} />
+        )}
+        <WebhookDialog
+          visible={isCreateOpened}
+          onClose={closeCreateModal}
+          header={t("CreateWebhook")}
+          onSubmit={onCreateWebhook}
+        />
+        <WebhookDialog
+          visible={isSettingsOpened}
+          onClose={closeSettingsModal}
+          header={t("SettingsWebhook")}
+          isSettingsModal={true}
+          webhook={currentWebhook}
+          onSubmit={handleWebhookUpdate}
+        />
+        <DeleteWebhookDialog
+          visible={isDeleteOpened}
+          onClose={closeDeleteModal}
+          header={t("DeleteWebhookForeverQuestion")}
+          handleSubmit={handleWebhookDelete}
+        />
+        <NoBoxShadowToast />
+      </MainWrapper>
+    </Suspense>
   );
 };
 
 export default inject(({ webhooksStore, auth }) => {
-  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty } = webhooksStore;
+  const {
+    state,
+    loadWebhooks,
+    addWebhook,
+    isWebhookExist,
+    isWebhooksEmpty,
+    currentWebhook,
+    editWebhook,
+    deleteWebhook,
+  } = webhooksStore;
   const { setDocumentTitle } = auth;
 
   return {
@@ -112,5 +163,8 @@ export default inject(({ webhooksStore, auth }) => {
     isWebhookExist,
     isWebhooksEmpty,
     setDocumentTitle,
+    currentWebhook,
+    editWebhook,
+    deleteWebhook,
   };
 })(observer(Webhooks));

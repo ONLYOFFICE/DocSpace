@@ -7,21 +7,23 @@ import WebhooksTableView from "./WebhooksTableView";
 import WebhooksRowView from "./WebhooksRowView";
 
 const WebhooksTable = (props) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, viewAs } = props;
+  const { viewAs, openSettingsModal, openDeleteModal } = props;
 
   return (
     <Consumer>
       {(context) =>
         viewAs === "table" ? (
           <WebhooksTableView
-            webhooks={webhooks}
-            toggleEnabled={toggleEnabled}
-            deleteWebhook={deleteWebhook}
-            editWebhook={editWebhook}
             sectionWidth={context.sectionWidth}
+            openSettingsModal={openSettingsModal}
+            openDeleteModal={openDeleteModal}
           />
         ) : (
-          <WebhooksRowView sectionWidth={context.sectionWidth} webhooks={webhooks} />
+          <WebhooksRowView
+            sectionWidth={context.sectionWidth}
+            openSettingsModal={openSettingsModal}
+            openDeleteModal={openDeleteModal}
+          />
         )
       }
     </Consumer>

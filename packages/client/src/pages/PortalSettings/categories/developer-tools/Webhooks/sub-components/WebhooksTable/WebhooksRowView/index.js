@@ -6,23 +6,14 @@ import { isMobile } from "react-device-detect";
 
 import RowContainer from "@docspace/components/row-container";
 
-import { WebhookRow } from "./WebhookRow";
+import WebhookRow from "./WebhookRow";
 
 const StyledRowContainer = styled(RowContainer)`
   margin-top: 16px;
 `;
 
 const WebhooksRowView = (props) => {
-  const {
-    webhooks,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
-    sectionWidth,
-    viewAs,
-    setViewAs,
-    setTitleHistory,
-  } = props;
+  const { webhooks, sectionWidth, viewAs, setViewAs, openSettingsModal, openDeleteModal } = props;
 
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
@@ -41,10 +32,8 @@ const WebhooksRowView = (props) => {
           key={webhook.id}
           webhook={webhook}
           sectionWidth={sectionWidth}
-          toggleEnabled={toggleEnabled}
-          deleteWebhook={deleteWebhook}
-          editWebhook={editWebhook}
-          setTitleHistory={setTitleHistory}
+          openSettingsModal={openSettingsModal}
+          openDeleteModal={openDeleteModal}
         />
       ))}
     </StyledRowContainer>
@@ -52,17 +41,13 @@ const WebhooksRowView = (props) => {
 };
 
 export default inject(({ webhooksStore, setup }) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, setTitleHistory } = webhooksStore;
+  const { webhooks } = webhooksStore;
 
   const { viewAs, setViewAs } = setup;
 
   return {
     webhooks,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
     viewAs,
     setViewAs,
-    setTitleHistory,
   };
 })(observer(WebhooksRowView));

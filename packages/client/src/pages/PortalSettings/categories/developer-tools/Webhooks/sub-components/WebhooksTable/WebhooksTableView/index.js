@@ -7,7 +7,7 @@ import styled from "styled-components";
 import TableContainer from "@docspace/components/table-container/TableContainer";
 import TableBody from "@docspace/components/table-container/TableBody";
 
-import { WebhooksTableRow } from "./WebhooksTableRow";
+import WebhooksTableRow from "./WebhooksTableRow";
 import WebhookTableHeader from "./WebhookTableHeader";
 
 import { Base } from "@docspace/components/themes";
@@ -15,7 +15,7 @@ import { Base } from "@docspace/components/themes";
 const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
 
-  .table-container_caption-header {
+  .table-container_header {
     position: absolute;
   }
 
@@ -34,13 +34,11 @@ const WebhooksTableView = (props) => {
   const {
     webhooks,
     loadWebhooks,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
     sectionWidth,
     viewAs,
     setViewAs,
-    setTitleHistory,
+    openSettingsModal,
+    openDeleteModal,
   } = props;
 
   const tableRef = useRef(null);
@@ -74,10 +72,8 @@ const WebhooksTableView = (props) => {
             key={webhook.id}
             webhook={webhook}
             index={index}
-            toggleEnabled={toggleEnabled}
-            deleteWebhook={deleteWebhook}
-            editWebhook={editWebhook}
-            setTitleHistory={setTitleHistory}
+            openSettingsModal={openSettingsModal}
+            openDeleteModal={openDeleteModal}
           />
         ))}
       </TableBody>
@@ -86,19 +82,14 @@ const WebhooksTableView = (props) => {
 };
 
 export default inject(({ webhooksStore, setup }) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, loadWebhooks, setTitleHistory } =
-    webhooksStore;
+  const { webhooks, loadWebhooks } = webhooksStore;
 
   const { viewAs, setViewAs } = setup;
 
   return {
     webhooks,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
     viewAs,
     setViewAs,
     loadWebhooks,
-    setTitleHistory,
   };
 })(observer(WebhooksTableView));

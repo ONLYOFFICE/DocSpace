@@ -4,19 +4,16 @@ import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
 
-import { NoBoxShadowToast } from "../../../styled-components";
-import toastr from "@docspace/components/toast/toastr";
-
 import ToggleButton from "@docspace/components/toggle-button";
 import SettingsIcon from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
-import WebhookDialog from "../../WebhookDialog";
-import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 import StatusBadge from "../../StatusBadge";
 
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
+import { inject, observer } from "mobx-react";
 
 const StyledWrapper = styled.div`
   display: contents;
@@ -38,25 +35,21 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
-export const WebhooksTableRow = ({
-  webhook,
-  toggleEnabled,
-  deleteWebhook,
-  editWebhook,
-  setTitleHistory,
-}) => {
+const WebhooksTableRow = (props) => {
+  const {
+    webhook,
+    toggleEnabled,
+    setTitleHistory,
+    openSettingsModal,
+    openDeleteModal,
+    setCurrentWebhook,
+  } = props;
   const navigate = useNavigate();
 
   const { t } = useTranslation(["Webhooks", "Common"]);
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
-  const [isSettingsOpened, setIsSettingsOpened] = useState(false);
-  const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
-  const closeSettings = () => setIsSettingsOpened(false);
-  const openSettings = () => setIsSettingsOpened(true);
-  const onDeleteOpen = () => setIsDeleteOpened(true);
-  const onDeleteClose = () => setIsDeleteOpened(false);
   const redirectToHistory = () => {
     setTitleHistory();
     navigate(window.location.pathname + `/${webhook.id}`);
@@ -76,17 +69,18 @@ export const WebhooksTableRow = ({
 
     redirectToHistory();
   };
-  const handleWebhookUpdate = async (webhookInfo) => {
-    await editWebhook(webhook, webhookInfo);
-    toastr.success(t("WebhookEditedSuccessfully"), <b>{t("Common:Done")}</b>);
-  };
-  const handleWebhookDelete = async () => {
-    await deleteWebhook(webhook);
-    toastr.success(t("WebhookRemoved"), <b>{t("Common:Done")}</b>);
-  };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
     setIsChecked((prevIsChecked) => !prevIsChecked);
+  };
+
+  const onSettingsOpen = () => {
+    setCurrentWebhook(webhook);
+    openSettingsModal();
+  };
+  const onDeleteOpen = () => {
+    setCurrentWebhook(webhook);
+    openDeleteModal();
   };
 
   const contextOptions = [
@@ -94,7 +88,7 @@ export const WebhooksTableRow = ({
       key: "Settings dropdownItem",
       label: t("Common:Settings"),
       icon: SettingsIcon,
-      onClick: openSettings,
+      onClick: onSettingsOpen,
     },
     {
       key: "Webhook history dropdownItem",
@@ -123,7 +117,6 @@ export const WebhooksTableRow = ({
               {webhook.name}{" "}
             </Text>
             <StatusBadge status={webhook.status} />
-            <NoBoxShadowToast />
           </TableCell>
           <TableCell>
             <Text
@@ -145,21 +138,16 @@ export const WebhooksTableRow = ({
           </TableCell>
         </StyledTableRow>
       </StyledWrapper>
-
-      <WebhookDialog
-        visible={isSettingsOpened}
-        onClose={closeSettings}
-        header={t("SettingsWebhook")}
-        isSettingsModal={true}
-        webhook={webhook}
-        onSubmit={handleWebhookUpdate}
-      />
-      <DeleteWebhookDialog
-        visible={isDeleteOpened}
-        onClose={onDeleteClose}
-        header={t("DeleteWebhookForeverQuestion")}
-        handleSubmit={handleWebhookDelete}
-      />
     </>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { toggleEnabled, setTitleHistory, setCurrentWebhook } = webhooksStore;
+
+  return {
+    toggleEnabled,
+    setTitleHistory,
+    setCurrentWebhook,
+  };
+})(observer(WebhooksTableRow));
