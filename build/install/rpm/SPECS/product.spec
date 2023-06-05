@@ -97,10 +97,7 @@ if ! which python3; then
    fi
 fi
 
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade requests
-python3 -m pip install --upgrade setuptools 
-python3 -m pip install --upgrade radicale==3.0.5
+python3 -m pip install --upgrade radicale
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_auth_plugin/.
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_store_plugin/.
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_rights_plugin/.
