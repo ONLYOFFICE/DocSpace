@@ -37,6 +37,8 @@ const Header = (props) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    isProfileLoaded,
   } = props;
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
@@ -95,6 +97,8 @@ const Header = (props) => {
     setFilter(filter);
   };
 
+  if (!isProfileLoaded) return <Loaders.SectionHeader />;
+
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
@@ -144,7 +148,7 @@ const Header = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, clientLoadingStore }) => {
   const { isAdmin } = auth;
 
   const { isVisitor, isCollaborator } = auth.userStore.user;
@@ -154,6 +158,8 @@ export default inject(({ auth, peopleStore }) => {
   const { filter, setFilterParams } = filterStore;
 
   const { targetUser, isMe } = targetUserStore;
+
+  const { isProfileLoaded } = clientLoadingStore;
 
   const {
     setChangeEmailVisible,
@@ -174,6 +180,8 @@ export default inject(({ auth, peopleStore }) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    isProfileLoaded,
   };
 })(
   observer(withTranslation(["Profile", "Common", "PeopleTranslations"])(Header))

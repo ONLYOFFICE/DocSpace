@@ -28,6 +28,7 @@ class Profile extends React.Component {
       isVisitor,
       selectedTreeNode,
       setSelectedNode,
+      setIsProfileLoaded,
     } = this.props;
     const userId = "@self";
 
@@ -50,7 +51,9 @@ class Profile extends React.Component {
     //   toastr.success(t("ChangeEmailSuccess"));
     // }
     if (!profile || profile.userName !== userId) {
-      fetchProfile(userId).finally(() => {});
+      fetchProfile(userId).finally(() => {
+        setIsProfileLoaded(true);
+      });
     }
 
     if (!profile && this.documentElement) {
@@ -113,6 +116,8 @@ export default inject(
   ({ auth, peopleStore, clientLoadingStore, treeFoldersStore }) => {
     const { setDocumentTitle, language } = auth;
 
+    const { setIsProfileLoaded } = clientLoadingStore;
+
     const { targetUserStore } = peopleStore;
     const {
       getTargetUser: fetchProfile,
@@ -135,6 +140,7 @@ export default inject(
       selectedTreeNode,
       setSelectedNode,
       isVisitor: auth.userStore.user.isVisitor,
+      setIsProfileLoaded,
     };
   }
 )(observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile))));

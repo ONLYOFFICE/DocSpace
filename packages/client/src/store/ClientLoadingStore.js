@@ -9,12 +9,8 @@ class ClientLoadingStore {
   isSectionHeaderLoading = false;
   isSectionFilterLoading = false;
   isSectionBodyLoading = false;
-  isProfileLoaded = false;
 
-  // showArticleLoader = true;
-  // showHeaderLoader = true;
-  // showFilterLoader = true;
-  // showBodyLoader = true;
+  isProfileLoaded = false;
 
   sectionHeaderTimer = null;
   sectionFilterTimer = null;

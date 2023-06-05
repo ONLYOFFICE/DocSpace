@@ -31,7 +31,14 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const { setBackupCodes, getTfaType, getBackupCodes, t } = props;
+  const {
+    setBackupCodes,
+    getTfaType,
+    getBackupCodes,
+    isProfileLoaded,
+
+    t,
+  } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
 
@@ -58,6 +65,8 @@ const SectionBodyContent = (props) => {
     fetchData();
   }, []);
 
+  if (!isProfileLoaded) return <Loaders.ProfileView />;
+
   return (
     <Wrapper>
       <MainProfile />
@@ -71,14 +80,15 @@ const SectionBodyContent = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, clientLoadingStore }) => {
   const { tfaStore } = auth;
   const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
-
+  const { isProfileLoaded } = clientLoadingStore;
   return {
     getBackupCodes,
     getTfaType,
     setBackupCodes,
+    isProfileLoaded,
   };
 })(
   observer(
