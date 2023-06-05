@@ -131,8 +131,8 @@ const Navigation = ({
 
   const showRootFolderNavigation =
     showRootFolderTitle &&
-    !isRootFolder &&
     navigationItems &&
+    navigationItems.length > 1 &&
     !isSmallTabletUtils() &&
     !isMobileOnly;
 
