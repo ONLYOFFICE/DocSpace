@@ -261,6 +261,10 @@ const Wizard = (props) => {
     }
   };
 
+  const onClickRetry = () => {
+    window.location.href = "/";
+  };
+
   if (!isWizardLoaded)
     return <Loader className="pageLoader" type="rombs" size="40px" />;
 
@@ -270,7 +274,7 @@ const Wizard = (props) => {
         headerText={t("Common:SomethingWentWrong")}
         bodyText={t("ErrorInitWizard")}
         buttonText={t("ErrorInitWizardButton")}
-        buttonUrl="/"
+        onClickButton={onClickRetry}
       />
     );
 

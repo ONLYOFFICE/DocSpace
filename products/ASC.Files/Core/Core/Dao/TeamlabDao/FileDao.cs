@@ -46,6 +46,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
+    private readonly StorageFactory _storageFactory;
+    private readonly TenantQuotaController _tenantQuotaController;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -73,7 +75,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Settings settings,
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        StorageFactory storageFactory,
+        TenantQuotaController tenantQuotaController)
         : base(
               dbContextManager,
               userManager,
@@ -102,6 +106,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
+        _storageFactory = storageFactory;
+        _tenantQuotaController = tenantQuotaController;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -795,7 +801,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (deleteFolder)
             {
-                await DeleteFolderAsync(fileId);
+                var tenantId = _tenantManager.GetCurrentTenant().Id;
+                _tenantQuotaController.Init(tenantId, ThumbnailTitle);
+                var store = _storageFactory.GetStorage(tenantId, FileConstant.StorageModule, _tenantQuotaController);
+                await store.DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
             }
 
             if (toDeleteFile != null)
@@ -1316,11 +1325,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
                             ? f.RootFolderType == FolderType.BUNCH
                             : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON);
         }
-    }
-
-    private async Task DeleteFolderAsync(int fileId)
-    {
-        await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
     }
 
     public Task<bool> IsExistOnStorageAsync(File<int> file)

@@ -497,6 +497,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/files/trash/filter",
 
                   "/accounts",
+                  "/accounts/changeOwner",
                   "/accounts/filter",
 
                   "/accounts/create/:type",
