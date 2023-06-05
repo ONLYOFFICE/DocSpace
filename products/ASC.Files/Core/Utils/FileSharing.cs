@@ -588,7 +588,7 @@ public class FileSharing
                 Id = invitationId,
                 Link = _invitationLinkService.GetInvitationLink(invitationId, _authContext.CurrentAccount.ID),
                 SubjectGroup = true,
-                Access = FileShare.Read,
+                Access = ((Folder<T>)entry).FolderType == FolderType.PublicRoom ? FileShare.RoomAdmin : FileShare.Read,
                 Owner = false,
                 IsTemplate = true,
                 SubjectType = SubjectType.InvitationLink
