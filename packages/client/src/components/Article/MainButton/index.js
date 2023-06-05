@@ -459,7 +459,7 @@ const ArticleMainButtonContent = (props) => {
 
   const isProfile = location.pathname === "/accounts/view/@self";
 
-  if (showArticleLoader || !tReady)
+  if (showArticleLoader)
     return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
 
   return (
