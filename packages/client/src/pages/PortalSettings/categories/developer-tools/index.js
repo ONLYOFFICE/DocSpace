@@ -11,6 +11,7 @@ import Webhooks from "./Webhooks";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
+import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 import { useTranslation } from "react-i18next";
 
@@ -61,7 +62,14 @@ const DeveloperToolsWrapper = (props) => {
     );
   };
 
-  if (!isLoading && !ready) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+  if (!isLoading && !ready)
+    return currentTab === 0 ? (
+      <SSOLoader />
+    ) : currentTab === 1 ? (
+      <WebhookConfigsLoader />
+    ) : (
+      <AppLoader />
+    );
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
