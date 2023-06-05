@@ -12,7 +12,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 class WebhooksStore {
   webhooks = [];
-  state = "pending"; // "pending", "done" or "error"
   checkedEventIds = [];
   historyFilters = null;
   historyItems = [];
@@ -20,10 +19,15 @@ class WebhooksStore {
   totalItems = 0;
   developerToolsTab = 0;
   titleType = "default"; // "default", "history" or "details"
+  currentWebhook = {};
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setCurrentWebhook = (webhook) => {
+    this.currentWebhook = webhook;
+  };
 
   setTab = (tabIndex) => {
     this.developerToolsTab = tabIndex;
@@ -42,11 +46,9 @@ class WebhooksStore {
           ssl: data.configs.ssl,
           status: data.status,
         }));
-        this.state = "success";
       });
     } catch (error) {
       console.error(error);
-      this.state = "error";
     }
   };
 
