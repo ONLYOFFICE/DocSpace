@@ -21,20 +21,38 @@ const StyledCloseButtonWrapper = styled.div`
     props.currentDisplayType === "modal"
       ? css`
           top: 18px;
-          right: -30px;
+
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl"
+              ? `left: -30px;`
+              : `right: -30px;`}
 
           @media ${smallTablet} {
-            right: 10px;
+            ${(props) =>
+              props.theme.interfaceDirection === "rtl"
+                ? `left: 10px;`
+                : `right: 10px;`}
             top: -27px;
           }
         `
       : css`
           top: 18px;
-          left: -27px;
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl"
+              ? `right: -27px;`
+              : `left: -27px;`}
           @media ${smallTablet} {
             top: -27px;
-            left: auto;
-            right: 10px;
+            ${(props) =>
+              props.theme.interfaceDirection === "rtl"
+                ? css`
+                    right: auto;
+                    left: 10px;
+                  `
+                : css`
+                    left: auto;
+                    right: 10px;
+                  `}
           }
         `}
 
@@ -46,7 +64,9 @@ const StyledCloseButtonWrapper = styled.div`
   }
 `;
 
-StyledCloseButtonWrapper.defaultProps = { theme: Base };
+StyledCloseButtonWrapper.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
   return (
