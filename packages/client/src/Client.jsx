@@ -22,23 +22,31 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 
-const ClientArticle = React.memo(({ withMainButton }) => {
-  return (
-    <Article withMainButton={withMainButton}>
-      <Article.Header>
-        <ArticleHeaderContent />
-      </Article.Header>
+const ClientArticle = React.memo(
+  ({ withMainButton, setIsHeaderLoading, setIsFilterLoading }) => {
+    return (
+      <Article
+        withMainButton={withMainButton}
+        onLogoClickAction={() => {
+          setIsFilterLoading(true, false);
+          setIsHeaderLoading(true, false);
+        }}
+      >
+        <Article.Header>
+          <ArticleHeaderContent />
+        </Article.Header>
 
-      <Article.MainButton>
-        <ArticleMainButtonContent />
-      </Article.MainButton>
+        <Article.MainButton>
+          <ArticleMainButtonContent />
+        </Article.MainButton>
 
-      <Article.Body>
-        <ArticleBodyContent />
-      </Article.Body>
-    </Article>
-  );
-});
+        <Article.Body>
+          <ArticleBodyContent />
+        </Article.Body>
+      </Article>
+    );
+  }
+);
 
 const ClientContent = (props) => {
   const {
@@ -57,6 +65,8 @@ const ClientContent = (props) => {
     t,
 
     isLoading,
+    setIsFilterLoading,
+    setIsHeaderLoading,
   } = props;
 
   const location = useLocation();
@@ -130,7 +140,11 @@ const ClientContent = (props) => {
         isFrame ? (
           showMenu && <ClientArticle />
         ) : (
-          <ClientArticle withMainButton={withMainButton} />
+          <ClientArticle
+            withMainButton={withMainButton}
+            setIsHeaderLoading={setIsHeaderLoading}
+            setIsFilterLoading={setIsFilterLoading}
+          />
         )
       ) : (
         <></>
@@ -155,7 +169,8 @@ const Client = inject(
 
     const { isVisitor } = auth.userStore.user;
 
-    const { isLoading } = clientLoadingStore;
+    const { isLoading, setIsSectionFilterLoading, setIsSectionHeaderLoading } =
+      clientLoadingStore;
 
     const withMainButton = !isVisitor;
 
@@ -170,7 +185,8 @@ const Client = inject(
       isLoaded: auth.isLoaded && clientLoadingStore.isLoaded,
       setIsLoaded: clientLoadingStore.setIsLoaded,
       withMainButton,
-
+      setIsFilterLoading: setIsSectionFilterLoading,
+      setIsHeaderLoading: setIsSectionHeaderLoading,
       isLoading,
       setEncryptionKeys: setEncryptionKeys,
       loadClientInfo: async () => {
