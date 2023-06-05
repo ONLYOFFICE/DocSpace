@@ -257,14 +257,10 @@ class FilesActionStore {
       activeFiles,
       activeFolders,
     } = this.filesStore;
-    const {
-      secondaryProgressDataStore,
-      clearActiveOperations,
-    } = this.uploadDataStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+    const { secondaryProgressDataStore, clearActiveOperations } =
+      this.uploadDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
     const selection = newSelection
@@ -1046,15 +1042,11 @@ class FilesActionStore {
     const { roomsFolder, isRoomsFolder, archiveRoomsId, myRoomsId } =
       this.treeFoldersStore;
 
-    const {
-      secondaryProgressDataStore,
-      clearActiveOperations,
-    } = this.uploadDataStore;
+    const { secondaryProgressDataStore, clearActiveOperations } =
+      this.uploadDataStore;
 
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      secondaryProgressDataStore;
 
     if (!myRoomsId || !archiveRoomsId) {
       console.error("Default categories not found");
@@ -2019,7 +2011,10 @@ class FilesActionStore {
 
       if (isMediaOrImage) {
         // localStorage.setItem("isFirstUrl", window.location.href);
-        this.mediaViewerDataStore.saveFirstUrl(window.location.href);
+
+        this.mediaViewerDataStore.saveFirstUrl(
+          `${window.DocSpace.location.pathname}${window.DocSpace.location.search}`
+        );
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
