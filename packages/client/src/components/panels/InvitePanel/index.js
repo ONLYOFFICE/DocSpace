@@ -81,9 +81,9 @@ const InvitePanel = ({
       let links = [];
 
       users.map((user) => {
-        const { shareLink, id, title, expirationDate } = user.sharedTo;
+        const { shareLink, id, title, expirationDate, linkType } = user.sharedTo;
 
-        if (!!shareLink) {
+        if (!!shareLink && linkType !== 1) {
           links.push({
             id,
             title,
