@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition, Suspense } from "react";
 import styled from "styled-components";
 
 import HistoryFilterHeader from "./sub-components/HistoryFilterHeader";
@@ -17,27 +17,22 @@ const WebhookHistory = (props) => {
   const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
     props;
 
-  const [isLoading, setIsLoading] = useState(false);
   const [isFetchFinished, setIsFetchFinished] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const { id } = useParams();
 
+  const fetchItems = async () => {
+    await fetchHistoryItems({
+      configId: id,
+      count: 30,
+    });
+    setIsFetchFinished(true);
+  };
+
   useEffect(() => {
     setTitleHistory();
-    (async () => {
-      const timer = setTimeout(() => {
-        !webhookDetails.status && setIsLoading(true);
-      }, 300);
-
-      await fetchHistoryItems({
-        configId: id,
-        count: 30,
-      });
-      setIsFetchFinished(true);
-
-      clearTimeout(timer);
-      setIsLoading(false);
-    })();
+    startTransition(fetchItems);
 
     return setTitleDefault;
   }, []);
@@ -51,9 +46,7 @@ const WebhookHistory = (props) => {
 
   return (
     <WebhookWrapper>
-      {isLoading ? (
-        <WebhookHistoryLoader />
-      ) : (
+      <Suspense fallback={<WebhookHistoryLoader />}>
         <main>
           <HistoryFilterHeader applyFilters={applyFilters} />
           {historyItems.length === 0 && isFetchFinished ? (
@@ -62,7 +55,7 @@ const WebhookHistory = (props) => {
             <WebhookHistoryTable />
           )}
         </main>
-      )}
+      </Suspense>
     </WebhookWrapper>
   );
 };
