@@ -10,7 +10,6 @@ const useAccounts = ({
   location,
 
   setIsLoading,
-  setFirstLoad,
 
   setSelectedNode,
   fetchPeople,
@@ -31,7 +30,6 @@ const useAccounts = ({
       })
       .finally(() => {
         setIsLoading(false);
-        setFirstLoad(false);
       });
   }, [isAccountsPage, location.pathname, location.search]);
 };

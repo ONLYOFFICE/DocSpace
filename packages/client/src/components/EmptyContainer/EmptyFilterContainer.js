@@ -83,14 +83,20 @@ const EmptyFilterContainer = ({
 };
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    clientLoadingStore,
+  }) => {
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     return {
       selectedFolderId: selectedFolderStore.id,
-      setIsLoading: filesStore.setIsLoading,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
       isRooms,
       isArchiveFolder,
       isRoomsFolder,

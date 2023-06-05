@@ -22,18 +22,18 @@ const FilesMediaViewer = (props) => {
     previewFile,
     fetchFiles,
     setIsLoading,
-    setFirstLoad,
+
     setToPreviewFile,
     setScrollToItem,
     setCurrentId,
-    setAlreadyFetchingRooms,
+
     setBufferSelection,
-    isFavoritesFolder,
+
     archiveRoomsId,
-    onClickFavorite,
+
     onShowInfoPanel,
     onClickDownload,
-    onClickDownloadAs,
+
     onClickRename,
     onClickDelete,
     onMoveAction,
@@ -77,7 +77,6 @@ const FilesMediaViewer = (props) => {
       // fetch file after preview with
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
-        setFirstLoad(false);
       });
     }
   }, [previewFile]);
@@ -228,14 +227,25 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     contextOptionsStore,
+    clientLoadingStore,
   }) => {
+    const {
+      firstLoad,
+
+      setIsSectionBodyLoading,
+      setIsSectionFilterLoading,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
+
     const {
       files,
       userAccess,
       fetchFiles,
-      setIsLoading,
-      firstLoad,
-      setFirstLoad,
+
       setScrollToItem,
       setBufferSelection,
       setIsPreview,
@@ -294,7 +304,7 @@ export default inject(
       previewFile,
       setIsLoading,
       firstLoad,
-      setFirstLoad,
+
       setToPreviewFile,
       setIsPreview,
       resetUrl,

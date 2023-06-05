@@ -39,7 +39,6 @@ import {
 import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 
-import { showLoader, hideLoader } from "./FilterUtils";
 import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const getAccountLoginType = (filterValues) => {
@@ -246,6 +245,7 @@ const SectionFilterContent = ({
   groups,
 
   accountsFilter,
+  showFilterLoader,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -1986,6 +1986,8 @@ const SectionFilterContent = ({
     }
   };
 
+  if (showFilterLoader) return <Loaders.Filter />;
+
   return (
     <FilterInput
       t={t}
@@ -2025,7 +2027,7 @@ export default inject(
     auth,
     filesStore,
     treeFoldersStore,
-
+    clientLoadingStore,
     tagsStore,
     peopleStore,
   }) => {
@@ -2033,7 +2035,7 @@ export default inject(
       filter,
 
       roomsFilter,
-      setIsLoading,
+
       setViewAs,
       viewAs,
       createThumbnails,
@@ -2090,7 +2092,8 @@ export default inject(
       isTrash,
       isArchiveFolder,
 
-      setIsLoading,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
+      showFilterLoader: clientLoadingStore.showFilterLoader,
 
       fetchTags,
       setViewAs,
@@ -2129,6 +2132,6 @@ export default inject(
       "PeopleTranslations",
       "ConnectDialog",
       "SmartBanner",
-    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
+    ])(observer(SectionFilterContent))
   )
 );

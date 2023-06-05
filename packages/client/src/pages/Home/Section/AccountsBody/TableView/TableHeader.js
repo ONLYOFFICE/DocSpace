@@ -172,12 +172,10 @@ class PeopleTableHeader extends React.Component {
   }
 }
 
-export default inject(({ auth, peopleStore, filesStore }) => {
+export default inject(({ auth, peopleStore, clientLoadingStore }) => {
   const { filterStore } = peopleStore;
 
   const { filter } = filterStore;
-
-  const { setIsLoading } = filesStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { withPaging } = auth.settingsStore;
@@ -185,7 +183,7 @@ export default inject(({ auth, peopleStore, filesStore }) => {
   return {
     filter,
 
-    setIsLoading,
+    setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
     userId: auth.userStore.user.id,
     infoPanelVisible,
     withPaging,

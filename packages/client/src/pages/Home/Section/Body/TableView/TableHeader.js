@@ -422,12 +422,19 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore, tableStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    tableStore,
+    clientLoadingStore,
+  }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
       isHeaderChecked,
-      setIsLoading,
+
       filter,
 
       canShare,
@@ -478,7 +485,7 @@ export default inject(
       withContent,
       sortingVisible,
 
-      setIsLoading,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
 
       roomsFilter,
 

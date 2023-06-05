@@ -36,7 +36,7 @@ const PureHome = (props) => {
 
     //homepage,
     setIsLoading,
-    setFirstLoad,
+
     setToPreviewFile,
     playlist,
 
@@ -108,6 +108,8 @@ const PureHome = (props) => {
     fetchPeople,
     setSelectedNode,
     onClickBack,
+
+    showFilterLoader,
   } = props;
 
   const location = useLocation();
@@ -125,7 +127,6 @@ const PureHome = (props) => {
     fetchFiles,
     fetchRooms,
     setIsLoading,
-    setFirstLoad,
 
     isAccountsPage,
     isSettingsPage,
@@ -167,14 +168,13 @@ const PureHome = (props) => {
     location,
 
     setIsLoading,
-    setFirstLoad,
 
     setSelectedNode,
     fetchPeople,
     setPortalTariff,
   });
 
-  useSettings({ t, isSettingsPage, setFirstLoad, setIsLoading });
+  useSettings({ t, isSettingsPage, setIsLoading });
 
   useSDK({
     frameConfig,
@@ -264,7 +264,8 @@ const PureHome = (props) => {
           </Section.SectionHeader>
         )}
 
-        {((!isEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
+        {(((!isEmptyPage || showFilterLoader) && !isErrorRoomNotAvailable) ||
+          isAccountsPage) &&
           !isSettingsPage && (
             <Section.SectionFilter>
               {isFrame ? (
@@ -309,6 +310,7 @@ export default inject(
     filesActionsStore,
     oformsStore,
     selectedFolderStore,
+    clientLoadingStore,
   }) => {
     const { setSelectedFolder } = selectedFolderStore;
     const {
@@ -316,17 +318,30 @@ export default inject(
       primaryProgressDataStore,
       clearUploadedFilesHistory,
     } = uploadDataStore;
+
     const {
       firstLoad,
-      setFirstLoad,
+
+      setIsSectionBodyLoading,
+      setIsSectionFilterLoading,
+      isLoading,
+
+      showFilterLoader,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
+
+    const {
       fetchFiles,
       fetchRooms,
 
       selection,
       dragging,
       setDragging,
-      setIsLoading,
-      isLoading,
+
       viewAs,
       getFileInfo,
       setIsUpdatingRowItem,
@@ -334,9 +349,6 @@ export default inject(
       folders,
       files,
       filesList,
-
-      setFolders,
-      setFiles,
 
       createFile,
       createFolder,
@@ -356,7 +368,6 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
 
-      expandedKeys,
       setExpandedKeys,
       isRoomsFolder,
       isArchiveFolder,
@@ -455,7 +466,7 @@ export default inject(
       disableDrag,
 
       setExpandedKeys,
-      setFirstLoad,
+
       setDragging,
       setIsLoading,
       fetchFiles,
@@ -499,9 +510,8 @@ export default inject(
       fetchPeople,
       setSelectedNode,
       onClickBack,
-      setSelectedFolder,
-      setFolders,
-      setFiles,
+
+      showFilterLoader,
     };
   }
 )(observer(Home));

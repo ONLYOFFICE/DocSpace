@@ -94,8 +94,10 @@ export default inject(
     dialogsStore,
 
     selectedFolderStore,
+    clientLoadingStore,
   }) => {
-    const { isErrorRoomNotAvailable, isFiltered, isLoading } = filesStore;
+    const { isErrorRoomNotAvailable, isFiltered } = filesStore;
+    const { isLoading } = clientLoadingStore;
 
     const { isGracePeriod } = auth.currentTariffStatusStore;
 

@@ -17,7 +17,7 @@ import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
+
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
@@ -31,10 +31,10 @@ const StyledBlock = styled.div`
 
 const ArticleBodyContent = (props) => {
   const {
-    // isDesktopClient,
-    // firstLoad,
-    // FirebaseHelper,
-    // theme,
+    isDesktopClient,
+    firstLoad,
+    FirebaseHelper,
+    theme,
 
     showText,
     toggleArticleOpen,
@@ -50,6 +50,8 @@ const ArticleBodyContent = (props) => {
 
     clearFiles,
     selectedFolderId,
+    showArticleLoader,
+    setIsBurgerLoading,
   } = props;
 
   const navigate = useNavigate();
@@ -58,15 +60,14 @@ const ArticleBodyContent = (props) => {
   const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState(null);
 
-  // const campaigns = (localStorage.getItem("campaigns") || "")
-  //   .split(",")
-  //   .filter((campaign) => campaign.length > 0);
+  const campaigns = (localStorage.getItem("campaigns") || "")
+    .split(",")
+    .filter((campaign) => campaign.length > 0);
 
   const onClick = React.useCallback(
     (folderId, title, rootFolderType) => {
       const { toggleArticleOpen } = props;
 
-      // let path = `/rooms`;
       let params = null;
       let path = ``;
 
@@ -75,6 +76,8 @@ const ArticleBodyContent = (props) => {
         isRoot: true,
         rootFolderType,
       };
+
+      let withTimer = !!selectedFolderId;
 
       switch (folderId) {
         case myFolderId:
@@ -113,6 +116,8 @@ const ArticleBodyContent = (props) => {
           params = accountsFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Accounts);
 
+          withTimer = false;
+
           break;
         case "settings":
           clearFiles();
@@ -135,7 +140,7 @@ const ArticleBodyContent = (props) => {
           break;
       }
 
-      setIsLoading(true);
+      setIsLoading(true, withTimer);
       path += `?${params}`;
 
       navigate(path, { state });
@@ -220,6 +225,12 @@ const ArticleBodyContent = (props) => {
     rootFolderId,
   ]);
 
+  React.useEffect(() => {
+    setIsBurgerLoading(showArticleLoader);
+  }, [showArticleLoader]);
+
+  if (showArticleLoader) return <Loaders.ArticleFolder />;
+
   return (
     <>
       <Items
@@ -249,8 +260,20 @@ export default inject(
     treeFoldersStore,
     dialogsStore,
     selectedFolderStore,
+    clientLoadingStore,
   }) => {
-    const { firstLoad, setIsLoading, clearFiles } = filesStore;
+    const { clearFiles } = filesStore;
+    const {
+      showArticleLoader,
+      setIsSectionBodyLoading,
+      setIsSectionFilterLoading,
+      firstLoad,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param, withTimer) => {
+      setIsSectionBodyLoading(param, withTimer);
+      setIsSectionFilterLoading(param, withTimer);
+    };
 
     const { roomsFolderId, archiveFolderId, myFolderId, recycleBinFolderId } =
       treeFoldersStore;
@@ -269,12 +292,13 @@ export default inject(
       isDesktopClient,
       FirebaseHelper,
       theme,
+      setIsBurgerLoading,
     } = auth.settingsStore;
 
     return {
       toggleArticleOpen,
       showText,
-
+      showArticleLoader,
       isVisitor: auth.userStore.user.isVisitor,
 
       setNewFilesPanelVisible,
@@ -294,10 +318,7 @@ export default inject(
 
       clearFiles,
       selectedFolderId,
+      setIsBurgerLoading,
     };
   }
-)(
-  withTranslation([])(
-    withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
-  )
-);
+)(withTranslation([])(observer(ArticleBodyContent)));

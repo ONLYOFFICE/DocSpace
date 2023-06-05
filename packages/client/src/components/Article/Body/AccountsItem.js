@@ -26,9 +26,7 @@ const PureAccountsItem = ({ showText, isActive, onClick, t }) => {
   );
 };
 
-const AccountsItem = withTranslation(["Common"])(
-  withLoader(PureAccountsItem)(<></>)
-);
+const AccountsItem = withTranslation(["Common"])(PureAccountsItem);
 
 export default inject(({ auth }) => {
   const { showText } = auth.settingsStore;

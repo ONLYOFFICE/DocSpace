@@ -136,8 +136,7 @@ class NewFilesPanel extends React.Component {
       fileType,
       providerKey,
       rootFolderType,
-      filesCount,
-      foldersCount,
+
       title,
     } = item;
     const {
@@ -148,7 +147,6 @@ class NewFilesPanel extends React.Component {
 
       currentFolderId,
       setIsLoading,
-      clearFiles,
     } = this.props;
 
     if (!fileExst) {
@@ -365,16 +363,19 @@ export default inject(
   }) => {
     const {
       addFileToRecentlyViewed,
-      //setIsLoading,
-      isLoading,
-      //updateFilesBadge,
-      //updateFolderBadge,
-      //updateFoldersBadge,
+
       hasNew,
       refreshFiles,
-      clearFiles,
-      setIsLoading,
     } = filesStore;
+
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading, isLoading } =
+      clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
+
     //const { updateRootBadge } = treeFoldersStore;
     const { playlist, setMediaViewerData, setCurrentItem } =
       mediaViewerDataStore;
@@ -400,24 +401,17 @@ export default inject(
       setCurrentItem,
       currentFolderId,
 
-      //setIsLoading,
-
       setMediaViewerData,
       addFileToRecentlyViewed,
       getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-      // updateRootBadge,
-      // updateFolderBadge,
-      // updateFoldersBadge,
-      // updateFilesBadge,
 
       theme: auth.settingsStore.theme,
       hasNew,
       refreshFiles,
 
-      clearFiles,
       setIsLoading,
     };
   }

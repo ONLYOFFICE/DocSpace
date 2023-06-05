@@ -124,7 +124,7 @@ const SectionHeaderContent = (props) => {
     isInfoPanelVisible,
     isRootFolder,
     title,
-
+    showHeaderLoader,
     isDesktop,
     isTabletView,
     personal,
@@ -199,9 +199,7 @@ const SectionHeaderContent = (props) => {
     isAdmin,
     setInvitePanelOptions,
     isEmptyPage,
-    pathParts,
 
-    clearFiles,
     emptyTrashInProgress,
     isLoading,
   } = props;
@@ -858,6 +856,8 @@ const SectionHeaderContent = (props) => {
 
   const isCurrentRoom = isLoading && stateIsRoom ? stateIsRoom : isRoom;
 
+  if (showHeaderLoader) return <Loaders.SectionHeader />;
+
   return (
     <Consumer key="header">
       {(context) => (
@@ -929,7 +929,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-
+    clientLoadingStore,
     contextOptionsStore,
   }) => {
     const { isOwner, isAdmin } = auth.userStore.user;
@@ -947,7 +947,6 @@ export default inject(
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
-      setIsLoading,
 
       activeFiles,
       activeFolders,
@@ -958,9 +957,19 @@ export default inject(
       isEmptyPage,
 
       clearFiles,
-
-      isLoading,
     } = filesStore;
+
+    const {
+      setIsSectionBodyLoading,
+      setIsSectionFilterLoading,
+      showHeaderLoader,
+      isLoading,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const {
       setSharingPanelVisible,
@@ -1049,7 +1058,7 @@ export default inject(
       setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-
+      showHeaderLoader,
       isLoading,
       isRootFolder: pathParts?.length === 1,
       isPersonalRoom,
@@ -1154,5 +1163,5 @@ export default inject(
     "People",
     "PeopleTranslations",
     "ChangeUserTypeDialog",
-  ])(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
+  ])(observer(SectionHeaderContent))
 );

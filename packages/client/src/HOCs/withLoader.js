@@ -7,7 +7,6 @@ const pathname = window.location.pathname.toLowerCase();
 const isEditor = pathname.indexOf("doceditor") !== -1;
 const isGallery = pathname.indexOf("form-gallery") !== -1;
 
-let loadTimeout = null;
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const {
@@ -15,47 +14,15 @@ const withLoader = (WrappedComponent) => (Loader) => {
       tReady,
       firstLoad,
       isLoaded,
-      isLoading,
+
       viewAs,
-      setIsBurgerLoading,
+      showBodyLoader,
       isLoadingFilesFind,
     } = props;
-    const [inLoad, setInLoad] = useState(false);
-
-    const cleanTimer = () => {
-      loadTimeout && clearTimeout(loadTimeout);
-      loadTimeout = null;
-    };
-
-    useEffect(() => {
-      if (isLoading) {
-        cleanTimer();
-        loadTimeout = setTimeout(() => {
-          //console.log("inLoad", true);
-          setInLoad(true);
-        }, 500);
-      } else {
-        cleanTimer();
-        //console.log("inLoad", false);
-        setInLoad(false);
-      }
-
-      return () => {
-        cleanTimer();
-      };
-    }, [isLoading]);
-
-    useEffect(() => {
-      if ((!isEditor && firstLoad) || !isLoaded || (isMobile && inLoad)) {
-        setIsBurgerLoading(true);
-      } else {
-        setIsBurgerLoading(false);
-      }
-    }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
 
     return (!isEditor && firstLoad && !isGallery) ||
       !isLoaded ||
-      (isMobile && inLoad && !firstLoad) ||
+      showBodyLoader ||
       (isLoadingFilesFind && !Loader) ||
       !tReady ||
       !isInit ? (
@@ -73,14 +40,9 @@ const withLoader = (WrappedComponent) => (Loader) => {
     );
   };
 
-  return inject(({ auth, filesStore }) => {
-    const {
-      firstLoad,
-      isLoading,
-      viewAs,
-      isLoadingFilesFind,
-      isInit,
-    } = filesStore;
+  return inject(({ auth, filesStore, clientLoadingStore }) => {
+    const { viewAs, isLoadingFilesFind, isInit } = filesStore;
+    const { firstLoad, isLoading, showBodyLoader } = clientLoadingStore;
     const { settingsStore } = auth;
     const { setIsBurgerLoading } = settingsStore;
     return {
@@ -91,6 +53,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       setIsBurgerLoading,
       isLoadingFilesFind,
       isInit,
+      showBodyLoader,
     };
   })(observer(withLoader));
 };

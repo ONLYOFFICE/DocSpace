@@ -8,7 +8,7 @@ import CatalogFavoritesReactSvgUrl from "PUBLIC_DIR/images/catalog.favorites.rea
 import CatalogRecentReactSvgUrl from "PUBLIC_DIR/images/catalog.recent.react.svg?url";
 import CatalogPrivateReactSvgUrl from "PUBLIC_DIR/images/catalog.private.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
@@ -415,6 +415,7 @@ export default inject(
     filesActionsStore,
     uploadDataStore,
     dialogsStore,
+    clientLoadingStore,
   }) => {
     const {
       selection,
@@ -422,9 +423,11 @@ export default inject(
       dragging,
       setDragging,
       trashIsEmpty,
-      firstLoad,
+
       startDrag,
     } = filesStore;
+
+    const { firstLoad } = clientLoadingStore;
 
     const { startUpload } = uploadDataStore;
 

@@ -61,6 +61,7 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
   accessRightsStore;
+  clientLoadingStore;
 
   isBulkDownload = false;
   isLoadedSearchFiles = false;
@@ -76,7 +77,8 @@ class FilesActionStore {
     settingsStore,
     dialogsStore,
     mediaViewerDataStore,
-    accessRightsStore
+    accessRightsStore,
+    clientLoadingStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -88,6 +90,7 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
     this.accessRightsStore = accessRightsStore;
+    this.clientLoadingStore = clientLoadingStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -1192,7 +1195,13 @@ class FilesActionStore {
   };
 
   selectTag = (tag) => {
-    const { roomsFilter, setIsLoading } = this.filesStore;
+    const { roomsFilter } = this.filesStore;
+
+    const { setIsSectionBodyLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+    };
 
     const newFilter = roomsFilter.clone();
 
@@ -1222,7 +1231,13 @@ class FilesActionStore {
   };
 
   selectOption = ({ option, value }) => {
-    const { roomsFilter, setIsLoading } = this.filesStore;
+    const { roomsFilter } = this.filesStore;
+
+    const { setIsSectionBodyLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+    };
 
     const newFilter = roomsFilter.clone();
     const tags = newFilter.tags ? [...newFilter.tags] : [];
@@ -1267,6 +1282,14 @@ class FilesActionStore {
   openLocationAction = async (item) => {
     this.filesStore.setBufferSelection(null);
 
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
+
     const { id, isRoom, title, rootFolderType } = item;
     const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
 
@@ -1277,16 +1300,21 @@ class FilesActionStore {
 
     const url = getCategoryUrl(categoryType, id);
 
-    this.filesStore.setIsLoading(true);
-
     window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const { setIsLoading, clearFiles, categoryType } = this.filesStore;
+    const { categoryType } = this.filesStore;
     const { myRoomsId, myFolderId, archiveRoomsId, recycleBinFolderId } =
       this.treeFoldersStore;
     const { rootFolderType } = this.selectedFolderStore;
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const { ExtraLocationTitle, ExtraLocation, fileExst } = item;
 
@@ -1980,16 +2008,20 @@ class FilesActionStore {
   onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
 
   openFileAction = (item) => {
-    const {
-      isLoading,
-      setIsLoading,
-      openDocEditor,
-      isPrivacyFolder,
-      clearFiles,
-    } = this.filesStore;
+    const { openDocEditor, isPrivacyFolder } = this.filesStore;
+
+    const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
+
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
@@ -2061,7 +2093,15 @@ class FilesActionStore {
   onClickBack = () => {
     const { roomType } = this.selectedFolderStore;
     const { setSelectedNode } = this.treeFoldersStore;
-    const { clearFiles, setIsLoading } = this.filesStore;
+    const { clearFiles } = this.filesStore;
+
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
@@ -2117,7 +2157,13 @@ class FilesActionStore {
   };
 
   moveToRoomsPage = () => {
-    const { clearFiles, setIsLoading } = this.filesStore;
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const categoryType = getCategoryType(location);
 
@@ -2144,7 +2190,13 @@ class FilesActionStore {
   };
 
   backToParentFolder = () => {
-    const { setIsLoading, clearFiles } = this.filesStore;
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     let id = this.selectedFolderStore.parentId;
 

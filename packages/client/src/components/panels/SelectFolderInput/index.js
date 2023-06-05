@@ -199,14 +199,14 @@ SelectFolderInput.defaultProps = {
 
 export default inject(
   ({
-    filesStore,
+    clientLoadingStore,
     treeFoldersStore,
     selectFolderDialogStore,
     selectedFolderStore,
     backup,
   }) => {
     const { clearLocalStorage } = backup;
-    const { setFirstLoad } = filesStore;
+    const { setFirstLoad } = clientLoadingStore;
     const { setExpandedPanelKeys } = treeFoldersStore;
     const {
       isLoading,

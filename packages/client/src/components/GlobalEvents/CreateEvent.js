@@ -301,9 +301,16 @@ export default inject(
     dialogsStore,
     oformsStore,
     settingsStore,
+    clientLoadingStore,
   }) => {
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+    };
+
     const {
-      setIsLoading,
       createFile,
       createFolder,
       addActiveItems,

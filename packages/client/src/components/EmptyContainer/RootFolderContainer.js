@@ -60,7 +60,6 @@ const RootFolderContainer = (props) => {
     setIsLoading,
     rootFolderType,
     linkStyles,
-    isLoading,
 
     isEmptyPage,
 
@@ -72,7 +71,6 @@ const RootFolderContainer = (props) => {
 
     myFolder,
     roomsFolder,
-    clearFiles,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -368,19 +366,30 @@ const RootFolderContainer = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    clientLoadingStore,
+  }) => {
     const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
       auth.settingsStore;
+
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     const {
       filter,
 
       privacyInstructions,
-      isLoading,
-      setIsLoading,
 
       isEmptyPage,
-      clearFiles,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId, myFolder, roomsFolder } =
@@ -399,7 +408,6 @@ export default inject(
       myFolderId,
       filter,
 
-      isLoading,
       setIsLoading,
       rootFolderType,
 
@@ -409,7 +417,6 @@ export default inject(
 
       myFolder,
       roomsFolder,
-      clearFiles,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

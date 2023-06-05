@@ -23,9 +23,7 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import MobileView from "./MobileView";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
-import withLoader from "../../../HOCs/withLoader";
+
 import { Events, EmployeeType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
@@ -89,6 +87,7 @@ const StyledButton = styled(Button)`
 const ArticleMainButtonContent = (props) => {
   const {
     t,
+    tReady,
     isMobileArticle,
 
     isPrivacy,
@@ -97,7 +96,7 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
-    isArticleLoading,
+    showArticleLoader,
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
@@ -460,23 +459,24 @@ const ArticleMainButtonContent = (props) => {
 
   const isProfile = location.pathname === "/accounts/view/@self";
 
+  if (showArticleLoader || !tReady)
+    return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
+
   return (
     <>
       {isMobileArticle ? (
         <>
-          {!isArticleLoading &&
-            !isProfile &&
-            (security?.Create || isAccountsPage) && (
-              <MobileView
-                t={t}
-                titleProp={t("Upload")}
-                actionOptions={actions}
-                buttonOptions={uploadActions}
-                isRooms={isRoomsFolder}
-                mainButtonMobileVisible={mainButtonMobileVisible}
-                onMainButtonClick={onCreateRoom}
-              />
-            )}
+          {!isProfile && (security?.Create || isAccountsPage) && (
+            <MobileView
+              t={t}
+              titleProp={t("Upload")}
+              actionOptions={actions}
+              buttonOptions={uploadActions}
+              isRooms={isRoomsFolder}
+              mainButtonMobileVisible={mainButtonMobileVisible}
+              onMainButtonClick={onCreateRoom}
+            />
+          )}
         </>
       ) : isRoomsFolder ? (
         <StyledButton
@@ -539,14 +539,10 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
+    clientLoadingStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-
-      mainButtonMobileVisible,
-    } = filesStore;
+    const { showArticleLoader } = clientLoadingStore;
+    const { mainButtonMobileVisible } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -563,8 +559,6 @@ export default inject(
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
-    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
-
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
     const security = selectedFolderStore.security;
@@ -580,7 +574,7 @@ export default inject(
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
 
-      isArticleLoading,
+      showArticleLoader,
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
@@ -595,9 +589,6 @@ export default inject(
       setSelectFileDialogVisible,
       setInvitePanelOptions,
 
-      isLoading,
-      isLoaded,
-      firstLoad,
       currentFolderId,
 
       enablePlugins,
@@ -618,9 +609,5 @@ export default inject(
     "Files",
     "People",
     "PeopleTranslations",
-  ])(
-    withLoader(observer(ArticleMainButtonContent))(
-      <Loaders.ArticleButton height="28px" />
-    )
-  )
+  ])(observer(ArticleMainButtonContent))
 );

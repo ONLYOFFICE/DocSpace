@@ -6,8 +6,6 @@ import CatalogItem from "@docspace/components/catalog-item";
 
 import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 
-import withLoader from "../../../HOCs/withLoader";
-
 const PureSettingsItem = ({ t, showText, isActive, onClick }) => {
   const onClickAction = React.useCallback(() => {
     onClick && onClick("settings");
@@ -27,7 +25,7 @@ const PureSettingsItem = ({ t, showText, isActive, onClick }) => {
 };
 
 const SettingsItem = withTranslation(["FilesSettings", "Common"])(
-  withLoader(PureSettingsItem)(<></>)
+  PureSettingsItem
 );
 
 export default inject(({ auth }) => {

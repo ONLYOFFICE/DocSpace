@@ -39,7 +39,7 @@ const EmptyFolderContainer = ({
 
   navigationPath,
   rootFolderType,
-  clearFiles,
+
   roomType,
   isLoading,
 }) => {
@@ -210,11 +210,11 @@ export default inject(
   ({
     auth,
     accessRightsStore,
-    filesStore,
+
     selectedFolderStore,
     contextOptionsStore,
+    clientLoadingStore,
   }) => {
-    const { clearFiles, isLoading } = filesStore;
     const {
       navigationPath,
       parentId,
@@ -236,8 +236,16 @@ export default inject(
 
     const { onClickInviteUsers } = contextOptionsStore;
 
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading, isLoading } =
+      clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
+
     return {
-      setIsLoading: filesStore.setIsLoading,
+      setIsLoading,
       isLoading,
       parentId: id ?? parentId,
       roomType,
@@ -245,7 +253,7 @@ export default inject(
 
       navigationPath,
       rootFolderType,
-      clearFiles,
+
       editAccess: security?.EditAccess,
       onClickInviteUsers,
       folderId,

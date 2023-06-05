@@ -61,15 +61,16 @@ const MainBar = ({
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, clientLoadingStore, filesStore }) => {
   const { currentTariffStatusStore, settingsStore } = auth;
   const { checkedMaintenance, setMaintenanceExist, snackbarExist } =
     settingsStore;
   const { isNotPaidPeriod } = currentTariffStatusStore;
-  const { firstLoad } = filesStore;
+  const { firstLoad } = clientLoadingStore;
+  const { isInit } = filesStore;
 
   return {
-    firstLoad,
+    firstLoad: firstLoad && isInit,
     checkedMaintenance,
     snackbarExist,
     setMaintenanceExist,

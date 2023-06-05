@@ -41,11 +41,9 @@ const SectionBodyContent = (props) => {
     filesList,
     uploaded,
     onClickBack,
-    isLoading,
+
     movingInProgress,
   } = props;
-
-  const location = useLocation();
 
   useEffect(() => {
     return () => window?.getSelection()?.removeAllRanges();
@@ -310,14 +308,14 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
-      isLoading,
+
       movingInProgress,
     } = filesStore;
     return {
       dragging,
       startDrag,
       setStartDrag,
-      isLoading,
+
       isEmptyFilesList,
       setDragging,
       folderId: selectedFolderStore.id,
@@ -341,6 +339,6 @@ export default inject(
   }
 )(
   withTranslation(["Files", "Common", "Translations"])(
-    withHotkeys(observer(SectionBodyContent))
+    withHotkeys(withLoader(observer(SectionBodyContent))())
   )
 );

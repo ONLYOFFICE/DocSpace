@@ -11,7 +11,7 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import Grid from "@docspace/components/grid";
 
-const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading, theme }) => {
+const EmptyScreen = ({ resetFilter, setIsLoading, theme }) => {
   const { t } = useTranslation(["People", "Common"]);
 
   const title = t("NotFoundUsers");
@@ -19,7 +19,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading, theme }) => {
 
   const onResetFilter = () => {
     setIsLoading(true);
-    resetFilter().finally(() => setIsLoading(false));
+    resetFilter();
   };
 
   const imageSrc = theme.isBase
@@ -68,10 +68,14 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading, theme }) => {
   );
 };
 
-export default inject(({ auth, peopleStore, filesStore }) => {
-  const { resetFilter, selectedGroupStore } = peopleStore;
-  const { isEmptyGroup } = selectedGroupStore;
-  const { setIsLoading } = filesStore;
+export default inject(({ auth, peopleStore, clientLoadingStore }) => {
+  const { resetFilter } = peopleStore;
+
+  const { setIsSectionBodyLoading } = clientLoadingStore;
+
+  const setIsLoading = (param) => {
+    setIsSectionBodyLoading(param);
+  };
   return {
     resetFilter,
     isEmptyGroup,

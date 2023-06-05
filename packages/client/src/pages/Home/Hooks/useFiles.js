@@ -25,7 +25,6 @@ const useFiles = ({
   fetchFiles,
   fetchRooms,
   setIsLoading,
-  setFirstLoad,
 
   isAccountsPage,
   isSettingsPage,
@@ -264,7 +263,6 @@ const useFiles = ({
       })
       .finally(() => {
         setIsLoading(false);
-        setFirstLoad(false);
       });
   }, [location.pathname, location.search, isAccountsPage, isSettingsPage]);
 

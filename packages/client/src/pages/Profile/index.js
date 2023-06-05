@@ -28,11 +28,9 @@ class Profile extends React.Component {
       isVisitor,
       selectedTreeNode,
       setSelectedNode,
-      setFirstLoadGlobal,
     } = this.props;
     const userId = "@self";
 
-    setFirstLoadGlobal(false);
     setIsEditTargetUser(false);
 
     isVisitor
@@ -111,31 +109,32 @@ Profile.propTypes = {
   language: PropTypes.string,
 };
 
-export default inject(({ auth, peopleStore, filesStore, treeFoldersStore }) => {
-  const { setDocumentTitle, language } = auth;
-  const { setFirstLoad: setFirstLoadGlobal } = filesStore;
-  const { targetUserStore } = peopleStore;
-  const {
-    getTargetUser: fetchProfile,
-    targetUser: profile,
-    isEditTargetUser,
-    setIsEditTargetUser,
-  } = targetUserStore;
+export default inject(
+  ({ auth, peopleStore, clientLoadingStore, treeFoldersStore }) => {
+    const { setDocumentTitle, language } = auth;
 
-  const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
-  return {
-    setFirstLoadGlobal,
-    setDocumentTitle,
-    language,
-    fetchProfile,
-    profile,
+    const { targetUserStore } = peopleStore;
+    const {
+      getTargetUser: fetchProfile,
+      targetUser: profile,
+      isEditTargetUser,
+      setIsEditTargetUser,
+    } = targetUserStore;
 
-    isEditTargetUser,
-    setIsEditTargetUser,
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+    return {
+      setDocumentTitle,
+      language,
+      fetchProfile,
+      profile,
 
-    showCatalog: auth.settingsStore.showCatalog,
-    selectedTreeNode,
-    setSelectedNode,
-    isVisitor: auth.userStore.user.isVisitor,
-  };
-})(observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile))));
+      isEditTargetUser,
+      setIsEditTargetUser,
+
+      showCatalog: auth.settingsStore.showCatalog,
+      selectedTreeNode,
+      setSelectedNode,
+      isVisitor: auth.userStore.user.isVisitor,
+    };
+  }
+)(observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile))));

@@ -28,7 +28,8 @@ class CreateEditRoomStore {
     thirdPartyStore,
     settingsStore,
     infoPanelStore,
-    currentQuotaStore
+    currentQuotaStore,
+    clientLoadingStore
   ) {
     makeAutoObservable(this);
 
@@ -40,6 +41,7 @@ class CreateEditRoomStore {
     this.settingsStore = settingsStore;
     this.infoPanelStore = infoPanelStore;
     this.currentQuotaStore = currentQuotaStore;
+    this.clientLoadingStore = clientLoadingStore;
   }
 
   setRoomParams = (roomParams) => {
@@ -160,8 +162,14 @@ class CreateEditRoomStore {
   };
 
   onOpenNewRoom = async (room) => {
-    const { setIsLoading, clearFiles } = this.filesStore;
+    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
+      this.clientLoadingStore;
     const { setView, setIsVisible } = this.infoPanelStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+      setIsSectionFilterLoading(param);
+    };
 
     setView("info_members");
 
