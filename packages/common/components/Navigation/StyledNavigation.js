@@ -42,7 +42,8 @@ const StyledContainer = styled.div`
   }
 
   .title-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(1px, max-content) auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

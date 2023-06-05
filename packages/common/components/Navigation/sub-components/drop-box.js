@@ -45,7 +45,8 @@ const StyledBox = styled.div`
   border-radius: 0px 0px 6px 6px;
 
   .title-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(1px, max-content) auto;
   }
 
   @media ${tablet} {

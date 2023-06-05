@@ -76,7 +76,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
 
 const StyledArrowIcon = styled(ArrowIcon)`
   height: 12px;
-  width: 12px;
+  min-width: 12px;
 
   padding-left: 6px;
   path {
