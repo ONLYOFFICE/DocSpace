@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -28,9 +28,9 @@ const getColumns = (defaultColumns, userId) => {
 
 const HistoryTableHeader = (props) => {
   const { userId, sectionWidth, tableRef } = props;
-  const { t } = useTranslation(["Webhooks", "People"]);
+  const { t, ready } = useTranslation(["Webhooks", "People"]);
 
-  const defaultColumns = useRef([
+  const defaultColumns = [
     {
       key: "Event ID",
       title: t("EventID"),
@@ -55,9 +55,13 @@ const HistoryTableHeader = (props) => {
       resizable: true,
       onChange: onColumnChange,
     },
-  ]);
+  ];
 
-  const [columns, setColumns] = useState(getColumns(defaultColumns.current, userId));
+  const [columns, setColumns] = useState(getColumns(defaultColumns, userId));
+
+  useEffect(() => {
+    ready && setColumns(getColumns(defaultColumns, userId));
+  }, [ready]);
 
   const onColumnChange = (key, e, userId) => {
     const columnIndex = columns.findIndex((c) => c.key === key);
