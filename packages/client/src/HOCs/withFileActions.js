@@ -350,7 +350,7 @@ export default function withFileActions(WrappedFileItem) {
 
         if (!destFolderId) return true;
 
-        return destFolderId.toString() !== id.toString();
+        return destFolderId != id;
       };
 
       const activeFileIndex = activeFiles.findIndex((x) => x.id === item.id);
