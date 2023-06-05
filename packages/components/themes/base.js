@@ -2126,7 +2126,7 @@ const Base = {
       macHoverColor: black,
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: black,
+      iosHoverColor: "url(#iosGradient-1)",
     },
     thirdPartyList: {
       color: "#818b91",
