@@ -62,8 +62,8 @@ REM echo ######## Build DocSpace package ########
 %AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
 
 IF "%SignBuild%"=="true" (
-:%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetSig
-:%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
+%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetSig
+%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
 )
 
 %AdvancedInstaller% /rebuild build\install\win\DocSpace.aip
