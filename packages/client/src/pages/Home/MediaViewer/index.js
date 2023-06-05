@@ -34,6 +34,9 @@ const FilesMediaViewer = (props) => {
     onShowInfoPanel,
     onClickDownload,
     onClickDownloadAs,
+    onClickLinkEdit,
+    onPreviewClick,
+    onCopyLink,
     onClickRename,
     onClickDelete,
     onMoveAction,
@@ -178,6 +181,8 @@ const FilesMediaViewer = (props) => {
       return;
     }
 
+    console.log(url);
+
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
@@ -205,6 +210,10 @@ const FilesMediaViewer = (props) => {
         onMoveAction={onMoveAction}
         onCopyAction={onCopyAction}
         onDuplicate={onDuplicate}
+        onClickLinkEdit={onClickLinkEdit}
+        onPreviewClick={onPreviewClick}
+        onCopyLink={onCopyLink}
+        onClickDownloadAs={onClickDownloadAs}
         onClose={onMediaViewerClose}
         getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
@@ -274,6 +283,9 @@ export default inject(
       onMoveAction,
       onCopyAction,
       onDuplicate,
+      onClickLinkEdit,
+      onPreviewClick,
+      onCopyLink,
     } = contextOptionsStore;
 
     return {
@@ -310,6 +322,9 @@ export default inject(
       onClickDelete,
       onClickDownload,
       onShowInfoPanel,
+      onClickLinkEdit,
+      onPreviewClick,
+      onCopyLink,
       onClickRename,
       onMoveAction,
       getIcon,

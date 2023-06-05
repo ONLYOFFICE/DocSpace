@@ -26,7 +26,8 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
-
+import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
+import { IndexedDBStores } from "@docspace/common/constants";
 import queryString from "query-string";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
@@ -49,6 +50,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    userId,
   } = rest;
 
   useEffect(() => {
@@ -255,6 +257,20 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       });
   };
 
+  const initIndexedDb = React.useCallback(async () => {
+    await indexedDbHelper.init(userId, [IndexedDBStores.images]);
+  }, [userId]);
+
+  useEffect(() => {
+    console.log(window.DocSpaceConfig.imageThumbnails);
+    if (!userId || !window.DocSpaceConfig.imageThumbnails) return;
+    initIndexedDb();
+
+    return () => {
+      indexedDbHelper.deleteDatabase(userId);
+    };
+  }, [userId, initIndexedDb]);
+
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -389,6 +405,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
+    userId: auth?.userStore?.user?.id,
     whiteLabelLogoUrls,
   };
 })(observer(Shell));
