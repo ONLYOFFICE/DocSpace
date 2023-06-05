@@ -30,6 +30,11 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
     return () => window.removeEventListener("keyup", onKeyPress);
   });
 
+  const handleDeleteClick = () => {
+    handleSubmit();
+    onClose();
+  };
+
   return (
     <ModalDialog visible={visible} onClose={onClose} displayType="modal">
       <ModalDialog.Header>{header}</ModalDialog.Header>
@@ -43,7 +48,7 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
             label={t("EmptyTrashDialog:DeleteForeverButton")}
             size="normal"
             primary={true}
-            onClick={handleSubmit}
+            onClick={handleDeleteClick}
           />
           <Button label={t("Common:CancelButton")} size="normal" onClick={onClose} />
         </Footer>
