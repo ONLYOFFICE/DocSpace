@@ -6,7 +6,6 @@ import Button from "@docspace/components/button";
 import FieldContainer from "@docspace/components/field-container";
 import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledContent } from "./RoomStyles";
-import { getPasswordErrorMessage } from "../../../helpers/utils";
 // import { createPasswordHash } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import FormWrapper from "@docspace/components/form-wrapper";
@@ -30,7 +29,7 @@ const RoomPassword = (props) => {
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // useEffect(() => {
   //   if (!hashSettings) getSettings(true);
@@ -44,6 +43,7 @@ const RoomPassword = (props) => {
   const onSubmit = async () => {
     if (!password.trim()) {
       setPasswordValid(false);
+      setErrorMessage(t("Common:RequiredField"));
     }
 
     if (!passwordValid || !password.trim()) {
@@ -56,27 +56,29 @@ const RoomPassword = (props) => {
       // const passwordHash = createPasswordHash(password, hashSettings);
 
       const res = await validatePublicRoomPassword(roomKey, password);
+
       setIsLoading(false);
 
       switch (res?.status) {
-        case ValidationResult.Ok:
-          // Ok
-
-          setRoomData(res);
-
+        case ValidationResult.Ok: {
+          setRoomData(res); // Ok
           return;
-        case ValidationResult.Invalid:
-          setError(""); // Invalid
-          toastr.error("Invalid");
+        }
+        // case ValidationResult.Invalid: {
+        //   setErrorMessage(""); // Invalid
+        //   toastr.error("Invalid");
+        //   return;
+        // }
+        // case ValidationResult.Expired: {
+        //   setErrorMessage(""); // Expired
+        //   toastr.error("Expired");
+        //   return;
+        // }
+        case ValidationResult.InvalidPassword: {
+          console.log("asd");
+          setErrorMessage(t("Common:IncorrectPassword"));
           return;
-        case ValidationResult.Expired:
-          setError(""); // Expired
-          toastr.error("Expired");
-          return;
-        case ValidationResult.InvalidPassword:
-          setError(""); // Invalid Password
-          toastr.error("Invalid Password");
-          return;
+        }
       }
     } catch (error) {
       console.log(error);
@@ -123,8 +125,8 @@ const RoomPassword = (props) => {
               <FieldContainer
                 isVertical={true}
                 labelVisible={false}
-                hasError={!passwordValid}
-                errorMessage={"Error password TODO:"}
+                hasError={!!errorMessage}
+                errorMessage={errorMessage}
               >
                 <PasswordInput
                   simpleView
@@ -134,7 +136,7 @@ const RoomPassword = (props) => {
                   placeholder={t("Common:Password")}
                   type="password"
                   inputValue={password}
-                  hasError={!passwordValid}
+                  hasError={!!errorMessage}
                   size="large"
                   scale
                   tabIndex={1}
@@ -182,4 +184,4 @@ export default inject(({ auth, publicRoomStore }) => {
     setRoomData,
     roomTitle,
   };
-})(withTranslation(["Common", "UploadPanel"])(observer(RoomPassword)));
+})(withTranslation(["Common"])(observer(RoomPassword)));

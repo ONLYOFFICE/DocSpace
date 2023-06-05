@@ -13,13 +13,10 @@ const LinkBlock = (props) => {
     setLinkNameValue,
     linkValue,
     setLinkValue,
-    isLinkNameValid,
-    setIsLinkNameValid,
   } = props;
 
   const onChangeLinkName = (e) => {
     setLinkNameValue(e.target.value);
-    setIsLinkNameValid(true);
   };
 
   const onShortenClick = () => {
@@ -32,25 +29,21 @@ const LinkBlock = (props) => {
       <Text className="edit-link-text" fontSize="13px" fontWeight={600}>
         {t("LinkName")}
       </Text>
-      <FieldContainer
-        isVertical
-        hasError={!isLinkNameValid}
-        errorMessage={t("Common:RequiredField")}
-        className="edit-link_password-block"
-      >
-        <TextInput
-          scale
-          size="base"
-          withBorder
-          isAutoFocussed={false}
-          className="edit-link_name-input"
-          value={linkNameValue}
-          onChange={onChangeLinkName}
-          placeholder={t("ExternalLink")}
-          isDisabled={isLoading}
-          hasError={!isLinkNameValid}
-        />
-      </FieldContainer>
+      <Text className="edit-link_required-icon" color="#F24724">
+        *
+      </Text>
+
+      <TextInput
+        scale
+        size="base"
+        withBorder
+        isAutoFocussed={false}
+        className="edit-link_name-input"
+        value={linkNameValue}
+        onChange={onChangeLinkName}
+        placeholder={t("ExternalLink")}
+        isDisabled={isLoading}
+      />
 
       <TextInput
         scale

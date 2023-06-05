@@ -20,11 +20,18 @@ const StyledEditLinkPanel = styled.div`
       padding: 0px 16px 20px 16px;
 
       .edit-link-text {
+        display: inline-flex;
         margin-bottom: 4px;
+      }
+
+      .edit-link_required-icon {
+        display: inline-flex;
+        margin-left: 2px;
       }
 
       .edit-link_link-input {
         margin-bottom: 8px;
+        margin-top: 16px;
       }
     }
 

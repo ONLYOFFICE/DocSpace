@@ -262,5 +262,6 @@
   "Website": "Website",
   "Yesterday": "Yesterday",
   "InfoPanel": "Info panel",
-  "NeedPassword": "You need a password to access the room"
+  "NeedPassword": "You need a password to access the room",
+  "IncorrectPassword": "Incorrect password"
 }

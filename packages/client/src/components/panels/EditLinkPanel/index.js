@@ -45,12 +45,12 @@ const EditLinkPanel = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [linkNameValue, setLinkNameValue] = useState("");
+  const linkTitle = link.sharedTo.title ?? "";
+  const [linkNameValue, setLinkNameValue] = useState(linkTitle);
   const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState("");
 
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [isLinkNameValid, setIsLinkNameValid] = useState(true);
 
   const [linkValue, setLinkValue] = useState(shareLink);
   const [hasChanges, setHasChanges] = useState(false);
@@ -74,23 +74,13 @@ const EditLinkPanel = (props) => {
 
   const onClose = () => setIsVisible(false);
   const onSave = () => {
-    let err = false;
-
     const isPasswordValid = !!passwordValue.trim();
 
     if (!isPasswordValid && passwordAccessIsChecked) {
       setIsPasswordValid(false);
-      err = true;
+
+      return;
     }
-
-    const isLinkNameValid = !!linkNameValue.trim();
-
-    if (!isLinkNameValid) {
-      setIsLinkNameValid(false);
-      err = true;
-    }
-
-    if (err) return;
 
     // const passwordHash = passwordAccessIsChecked
     //   ? createPasswordHash(passwordValue, hashSettings)
@@ -158,6 +148,8 @@ const EditLinkPanel = (props) => {
     return () => window.removeEventListener("keydown", onKeyPress);
   }, [unsavedChangesDialogVisible]);
 
+  const linkNameIsValid = !!linkNameValue.trim();
+
   return (
     <StyledEditLinkPanel>
       <Backdrop
@@ -186,8 +178,6 @@ const EditLinkPanel = (props) => {
               setLinkNameValue={setLinkNameValue}
               linkValue={linkValue}
               setLinkValue={setLinkValue}
-              isLinkNameValid={isLinkNameValid}
-              setIsLinkNameValid={setIsLinkNameValid}
             />
             <PasswordAccessBlock
               t={t}
@@ -224,7 +214,7 @@ const EditLinkPanel = (props) => {
             primary
             size="normal"
             label={t("Common:SaveButton")}
-            isDisabled={isLoading}
+            isDisabled={isLoading || !linkNameIsValid}
             onClick={onSave}
           />
           <Button

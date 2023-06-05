@@ -105,7 +105,7 @@ export const StyledBody = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 40px;
+    padding-bottom: 64px;
   }
 
   .password-field-wrapper {
