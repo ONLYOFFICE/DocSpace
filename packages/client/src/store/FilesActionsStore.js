@@ -2163,6 +2163,8 @@ class FilesActionStore {
       id = urlFilter.folder;
     }
 
+    if (id === undefined) return;
+
     setIsLoading(true);
 
     fetchFiles(id, null, true, false).finally(() => setIsLoading(false));

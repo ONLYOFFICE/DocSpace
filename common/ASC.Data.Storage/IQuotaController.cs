@@ -36,4 +36,6 @@ public interface IQuotaController
     void QuotaUsedSet(string module, string domain, string dataTag, long size);
 
     void QuotaUsedCheck(long size);
+
+    string ExcludePattern { get; set; }
 }

@@ -552,14 +552,14 @@ install_docker_compose () {
 		install_service python3
 	fi
 
-	if command_exists apt-get; then
-		apt-get -y update -qq
-		apt-get -y -q install python3-pip
-	elif command_exists yum; then
+	py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
+	if [[ $py3_version -lt 6 ]]; then
+		curl -O https://bootstrap.pypa.io/pip/3.$py3_version/get-pip.py
+	else
 		curl -O https://bootstrap.pypa.io/get-pip.py
-		python3 get-pip.py || true
-		rm get-pip.py
-	fi	
+	fi
+	python3 get-pip.py
+	rm get-pip.py
 
 	python3 -m pip install --upgrade pip
 	python3 -m pip install docker-compose
@@ -567,21 +567,6 @@ install_docker_compose () {
 
 	if ! command_exists docker-compose; then
 		echo "command docker-compose not found"
-		exit 1;
-	fi
-}
-
-install_jq () {
-	if command_exists apt-get; then
-		apt-get -y update
-		apt-get -y -q install jq
-	elif command_exists yum; then
-		rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm || true
-		yum -y install jq
-	fi
-
-	if ! command_exists jq; then
-		echo "command jq not found"
 		exit 1;
 	fi
 }
@@ -779,10 +764,6 @@ get_available_version () {
 		install_curl;
 	fi
 
-	if ! command_exists jq ; then
-		install_jq
-	fi
-
 	CREDENTIALS="";
 	AUTH_HEADER="";
 	TAGS_RESP="";
@@ -953,6 +934,13 @@ download_files () {
 		install_service svn subversion
 	fi
 
+	if ! command_exists jq ; then
+		if command_exists yum; then 
+			rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm
+		fi
+		install_service jq
+	fi
+
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
@@ -965,8 +953,8 @@ download_files () {
 }
 
 reconfigure () {
-	local VARIABLE_NAME=$1
-	local VARIABLE_VALUE=$2
+	local VARIABLE_NAME="$1"
+	local VARIABLE_VALUE="$2"
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
 		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
