@@ -176,23 +176,18 @@ public class WebPath
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<string> GetPathAsync(string relativePath)
+    public async Task<string> GetPathAsync(string relativePath)
     {
         if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
         {
             throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
         }
 
-        return InternalGetPathAsync(relativePath);
-    }
-
-    private async Task<string> InternalGetPathAsync(string relativePath)
-    {
-        if (_coreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
+        if (_coreBaseSettings.Standalone && await ServiceProvider.GetService<StaticUploader>().CanUploadAsync()) //hack for skip resolve DistributedTaskQueueOptionsManager
         {
             try
             {
-                var uri = await _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>()).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                var uri = await (await _storageSettingsHelper.DataStoreAsync(await _settingsManager.LoadAsync<CdnStorageSettings>())).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
                 var result = uri.AbsoluteUri.ToLower();
                 if (!string.IsNullOrEmpty(result))
                 {

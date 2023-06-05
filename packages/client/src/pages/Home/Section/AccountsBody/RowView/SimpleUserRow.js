@@ -129,7 +129,7 @@ const SimpleUserRow = (props) => {
           mode={"modern"}
           className={"user-row"}
           onRowClick={onRowClick}
-          rowContextClick={onRowContextClick}
+          onContextClick={onRowContextClick}
         >
           <UserContent {...props} />
         </StyledSimpleUserRow>

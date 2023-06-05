@@ -59,7 +59,7 @@ public class StudioNotifyServiceSender
     {
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetRequiredService<StudioNotifyWorker>();
-        scopeClass.OnMessage(item);
+        scopeClass.OnMessageAsync(item).Wait();
     }
 
     public void RegisterSendMethod()
@@ -70,11 +70,11 @@ public class StudioNotifyServiceSender
         {
             if (_tenantExtraConfig.Enterprise)
             {
-                _workContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
+                _workContext.RegisterSendMethod(SendEnterpriseTariffLettersAsync, cron);
             }
             else if (_tenantExtraConfig.Opensource)
             {
-                _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+                _workContext.RegisterSendMethod(SendOpensourceTariffLettersAsync, cron);
             }
             else if (_tenantExtraConfig.Saas)
             {
@@ -82,57 +82,57 @@ public class StudioNotifyServiceSender
                 {
                     if (!_coreBaseSettings.CustomMode)
                     {
-                        _workContext.RegisterSendMethod(SendLettersPersonal, cron);
+                        _workContext.RegisterSendMethod(SendLettersPersonalAsync, cron);
                     }
                 }
                 else
                 {
-                    _workContext.RegisterSendMethod(SendSaasTariffLetters, cron);
+                    _workContext.RegisterSendMethod(SendSaasTariffLettersAsync, cron);
                 }
             }
         }
 
         if (!_coreBaseSettings.Personal)
         {
-            _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
-            _workContext.RegisterSendMethod(SendRoomsActivity, "0 0 * ? * *"); //every hour
+            _workContext.RegisterSendMethod(SendMsgWhatsNewAsync, "0 0 * ? * *"); // every hour
+            _workContext.RegisterSendMethod(SendRoomsActivityAsync, "0 0 * ? * *"); //every hour
         }
     }
 
-    public void SendSaasTariffLetters(DateTime scheduleDate)
+    public async Task SendSaasTariffLettersAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
+        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate);
     }
 
-    public void SendEnterpriseTariffLetters(DateTime scheduleDate)
+    public async Task SendEnterpriseTariffLettersAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate).Wait();
+        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLettersAsync(EMailSenderName, scheduleDate);
     }
 
-    public void SendOpensourceTariffLetters(DateTime scheduleDate)
+    public async Task SendOpensourceTariffLettersAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
+        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLettersAsync(EMailSenderName, scheduleDate);
     }
 
-    public void SendLettersPersonal(DateTime scheduleDate)
+    public async Task SendLettersPersonalAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
+        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLettersAsync(EMailSenderName, scheduleDate);
     }
 
-    public async Task SendMsgWhatsNew(DateTime scheduleDate)
+    public async Task SendMsgWhatsNewAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.DailyFeed);
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNewAsync(scheduleDate, WhatsNewType.DailyFeed);
     }
 
-    public async Task SendRoomsActivity(DateTime scheduleDate)
+    public async Task SendRoomsActivityAsync(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.RoomsActivity);
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNewAsync(scheduleDate, WhatsNewType.RoomsActivity);
     }
 }
 
@@ -165,16 +165,16 @@ public class StudioNotifyWorker
         _workContext = workContext;
     }
 
-    public void OnMessage(NotifyItem item)
+    public async Task OnMessageAsync(NotifyItem item)
     {
         _commonLinkUtility.ServerUri = item.BaseUrl;
-        _tenantManager.SetCurrentTenant(item.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(item.TenantId);
 
         CultureInfo culture = null;
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
 
         if (tenant != null)
         {
@@ -183,24 +183,24 @@ public class StudioNotifyWorker
 
         if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
         {
-            _securityContext.AuthenticateMeWithoutCookie(Guid.Parse(item.UserId));
-            var user = _userManager.GetUsers(userId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(Guid.Parse(item.UserId));
+            var user = await _userManager.GetUsersAsync(userId);
             if (!string.IsNullOrEmpty(user.CultureName))
             {
                 culture = CultureInfo.GetCultureInfo(user.CultureName);
             }
         }
 
-        if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
+        if (culture != null && !Equals(CultureInfo.CurrentCulture, culture))
         {
-            Thread.CurrentThread.CurrentCulture = culture;
+            CultureInfo.CurrentCulture = culture;
         }
-        if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
+        if (culture != null && !Equals(CultureInfo.CurrentUICulture, culture))
         {
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CultureInfo.CurrentUICulture = culture;
         }
 
-        client.SendNoticeToAsync(
+        await client.SendNoticeToAsync(
             (NotifyAction)item.Action,
             item.ObjectId,
             item.Recipients?.Select(r => r.IsGroup ? new RecipientsGroup(r.Id, r.Name) : (IRecipient)new DirectRecipient(r.Id, r.Name, r.Addresses.ToArray(), r.CheckActivation)).ToArray(),

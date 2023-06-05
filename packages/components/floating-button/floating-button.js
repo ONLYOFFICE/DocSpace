@@ -125,9 +125,13 @@ const FloatingButton = (props) => {
 };
 
 FloatingButton.propTypes = {
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts CSS style */
   style: PropTypes.object,
+  /** Sets the icon on the button */
   icon: PropTypes.oneOf([
     "upload",
     "file",
@@ -137,9 +141,13 @@ FloatingButton.propTypes = {
     "plus",
     "minus",
   ]),
+  /** Displays the alert */
   alert: PropTypes.bool,
+  /** Loading indicator */
   percent: PropTypes.number,
+  /**  Sets a callback function that is triggered when the button is clicked */
   onClick: PropTypes.func,
+  /** CSS color */
   color: PropTypes.string,
 };
 

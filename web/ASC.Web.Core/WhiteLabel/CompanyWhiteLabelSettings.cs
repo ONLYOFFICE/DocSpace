@@ -94,9 +94,9 @@ public class CompanyWhiteLabelSettingsHelper
         _settingsManager = settingsManager;
     }
 
-    public CompanyWhiteLabelSettings Instance()
+    public async Task<CompanyWhiteLabelSettings> InstanceAsync()
     {
-        return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+        return await _settingsManager.LoadForDefaultTenantAsync<CompanyWhiteLabelSettings>();
     }
 
     public bool IsDefault(CompanyWhiteLabelSettings settings)

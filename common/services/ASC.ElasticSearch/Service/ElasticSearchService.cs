@@ -66,7 +66,7 @@ public class ElasticSearchService
 
             var generic = typeof(BaseIndexer<>);
             var instance = (IIndexer)Activator.CreateInstance(generic.MakeGenericType(index.GetType()), index);
-            tasks.Add(instance.ReIndex());
+            tasks.Add(instance.ReIndexAsync());
         }
 
         if (tasks.Count == 0)
@@ -74,13 +74,13 @@ public class ElasticSearchService
             return;
         }
 
-        Task.WhenAll(tasks).ContinueWith(r =>
+        Task.WhenAll(tasks).ContinueWith(async r =>
         {
             using var scope = _serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
-            tenantManager.SetCurrentTenant(tenant);
-            settingsManager.ClearCache<SearchSettings>();
+            await tenantManager.SetCurrentTenantAsync(tenant);
+            await settingsManager.ClearCacheAsync<SearchSettings>();
         });
     }
     //public State GetState()

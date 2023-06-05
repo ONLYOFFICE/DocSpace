@@ -102,7 +102,7 @@ public class PortalController : ControllerBase
     [HttpPost("register")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
-    public async Task<IActionResult> RegisterAsync(TenantModel model)
+    public async ValueTask<IActionResult> RegisterAsync(TenantModel model)
     {
         if (model == null)
         {
@@ -238,7 +238,7 @@ public class PortalController : ControllerBase
                 _log.LogDebug("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
 
-            _hostedSolution.RegisterTenant(info, out t);
+            t = await _hostedSolution.RegisterTenantAsync(info);
 
             /*********/
 
@@ -274,7 +274,7 @@ public class PortalController : ControllerBase
                     Quotas = new List<Quota> { new Quota(trialQuotaId, 1) },
                     DueDate = dueDate
                 };
-                _hostedSolution.SetTariff(t.Id, tariff);
+                await _hostedSolution.SetTariffAsync(t.Id, tariff);
             }
         }
 
@@ -292,11 +292,11 @@ public class PortalController : ControllerBase
                 /* set wizard not completed*/
                 _tenantManager.SetCurrentTenant(t);
 
-                var settings = _settingsManager.Load<WizardSettings>();
+                var settings = await _settingsManager.LoadAsync<WizardSettings>();
 
                 settings.Completed = false;
 
-                _settingsManager.Save(settings);
+                await _settingsManager.SaveAsync(settings);
             }
             catch (Exception e)
             {
@@ -320,9 +320,10 @@ public class PortalController : ControllerBase
     [HttpDelete("remove")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult Remove([FromQuery] TenantModel model)
+    public async Task<IActionResult> RemoveAsync([FromQuery] TenantModel model)
     {
-        if (!_commonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             _log.LogError("Model without tenant");
 
@@ -344,7 +345,7 @@ public class PortalController : ControllerBase
             });
         }
 
-        _hostedSolution.RemoveTenant(tenant);
+        await _hostedSolution.RemoveTenantAsync(tenant);
 
         return Ok(new
         {
@@ -355,9 +356,10 @@ public class PortalController : ControllerBase
     [HttpPut("status")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult ChangeStatus(TenantModel model)
+    public async Task<IActionResult> ChangeStatusAsync(TenantModel model)
     {
-        if (!_commonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             _log.LogError("Model without tenant");
 
@@ -388,7 +390,7 @@ public class PortalController : ControllerBase
 
         tenant.SetStatus(active);
 
-        _hostedSolution.SaveTenant(tenant);
+        await _hostedSolution.SaveTenantAsync(tenant);
 
         return Ok(new
         {
@@ -398,22 +400,17 @@ public class PortalController : ControllerBase
 
     [HttpPost("validateportalname")]
     [AllowCrossSiteJson]
-    public Task<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
+    public async ValueTask<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
     {
         if (model == null)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new
+            return BadRequest(new
             {
                 error = "portalNameEmpty",
                 message = "PortalName is required"
-            }));
+            });
         }
 
-        return InternalCheckExistingNamePortalAsync(model);
-    }
-
-    private async Task<IActionResult> InternalCheckExistingNamePortalAsync(TenantModel model)
-    {
         var (exists, error) = await CheckExistingNamePortalAsync((model.PortalName ?? "").Trim());
 
         if (!exists)
@@ -430,7 +427,7 @@ public class PortalController : ControllerBase
     [HttpGet("get")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult GetPortals([FromQuery] TenantModel model)
+    public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model)
     {
         try
         {
@@ -440,13 +437,13 @@ public class PortalController : ControllerBase
             if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
             {
                 empty = false;
-                tenants.AddRange(_hostedSolution.FindTenants((model.Email ?? "").Trim()));
+                tenants.AddRange(await _hostedSolution.FindTenantsAsync((model.Email ?? "").Trim()));
             }
 
             if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
             {
                 empty = false;
-                var tenant = _hostedSolution.GetTenant((model.PortalName ?? "").Trim());
+                var tenant = (await _hostedSolution.GetTenantAsync((model.PortalName ?? "").Trim()));
 
                 if (tenant != null)
                 {
@@ -457,7 +454,7 @@ public class PortalController : ControllerBase
             if (model.TenantId.HasValue)
             {
                 empty = false;
-                var tenant = _hostedSolution.GetTenant(model.TenantId.Value);
+                var tenant = await _hostedSolution.GetTenantAsync(model.TenantId.Value);
 
                 if (tenant != null)
                 {
@@ -467,7 +464,7 @@ public class PortalController : ControllerBase
 
             if (empty)
             {
-                tenants.AddRange(_hostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.Id).ToList());
+                tenants.AddRange((await _hostedSolution.GetTenantsAsync(DateTime.MinValue)).OrderBy(t => t.Id).ToList());
             }
 
             var tenantsWrapper = tenants
@@ -513,20 +510,15 @@ public class PortalController : ControllerBase
         }
     }
 
-    private Task<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
-    {
-        if (string.IsNullOrEmpty(portalName))
-        {
-            object error = new { error = "portalNameEmpty", message = "PortalName is required" };
-            return Task.FromResult((false, error));
-        }
-
-        return internalCheckExistingNamePortalAsync(portalName);
-    }
-
-    private async Task<(bool exists, object error)> internalCheckExistingNamePortalAsync(string portalName)
+    private async ValueTask<(bool, object)> CheckExistingNamePortalAsync(string portalName)
     {
         object error = null;
+        if (string.IsNullOrEmpty(portalName))
+        {
+            error = new { error = "portalNameEmpty", message = "PortalName is required" };
+            return (false, error);
+        }
+
         try
         {
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
@@ -535,7 +527,7 @@ public class PortalController : ControllerBase
             }
             else
             {
-                _hostedSolution.CheckTenantAddress(portalName.Trim());
+                await _hostedSolution.CheckTenantAddressAsync(portalName.Trim());
             }
         }
         catch (TenantAlreadyExistsException ex)

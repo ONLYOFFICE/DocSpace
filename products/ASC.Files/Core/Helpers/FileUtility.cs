@@ -437,42 +437,74 @@ public class FileUtility
 
     private Dictionary<string, List<string>> _extsConvertible;
 
-    public Dictionary<string, List<string>> ExtsConvertible
+    public Dictionary<string, List<string>> GetExtsConvertible()
     {
-        get
+        if (_extsConvertible == null)
         {
-            if (_extsConvertible == null)
+            _extsConvertible = new Dictionary<string, List<string>>();
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
             {
-                _extsConvertible = new Dictionary<string, List<string>>();
-                if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
-                {
-                    return _extsConvertible;
-                }
-
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
-
-                foreach (var item in list)
-                {
-                    var input = item.Input;
-                    var output = item.Output;
-                    if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
-                    {
-                        continue;
-                    }
-
-                    input = input.ToLower().Trim();
-                    output = output.ToLower().Trim();
-                    if (!_extsConvertible.ContainsKey(input))
-                    {
-                        _extsConvertible[input] = new List<string>();
-                    }
-
-                    _extsConvertible[input].Add(output);
-                }
+                return _extsConvertible;
             }
-            return _extsConvertible;
+
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
+
+            foreach (var item in list)
+            {
+                var input = item.Input;
+                var output = item.Output;
+                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                {
+                    continue;
+                }
+
+                input = input.ToLower().Trim();
+                output = output.ToLower().Trim();
+                if (!_extsConvertible.ContainsKey(input))
+                {
+                    _extsConvertible[input] = new List<string>();
+                }
+
+                _extsConvertible[input].Add(output);
+            }
         }
+        return _extsConvertible;
+    }
+
+    public async Task<Dictionary<string, List<string>>> GetExtsConvertibleAsync()
+    {
+        if (_extsConvertible == null)
+        {
+            _extsConvertible = new Dictionary<string, List<string>>();
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
+            {
+                return _extsConvertible;
+            }
+
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var list = await filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToListAsync();
+
+            foreach (var item in list)
+            {
+                var input = item.Input;
+                var output = item.Output;
+                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                {
+                    continue;
+                }
+
+                input = input.ToLower().Trim();
+                output = output.ToLower().Trim();
+                if (!_extsConvertible.ContainsKey(input))
+                {
+                    _extsConvertible[input] = new List<string>();
+                }
+
+                _extsConvertible[input].Add(output);
+            }
+        }
+        return _extsConvertible;
     }
 
     private List<string> _extsUploadable;

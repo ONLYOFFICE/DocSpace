@@ -40,42 +40,42 @@ public class FeedReadedDataProvider
         _dbContextFactory = dbContextFactory;
     }
 
-    public DateTime GetTimeReaded()
+    public async Task<DateTime> GetTimeReadedAsync()
     {
-        return GetTimeReaded(GetUser(), "all", GetTenant());
+        return await GetTimeReadedAsync(GetUser(), "all", await GetTenantAsync());
     }
 
-    public DateTime GetTimeReaded(string module)
+    public async Task<DateTime> GetTimeReadedAsync(string module)
     {
-        return GetTimeReaded(GetUser(), module, GetTenant());
+        return await GetTimeReadedAsync(GetUser(), module, await GetTenantAsync());
     }
 
-    public DateTime GetTimeReaded(Guid user, string module, int tenant)
+    public async Task<DateTime> GetTimeReadedAsync(Guid user, string module, int tenant)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return feedDbContext.FeedReaded
+        return await feedDbContext.FeedReaded
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.Module == module)
-            .Max(r => r.TimeStamp);
+            .MaxAsync(r => r.TimeStamp);
     }
 
-    public void SetTimeReaded()
+    public async Task SetTimeReadedAsync()
     {
-        SetTimeReaded(GetUser(), DateTime.UtcNow, "all", GetTenant());
+        await SetTimeReadedAsync(GetUser(), DateTime.UtcNow, "all", await GetTenantAsync());
     }
 
-    public void SetTimeReaded(string module)
+    public async Task SetTimeReadedAsync(string module)
     {
-        SetTimeReaded(GetUser(), DateTime.UtcNow, module, GetTenant());
+        await SetTimeReadedAsync(GetUser(), DateTime.UtcNow, module, await GetTenantAsync());
     }
 
-    public void SetTimeReaded(Guid user)
+    public async Task SetTimeReadedAsync(Guid user)
     {
-        SetTimeReaded(user, DateTime.UtcNow, "all", GetTenant());
+        await SetTimeReadedAsync(user, DateTime.UtcNow, "all", await GetTenantAsync());
     }
 
-    public void SetTimeReaded(Guid user, DateTime time, string module, int tenant)
+    public async Task SetTimeReadedAsync(Guid user, DateTime time, string module, int tenant)
     {
         if (string.IsNullOrEmpty(module))
         {
@@ -91,29 +91,29 @@ public class FeedReadedDataProvider
         };
 
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        feedDbContext.AddOrUpdate(feedDbContext.FeedReaded, feedReaded);
-        feedDbContext.SaveChanges();
+        await feedDbContext.AddOrUpdateAsync(q => q.FeedReaded, feedReaded);
+        await feedDbContext.SaveChangesAsync();
     }
 
-    public IEnumerable<string> GetReadedModules(DateTime fromTime)
+    public async Task<IEnumerable<string>> GetReadedModulesAsync(DateTime fromTime)
     {
-        return GetReadedModules(GetUser(), GetTenant(), fromTime);
+        return await GetReadedModulesAsync(GetUser(), await GetTenantAsync(), fromTime);
     }
 
-    public IEnumerable<string> GetReadedModules(Guid user, int tenant, DateTime fromTime)
+    public async Task<IEnumerable<string>> GetReadedModulesAsync(Guid user, int tenant, DateTime fromTime)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return feedDbContext.FeedReaded
+        return await feedDbContext.FeedReaded
             .Where(r => r.Tenant == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.TimeStamp >= fromTime)
             .Select(r => r.Module)
-            .ToList();
+            .ToListAsync();
     }
 
-    private int GetTenant()
+    private async Task<int> GetTenantAsync()
     {
-        return _tenantManager.GetCurrentTenant().Id;
+        return await _tenantManager.GetCurrentTenantIdAsync();
     }
 
     private Guid GetUser()

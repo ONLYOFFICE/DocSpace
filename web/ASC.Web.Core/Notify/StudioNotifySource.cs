@@ -175,59 +175,59 @@ public class StudioNotifySource : NotifySource
             this._provider = provider;
         }
 
-        public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+        public async Task<object> GetSubscriptionRecordAsync(INotifyAction action, IRecipient recipient, string objectID)
         {
-            return _provider.GetSubscriptionRecord(GetAdminAction(action), recipient, objectID);
+            return await _provider.GetSubscriptionRecordAsync(GetAdminAction(action), recipient, objectID);
         }
 
-        public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
+        public async Task<string[]> GetSubscriptionsAsync(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
         {
-            return _provider.GetSubscriptions(GetAdminAction(action), recipient, checkSubscription);
+            return await _provider.GetSubscriptionsAsync(GetAdminAction(action), recipient, checkSubscription);
         }
 
-        public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
+        public async Task SubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
         {
-            _provider.Subscribe(GetAdminAction(action), objectID, recipient);
+            await _provider.SubscribeAsync(GetAdminAction(action), objectID, recipient);
         }
 
-        public void UnSubscribe(INotifyAction action, IRecipient recipient)
+        public async Task UnSubscribeAsync(INotifyAction action, IRecipient recipient)
         {
-            _provider.UnSubscribe(GetAdminAction(action), recipient);
+            await _provider.UnSubscribeAsync(GetAdminAction(action), recipient);
         }
 
-        public void UnSubscribe(INotifyAction action)
+        public async Task UnSubscribeAsync(INotifyAction action)
         {
-            _provider.UnSubscribe(GetAdminAction(action));
+            await _provider.UnSubscribeAsync(GetAdminAction(action));
         }
 
-        public void UnSubscribe(INotifyAction action, string objectID)
+        public async Task UnSubscribeAsync(INotifyAction action, string objectID)
         {
-            _provider.UnSubscribe(GetAdminAction(action), objectID);
+            await _provider.UnSubscribeAsync(GetAdminAction(action), objectID);
         }
 
-        public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
+        public async Task UnSubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
         {
-            _provider.UnSubscribe(GetAdminAction(action), objectID, recipient);
+            await _provider.UnSubscribeAsync(GetAdminAction(action), objectID, recipient);
         }
 
-        public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
+        public async Task UpdateSubscriptionMethodAsync(INotifyAction action, IRecipient recipient, params string[] senderNames)
         {
-            _provider.UpdateSubscriptionMethod(GetAdminAction(action), recipient, senderNames);
+            await _provider.UpdateSubscriptionMethodAsync(GetAdminAction(action), recipient, senderNames);
         }
 
-        public IRecipient[] GetRecipients(INotifyAction action, string objectID)
+        public async Task<IRecipient[]> GetRecipientsAsync(INotifyAction action, string objectID)
         {
-            return _provider.GetRecipients(GetAdminAction(action), objectID);
+            return await _provider.GetRecipientsAsync(GetAdminAction(action), objectID);
         }
 
-        public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+        public async Task<string[]> GetSubscriptionMethodAsync(INotifyAction action, IRecipient recipient)
         {
-            return _provider.GetSubscriptionMethod(GetAdminAction(action), recipient);
+            return await _provider.GetSubscriptionMethodAsync(GetAdminAction(action), recipient);
         }
 
-        public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
+        public async Task<bool> IsUnsubscribeAsync(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            return _provider.IsUnsubscribe(recipient, action, objectID);
+            return await _provider.IsUnsubscribeAsync(recipient, action, objectID);
         }
 
         private INotifyAction GetAdminAction(INotifyAction action)

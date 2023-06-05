@@ -119,7 +119,7 @@ public class TransferPortalTask : PortalTaskBase
             //transfer files
             if (ProcessStorage)
             {
-                await DoTransferStorage(columnMapper);
+                await DoTransferStorageAsync(columnMapper);
             }
 
             SaveTenant(toDbFactory, tenantAlias, TenantStatus.Active);
@@ -153,15 +153,15 @@ public class TransferPortalTask : PortalTaskBase
         }
     }
 
-    private async Task DoTransferStorage(ColumnMapper columnMapper)
+    private async Task DoTransferStorageAsync(ColumnMapper columnMapper)
     {
         _logger.DebugBeginTransferStorage();
         var fileGroups = (await GetFilesToProcess(TenantId)).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
         {
-            var baseStorage = StorageFactory.GetStorage(TenantId, group.Key);
-            var destStorage = StorageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, ToRegion);
+            var baseStorage = await StorageFactory.GetStorageAsync(TenantId, group.Key);
+            var destStorage = await StorageFactory.GetStorageAsync(columnMapper.GetTenantMapping(), group.Key, ToRegion);
             var utility = new CrossModuleTransferUtility(_logger, _tempStream, _tempPath, baseStorage, destStorage);
 
             foreach (var file in group)

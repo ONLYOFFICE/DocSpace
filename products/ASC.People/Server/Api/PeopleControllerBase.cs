@@ -51,17 +51,17 @@ public abstract class PeopleControllerBase : ApiControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected UserInfo GetUserInfo(string userNameOrId)
+    protected async Task<UserInfo> GetUserInfoAsync(string userNameOrId)
     {
         UserInfo user;
         try
         {
             var userId = new Guid(userNameOrId);
-            user = _userManager.GetUsers(userId);
+            user = await _userManager.GetUsersAsync(userId);
         }
         catch (FormatException)
         {
-            user = _userManager.GetUserByUserName(userNameOrId);
+            user = await _userManager.GetUserByUserNameAsync(userNameOrId);
         }
 
         if (user == null || user.Id == Constants.LostUser.Id)
@@ -72,11 +72,11 @@ public abstract class PeopleControllerBase : ApiControllerBase
         return user;
     }
 
-    protected void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user, bool checkPermissions = true)
+    protected async Task UpdateContactsAsync(IEnumerable<Contact> contacts, UserInfo user, bool checkPermissions = true)
     {
         if (checkPermissions)
         {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
         }
 
         if (contacts == null)
@@ -88,14 +88,14 @@ public abstract class PeopleControllerBase : ApiControllerBase
         user.Contacts = string.Join('|', values);
     }
 
-    protected async Task UpdatePhotoUrl(string files, UserInfo user)
+    protected async Task UpdatePhotoUrlAsync(string files, UserInfo user)
     {
         if (string.IsNullOrEmpty(files))
         {
             return;
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!files.StartsWith("http://") && !files.StartsWith("https://"))
         {

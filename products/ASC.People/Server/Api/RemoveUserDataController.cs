@@ -60,35 +60,35 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpGet("remove/progress")]
-    public RemoveProgressItem GetRemoveProgress(Guid userId)
+    public async Task<RemoveProgressItem> GetRemoveProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     [HttpPut("self/delete")]
-    public object SendInstructionsToDelete()
+    public async Task<object> SendInstructionsToDeleteAsync()
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
         if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }
 
-        _studioNotifyService.SendMsgProfileDeletion(user);
-        _messageService.Send(MessageAction.UserSentDeleteInstructions);
+        await _studioNotifyService.SendMsgProfileDeletionAsync(user);
+        await _messageService.SendAsync(MessageAction.UserSentDeleteInstructions);
 
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
     [HttpPost("remove/start")]
-    public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
+    public async Task<RemoveProgressItem> StartRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(inDto.UserId);
+        var user = await _userManager.GetUsersAsync(inDto.UserId);
 
         if (user == null || user.Id == Constants.LostUser.Id)
         {
@@ -104,9 +104,9 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpPut("remove/terminate")]
-    public void TerminateRemove(TerminateRequestDto inDto)
+    public async Task TerminateRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }

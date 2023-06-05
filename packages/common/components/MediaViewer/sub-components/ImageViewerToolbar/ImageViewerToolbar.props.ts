@@ -11,6 +11,7 @@ interface ImageViewerToolbarProps {
   percentValue: number;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
   toolbarEvent: (item: ToolbarItemType) => void;
+  className?: string;
 }
 
 export type ToolbarItemType = ReturnType<typeof getCustomToolbar>[number];

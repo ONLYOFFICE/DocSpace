@@ -47,12 +47,12 @@ public class CountPaidUserStatistic : ITenantQuotaFeatureStat<CountPaidUserFeatu
         _serviceProvider = serviceProvider;
     }
 
-    public Task<int> GetValue()
+    public async Task<int> GetValueAsync()
     {
         var userManager = _serviceProvider.GetService<UserManager>();
-        var adminsCount = userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length;
-        var collaboratorsCount = userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupCollaborator.ID).Length;
+        var adminsCount = (await userManager.GetUsersByGroupAsync(ASC.Core.Users.Constants.GroupManager.ID)).Length;
+        var collaboratorsCount = (await userManager.GetUsersByGroupAsync(ASC.Core.Users.Constants.GroupCollaborator.ID)).Length;
         
-        return Task.FromResult(adminsCount + collaboratorsCount);
+        return adminsCount + collaboratorsCount;
     }
 }

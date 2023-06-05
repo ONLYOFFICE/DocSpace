@@ -96,9 +96,6 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
-
-
     private int? _tenantId;
     public int TenantId
     {
@@ -135,9 +132,9 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var _securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
             var _webItemManagerSecurity = scope.ServiceProvider.GetRequiredService<WebItemManagerSecurity>();
 
-            _tenantManager.SetCurrentTenant(TenantId);
+            await _tenantManager.SetCurrentTenantAsync(TenantId);
 
-            var users = _userManager.GetUsers();
+            var users = await _userManager.GetUsersAsync();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var user in users)
@@ -151,8 +148,8 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                 Percentage += 1.0 * 100 / users.Length;
                 PublishChanges();
 
-                var account = _authentication.GetAccountByID(TenantId, user.Id);
-                _securityContext.AuthenticateMe(account);
+                var account = await _authentication.GetAccountByIDAsync(TenantId, user.Id);
+                await _securityContext.AuthenticateMeAsync(account);
 
                 foreach (var item in webItems)
                 {
