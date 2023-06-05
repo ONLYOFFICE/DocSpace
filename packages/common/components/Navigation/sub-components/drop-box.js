@@ -156,7 +156,7 @@ const DropBox = React.forwardRef(
     const navigationTitleContainerNode = showRootFolderNavigation ? (
       <div className="title-container">
         <Text
-          title={navigationItems[0].title}
+          title={navigationItems[navigationItems.length - 2].title}
           isOpen={true}
           isRootFolderTitle
         />
