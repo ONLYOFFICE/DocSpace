@@ -66,8 +66,6 @@ rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
 #add dotnet repo
 if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
 	rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
-elif rpm -q packages-microsoft-prod; then
-	yum remove -y packages-microsoft-prod dotnet*
 fi
 
 #add mysql repo
@@ -119,15 +117,6 @@ ${package_manager} -y install epel-release \
 			SDL2 $POWERTOOLS_REPO \
 			expect \
 			ffmpeg $TESTING_REPO
-	
-py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
-if [[ $py3_version -lt 6 ]]; then
-	curl -O https://bootstrap.pypa.io/pip/3.$py3_version/get-pip.py
-else
-	curl -O https://bootstrap.pypa.io/get-pip.py
-fi
-python3 get-pip.py || true
-rm get-pip.py
 
 if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	yum -y install postgresql-upgrade
@@ -141,5 +130,4 @@ if [ ! -e /usr/bin/json ]; then
 	npm i json -g >/dev/null 2>&1
 fi
 
-systemctl daemon-reload
 package_services="rabbitmq-server postgresql redis nginx mysqld"

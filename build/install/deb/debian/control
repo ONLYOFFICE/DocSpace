@@ -139,7 +139,7 @@ Description: {{product}}-migration-runner
 
 Package: {{product}}-radicale
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}), python3-pip, ${misc:Depends}, ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), python3-pip, python3-requests, python3-setuptools, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-radicale
 	{{product}}-radicale
 
