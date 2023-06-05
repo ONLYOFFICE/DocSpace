@@ -376,11 +376,9 @@ export default inject(
     const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
       auth.settingsStore;
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      clientLoadingStore;
+    const { setIsSectionFilterLoading } = clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

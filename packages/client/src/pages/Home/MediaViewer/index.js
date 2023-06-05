@@ -241,12 +241,10 @@ export default inject(
     const {
       firstLoad,
 
-      setIsSectionBodyLoading,
       setIsSectionFilterLoading,
     } = clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

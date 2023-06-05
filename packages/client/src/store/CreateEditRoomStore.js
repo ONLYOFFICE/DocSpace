@@ -162,12 +162,10 @@ class CreateEditRoomStore {
   };
 
   onOpenNewRoom = async (room) => {
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
     const { setView, setIsVisible } = this.infoPanelStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

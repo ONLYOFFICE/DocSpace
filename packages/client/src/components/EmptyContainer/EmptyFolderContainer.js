@@ -236,11 +236,9 @@ export default inject(
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading, isLoading } =
-      clientLoadingStore;
+    const { setIsSectionFilterLoading, isLoading } = clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

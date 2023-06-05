@@ -303,8 +303,7 @@ export default inject(
     settingsStore,
     clientLoadingStore,
   }) => {
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      clientLoadingStore;
+    const { setIsSectionBodyLoading } = clientLoadingStore;
 
     const setIsLoading = (param) => {
       setIsSectionBodyLoading(param);

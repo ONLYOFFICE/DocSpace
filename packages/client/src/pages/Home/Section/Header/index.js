@@ -959,15 +959,10 @@ export default inject(
       clearFiles,
     } = filesStore;
 
-    const {
-      setIsSectionBodyLoading,
-      setIsSectionFilterLoading,
-      showHeaderLoader,
-      isLoading,
-    } = clientLoadingStore;
+    const { setIsSectionFilterLoading, showHeaderLoader, isLoading } =
+      clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

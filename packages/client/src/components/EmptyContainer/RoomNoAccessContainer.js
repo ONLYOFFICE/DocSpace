@@ -82,11 +82,9 @@ const RoomNoAccessContainer = (props) => {
 };
 
 export default inject(({ auth, filesStore, clientLoadingStore }) => {
-  const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-    clientLoadingStore;
+  const { setIsSectionFilterLoading } = clientLoadingStore;
 
   const setIsLoading = (param) => {
-    setIsSectionBodyLoading(param);
     setIsSectionFilterLoading(param);
   };
   const { isEmptyPage } = filesStore;

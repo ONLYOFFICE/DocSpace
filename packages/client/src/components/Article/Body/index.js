@@ -269,13 +269,12 @@ export default inject(
     const { clearFiles } = filesStore;
     const {
       showArticleLoader,
-      setIsSectionBodyLoading,
+
       setIsSectionFilterLoading,
       firstLoad,
     } = clientLoadingStore;
 
     const setIsLoading = (param, withTimer) => {
-      setIsSectionBodyLoading(param, withTimer);
       setIsSectionFilterLoading(param, withTimer);
     };
 

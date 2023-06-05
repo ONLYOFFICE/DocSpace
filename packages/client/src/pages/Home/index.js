@@ -313,7 +313,6 @@ export default inject(
     selectedFolderStore,
     clientLoadingStore,
   }) => {
-    const { setSelectedFolder } = selectedFolderStore;
     const {
       secondaryProgressDataStore,
       primaryProgressDataStore,
@@ -323,7 +322,6 @@ export default inject(
     const {
       firstLoad,
 
-      setIsSectionBodyLoading,
       setIsSectionFilterLoading,
       isLoading,
 
@@ -331,7 +329,6 @@ export default inject(
     } = clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

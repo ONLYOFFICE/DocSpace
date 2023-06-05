@@ -1282,11 +1282,9 @@ class FilesActionStore {
   openLocationAction = async (item) => {
     this.filesStore.setBufferSelection(null);
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
@@ -1308,11 +1306,9 @@ class FilesActionStore {
     const { myRoomsId, myFolderId, archiveRoomsId, recycleBinFolderId } =
       this.treeFoldersStore;
     const { rootFolderType } = this.selectedFolderStore;
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
@@ -2015,11 +2011,9 @@ class FilesActionStore {
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
@@ -2098,11 +2092,9 @@ class FilesActionStore {
     const { setSelectedNode } = this.treeFoldersStore;
     const { clearFiles } = this.filesStore;
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
@@ -2160,11 +2152,9 @@ class FilesActionStore {
   };
 
   moveToRoomsPage = () => {
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
@@ -2193,11 +2183,9 @@ class FilesActionStore {
   };
 
   backToParentFolder = () => {
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading } =
-      this.clientLoadingStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 

@@ -368,11 +368,9 @@ export default inject(
       refreshFiles,
     } = filesStore;
 
-    const { setIsSectionBodyLoading, setIsSectionFilterLoading, isLoading } =
-      clientLoadingStore;
+    const { setIsSectionFilterLoading, isLoading } = clientLoadingStore;
 
     const setIsLoading = (param) => {
-      setIsSectionBodyLoading(param);
       setIsSectionFilterLoading(param);
     };
 
