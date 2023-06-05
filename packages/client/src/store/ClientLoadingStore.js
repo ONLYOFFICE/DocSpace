@@ -1,5 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
+const SHOW_LOADER_TIMER = 500;
+const MIN_LOADER_TIMER = 300;
+
 class ClientLoadingStore {
   isLoaded = false;
   firstLoad = true;
@@ -20,6 +23,12 @@ class ClientLoadingStore {
     header: false,
     filter: false,
     body: false,
+  };
+
+  startLoadingTime = {
+    header: null,
+    filter: null,
+    body: null,
   };
 
   constructor() {
@@ -44,17 +53,37 @@ class ClientLoadingStore {
       if (this.sectionHeaderTimer) {
         return;
       }
+      this.startLoadingTime.header = new Date();
       if (withTimer) {
         return (this.sectionHeaderTimer = setTimeout(() => {
           this.isSectionHeaderLoading = isSectionHeaderLoading;
-        }, 500));
+        }, SHOW_LOADER_TIMER));
       }
       this.isSectionHeaderLoading = isSectionHeaderLoading;
     } else {
+      if (this.startLoadingTime.header) {
+        const currentDate = new Date();
+
+        const ms = Math.abs(
+          this.startLoadingTime.header.getTime() - currentDate.getTime()
+        );
+        if (this.sectionHeaderTimer) {
+          let ms = Math.abs(ms - SHOW_LOADER_TIMER);
+          clearTimeout(this.sectionHeaderTimer);
+          this.sectionHeaderTimer = null;
+        }
+
+        if (ms < MIN_LOADER_TIMER)
+          return setTimeout(() => {
+            this.isSectionHeaderLoading = false;
+            this.startLoadingTime.header = null;
+          }, MIN_LOADER_TIMER - ms);
+      }
       if (this.sectionHeaderTimer) {
         clearTimeout(this.sectionHeaderTimer);
         this.sectionHeaderTimer = null;
       }
+      this.startLoadingTime.header = null;
       this.isSectionHeaderLoading = false;
     }
   };
@@ -65,38 +94,85 @@ class ClientLoadingStore {
       if (this.sectionFilterTimer) {
         return;
       }
+      this.startLoadingTime.filter = new Date();
       if (withTimer) {
         return (this.sectionFilterTimer = setTimeout(() => {
           this.isSectionFilterLoading = isSectionFilterLoading;
-        }, 500));
+        }, SHOW_LOADER_TIMER));
       }
       this.isSectionFilterLoading = isSectionFilterLoading;
     } else {
+      if (this.startLoadingTime.filter) {
+        const currentDate = new Date();
+
+        let ms = Math.abs(
+          this.startLoadingTime.filter.getTime() - currentDate.getTime()
+        );
+
+        if (this.sectionFilterTimer) {
+          let ms = Math.abs(ms - SHOW_LOADER_TIMER);
+
+          clearTimeout(this.sectionFilterTimer);
+          this.sectionFilterTimer = null;
+        }
+
+        if (ms < MIN_LOADER_TIMER)
+          return setTimeout(() => {
+            this.isSectionFilterLoading = false;
+            this.startLoadingTime.filter = null;
+          }, MIN_LOADER_TIMER - ms);
+      }
       if (this.sectionFilterTimer) {
         clearTimeout(this.sectionFilterTimer);
         this.sectionFilterTimer = null;
       }
+      this.startLoadingTime.filter = null;
       this.isSectionFilterLoading = false;
     }
   };
 
   setIsSectionBodyLoading = (isSectionBodyLoading, withTimer = true) => {
     this.pendingSectionLoaders.body = isSectionBodyLoading;
+
     if (isSectionBodyLoading) {
       if (this.sectionBodyTimer) {
         return;
       }
+      this.startLoadingTime.body = new Date();
       if (withTimer) {
         return (this.sectionBodyTimer = setTimeout(() => {
           this.isSectionBodyLoading = isSectionBodyLoading;
-        }, 500));
+        }, SHOW_LOADER_TIMER));
       }
       this.isSectionBodyLoading = isSectionBodyLoading;
     } else {
+      if (this.startLoadingTime.body) {
+        const currentDate = new Date();
+
+        let ms = Math.abs(
+          this.startLoadingTime.body.getTime() - currentDate.getTime()
+        );
+
+        if (this.sectionBodyTimer) {
+          let ms = Math.abs(ms - SHOW_LOADER_TIMER);
+
+          clearTimeout(this.sectionBodyTimer);
+          this.sectionBodyTimer = null;
+        }
+
+        if (ms < MIN_LOADER_TIMER)
+          return setTimeout(() => {
+            this.isSectionBodyLoading = false;
+            this.startLoadingTime.body = null;
+          }, MIN_LOADER_TIMER - ms);
+      }
+
       if (this.sectionBodyTimer) {
         clearTimeout(this.sectionBodyTimer);
         this.sectionBodyTimer = null;
       }
+
+      this.startLoadingTime.body = null;
       this.isSectionBodyLoading = false;
     }
   };
