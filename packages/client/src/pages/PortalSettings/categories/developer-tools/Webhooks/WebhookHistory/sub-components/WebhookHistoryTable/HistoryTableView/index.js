@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import styled from "styled-components";
 
@@ -18,7 +18,7 @@ import { Base } from "@docspace/components/themes";
 const TableWrapper = styled(TableContainer)`
   margin-top: 0;
 
-  .table-container_header{
+  .table-container_header {
     position: absolute;
   }
 
@@ -44,6 +44,10 @@ const TableWrapper = styled(TableContainer)`
 
 TableWrapper.defaultProps = { theme: Base };
 
+const TABLE_VERSION = "5";
+const COLUMNS_SIZE = `webhooksHistoryColumnsSize_ver-${TABLE_VERSION}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelWebhooksHistoryColumnsSize_ver-${TABLE_VERSION}`;
+
 const HistoryTableView = (props) => {
   const {
     sectionWidth,
@@ -55,9 +59,11 @@ const HistoryTableView = (props) => {
     fetchMoreItems,
     formatFilters,
     historyFilters,
+    userId,
   } = props;
 
   const tableRef = useRef(null);
+  const [hideColumns, setHideColumns] = useState(false);
 
   const { id } = useParams();
 
@@ -75,6 +81,9 @@ const HistoryTableView = (props) => {
     fetchMoreItems({ ...params, configId: id, count: 10 });
   };
 
+  const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+  const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
+
   return (
     <TableWrapper
       forwardedRef={tableRef}
@@ -82,26 +91,41 @@ const HistoryTableView = (props) => {
         gridTemplateColumns: "300px 100px 400px 24px",
       }}
       useReactWindow>
-      <HistoryTableHeader sectionWidth={sectionWidth} tableRef={tableRef} />
+      <HistoryTableHeader
+        sectionWidth={sectionWidth}
+        tableRef={tableRef}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        setHideColumns={setHideColumns}
+      />
       <TableBody
         itemHeight={49}
         useReactWindow
+        infoPanelVisible={false}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         filesLength={historyItems.length}
         fetchMoreFiles={fetchMoreFiles}
         hasMoreFiles={hasMoreItems}
         itemCount={totalItems}>
         {historyItems.map((item) => (
-          <HistoryTableRow key={item.id} item={{ ...item, title: item.id }} />
+          <HistoryTableRow
+            key={item.id}
+            item={{ ...item, title: item.id }}
+            hideColumns={hideColumns}
+          />
         ))}
       </TableBody>
     </TableWrapper>
   );
 };
 
-export default inject(({ setup, webhooksStore }) => {
+export default inject(({ setup, webhooksStore, auth }) => {
   const { viewAs, setViewAs } = setup;
   const { historyItems, fetchMoreItems, hasMoreItems, totalItems, formatFilters, historyFilters } =
     webhooksStore;
+  const { id: userId } = auth.userStore.user;
+
   return {
     viewAs,
     setViewAs,
@@ -111,5 +135,6 @@ export default inject(({ setup, webhooksStore }) => {
     totalItems,
     formatFilters,
     historyFilters,
+    userId,
   };
 })(observer(HistoryTableView));

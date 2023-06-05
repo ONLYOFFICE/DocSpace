@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 
@@ -30,6 +30,10 @@ const TableWrapper = styled(TableContainer)`
 
 TableWrapper.defaultProps = { theme: Base };
 
+const TABLE_VERSION = "5";
+const COLUMNS_SIZE = `webhooksConfigColumnsSize_ver-${TABLE_VERSION}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelWebhooksConfigColumnsSize_ver-${TABLE_VERSION}`;
+
 const WebhooksTableView = (props) => {
   const {
     webhooks,
@@ -39,9 +43,11 @@ const WebhooksTableView = (props) => {
     setViewAs,
     openSettingsModal,
     openDeleteModal,
+    userId,
   } = props;
 
   const tableRef = useRef(null);
+  const [hideColumns, setHideColumns] = useState(false);
 
   useEffect(() => {
     if (!sectionWidth) return;
@@ -52,17 +58,24 @@ const WebhooksTableView = (props) => {
     }
   }, [sectionWidth]);
 
+  const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+  const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
+
   return (
-    <TableWrapper
-      forwardedRef={tableRef}
-      style={{
-        gridTemplateColumns: "200px 500px 110px 24px",
-      }}
-      useReactWindow>
-      <WebhookTableHeader sectionWidth={sectionWidth} tableRef={tableRef} />
+    <TableWrapper forwardedRef={tableRef} useReactWindow>
+      <WebhookTableHeader
+        sectionWidth={sectionWidth}
+        tableRef={tableRef}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        setHideColumns={setHideColumns}
+      />
       <TableBody
         itemHeight={49}
         useReactWindow
+        infoPanelVisible={false}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         filesLength={webhooks.length}
         fetchMoreFiles={loadWebhooks}
         hasMoreFiles={false}
@@ -74,6 +87,7 @@ const WebhooksTableView = (props) => {
             index={index}
             openSettingsModal={openSettingsModal}
             openDeleteModal={openDeleteModal}
+            hideColumns={hideColumns}
           />
         ))}
       </TableBody>
@@ -81,15 +95,17 @@ const WebhooksTableView = (props) => {
   );
 };
 
-export default inject(({ webhooksStore, setup }) => {
+export default inject(({ webhooksStore, setup, auth }) => {
   const { webhooks, loadWebhooks } = webhooksStore;
 
   const { viewAs, setViewAs } = setup;
+  const { id: userId } = auth.userStore.user;
 
   return {
     webhooks,
     viewAs,
     setViewAs,
     loadWebhooks,
+    userId,
   };
 })(observer(WebhooksTableView));

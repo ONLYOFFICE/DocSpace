@@ -1,12 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 const TABLE_VERSION = "5";
-const TABLE_COLUMNS = `webhooksConfigTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `webhooksConfigColumnsSize_ver-${TABLE_VERSION}`;
+const TABLE_COLUMNS = `webhooksConfigColumns_ver-${TABLE_VERSION}`;
 
 const getColumns = (defaultColumns, userId) => {
   const storageColumns = localStorage.getItem(`${TABLE_COLUMNS}=${userId}`);
@@ -28,10 +27,17 @@ const getColumns = (defaultColumns, userId) => {
 };
 
 const WebhookTableHeader = (props) => {
-  const { userId, sectionWidth, tableRef } = props;
+  const {
+    userId,
+    sectionWidth,
+    tableRef,
+    columnStorageName,
+    columnInfoPanelStorageName,
+    setHideColumns,
+  } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
 
-  const defaultColumns = useRef([
+  const defaultColumns = [
     {
       key: "Name",
       title: t("Common:Name"),
@@ -56,11 +62,11 @@ const WebhookTableHeader = (props) => {
       resizable: true,
       onChange: onColumnChange,
     },
-  ]);
+  ];
 
-  const [columns, setColumns] = useState(getColumns(defaultColumns.current, userId));
+  const [columns, setColumns] = useState(getColumns(defaultColumns, userId));
 
-  const onColumnChange = (key, e) => {
+  function onColumnChange(key, e) {
     const columnIndex = columns.findIndex((c) => c.key === key);
 
     if (columnIndex === -1) return;
@@ -73,18 +79,21 @@ const WebhookTableHeader = (props) => {
 
     const tableColumns = columns.map((c) => c.enable && c.key);
     localStorage.setItem(`${TABLE_COLUMNS}=${userId}`, tableColumns);
-  };
+  }
 
   return (
     <TableHeader
-      columns={columns}
+      checkboxSize="48px"
       containerRef={tableRef}
+      columns={columns}
+      columnStorageName={columnStorageName}
+      columnInfoPanelStorageName={columnInfoPanelStorageName}
       sectionWidth={sectionWidth}
+      checkboxMargin="12px"
       showSettings={false}
       useReactWindow
-      setHideColumns={() => {}}
-      infoPanelVisible={true}
-      columnStorageName={`${COLUMNS_SIZE}=${userId}`}
+      setHideColumns={setHideColumns}
+      infoPanelVisible={false}
     />
   );
 };

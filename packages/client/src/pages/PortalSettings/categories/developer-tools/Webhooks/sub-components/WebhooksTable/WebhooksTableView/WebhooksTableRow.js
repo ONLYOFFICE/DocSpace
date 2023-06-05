@@ -43,6 +43,7 @@ const WebhooksTableRow = (props) => {
     openSettingsModal,
     openDeleteModal,
     setCurrentWebhook,
+    hideColumns,
   } = props;
   const navigate = useNavigate();
 
@@ -111,7 +112,7 @@ const WebhooksTableRow = (props) => {
   return (
     <>
       <StyledWrapper onClick={handleRowClick}>
-        <StyledTableRow contextOptions={contextOptions}>
+        <StyledTableRow contextOptions={contextOptions} hideColumns={hideColumns}>
           <TableCell>
             <Text as="span" fontWeight={600} className="mr-8 textOverflow">
               {webhook.name}{" "}

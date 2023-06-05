@@ -39,7 +39,7 @@ const StyledWrapper = styled.div`
 `;
 
 const HistoryTableRow = (props) => {
-  const { item, toggleEventId, isIdChecked, retryWebhookEvent } = props;
+  const { item, toggleEventId, isIdChecked, retryWebhookEvent, hideColumns } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
 
@@ -86,7 +86,7 @@ const HistoryTableRow = (props) => {
 
   return (
     <StyledWrapper className={isChecked ? "selected-table-row" : ""} onClick={onChange}>
-      <StyledTableRow contextOptions={contextOptions} checked={isChecked}>
+      <StyledTableRow contextOptions={contextOptions} checked={isChecked} hideColumns={hideColumns}>
         <TableCell>
           <TableCell checked={isChecked} className="noPadding">
             <Checkbox onChange={onChange} isChecked={isChecked} />
