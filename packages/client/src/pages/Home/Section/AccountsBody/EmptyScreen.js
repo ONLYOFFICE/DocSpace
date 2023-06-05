@@ -78,7 +78,7 @@ export default inject(({ auth, peopleStore, clientLoadingStore }) => {
   };
   return {
     resetFilter,
-    isEmptyGroup,
+
     setIsLoading,
     theme: auth.settingsStore.theme,
   };

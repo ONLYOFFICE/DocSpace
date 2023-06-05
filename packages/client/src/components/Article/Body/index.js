@@ -64,6 +64,8 @@ const ArticleBodyContent = (props) => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
+  const isAccounts = location.pathname.includes("accounts/filter");
+
   const onClick = React.useCallback(
     (folderId, title, rootFolderType) => {
       const { toggleArticleOpen } = props;
@@ -116,7 +118,7 @@ const ArticleBodyContent = (props) => {
           params = accountsFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Accounts);
 
-          withTimer = false;
+          if (activeItem === "accounts" && isAccounts) return;
 
           break;
         case "settings":
@@ -156,6 +158,7 @@ const ArticleBodyContent = (props) => {
       recycleBinFolderId,
       activeItem,
       selectedFolderId,
+      isAccounts,
     ]
   );
 
