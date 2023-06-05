@@ -116,27 +116,27 @@ public class TenantExtra
         get => _tenantExtraConfig.Opensource;
     }
 
-    public bool EnterprisePaid(bool withRequestToPaymentSystem = true)
+    public async Task<bool> EnterprisePaidAsync(bool withRequestToPaymentSystem = true)
     {
-        return Enterprise && GetCurrentTariff(withRequestToPaymentSystem).State < TariffState.NotPaid;
+        return Enterprise && (await GetCurrentTariffAsync(withRequestToPaymentSystem)).State < TariffState.NotPaid;
     }
 
-    public Tariff GetCurrentTariff(bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetCurrentTariffAsync(bool withRequestToPaymentSystem = true)
     {
-        return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id, withRequestToPaymentSystem);
+        return await _tariffService.GetTariffAsync(await _tenantManager.GetCurrentTenantIdAsync(), withRequestToPaymentSystem);
     }
 
-    public IEnumerable<TenantQuota> GetTenantQuotas()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return _tenantManager.GetTenantQuotas();
+        return await _tenantManager.GetTenantQuotasAsync();
     }
 
 
     public async Task<TenantQuota> GetRightQuota()
     {
-        var usedSpace = await _maxTotalSizeStatistic.GetValue();
-        var needUsersCount = await _countPaidUserStatistic.GetValue();
-        var quotas = GetTenantQuotas();
+        var usedSpace = await _maxTotalSizeStatistic.GetValueAsync();
+        var needUsersCount = await _countPaidUserStatistic.GetValueAsync();
+        var quotas = await GetTenantQuotasAsync();
 
         return quotas.OrderBy(q => q.CountUser)
                      .FirstOrDefault(q =>
@@ -146,37 +146,34 @@ public class TenantExtra
                                      && !q.Trial);
     }
 
-    public bool IsNotPaid(bool withRequestToPaymentSystem = true)
+    public async Task<bool> IsNotPaidAsync(bool withRequestToPaymentSystem = true)
     {
         Tariff tariff;
         return EnableTariffSettings
-               && ((tariff = GetCurrentTariff(withRequestToPaymentSystem)).State >= TariffState.NotPaid
-                   || Enterprise && !EnterprisePaid(withRequestToPaymentSystem) && tariff.LicenseDate == DateTime.MaxValue);
+               && ((tariff = (await GetCurrentTariffAsync(withRequestToPaymentSystem))).State >= TariffState.NotPaid
+                   || Enterprise && !(await EnterprisePaidAsync(withRequestToPaymentSystem)) && tariff.LicenseDate == DateTime.MaxValue);
     }
 
     /// <summary>
     /// Max possible file size for not chunked upload. Less or equal than 100 mb.
     /// </summary>
-    public long MaxUploadSize
+    public async Task<long> GetMaxUploadSizeAsync()
     {
-        get { return Math.Min(_setupInfo.AvailableFileSize, MaxChunkedUploadSize); }
+        return Math.Min(_setupInfo.AvailableFileSize, await GetMaxChunkedUploadSizeAsync());
     }
 
     /// <summary>
     /// Max possible file size for chunked upload.
     /// </summary>
-    public long MaxChunkedUploadSize
+    public async Task<long> GetMaxChunkedUploadSizeAsync()
     {
-        get
+        var diskQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        if (diskQuota != null)
         {
-            var diskQuota = _tenantManager.GetCurrentTenantQuota();
-            if (diskQuota != null)
-            {
-                var usedSize = _maxTotalSizeStatistic.GetValue().Result;
-                var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
-                return Math.Min(freeSize, diskQuota.MaxFileSize);
-            }
-            return _setupInfo.ChunkUploadSize;
+            var usedSize = await _maxTotalSizeStatistic.GetValueAsync();
+            var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
+            return Math.Min(freeSize, diskQuota.MaxFileSize);
         }
+        return _setupInfo.ChunkUploadSize;
     }
 }

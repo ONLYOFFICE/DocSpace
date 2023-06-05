@@ -38,9 +38,9 @@ public class QuotaHelper
         _serviceProvider = serviceProvider;
     }
 
-    public async IAsyncEnumerable<QuotaDto> GetQuotas()
+    public async IAsyncEnumerable<QuotaDto> GetQuotasAsync()
     {
-        var quotaList = _tenantManager.GetTenantQuotas(false);
+        var quotaList = await _tenantManager.GetTenantQuotasAsync(false);
 
         foreach (var quota in quotaList)
         {
@@ -48,9 +48,9 @@ public class QuotaHelper
         }
     }
 
-    public async Task<QuotaDto> GetCurrentQuota(bool refresh = false)
+    public async Task<QuotaDto> GetCurrentQuotaAsync(bool refresh = false)
     {
-        var quota = _tenantManager.GetCurrentTenantQuota(refresh);
+        var quota = await _tenantManager.GetCurrentTenantQuotaAsync(refresh);
 
         return await ToQuotaDto(quota, true, true);
     }
@@ -159,7 +159,7 @@ public class QuotaHelper
 
                 if (statisticProvider != null)
                 {
-                    used = await statisticProvider.GetValue();
+                    used = await statisticProvider.GetValueAsync();
                 }
             }
         }

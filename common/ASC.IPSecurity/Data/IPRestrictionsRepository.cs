@@ -38,41 +38,31 @@ public class IPRestrictionsRepository
         _mapper = mapper;
     }
 
-    public List<IPRestriction> Get(int tenant)
+    public async Task<List<IPRestriction>> GetAsync(int tenant)
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
-        return tenantDbContext.TenantIpRestrictions
+        return await tenantDbContext.TenantIpRestrictions
             .Where(r => r.Tenant == tenant)
             .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
     }
 
-    public List<IpRestrictionBase> Save(IEnumerable<IpRestrictionBase> ips, int tenant)
+    public async Task<List<IpRestrictionBase>> SaveAsync(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
-        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        tenantDbContext.TenantIpRestrictions.RemoveRange(tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant));
+
+        var ipsList = ips.Select(r => new TenantIpRestrictions
         {
-            using var tenantDbContext = _dbContextManager.CreateDbContext();
-            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
+            Tenant = tenant,
+            Ip = r.Ip,
+            ForAdmin = r.ForAdmin
 
-            await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
+        });
 
-            var ipsList = ips.Select(r => new TenantIpRestrictions
-            {
-                Tenant = tenant,
-                Ip = r.Ip,
-                ForAdmin = r.ForAdmin
-
-            });
-
-            tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            await tenantDbContext.SaveChangesAsync();
-
-            await tx.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+        tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+        await tenantDbContext.SaveChangesAsync();
 
         return ips.ToList();
     }

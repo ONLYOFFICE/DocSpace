@@ -81,17 +81,17 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         {
             CancellationToken.ThrowIfCancellationRequested();
 
-            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID);
+            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal).Identity).ID);
 
             if (entry.FileEntryType == FileEntryType.File)
             {
                 ProcessedFile(((File<T>)entry).Id);
-                _ = filesMessageService.Send(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
+                _ = filesMessageService.SendAsync(entry, _headers, MessageAction.FileMarkedAsRead, entry.Title);
             }
             else
             {
                 ProcessedFolder(((Folder<T>)entry).Id);
-                _ = filesMessageService.Send(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
+                _ = filesMessageService.SendAsync(entry, _headers, MessageAction.FolderMarkedAsRead, entry.Title);
             }
 
             ProgressStep();
@@ -100,14 +100,14 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
 
         var rootIds = new List<int>
             {
-                globalFolder.GetFolderMy(fileMarker, daoFactory),
+                await globalFolder.GetFolderMyAsync(fileMarker, daoFactory),
                 await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
                 await globalFolder.GetFolderShareAsync(daoFactory),
                 await globalFolder.GetFolderProjectsAsync(daoFactory),
                 await globalFolder.GetFolderVirtualRoomsAsync(daoFactory),
             };
 
-        if (PrivacyRoomSettings.GetEnabled(settingsManager))
+        if (await PrivacyRoomSettings.GetEnabledAsync(settingsManager))
         {
             rootIds.Add(await globalFolder.GetFolderPrivacyAsync(daoFactory));
         }

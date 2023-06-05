@@ -145,7 +145,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
         _cancelationToken[channelName] = new CancellationTokenSource();
         _actions[channelName] = onchange;
 
-        async void action()
+        async Task actionAsync()
         {
             var conf = new ConsumerConfig(_clientConfig)
             {
@@ -213,8 +213,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
             }
         }
 
-        var task = new Task(action, TaskCreationOptions.LongRunning);
-        task.Start();
+        Task.Run(actionAsync);
     }
 
     public void Unsubscribe(CacheNotifyAction notifyAction)

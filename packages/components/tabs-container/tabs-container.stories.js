@@ -1,6 +1,11 @@
 import React from "react";
 import TabContainer from "./";
 
+export default {
+  title: "Components/TabContainer",
+  component: TabContainer,
+};
+
 const arrayItems = [
   {
     key: "tab0",

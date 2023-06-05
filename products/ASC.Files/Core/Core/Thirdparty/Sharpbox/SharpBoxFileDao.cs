@@ -60,14 +60,14 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         _fileDao = fileDao;
     }
 
-    public Task InvalidateCacheAsync(string fileId)
+    public async Task InvalidateCacheAsync(string fileId)
     {
-        return SharpBoxProviderInfo.InvalidateStorageAsync();
+        await SharpBoxProviderInfo.InvalidateStorageAsync();
     }
 
-    public Task<File<string>> GetFileAsync(string fileId)
+    public async Task<File<string>> GetFileAsync(string fileId)
     {
-        return GetFileAsync(fileId, 1);
+        return await GetFileAsync(fileId, 1);
     }
 
     public Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -108,8 +108,8 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -181,13 +181,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
 
         //Get only files
-        var files = GetFolderById(parentId).Where(x => x is not ICloudDirectoryEntry).Select(ToFile);
+        var files = GetFolderById(parentId).Where(x => x is not ICloudDirectoryEntry).Select(ToFile).ToAsyncEnumerable();
 
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -255,7 +255,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         //hack
         await Task.Delay(1);
 
-        foreach (var f in files)
+        await foreach (var f in files)
         {
             yield return f;
         }
@@ -364,9 +364,9 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return ToFile(entry);
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream);
+        return await SaveFileAsync(file, fileStream);
     }
 
     public async Task DeleteFileAsync(string fileId)
@@ -385,7 +385,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using (var tx = filesDbContext.Database.BeginTransaction())
+            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
                 var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.Id.StartsWith(id))
@@ -433,11 +433,11 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
     }
 
-    public Task<bool> IsExistAsync(string title, object folderId)
+    public async Task<bool> IsExistAsync(string title, object folderId)
     {
         var folder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId));
 
-        return IsExistAsync(title, folder);
+        return await IsExistAsync(title, folder);
     }
 
     public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)

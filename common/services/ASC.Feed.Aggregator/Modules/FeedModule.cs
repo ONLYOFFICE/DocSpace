@@ -32,7 +32,6 @@ public abstract class FeedModule : IFeedModule
     public abstract string Product { get; }
     public abstract Guid ProductID { get; }
     protected abstract string DbId { get; }
-    protected int Tenant => _tenantManager.GetCurrentTenant().Id;
 
     protected readonly TenantManager _tenantManager;
     protected readonly WebItemSecurity _webItemSecurity;
@@ -47,26 +46,25 @@ public abstract class FeedModule : IFeedModule
 
     public abstract Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime);
 
-    public virtual Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public virtual async Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var tuple in feed)
         {
-            if (VisibleFor(tuple.Item1.Feed, tuple.Item2, userId))
+            if (await VisibleForAsync(tuple.Item1.Feed, tuple.Item2, userId))
             {
                 tuple.Item1.Users.Add(userId);
             }
         }
-        return Task.CompletedTask;
     }
 
-    public virtual bool VisibleFor(Feed feed, object data, Guid userId)
+    public virtual async Task<bool> VisibleForAsync(Feed feed, object data, Guid userId)
     {
-        return _webItemSecurity.IsAvailableForUser(ProductID, userId);
+        return await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId);
     }
 
     protected static Guid ToGuid(object guid)

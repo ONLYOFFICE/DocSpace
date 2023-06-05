@@ -41,7 +41,7 @@ public class PushSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public Task<NoticeSendResult> Send(NotifyMessage m)
+    public async Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         if (!string.IsNullOrEmpty(m.Content))
         {
@@ -52,14 +52,14 @@ public class PushSender : INotifySender
         {
             using var scope = _serviceProvider.CreateScope();
             var FirebaseHelper = scope.ServiceProvider.GetService<FirebaseHelper>();
-            FirebaseHelper.SendMessage(m);
+            await FirebaseHelper.SendMessageAsync(m);
         }
         catch (Exception e)
         {
             _logger.ErrorUnexpected(e);
         }
 
-        return Task.FromResult(NoticeSendResult.OK);
+        return NoticeSendResult.OK;
     }
 }
 public static class FirebaseSenderExtension

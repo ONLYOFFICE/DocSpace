@@ -20,6 +20,7 @@ import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 import MediaViewer from "./MediaViewer";
 import SelectionArea from "./SelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 import {
   useFiles,

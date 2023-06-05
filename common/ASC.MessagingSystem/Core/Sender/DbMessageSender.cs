@@ -41,7 +41,7 @@ public class DbMessageSender : IMessageSender
         _logger = options.CreateLogger("ASC.Messaging");
     }
 
-    public int Send(EventMessage message)
+    public async Task<int> SendAsync(EventMessage message)
     {
         try
         {
@@ -55,7 +55,7 @@ public class DbMessageSender : IMessageSender
                 return 0;
             }
 
-            return _messagesRepository.Add(message);
+            return await _messagesRepository.AddAsync(message);
         }
         catch (Exception ex)
         {

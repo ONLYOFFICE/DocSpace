@@ -69,7 +69,7 @@ public class TelegramHandler
 
         try
         {
-            var tgUser = telegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
+            var tgUser = await telegramDao.GetUserAsync(Guid.Parse(msg.Reciever), msg.TenantId);
 
             if (tgUser == null)
             {

@@ -92,8 +92,6 @@ Badge.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Sets hovered state and link effects */
   isHovered: PropTypes.bool,
-  /** Sets hovered state and link effects */
-  onHovered: PropTypes.bool,
   /** Disables hover styles */
   noHover: PropTypes.bool,
   /** Type Badge */

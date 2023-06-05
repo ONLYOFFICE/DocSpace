@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import PasswordInput from ".";
 import TextInput from "../text-input";
+import PasswordInputDocs from "./password-input.mdx";
+
+const disable = {
+  table: {
+    disable: true,
+  },
+};
 
 export default {
   title: "Components/PasswordInput",
@@ -10,13 +17,14 @@ export default {
       description: {
         component: "Paging is used to navigate med content pages",
       },
+      page: PasswordInputDocs,
     },
   },
   argTypes: {
-    settingMinLength: { description: "Property for story" },
-    settingsUpperCase: { description: "Property for story" },
-    settingsDigits: { description: "Property for story" },
-    settingsSpecSymbols: { description: "Property for story" },
+    settingMinLength: disable,
+    settingsUpperCase: disable,
+    settingsDigits: disable,
+    settingsSpecSymbols: disable,
   },
 };
 

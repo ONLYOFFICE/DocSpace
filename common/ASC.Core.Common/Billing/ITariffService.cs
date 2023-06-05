@@ -30,15 +30,15 @@ namespace ASC.Core.Billing;
 public interface ITariffService
 {
     IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds);
-    IEnumerable<PaymentInfo> GetPayments(int tenantId);
-    Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false);
-    Task<Uri> GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null);
-    Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
+    Task<IEnumerable<PaymentInfo>> GetPaymentsAsync(int tenantId);
+    Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false);
+    Task<Uri> GetShoppingUriAsync(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null);
+    Task<Uri> GetShoppingUriAsync(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
     Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null);
     void ClearCache(int tenantId);
-    void DeleteDefaultBillingInfo();
-    void SetTariff(int tenantId, Tariff tariff);
-    Uri GetAccountLink(int tenant, string backUrl);
-    Task<bool> PaymentChange(int tenant, Dictionary<string, int> quantity);
+    Task DeleteDefaultBillingInfoAsync();
+    Task SetTariffAsync(int tenantId, Tariff tariff);
+    Task<Uri> GetAccountLinkAsync(int tenant, string backUrl);
+    Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
     int GetPaymentDelay();
 }

@@ -91,6 +91,7 @@ class AvatarEditor extends React.Component {
           visible={this.state.isOpen || this.props.visible}
           onClose={this.onClose}
           onSave={this.onSave}
+          onCancel={this.onClose}
           onDeleteImage={this.onDeleteImage}
           onImageChange={this.onImageChange}
           onLoadFile={this.onLoadFile}

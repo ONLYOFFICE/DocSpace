@@ -45,7 +45,7 @@ public class DeleteExpiredService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var dataStore = _globalStore.GetStore(false);
+        var dataStore = await _globalStore.GetStoreAsync(false);
 
         while (!stoppingToken.IsCancellationRequested)
         {
