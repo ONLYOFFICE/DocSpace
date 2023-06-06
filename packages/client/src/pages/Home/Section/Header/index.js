@@ -780,9 +780,7 @@ const SectionHeaderContent = (props) => {
 
     setIsLoading(true);
 
-    path = `${path}?${filter.toUrlParams()}`;
-
-    window.DocSpace.navigate(path, { state });
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   const onInvite = (e) => {
