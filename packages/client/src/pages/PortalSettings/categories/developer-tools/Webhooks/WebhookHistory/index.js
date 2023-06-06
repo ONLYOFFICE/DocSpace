@@ -14,8 +14,14 @@ const WebhookWrapper = styled.div`
 `;
 
 const WebhookHistory = (props) => {
-  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
-    props;
+  const {
+    historyItems,
+    fetchHistoryItems,
+    setTitleHistory,
+    setTitleDefault,
+    emptyCheckedIds,
+    clearHistoryFilters,
+  } = props;
 
   const [isFetchFinished, setIsFetchFinished] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -30,11 +36,16 @@ const WebhookHistory = (props) => {
     setIsFetchFinished(true);
   };
 
+  const cleanUpOnLeave = () => {
+    setTitleDefault();
+    clearHistoryFilters();
+  };
+
   useEffect(() => {
     setTitleHistory();
     startTransition(fetchItems);
 
-    return setTitleDefault;
+    return cleanUpOnLeave;
   }, []);
 
   const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
@@ -61,8 +72,21 @@ const WebhookHistory = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
-    webhooksStore;
+  const {
+    historyItems,
+    fetchHistoryItems,
+    setTitleHistory,
+    setTitleDefault,
+    emptyCheckedIds,
+    clearHistoryFilters,
+  } = webhooksStore;
 
-  return { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds };
+  return {
+    historyItems,
+    fetchHistoryItems,
+    setTitleHistory,
+    setTitleDefault,
+    emptyCheckedIds,
+    clearHistoryFilters,
+  };
 })(observer(WebhookHistory));
