@@ -154,8 +154,9 @@ const SecretKeyInput = (props) => {
   );
 };
 
-export default inject(({ settingsStore }) => {
-  const { webhooksGuideUrl, passwordSettings } = settingsStore;
+export default inject(({ settingsStore, auth }) => {
+  const { passwordSettings } = settingsStore;
+  const { webhooksGuideUrl } = auth.settingsStore;
 
   return {
     passwordSettings,
