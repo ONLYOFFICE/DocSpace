@@ -6,11 +6,13 @@ import { withTranslation } from "react-i18next";
 import TileContainer from "./TilesView/sub-components/TileContainer";
 import FileTile from "./TilesView/FileTile";
 import Loaders from "@docspace/common/components/Loaders";
+import SubmitToGalleryTile from "./TilesView/sub-components/SubmitToGalleryTile";
 
 const SectionBodyContent = ({
   oformFiles,
   hasGalleryFiles,
   setGallerySelected,
+  submitToGalleryTileIsVisible,
   t,
   tReady,
 }) => {
@@ -45,6 +47,7 @@ const SectionBodyContent = ({
     />
   ) : (
     <TileContainer className="tile-container">
+      {submitToGalleryTileIsVisible && <SubmitToGalleryTile />}
       {oformFiles.map((item, index) => (
         <FileTile key={`${item.id}_${index}`} item={item} />
       ))}
@@ -56,4 +59,5 @@ export default inject(({ oformsStore }) => ({
   oformFiles: oformsStore.oformFiles,
   hasGalleryFiles: oformsStore.hasGalleryFiles,
   setGallerySelected: oformsStore.setGallerySelected,
+  submitToGalleryTileIsVisible: oformsStore.submitToGalleryTileIsVisible,
 }))(withTranslation("FormGallery")(observer(SectionBodyContent)));

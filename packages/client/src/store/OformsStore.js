@@ -11,6 +11,8 @@ class OformsStore {
   gallerySelected = null;
   oformsIsLoading = false;
 
+  submitToGalleryTileIsVisible = true;
+
   constructor(authStore) {
     makeAutoObservable(this);
 
@@ -86,6 +88,10 @@ class OformsStore {
   get hasMoreForms() {
     return this.oformFiles.length < this.oformsFilterTotal;
   }
+
+  hideSubmitToGalleryTile = () => {
+    this.submitToGalleryTileIsVisible = false;
+  };
 }
 
 export default OformsStore;

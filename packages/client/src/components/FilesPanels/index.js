@@ -24,6 +24,7 @@ import {
   InviteUsersWarningDialog,
   CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
+  SubmitToFormGallery,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -62,6 +63,7 @@ const Panels = (props) => {
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
     restoreRoomDialogVisible,
+    submitToGalleryDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -138,6 +140,9 @@ const Panels = (props) => {
     preparationPortalDialogVisible && (
       <PreparationPortalDialog key="preparation-portal-dialog" />
     ),
+    submitToGalleryDialogVisible && (
+      <SubmitToFormGallery key="submit-to-form-gallery-dialog" />
+    ),
   ];
 };
 
@@ -178,6 +183,8 @@ export default inject(
       invitePanelOptions,
       inviteUsersWarningDialogVisible,
       changeUserTypeDialogVisible,
+
+      submitToGalleryDialogVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -218,6 +225,7 @@ export default inject(
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
       restoreRoomDialogVisible,
+      submitToGalleryDialogVisible,
     };
   }
 )(observer(Panels));

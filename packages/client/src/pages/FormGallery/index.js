@@ -6,6 +6,7 @@ import SectionHeaderContent from "./Header";
 import SectionBodyContent from "./Body";
 import { InfoPanelBodyContent } from "../Home/InfoPanel";
 import InfoPanelHeaderContent from "../Home/InfoPanel/Header";
+import Dialogs from "./Dialogs";
 
 const FormGallery = ({ getOforms, setOformFiles }) => {
   useEffect(() => {
@@ -17,24 +18,28 @@ const FormGallery = ({ getOforms, setOformFiles }) => {
   }, [getOforms, setOformFiles]);
 
   return (
-    <Section
-      // withBodyScroll
-      // withBodyAutoFocus={!isMobile}
-      withPaging={false}
-    >
-      <Section.SectionHeader>
-        <SectionHeaderContent />
-      </Section.SectionHeader>
-      <Section.SectionBody>
-        <SectionBodyContent />
-      </Section.SectionBody>
-      <Section.InfoPanelHeader>
-        <InfoPanelHeaderContent isGallery />
-      </Section.InfoPanelHeader>
-      <Section.InfoPanelBody>
-        <InfoPanelBodyContent isGallery />
-      </Section.InfoPanelBody>
-    </Section>
+    <>
+      <Section
+        // withBodyScroll
+        // withBodyAutoFocus={!isMobile}
+        withPaging={false}
+      >
+        <Section.SectionHeader>
+          <SectionHeaderContent />
+        </Section.SectionHeader>
+        <Section.SectionBody>
+          <SectionBodyContent />
+        </Section.SectionBody>
+        <Section.InfoPanelHeader>
+          <InfoPanelHeaderContent isGallery />
+        </Section.InfoPanelHeader>
+        <Section.InfoPanelBody>
+          <InfoPanelBodyContent isGallery />
+        </Section.InfoPanelBody>
+      </Section>
+
+      <Dialogs />
+    </>
   );
 };
 

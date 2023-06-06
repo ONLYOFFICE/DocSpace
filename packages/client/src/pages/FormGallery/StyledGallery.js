@@ -3,6 +3,7 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import Headline from "@docspace/common/components/Headline";
 import { Base } from "@docspace/components/themes";
+import { Button } from "@docspace/components";
 
 const StyledHeadline = styled(Headline)`
   width: calc(100% + 1px);
@@ -21,7 +22,7 @@ const StyledContainer = styled.div`
   display: grid;
 
   grid-template-columns: ${(props) =>
-    props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
+    props.isRootFolder ? "1fr auto auto" : "29px 1fr auto auto"};
 
   align-items: center;
 
@@ -53,9 +54,12 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const StyledInfoPanelToggleWrapper = styled.div`
+const StyledSubmitToGalleryButton = styled(Button)`
   margin-left: auto;
+  margin-right: 12px;
+`;
 
+const StyledInfoPanelToggleWrapper = styled.div`
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
   align-items: center;
   justify-content: center;
@@ -88,4 +92,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
 `;
 StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
-export { StyledHeadline, StyledContainer, StyledInfoPanelToggleWrapper };
+export {
+  StyledHeadline,
+  StyledContainer,
+  StyledSubmitToGalleryButton,
+  StyledInfoPanelToggleWrapper,
+};

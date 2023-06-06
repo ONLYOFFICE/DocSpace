@@ -41,6 +41,7 @@ class DialogsStore {
 
   removeItem = null;
   connectItem = null;
+  formItem = null;
   destFolderId = null;
   newFilesIds = null;
   newFiles = null;
@@ -59,6 +60,7 @@ class DialogsStore {
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
+  submitToGalleryDialogVisible = false;
 
   constructor(
     authStore,
@@ -313,6 +315,14 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
+  setSubmitToGalleryDialogVisible = (submitToGalleryDialogVisible) => {
+    this.submitToGalleryDialogVisible = submitToGalleryDialogVisible;
+  };
+
+  setFormItem = (formItem) => {
+    this.formItem = formItem;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -339,7 +349,8 @@ class DialogsStore {
       this.inviteUsersWarningDialogVisible ||
       this.createRoomDialogVisible ||
       this.createRoomConfirmDialogVisible ||
-      this.changeUserTypeDialogVisible
+      this.changeUserTypeDialogVisible ||
+      this.submitToGalleryDialogVisible
     );
   }
 

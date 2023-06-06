@@ -21,6 +21,7 @@ import FormFillRectSvgUrl from "PUBLIC_DIR/images/form.fill.rect.svg?url";
 import AccessEditReactSvgUrl from "PUBLIC_DIR/images/access.edit.react.svg?url";
 import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import FormPlusReactSvgUrl from "PUBLIC_DIR/images/form.plus.react.svg?url";
+import FormFileReactSvgUrl from "PUBLIC_DIR/images/form.file.react.svg?url";
 import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
@@ -185,6 +186,11 @@ class ContextOptionsStore {
       });
       setConvertPasswordDialogVisible(true);
     });
+  };
+
+  onClickSubmitToFormGallery = (item) => {
+    this.dialogsStore.setFormItem(item);
+    this.dialogsStore.setSubmitToGalleryDialogVisible(true);
   };
 
   onOpenLocation = (item) => {
@@ -685,12 +691,18 @@ class ContextOptionsStore {
 
     const hasInfoPanel = contextOptions.includes("show-info");
 
-    //const emailSendIsDisabled = true;
-    const showSeparator0 = hasInfoPanel || !isMedia; // || !emailSendIsDisabled;
+    const separator0 =
+      hasInfoPanel || !isMedia
+        ? {
+            key: "separator0",
+            isSeparator: true,
+          }
+        : false;
 
-    const separator0 = showSeparator0
+    //TODO-submit-to-form-gallery change to correct key when added
+    const separator1 = contextOptions.includes("make-form")
       ? {
-          key: "separator0",
+          key: "separator1",
           isSeparator: true,
         }
       : false;
@@ -902,6 +914,16 @@ class ContextOptionsStore {
       },
       separator0,
       {
+        //TODO-submit-to-form-gallery change to correct key when added
+        id: "option_make-form",
+        key: "make-form",
+        label: t("Common:SubmitToFormGallery"),
+        icon: FormFileReactSvgUrl,
+        onClick: () => this.onClickSubmitToFormGallery(item),
+        disabled: false,
+      },
+      separator1,
+      {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
@@ -993,7 +1015,7 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "separator1",
+        key: "separator2",
         isSeparator: true,
       },
       {
@@ -1066,7 +1088,7 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
-        key: "separator2",
+        key: "separator3",
         isSeparator: true,
       },
       {
