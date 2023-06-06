@@ -2123,7 +2123,7 @@ const Base = {
     downloadAppList: {
       color: "#83888d",
       winHoverColor: "#3785D3",
-      macHoverColor: black,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
       iosHoverColor: "url(#iosGradient-1)",
