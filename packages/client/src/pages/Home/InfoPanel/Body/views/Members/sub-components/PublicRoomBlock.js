@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 import toastr from "@docspace/components/toast/toastr";
-import LinksToViewingIcon from "PUBLIC_DIR/images/links-to-viewing.react.svg?url";
+import LinksToViewingIconUrl from "PUBLIC_DIR/images/links-to-viewing.react.svg?url";
 import PublicRoomBar from "./PublicRoomBar";
 import { LinksBlock } from "./StyledPublicRoom";
 import LinkRow from "./LinkRow";
@@ -30,11 +30,13 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
       )}
       <LinksBlock>
         <Text fontSize="14px" fontWeight={600} color="#a3a9ae">
-          {t("LinksToViewingIcon")}
+          {externalLinks.length
+            ? t("LinksToViewingIcon")
+            : t("NoExternalLinks")}
         </Text>
         <IconButton
           className="link-to-viewing-icon"
-          iconName={LinksToViewingIcon}
+          iconName={LinksToViewingIconUrl}
           onClick={onCopyLink}
           size={16}
         />

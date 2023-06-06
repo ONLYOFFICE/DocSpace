@@ -39,5 +39,6 @@
   "SystemProperties": "System properties",
   "UsersInRoom": "Users in room",
   "Versions": "Versions",
-  "LinksToViewingIcon": "Links to Viewing"
+  "LinksToViewingIcon": "Links to Viewing",
+  "NoExternalLinks": "No external links"
 }
