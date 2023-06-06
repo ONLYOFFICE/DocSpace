@@ -2,6 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 
 import ArticleTeamTrainingAlert from "./article-team-training";
+import ArticleSubmitToFormGalleryAlert from "./article-submit-to-form-gallery";
 import ArticlePaymentAlert from "./article-payment-alert";
 import { StyledArticleAlertsComponent } from "../styled-article";
 
@@ -13,6 +14,7 @@ const ArticleAlerts = ({
   isPaymentPageAvailable,
   isTeamTrainingAlertAvailable,
 }) => {
+  //TODO-submit-to-form-gallery clear up about alert switchind functionality, implement and return training alert
   return (
     <StyledArticleAlertsComponent>
       {isPaymentPageAvailable &&
@@ -20,7 +22,9 @@ const ArticleAlerts = ({
         (isFreeTariff || isGracePeriod) &&
         showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
 
-      {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
+      {isTeamTrainingAlertAvailable && showText && (
+        <ArticleSubmitToFormGalleryAlert />
+      )}
     </StyledArticleAlertsComponent>
   );
 };
