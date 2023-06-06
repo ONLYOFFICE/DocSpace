@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 const SHOW_LOADER_TIMER = 500;
-const MIN_LOADER_TIMER = 300;
+const MIN_LOADER_TIMER = 500;
 
 class ClientLoadingStore {
   isLoaded = false;
@@ -47,6 +47,18 @@ class ClientLoadingStore {
     this.isArticleLoading = isArticleLoading;
   };
 
+  updateIsSectionHeaderLoading = (param) => {
+    this.isSectionHeaderLoading = param;
+  };
+
+  updateIsSectionFilterLoading = (param) => {
+    this.isSectionFilterLoading = param;
+  };
+
+  updateIsSectionBodyLoading = (param) => {
+    this.isSectionBodyLoading = param;
+  };
+
   setIsSectionHeaderLoading = (isSectionHeaderLoading, withTimer = true) => {
     this.pendingSectionLoaders.header = isSectionHeaderLoading;
     if (isSectionHeaderLoading) {
@@ -56,10 +68,10 @@ class ClientLoadingStore {
       this.startLoadingTime.header = new Date();
       if (withTimer) {
         return (this.sectionHeaderTimer = setTimeout(() => {
-          this.isSectionHeaderLoading = isSectionHeaderLoading;
+          this.updateIsSectionHeaderLoading(isSectionHeaderLoading);
         }, SHOW_LOADER_TIMER));
       }
-      this.isSectionHeaderLoading = isSectionHeaderLoading;
+      this.updateIsSectionHeaderLoading(isSectionHeaderLoading);
     } else {
       if (this.startLoadingTime.header) {
         const currentDate = new Date();
@@ -75,7 +87,7 @@ class ClientLoadingStore {
 
         if (ms < MIN_LOADER_TIMER)
           return setTimeout(() => {
-            this.isSectionHeaderLoading = false;
+            this.updateIsSectionHeaderLoading(false);
             this.startLoadingTime.header = null;
           }, MIN_LOADER_TIMER - ms);
       }
@@ -84,7 +96,7 @@ class ClientLoadingStore {
         this.sectionHeaderTimer = null;
       }
       this.startLoadingTime.header = null;
-      this.isSectionHeaderLoading = false;
+      this.updateIsSectionHeaderLoading(false);
     }
   };
 
@@ -97,10 +109,10 @@ class ClientLoadingStore {
       this.startLoadingTime.filter = new Date();
       if (withTimer) {
         return (this.sectionFilterTimer = setTimeout(() => {
-          this.isSectionFilterLoading = isSectionFilterLoading;
+          this.updateIsSectionFilterLoading(isSectionFilterLoading);
         }, SHOW_LOADER_TIMER));
       }
-      this.isSectionFilterLoading = isSectionFilterLoading;
+      this.updateIsSectionFilterLoading(isSectionFilterLoading);
     } else {
       if (this.startLoadingTime.filter) {
         const currentDate = new Date();
@@ -116,18 +128,20 @@ class ClientLoadingStore {
           this.sectionFilterTimer = null;
         }
 
-        if (ms < MIN_LOADER_TIMER)
+        if (ms < MIN_LOADER_TIMER) {
           return setTimeout(() => {
-            this.isSectionFilterLoading = false;
+            this.updateIsSectionFilterLoading(false);
             this.startLoadingTime.filter = null;
           }, MIN_LOADER_TIMER - ms);
+        }
       }
       if (this.sectionFilterTimer) {
         clearTimeout(this.sectionFilterTimer);
         this.sectionFilterTimer = null;
       }
+
       this.startLoadingTime.filter = null;
-      this.isSectionFilterLoading = false;
+      this.updateIsSectionFilterLoading(false);
     }
   };
 
@@ -141,10 +155,10 @@ class ClientLoadingStore {
       this.startLoadingTime.body = new Date();
       if (withTimer) {
         return (this.sectionBodyTimer = setTimeout(() => {
-          this.isSectionBodyLoading = isSectionBodyLoading;
+          this.updateIsSectionBodyLoading(isSectionBodyLoading);
         }, SHOW_LOADER_TIMER));
       }
-      this.isSectionBodyLoading = isSectionBodyLoading;
+      this.updateIsSectionBodyLoading(isSectionBodyLoading);
     } else {
       if (this.startLoadingTime.body) {
         const currentDate = new Date();
@@ -162,7 +176,7 @@ class ClientLoadingStore {
 
         if (ms < MIN_LOADER_TIMER)
           return setTimeout(() => {
-            this.isSectionBodyLoading = false;
+            this.updateIsSectionBodyLoading(false);
             this.startLoadingTime.body = null;
           }, MIN_LOADER_TIMER - ms);
       }
@@ -173,7 +187,7 @@ class ClientLoadingStore {
       }
 
       this.startLoadingTime.body = null;
-      this.isSectionBodyLoading = false;
+      this.updateIsSectionBodyLoading(false);
     }
   };
 
