@@ -55,6 +55,7 @@ const FilesMediaViewer = (props) => {
     setSelection,
     activeFiles,
     activeFolders,
+    onClickDownloadAs,
   } = props;
 
   const navigate = useNavigate();
@@ -178,8 +179,6 @@ const FilesMediaViewer = (props) => {
     if (!url) {
       return;
     }
-
-    console.log(url);
 
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
