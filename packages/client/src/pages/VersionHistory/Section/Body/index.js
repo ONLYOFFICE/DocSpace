@@ -144,7 +144,7 @@ export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
 
   return {
     culture: auth.settingsStore.culture,
-    isLoading: isLoading,
+    isLoading,
     versions,
     fileId,
     fileSecurity,
