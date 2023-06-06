@@ -149,8 +149,7 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
 
-  interfaceDirection =
-    (window && localStorage.getItem("interfaceDirection")) || "ltr";
+  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
 
   constructor() {
     makeAutoObservable(this);
