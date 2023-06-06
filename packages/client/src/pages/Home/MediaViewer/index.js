@@ -22,18 +22,18 @@ const FilesMediaViewer = (props) => {
     previewFile,
     fetchFiles,
     setIsLoading,
-    setFirstLoad,
+
     setToPreviewFile,
     setScrollToItem,
     setCurrentId,
-    setAlreadyFetchingRooms,
+
     setBufferSelection,
-    isFavoritesFolder,
+
     archiveRoomsId,
-    onClickFavorite,
+
     onShowInfoPanel,
     onClickDownload,
-    onClickDownloadAs,
+
     onClickLinkEdit,
     onPreviewClick,
     onCopyLink,
@@ -55,6 +55,7 @@ const FilesMediaViewer = (props) => {
     setSelection,
     activeFiles,
     activeFolders,
+    onClickDownloadAs,
   } = props;
 
   const navigate = useNavigate();
@@ -80,8 +81,6 @@ const FilesMediaViewer = (props) => {
       // fetch file after preview with
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
-        setFirstLoad(false);
-        setAlreadyFetchingRooms(false);
       });
     }
   }, [previewFile]);
@@ -181,8 +180,6 @@ const FilesMediaViewer = (props) => {
       return;
     }
 
-    console.log(url);
-
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
@@ -238,14 +235,23 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     contextOptionsStore,
+    clientLoadingStore,
   }) => {
+    const {
+      firstLoad,
+
+      setIsSectionFilterLoading,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     const {
       files,
       userAccess,
       fetchFiles,
-      setIsLoading,
-      firstLoad,
-      setFirstLoad,
+
       setScrollToItem,
       setBufferSelection,
       setIsPreview,
@@ -307,7 +313,7 @@ export default inject(
       previewFile,
       setIsLoading,
       firstLoad,
-      setFirstLoad,
+
       setToPreviewFile,
       setIsPreview,
       resetUrl,

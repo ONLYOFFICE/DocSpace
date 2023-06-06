@@ -99,9 +99,9 @@ VersionHistoryPanel.propTypes = {
   fileId: PropTypes.string,
 };
 
-export default inject(({ auth, filesStore, versionHistoryStore }) => {
+export default inject(({ auth, clientLoadingStore, versionHistoryStore }) => {
   const { isTabletView } = auth.settingsStore;
-  const { isLoading } = filesStore;
+  const { isLoading } = clientLoadingStore;
   const {
     fileId,
     versions,

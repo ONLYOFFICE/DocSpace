@@ -40,10 +40,16 @@ import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { muteRoomNotification } from "@docspace/common/api/settings";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import AccountsFilter from "@docspace/common/api/people/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
 
 import uniqueid from "lodash/uniqueId";
+import FilesFilter from "@docspace/common/api/files/filter";
+import {
+  getCategoryTypeByFolderType,
+  getCategoryUrl,
+} from "SRC_DIR/helpers/utils";
 
 class FilesActionStore {
   authStore;
@@ -55,6 +61,7 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
   accessRightsStore;
+  clientLoadingStore;
 
   isBulkDownload = false;
   isLoadedSearchFiles = false;
@@ -70,7 +77,8 @@ class FilesActionStore {
     settingsStore,
     dialogsStore,
     mediaViewerDataStore,
-    accessRightsStore
+    accessRightsStore,
+    clientLoadingStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -82,6 +90,7 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
     this.accessRightsStore = accessRightsStore;
+    this.clientLoadingStore = clientLoadingStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -100,10 +109,11 @@ class FilesActionStore {
       this.uploadDataStore.secondaryProgressDataStore;
 
     const {
-      filter,
       fetchFiles,
-      roomsFilter,
       fetchRooms,
+      filter,
+      roomsFilter,
+
       isEmptyLastPageAfterOperation,
       resetFilterPage,
     } = this.filesStore;
@@ -1185,9 +1195,13 @@ class FilesActionStore {
   };
 
   selectTag = (tag) => {
-    const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
+    const { roomsFilter } = this.filesStore;
 
-    const { id } = this.selectedFolderStore;
+    const { setIsSectionBodyLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+    };
 
     const newFilter = roomsFilter.clone();
 
@@ -1211,13 +1225,19 @@ class FilesActionStore {
     }
 
     setIsLoading(true);
-
-    fetchRooms(id, newFilter).finally(() => setIsLoading(false));
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+    );
   };
 
   selectOption = ({ option, value }) => {
-    const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
-    const { id } = this.selectedFolderStore;
+    const { roomsFilter } = this.filesStore;
+
+    const { setIsSectionBodyLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionBodyLoading(param);
+    };
 
     const newFilter = roomsFilter.clone();
     const tags = newFilter.tags ? [...newFilter.tags] : [];
@@ -1232,7 +1252,9 @@ class FilesActionStore {
     }
 
     setIsLoading(true);
-    fetchRooms(id, newFilter).finally(() => setIsLoading(false));
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+    );
   };
 
   selectRowAction = (checked, file) => {
@@ -1257,28 +1279,67 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = async (locationId) => {
+  openLocationAction = async (item) => {
     this.filesStore.setBufferSelection(null);
 
-    const files = await this.filesStore.fetchFiles(locationId, null);
-    return files;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
+    const { id, isRoom, title, rootFolderType } = item;
+    const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
+
+    const state = { title, rootFolderType, isRoot: false, isRoom };
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const url = getCategoryUrl(categoryType, id);
+
+    window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const { filter, setHighlightFile, fetchFiles } = this.filesStore;
-    const newFilter = filter.clone();
+    const { categoryType } = this.filesStore;
+    const { myRoomsId, myFolderId, archiveRoomsId, recycleBinFolderId } =
+      this.treeFoldersStore;
+    const { rootFolderType } = this.selectedFolderStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
-    newFilter.page = 0;
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
+    const { ExtraLocationTitle, ExtraLocation, fileExst } = item;
+
+    const isRoot =
+      ExtraLocation === myRoomsId ||
+      ExtraLocation === myFolderId ||
+      ExtraLocation === archiveRoomsId ||
+      ExtraLocation === recycleBinFolderId;
+
+    const state = {
+      title: ExtraLocationTitle,
+
+      isRoot,
+      fileExst,
+      highlightFileId: item.id,
+      isFileHasExst: !item.fileExst,
+      rootFolderType,
+    };
+
+    const url = getCategoryUrl(categoryType, ExtraLocation);
+
+    const newFilter = FilesFilter.getDefault();
+
     newFilter.search = item.title;
+    newFilter.folder = ExtraLocation;
 
-    fetchFiles(item.ExtraLocation, newFilter)
-      .then(() => {
-        setHighlightFile({
-          highlightFileId: item.id,
-          isFileHasExst: !item.fileExst,
-        });
-      })
-      .catch((err) => toastr.error(err));
+    setIsLoading(true);
+
+    window.DocSpace.navigate(`${url}?${newFilter.toUrlParams()}`, { state });
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -1943,16 +2004,18 @@ class FilesActionStore {
   onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
 
   openFileAction = (item) => {
-    const {
-      isLoading,
-      setIsLoading,
-      fetchFiles,
-      openDocEditor,
-      isPrivacyFolder,
-    } = this.filesStore;
+    const { openDocEditor, isPrivacyFolder } = this.filesStore;
+
+    const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
+
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
@@ -1966,14 +2029,21 @@ class FilesActionStore {
     if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
+      const { isRoom, rootFolderType, title } = item;
+
       setIsLoading(true);
 
-      fetchFiles(id, null, true, false)
-        .catch((err) => {
-          toastr.error(err);
-          setIsLoading(false);
-        })
-        .finally(() => setIsLoading(false));
+      const path = getCategoryUrl(
+        getCategoryTypeByFolderType(rootFolderType, id),
+        id
+      );
+
+      const filter = FilesFilter.getDefault();
+      filter.folder = id;
+
+      const state = { title, isRoot: false, rootFolderType, isRoom };
+
+      window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
     } else {
       if (canConvert) {
         setConvertItem({ ...item, isOpen: true });
@@ -2018,8 +2088,15 @@ class FilesActionStore {
   };
 
   onClickBack = () => {
-    const { roomType, parentId, setSelectedFolder } = this.selectedFolderStore;
+    const { roomType } = this.selectedFolderStore;
     const { setSelectedNode } = this.treeFoldersStore;
+    const { clearFiles } = this.filesStore;
+
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
@@ -2051,49 +2128,94 @@ class FilesActionStore {
     }
 
     if (categoryType === CategoryType.Settings) {
-      setSelectedFolder(null);
+      clearFiles();
+
+      const path = getCategoryUrl(CategoryType.Settings);
+
       setSelectedNode(["common"]);
+
+      return navigate(path);
     }
 
     if (categoryType === CategoryType.Accounts) {
-      setSelectedFolder(null);
+      const accountsFilter = AccountsFilter.getDefault();
+      params = accountsFilter.toUrlParams();
+      const path = getCategoryUrl(CategoryType.Accounts);
+
+      clearFiles();
+      setIsLoading(true);
+
       setSelectedNode(["accounts", "filter"]);
+
+      return navigate(`${path}?${params}`);
     }
   };
 
   moveToRoomsPage = () => {
-    const { setIsLoading, fetchRooms, setAlreadyFetchingRooms } =
-      this.filesStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
 
     const categoryType = getCategoryType(location);
 
-    setIsLoading(true);
-    setAlreadyFetchingRooms(true);
-
     const filter = RoomsFilter.getDefault();
+
+    const path = getCategoryUrl(categoryType);
+
+    const state = {
+      title:
+        this.selectedFolderStore?.navigationPath[
+          this.selectedFolderStore?.navigationPath.length - 1
+        ]?.title || "",
+      isRoot: true,
+      rootFolderType: this.selectedFolderStore.rootFolderType,
+    };
+
+    setIsLoading(true);
 
     if (categoryType == CategoryType.Archive) {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   backToParentFolder = () => {
-    const { setIsLoading, fetchFiles } = this.filesStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
 
     let id = this.selectedFolderStore.parentId;
+
+    const { navigationPath, rootFolderType } = this.selectedFolderStore;
 
     if (!id) {
       const urlFilter = getObjectByLocation(location);
       id = urlFilter.folder;
     }
 
+    const path = getCategoryUrl(
+      getCategoryTypeByFolderType(rootFolderType, id),
+      id
+    );
+
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const state = {
+      title: navigationPath[0]?.title || "",
+      isRoot: navigationPath.length === 1,
+      rootFolderType: rootFolderType,
+    };
+
     setIsLoading(true);
 
-    fetchFiles(id, null, true, false).finally(() => setIsLoading(false));
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   setGroupMenuBlocked = (blocked) => {

@@ -4,6 +4,8 @@ import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 const DeleteThirdPartyDialog = (props) => {
   const {
@@ -12,8 +14,9 @@ const DeleteThirdPartyDialog = (props) => {
     visible,
     providers,
     removeItem,
-    fetchFiles,
+
     currentFolderId,
+
     deleteThirdParty,
     setThirdPartyProviders,
     setDeleteThirdPartyDialogVisible,
@@ -22,6 +25,9 @@ const DeleteThirdPartyDialog = (props) => {
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onClose = () => setDeleteThirdPartyDialogVisible(false);
 
@@ -46,8 +52,13 @@ const DeleteThirdPartyDialog = (props) => {
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        if (currentFolderId) fetchFiles(currentFolderId, null, true, true);
-        else {
+        if (currentFolderId) {
+          const filter = FilesFilter.getDefault();
+
+          filter.folder = currentFolderId;
+
+          navigate(`${location.pathname}?${filter.toUrlParams()}`);
+        } else {
           toastr.success(
             t("SuccessDeleteThirdParty", { service: removeItem.title })
           );
@@ -105,7 +116,7 @@ export default inject(
   }) => {
     const { providers, setThirdPartyProviders, deleteThirdParty } =
       settingsStore.thirdPartyStore;
-    const { fetchFiles } = filesStore;
+    const { setIsLoading } = filesStore;
     const { selectedThirdPartyAccount: backupConnectionItem } = backup;
     const {
       deleteThirdPartyDialogVisible: visible,
@@ -115,13 +126,17 @@ export default inject(
 
     const removeItem = backupConnectionItem ?? storeItem;
 
+    const { id } = selectedFolderStore;
+
     return {
-      currentFolderId: selectedFolderStore.id,
+      currentFolderId: id,
+
+      setIsLoadingStore: setIsLoading,
+
       providers,
       visible,
       removeItem,
 
-      fetchFiles,
       setThirdPartyProviders,
       deleteThirdParty,
       setDeleteThirdPartyDialogVisible,

@@ -11,12 +11,8 @@ class SelectFileInput extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    const {
-      setExpandedPanelKeys,
-      setFolderId,
-      setFile,
-      onSelectFile,
-    } = this.props;
+    const { setExpandedPanelKeys, setFolderId, setFile, onSelectFile } =
+      this.props;
 
     setExpandedPanelKeys(null);
     setFolderId(null);
@@ -75,8 +71,8 @@ SelectFileInput.defaultProps = {
 };
 
 export default inject(
-  ({ filesStore, treeFoldersStore, selectFileDialogStore }) => {
-    const { setFirstLoad } = filesStore;
+  ({ clientLoadingStore, treeFoldersStore, selectFileDialogStore }) => {
+    const { setFirstLoad } = clientLoadingStore;
     const { folderId, setFolderId, setFile, fileInfo } = selectFileDialogStore;
     const fileName = fileInfo?.title;
     const { setExpandedPanelKeys } = treeFoldersStore;

@@ -79,9 +79,8 @@ const CreateRoomEvent = ({
 
 export default inject(
   ({
-    auth,
     createEditRoomStore,
-    filesStore,
+
     tagsStore,
     dialogsStore,
     settingsStore,
