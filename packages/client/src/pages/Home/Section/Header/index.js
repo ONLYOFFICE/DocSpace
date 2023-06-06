@@ -50,6 +50,7 @@ import toastr from "@docspace/components/toast/toastr";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 import withLoader from "../../../../HOCs/withLoader";
 import {
   getCategoryTypeByFolderType,
@@ -200,8 +201,10 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
 
-    emptyTrashInProgress,
     isLoading,
+    pathParts,
+    emptyTrashInProgress,
+    categoryType,
   } = props;
 
   const navigate = useNavigate();
@@ -858,6 +861,10 @@ const SectionHeaderContent = (props) => {
 
   if (showHeaderLoader) return <Loaders.SectionHeader />;
 
+  const insideTheRoom =
+    categoryType === CategoryType.SharedRoom ||
+    categoryType === CategoryType.Archive;
+
   return (
     <Consumer key="header">
       {(context) => (
@@ -910,6 +917,7 @@ const SectionHeaderContent = (props) => {
                 isEmptyPage={isEmptyPage}
                 isRoom={isCurrentRoom}
                 hideInfoPanel={isSettingsPage}
+                showRootFolderTitle={insideTheRoom}
               />
             </div>
           )}
@@ -957,6 +965,7 @@ export default inject(
       isEmptyPage,
 
       clearFiles,
+      categoryType,
     } = filesStore;
 
     const { setIsSectionFilterLoading, showHeaderLoader, isLoading } =
@@ -1145,6 +1154,7 @@ export default inject(
 
       clearFiles,
       emptyTrashInProgress,
+      categoryType,
     };
   }
 )(
