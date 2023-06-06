@@ -43,10 +43,8 @@ const Article = ({
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [
-    articleMainButtonContent,
-    setArticleMainButtonContent,
-  ] = React.useState(null);
+  const [articleMainButtonContent, setArticleMainButtonContent] =
+    React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -220,6 +218,8 @@ const Article = ({
   //   articleMainButton: !!articleMainButtonContent,
   //   withMainButton,
   // });
+
+  console.log(articleOpen);
 
   return isMobileOnly ? renderPortalArticle() : articleComponent;
 };

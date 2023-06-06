@@ -5,6 +5,7 @@ import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
+import { isMobile } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 import {
   StyledArticleHeader,
@@ -24,7 +25,8 @@ const ArticleHeader = ({
 }) => {
   const navigate = useNavigate();
 
-  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+  const isTabletView =
+    (isTabletUtils() || isTablet) && !isMobileOnly && !isMobile();
   const onLogoClick = () => navigate("/");
 
   const burgerLogo = !theme.isBase
@@ -34,7 +36,7 @@ const ArticleHeader = ({
     ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
-  if (isMobileOnly) return <></>;
+  if (isMobileOnly || isMobile()) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && isBurgerLoading ? (

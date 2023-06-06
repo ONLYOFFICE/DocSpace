@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
 import { isMobileOnly, isMobile } from "react-device-detect";
-import {  useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isDesktop, tablet, mobile } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
