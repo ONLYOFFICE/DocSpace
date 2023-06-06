@@ -18,6 +18,7 @@ const ArticleHeader = ({
   showText,
   children,
   onClick,
+  onLogoClickAction,
   isBurgerLoading,
   whiteLabelLogoUrls,
   theme,
@@ -27,7 +28,11 @@ const ArticleHeader = ({
 
   const isTabletView =
     (isTabletUtils() || isTablet) && !isMobileOnly && !isMobile();
-  const onLogoClick = () => navigate("/");
+
+  const onLogoClick = () => {
+    onLogoClickAction && onLogoClickAction();
+    navigate("/");
+  };
 
   const burgerLogo = !theme.isBase
     ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
@@ -48,16 +53,10 @@ const ArticleHeader = ({
       )}
 
       {!isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="211px" />
+        <Loaders.ArticleHeader height="24px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
-          {isTabletView ? (
-            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
-          ) : (
-            <Link to="/">
-              <img className="logo-icon_svg" src={logo} />
-            </Link>
-          )}
+          <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
         </StyledHeading>
       )}
     </StyledArticleHeader>

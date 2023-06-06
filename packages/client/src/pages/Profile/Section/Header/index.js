@@ -18,8 +18,6 @@ import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
-import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-
 import { StyledHeader } from "./StyledHeader";
 
 const Header = (props) => {
@@ -39,6 +37,8 @@ const Header = (props) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    isProfileLoaded,
   } = props;
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
@@ -97,6 +97,8 @@ const Header = (props) => {
     setFilter(filter);
   };
 
+  if (!isProfileLoaded) return <Loaders.SectionHeader />;
+
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
@@ -113,9 +115,9 @@ const Header = (props) => {
       )}
       <Headline className="header-headline" type="content" truncate={true}>
         {t("Profile:MyProfile")}
-        {profile.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
+        {profile?.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
       </Headline>
-      {((isAdmin && !profile.isOwner) || isMe) && (
+      {((isAdmin && !profile?.isOwner) || isMe) && (
         <ContextMenuButton
           className="action-button"
           directionX="right"
@@ -132,7 +134,7 @@ const Header = (props) => {
         <DeleteSelfProfileDialog
           visible={deleteSelfProfileDialog}
           onClose={() => setDeleteSelfProfileDialog(false)}
-          email={profile.email}
+          email={profile?.email}
         />
       )}
 
@@ -146,7 +148,7 @@ const Header = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, clientLoadingStore }) => {
   const { isAdmin } = auth;
 
   const { isVisitor, isCollaborator } = auth.userStore.user;
@@ -156,6 +158,8 @@ export default inject(({ auth, peopleStore }) => {
   const { filter, setFilterParams } = filterStore;
 
   const { targetUser, isMe } = targetUserStore;
+
+  const { isProfileLoaded } = clientLoadingStore;
 
   const {
     setChangeEmailVisible,
@@ -176,11 +180,9 @@ export default inject(({ auth, peopleStore }) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    isProfileLoaded,
   };
 })(
-  observer(
-    withTranslation(["Profile", "Common", "PeopleTranslations"])(
-      withPeopleLoader(Header)(<Loaders.SectionHeader />)
-    )
-  )
+  observer(withTranslation(["Profile", "Common", "PeopleTranslations"])(Header))
 );
