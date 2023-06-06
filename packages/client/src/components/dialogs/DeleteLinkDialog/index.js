@@ -18,7 +18,6 @@ const DeleteLinkDialogComponent = (props) => {
     setExternalLinks,
     editExternalLink,
   } = props;
-  const { id: linkId, title } = link.sharedTo;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,9 +41,10 @@ const DeleteLinkDialogComponent = (props) => {
   const onDelete = () => {
     setIsLoading(true);
 
-    link.access = 0;
+    const newLink = JSON.parse(JSON.stringify(link));
+    newLink.access = 0;
 
-    editExternalLink(roomId, link)
+    editExternalLink(roomId, newLink)
       .then((res) => {
         setExternalLinks(res);
         toastr.success("Files:LinkRemovedSuccessfully");

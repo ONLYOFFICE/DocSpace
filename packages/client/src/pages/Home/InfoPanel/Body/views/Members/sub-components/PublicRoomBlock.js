@@ -7,6 +7,7 @@ import LinksToViewingIcon from "PUBLIC_DIR/images/links-to-viewing.react.svg?url
 import PublicRoomBar from "./PublicRoomBar";
 import { LinksBlock } from "./StyledPublicRoom";
 import LinkRow from "./LinkRow";
+import { LinkType } from "../../../../../../../helpers/constants";
 
 const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
   const [barIsVisible, setBarVisible] = useState(true);
@@ -42,7 +43,8 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
       {externalLinks.length ? (
         externalLinks.map(
           (link) =>
-            !link.sharedTo.isTemplate && (
+            !link.sharedTo.isTemplate &&
+            link.sharedTo.linkType === LinkType.External && (
               <LinkRow link={link} key={link?.sharedTo?.id} />
             )
         )

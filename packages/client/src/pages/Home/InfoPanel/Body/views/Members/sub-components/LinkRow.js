@@ -60,9 +60,10 @@ const LinkRow = (props) => {
   const onDisableLink = () => {
     setIsLoading(true);
 
-    link.sharedTo.disabled = !link.sharedTo.disabled;
+    const newLink = JSON.parse(JSON.stringify(link));
+    newLink.sharedTo.disabled = !newLink.sharedTo.disabled;
 
-    editExternalLink(roomId, link)
+    editExternalLink(roomId, newLink)
       .then((res) => {
         setExternalLink(id, res);
 
@@ -174,20 +175,24 @@ const LinkRow = (props) => {
       )}
 
       <div className="external-row-icons">
-        {isLocked && (
-          <IconButton
-            className="locked-icon"
-            size={16}
-            iconName={LockedReactSvgUrl}
-            onClick={onLockClick}
-          />
+        {!disabled && (
+          <>
+            {isLocked && (
+              <IconButton
+                className="locked-icon"
+                size={16}
+                iconName={LockedReactSvgUrl}
+                onClick={onLockClick}
+              />
+            )}
+            <IconButton
+              className="copy-icon"
+              size={16}
+              iconName={CopyReactSvgUrl}
+              onClick={onCopyExternalLink}
+            />
+          </>
         )}
-        <IconButton
-          className="copy-icon"
-          size={16}
-          iconName={CopyReactSvgUrl}
-          onClick={onCopyExternalLink}
-        />
 
         <ContextMenuButton getData={getData} isDisabled={false} />
       </div>
@@ -203,9 +208,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setEmbeddingPanelIsVisible,
     setLinkParams,
   } = dialogsStore;
-  const { editExternalLink, externalLinks, setExternalLink } = publicRoomStore;
-
-  const links = externalLinks.filter((l) => !l.sharedTo.isTemplate);
+  const { editExternalLink, setExternalLink } = publicRoomStore;
 
   return {
     setLinkParams,

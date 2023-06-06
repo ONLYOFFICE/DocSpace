@@ -21,6 +21,7 @@ import LinkBlock from "./LinkBlock";
 import ToggleBlock from "./ToggleBlock";
 import PasswordAccessBlock from "./PasswordAccessBlock";
 import LimitTimeBlock from "./LimitTimeBlock";
+import { LinkType } from "../../../helpers/constants";
 
 const EditLinkPanel = (props) => {
   const {
@@ -86,13 +87,15 @@ const EditLinkPanel = (props) => {
     //   ? createPasswordHash(passwordValue, hashSettings)
     //   : null;
 
-    link.sharedTo.title = linkNameValue;
-    link.sharedTo.password = passwordAccessIsChecked ? passwordValue : null;
-    link.sharedTo.denyDownload = denyDownload;
+    const newLink = JSON.parse(JSON.stringify(link));
+
+    newLink.sharedTo.title = linkNameValue;
+    newLink.sharedTo.password = passwordAccessIsChecked ? passwordValue : null;
+    newLink.sharedTo.denyDownload = denyDownload;
     // link.sharedTo.expirationDate=expirationDate;
 
     setIsLoading(true);
-    editExternalLink(roomId, link)
+    editExternalLink(roomId, newLink)
       .then((res) => {
         setExternalLinks(res);
 
@@ -245,7 +248,10 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
 
   const linkId = linkParams?.link?.sharedTo?.id;
   const link = externalLinks.find((l) => l?.sharedTo?.id === linkId);
-  const template = externalLinks.find((t) => t?.sharedTo?.isTemplate);
+  const template = externalLinks.find(
+    (t) =>
+      t?.sharedTo?.isTemplate && t?.sharedTo?.linkType === LinkType.External
+  );
   const shareLink = link?.sharedTo?.shareLink ?? template?.sharedTo?.shareLink;
 
   return {

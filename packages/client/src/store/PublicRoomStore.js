@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
-import { ValidationResult } from "../helpers/constants";
+import { LinkType, ValidationResult } from "../helpers/constants";
 
 class PublicRoomStore {
   externalLinks = [];
@@ -54,7 +54,7 @@ class PublicRoomStore {
   };
 
   editExternalLink = (roomId, link) => {
-    const linkType = 1;
+    const linkType = LinkType.External;
 
     const { id, title, expirationDate, password, disabled, denyDownload } =
       link.sharedTo;
@@ -92,12 +92,11 @@ class PublicRoomStore {
   }
 
   get roomLinks() {
-    const a = this.externalLinks.filter(
-      (l) => l.sharedTo.shareLink && !l.sharedTo.isTemplate
-    );
-
     return this.externalLinks.filter(
-      (l) => l.sharedTo.shareLink && !l.sharedTo.isTemplate
+      (l) =>
+        l.sharedTo.shareLink &&
+        !l.sharedTo.isTemplate &&
+        l.sharedTo.linkType === LinkType.External
     );
   }
 }

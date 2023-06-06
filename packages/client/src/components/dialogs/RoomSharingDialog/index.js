@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import InputBlock from "@docspace/components/input-block";
+import TextInput from "@docspace/components/text-input";
 import copy from "copy-to-clipboard";
 import toastr from "@docspace/components/toast/toastr";
 
@@ -38,7 +39,7 @@ const RoomSharingDialog = ({ t, tReady, visible, setIsVisible }) => {
       <ModalDialog.Header>{t("Files:ShareRoom")}</ModalDialog.Header>
       <ModalDialog.Body>
         <div className="modal-dialog-content-body">
-          <InputBlock value={roomHref} scale isReadOnly isDisabled />
+          <TextInput value={roomHref} scale isReadOnly isDisabled />
           <Button
             label={t("Translations:Copy")}
             size="small"
