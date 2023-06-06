@@ -179,7 +179,7 @@ const Items = ({
   deleteAction,
   startDrag,
 
-  activeItem,
+  activeItemId,
   emptyTrashInProgress,
 }) => {
   const getEndOfBlock = React.useCallback(
@@ -332,7 +332,7 @@ const Items = ({
             item={item}
             dragging={dragging}
             getFolderIcon={getFolderIcon}
-            isActive={item.id === activeItem}
+            isActive={item.id === activeItemId}
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
@@ -354,7 +354,7 @@ const Items = ({
           <SettingsItem
             key="settings-item"
             onClick={onClick}
-            isActive={activeItem === "settings"}
+            isActive={activeItemId === "settings"}
           />
         );
       if (!isVisitor && !isCollaborator)
@@ -364,7 +364,7 @@ const Items = ({
           <AccountsItem
             key="accounts-item"
             onClick={onClick}
-            isActive={activeItem === "accounts"}
+            isActive={activeItemId === "accounts"}
           />
         );
 
@@ -390,7 +390,7 @@ const Items = ({
       isAdmin,
       isVisitor,
       firstLoad,
-      activeItem,
+      activeItemId,
       emptyTrashInProgress,
     ]
   );

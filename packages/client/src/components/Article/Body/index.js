@@ -58,7 +58,7 @@ const ArticleBodyContent = (props) => {
   const location = useLocation();
 
   const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
-  const [activeItem, setActiveItem] = React.useState(null);
+  const [activeItemId, setActiveItemId] = React.useState(null);
 
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
@@ -89,7 +89,7 @@ const ArticleBodyContent = (props) => {
 
           path = getCategoryUrl(CategoryType.Personal);
 
-          if (activeItem === myFolderId && folderId === selectedFolderId)
+          if (activeItemId === myFolderId && folderId === selectedFolderId)
             return;
 
           break;
@@ -98,7 +98,7 @@ const ArticleBodyContent = (props) => {
           archiveFilter.searchArea = RoomSearchArea.Archive;
           params = archiveFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Archive);
-          if (activeItem === archiveFolderId && folderId === selectedFolderId)
+          if (activeItemId === archiveFolderId && folderId === selectedFolderId)
             return;
           break;
         case recycleBinFolderId:
@@ -107,7 +107,7 @@ const ArticleBodyContent = (props) => {
           params = recycleBinFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Trash);
           if (
-            activeItem === recycleBinFolderId &&
+            activeItemId === recycleBinFolderId &&
             folderId === selectedFolderId
           )
             return;
@@ -118,7 +118,7 @@ const ArticleBodyContent = (props) => {
           params = accountsFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Accounts);
 
-          if (activeItem === "accounts" && isAccounts) return;
+          if (activeItemId === "accounts" && isAccounts) return;
 
           break;
         case "settings":
@@ -137,7 +137,7 @@ const ArticleBodyContent = (props) => {
           roomsFilter.searchArea = RoomSearchArea.Active;
           params = roomsFilter.toUrlParams();
           path = getCategoryUrl(CategoryType.Shared);
-          if (activeItem === roomsFolderId && folderId === selectedFolderId)
+          if (activeItemId === roomsFolderId && folderId === selectedFolderId)
             return;
           break;
       }
@@ -156,7 +156,7 @@ const ArticleBodyContent = (props) => {
       archiveFolderId,
       myFolderId,
       recycleBinFolderId,
-      activeItem,
+      activeItemId,
       selectedFolderId,
       isAccounts,
     ]
@@ -178,52 +178,52 @@ const ArticleBodyContent = (props) => {
   React.useEffect(() => {
     if (
       location.pathname.includes("/rooms/shared") &&
-      activeItem !== roomsFolderId
+      activeItemId !== roomsFolderId
     )
-      return setActiveItem(roomsFolderId);
+      return setActiveItemId(roomsFolderId);
 
     if (
       location.pathname.includes("/rooms/archived") &&
-      activeItem !== archiveFolderId
+      activeItemId !== archiveFolderId
     )
-      return setActiveItem(archiveFolderId);
+      return setActiveItemId(archiveFolderId);
 
     if (
       location.pathname.includes("/rooms/personal") &&
-      activeItem !== myFolderId
+      activeItemId !== myFolderId
     )
-      return setActiveItem(myFolderId);
+      return setActiveItemId(myFolderId);
 
     if (
       location.pathname.includes("/files/trash") &&
-      activeItem !== recycleBinFolderId
+      activeItemId !== recycleBinFolderId
     )
-      return setActiveItem(recycleBinFolderId);
+      return setActiveItemId(recycleBinFolderId);
 
     if (
       location.pathname.includes("/accounts/filter") &&
-      activeItem !== "accounts"
+      activeItemId !== "accounts"
     )
-      return setActiveItem("accounts");
+      return setActiveItemId("accounts");
 
-    if (location.pathname.includes("/settings") && activeItem !== "settings")
-      return setActiveItem("settings");
+    if (location.pathname.includes("/settings") && activeItemId !== "settings")
+      return setActiveItemId("settings");
 
     if (location.pathname.includes("/accounts/view/@self")) {
       if (isVisitor) {
-        if (activeItem) return;
-        return setActiveItem(rootFolderId);
+        if (activeItemId) return;
+        return setActiveItemId(rootFolderId);
       }
 
-      if (activeItem !== "accounts") return setActiveItem("accounts");
+      if (activeItemId !== "accounts") return setActiveItemId("accounts");
     }
 
     if (location.pathname.includes("/products/files/#preview")) {
-      setActiveItem(rootFolderId);
+      setActiveItemId(rootFolderId);
     }
   }, [
     location.pathname,
-    activeItem,
+    activeItemId,
     roomsFolderId,
     archiveFolderId,
     myFolderId,
@@ -245,7 +245,7 @@ const ArticleBodyContent = (props) => {
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
         onHide={toggleArticleOpen}
-        activeItem={activeItem}
+        activeItemId={activeItemId}
       />
 
       {/* {!isDesktopClient && showText && (
