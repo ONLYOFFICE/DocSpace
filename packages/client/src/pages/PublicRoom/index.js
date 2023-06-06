@@ -34,7 +34,6 @@ const PublicRoom = (props) => {
     secondaryProgressBarIcon,
     showSecondaryButtonAlert,
 
-    logout,
     isEmptyPage,
   } = props;
 
@@ -44,10 +43,6 @@ const PublicRoom = (props) => {
   const lastIndex =
     lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
   const key = location.search.substring(5, lastIndex);
-
-  useEffect(() => {
-    logout(); //.then(() => window.location.replace(path));
-  }, [logout]);
 
   useEffect(() => {
     validatePublicRoomKey(key);
@@ -190,7 +185,6 @@ export default inject(
       showSecondaryButtonAlert,
 
       isAuthenticated: auth.isAuthenticated,
-      logout: auth.logout,
       isEmptyPage: isEmptyFilesList || isEmptyPage,
     };
   }
