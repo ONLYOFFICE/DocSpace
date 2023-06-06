@@ -193,6 +193,11 @@ const StyledContextMenu = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     margin-left: 4px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: -4px;
+      `}
     margin-top: -4px;
   }
 

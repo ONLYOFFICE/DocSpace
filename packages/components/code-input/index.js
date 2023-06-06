@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import InputWrapper from "./styled-code-input";
 
 const CodeInput = (props) => {
-  const { onSubmit, onChange, isDisabled } = props;
+  const { onSubmit, onChange, isDisabled, interfaceDirection } = props;
 
   const inputsRef = useRef([]);
   const characters = 6;
@@ -76,19 +76,32 @@ const CodeInput = (props) => {
   const elements = [];
   for (let i = 0; i < characters; i++) {
     if (i === 3) elements.push(<hr key="InputCode-line" />);
-
-    elements.push(
-      <input
-        key={`InputCode-${i}`}
-        onChange={handleOnChange}
-        onKeyDown={handleOnKeyDown}
-        onFocus={handleOnFocus}
-        onPaste={handleOnPaste}
-        ref={(el) => (inputsRef.current[i] = el)}
-        maxLength={1}
-        disabled={isDisabled}
-      />
-    );
+    if (interfaceDirection === "rtl")
+      elements.unshift(
+        <input
+          key={`InputCode-${i}`}
+          onChange={handleOnChange}
+          onKeyDown={handleOnKeyDown}
+          onFocus={handleOnFocus}
+          onPaste={handleOnPaste}
+          ref={(el) => (inputsRef.current[i] = el)}
+          maxLength={1}
+          disabled={isDisabled}
+        />
+      );
+    else
+      elements.push(
+        <input
+          key={`InputCode-${i}`}
+          onChange={handleOnChange}
+          onKeyDown={handleOnKeyDown}
+          onFocus={handleOnFocus}
+          onPaste={handleOnPaste}
+          ref={(el) => (inputsRef.current[i] = el)}
+          maxLength={1}
+          disabled={isDisabled}
+        />
+      );
   }
 
   return <InputWrapper {...props}>{elements}</InputWrapper>;
