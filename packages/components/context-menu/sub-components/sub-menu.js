@@ -6,6 +6,7 @@ import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
+import OutsdideIcon from "PUBLIC_DIR/images/arrow.outside.react.svg";
 import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
 import { SubMenuItem } from "../styled-context-menu";
@@ -161,6 +162,9 @@ const SubMenu = (props) => {
         {icon}
         {label}
         {subMenuIcon}
+        {item.isOutsideLink && (
+          <OutsdideIcon className={`${subMenuIconClassName}-outside`} />
+        )}
       </a>
     );
 

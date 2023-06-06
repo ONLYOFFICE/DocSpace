@@ -291,6 +291,13 @@ const StyledContextMenu = styled.div`
     }
   }
 
+  .p-submenu-icon-outside {
+    margin-left: auto;
+    padding-left: 8px;
+    min-width: 12px;
+    min-height: 12px;
+  }
+
   .p-contextmenu-enter {
     opacity: 0;
   }

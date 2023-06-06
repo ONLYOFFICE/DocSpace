@@ -920,6 +920,7 @@ class ContextOptionsStore {
         label: t("Common:SubmitToFormGallery"),
         icon: FormFileReactSvgUrl,
         onClick: () => this.onClickSubmitToFormGallery(item),
+        isOutsideLink: true,
         disabled: false,
       },
       separator1,
