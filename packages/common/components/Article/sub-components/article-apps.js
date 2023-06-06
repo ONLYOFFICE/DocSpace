@@ -16,14 +16,14 @@ const StyledArticleApps = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  position: fixed;
-  bottom: 89px;
+  position: relative;
+  margin-top: auto;
+  margin-bottom: 16px;
 
   @media ${tablet} {
     ${(props) =>
       props.showText &&
       css`
-        bottom: 158px;
         margin-left: 8px;
       `}
   }
