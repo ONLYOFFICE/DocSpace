@@ -56,18 +56,18 @@ const EmptyFilter = (props) => {
   return (
     <EmptyFilterWrapper>
       <EmptyFilterContent>
-        <img src={theme.isBased ? EmptyFilterImg : EmptyFilterDarkImg} alt="Empty filter" />
+        <img src={theme.isBase ? EmptyFilterImg : EmptyFilterDarkImg} alt="Empty filter" />
         <div className="emptyFilterText">
           <Text fontSize="16px" fontWeight={700} as="p" className="emptyFilterHeading">
             {t("Common:NotFoundTitle")}
           </Text>
-          <Text fontSize="12px" color={theme.isBased ? "#555F65" : "rgba(255, 255, 255, 0.6)"}>
+          <Text fontSize="12px" color={theme.isBase ? "#555F65" : "rgba(255, 255, 255, 0.6)"}>
             {t("NoResultsMatched")}
           </Text>
           <span className="clearFilter" onClick={clearFilters}>
             <img src={ClearEmptyFilterIcon} alt={t("ClearFilter")} className="clearFilterIcon" />
             <Link
-              color={theme.isBased ? "#657077" : "inherit"}
+              color={theme.isBase ? "#657077" : "inherit"}
               isHovered
               fontWeight={600}
               type="action">
@@ -82,8 +82,7 @@ const EmptyFilter = (props) => {
 
 export default inject(({ webhooksStore, auth }) => {
   const { formatFilters, clearHistoryFilters } = webhooksStore;
-  const { settingsStore } = auth;
-  const { theme } = settingsStore;
+  const { theme } = auth.settingsStore;
 
   return { formatFilters, clearHistoryFilters, theme };
 })(observer(EmptyFilter));
