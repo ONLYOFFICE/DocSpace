@@ -5,11 +5,13 @@ import Submenu from "@docspace/components/submenu";
 import { RequestDetails } from "./RequestDetails";
 import { ResponseDetails } from "./ResponseDetails";
 import { useTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
 
 const SubmenuWrapper = styled.div`
   .sticky {
     z-index: 3;
-    top: 68px;
+
+    top: ${() => (isMobileOnly ? "68px" : "0px")};
   }
 `;
 
