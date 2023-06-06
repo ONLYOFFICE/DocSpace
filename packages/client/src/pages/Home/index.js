@@ -321,7 +321,7 @@ export default inject(
 
     const {
       firstLoad,
-
+      setIsSectionBodyLoading,
       setIsSectionFilterLoading,
       isLoading,
 
@@ -330,6 +330,7 @@ export default inject(
 
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);
+      setIsSectionBodyLoading(param);
     };
 
     const {

@@ -29,7 +29,7 @@ import {
 } from "@docspace/common/constants";
 
 import { getDefaultRoomName } from "SRC_DIR/helpers/filesUtils";
-import withLoader from "SRC_DIR/HOCs/withLoader";
+
 import {
   TableVersions,
   SortByFieldName,
@@ -372,8 +372,6 @@ const SectionFilterContent = ({
         if (isTrash) {
           newFilter.roomId = roomId;
         }
-
-        setIsLoading(true);
 
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       }
@@ -1868,7 +1866,6 @@ const SectionFilterContent = ({
           newFilter.accountLoginType = null;
         }
 
-        setIsLoading(true);
         navigate(`accounts/filter?${newFilter.toUrlParams()}`);
       } else if (isRooms) {
         const newFilter = roomsFilter.clone();
