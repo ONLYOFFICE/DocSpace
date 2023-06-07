@@ -17,7 +17,6 @@ export const WebhookRow = (props) => {
     webhook,
     sectionWidth,
     toggleEnabled,
-    setTitleHistory,
     openSettingsModal,
     openDeleteModal,
     setCurrentWebhook,
@@ -33,7 +32,6 @@ export const WebhookRow = (props) => {
   };
 
   const redirectToHistory = () => {
-    setTitleHistory();
     navigate(window.location.pathname + `/${webhook.id}`);
   };
   const handleRowClick = (e) => {
@@ -103,8 +101,8 @@ export const WebhookRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { toggleEnabled, deleteWebhook, editWebhook, setTitleHistory, setCurrentWebhook } =
+  const { toggleEnabled, deleteWebhook, editWebhook, setCurrentWebhook } =
     webhooksStore;
 
-  return { toggleEnabled, deleteWebhook, editWebhook, setTitleHistory, setCurrentWebhook };
+  return { toggleEnabled, deleteWebhook, editWebhook, setCurrentWebhook };
 })(observer(WebhookRow));

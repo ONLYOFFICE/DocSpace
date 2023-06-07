@@ -17,8 +17,6 @@ const WebhookHistory = (props) => {
   const {
     historyItems,
     fetchHistoryItems,
-    setTitleHistory,
-    setTitleDefault,
     emptyCheckedIds,
     clearHistoryFilters,
   } = props;
@@ -36,16 +34,10 @@ const WebhookHistory = (props) => {
     setIsFetchFinished(true);
   };
 
-  const cleanUpOnLeave = () => {
-    setTitleDefault();
-    clearHistoryFilters();
-  };
-
   useEffect(() => {
-    setTitleHistory();
     startTransition(fetchItems);
 
-    return cleanUpOnLeave;
+    return clearHistoryFilters;
   }, []);
 
   const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
@@ -75,8 +67,6 @@ export default inject(({ webhooksStore }) => {
   const {
     historyItems,
     fetchHistoryItems,
-    setTitleHistory,
-    setTitleDefault,
     emptyCheckedIds,
     clearHistoryFilters,
   } = webhooksStore;
@@ -84,8 +74,6 @@ export default inject(({ webhooksStore }) => {
   return {
     historyItems,
     fetchHistoryItems,
-    setTitleHistory,
-    setTitleDefault,
     emptyCheckedIds,
     clearHistoryFilters,
   };
