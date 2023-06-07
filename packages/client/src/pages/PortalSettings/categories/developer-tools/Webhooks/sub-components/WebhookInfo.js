@@ -42,7 +42,7 @@ const WebhookInfo = (props) => {
   return (
     <InfoWrapper>
       <InfoText as="p">{t("WebhooksInfo")}</InfoText>
-      <StyledGuideLink fontWeight={600} isHovered type="page" href={webhooksGuideUrl}>
+      <StyledGuideLink fontWeight={600} isHovered type="page" href={webhooksGuideUrl} target="_blank">
         {t("WebhooksGuide")}
       </StyledGuideLink>
     </InfoWrapper>
