@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
+import { inject, observer } from "mobx-react";
 
 import json_beautifier from "csvjson-json_beautifier";
 import { isMobileOnly } from "react-device-detect";
@@ -61,8 +62,8 @@ function isJSON(jsonString) {
   return false;
 }
 
-export const ResponseDetails = ({ webhookDetails }) => {
-  const responsePayload = webhookDetails.responsePayload?.trim();
+const ResponseDetails = ({ eventDetails }) => {
+  const responsePayload = eventDetails.responsePayload?.trim();
   const { t } = useTranslation(["Webhooks"]);
 
   const beautifiedJSON = isJSON(responsePayload)
@@ -89,7 +90,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
         {t("ResponsePostHeader")}
       </Text>
       <Textarea
-        value={webhookDetails.responseHeaders}
+        value={eventDetails.responseHeaders}
         enableCopy
         hasNumeration
         isFullHeight
@@ -134,3 +135,9 @@ export const ResponseDetails = ({ webhookDetails }) => {
     </DetailsWrapper>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { eventDetails } = webhooksStore;
+
+  return { eventDetails };
+})(observer(ResponseDetails));

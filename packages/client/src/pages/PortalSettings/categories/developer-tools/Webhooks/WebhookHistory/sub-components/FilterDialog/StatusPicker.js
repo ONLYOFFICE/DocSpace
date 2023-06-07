@@ -18,16 +18,17 @@ const RoundedButton = styled(Button)`
   line-height: 20px;
 `;
 
+const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick }) => {
+  const handleOnClick = () => handleStatusClick(statusCode);
+  return (
+    <RoundedButton label={label} onClick={handleOnClick} primary={isStatusSelected(statusCode)} />
+  );
+};
+
 const StatusPicker = ({ Selectors, filters, setFilters }) => {
   const { t } = useTranslation(["Webhooks", "People"]);
 
-  const StatusCodes = {
-    0: "Not sent",
-    200: "2XX",
-    300: "3XX",
-    400: "4XX",
-    500: "5XX",
-  };
+  const StatusCodes = ["Not sent", "2XX", "3XX", "4XX", "5XX"];
 
   const isStatusSelected = (statusCode) => {
     return filters.status.includes(statusCode);
@@ -40,38 +41,33 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
         : [...prevFilters.status, statusCode],
     }));
   };
+
+  const StatusBadgeElements = StatusCodes.map((code) =>
+    code === "Not sent" ? (
+      <StatusBadgeSelector
+        label={t("NotSent")}
+        statusCode={code}
+        isStatusSelected={isStatusSelected}
+        handleStatusClick={handleStatusClick}
+        key={code}
+      />
+    ) : (
+      <StatusBadgeSelector
+        label={code}
+        statusCode={code}
+        isStatusSelected={isStatusSelected}
+        handleStatusClick={handleStatusClick}
+        key={code}
+      />
+    ),
+  );
+
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
         {t("People:UserStatus")}
       </Text>
-      <Selectors>
-        <RoundedButton
-          label={t("NotSent")}
-          onClick={() => handleStatusClick(StatusCodes[0])}
-          primary={isStatusSelected(StatusCodes[0])}
-        />
-        <RoundedButton
-          label={StatusCodes[200]}
-          onClick={() => handleStatusClick(StatusCodes[200])}
-          primary={isStatusSelected(StatusCodes[200])}
-        />
-        <RoundedButton
-          label={StatusCodes[300]}
-          onClick={() => handleStatusClick(StatusCodes[300])}
-          primary={isStatusSelected(StatusCodes[300])}
-        />
-        <RoundedButton
-          label={StatusCodes[400]}
-          onClick={() => handleStatusClick(StatusCodes[400])}
-          primary={isStatusSelected(StatusCodes[400])}
-        />
-        <RoundedButton
-          label={StatusCodes[500]}
-          onClick={() => handleStatusClick(StatusCodes[500])}
-          primary={isStatusSelected(StatusCodes[500])}
-        />
-      </Selectors>
+      <Selectors>{StatusBadgeElements}</Selectors>
     </>
   );
 };

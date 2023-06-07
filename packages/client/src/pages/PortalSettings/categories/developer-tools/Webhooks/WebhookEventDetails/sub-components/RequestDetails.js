@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
 import Textarea from "@docspace/components/textarea";
+import { inject, observer } from "mobx-react";
 
 import DangerIcon from "PUBLIC_DIR/images/danger.toast.react.svg?url";
 import { useTranslation } from "react-i18next";
@@ -43,11 +44,12 @@ const ErrorMessageTooltip = styled.div`
   }
 `;
 
-export const RequestDetails = ({ webhookDetails }) => {
+const RequestDetails = ({ eventDetails }) => {
   const { t } = useTranslation(["Webhooks"]);
+
   return (
     <DetailsWrapper>
-      {webhookDetails.status === 0 && (
+      {eventDetails.status === 0 && (
         <ErrorMessageTooltip>
           <img src={DangerIcon} alt="danger icon" />
           {t("FailedToConnect")}
@@ -56,11 +58,11 @@ export const RequestDetails = ({ webhookDetails }) => {
       <Text as="h3" fontWeight={600} className="mb-4 mt-7">
         {t("RequestPostHeader")}
       </Text>
-      {!webhookDetails.requestHeaders ? (
+      {!eventDetails.requestHeaders ? (
         <Textarea isDisabled />
       ) : (
         <Textarea
-          value={webhookDetails.requestHeaders}
+          value={eventDetails.requestHeaders}
           enableCopy
           hasNumeration
           isFullHeight
@@ -73,7 +75,7 @@ export const RequestDetails = ({ webhookDetails }) => {
         {t("RequestPostBody")}
       </Text>
       <Textarea
-        value={webhookDetails.requestPayload}
+        value={eventDetails.requestPayload}
         isJSONField
         enableCopy
         hasNumeration
@@ -83,3 +85,9 @@ export const RequestDetails = ({ webhookDetails }) => {
     </DetailsWrapper>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { eventDetails } = webhooksStore;
+
+  return { eventDetails };
+})(observer(RequestDetails));
