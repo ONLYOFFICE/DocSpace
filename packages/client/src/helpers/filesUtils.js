@@ -95,6 +95,10 @@ export const getDefaultFileName = (format) => {
   }
 };
 
+export const getUnexpectedErrorText = () => {
+  return i18n.t("Common:UnexpectedError");
+};
+
 export const addFileToRecent = async (fileId) => {
   try {
     await addFileToRecentlyViewed(fileId);
