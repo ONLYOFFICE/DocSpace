@@ -136,31 +136,33 @@ public class SearchSettingsHelper
         _cacheNotify.Publish(action, CacheNotifyAction.Any);
     }
 
-    public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
+    public bool CanIndexByContent<T>() where T : class, ISearchItem
     {
-        return CanIndexByContent(typeof(T), tenantId);
+        return CanIndexByContent(typeof(T));
     }
 
-    public bool CanIndexByContent(Type t, int tenantId)
+    public bool CanIndexByContent(Type t)
     {
         if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
         {
             return false;
         }
 
-        if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
-        {
-            return true;
-        }
+        return true;
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            return true;
-        }
+        //if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
+        //{
+        //    return true;
+        //}
 
-        var settings = _settingsManager.Load<SearchSettings>(tenantId);
+        //if (!_coreBaseSettings.Standalone)
+        //{
+        //    return true;
+        //}
 
-        return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
+        //var settings = _settingsManager.Load<SearchSettings>(tenantId);
+
+        //return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }
 
     public bool CanSearchByContent<T>() where T : class, ISearchItem
@@ -171,7 +173,7 @@ public class SearchSettingsHelper
     public bool CanSearchByContent(Type t)
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
-        if (!CanIndexByContent(t, tenantId))
+        if (!CanIndexByContent(t))
         {
             return false;
         }

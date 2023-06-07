@@ -1996,7 +1996,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights was unaffected..
+        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights were unaffected..
         /// </summary>
         public static string LdapSettingsErrorLostRights {
             get {
