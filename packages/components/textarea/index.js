@@ -80,10 +80,10 @@ const Textarea = ({
   }
 
   useEffect(() => {
-    if (!isJSONField || !modifiedValue || !isJSON(modifiedValue)) {
+    if (isJSONField && (!modifiedValue || !isJSON(modifiedValue))) {
       setIsError(true);
     }
-  }, [isJSONField]);
+  }, [isJSONField, value]);
 
   useEffect(() => {
     if (areaSelect && areaRef.current) {
