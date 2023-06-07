@@ -50,6 +50,30 @@ const commonInputStyle = css`
 
   cursor: ${(props) =>
     props.isReadOnly || props.isDisabled ? "default" : "text"};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      // If current interface direction is rtl, set cursor in the right side of the input
+      :placeholder-shown {
+        direction: rtl;
+      }
+
+      ::placeholder {
+        text-align: right;
+      }
+
+      &[type="email"]:placeholder-shown,
+      &[type="tel"]:placeholder-shown,
+      &[type="number"]:placeholder-shown,
+      &[type="url"]:placeholder-shown {
+        direction: ltr;
+      }
+
+      &[type="password"] {
+        direction: rtl;
+      }
+    `}
 `;
 
 export default commonInputStyle;
