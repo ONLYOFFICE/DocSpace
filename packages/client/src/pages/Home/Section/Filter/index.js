@@ -1,6 +1,6 @@
 ﻿import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import find from "lodash/find";
@@ -11,6 +11,8 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 import { getUser } from "@docspace/common/api/people";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import AccountsFilter from "@docspace/common/api/people/filter";
+import FilesFilter from "@docspace/common/api/files/filter";
 import {
   FilterGroups,
   FilterKeys,
@@ -27,7 +29,7 @@ import {
 } from "@docspace/common/constants";
 
 import { getDefaultRoomName } from "SRC_DIR/helpers/filesUtils";
-import withLoader from "SRC_DIR/HOCs/withLoader";
+
 import {
   TableVersions,
   SortByFieldName,
@@ -37,7 +39,6 @@ import {
 import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 
-import { showLoader, hideLoader } from "./FilterUtils";
 import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const getAccountLoginType = (filterValues) => {
@@ -226,30 +227,29 @@ const SectionFilterContent = ({
   createThumbnails,
   setViewAs,
   setIsLoading,
-  selectedFolderId,
-  fetchFiles,
-  fetchRooms,
+
   fetchTags,
   infoPanelVisible,
   isRooms,
   isTrash,
   userId,
   isPersonalRoom,
-  setCurrentRoomsFilter,
+
   providers,
-  isLoadedEmptyPage,
-  isEmptyPage,
+
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
   isArchiveFolder,
   accountsViewAs,
   groups,
-  fetchPeople,
+
   accountsFilter,
+  showFilterLoader,
   isPublicRoom,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isAccountsPage = location.pathname.includes("accounts");
 
@@ -257,8 +257,8 @@ const SectionFilterContent = ({
 
   const onFilter = React.useCallback(
     (data) => {
+      setIsLoading(true);
       if (isAccountsPage) {
-        setIsLoading(true);
         const status = getStatus(data);
 
         const role = getRole(data);
@@ -291,7 +291,7 @@ const SectionFilterContent = ({
 
         //console.log(newFilter);
 
-        fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+        navigate(`accounts/filter?${newFilter.toUrlParams()}`);
       } else if (isRooms) {
         const type = getType(data) || null;
 
@@ -301,13 +301,6 @@ const SectionFilterContent = ({
 
         const providerType = getProviderType(data) || null;
         const tags = getTags(data) || null;
-
-        // const withSubfolders =
-        //   getFilterFolders(data) === FilterKeys.withSubfolders;
-
-        // const withContent = getFilterContent(data) === FilterKeys.withContent;
-
-        setIsLoading(true);
 
         const newFilter = roomsFilter.clone();
 
@@ -343,12 +336,12 @@ const SectionFilterContent = ({
           newFilter.withoutTags = false;
         }
 
-        // newFilter.withSubfolders = withSubfolders;
-        // newFilter.searchInContent = withContent;
+        const path =
+          newFilter.searchArea === RoomSearchArea.Active
+            ? "rooms/shared"
+            : "rooms/archived";
 
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const filterType = getFilterType(data) || null;
 
@@ -376,29 +369,25 @@ const SectionFilterContent = ({
           withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
         newFilter.searchInContent = withContent === "true" ? "true" : null;
 
+        const path = location.pathname.split("/filter")[0];
         if (isTrash) {
           newFilter.roomId = roomId;
         }
 
-        setIsLoading(true);
-
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       }
     },
     [
       isRooms,
       isAccountsPage,
       isTrash,
-      fetchFiles,
-      fetchRooms,
-      fetchPeople,
       setIsLoading,
       roomsFilter,
       accountsFilter,
       filter,
-      selectedFolderId,
+
+      isAccountsPage,
+      location.pathname,
     ]
   );
 
@@ -406,82 +395,78 @@ const SectionFilterContent = ({
     if (isAccountsPage) {
       return;
     }
-
+    setIsLoading(true);
     if (isRooms) {
       const newFilter = RoomsFilter.getDefault();
       newFilter.searchArea = roomsFilter.searchArea;
 
-      fetchRooms(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
+      const path =
+        roomsFilter.searchArea === RoomSearchArea.Active
+          ? "rooms/shared"
+          : "rooms/archived";
+
+      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
     } else {
       const newFilter = filter.clone();
       newFilter.page = 0;
       newFilter.filterValue = "";
 
-      setIsLoading(true);
+      const path = location.pathname.split("/filter")[0];
 
-      fetchFiles(selectedFolderId, newFilter).finally(() => {
-        setIsLoading(false);
-      });
+      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
     }
   }, [
     isRooms,
     setIsLoading,
-    fetchFiles,
-    fetchRooms,
 
-    selectedFolderId,
     filter,
 
     roomsFilter,
     isAccountsPage,
+
+    location.pathname,
   ]);
 
   const onSearch = React.useCallback(
     (data = "") => {
+      setIsLoading(true);
       if (isAccountsPage) {
         const newFilter = accountsFilter.clone();
         newFilter.page = 0;
         newFilter.search = data;
 
-        setIsLoading(true);
-
-        fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+        navigate(`accounts/filter?${newFilter.toUrlParams()}`);
       } else if (isRooms) {
         const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
         newFilter.filterValue = data;
 
-        setIsLoading(true);
+        const path =
+          newFilter.searchArea === RoomSearchArea.Active
+            ? "rooms/shared"
+            : "rooms/archived";
 
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const newFilter = filter.clone();
         newFilter.page = 0;
         newFilter.search = data;
 
-        setIsLoading(true);
+        const path = location.pathname.split("/filter")[0];
 
-        fetchFiles(selectedFolderId, newFilter).finally(() => {
-          setIsLoading(false);
-        });
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       }
     },
     [
       isRooms,
       isAccountsPage,
       setIsLoading,
-      fetchFiles,
-      fetchRooms,
-      fetchPeople,
-      selectedFolderId,
+
       filter,
       roomsFilter,
       accountsFilter,
+      location.pathname,
     ]
   );
 
@@ -502,29 +487,21 @@ const SectionFilterContent = ({
       setIsLoading(true);
 
       if (isAccountsPage) {
-        fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+        navigate(`accounts/filter?${newFilter.toUrlParams()}`);
       } else if (isRooms) {
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        const path =
+          newFilter.searchArea === RoomSearchArea.Active
+            ? "rooms/shared"
+            : "rooms/archived";
+
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        const path = location.pathname.split("/filter")[0];
+
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       }
     },
-    [
-      isRooms,
-      isAccountsPage,
-      setIsLoading,
-      fetchFiles,
-      fetchRooms,
-      fetchPeople,
-      selectedFolderId,
-      filter,
-      roomsFilter,
-      accountsFilter,
-    ]
+    [isRooms, isAccountsPage, setIsLoading, filter, roomsFilter, accountsFilter]
   );
 
   const onChangeViewAs = React.useCallback(
@@ -1866,6 +1843,7 @@ const SectionFilterContent = ({
 
   const removeSelectedItem = React.useCallback(
     ({ key, group }) => {
+      setIsLoading(true);
       if (isAccountsPage) {
         const newFilter = accountsFilter.clone();
         newFilter.page = 0;
@@ -1891,11 +1869,8 @@ const SectionFilterContent = ({
           newFilter.accountLoginType = null;
         }
 
-        setIsLoading(true);
-        fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+        navigate(`accounts/filter?${newFilter.toUrlParams()}`);
       } else if (isRooms) {
-        setIsLoading(true);
-
         const newFilter = roomsFilter.clone();
 
         if (group === FilterGroups.roomFilterProviderType) {
@@ -1941,9 +1916,12 @@ const SectionFilterContent = ({
 
         newFilter.page = 0;
 
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        const path =
+          newFilter.searchArea === RoomSearchArea.Active
+            ? "rooms/shared"
+            : "rooms/archived";
+
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const newFilter = filter.clone();
 
@@ -1966,25 +1944,12 @@ const SectionFilterContent = ({
 
         newFilter.page = 0;
 
-        setIsLoading(true);
+        const path = location.pathname.split("/filter")[0];
 
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       }
     },
-    [
-      isRooms,
-      isAccountsPage,
-      fetchFiles,
-      fetchRooms,
-      fetchPeople,
-      setIsLoading,
-      roomsFilter,
-      filter,
-      accountsFilter,
-      selectedFolderId,
-    ]
+    [isRooms, isAccountsPage, setIsLoading, roomsFilter, filter, accountsFilter]
   );
 
   const onSortButtonClick = (isOpen) => {
@@ -1994,27 +1959,34 @@ const SectionFilterContent = ({
   };
 
   const clearAll = () => {
+    setIsLoading(true);
     if (isAccountsPage) {
-      setIsLoading(true);
-      fetchPeople(null, true).finally(() => setIsLoading(false));
-    } else if (isRooms) {
-      setIsLoading(true);
+      const newFilter = AccountsFilter.getDefault();
 
+      navigate(`accounts/filter?${newFilter.toUrlParams()}`);
+    } else if (isRooms) {
       const newFilter = RoomsFilter.getDefault();
 
       if (isArchiveFolder) {
         newFilter.searchArea = RoomSearchArea.Archive;
       }
 
-      fetchRooms(selectedFolderId, newFilter).finally(() =>
-        setIsLoading(false)
-      );
-    } else {
-      setIsLoading(true);
+      const path =
+        newFilter.searchArea === RoomSearchArea.Active
+          ? "rooms/shared"
+          : "rooms/archived";
 
-      fetchFiles(selectedFolderId).finally(() => setIsLoading(false));
+      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+    } else {
+      const newFilter = FilesFilter.getDefault();
+
+      const path = location.pathname.split("/filter")[0];
+
+      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
     }
   };
+
+  if (showFilterLoader) return <Loaders.Filter />;
 
   return (
     <FilterInput
@@ -2055,17 +2027,16 @@ export default inject(
     auth,
     filesStore,
     treeFoldersStore,
-    selectedFolderStore,
+    clientLoadingStore,
     tagsStore,
     peopleStore,
     publicRoomStore,
   }) => {
     const {
-      fetchFiles,
       filter,
-      fetchRooms,
+
       roomsFilter,
-      setIsLoading,
+
       setViewAs,
       viewAs,
       createThumbnails,
@@ -2075,7 +2046,6 @@ export default inject(
       clearSearch,
       setClearSearch,
       isLoadedEmptyPage,
-      isEmptyPage,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2099,20 +2069,19 @@ export default inject(
 
     const {
       filterStore,
-      usersStore,
+
       groupsStore,
       viewAs: accountsViewAs,
     } = peopleStore;
 
     const { groups } = groupsStore;
 
-    const { getUsersList: fetchPeople } = usersStore;
     const { filter: accountsFilter } = filterStore;
 
     return {
       user,
       userId: user?.id,
-      selectedFolderId: selectedFolderStore.id,
+
       selectedItem: filter.selectedItem,
       filter,
       roomsFilter,
@@ -2124,9 +2093,9 @@ export default inject(
       isTrash,
       isArchiveFolder,
 
-      setIsLoading,
-      fetchFiles,
-      fetchRooms,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
+      showFilterLoader: clientLoadingStore.showFilterLoader,
+
       fetchTags,
       setViewAs,
       createThumbnails,
@@ -2138,7 +2107,6 @@ export default inject(
       providers,
 
       isLoadedEmptyPage,
-      isEmptyPage,
 
       clearSearch,
       setClearSearch,
@@ -2149,7 +2117,7 @@ export default inject(
 
       accountsViewAs,
       groups,
-      fetchPeople,
+
       accountsFilter,
       isPublicRoom: publicRoomStore.isPublicRoom,
     };
@@ -2166,6 +2134,6 @@ export default inject(
       "PeopleTranslations",
       "ConnectDialog",
       "SmartBanner",
-    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
+    ])(observer(SectionFilterContent))
   )
 );

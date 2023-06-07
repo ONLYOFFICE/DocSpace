@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { useLocation, Navigate, Route, Outlet } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 
 import Article from "@docspace/common/components/Article";
@@ -22,23 +22,31 @@ import {
   ArticleMainButtonContent,
 } from "./components/Article";
 
-const ClientArticle = React.memo(({ withMainButton }) => {
-  return (
-    <Article withMainButton={withMainButton}>
-      <Article.Header>
-        <ArticleHeaderContent />
-      </Article.Header>
+const ClientArticle = React.memo(
+  ({ withMainButton, setIsHeaderLoading, setIsFilterLoading }) => {
+    return (
+      <Article
+        withMainButton={withMainButton}
+        onLogoClickAction={() => {
+          setIsFilterLoading(true, false);
+          setIsHeaderLoading(true, false);
+        }}
+      >
+        <Article.Header>
+          <ArticleHeaderContent />
+        </Article.Header>
 
-      <Article.MainButton>
-        <ArticleMainButtonContent />
-      </Article.MainButton>
+        <Article.MainButton>
+          <ArticleMainButtonContent />
+        </Article.MainButton>
 
-      <Article.Body>
-        <ArticleBodyContent />
-      </Article.Body>
-    </Article>
-  );
-});
+        <Article.Body>
+          <ArticleBodyContent />
+        </Article.Body>
+      </Article>
+    );
+  }
+);
 
 const ClientContent = (props) => {
   const {
@@ -55,8 +63,10 @@ const ClientContent = (props) => {
     isFrame,
     withMainButton,
     t,
-    setFirstLoad,
+
     isLoading,
+    setIsFilterLoading,
+    setIsHeaderLoading,
   } = props;
 
   const location = useLocation();
@@ -115,10 +125,6 @@ const ClientContent = (props) => {
   ]);
 
   React.useEffect(() => {
-    setFirstLoad(false);
-  }, [setFirstLoad]);
-
-  React.useEffect(() => {
     if (isLoading) {
       showLoader();
     } else {
@@ -134,7 +140,11 @@ const ClientContent = (props) => {
         isFrame ? (
           showMenu && <ClientArticle />
         ) : (
-          <ClientArticle withMainButton={withMainButton} />
+          <ClientArticle
+            withMainButton={withMainButton}
+            setIsHeaderLoading={setIsHeaderLoading}
+            setIsFilterLoading={setIsFilterLoading}
+          />
         )
       ) : (
         <></>
@@ -144,45 +154,49 @@ const ClientContent = (props) => {
   );
 };
 
-const Client = inject(({ auth, filesStore, peopleStore }) => {
-  const {
-    frameConfig,
-    isFrame,
-    isDesktopClient,
-    encryptionKeys,
-    setEncryptionKeys,
-    isEncryptionSupport,
-  } = auth.settingsStore;
+const Client = inject(
+  ({ auth, clientLoadingStore, filesStore, peopleStore }) => {
+    const {
+      frameConfig,
+      isFrame,
+      isDesktopClient,
+      encryptionKeys,
+      setEncryptionKeys,
+      isEncryptionSupport,
+    } = auth.settingsStore;
 
-  if (!auth.userStore.user) return;
+    if (!auth.userStore.user) return;
 
-  const { isVisitor } = auth.userStore.user;
+    const { isVisitor } = auth.userStore.user;
 
-  const { setFirstLoad, isLoading } = filesStore;
+    const { isLoading, setIsSectionFilterLoading, setIsSectionHeaderLoading } =
+      clientLoadingStore;
 
-  const withMainButton = !isVisitor;
+    const withMainButton = !isVisitor;
 
-  return {
-    isDesktop: isDesktopClient,
-    isFrame,
-    showMenu: frameConfig?.showMenu,
-    user: auth.userStore.user,
-    isAuthenticated: auth.isAuthenticated,
-    encryptionKeys: encryptionKeys,
-    isEncryption: isEncryptionSupport,
-    isLoaded: auth.isLoaded && filesStore.isLoaded,
-    setIsLoaded: filesStore.setIsLoaded,
-    withMainButton,
-    setFirstLoad,
-    isLoading,
-    setEncryptionKeys: setEncryptionKeys,
-    loadClientInfo: async () => {
-      const actions = [];
-      actions.push(filesStore.initFiles());
-      actions.push(peopleStore.init());
-      await Promise.all(actions);
-    },
-  };
-})(withTranslation("Common")(observer(ClientContent)));
+    return {
+      isDesktop: isDesktopClient,
+      isFrame,
+      showMenu: frameConfig?.showMenu,
+      user: auth.userStore.user,
+      isAuthenticated: auth.isAuthenticated,
+      encryptionKeys: encryptionKeys,
+      isEncryption: isEncryptionSupport,
+      isLoaded: auth.isLoaded && clientLoadingStore.isLoaded,
+      setIsLoaded: clientLoadingStore.setIsLoaded,
+      withMainButton,
+      setIsFilterLoading: setIsSectionFilterLoading,
+      setIsHeaderLoading: setIsSectionHeaderLoading,
+      isLoading,
+      setEncryptionKeys: setEncryptionKeys,
+      loadClientInfo: async () => {
+        const actions = [];
+        actions.push(filesStore.initFiles());
+        actions.push(peopleStore.init());
+        await Promise.all(actions);
+      },
+    };
+  }
+)(withTranslation("Common")(observer(ClientContent)));
 
 export default () => <Client />;

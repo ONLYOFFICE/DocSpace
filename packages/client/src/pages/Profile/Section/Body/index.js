@@ -5,7 +5,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
@@ -32,7 +31,14 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const { setBackupCodes, getTfaType, getBackupCodes, t } = props;
+  const {
+    setBackupCodes,
+    getTfaType,
+    getBackupCodes,
+    isProfileLoaded,
+
+    t,
+  } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
 
@@ -59,6 +65,8 @@ const SectionBodyContent = (props) => {
     fetchData();
   }, []);
 
+  if (!isProfileLoaded) return <Loaders.ProfileView />;
+
   return (
     <Wrapper>
       <MainProfile />
@@ -72,14 +80,15 @@ const SectionBodyContent = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, clientLoadingStore }) => {
   const { tfaStore } = auth;
   const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
-
+  const { isProfileLoaded } = clientLoadingStore;
   return {
     getBackupCodes,
     getTfaType,
     setBackupCodes,
+    isProfileLoaded,
   };
 })(
   observer(
@@ -92,10 +101,6 @@ export default inject(({ auth }) => {
       "BackupCodesDialog",
       "DeleteSelfProfileDialog",
       "Notifications",
-    ])(
-      withPeopleLoader(SectionBodyContent)(
-        <Loaders.ProfileView isProfileView />
-      )
-    )
+    ])(SectionBodyContent)
   )
 );

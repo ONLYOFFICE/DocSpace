@@ -342,7 +342,7 @@ class FilesTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, selectedFolderId, setIsLoading, fetchFiles } = this.props;
+    const { filter, setIsLoading } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -353,16 +353,14 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams}`
+    );
   };
 
   onRoomsFilter = (sortBy) => {
-    const {
-      roomsFilter,
-      selectedFolderId,
-      setIsLoading,
-      fetchRooms,
-    } = this.props;
+    const { roomsFilter, setIsLoading, navigate, location } = this.props;
 
     const newFilter = roomsFilter.clone();
     if (newFilter.sortBy !== sortBy) {
@@ -373,7 +371,8 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchRooms(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   render() {
@@ -435,26 +434,22 @@ export default inject(
     treeFoldersStore,
     tableStore,
     publicRoomStore,
+    clientLoadingStore,
   }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
       isHeaderChecked,
-      setIsLoading,
+
       filter,
-      fetchFiles,
+
       canShare,
       firstElemChecked,
       headerBorder,
       roomsFilter,
-      fetchRooms,
     } = filesStore;
-    const {
-      isRecentFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-      isTrashFolder,
-    } = treeFoldersStore;
+    const { isRecentFolder, isRoomsFolder, isArchiveFolder, isTrashFolder } =
+      treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
@@ -496,11 +491,9 @@ export default inject(
       withContent,
       sortingVisible,
 
-      setIsLoading,
-      fetchFiles,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
 
       roomsFilter,
-      fetchRooms,
 
       firstElemChecked,
       headerBorder,

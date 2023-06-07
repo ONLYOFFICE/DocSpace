@@ -2,6 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { PaymentsType, AccountLoginType } from "@docspace/common/constants";
 
@@ -44,21 +45,25 @@ const Badges = ({
   withoutPaid,
   isPaid = false,
   filter,
-  getUsersList,
+
   isSSO = false,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const onClickPaid = () => {
     if (filter.payments === PaymentsType.Paid) return;
     const newFilter = filter.clone();
     newFilter.payments = PaymentsType.Paid;
-    getUsersList(newFilter, true);
+
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   const onClickSSO = () => {
     if (filter.accountLoginType === AccountLoginType.SSO) return;
     const newFilter = filter.clone();
     newFilter.accountLoginType = AccountLoginType.SSO;
-    getUsersList(newFilter, true);
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   return (
@@ -99,10 +104,9 @@ const Badges = ({
 };
 
 export default inject(({ peopleStore }) => {
-  const { filterStore, usersStore } = peopleStore;
+  const { filterStore } = peopleStore;
 
   const { filter } = filterStore;
 
-  const { getUsersList } = usersStore;
-  return { filter, getUsersList };
+  return { filter };
 })(withTranslation(["Common"])(observer(Badges)));

@@ -34,8 +34,8 @@ const SettingsView = ({
   );
 };
 
-export default inject(({ auth, filesStore, settingsStore }) => {
-  const { isLoading } = filesStore;
+export default inject(({ auth, clientLoadingStore, settingsStore }) => {
+  const { isLoading } = clientLoadingStore;
 
   const { isLoadedSettingsTree } = settingsStore;
 

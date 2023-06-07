@@ -51,6 +51,7 @@ const Navigation = ({
   isDesktop: isDesktopClient,
   isRoom,
   hideInfoPanel,
+  showRootFolderTitle,
   withLogo,
   burgerLogo,
   isPublicRoom,
@@ -133,6 +134,36 @@ const Navigation = ({
     onBackToParentFolder && onBackToParentFolder();
   }, [onBackToParentFolder]);
 
+  const showRootFolderNavigation =
+    showRootFolderTitle &&
+    navigationItems &&
+    navigationItems.length > 1 &&
+    !isSmallTabletUtils() &&
+    !isMobileOnly;
+
+  const navigationTitleNode = (
+    <Text
+      title={title}
+      isOpen={false}
+      isRootFolder={isRootFolder}
+      onClick={toggleDropBox}
+    />
+  );
+
+  const navigationTitleContainerNode = showRootFolderNavigation ? (
+    <div className="title-container">
+      <Text
+        title={navigationItems[navigationItems.length - 2].title}
+        isOpen={false}
+        isRootFolder={isRootFolder}
+        isRootFolderTitle
+      />
+      {navigationTitleNode}
+    </div>
+  ) : (
+    navigationTitleNode
+  );
+
   return (
     <Consumer>
       {(context) => (
@@ -167,6 +198,7 @@ const Navigation = ({
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
                 isDesktopClient={isDesktopClient}
+                showRootFolderNavigation={showRootFolderNavigation}
                 withLogo={withLogo}
                 burgerLogo={burgerLogo}
                 titleIcon={titleIcon}
@@ -197,6 +229,9 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
+
+            {navigationTitleContainerNode}
+
             <div className="title-block">
               {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
               <Text

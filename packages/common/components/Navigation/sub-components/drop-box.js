@@ -51,6 +51,11 @@ const StyledBox = styled.div`
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
 
+  .title-container {
+    display: grid;
+    grid-template-columns: minmax(1px, max-content) auto;
+  }
+
   @media ${tablet} {
     width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
     left: -16px;
@@ -117,6 +122,7 @@ const DropBox = React.forwardRef(
       isOpen,
       isDesktop,
       isDesktopClient,
+      showRootFolderNavigation,
       withLogo,
       burgerLogo,
       titleIcon,
@@ -155,6 +161,23 @@ const DropBox = React.forwardRef(
       );
     }, [sectionHeight]);
 
+    const navigationTitleNode = (
+      <Text title={title} isOpen={true} onClick={toggleDropBox} />
+    );
+
+    const navigationTitleContainerNode = showRootFolderNavigation ? (
+      <div className="title-container">
+        <Text
+          title={navigationItems[navigationItems.length - 2].title}
+          isOpen={true}
+          isRootFolderTitle
+        />
+        {navigationTitleNode}
+      </div>
+    ) : (
+      navigationTitleNode
+    );
+
     const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
     return (
@@ -186,6 +209,9 @@ const DropBox = React.forwardRef(
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
+
+            {navigationTitleContainerNode}
+
             <div className="title-block">
               {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
               <Text title={title} isOpen={true} onClick={toggleDropBox} />

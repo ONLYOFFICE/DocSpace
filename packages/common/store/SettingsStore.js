@@ -24,7 +24,7 @@ const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
-  isBurgerLoading = false;
+  isBurgerLoading = true;
 
   checkedMaintenance = false;
   maintenanceExist = false;
