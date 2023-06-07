@@ -76,6 +76,7 @@
   "DNSSettingsMobile": "Nosūtiet savu pieprasījumu mūsu atbalsta komandai, un mūsu speciālisti palīdzēs jums ar iestatījumiem.",
   "DNSSettingsTooltipMain": "DNS iestatījumi ļauj iestatīt alternatīvu vietrāža URL adresi jūsu {{ organizationName }} telpai.",
   "DNSSettingsTooltip": "Nosūtiet savu pieprasījumu mūsu atbalsta komandai, un mūsu speciālisti palīdzēs jums ar iestatījumiem.",
+  "DNSSettingsTooltipStandalone": "Pārbaudiet'Pielāgotā domēna nosaukuma' lauku un precizējiet ONLYOFFICE™ portāla nosaukumu zemāk esošajā laukā. Lai aktivizētu uzstādītos parametrus, nospiediet 'Saglabāt', kas atrodas sadaļas apakšā.",
   "DownloadCopy": "Lejupielādēt kopiju",
   "DownloadReportBtnText": "Lejupielādēt pārskatu",
   "DownloadReportDescription": "Atskaite tiks saglabāta mapē Mani dokumenti",

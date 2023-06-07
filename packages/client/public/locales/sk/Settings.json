@@ -76,6 +76,7 @@
   "DNSSettingsMobile": "Pošlite svoju požiadavku nášmu tímu podpory a naši špecialisti vám pomôžu s nastavením.",
   "DNSSettingsTooltipMain": "Nastavenia DNS vám umožňujú nastaviť alternatívnu adresu URL pre váš priestor {{organizationName}}.",
   "DNSSettingsTooltip": "Pošlite žiadosť nášmu tímu podpory a naši špecialisti vám pomôžu s nastaveniami.",
+  "DNSSettingsTooltipStandalone": "Zaškrtnite políčko 'Vlastné meno domény' a nižšie zadajte vlastný názov domény pre portál ONLYOFFICE™ . Ak chcete nastavené parametre potvrdiť, kliknite na tlačidlo 'Uložiť' v dolnej časti sekcie.",
   "DownloadCopy": "Stiahnuť si kópiu",
   "DownloadReportBtnText": "Stiahnuť správu",
   "DownloadReportDescription": "Správa sa uloží do priečinka Moje dokumenty",

@@ -78,6 +78,7 @@
   "DNSSettingsMobile": "Invia la tua richiesta al nostro team di supporto e i nostri specialisti ti aiuteranno con le impostazioni.",
   "DNSSettingsTooltipMain": "Le impostazioni DNS ti consentono di impostare un indirizzo URL alternativo per il tuo spazio {{ organizationName }}.",
   "DNSSettingsTooltip": "Invia la tua richiesta al nostro team di assistenza e i nostri esperti ti aiuteranno con le impostazioni.",
+  "DNSSettingsTooltipStandalone": "Spunta la casella 'Nome dominio personalizzato' e specifica il proprio nome a dominio per il portale ONLYOFFICE® nel campo di sotto. Per applicare i parametri impostati clicca su 'Salva' nella parte inferiore della sezione",
   "DownloadCopy": "Scaricare la copia",
   "DownloadReportBtnText": "Scarica il report",
   "DownloadReportDescription": "Il report verrà salvato in Documenti",
