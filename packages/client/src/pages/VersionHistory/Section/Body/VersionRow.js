@@ -48,9 +48,8 @@ const VersionRow = (props) => {
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const title = `${new Date(info.updated).toLocaleString(
-    culture
-  )} ${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
+  const versionDate = `${new Date(info.updated).toLocaleString(culture)}`;
+  const title = `${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
@@ -150,16 +149,28 @@ const VersionRow = (props) => {
             {...onClickProp}
             t={t}
           />
-          <Link
-            onClick={onOpenFile}
-            fontWeight={600}
-            fontSize="14px"
-            title={title}
-            isTextOverflow={true}
-            className="version-link-file"
-          >
-            {title}
-          </Link>
+          <Box displayProp="flex" flexDirection="column">
+            <Link
+              onClick={onOpenFile}
+              fontWeight={600}
+              fontSize="14px"
+              title={versionDate}
+              isTextOverflow={true}
+              className="version-link-file"
+            >
+              {versionDate}
+            </Link>
+            <Link
+              onClick={onOpenFile}
+              fontWeight={600}
+              fontSize="14px"
+              title={title}
+              isTextOverflow={true}
+              className="version-link-file"
+            >
+              {title}
+            </Link>
+          </Box>
 
           {/*<Text
             className="version_content-length"
