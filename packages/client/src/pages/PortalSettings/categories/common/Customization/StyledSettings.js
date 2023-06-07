@@ -45,6 +45,7 @@ const StyledSettingsComponent = styled.div`
     textarea {
       color: ${(props) => props.theme.text.disableColor};
     }
+    ${(props) => props.standalone && "margin-top: 14px"};
   }
 
   .combo-button-label {
@@ -76,6 +77,15 @@ const StyledSettingsComponent = styled.div`
   .combo-box-settings {
     .combo-button {
       justify-content: space-between !important;
+    }
+  }
+  .settings-dns_toggle-button {
+    .toggle-button-text {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    svg {
+      margin-top: 1px;
     }
   }
 
