@@ -39,6 +39,8 @@
   "Branding": "Branding",
   "BrandingSectionDescription": "Zadejte informace o své společnosti, přidejte odkazy na externí zdroje a e-mailové adresy zobrazené v rozhraní DocSpace.",
   "BrandingSubtitle": "Tuto možnost použijte, abyste uživatelům poskytli zážitek na úrovni značky.",
+  "BreakpointSmallText": "Vaše okno je příliš malé na zobrazení celého obsahu stránky",
+  "BreakpointSmallTextPrompt": "Změňte velikost okna nebo zapněte celoobrazovkový režim",
   "BreakpointWarningText": "Tato část je k dispozici pouze ve verzi pro stolní počítače",
   "BreakpointWarningTextPrompt": "Pro přístup k nastavení <1>{{sectionName}}</1> použijte prosím desktopovou stránku.",
   "ButtonsColor": "Tlačítka",

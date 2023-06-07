@@ -376,4 +376,43 @@
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Vlastní filtr</value>
   </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Vyplňování formulářů</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Automaticky uloženo</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Vytvořeno pro vyplnění formuláře</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Upraveno pomocí šifrování</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Šifrováno</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Uloženo</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění k přesunu souboru</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění k přesunu složky</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Vyhledávání v obsahu dokumentů</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Vyplnitelný dokument OFORM je připraven. Je uložen v {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Kopie OFORM se vytvoří ve složce {0}. Vyplňte formulář a stáhněte si výsledek ve formátu PDF nebo DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Soubor již není návrhem pro vyplnění formuláře.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Zobrazení a stažení sdílených dokumentů. Nahrávání souborů do sdílených složek. Zaručena nejvyšší kompatibilita s formáty docx, xlsx, pptx.</value>
+  </data>
 </root>
