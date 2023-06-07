@@ -162,7 +162,10 @@ const DropBox = React.forwardRef(
     }, [sectionHeight]);
 
     const navigationTitleNode = (
-      <Text title={title} isOpen={true} onClick={toggleDropBox} />
+      <div className="title-block">
+        {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+        <Text title={title} isOpen={true} onClick={toggleDropBox} />
+      </div>
     );
 
     const navigationTitleContainerNode = showRootFolderNavigation ? (
@@ -212,10 +215,6 @@ const DropBox = React.forwardRef(
 
             {navigationTitleContainerNode}
 
-            <div className="title-block">
-              {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
-              <Text title={title} isOpen={true} onClick={toggleDropBox} />
-            </div>
             <ControlButtons
               isDesktop={isDesktop}
               personal={personal}

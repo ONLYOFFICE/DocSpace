@@ -142,12 +142,15 @@ const Navigation = ({
     !isMobileOnly;
 
   const navigationTitleNode = (
-    <Text
-      title={title}
-      isOpen={false}
-      isRootFolder={isRootFolder}
-      onClick={toggleDropBox}
-    />
+    <div className="title-block">
+      {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+      <Text
+        title={title}
+        isOpen={false}
+        isRootFolder={isRootFolder}
+        onClick={toggleDropBox}
+      />
+    </div>
   );
 
   const navigationTitleContainerNode = showRootFolderNavigation ? (
@@ -232,15 +235,6 @@ const Navigation = ({
 
             {navigationTitleContainerNode}
 
-            <div className="title-block">
-              {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
-              <Text
-                title={title}
-                isOpen={false}
-                isRootFolder={isRootFolder}
-                onClick={toggleDropBox}
-              />
-            </div>
             <ControlButtons
               personal={personal}
               isRootFolder={isRootFolder}
