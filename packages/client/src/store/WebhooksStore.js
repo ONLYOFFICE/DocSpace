@@ -18,8 +18,8 @@ class WebhooksStore {
   startIndex = 0;
   totalItems = 0;
   developerToolsTab = 0;
-  titleType = "default"; // "default", "history" or "details"
   currentWebhook = {};
+  eventDetails = {};
 
   constructor() {
     makeAutoObservable(this);
@@ -125,9 +125,9 @@ class WebhooksStore {
       this.historyItems = [...this.historyItems, ...historyData.items];
     });
   };
-  getEvent = async (eventId) => {
+  fetchEventData = async (eventId) => {
     const data = await getWebhooksJournal({ eventId });
-    return data.items[0];
+    this.eventDetails = data.items[0];
   };
   get hasMoreItems() {
     return this.totalItems > this.historyItems.length;
@@ -206,16 +206,6 @@ class WebhooksStore {
   get isHeaderVisible() {
     return this.checkedEventIds.length !== 0;
   }
-
-  setTitleDefault = () => {
-    this.titleType = "default";
-  };
-  setTitleHistory = () => {
-    this.titleType = "history";
-  };
-  setTitleDetails = () => {
-    this.titleType = "details";
-  };
 }
 
 export default WebhooksStore;
