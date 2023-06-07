@@ -20,6 +20,8 @@ import toastr from "@docspace/components/toast/toastr";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
+import { showLoader, hideLoader } from "@docspace/common/utils";
+
 const HeaderContainer = styled.div`
   position: sticky;
   top: 0;
@@ -48,7 +50,7 @@ const HeaderContainer = styled.div`
     `}
 
   .arrow-button {
-    margin-right: 15px;
+    margin-right: 18.5px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
@@ -96,7 +98,7 @@ const HeaderContainer = styled.div`
 
 const HistoryHeader = (props) => {
   const {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkedEventIds,
     checkAllIds,
     emptyCheckedIds,
@@ -118,7 +120,11 @@ const HistoryHeader = (props) => {
   };
 
   const handleRetryAll = async () => {
-    await retryWebhookEvents(checkedEventIds);
+    await emptyCheckedIds();
+    const tempIds = checkedEventIds;
+    showLoader();
+    await retryWebhookEvents(tempIds);
+    hideLoader();
     fetchHistoryItems({
       configId: id,
     });
@@ -126,7 +132,6 @@ const HistoryHeader = (props) => {
       `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
       <b>{t("Common:Done")}</b>,
     );
-    emptyCheckedIds();
   };
 
   const headerMenu = [
@@ -198,13 +203,13 @@ const HistoryHeader = (props) => {
   }, []);
 
   return (
-    <HeaderContainer isHeaderVisible={isHeaderVisible}>
+    <HeaderContainer>
       {isMobileOnly ? (
         <>
-          {isHeaderVisible && <GroupMenu />}
+          {isGroupMenuVisible && <GroupMenu />}
           <NavigationHeader />
         </>
-      ) : isHeaderVisible ? (
+      ) : isGroupMenuVisible ? (
         <GroupMenu />
       ) : (
         <NavigationHeader />
@@ -215,7 +220,7 @@ const HistoryHeader = (props) => {
 
 export default inject(({ webhooksStore, auth }) => {
   const {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkAllIds,
     emptyCheckedIds,
     checkedEventIds,
@@ -230,7 +235,7 @@ export default inject(({ webhooksStore, auth }) => {
   const { theme } = settingsStore;
 
   return {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkAllIds,
     emptyCheckedIds,
     checkedEventIds,
