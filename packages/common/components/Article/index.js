@@ -224,8 +224,6 @@ const Article = ({
   //   withMainButton,
   // });
 
-  console.log(articleOpen);
-
   return isMobileOnly ? renderPortalArticle() : articleComponent;
 };
 
