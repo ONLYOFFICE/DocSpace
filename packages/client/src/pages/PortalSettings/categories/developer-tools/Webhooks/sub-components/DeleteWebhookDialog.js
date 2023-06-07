@@ -25,9 +25,11 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
 
   const { t } = useTranslation(["Webhooks", "Common", "EmptyTrashDialog"]);
 
+  const cleanUpEvent = () => window.removeEventListener("keyup", onKeyPress);
+
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
-    return () => window.removeEventListener("keyup", onKeyPress);
+    return cleanUpEvent;
   });
 
   const handleDeleteClick = () => {
