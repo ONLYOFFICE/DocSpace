@@ -116,9 +116,6 @@ const HistoryHeader = (props) => {
   const handleGroupSelection = (isChecked) => {
     isChecked ? checkAllIds() : emptyCheckedIds();
   };
-  const SelectAll = () => {
-    () => checkAllIds();
-  };
 
   const handleRetryAll = async () => {
     await retryWebhookEvents(checkedEventIds);
@@ -154,7 +151,7 @@ const HistoryHeader = (props) => {
         key="select-all-event-ids"
         label={t("Common:SelectAll")}
         data-index={0}
-        onClick={SelectAll}
+        onClick={checkAllIds}
       />
       <DropDownItem
         key="unselect-all-event-ids"
