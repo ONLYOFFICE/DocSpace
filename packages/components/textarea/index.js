@@ -4,6 +4,7 @@ import {
   StyledTextarea,
   StyledScrollbar,
   StyledCopyIcon,
+  CopyIconWrapper,
   Wrapper,
   Numeration,
 } from "./styled-textarea";
@@ -80,9 +81,7 @@ const Textarea = ({
   }
 
   useEffect(() => {
-    if (isJSONField && (!modifiedValue || !isJSON(modifiedValue))) {
-      setIsError(true);
-    }
+    setIsError(isJSONField && (!value || !isJSON(value)));
   }, [isJSONField, value]);
 
   useEffect(() => {
@@ -102,14 +101,15 @@ const Textarea = ({
       onFocus={enableCopy ? onTextareaClick : undefined}
     >
       {isJSONField && (
-        <WrappedStyledCopyIcon
+        <CopyIconWrapper
+          isJSONField={isJSONField}
           onClick={() => {
             copy(modifiedValue);
             toastr.success(copyInfoText);
           }}
-          heightScale={heightScale}
-          isJSONField={isJSONField}
-        />
+        >
+          <WrappedStyledCopyIcon heightScale={heightScale} />
+        </CopyIconWrapper>
       )}
       <ColorTheme
         themeId={ThemeType.Textarea}
