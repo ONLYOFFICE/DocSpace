@@ -704,7 +704,7 @@
     <value>Invalid User Filter value.</value>
   </data>
   <data name="LdapSettingsErrorLostRights" xml:space="preserve">
-    <value>You attempted to take away admin rights from yourself. Your admin rights was unaffected.</value>
+    <value>You attempted to take away admin rights from yourself. Your admin rights were unaffected.</value>
   </data>
   <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
     <value>Your account is not linked to the LDAP directory and your LDAP password is no longer active. Please change or set the password to your account at the profile settings page.</value>

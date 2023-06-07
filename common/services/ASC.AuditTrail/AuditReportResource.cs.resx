@@ -652,4 +652,25 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Tagy smazány: {0}</value>
   </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Nastavení životnosti auditu aktualizováno</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Vlastní nastavení navigace aktualizováno</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Nastavení funkce Forcesave aktualizováno</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Selhání přihlášení. Příliš mnoho pokusů</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Selhání přihlášení. Recaptcha je neplatná</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Neúspěšné přihlášení prostřednictvím aplikace API a autentizátoru</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Přihlášení prostřednictvím aplikace autentizátoru se nezdařilo</value>
+  </data>
 </root>

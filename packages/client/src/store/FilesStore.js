@@ -436,6 +436,7 @@ class FilesStore {
       tempActionFilesIds.push(this.files[foundIndex].id);
 
       this.setTempActionFilesIds(tempActionFilesIds);
+
       this.debounceRemoveFiles();
 
       // Hide pagination when deleting files
@@ -569,30 +570,45 @@ class FilesStore {
     }
   };
 
-  addActiveItems = (files, folders) => {
+  addActiveItems = (files, folders, destFolderId) => {
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
-        this.setActiveFolders(folders);
+        this.setActiveFolders(folders, destFolderId);
       } else {
-        folders.map((item) => this.activeFolders.push(item));
+        folders.map((item) =>
+          this.activeFolders.push({ id: item, destFolderId })
+        );
       }
     }
 
     if (files && files.length) {
       if (!this.activeFiles.length) {
-        this.setActiveFiles(files);
+        this.setActiveFiles(files, destFolderId);
       } else {
-        files.map((item) => this.activeFiles.push(item));
+        files.map((item) => this.activeFiles.push({ id: item, destFolderId }));
       }
     }
   };
 
-  setActiveFiles = (activeFiles) => {
-    this.activeFiles = activeFiles;
+  updateActiveFiles = (items) => {
+    this.activeFiles = items;
+  };
+  setActiveFiles = (activeFiles, destFolderId) => {
+    const arrayFormation = activeFiles.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFiles = arrayFormation;
   };
 
-  setActiveFolders = (activeFolders) => {
-    this.activeFolders = activeFolders;
+  setActiveFolders = (activeFolders, destFolderId) => {
+    const arrayFormation = activeFolders.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFolders = arrayFormation;
   };
 
   setIsLoaded = (isLoaded) => {
@@ -857,9 +873,9 @@ class FilesStore {
 
   getFilesChecked = (file, selected) => {
     if (!file.parentId) {
-      if (this.activeFiles.includes(file.id)) return false;
+      if (this.activeFiles.find((elem) => elem.id === file.id)) return false;
     } else {
-      if (this.activeFolders.includes(file.id)) return false;
+      if (this.activeFolders.find((elem) => elem.id === file.id)) return false;
     }
 
     const type = file.fileType;
@@ -963,13 +979,13 @@ class FilesStore {
         const isFound =
           this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
 
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           isFound &&
             newSelections.push(
               this.filesList.find((f) => f.id == id && !f.isFolder)
             );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         const isFound =
           this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
 
@@ -998,12 +1014,12 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           newSelections = newSelections.filter(
             (f) => !(f.id == id && !f.isFolder)
           );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         newSelections = newSelections.filter(
           (f) => !(f.id == id && f.isFolder)
         );
@@ -2226,9 +2242,11 @@ class FilesStore {
     this.scrollToTop();
   };
 
-  removeFiles = (fileIds, folderIds, showToast) => {
+  removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
+    if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
 
     if (newFilter.total <= newFilter.pageCount) {
       const files = fileIds
@@ -2693,8 +2711,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
