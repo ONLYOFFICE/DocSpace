@@ -3,7 +3,7 @@ import moment from "moment";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
@@ -39,13 +39,18 @@ const StyledWrapper = styled.div`
 `;
 
 const HistoryTableRow = (props) => {
-  const { item, toggleEventId, isIdChecked, retryWebhookEvent, hideColumns } = props;
+  const { item, toggleEventId, isIdChecked, retryWebhookEvent, hideColumns, fetchHistoryItems } =
+    props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(item.id);
+    await fetchHistoryItems({
+      configId: id,
+    });
     toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
   };
 
@@ -105,7 +110,7 @@ const HistoryTableRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { toggleEventId, isIdChecked, retryWebhookEvent } = webhooksStore;
+  const { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems } = webhooksStore;
 
-  return { toggleEventId, isIdChecked, retryWebhookEvent };
+  return { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems };
 })(observer(HistoryTableRow));
