@@ -398,7 +398,7 @@
     <value>设置已更新</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>有关删除个人账号的详细指引已发送到您提供的Email地址中</value>
+    <value>有关删除个人账号的详细指引已发送到您提供的 {0} 邮件地址中</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>验证码有误</value>

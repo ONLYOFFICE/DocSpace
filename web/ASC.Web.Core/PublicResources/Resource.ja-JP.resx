@@ -200,7 +200,7 @@
     <value>ユーザー数はライセンスで許可されたユーザー数を超過した</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>メールアドレスの変更手順は、{0}メールアドレスに送信されました</value>
+    <value>メールアドレスの変更手順は、メールアドレスに送信されました</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>{0}メールアドレスを持つユーザが存在する場合は、パスワード変更手順はこのメールアドレスに送信されます。</value>
@@ -263,7 +263,7 @@
     <value>設定が正常に更新されました</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>プロファイルの削除方法は、お使いのメールアドレスに送信されました</value>
+    <value>プロフィールの削除方法は、「{0}」メールアドレスに送信されました</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>不正なコード</value>
