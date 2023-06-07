@@ -124,7 +124,6 @@ const HistoryHeader = (props) => {
     await retryWebhookEvents(checkedEventIds);
     fetchHistoryItems({
       configId: id,
-      count: 30,
     });
     toastr.success(
       `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
