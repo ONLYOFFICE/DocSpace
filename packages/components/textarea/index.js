@@ -4,6 +4,7 @@ import {
   StyledTextarea,
   StyledScrollbar,
   StyledCopyIcon,
+  CopyIconWrapper,
   Wrapper,
   Numeration,
 } from "./styled-textarea";
@@ -15,6 +16,13 @@ import { isJSON, beautifyJSON } from "./utils";
 import copy from "copy-to-clipboard";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
+
+const jsonify = (value, isJSONField) => {
+  if (isJSONField && value && isJSON(value)) {
+    return beautifyJSON(value);
+  }
+  return value;
+};
 
 const Textarea = ({
   className,
@@ -44,7 +52,7 @@ const Textarea = ({
 }) => {
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
-  const [modifiedValue, setModifiedValue] = useState(value);
+  const modifiedValue = jsonify(value, isJSONField);
 
   const lineHeight = 1.5;
   const padding = 7;
@@ -73,14 +81,8 @@ const Textarea = ({
   }
 
   useEffect(() => {
-    if (isJSONField) {
-      if (modifiedValue && isJSON(modifiedValue)) {
-        setModifiedValue(beautifyJSON(modifiedValue));
-      } else {
-        setIsError(true);
-      }
-    }
-  }, [isJSONField]);
+    setIsError(isJSONField && (!value || !isJSON(value)));
+  }, [isJSONField, value]);
 
   useEffect(() => {
     if (areaSelect && areaRef.current) {
@@ -99,14 +101,15 @@ const Textarea = ({
       onFocus={enableCopy ? onTextareaClick : undefined}
     >
       {isJSONField && (
-        <WrappedStyledCopyIcon
+        <CopyIconWrapper
+          isJSONField={isJSONField}
           onClick={() => {
             copy(modifiedValue);
             toastr.success(copyInfoText);
           }}
-          heightScale={heightScale}
-          isJSONField={isJSONField}
-        />
+        >
+          <WrappedStyledCopyIcon heightScale={heightScale} />
+        </CopyIconWrapper>
       )}
       <ColorTheme
         themeId={ThemeType.Textarea}

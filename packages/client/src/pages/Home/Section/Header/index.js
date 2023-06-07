@@ -39,8 +39,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Loaders from "@docspace/common/components/Loaders";
 import Navigation from "@docspace/common/components/Navigation";
 import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
-import { Events, EmployeeType } from "@docspace/common/constants";
-
+import { Events, EmployeeType, FolderType } from "@docspace/common/constants";
+import FilesFilter from "@docspace/common/api/files/filter";
 import { resendInvitesAgain } from "@docspace/common/api/people";
 
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -48,9 +48,14 @@ import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import toastr from "@docspace/components/toast/toastr";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
-
+import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 import withLoader from "../../../../HOCs/withLoader";
+import {
+  getCategoryTypeByFolderType,
+  getCategoryUrl,
+} from "SRC_DIR/helpers/utils";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -120,7 +125,7 @@ const SectionHeaderContent = (props) => {
     isInfoPanelVisible,
     isRootFolder,
     title,
-
+    showHeaderLoader,
     isDesktop,
     isTabletView,
     personal,
@@ -179,7 +184,7 @@ const SectionHeaderContent = (props) => {
     getCheckboxItemId,
     setSelectedNode,
     setIsLoading,
-    fetchFiles,
+
     moveToRoomsPage,
     setIsInfoPanelVisible,
 
@@ -195,8 +200,11 @@ const SectionHeaderContent = (props) => {
     isAdmin,
     setInvitePanelOptions,
     isEmptyPage,
+
+    isLoading,
     pathParts,
-    emptyTrashInProgress
+    emptyTrashInProgress,
+    categoryType,
   } = props;
 
   const navigate = useNavigate();
@@ -749,10 +757,30 @@ const SectionHeaderContent = (props) => {
     }
 
     setSelectedNode(id);
+
+    const rootFolderType = selectedFolder.rootFolderType;
+
+    const path = getCategoryUrl(
+      getCategoryTypeByFolderType(rootFolderType, id),
+      id
+    );
+
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const itemIdx = selectedFolder.navigationPath.findIndex((v) => v.id === id);
+
+    const state = {
+      title: selectedFolder.navigationPath[itemIdx]?.title || "",
+      isRoot: itemIdx === 0,
+
+      rootFolderType: rootFolderType,
+    };
+
     setIsLoading(true);
-    fetchFiles(id, null, true, false)
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   const onInvite = (e) => {
@@ -782,6 +810,7 @@ const SectionHeaderContent = (props) => {
   const headerMenu = isAccountsPage
     ? getAccountsHeaderMenu(t)
     : getHeaderMenu(t);
+
   const menuItems = getMenuItems();
 
   let tableGroupMenuVisible = headerMenu.length;
@@ -809,19 +838,30 @@ const SectionHeaderContent = (props) => {
     tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
   }
 
-  const fromAccounts = location?.state?.fromAccounts;
-  const fromSettings = location?.state?.fromSettings;
+  const stateTitle = location?.state?.title;
+  const stateIsRoot = location?.state?.isRoot;
+  const stateIsRoom = location?.state?.isRoom;
 
   const isRoot =
-    pathParts === null && (fromAccounts || fromSettings)
-      ? true
+    isLoading && stateIsRoot
+      ? stateIsRoot
       : isRootFolder || isAccountsPage || isSettingsPage;
-  const currentTitle =
-    isSettingsPage || (!title && fromSettings)
-      ? t("Common:Settings")
-      : isAccountsPage || (!title && fromAccounts)
-      ? t("Common:Accounts")
-      : title;
+
+  const currentTitle = isSettingsPage
+    ? t("Common:Settings")
+    : isAccountsPage
+    ? t("Common:Accounts")
+    : isLoading && stateTitle
+    ? stateTitle
+    : title;
+
+  const isCurrentRoom = isLoading && stateIsRoom ? stateIsRoom : isRoom;
+
+  if (showHeaderLoader) return <Loaders.SectionHeader />;
+
+  const insideTheRoom =
+    categoryType === CategoryType.SharedRoom ||
+    categoryType === CategoryType.Archive;
 
   return (
     <Consumer key="header">
@@ -873,8 +913,9 @@ const SectionHeaderContent = (props) => {
                 withMenu={!isRoomsFolder}
                 onPlusClick={onCreateRoom}
                 isEmptyPage={isEmptyPage}
-                isRoom={isRoom}
+                isRoom={isCurrentRoom}
                 hideInfoPanel={isSettingsPage}
+                showRootFolderTitle={insideTheRoom}
               />
             </div>
           )}
@@ -894,7 +935,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-
+    clientLoadingStore,
     contextOptionsStore,
   }) => {
     const { isOwner, isAdmin } = auth.userStore.user;
@@ -912,19 +953,25 @@ export default inject(
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
-      setIsLoading,
-      fetchFiles,
-      fetchRooms,
+
       activeFiles,
       activeFolders,
-
-      setAlreadyFetchingRooms,
 
       roomsForRestore,
       roomsForDelete,
 
       isEmptyPage,
+
+      clearFiles,
+      categoryType,
     } = filesStore;
+
+    const { setIsSectionFilterLoading, showHeaderLoader, isLoading } =
+      clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
 
     const {
       setSharingPanelVisible,
@@ -1013,7 +1060,8 @@ export default inject(
       setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
-
+      showHeaderLoader,
+      isLoading,
       isRootFolder: pathParts?.length === 1,
       isPersonalRoom,
       title,
@@ -1060,15 +1108,11 @@ export default inject(
       hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
-      fetchFiles,
-      fetchRooms,
 
       activeFiles,
       activeFolders,
 
       isRoomsFolder,
-
-      setAlreadyFetchingRooms,
 
       enablePlugins,
 
@@ -1105,7 +1149,10 @@ export default inject(
       isAdmin,
       setInvitePanelOptions,
       isEmptyPage,
+
+      clearFiles,
       emptyTrashInProgress,
+      categoryType,
     };
   }
 )(
@@ -1119,5 +1166,5 @@ export default inject(
     "People",
     "PeopleTranslations",
     "ChangeUserTypeDialog",
-  ])(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
+  ])(observer(SectionHeaderContent))
 );

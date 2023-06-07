@@ -42,15 +42,15 @@ const WebhookInfo = (props) => {
   return (
     <InfoWrapper>
       <InfoText as="p">{t("WebhooksInfo")}</InfoText>
-      <StyledGuideLink fontWeight={600} isHovered type="page" href={webhooksGuideUrl}>
+      <StyledGuideLink fontWeight={600} isHovered type="page" href={webhooksGuideUrl} target="_blank">
         {t("WebhooksGuide")}
       </StyledGuideLink>
     </InfoWrapper>
   );
 };
 
-export default inject(({ settingsStore }) => {
-  const { webhooksGuideUrl } = settingsStore;
+export default inject(({ auth }) => {
+  const { webhooksGuideUrl } = auth.settingsStore;
 
   return {
     webhooksGuideUrl,

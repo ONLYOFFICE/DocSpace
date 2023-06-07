@@ -14,8 +14,7 @@ const WebhookWrapper = styled.div`
 `;
 
 const WebhookHistory = (props) => {
-  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
-    props;
+  const { historyItems, fetchHistoryItems, emptyCheckedIds, clearHistoryFilters } = props;
 
   const [isFetchFinished, setIsFetchFinished] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -25,21 +24,19 @@ const WebhookHistory = (props) => {
   const fetchItems = async () => {
     await fetchHistoryItems({
       configId: id,
-      count: 30,
     });
     setIsFetchFinished(true);
   };
 
   useEffect(() => {
-    setTitleHistory();
     startTransition(fetchItems);
 
-    return setTitleDefault;
+    return clearHistoryFilters;
   }, []);
 
   const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
     emptyCheckedIds();
-    const params = { configId: id, deliveryFrom, deliveryTo, groupStatus, count: 30 };
+    const params = { configId: id, deliveryFrom, deliveryTo, groupStatus };
 
     await fetchHistoryItems(params);
   };
@@ -61,8 +58,12 @@ const WebhookHistory = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
-    webhooksStore;
+  const { historyItems, fetchHistoryItems, emptyCheckedIds, clearHistoryFilters } = webhooksStore;
 
-  return { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds };
+  return {
+    historyItems,
+    fetchHistoryItems,
+    emptyCheckedIds,
+    clearHistoryFilters,
+  };
 })(observer(WebhookHistory));

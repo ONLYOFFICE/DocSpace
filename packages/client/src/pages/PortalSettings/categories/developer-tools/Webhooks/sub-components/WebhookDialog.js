@@ -107,9 +107,11 @@ const WebhookDialog = (props) => {
     onModalClose();
   };
 
+  const cleanUpEvent = () => window.removeEventListener("keyup", onKeyPress);
+
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
-    return () => window.removeEventListener("keyup", onKeyPress);
+    return cleanUpEvent;
   }, []);
 
   useEffect(() => {

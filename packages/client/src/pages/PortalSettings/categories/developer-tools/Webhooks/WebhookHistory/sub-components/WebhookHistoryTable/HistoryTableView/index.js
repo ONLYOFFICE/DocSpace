@@ -78,7 +78,7 @@ const HistoryTableView = (props) => {
 
   const fetchMoreFiles = () => {
     const params = historyFilters === null ? {} : formatFilters(historyFilters);
-    fetchMoreItems({ ...params, configId: id, count: 10 });
+    fetchMoreItems({ ...params, configId: id });
   };
 
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;

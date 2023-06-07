@@ -12,13 +12,18 @@ import FilterDialog from "./FilterDialog";
 import StatusBar from "./StatusBar";
 import { useTranslation } from "react-i18next";
 
-import { isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  ${() =>
+    isMobile &&
+    css`
+      margin-top: 9px;
+    `}
   ${() =>
     isMobileOnly &&
     css`
@@ -46,7 +51,7 @@ const FilterButton = styled.div`
   width: 32px;
   height: 32px;
 
-  z-index: ${(props) => (props.isHeaderVisible ? 199 : 202)};
+  z-index: ${(props) => (props.isHeaderVisible ? 199 : 201)};
 
   border: 1px solid;
   border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};

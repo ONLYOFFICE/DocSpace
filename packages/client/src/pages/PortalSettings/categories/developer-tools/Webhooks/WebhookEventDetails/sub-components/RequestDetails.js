@@ -2,12 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
 import Textarea from "@docspace/components/textarea";
+import { inject, observer } from "mobx-react";
 
 import DangerIcon from "PUBLIC_DIR/images/danger.toast.react.svg?url";
 import { useTranslation } from "react-i18next";
 
 const DetailsWrapper = styled.div`
   width: 100%;
+
+  .textareaBody {
+    height: 50vh !important;
+  }
 
   .mt-7 {
     margin-top: 7px;
@@ -43,11 +48,21 @@ const ErrorMessageTooltip = styled.div`
   }
 `;
 
-export const RequestDetails = ({ webhookDetails }) => {
+function isJSON(jsonString) {
+  try {
+    const parsedJson = JSON.parse(jsonString);
+    return parsedJson && typeof parsedJson === "object";
+  } catch (e) {}
+
+  return false;
+}
+
+const RequestDetails = ({ eventDetails }) => {
   const { t } = useTranslation(["Webhooks"]);
+
   return (
     <DetailsWrapper>
-      {webhookDetails.status === 0 && (
+      {eventDetails.status === 0 && (
         <ErrorMessageTooltip>
           <img src={DangerIcon} alt="danger icon" />
           {t("FailedToConnect")}
@@ -56,11 +71,11 @@ export const RequestDetails = ({ webhookDetails }) => {
       <Text as="h3" fontWeight={600} className="mb-4 mt-7">
         {t("RequestPostHeader")}
       </Text>
-      {!webhookDetails.requestHeaders ? (
+      {!eventDetails.requestHeaders ? (
         <Textarea isDisabled />
       ) : (
         <Textarea
-          value={webhookDetails.requestHeaders}
+          value={eventDetails.requestHeaders}
           enableCopy
           hasNumeration
           isFullHeight
@@ -72,14 +87,24 @@ export const RequestDetails = ({ webhookDetails }) => {
       <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("RequestPostBody")}
       </Text>
-      <Textarea
-        value={webhookDetails.requestPayload}
-        isJSONField
-        enableCopy
-        hasNumeration
-        isFullHeight
-        copyInfoText={t("RequestBodyCopied")}
-      />
+      {isJSON(eventDetails.requestPayload) ? (
+        <Textarea
+          value={eventDetails.requestPayload}
+          isJSONField
+          enableCopy
+          hasNumeration
+          isFullHeight
+          copyInfoText={t("RequestBodyCopied")}
+        />
+      ) : (
+        <Textarea value={eventDetails.requestPayload} heightScale className="textareaBody" />
+      )}
     </DetailsWrapper>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { eventDetails } = webhooksStore;
+
+  return { eventDetails };
+})(observer(RequestDetails));

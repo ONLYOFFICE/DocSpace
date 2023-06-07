@@ -7,6 +7,7 @@ import Section from "@docspace/common/components/Section";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 //import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
+import { useParams } from "react-router-dom";
 import HistoryHeader from "../categories/developer-tools/Webhooks/WebhookHistory/sub-components/HistoryHeader";
 import DetailsNavigationHeader from "../categories/developer-tools/Webhooks/WebhookEventDetails/sub-components/DetailsNavigationHeader";
 
@@ -24,29 +25,25 @@ const ArticleSettings = React.memo(() => {
   );
 });
 
-const Layout = ({
-  currentProductId,
-  setCurrentProductId,
-  language,
-  children,
-  addUsers,
-  titleType,
-}) => {
+const Layout = ({ currentProductId, setCurrentProductId, language, children, addUsers }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
 
-  const isTitleHistory = titleType === "history";
-  const isTitleDetails = titleType === "details";
+  const { id, eventId } = useParams();
+
+  const webhookHistoryPath = `/portal-settings/developer-tools/webhooks/${id}`;
+  const webhookDetailsPath = `/portal-settings/developer-tools/webhooks/${id}/${eventId}`;
+  const currentPath = window.location.pathname;
 
   return (
     <>
       <ArticleSettings />
       <Section withBodyScroll={true} settingsStudio={true}>
         <Section.SectionHeader>
-          {isTitleHistory ? (
+          {currentPath === webhookHistoryPath ? (
             <HistoryHeader />
-          ) : isTitleDetails ? (
+          ) : currentPath === webhookDetailsPath ? (
             <DetailsNavigationHeader />
           ) : (
             <SectionHeaderContent />
@@ -64,15 +61,13 @@ const Layout = ({
   );
 };
 
-export default inject(({ auth, setup, webhooksStore }) => {
+export default inject(({ auth, setup }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
-  const { titleType } = webhooksStore;
 
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
     addUsers,
-    titleType,
   };
 })(withLoading(observer(Layout)));

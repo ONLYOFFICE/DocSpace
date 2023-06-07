@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useTransition, Suspense } from "react";
 import styled from "styled-components";
 
 import { useParams } from "react-router-dom";
@@ -6,8 +6,8 @@ import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 
-import { DetailsBar } from "./sub-components/DetailsBar";
-import { MessagesDetails } from "./sub-components/MessagesDetails";
+import DetailsBar from "./sub-components/DetailsBar";
+import MessagesDetails from "./sub-components/MessagesDetails";
 import { WebhookDetailsLoader } from "../sub-components/Loaders";
 
 const DetailsWrapper = styled.div`
@@ -19,46 +19,34 @@ const EventDetailsHeader = styled.header`
 `;
 
 const WebhookEventDetails = (props) => {
-  const { getEvent, setTitleDetails, setTitleDefault } = props;
-
+  const { fetchEventData } = props;
   const { id, eventId } = useParams();
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [webhookDetails, setWebhookDetails] = useState({});
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    setTitleDetails();
-    (async () => {
-      const timer = setTimeout(() => {
-        webhookDetails.status === undefined && setIsLoading(true);
-      }, 300);
-      const webhookDetailsData = await getEvent(eventId);
-      setWebhookDetails(webhookDetailsData);
-      clearTimeout(timer);
-      setIsLoading(false);
-    })();
-    return setTitleDefault;
+    startTransition(() => {
+      fetchEventData(eventId);
+    });
   }, []);
 
   return (
-    <DetailsWrapper>
-      {isLoading && <WebhookDetailsLoader />}
-      {webhookDetails.status !== undefined && (
+    <Suspense fallback={WebhookDetailsLoader}>
+      <DetailsWrapper>
         <main>
           <EventDetailsHeader>
             <Text fontWeight={600}>Webhook {id}</Text>
-            <DetailsBar webhookDetails={webhookDetails} />
+            <DetailsBar />
           </EventDetailsHeader>
-          <MessagesDetails webhookDetails={webhookDetails} />
+          <MessagesDetails />
         </main>
-      )}
-    </DetailsWrapper>
+      </DetailsWrapper>
+    </Suspense>
   );
 };
 
 export default inject(({ webhooksStore }) => {
-  const { getEvent, setTitleDetails, setTitleDefault } = webhooksStore;
+  const { fetchEventData } = webhooksStore;
 
-  return { getEvent, setTitleDetails, setTitleDefault };
+  return { fetchEventData };
 })(observer(WebhookEventDetails));

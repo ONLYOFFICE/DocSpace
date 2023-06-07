@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Row from "@docspace/components/row";
 import { HistoryRowContent } from "./HistoryRowContent";
@@ -14,13 +14,24 @@ import toastr from "@docspace/components/toast/toastr";
 import { useTranslation } from "react-i18next";
 
 const HistoryRow = (props) => {
-  const { historyItem, sectionWidth, toggleEventId, isIdChecked, retryWebhookEvent } = props;
+  const {
+    historyItem,
+    sectionWidth,
+    toggleEventId,
+    isIdChecked,
+    retryWebhookEvent,
+    fetchHistoryItems,
+  } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${historyItem.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(historyItem.id);
+    await fetchHistoryItems({
+      configId: id,
+    });
     toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
   };
   const handleOnSelect = () => toggleEventId(historyItem.id);
@@ -69,7 +80,7 @@ const HistoryRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { toggleEventId, isIdChecked, retryWebhookEvent } = webhooksStore;
+  const { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems } = webhooksStore;
 
-  return { toggleEventId, isIdChecked, retryWebhookEvent };
+  return { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems };
 })(observer(HistoryRow));

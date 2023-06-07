@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import moment from "moment";
 import styled from "styled-components";
 
 import Text from "@docspace/components/text";
 import StatusBadge from "../../sub-components/StatusBadge";
+
+import { inject, observer } from "mobx-react";
 
 import { Base } from "@docspace/components/themes";
 
@@ -52,28 +54,26 @@ const FlexWrapper = styled.div`
   align-items: center;
 `;
 
-export const DetailsBar = ({ webhookDetails }) => {
-  const formattedDelivery = useMemo(
-    () => moment(webhookDetails.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
-    [webhookDetails],
-  );
-  const formattedCreationTime = useMemo(
-    () => moment(webhookDetails.creationTime).format("MMM D, YYYY, h:mm:ss A") + " UTC",
-    [webhookDetails],
-  );
+const DetailsBar = ({ eventDetails }) => {
+  const formatDate = (date) => {
+    return moment(date).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+  };
+
+  const formattedDelivery = formatDate(eventDetails.delivery);
+  const formattedCreationTime = formatDate(eventDetails.creationTime);
 
   return (
     <BarWrapper>
       <BarItem>
         <BarItemHeader>Status</BarItemHeader>
         <FlexWrapper>
-          <StatusBadge status={webhookDetails.status} />
+          <StatusBadge status={eventDetails.status} />
         </FlexWrapper>
       </BarItem>
       <BarItem>
         <BarItemHeader>Event ID</BarItemHeader>
         <Text isInline fontWeight={600}>
-          {webhookDetails.id}
+          {eventDetails.id}
         </Text>
       </BarItem>
       <BarItem>
@@ -91,3 +91,9 @@ export const DetailsBar = ({ webhookDetails }) => {
     </BarWrapper>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { eventDetails } = webhooksStore;
+
+  return { eventDetails };
+})(observer(DetailsBar));

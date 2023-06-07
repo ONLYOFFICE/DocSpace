@@ -20,6 +20,8 @@ import toastr from "@docspace/components/toast/toastr";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
+import { showLoader, hideLoader } from "@docspace/common/utils";
+
 const HeaderContainer = styled.div`
   position: sticky;
   top: 0;
@@ -48,7 +50,7 @@ const HeaderContainer = styled.div`
     `}
 
   .arrow-button {
-    margin-right: 15px;
+    margin-right: 18.5px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
@@ -96,7 +98,7 @@ const HeaderContainer = styled.div`
 
 const HistoryHeader = (props) => {
   const {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkedEventIds,
     checkAllIds,
     emptyCheckedIds,
@@ -105,12 +107,10 @@ const HistoryHeader = (props) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
-    setTitleDefault,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
     navigate(-1);
-    setTitleDefault();
   };
   const { t } = useTranslation(["Webhooks", "Common", "InfoPanel"]);
   const { id } = useParams();
@@ -118,21 +118,25 @@ const HistoryHeader = (props) => {
   const handleGroupSelection = (isChecked) => {
     isChecked ? checkAllIds() : emptyCheckedIds();
   };
-  const SelectAll = () => {
-    () => checkAllIds();
-  };
 
   const handleRetryAll = async () => {
-    await retryWebhookEvents(checkedEventIds);
-    fetchHistoryItems({
-      configId: id,
-      count: 30,
-    });
-    toastr.success(
-      `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
-      <b>{t("Common:Done")}</b>,
-    );
-    emptyCheckedIds();
+    try {
+      await emptyCheckedIds();
+      const tempIds = checkedEventIds;
+      showLoader();
+      await retryWebhookEvents(tempIds);
+      hideLoader();
+      fetchHistoryItems({
+        configId: id,
+      });
+      toastr.success(
+        `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
+        <b>{t("Common:Done")}</b>,
+      );
+    } catch (error) {
+      console.log(error);
+      toastr.error(error);
+    }
   };
 
   const headerMenu = [
@@ -157,7 +161,7 @@ const HistoryHeader = (props) => {
         key="select-all-event-ids"
         label={t("Common:SelectAll")}
         data-index={0}
-        onClick={SelectAll}
+        onClick={checkAllIds}
       />
       <DropDownItem
         key="unselect-all-event-ids"
@@ -204,13 +208,13 @@ const HistoryHeader = (props) => {
   }, []);
 
   return (
-    <HeaderContainer isHeaderVisible={isHeaderVisible}>
+    <HeaderContainer>
       {isMobileOnly ? (
         <>
-          {isHeaderVisible && <GroupMenu />}
+          {isGroupMenuVisible && <GroupMenu />}
           <NavigationHeader />
         </>
-      ) : isHeaderVisible ? (
+      ) : isGroupMenuVisible ? (
         <GroupMenu />
       ) : (
         <NavigationHeader />
@@ -221,7 +225,7 @@ const HistoryHeader = (props) => {
 
 export default inject(({ webhooksStore, auth }) => {
   const {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkAllIds,
     emptyCheckedIds,
     checkedEventIds,
@@ -229,7 +233,6 @@ export default inject(({ webhooksStore, auth }) => {
     isIndeterminate,
     areAllIdsChecked,
     fetchHistoryItems,
-    setTitleDefault,
   } = webhooksStore;
 
   const { settingsStore } = auth;
@@ -237,7 +240,7 @@ export default inject(({ webhooksStore, auth }) => {
   const { theme } = settingsStore;
 
   return {
-    isHeaderVisible,
+    isGroupMenuVisible,
     checkAllIds,
     emptyCheckedIds,
     checkedEventIds,
@@ -246,6 +249,5 @@ export default inject(({ webhooksStore, auth }) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
-    setTitleDefault,
   };
 })(observer(HistoryHeader));

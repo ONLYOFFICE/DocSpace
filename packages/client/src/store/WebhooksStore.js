@@ -18,8 +18,9 @@ class WebhooksStore {
   startIndex = 0;
   totalItems = 0;
   developerToolsTab = 0;
-  titleType = "default"; // "default", "history" or "details"
   currentWebhook = {};
+  eventDetails = {};
+  FETCH_COUNT = 100;
 
   constructor() {
     makeAutoObservable(this);
@@ -110,27 +111,38 @@ class WebhooksStore {
   };
 
   fetchHistoryItems = async (params) => {
+    this.totalItems = 0;
     this.startIndex = 0;
-    const historyData = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
+    const count = params.count ? params.count : this.FETCH_COUNT;
+    const historyData = await getWebhooksJournal({
+      ...params,
+      startIndex: this.startIndex,
+      count: count,
+    });
     runInAction(() => {
-      this.startIndex = params.count;
+      this.startIndex = count;
       this.historyItems = historyData.items;
       this.totalItems = historyData.total;
     });
   };
   fetchMoreItems = async (params) => {
-    const historyData = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
+    const count = params.count ? params.count : this.FETCH_COUNT;
+    const historyData = await getWebhooksJournal({
+      ...params,
+      startIndex: this.startIndex,
+      count: count,
+    });
     runInAction(() => {
-      this.startIndex = this.startIndex + params.count;
+      this.startIndex = this.startIndex + count;
       this.historyItems = [...this.historyItems, ...historyData.items];
     });
   };
-  getEvent = async (eventId) => {
+  fetchEventData = async (eventId) => {
     const data = await getWebhooksJournal({ eventId });
-    return data.items[0];
+    this.eventDetails = data.items[0];
   };
   get hasMoreItems() {
-    return this.totalItems > this.historyItems.length;
+    return this.totalItems > this.startIndex;
   }
 
   get isWebhooksEmpty() {
@@ -203,19 +215,9 @@ class WebhooksStore {
     return this.checkedEventIds.length > 0 && !this.areAllIdsChecked;
   }
 
-  get isHeaderVisible() {
+  get isGroupMenuVisible() {
     return this.checkedEventIds.length !== 0;
   }
-
-  setTitleDefault = () => {
-    this.titleType = "default";
-  };
-  setTitleHistory = () => {
-    this.titleType = "history";
-  };
-  setTitleDetails = () => {
-    this.titleType = "details";
-  };
 }
 
 export default WebhooksStore;

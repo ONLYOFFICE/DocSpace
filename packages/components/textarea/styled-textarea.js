@@ -129,10 +129,6 @@ StyledTextarea.defaultProps = {
 const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
   <CopyIcon {...props} />
 ))`
-  position: absolute;
-  right: ${(props) =>
-    props.isJSONField && props.heightScale ? "16px" : "8px"};
-  top: 8px;
   width: 16px;
   height: 16px;
   z-index: 1;
@@ -144,6 +140,26 @@ const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
 `;
 
 StyledCopyIcon.defaultProps = {
+  theme: Base,
+};
+
+const CopyIconWrapper = styled.div`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  z-index: 2;
+
+  right: ${(props) =>
+    props.isJSONField && props.heightScale ? "18px" : "10px"};
+  top: 6px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.backgroundColor};
+`;
+
+CopyIconWrapper.defaultProps = {
   theme: Base,
 };
 
@@ -175,4 +191,11 @@ Numeration.defaultProps = {
   theme: Base,
 };
 
-export { StyledTextarea, StyledScrollbar, StyledCopyIcon, Wrapper, Numeration };
+export {
+  StyledTextarea,
+  StyledScrollbar,
+  StyledCopyIcon,
+  Wrapper,
+  Numeration,
+  CopyIconWrapper,
+};

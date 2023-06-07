@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styled, { css } from "styled-components";
 import Submenu from "@docspace/components/submenu";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -14,6 +15,18 @@ import SSOLoader from "./sub-components/ssoLoader";
 import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 import { useTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
+
+const StyledSubmenu = styled(Submenu)`
+  .sticky {
+    z-index: 201;
+    ${() =>
+      isMobileOnly &&
+      css`
+        top: 58px;
+      `}
+  }
+`;
 
 const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo, developerToolsTab, setTab } = props;
@@ -71,7 +84,7 @@ const DeveloperToolsWrapper = (props) => {
       <AppLoader />
     );
 
-  return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
+  return <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
 export default inject(({ setup, webhooksStore }) => {
