@@ -835,11 +835,11 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The number of links cannot be less than {0}.
+        ///   Looks up a localized string similar to The maximum number of links may not exceed {0}.
         /// </summary>
-        public static string ErrorMessage_MinLinksCount {
+        public static string ErrorMessage_MaxLinksCount {
             get {
-                return ResourceManager.GetString("ErrorMessage_MinLinksCount", resourceCulture);
+                return ResourceManager.GetString("ErrorMessage_MaxLinksCount", resourceCulture);
             }
         }
         

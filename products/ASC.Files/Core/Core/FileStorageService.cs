@@ -2587,10 +2587,7 @@ public class FileStorageService //: IFileStorageService
         FileEntry<T> entry = entryType == FileEntryType.File ? (await GetFileDao<T>().GetFileAsync(entryId)).NotFoundIfNull() 
             : (await GetFolderDao<T>().GetFolderAsync(entryId)).NotFoundIfNull();
 
-        var minLinksCount = (uint)(entry is Folder<T> { FolderType: FolderType.PublicRoom } ? 1 : 0);
-
-        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 
-            minLinksCount);
+        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 10);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3314,7 +3311,7 @@ public class FileStorageService //: IFileStorageService
     
     private async Task<List<AceWrapper>> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, string title, FileShare share, 
         IReadOnlyDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false, 
-        uint minLinksCount = 0)
+        int maxLinksCount = int.MaxValue)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
@@ -3330,16 +3327,16 @@ public class FileStorageService //: IFileStorageService
         
         if (share == FileShare.None)
         {
-            if (minLinksCount > 0 && links.Count - 1 < minLinksCount)
-            {
-                throw new InvalidOperationException(string.Format(FilesCommonResource.ErrorMessage_MinLinksCount, minLinksCount));
-            }
-
             action = EventType.Remove;
         }
         else if (links.Any(r => r.Subject == linkId))
         {
             action = EventType.Update;
+        }
+
+        if (action == EventType.Create && links.Count == maxLinksCount)
+        {
+            throw GenerateException(new InvalidOperationException(FilesCommonResource.ErrorMessage_MaxLinksCount));
         }
 
         var options = new FileShareOptions
