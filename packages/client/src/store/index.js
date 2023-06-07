@@ -36,8 +36,11 @@ import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
 
 import WebhooksStore from "./WebhooksStore";
+import ClientLoadingStore from "./ClientLoadingStore";
 
 const oformsStore = new OformsStore(authStore);
+
+const clientLoadingStore = new ClientLoadingStore();
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
@@ -52,7 +55,7 @@ const ssoStore = new SsoFormStore();
 
 const tagsStore = new TagsStore();
 
-const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
+const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
@@ -64,6 +67,7 @@ const filesStore = new FilesStore(
   settingsStore,
   thirdPartyStore,
   accessRightsStore,
+  clientLoadingStore,
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(filesStore, settingsStore);
@@ -79,12 +83,7 @@ const dialogsStore = new DialogsStore(
   versionHistoryStore,
 );
 
-const peopleStore = new PeopleStore(
-  authStore,
-  setupStore,
-  accessRightsStore,
-  dialogsStore,
-);
+const peopleStore = new PeopleStore(authStore, setupStore, accessRightsStore, dialogsStore);
 
 const uploadDataStore = new UploadDataStore(
   authStore,
@@ -107,6 +106,7 @@ const filesActionsStore = new FilesActionsStore(
   dialogsStore,
   mediaViewerDataStore,
   accessRightsStore,
+  clientLoadingStore,
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -156,7 +156,8 @@ const createEditRoomStore = new CreateEditRoomStore(
   thirdPartyStore,
   authStore.settingsStore,
   authStore.infoPanelStore,
-  authStore.currentQuotaStore
+  authStore.currentQuotaStore,
+  clientLoadingStore,
 );
 
 const webhooksStore = new WebhooksStore();
@@ -198,6 +199,7 @@ const store = {
   createEditRoomStore,
 
   webhooksStore,
+  clientLoadingStore,
 };
 
 export default store;

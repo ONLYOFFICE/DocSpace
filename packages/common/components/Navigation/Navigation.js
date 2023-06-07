@@ -50,6 +50,7 @@ const Navigation = ({
   isDesktop: isDesktopClient,
   isRoom,
   hideInfoPanel,
+  showRootFolderTitle,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -128,6 +129,36 @@ const Navigation = ({
     onBackToParentFolder && onBackToParentFolder();
   }, [onBackToParentFolder]);
 
+  const showRootFolderNavigation =
+    showRootFolderTitle &&
+    navigationItems &&
+    navigationItems.length > 1 &&
+    !isSmallTabletUtils() &&
+    !isMobileOnly;
+
+  const navigationTitleNode = (
+    <Text
+      title={title}
+      isOpen={false}
+      isRootFolder={isRootFolder}
+      onClick={toggleDropBox}
+    />
+  );
+
+  const navigationTitleContainerNode = showRootFolderNavigation ? (
+    <div className="title-container">
+      <Text
+        title={navigationItems[navigationItems.length - 2].title}
+        isOpen={false}
+        isRootFolder={isRootFolder}
+        isRootFolderTitle
+      />
+      {navigationTitleNode}
+    </div>
+  ) : (
+    navigationTitleNode
+  );
+
   return (
     <Consumer>
       {(context) => (
@@ -162,6 +193,7 @@ const Navigation = ({
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
                 isDesktopClient={isDesktopClient}
+                showRootFolderNavigation={showRootFolderNavigation}
               />
             </>
           )}
@@ -181,12 +213,9 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text
-              title={title}
-              isOpen={false}
-              isRootFolder={isRootFolder}
-              onClick={toggleDropBox}
-            />
+
+            {navigationTitleContainerNode}
+
             <ControlButtons
               personal={personal}
               isRootFolder={isRootFolder}
