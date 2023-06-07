@@ -105,19 +105,34 @@ export const DNSSettingsTooltip = ({
   currentColorScheme,
   helpLink,
   organizationName,
+  standalone,
 }) => {
   return (
     <StyledTooltip>
       <div className="font-size">
-        <Trans
-          ns="Settings"
-          i18nKey="DNSSettingsTooltip"
-          organizationName={organizationName}
-        >
-          DNS Settings allow you to set an alternative URL address for your
-          {{ organizationName }} space. Send your request to our support team,
-          and our specialists will help you with the settings.
-        </Trans>
+        {standalone ? (
+          <Trans
+            ns="Settings"
+            i18nKey="DNSSettingsTooltipStandalone"
+            organizationName={organizationName}
+          >
+            DNS Settings allow you to set an alternative URL address for your
+            {{ organizationName }} space. Check the 'Custom domain name box' and
+            specify your own domain name for the {{ organizationName }} portal
+            in the field below. To make the parameters you set take effect click
+            the 'Save button' at the bottom of the section.
+          </Trans>
+        ) : (
+          <Trans
+            ns="Settings"
+            i18nKey="DNSSettingsTooltip"
+            organizationName={organizationName}
+          >
+            DNS Settings allow you to set an alternative URL address for your
+            {{ organizationName }} space. Send your request to our support team,
+            and our specialists will help you with the settings.
+          </Trans>
+        )}
         <Link
           color={currentColorScheme.main.accent}
           className="display-block font-size"
