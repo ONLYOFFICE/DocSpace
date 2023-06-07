@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import moment from "moment";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -64,10 +64,7 @@ const HistoryTableRow = (props) => {
     },
   ];
 
-  const formattedDelivery = useMemo(
-    () => moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
-    [item],
-  );
+  const formattedDelivery = moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
 
   const onChange = (e) => {
     if (

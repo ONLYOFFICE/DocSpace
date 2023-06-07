@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import moment from "moment";
 import styled from "styled-components";
 
@@ -28,10 +28,7 @@ const StatusHeader = styled.div`
 `;
 
 export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
-  const formattedDelivery = useMemo(
-    () => moment(historyItem.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
-    [historyItem],
-  );
+  const formattedDelivery = moment(historyItem.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
