@@ -89,14 +89,18 @@ const ResponseDetails = ({ eventDetails }) => {
       <Text as="h3" fontWeight={600} className="mb-4 mt-7">
         {t("ResponsePostHeader")}
       </Text>
-      <Textarea
-        value={eventDetails.responseHeaders}
-        enableCopy
-        hasNumeration
-        isFullHeight
-        isJSONField
-        copyInfoText={t("ResponseHeaderCopied")}
-      />
+      {isJSON(eventDetails.responseHeaders) ? (
+        <Textarea
+          value={eventDetails.responseHeaders}
+          enableCopy
+          hasNumeration
+          isFullHeight
+          isJSONField
+          copyInfoText={t("ResponseHeaderCopied")}
+        />
+      ) : (
+        <Textarea value={eventDetails.responseHeaders} heightScale className="textareaBody" />
+      )}
       <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("ResponsePostBody")}
       </Text>
