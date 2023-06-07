@@ -10,6 +10,10 @@ import { useTranslation } from "react-i18next";
 const DetailsWrapper = styled.div`
   width: 100%;
 
+  .textareaBody {
+    height: 50vh !important;
+  }
+
   .mt-7 {
     margin-top: 7px;
   }
@@ -44,6 +48,15 @@ const ErrorMessageTooltip = styled.div`
   }
 `;
 
+function isJSON(jsonString) {
+  try {
+    const parsedJson = JSON.parse(jsonString);
+    return parsedJson && typeof parsedJson === "object";
+  } catch (e) {}
+
+  return false;
+}
+
 const RequestDetails = ({ eventDetails }) => {
   const { t } = useTranslation(["Webhooks"]);
 
@@ -74,14 +87,18 @@ const RequestDetails = ({ eventDetails }) => {
       <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("RequestPostBody")}
       </Text>
-      <Textarea
-        value={eventDetails.requestPayload}
-        isJSONField
-        enableCopy
-        hasNumeration
-        isFullHeight
-        copyInfoText={t("RequestBodyCopied")}
-      />
+      {isJSON(eventDetails.requestPayload) ? (
+        <Textarea
+          value={eventDetails.requestPayload}
+          isJSONField
+          enableCopy
+          hasNumeration
+          isFullHeight
+          copyInfoText={t("RequestBodyCopied")}
+        />
+      ) : (
+        <Textarea value={eventDetails.requestPayload} heightScale className="textareaBody" />
+      )}
     </DetailsWrapper>
   );
 };
