@@ -1957,6 +1957,7 @@ const Base = {
   navigation: {
     expanderColor: black,
     background: white,
+    rootFolderTitleColor: "#A3A9AE",
 
     icon: {
       fill: "#316DAA",
