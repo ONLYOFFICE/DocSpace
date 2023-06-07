@@ -120,18 +120,23 @@ const HistoryHeader = (props) => {
   };
 
   const handleRetryAll = async () => {
-    await emptyCheckedIds();
-    const tempIds = checkedEventIds;
-    showLoader();
-    await retryWebhookEvents(tempIds);
-    hideLoader();
-    fetchHistoryItems({
-      configId: id,
-    });
-    toastr.success(
-      `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
-      <b>{t("Common:Done")}</b>,
-    );
+    try {
+      await emptyCheckedIds();
+      const tempIds = checkedEventIds;
+      showLoader();
+      await retryWebhookEvents(tempIds);
+      hideLoader();
+      fetchHistoryItems({
+        configId: id,
+      });
+      toastr.success(
+        `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
+        <b>{t("Common:Done")}</b>,
+      );
+    } catch (error) {
+      console.log(error);
+      toastr.error(error);
+    }
   };
 
   const headerMenu = [
