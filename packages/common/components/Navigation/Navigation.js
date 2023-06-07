@@ -11,10 +11,10 @@ import { Consumer } from "@docspace/components/utils/context";
 
 import DomHelpers from "@docspace/components/utils/domHelpers";
 import Backdrop from "@docspace/components/backdrop";
+import { isMobileOnly } from "react-device-detect";
 
 import { ReactSVG } from "react-svg";
 import {
-  isMobile as isMobileUtils,
   isTablet as isTabletUtils,
   isDesktop as isDesktopUtils,
   isSmallTablet as isSmallTabletUtils,
