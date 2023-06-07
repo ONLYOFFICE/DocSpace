@@ -16,6 +16,13 @@ import copy from "copy-to-clipboard";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 
+const jsonify = (value, isJSONField) => {
+  if (isJSONField && value && isJSON(value)) {
+    return beautifyJSON(value);
+  }
+  return value;
+};
+
 const Textarea = ({
   className,
   id,
@@ -44,7 +51,7 @@ const Textarea = ({
 }) => {
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
-  const [modifiedValue, setModifiedValue] = useState(value);
+  const modifiedValue = jsonify(value, isJSONField);
 
   const lineHeight = 1.5;
   const padding = 7;
@@ -73,12 +80,8 @@ const Textarea = ({
   }
 
   useEffect(() => {
-    if (isJSONField) {
-      if (modifiedValue && isJSON(modifiedValue)) {
-        setModifiedValue(beautifyJSON(modifiedValue));
-      } else {
-        setIsError(true);
-      }
+    if (!isJSONField || !modifiedValue || !isJSON(modifiedValue)) {
+      setIsError(true);
     }
   }, [isJSONField]);
 
