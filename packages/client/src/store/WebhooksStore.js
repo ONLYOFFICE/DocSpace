@@ -215,7 +215,7 @@ class WebhooksStore {
     return this.checkedEventIds.length > 0 && !this.areAllIdsChecked;
   }
 
-  get isHeaderVisible() {
+  get isGroupMenuVisible() {
     return this.checkedEventIds.length !== 0;
   }
 }
