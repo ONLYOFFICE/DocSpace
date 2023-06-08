@@ -49,7 +49,10 @@ const Item = React.memo(({ index, style, data }: ItemProps) => {
     };
 
     const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target instanceof HTMLElement && e.target.closest(".checkbox"))
+      if (
+        (e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
+        !!e.target.closest(".checkbox")
+      )
         return;
 
       onSelect && onSelect(item);
