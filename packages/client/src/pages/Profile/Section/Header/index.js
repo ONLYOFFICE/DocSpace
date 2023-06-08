@@ -6,7 +6,7 @@ import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import IconButton from "@docspace/components/icon-button";
@@ -41,8 +41,11 @@ const Header = (props) => {
     isProfileLoaded,
   } = props;
 
-  const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
+
   const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
     useState(false);
 
@@ -86,14 +89,18 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    const url = filter.toUrlParams();
-    const backUrl = combineUrl(
-      window.DocSpaceConfig?.proxy?.url,
-      config.homepage,
-      `/accounts/filter?/${url}`
-    );
+    if (location?.state?.fromUrl) {
+      return navigate(location?.state?.fromUrl);
+    }
 
-    navigate(backUrl, url);
+    if (location.pathname.includes("portal-settings")) {
+      return navigate("/portal-settings/customization/general");
+    }
+
+    const url = filter.toUrlParams();
+    const backUrl = `/accounts/filter?/${url}`;
+
+    navigate(backUrl);
     setFilter(filter);
   };
 

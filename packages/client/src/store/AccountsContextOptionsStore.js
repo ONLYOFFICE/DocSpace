@@ -28,7 +28,7 @@ import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
-const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
+const PROFILE_SELF_URL = "/view/@self";
 
 class AccountsContextOptionsStore {
   authStore = null;
@@ -303,7 +303,11 @@ class AccountsContextOptionsStore {
   };
 
   onProfileClick = () => {
-    window.DocSpace.navigate(PROFILE_SELF_URL);
+    const prefix = window.location.pathname.includes("portal-settings")
+      ? "/portal-settings"
+      : "";
+
+    window.DocSpace.navigate(`${prefix}${PROFILE_SELF_URL}`);
   };
 
   toggleChangeNameDialog = () => {

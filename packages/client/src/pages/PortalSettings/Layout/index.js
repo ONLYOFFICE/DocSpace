@@ -26,6 +26,7 @@ const Layout = ({
   language,
   children,
   addUsers,
+  isGeneralPage,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -34,18 +35,20 @@ const Layout = ({
   return (
     <>
       <ArticleSettings />
-      <Section withBodyScroll={true} settingsStudio={true}>
-        <Section.SectionHeader>
-          <SectionHeaderContent />
-        </Section.SectionHeader>
+      {!isGeneralPage && (
+        <Section withBodyScroll={true} settingsStudio={true}>
+          <Section.SectionHeader>
+            <SectionHeaderContent />
+          </Section.SectionHeader>
 
-        <Section.SectionBody>{children}</Section.SectionBody>
-        {addUsers && (
-          <Section.SectionPaging>
-            <SectionPagingContent />
-          </Section.SectionPaging>
-        )}
-      </Section>
+          <Section.SectionBody>{children}</Section.SectionBody>
+          {addUsers && (
+            <Section.SectionPaging>
+              <SectionPagingContent />
+            </Section.SectionPaging>
+          )}
+        </Section>
+      )}
     </>
   );
 };

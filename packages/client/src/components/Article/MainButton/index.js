@@ -457,7 +457,7 @@ const ArticleMainButtonContent = (props) => {
     ? !isAccountsPage
     : !security?.Create;
 
-  const isProfile = location.pathname === "/accounts/view/@self";
+  const isProfile = location.pathname.includes("/view/@self");
 
   if (showArticleLoader)
     return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
