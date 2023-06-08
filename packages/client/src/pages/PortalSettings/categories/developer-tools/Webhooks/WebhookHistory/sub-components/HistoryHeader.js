@@ -107,10 +107,12 @@ const HistoryHeader = (props) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
+    historyFilters,
+    formatFilters,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
-    navigate(-1);
+    navigate("/portal-settings/developer-tools/webhooks");
   };
   const { t } = useTranslation(["Webhooks", "Common", "InfoPanel"]);
   const { id } = useParams();
@@ -126,7 +128,8 @@ const HistoryHeader = (props) => {
       showLoader();
       await retryWebhookEvents(tempIds);
       hideLoader();
-      fetchHistoryItems({
+      await fetchHistoryItems({
+        ...(historyFilters ? formatFilters(historyFilters) : {}),
         configId: id,
       });
       toastr.success(
@@ -233,6 +236,8 @@ export default inject(({ webhooksStore, auth }) => {
     isIndeterminate,
     areAllIdsChecked,
     fetchHistoryItems,
+    historyFilters,
+    formatFilters,
   } = webhooksStore;
 
   const { settingsStore } = auth;
@@ -249,5 +254,7 @@ export default inject(({ webhooksStore, auth }) => {
     areAllIdsChecked,
     fetchHistoryItems,
     theme,
+    historyFilters,
+    formatFilters,
   };
 })(observer(HistoryHeader));

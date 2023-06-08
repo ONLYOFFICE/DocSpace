@@ -9,9 +9,10 @@ import Link from "@docspace/components/link";
 import { isMobile } from "react-device-detect";
 
 const StatusBarWrapper = styled.div`
-  margin-top: 8px;
+  margin-top: 9px;
 
   .statusBarItem {
+    box-sizing: border-box;
     margin-right: 4px;
     ${isMobile &&
     css`
@@ -112,16 +113,16 @@ const StatusBar = (props) => {
       {SelectedStatuses}
       {((historyFilters.deliveryDate !== null && historyFilters.status.length > 0) ||
         historyFilters.status.length > 1) && (
-          <Link
-            type="action"
-            fontWeight={600}
-            isHovered={true}
-            onClick={clearAll}
-            color="#A3A9AE"
-            className="statusActionItem">
-            Clear all
-          </Link>
-        )}
+        <Link
+          type="action"
+          fontWeight={600}
+          isHovered={true}
+          onClick={clearAll}
+          color="#A3A9AE"
+          className="statusActionItem">
+          Clear all
+        </Link>
+      )}
     </StatusBarWrapper>
   );
 };

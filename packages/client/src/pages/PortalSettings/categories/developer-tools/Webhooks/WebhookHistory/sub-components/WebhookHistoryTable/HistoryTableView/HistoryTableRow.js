@@ -39,8 +39,16 @@ const StyledWrapper = styled.div`
 `;
 
 const HistoryTableRow = (props) => {
-  const { item, toggleEventId, isIdChecked, retryWebhookEvent, hideColumns, fetchHistoryItems } =
-    props;
+  const {
+    item,
+    toggleEventId,
+    isIdChecked,
+    retryWebhookEvent,
+    hideColumns,
+    fetchHistoryItems,
+    historyFilters,
+    formatFilters,
+  } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -49,6 +57,7 @@ const HistoryTableRow = (props) => {
   const handleRetryEvent = async () => {
     await retryWebhookEvent(item.id);
     await fetchHistoryItems({
+      ...(historyFilters ? formatFilters(historyFilters) : {}),
       configId: id,
     });
     toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
@@ -110,7 +119,21 @@ const HistoryTableRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems } = webhooksStore;
+  const {
+    toggleEventId,
+    isIdChecked,
+    retryWebhookEvent,
+    fetchHistoryItems,
+    historyFilters,
+    formatFilters,
+  } = webhooksStore;
 
-  return { toggleEventId, isIdChecked, retryWebhookEvent, fetchHistoryItems };
+  return {
+    toggleEventId,
+    isIdChecked,
+    retryWebhookEvent,
+    fetchHistoryItems,
+    historyFilters,
+    formatFilters,
+  };
 })(observer(HistoryTableRow));

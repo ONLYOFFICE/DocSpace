@@ -9,6 +9,8 @@ import Button from "@docspace/components/button";
 import DeliveryDatePicker from "./DeliveryDatePicker";
 import StatusPicker from "./StatusPicker";
 
+import { useParams, useNavigate } from "react-router-dom";
+
 import { useTranslation } from "react-i18next";
 
 import { Base } from "@docspace/components/themes";
@@ -43,10 +45,22 @@ const Separator = styled.hr`
 
 Separator.defaultProps = { theme: Base };
 
+const constructUrl = (baseUrl, filters) => {
+  const url = new URL(baseUrl, "http://127.0.0.1:8092/");
+  url.searchParams.append("deliveryDate", filters.deliveryDate?.format("YYYY-MM-DD") || null);
+  url.searchParams.append("deliveryFrom", filters.deliveryFrom.format("HH:mm"));
+  url.searchParams.append("deliveryTo", filters.deliveryTo.format("HH:mm"));
+  url.searchParams.append("status", JSON.stringify(filters.status));
+
+  return url.pathname + url.search;
+};
+
 const FilterDialog = (props) => {
   const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters, historyFilters } =
     props;
   const { t } = useTranslation(["Webhooks", "Files", "Common"]);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     deliveryDate: null,
@@ -57,6 +71,8 @@ const FilterDialog = (props) => {
 
   const [isApplied, setIsApplied] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleApplyFilters = () => {
     if (filters.deliveryTo > filters.deliveryFrom) {
@@ -71,19 +87,24 @@ const FilterDialog = (props) => {
   };
 
   useEffect(() => {
-    console.log(historyFilters);
-    if (historyFilters === null && (filters.deliveryDate !== null || filters.status.length > 0)) {
-      setFilters({
-        deliveryDate: null,
-        deliveryFrom: moment().startOf("day"),
-        deliveryTo: moment().endOf("day"),
-        status: [],
-      });
-    } else if (historyFilters !== null) {
+    console.log(historyFilters, "history filters");
+    if (historyFilters === null) {
+      if (filters.deliveryDate !== null || filters.status.length > 0) {
+        setFilters({
+          deliveryDate: null,
+          deliveryFrom: moment().startOf("day"),
+          deliveryTo: moment().endOf("day"),
+          status: [],
+        });
+      }
+      isLoaded && navigate(`/portal-settings/developer-tools/webhooks/${id}`);
+    } else {
       setFilters(historyFilters);
       setIsTimeOpen(false);
       setIsApplied(true);
+      navigate(constructUrl(`/portal-settings/developer-tools/webhooks/${id}`, historyFilters));
     }
+    setIsLoaded(true);
   }, [historyFilters, visible]);
 
   return (
