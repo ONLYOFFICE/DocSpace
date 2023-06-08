@@ -53,6 +53,7 @@
   "CompanyInfoSettingsDescription": "Queste informazioni verranno visualizzate nella finestra <1>{{link}}</1>.",
   "ConfirmEmailSended": "Un messaggio e-mail di conferma è stato spedito a {{ownerName}}",
   "Custom": "Personalizzato",
+  "CustomDomainName": "Nome di dominio personalizzato",
   "CustomDomains": "Domini personalizzati",
   "Customization": "Personalizzazione",
   "CustomizationDescription": "Questa sottosezione ti consente di cambiare l'aspetto del tuo spazio. Puoi utilizzare il logo, il nome e il testo della tua azienda in modo che corrispondano al marchio della tua organizzazione.",

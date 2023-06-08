@@ -53,6 +53,7 @@
   "CompanyInfoSettingsDescription": "Diese Informationen werden im Fenster <1>{{link}}</1> angezeigt.",
   "ConfirmEmailSended": "Bestätiguns-E-Mail wurde an {{ownerName}} gesendet.",
   "Custom": "Benutzerdefiniert",
+  "CustomDomainName": "Benutzerdefinierter Domänenname",
   "CustomDomains": "Benutzerdefinierte Domains",
   "Customization": "Anpassung",
   "CustomizationDescription": "Dieser Unterabschnitt ermöglicht es Ihnen, das Aussehen Ihres Bereichs zu ändern. Sie können Ihr eigenes Unternehmenslogo, den Namen und Text verwenden, sodass Ihr Bereich zum Design Ihres Produkts passt.",

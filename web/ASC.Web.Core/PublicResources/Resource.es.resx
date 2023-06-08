@@ -916,4 +916,25 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios recibir notificaciones sobre mensajes incluso offline. {0}Vaya a la consola Firebase y añada un nuevo proyecto para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Conecte el servicio Google Cloud Storage para hacer una copia de seguridad y almacenar los datos de su portal. {0}Vaya a la Consola de la Plataforma Google Cloud y cree una nueva cuenta de servicio para ONLYOFFICE. Pegue los datos que recibió a continuación:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Conecte el servicio Rackspace Cloud Storage service para hacer una copia de seguridad y almacenar los datos de su portal. {0}En los ajustes de seguridad del Panel de Control de Rackspace Cloud, haga clic en el enlace Mostrar junto a la Clave API de Rackspace. Pegue los datos que recibió a continuación:</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando Microsoft. {0}Vaya a Microsoft Azure y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que usted recibió a continuación:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Conecte Amazon AWS S3 para hacer una copia de seguridad y almacenar los datos de su portal. {0}Vaya a la consola de gestión de AWS y cree claves de acceso para ONLYOFFICE. Pegue los datos que recibió a continuación:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Conecte el servicio Selectel Cloud Storage service para hacer una copia de seguridad y almacenar los datos de su portal. {0}Obtenga los datos de acceso para un usuario con derechos de Lectura/Escritura para los contenedores donde planea almacenar sus copias de seguridad y péguelos debajo:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Habilite la aplicación para publicar fácilmente documentos en su sitio web de WordPress. {0}En la página de Desarrolladores de Wordpress, cree una nueva aplicación para la integración de ONLYOFFICE. Pegue los datos que recibió a continuación:</value>
+  </data>
 </root>
