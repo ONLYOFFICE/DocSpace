@@ -3,7 +3,7 @@ ARG BUILD_PATH="/var/www"
 ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
 ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
 
-FROM $DOTNET_SDK AS dotnet-base
+FROM $DOTNET_SDK AS base
 
 ARG SRC_PATH
 ARG BUILD_PATH
