@@ -247,6 +247,7 @@ const SectionFilterContent = ({
   accountsFilter,
   showFilterLoader,
   isPublicRoom,
+  publicKey,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -254,6 +255,14 @@ const SectionFilterContent = ({
   const isAccountsPage = location.pathname.includes("accounts");
 
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
+  const onNavigate = (path, filter) => {
+    if (isPublicRoom) {
+      navigate(`${path}?key=${publicKey}&${filter.toUrlParams()}`);
+    } else {
+      navigate(`${path}/filter?${filter.toUrlParams()}`);
+    }
+  };
 
   const onFilter = React.useCallback(
     (data) => {
@@ -374,7 +383,7 @@ const SectionFilterContent = ({
           newFilter.roomId = roomId;
         }
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [
@@ -413,7 +422,7 @@ const SectionFilterContent = ({
 
       const path = location.pathname.split("/filter")[0];
 
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+      onNavigate(path, newFilter);
     }
   }, [
     isRooms,
@@ -455,7 +464,7 @@ const SectionFilterContent = ({
 
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [
@@ -498,7 +507,7 @@ const SectionFilterContent = ({
       } else {
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [isRooms, isAccountsPage, setIsLoading, filter, roomsFilter, accountsFilter]
@@ -1946,7 +1955,7 @@ const SectionFilterContent = ({
 
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [isRooms, isAccountsPage, setIsLoading, roomsFilter, filter, accountsFilter]
@@ -1982,7 +1991,7 @@ const SectionFilterContent = ({
 
       const path = location.pathname.split("/filter")[0];
 
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+      onNavigate(path, newFilter);
     }
   };
 
@@ -2077,6 +2086,7 @@ export default inject(
     const { groups } = groupsStore;
 
     const { filter: accountsFilter } = filterStore;
+    const { isPublicRoom, publicKey } = publicRoomStore;
 
     return {
       user,
@@ -2119,7 +2129,8 @@ export default inject(
       groups,
 
       accountsFilter,
-      isPublicRoom: publicRoomStore.isPublicRoom,
+      isPublicRoom,
+      publicKey,
     };
   }
 )(

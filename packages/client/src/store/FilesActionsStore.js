@@ -2022,6 +2022,9 @@ class FilesActionStore {
 
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
+    if (this.publicRoomStore.isPublicRoom && item.isFolder)
+      return this.moveToPublicRoom(item.id);
+
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);
     };
@@ -2112,13 +2115,12 @@ class FilesActionStore {
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
-    const isPublicRoom = this.publicRoomStore.isPublicRoom;
 
     const urlFilter = getObjectByLocation(location);
 
     const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
 
-    if (isPublicRoom) {
+    if (this.publicRoomStore.isPublicRoom) {
       return this.backToParentFolder();
     }
 
@@ -2199,7 +2201,32 @@ class FilesActionStore {
     window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
+  moveToPublicRoom = (folderId) => {
+    const { navigationPath, rootFolderType } = this.selectedFolderStore;
+    const { publicKey } = this.publicRoomStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const id = folderId ? folderId : this.selectedFolderStore.parentId;
+    const path = getCategoryUrl(CategoryType.PublicRoom);
+    const filter = FilesFilter.getDefault();
+    filter.folder = id;
+
+    const state = {
+      title: navigationPath[0]?.title || "",
+      isRoot: navigationPath.length === 1,
+      rootFolderType: rootFolderType,
+    };
+
+    setIsSectionFilterLoading(true);
+    window.DocSpace.navigate(
+      `${path}?key=${publicKey}&${filter.toUrlParams()}`,
+      { state }
+    );
+  };
+
   backToParentFolder = () => {
+    if (this.publicRoomStore.isPublicRoom) return this.moveToPublicRoom();
+
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const setIsLoading = (param) => {

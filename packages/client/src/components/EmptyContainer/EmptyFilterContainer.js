@@ -23,6 +23,8 @@ const EmptyFilterContainer = ({
   isRoomsFolder,
   setClearSearch,
   theme,
+  isPublicRoom,
+  publicKey,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +51,13 @@ const EmptyFilterContainer = ({
 
       newFilter.folder = selectedFolderId;
 
-      navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
+      if (isPublicRoom) {
+        navigate(
+          `${location.pathname}?key=${publicKey}&${newFilter.toUrlParams()}`
+        );
+      } else {
+        navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
+      }
     }
   };
 
@@ -89,10 +97,12 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     clientLoadingStore,
+    publicRoomStore,
   }) => {
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
+    const { isPublicRoom, publicKey } = publicRoomStore;
 
     return {
       selectedFolderId: selectedFolderStore.id,
@@ -102,6 +112,9 @@ export default inject(
       isRoomsFolder,
       setClearSearch: filesStore.setClearSearch,
       theme: auth.settingsStore.theme,
+
+      isPublicRoom,
+      publicKey,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

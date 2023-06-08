@@ -199,6 +199,7 @@ const SectionHeaderContent = (props) => {
     downloadAction,
     isPublicRoomType,
     externalLinks,
+    moveToPublicRoom,
   } = props;
 
   const navigate = useNavigate();
@@ -836,6 +837,10 @@ const SectionHeaderContent = (props) => {
   };
 
   const onClickFolder = (id, isRootRoom) => {
+    if (isPublicRoom) {
+      return moveToPublicRoom(id);
+    }
+
     if (isRootRoom) {
       return moveToRoomsPage();
     }
@@ -1106,6 +1111,7 @@ export default inject(
       moveToRoomsPage,
       onClickBack,
       emptyTrashInProgress,
+      moveToPublicRoom,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -1241,6 +1247,7 @@ export default inject(
       isPublicRoomType,
       isPublicRoom: publicRoomStore.isPublicRoom,
       externalLinks: publicRoomStore.roomLinks,
+      moveToPublicRoom,
 
       getAccountsHeaderMenu,
       isAccountsHeaderVisible,
