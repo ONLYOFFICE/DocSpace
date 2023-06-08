@@ -14,6 +14,7 @@ import { BodyProps } from "./Body.types";
 
 const CONTAINER_PADDING = 16;
 const HEADER_HEIGHT = 54;
+const BREAD_CRUMBS_HEIGHT = 54;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
