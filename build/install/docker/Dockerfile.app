@@ -3,18 +3,31 @@ ARG BUILD_PATH="/var/www"
 ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
 ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
 
-FROM $DOTNET_SDK AS base
+FROM $DOTNET_SDK AS dotnet-base
+
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG BUILD_DOTNET_CORE_ARGS
+ENV BUILD_DOTNET_CORE_ARGS="${BUILD_DOTNET_CORE_ARGS}"
+ARG PROPERTY_BUILD="all"
+ARG BACKEND_NODEJS_SERVICES
+ENV BACKEND_NODEJS_SERVICES="${BACKEND_NODEJS_SERVICES}"
+ARG BACKEND_DOTNETCORE_SERVICES
+ENV BACKEND_DOTNETCORE_SERVICES="${BACKEND_DOTNETCORE_SERVICES}"
+ARG SELF_CONTAINED=""
+ARG PUBLISH_BACKEND_ARGS
+ENV PUBLISH_BACKEND_ARGS="${PUBLISH_BACKEND_ARGS}"
+ARG PUBLISH_CNF="Release"
+ARG YARN_FRONTEND_BUILD_ARGS="build"
+ARG YARN_FRONTEND_DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO_CHECK="true"
+ARG MIGRATION_CHECK="true"
+
+ARG GIT_BRANCH="master"
 ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PRODUCT_VERSION=0.0.0
 ARG BUILD_NUMBER=0
-ARG GIT_BRANCH="master"
-ARG SRC_PATH
-ARG BUILD_PATH
-ARG BUILD_ARGS="build"
-ARG DEPLOY_ARGS="deploy"
-ARG DEBUG_INFO="true"
-ARG PUBLISH_CNF="Release"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
@@ -50,9 +63,16 @@ RUN cd ${SRC_PATH} && \
     sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
-    bash build-frontend.sh -sp "${SRC_PATH}" -ba "${BUILD_ARGS}" -da "${DEPLOY_ARGS}" -di "${DEBUG_INFO}" && \
-    bash build-backend.sh -sp "${SRC_PATH}"  && \
-    bash publish-backend.sh -pc "${PUBLISH_CNF}" -sp "${SRC_PATH}" -bp "${BUILD_PATH}"  && \
+    bash build-services.sh \
+    -sp "${SRC_PATH}" \
+    -bp "${BUILD_PATH}" \
+    -pb "${PROPERTY_BUILD}" \
+    -sc "${SELF_CONTAINED}" \
+    -pc "${PUBLISH_CNF}" \
+    -yb "${YARN_FRONTEND_BUILD_ARGS}" \
+    -yd "${YARN_FRONTEND_DEPLOY_ARGS}" \
+    -dc "${DEBUG_INFO_CHECK}" \
+    -mc "${MIGRATION_CHECK}" && \
     cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
     rm -rf ${SRC_PATH}/common/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
@@ -222,7 +242,7 @@ FROM dotnetrun AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/server/ .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
 
@@ -251,7 +271,7 @@ FROM dotnetrun AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.People/server/ .
 
 CMD ["ASC.People.dll", "ASC.People"]
 
@@ -334,8 +354,8 @@ RUN mkdir -p /app/appserver/ASC.Files/server && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY --from=base /var/www/products/ASC.Files/server/ /app/appserver/ASC.Files/server/
-COPY --from=base /var/www/products/ASC.People/server/ /app/appserver/ASC.People/server/
+COPY --from=base /var/www/services/ASC.Files/server/ /app/appserver/ASC.Files/server/
+COPY --from=base /var/www/services/ASC.People/server/ /app/appserver/ASC.People/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##
