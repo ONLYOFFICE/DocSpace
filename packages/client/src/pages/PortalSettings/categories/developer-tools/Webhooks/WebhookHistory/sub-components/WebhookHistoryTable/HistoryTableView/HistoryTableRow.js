@@ -90,7 +90,7 @@ const HistoryTableRow = (props) => {
     <StyledWrapper className={isChecked ? "selected-table-row" : ""} onClick={onChange}>
       <StyledTableRow contextOptions={contextOptions} checked={isChecked} hideColumns={hideColumns}>
         <TableCell>
-          <TableCell checked={isChecked} className="noPadding">
+          <TableCell checked={isChecked} className="checkboxWrapper">
             <Checkbox onChange={onChange} isChecked={isChecked} />
           </TableCell>
 

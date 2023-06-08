@@ -26,8 +26,9 @@ const TableWrapper = styled(TableContainer)`
     font-size: 12px;
   }
 
-  .noPadding {
+  .checkboxWrapper {
     padding: 0;
+    padding-left: 8px;
   }
 
   .table-list-item {
