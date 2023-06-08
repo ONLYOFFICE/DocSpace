@@ -1,24 +1,13 @@
 import React, { useEffect } from "react";
 import moment from "moment";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import SelectedItem from "@docspace/components/selected-item";
+import SelectedItem from "./SelectedItem";
 import Link from "@docspace/components/link";
-
-import { isMobile } from "react-device-detect";
 
 const StatusBarWrapper = styled.div`
   margin-top: 9px;
-
-  .statusBarItem {
-    box-sizing: border-box;
-    margin-right: 4px;
-    ${isMobile &&
-    css`
-      margin-bottom: 4px;
-    `}
-  }
 
   .statusBarItem:last-of-type {
     margin-right: 0;
@@ -52,33 +41,30 @@ const StatusBar = (props) => {
   const SelectedDateTime = () => {
     return (
       <SelectedItem
-        onClose={clearDate}
-        text={
+        label={
           moment(historyFilters.deliveryDate).format("DD MMM YYYY") +
           " " +
           moment(historyFilters.deliveryFrom).format("HH:mm") +
           " - " +
           moment(historyFilters.deliveryTo).format("HH:mm")
         }
-        className="statusBarItem"
+        removeSelectedItem={clearDate}
       />
     );
   };
 
   const SelectedDate = () => (
     <SelectedItem
-      onClose={clearDate}
-      text={moment(historyFilters.deliveryDate).format("DD MMM YYYY")}
-      className="statusBarItem"
+      label={moment(historyFilters.deliveryDate).format("DD MMM YYYY")}
+      removeSelectedItem={clearDate}
     />
   );
 
   const SelectedStatuses = historyFilters.status.map((statusCode) => (
     <SelectedItem
-      onClose={() => unselectStatus(statusCode)}
-      text={statusCode}
+      label={statusCode}
       key={statusCode}
-      className="statusBarItem"
+      removeSelectedItem={() => unselectStatus(statusCode)}
     />
   ));
 
