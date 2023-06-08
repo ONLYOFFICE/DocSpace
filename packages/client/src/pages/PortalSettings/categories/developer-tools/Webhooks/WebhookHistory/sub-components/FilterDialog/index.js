@@ -55,6 +55,10 @@ const constructUrl = (baseUrl, filters) => {
   return url.pathname + url.search;
 };
 
+function areArraysEqual(array1, array2) {
+  return array1.length === array2.length && array1.every((val, index) => val === array2[index]);
+}
+
 const FilterDialog = (props) => {
   const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters, historyFilters } =
     props;
@@ -87,7 +91,6 @@ const FilterDialog = (props) => {
   };
 
   useEffect(() => {
-    console.log(historyFilters, "history filters");
     if (historyFilters === null) {
       if (filters.deliveryDate !== null || filters.status.length > 0) {
         setFilters({
@@ -106,6 +109,14 @@ const FilterDialog = (props) => {
     }
     setIsLoaded(true);
   }, [historyFilters, visible]);
+
+  const areFiltersChanged =
+    historyFilters !== null
+      ? areArraysEqual(filters.status, historyFilters.status) &&
+        filters.deliveryDate === historyFilters?.deliveryDate &&
+        filters.deliveryFrom === historyFilters.deliveryFrom &&
+        filters.deliveryTo === historyFilters.deliveryTo
+      : filters.deliveryDate === null && filters.status.length === 0;
 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={closeModal} displayType="aside">
@@ -126,18 +137,19 @@ const FilterDialog = (props) => {
           <Separator />
         </DialogBodyWrapper>
       </ModalDialog.Body>
-
-      <ModalDialog.Footer>
-        <Footer>
-          <Button
-            label={t("Common:ApplyButton")}
-            size="normal"
-            primary={true}
-            onClick={handleApplyFilters}
-          />
-          <Button label={t("Common:CancelButton")} size="normal" onClick={closeModal} />
-        </Footer>
-      </ModalDialog.Footer>
+      {!areFiltersChanged && (
+        <ModalDialog.Footer>
+          <Footer>
+            <Button
+              label={t("Common:ApplyButton")}
+              size="normal"
+              primary={true}
+              onClick={handleApplyFilters}
+            />
+            <Button label={t("Common:CancelButton")} size="normal" onClick={closeModal} />
+          </Footer>
+        </ModalDialog.Footer>
+      )}
     </ModalDialog>
   );
 };
