@@ -1,6 +1,6 @@
 {
-  "ActivateLicenseActivated": "License activated",
   "ActivateLicense": "Activate license",
+  "ActivateLicenseActivated": "License activated",
   "ActivatePurchaseBuyLicense": "To buy license, click the button below.",
   "ActivatePurchaseBuyNow": "Buy now",
   "ActivatePurchaseRenewLicense": "To continue getting support and updates, buy a renewal.",
@@ -17,7 +17,6 @@
   "TopBottonsEnterpriseExpired": "Your subscription to support and updates has expired",
   "TopBottonsEnterpriseWarning": "Your subscription to support and updates is expiring on {{date}}",
   "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
-  "UpgradeToProBannerInstructionReadNow": "Read now",
   "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
   "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
   "UpgradeToProBannerInformationPurchase": "Ask purchase questions at <1>{{email}}</1>",
@@ -28,6 +27,7 @@
   "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
   "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
   "UpgradeToProBannerInstructionNote": "Please note that the editors will be unavailable during the upgrade. We also recommend to <1>backup your data</1> before you start.",
+  "UpgradeToProBannerInstructionReadNow": "Read now",
   "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
   "UpgradeToProBannerItemLicenseHeader": "Lifetime license.",
   "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers.",
