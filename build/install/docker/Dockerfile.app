@@ -73,7 +73,7 @@ RUN cd ${SRC_PATH} && \
     -yd "${YARN_FRONTEND_DEPLOY_ARGS}" \
     -dc "${DEBUG_INFO_CHECK}" \
     -mc "${MIGRATION_CHECK}" && \
-    cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
+    #cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
     rm -rf ${SRC_PATH}/common/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
     rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
@@ -243,6 +243,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/products/ASC.Files/Server/DocStore .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
 
