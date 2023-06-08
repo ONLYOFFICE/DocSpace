@@ -213,7 +213,6 @@ function run {
         publish_dotnetcore_backend
 		;;
       backend-nodejs-publish )
-        build_dotnetcore_backend "${MIGRATION_CHECK}"
         build_nodejs_backend
 		;;
       backend-build )
