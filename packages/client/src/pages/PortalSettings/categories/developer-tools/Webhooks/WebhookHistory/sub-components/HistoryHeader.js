@@ -184,11 +184,11 @@ const HistoryHeader = (props) => {
       <Headline type="content" truncate={true} className="headline">
         {t("InfoPanel:SubmenuHistory")}
       </Headline>
-      <Hint
+      {/* <Hint
         backgroundColor={theme.isBase ? "#F8F9F9" : "#3D3D3D"}
         color={theme.isBase ? "#555F65" : "#FFFFFF"}>
         {t("EventHint")}
-      </Hint>
+      </Hint> */}
     </>
   );
 
