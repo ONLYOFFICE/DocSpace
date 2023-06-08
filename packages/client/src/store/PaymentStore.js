@@ -215,15 +215,14 @@ class PaymentStore {
 
   acceptPaymentsLicense = async (t) => {
     try {
-      const { currentTariffStatusStore, currentQuotaStore } = authStore;
-      const { setPortalQuota } = currentQuotaStore;
-      const { setPortalTariff } = currentTariffStatusStore;
+      const { getTenantExtra } = authStore;
 
       await acceptLicense();
+
       toastr.success(t("ActivateLicenseActivated"));
       localStorage.removeItem("enterpriseAlertClose");
 
-      await Promise.all([setPortalTariff(), setPortalQuota()]);
+      await getTenantExtra();
     } catch (e) {
       toastr.error(e);
     }
