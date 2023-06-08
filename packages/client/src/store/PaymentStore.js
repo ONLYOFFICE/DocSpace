@@ -156,10 +156,38 @@ class PaymentStore {
       });
   };
 
-  standaloneInit = async () => {
-    if (this.isInitPaymentPage) return;
+  standaloneBasicSettings = async (t) => {
+    const { getTenantExtra } = authStore;
 
-    await this.getSettingsPayment();
+    this.setIsUpdatingBasicSettings(true);
+
+    try {
+      await getTenantExtra();
+    } catch (e) {
+      toastr.error(t("Common:UnexpectedError"));
+
+      return;
+    }
+
+    this.setIsUpdatingBasicSettings(false);
+  };
+
+  standaloneInit = async (t) => {
+    const { getTenantExtra } = authStore;
+
+    if (this.isInitPaymentPage) {
+      this.standaloneBasicSettings(t);
+
+      return;
+    }
+
+    try {
+      await Promise.all([this.getSettingsPayment(), getTenantExtra()]);
+    } catch (error) {
+      toastr.error(t("Common:UnexpectedError"));
+      console.error(error);
+      return;
+    }
 
     this.isInitPaymentPage = true;
   };
