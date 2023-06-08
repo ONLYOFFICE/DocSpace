@@ -148,6 +148,9 @@ const StyledVersionRow = styled(Row)`
       margin-top: -1px;
     }
   }
+  .version-link-file:first-child {
+    margin-bottom: 4px;
+  }
 
   .icon-link {
     width: 10px;
