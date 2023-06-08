@@ -17,6 +17,7 @@ const InfoText = styled(Text)`
   max-width: 660px;
   white-space: break-spaces;
   margin: 0 0 8px 0;
+  line-height: 20px;
 
   color: ${(props) => (props.theme.isBase ? "#657077" : "rgba(255, 255, 255, 0.6)")};
   &:hover {
@@ -42,7 +43,12 @@ const WebhookInfo = (props) => {
   return (
     <InfoWrapper>
       <InfoText as="p">{t("WebhooksInfo")}</InfoText>
-      <StyledGuideLink fontWeight={600} isHovered type="page" href={webhooksGuideUrl} target="_blank">
+      <StyledGuideLink
+        fontWeight={600}
+        isHovered
+        type="page"
+        href={webhooksGuideUrl}
+        target="_blank">
         {t("WebhooksGuide")}
       </StyledGuideLink>
     </InfoWrapper>

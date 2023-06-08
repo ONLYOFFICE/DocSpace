@@ -15,10 +15,11 @@ import SSOLoader from "./sub-components/ssoLoader";
 import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 import { useTranslation } from "react-i18next";
-import { isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledSubmenu = styled(Submenu)`
   .sticky {
+    margin-top: ${() => (isMobile ? "0" : "4px")};
     z-index: 201;
     ${() =>
       isMobileOnly &&

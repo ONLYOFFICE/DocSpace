@@ -15,6 +15,10 @@ import { Base } from "@docspace/components/themes";
 const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
 
+  .header-container-text {
+    font-size: 12px;
+  }
+
   .table-container_header {
     position: absolute;
   }
