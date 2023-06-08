@@ -92,11 +92,9 @@ class PaymentStore {
     } = authStore;
     const { setPayerInfo } = currentTariffStatusStore;
     const { addedManagersCount } = currentQuotaStore;
-    const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
+    const { setPortalPaymentQuotas } = paymentQuotasStore;
 
-    const requests = [this.getSettingsPayment()];
-
-    if (!isLoaded) requests.push(setPortalPaymentQuotas());
+    const requests = [this.getSettingsPayment(), setPortalPaymentQuotas()];
 
     this.isAlreadyPaid
       ? requests.push(this.setPaymentAccount())
