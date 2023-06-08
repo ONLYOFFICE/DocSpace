@@ -164,32 +164,6 @@ const selectedItemTag = css`
     props.theme.filterInput.filter.selectedItem.border};
 `;
 
-const StyledFilterBlockItemTag = styled.div`
-  height: 28px;
-  max-height: 28px;
-
-  max-width: 100%;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  border: ${(props) => props.theme.filterInput.filter.border};
-  border-radius: 16px;
-
-  box-sizing: border-box;
-
-  padding: 4px 15px;
-
-  cursor: pointer;
-
-  ${(props) => props.isSelected && selectedItemTag}
-
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-`;
-
-StyledFilterBlockItemTag.defaultProps = { theme: Base };
-
 const selectedItemTagText = css`
   color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
   font-weight: 600;
@@ -346,7 +320,6 @@ export {
   StyledFilterBlockItemContent,
   StyledFilterBlockItemSelector,
   StyledFilterBlockItemSelectorText,
-  StyledFilterBlockItemTag,
   StyledFilterBlockItemTagText,
   StyledFilterBlockItemTagIcon,
   StyledFilterBlockItemToggle,

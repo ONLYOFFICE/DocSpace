@@ -4,7 +4,6 @@ import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
-import axios from "axios";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import { Trans } from "react-i18next";
 import CurrentUsersCountContainer from "./sub-components/CurrentUsersCount";
@@ -49,9 +48,7 @@ const StyledBody = styled.div`
 `;
 
 let timeout = null,
-  CancelToken,
-  source;
-
+  controller;
 const PriceCalculation = ({
   t,
   theme,
@@ -92,14 +89,11 @@ const PriceCalculation = ({
 
     timeout && clearTimeout(timeout);
     timeout = setTimeout(() => {
-      if (source) {
-        source.cancel();
-      }
+      if (controller) controller.abort();
 
-      CancelToken = axios.CancelToken;
-      source = CancelToken.source();
+      controller = new AbortController();
 
-      getPaymentLink(source.token).finally(() => {
+      getPaymentLink(controller.signal).finally(() => {
         setIsLoading(false);
       });
     }, 1000);

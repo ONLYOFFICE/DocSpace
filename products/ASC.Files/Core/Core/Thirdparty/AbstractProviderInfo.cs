@@ -293,19 +293,13 @@ public class DisposableWrapper : IDisposable
         return _storages.TryGetValue(providerId, out storage);
     }
 
-
-    private Task CheckTokenAsync<T>(OAuth20Token token, int id) where T : Consumer, IOAuthProvider, new()
+    private async ValueTask CheckTokenAsync<T>(OAuth20Token token, int id) where T : Consumer, IOAuthProvider, new()
     {
         if (token == null)
         {
             throw new UnauthorizedAccessException("Cannot create third party session with given token");
         }
 
-        return InternalCheckTokenAsync<T>(token, id);
-    }
-
-    private async Task InternalCheckTokenAsync<T>(OAuth20Token token, int id) where T : Consumer, IOAuthProvider, new()
-    {
         if (token.IsExpired)
         {
             token = _oAuth20TokenHelper.RefreshToken<T>(_consumerFactory, token);

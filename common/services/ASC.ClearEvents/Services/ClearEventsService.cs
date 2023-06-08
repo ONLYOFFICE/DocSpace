@@ -43,7 +43,7 @@ public class ClearEventsService : IHostedService, IDisposable
     {
         _logger.InformationTimerRunnig();
 
-        _timer = new Timer(DeleteOldEvents, null, TimeSpan.Zero,
+        _timer = new Timer(async state => await DeleteOldEventsAsync(state), null, TimeSpan.Zero,
             TimeSpan.FromDays(1));
 
         return Task.CompletedTask;
@@ -75,12 +75,12 @@ public class ClearEventsService : IHostedService, IDisposable
         handle.WaitOne();
     }
 
-    private void DeleteOldEvents(object state)
+    private async Task DeleteOldEventsAsync(object state)
     {
         try
         {
-            GetOldEvents(r => r.LoginEvents, "LoginHistoryLifeTime");
-            GetOldEvents(r => r.AuditEvents, "AuditTrailLifeTime");
+            await GetOldEventsAsync(r => r.LoginEvents, "LoginHistoryLifeTime");
+            await GetOldEventsAsync(r => r.AuditEvents, "AuditTrailLifeTime");
         }
         catch (Exception ex)
         {
@@ -88,7 +88,7 @@ public class ClearEventsService : IHostedService, IDisposable
         }
     }
 
-    private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
+    private async Task GetOldEventsAsync<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
         List<T> ids;
         var compile = func.Compile();
@@ -114,7 +114,7 @@ public class ClearEventsService : IHostedService, IDisposable
                     .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
                 .Take(1000);
 
-            ids = ae.Select(r => r.ef).ToList();
+            ids = await ae.Select(r => r.ef).ToListAsync();
 
             if (!ids.Any())
             {
@@ -122,7 +122,7 @@ public class ClearEventsService : IHostedService, IDisposable
             }
 
             table.RemoveRange(ids);
-            ef.SaveChanges();
+            await ef.SaveChangesAsync();
 
         } while (ids.Any());
     }

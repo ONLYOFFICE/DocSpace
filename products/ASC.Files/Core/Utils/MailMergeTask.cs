@@ -138,7 +138,7 @@ public class MailMergeTaskRunner
             RequestUri = new Uri(_baseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach)),
             Method = HttpMethod.Post
         };
-        request.Headers.Add("Authorization", _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID));
+        request.Headers.Add("Authorization", await _securityContext.AuthenticateMeAsync(_securityContext.CurrentAccount.ID));
         request.Content.Headers.ContentType = new MediaTypeHeaderValue(mailMergeTask.AttachTitle);
         request.Content = new StreamContent(mailMergeTask.Attach);
 

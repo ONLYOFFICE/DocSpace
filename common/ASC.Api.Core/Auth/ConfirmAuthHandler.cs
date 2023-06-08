@@ -58,21 +58,21 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
     }
 
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var emailValidationKeyModel = _emailValidationKeyModelHelper.GetModel();
 
         if (!emailValidationKeyModel.Type.HasValue)
         {
             return _securityContext.IsAuthenticated
-                ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
-                    : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
+                ? AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name))
+                    : AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)));
         }
 
         EmailValidationKeyProvider.ValidationResult checkKeyResult;
         try
         {
-            checkKeyResult = _emailValidationKeyModelHelper.Validate(emailValidationKeyModel);
+            checkKeyResult = await _emailValidationKeyModelHelper.ValidateAsync(emailValidationKeyModel);
         }
         catch (ArgumentNullException)
         {
@@ -103,7 +103,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
                     }
                     else
                     {
-                        userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).Id;
+                        userId = (await _userManager.GetUserByEmailAsync(emailValidationKeyModel.Email)).Id;
                     }
                 }
             }
@@ -112,7 +112,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
                 userId = _securityContext.CurrentAccount.ID;
             }
 
-            _securityContext.AuthenticateMeWithoutCookie(userId, claims);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(userId, claims);
         }
 
         var result = checkKeyResult switch
@@ -121,6 +121,6 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
             _ => AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)))
         };
 
-        return Task.FromResult(result);
+        return result;
     }
 }

@@ -4,10 +4,9 @@ import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-import { ColorTheme, ThemeType } from "../../ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
-
   align-self: center;
   margin-left: auto;
 
@@ -26,6 +25,7 @@ const ToggleInfoPanelButton = ({
   isInfoPanelVisible,
   toggleInfoPanel,
   id,
+  titles,
 }) => {
   return (
     <StyledInfoPanelToggleColorThemeWrapper
@@ -41,6 +41,7 @@ const ToggleInfoPanelButton = ({
           size="16"
           isFill={true}
           onClick={toggleInfoPanel}
+          title={titles?.infoPanel}
         />
       </div>
     </StyledInfoPanelToggleColorThemeWrapper>

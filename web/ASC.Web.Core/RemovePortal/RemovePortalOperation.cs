@@ -78,7 +78,7 @@ public class RemovePortalOperation : DistributedTaskProgress
                 Percentage += 100 / (modules.Count() + 1);
                 PublishChanges();
                 _logger.DebugRemoveModule(module);
-                var storage = _storageFactory.GetStorage(TenantId, module);
+                var storage = await _storageFactory.GetStorageAsync(TenantId, module);
                 foreach (var domain in _storageFactoryConfig.GetDomainList(module))
                 {
                     await storage.DeleteDirectoryAsync(domain, "");
@@ -92,7 +92,7 @@ public class RemovePortalOperation : DistributedTaskProgress
 
             _logger.DebugEndRemoveTenant(TenantId);
 
-            _studioNotifyService.SendMsgPortalDeletionSuccess(owner, _redirectLink);
+            await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, _redirectLink);
             Percentage = 100;
         }
         catch (Exception e)

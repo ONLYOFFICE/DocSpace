@@ -32,7 +32,7 @@ public class NCMigratingMail : MigratingMail
 
     public override int MessagesCount => messagesCount;
     public override string ModuleName => MigrationResource.ModuleNameMail;
-    public override Task Migrate()
+    public override Task MigrateAsync()
     {
         throw new NotImplementedException();
     }

@@ -66,7 +66,7 @@ internal sealed class BackupCleanerService : BackgroundService
                 continue;
             }
 
-            await ExecuteBackupCleaner(stoppingToken);
+            await ExecuteBackupCleanerAsync(stoppingToken);
 
             await Task.Delay(_backupCleanerPeriod, stoppingToken);
         }
@@ -74,7 +74,7 @@ internal sealed class BackupCleanerService : BackgroundService
         _logger.DebugBackupCleanerServiceStopping();
     }
 
-    private async Task ExecuteBackupCleaner(CancellationToken stoppingToken)
+    private async Task ExecuteBackupCleanerAsync(CancellationToken stoppingToken)
     {
         await using var serviceScope = _scopeFactory.CreateAsyncScope();
 
@@ -83,18 +83,18 @@ internal sealed class BackupCleanerService : BackgroundService
 
         _logger.DebugStartedClean();
 
-        var backupsToRemove = backupRepository.GetExpiredBackupRecords();
+        var backupsToRemove = await backupRepository.GetExpiredBackupRecordsAsync();
 
         _logger.DebugFoundBackups(backupsToRemove.Count);
 
-        foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
+        foreach (var scheduledBackups in (await backupRepository.GetScheduledBackupRecordsAsync()).GroupBy(r => r.TenantId))
         {
             if (stoppingToken.IsCancellationRequested)
             {
                 return;
             }
 
-            var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
+            var schedule = await backupRepository.GetBackupScheduleAsync(scheduledBackups.Key);
 
             if (schedule != null)
             {
@@ -120,15 +120,15 @@ internal sealed class BackupCleanerService : BackgroundService
 
             try
             {
-                var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
+                var backupStorage = await backupStorageFactory.GetBackupStorageAsync(backupRecord);
                 if (backupStorage == null)
                 {
                     continue;
                 }
 
-                await backupStorage.Delete(backupRecord.StoragePath);
+                await backupStorage.DeleteAsync(backupRecord.StoragePath);
 
-                backupRepository.DeleteBackupRecord(backupRecord.Id);
+                await backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
             }
             catch (ProviderInfoArgumentException error)
             {
@@ -136,7 +136,7 @@ internal sealed class BackupCleanerService : BackgroundService
 
                 if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
                 {
-                    backupRepository.DeleteBackupRecord(backupRecord.Id);
+                    await backupRepository.DeleteBackupRecordAsync(backupRecord.Id);
                 }
             }
             catch (Exception error)

@@ -40,13 +40,13 @@ public class Builder<T>
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly DocumentServiceHelper _documentServiceHelper;
     private readonly Global _global;
-    private readonly GlobalStore _globalStore;
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
     private readonly SocketManager _socketManager;
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
     private readonly TempStream _tempStream;
+    private readonly StorageFactory _storageFactory;
     private IDataStore _dataStore;
 
     private readonly List<string> _imageFormatsCanBeCrop = new List<string>
@@ -61,14 +61,14 @@ public class Builder<T>
         DocumentServiceConnector documentServiceConnector,
         DocumentServiceHelper documentServiceHelper,
         Global global,
-        GlobalStore globalStore,
         PathProvider pathProvider,
         ILoggerProvider log,
         IHttpClientFactory clientFactory,
         FFmpegService fFmpegService,
         TempPath tempPath,
         SocketManager socketManager,
-        TempStream tempStream)
+        TempStream tempStream,
+        StorageFactory storageFactory)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -82,17 +82,17 @@ public class Builder<T>
         _fFmpegService = fFmpegService;
         _tempPath = tempPath;
         _tempStream = tempStream;
+        _storageFactory = storageFactory;
         _socketManager = socketManager;
-        _globalStore = globalStore;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
     {
         try
         {
-            _tenantManager.SetCurrentTenant(fileData.TenantId);
+            await _tenantManager.SetCurrentTenantAsync(fileData.TenantId);
 
-            _dataStore = _globalStore.GetStore();
+            _dataStore = await _storageFactory.GetStorageAsync(fileData.TenantId, FileConstant.StorageModule, (IQuotaController)null);
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)
@@ -194,7 +194,7 @@ public class Builder<T>
 
             using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
             {
-                await Crop(fileDao, file, streamThumb);
+                await CropAsync(fileDao, file, streamThumb);
             }
         }
         finally
@@ -279,11 +279,11 @@ public class Builder<T>
 
     private async Task<(int, string)> GetThumbnailUrl(File<T> file, string toExtension, int width, int height)
     {
-        var fileUri = _pathProvider.GetFileStreamUrl(file);
-        fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
+        var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
+        fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var fileExtension = file.ConvertedExtension;
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
         var thumbnail = new ThumbnailData
         {
             Aspect = 2,
@@ -369,13 +369,13 @@ public class Builder<T>
 
         using (var stream = await fileDao.GetFileStreamAsync(file))
         {
-            await Crop(fileDao, file, stream);
+            await CropAsync(fileDao, file, stream);
         }
 
         _logger.DebugCropImageSuccessfullySaved(file.Id.ToString());
     }
 
-    private async Task Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
+    private async Task CropAsync(IFileDao<T> fileDao, File<T> file, Stream stream)
     {
         using var sourceImg = await Image.LoadAsync(stream);
 

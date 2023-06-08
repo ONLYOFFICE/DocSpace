@@ -71,7 +71,7 @@
     <value>Grupos</value>
   </data>
   <data name="CommonGuest" xml:space="preserve">
-    <value>Visitante</value>
+    <value>Convidado(a)</value>
   </data>
   <data name="CommonGuests" xml:space="preserve">
     <value>Visitantes</value>
@@ -104,7 +104,7 @@
     <value>Departamentos</value>
   </data>
   <data name="DefaultGuest" xml:space="preserve">
-    <value>Visitante</value>
+    <value>Convidado(a)</value>
   </data>
   <data name="DefaultGuests" xml:space="preserve">
     <value>Visitantes</value>
@@ -137,7 +137,7 @@
     <value>Grupos</value>
   </data>
   <data name="EducationGuest" xml:space="preserve">
-    <value>Convidado</value>
+    <value>Convidado(a)</value>
   </data>
   <data name="EducationGuests" xml:space="preserve">
     <value>Convidados</value>

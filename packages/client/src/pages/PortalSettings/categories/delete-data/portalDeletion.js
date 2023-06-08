@@ -14,6 +14,7 @@ import {
 } from "@docspace/common/api/portal";
 import { isDesktop } from "@docspace/components/utils/device";
 import { EmployeeActivationStatus } from "@docspace/common/constants";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PortalDeletion = (props) => {
   const { t, getPortalOwner, owner, currentColorScheme, sendActivationLink } =
@@ -57,7 +58,7 @@ const PortalDeletion = (props) => {
   };
 
   const requestAgain = () => {
-    sendActivationLink && sendActivationLink(t);
+    sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
   const notActivatedEmail =

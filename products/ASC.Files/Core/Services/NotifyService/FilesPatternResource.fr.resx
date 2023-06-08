@@ -99,7 +99,7 @@ $Message</value>
     <value>[OnlyOffice - Documents] Le statut de la signature modifié</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
-    <value>[OnlyOffice - Documents] Diffusion est terminée. </value>
+    <value>[OnlyOffice - Documents] Diffusion est terminée.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
     <value>[OnlyOffice - Documents] Accès accordé au document $DocumentTitle</value>
@@ -112,5 +112,17 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>[OnlyOffice - Documents] Accès accordé au dossier [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName vous a mentionné dans le commentaire du document
+ 
+$__AuthorName vous a mentionné dans le commentaire du document "$DocumentTitle":"$DocumentURL" dans la salle "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName a supprimé la salle
+ 
+$__AuthorName a supprimé la salle : $RoomTitle</value>
   </data>
 </root>

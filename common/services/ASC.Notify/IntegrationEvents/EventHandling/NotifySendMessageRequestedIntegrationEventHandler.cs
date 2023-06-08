@@ -40,11 +40,11 @@ public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEve
         _db = db;
     }
 
-    private void SendNotifyMessage(NotifyMessage notifyMessage)
+    private async Task SendNotifyMessageAsync(NotifyMessage notifyMessage)
     {
         try
         {
-            _db.SaveMessage(notifyMessage);
+            await _db.SaveMessageAsync(notifyMessage);
         }
         catch (Exception e)
         {
@@ -54,11 +54,12 @@ public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEve
 
     public async Task Handle(NotifySendMessageRequestedIntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            SendNotifyMessage(@event.NotifyMessage);
+            await SendNotifyMessageAsync(@event.NotifyMessage);
 
             await Task.CompletedTask;
         }

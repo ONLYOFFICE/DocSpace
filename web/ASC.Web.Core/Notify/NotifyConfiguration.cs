@@ -106,10 +106,10 @@ public class NotifyConfiguration
             "ProductSecurityInterceptor",
              InterceptorPlace.DirectSend,
              InterceptorLifetime.Global,
-             (r, p, scope) =>
+             async (r, p, scope) =>
              {
                  var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
-                 return scopeClass.Intercept(r, p);
+                 return await scopeClass.InterceptAsync(r, p);
              });
         client.AddInterceptor(securityAndCulture);
 
@@ -172,7 +172,7 @@ public class ProductSecurityInterceptor
         _log = logger;
     }
 
-    public bool Intercept(NotifyRequest r, InterceptorPlace p)
+    public async Task<bool> InterceptAsync(NotifyRequest r, InterceptorPlace p)
     {
         try
         {
@@ -194,25 +194,25 @@ public class ProductSecurityInterceptor
 
                     if (guid != default)
                     {
-                        u = _userManager.GetUsers(guid);
+                        u = await _userManager.GetUsersAsync(guid);
                     }
                 }
 
                 if (Constants.LostUser.Equals(u))
                 {
-                    u = _userManager.GetUserByEmail(r.Recipient.ID);
+                    u = await _userManager.GetUserByEmailAsync(r.Recipient.ID);
                 }
 
                 if (Constants.LostUser.Equals(u))
                 {
-                    u = _userManager.GetUserByUserName(r.Recipient.ID);
+                    u = await _userManager.GetUserByUserNameAsync(r.Recipient.ID);
                 }
 
                 if (!Constants.LostUser.Equals(u))
                 {
                     var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
 
                     // security
                     var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
@@ -228,7 +228,7 @@ public class ProductSecurityInterceptor
                     }
                     if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                     {
-                        return !_webItemSecurity.IsAvailableForUser(productId, u.Id);
+                        return !await _webItemSecurity.IsAvailableForUserAsync(productId, u.Id);
                     }
                 }
             }
@@ -237,8 +237,8 @@ public class ProductSecurityInterceptor
             if (tagCulture != null)
             {
                 var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
             }
         }
         catch (Exception error)
@@ -312,16 +312,16 @@ public class NotifyTransferRequest : INotifyEngineAction
         _log = logger;
     }
 
-    public void BeforeTransferRequest(NotifyRequest request)
+    public async Task BeforeTransferRequestAsync(NotifyRequest request)
     {
         var aid = Guid.Empty;
         var aname = string.Empty;
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (_authContext.IsAuthenticated)
         {
             aid = _authContext.CurrentAccount.ID;
-            var user = _userManager.GetUsers(aid);
+            var user = await _userManager.GetUsersAsync(aid);
             if (_userManager.UserExists(user))
             {
                 aname = user.DisplayUserName(false, _displayUserSettingsHelper)
@@ -337,14 +337,14 @@ public class NotifyTransferRequest : INotifyEngineAction
         }
 
         var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-        if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(_settingsManager))
+        if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager))
         {
-            logoText = _tenantLogoManager.GetLogoText();
+            logoText = await _tenantLogoManager.GetLogoTextAsync();
         }
 
         request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
         request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetUserProfile(aid))));
+        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(await _commonLinkUtility.GetUserProfileAsync(aid))));
         request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
         request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
         request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
@@ -353,42 +353,35 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
         request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetMyStaff())));
         request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, _commonLinkUtility.GetUnsubscribe()));
-        request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
+        request.Arguments.Add(new TagValue(CommonTags.HelpLink, await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
         request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
+        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, await MailWhiteLabelSettings.InstanceAsync(_settingsManager)));
         request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
-        AddLetterLogo(request);
+        await AddLetterLogoAsync(request);
     }
     public void AfterTransferRequest(NotifyRequest request)
     {
+
     }
 
-    private void AddLetterLogo(NotifyRequest request)
+    private async Task AddLetterLogoAsync(NotifyRequest request)
     {
 
-        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
+        try
         {
-            try
-            {
-                var attachment = _tenantLogoManager.GetMailLogoAsAttacment().Result;
+            var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
 
-                if (attachment != null)
-                {
-                    request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                    request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                    return;
-                }
-            }
-            catch (Exception error)
+            if (attachment != null)
             {
-                _log.ErrorAddLetterLogo(error);
+                request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
             }
         }
-
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false).Result);
-
-        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
+        catch (Exception error)
+        {
+            _log.ErrorAddLetterLogo(error);
+        }
     }
 }

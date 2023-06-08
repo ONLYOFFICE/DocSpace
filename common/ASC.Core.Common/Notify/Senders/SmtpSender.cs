@@ -57,11 +57,11 @@ public class SmtpSender : INotifySender
         _initProperties = properties;
     }
 
-    public virtual Task<NoticeSendResult> Send(NotifyMessage m)
+    public virtual async Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        tenantManager.SetCurrentTenant(m.TenantId);
+        await tenantManager.SetCurrentTenantAsync(m.TenantId);
 
         var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
@@ -71,7 +71,7 @@ public class SmtpSender : INotifySender
         {
             try
             {
-                BuildSmtpSettings(configuration);
+                await BuildSmtpSettingsAsync(configuration);
 
                 var mail = BuildMailMessage(m);
 
@@ -149,12 +149,12 @@ public class SmtpSender : INotifySender
             smtpClient.Dispose();
         }
 
-        return Task.FromResult(result);
+        return result;
     }
 
-    private void BuildSmtpSettings(CoreConfiguration configuration)
+    private async Task BuildSmtpSettingsAsync(CoreConfiguration configuration)
     {
-        if (configuration.SmtpSettings.IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
+        if ((await configuration.GetSmtpSettingsAsync()).IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
         {
             _host = _initProperties["host"];
 
@@ -185,7 +185,7 @@ public class SmtpSender : INotifySender
         }
         else
         {
-            var s = configuration.SmtpSettings;
+            var s = await configuration.GetSmtpSettingsAsync();
 
             _host = s.Host;
             _port = s.Port;
@@ -195,7 +195,7 @@ public class SmtpSender : INotifySender
                 : null;
         }
     }
-    private MimeMessage BuildMailMessage(NotifyMessage m)
+    protected MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage
         {

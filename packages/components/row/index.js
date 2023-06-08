@@ -34,13 +34,16 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      rowContextClick,
       rowContextClose,
       sectionWidth,
       getContextModel,
       isRoom,
       withoutBorder,
+      contextTitle,
     } = this.props;
+
+    const { onRowClick, inProgress, mode, onContextClick, ...rest } =
+      this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -70,12 +73,12 @@ class Row extends React.Component {
     };
 
     const getOptions = () => {
-      rowContextClick && rowContextClick();
+      onContextClick && onContextClick();
       return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick(e.button === 2);
+      onContextClick && onContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.row.current.click(e); //TODO: need fix context menu to global
       }
@@ -92,8 +95,6 @@ class Row extends React.Component {
           : children.props.item.displayName,
       };
     }
-
-    const { onRowClick, inProgress, mode, ...rest } = this.props;
 
     const onElementClick = () => {
       if (!isMobile) return;
@@ -168,6 +169,7 @@ class Row extends React.Component {
               directionX="right"
               displayType="toggle"
               onClick={onContextMenu}
+              title={contextTitle}
             />
           ) : (
             <div className="expandButton"> </div>
@@ -216,7 +218,7 @@ Row.propTypes = {
   /** Sets a callback function that is triggered when any element except the checkbox and context menu is clicked. */
   onRowClick: PropTypes.func,
   /** Function that is invoked on clicking the icon button in the context-menu */
-  rowContextClick: PropTypes.func,
+  onContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Width section */

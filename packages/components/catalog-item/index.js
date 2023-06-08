@@ -16,7 +16,7 @@ import {
   StyledCatalogItemInitialText,
   StyledCatalogItemHeaderContainer,
 } from "./styled-catalog-item";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
@@ -41,6 +41,7 @@ const CatalogItem = (props) => {
     isHeader,
     isFirstHeader,
     folderId,
+    badgeTitle,
   } = props;
 
   const onClickAction = () => {
@@ -48,7 +49,6 @@ const CatalogItem = (props) => {
   };
 
   const onClickBadgeAction = (e) => {
-    console.log("PRO", onClickBadge);
     e.stopPropagation();
     onClickBadge && onClickBadge(id);
   };
@@ -118,6 +118,7 @@ const CatalogItem = (props) => {
           <StyledCatalogItemBadgeWrapper
             showText={showText}
             onClick={onClickBadgeAction}
+            title={badgeTitle}
           >
             {!iconBadge ? (
               <Badge className="catalog-item__badge" label={labelBadge} />

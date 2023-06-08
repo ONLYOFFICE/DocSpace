@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -90,7 +91,7 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         border-bottom: ${(props) =>
-    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
   }
@@ -128,8 +129,10 @@ const Table = ({
   const ref = useRef(null);
   const tagRef = useRef(null);
 
-  useEffect(() => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  useEffect(() => {
     const width = window.innerWidth;
 
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
@@ -178,6 +181,10 @@ const Table = ({
     }
   }, []);
 
+  React.useEffect(() => {
+    if (!isRooms) setTagCount(0);
+  }, [isRooms]);
+
   const filesListNode = useMemo(() => {
     return filesList.map((item, index) => (
       <TableRow
@@ -220,6 +227,8 @@ const Table = ({
         containerRef={ref}
         tagRef={onSetTagRef}
         setHideColumns={setHideColumns}
+        navigate={navigate}
+        location={location}
       />
 
       <TableBody

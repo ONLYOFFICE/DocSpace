@@ -90,13 +90,13 @@ $__DateTime user "$__AuthorName":"$__AuthorUrl" le ha concedido el acceso a la c
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Documentos. Todas las personas han firmado.</value>
+    <value>Documentos. Todas las personas han firmado</value>
   </data>
   <data name="subject_DocuSignComplete_tg" xml:space="preserve">
     <value>Documentos. Todos los firmantes han completado [$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Documentos. Estado de la firma ha sido cambiado.</value>
+    <value>Documentos. Estado de la firma ha sido cambiado</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documentos. Envío está completo.</value>

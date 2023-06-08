@@ -30,40 +30,33 @@ namespace ASC.Web.Api.Core;
 public class QuotaHelper
 {
     private readonly TenantManager _tenantManager;
-    private readonly RegionHelper _regionHelper;
     private readonly IServiceProvider _serviceProvider;
 
-    public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper, IServiceProvider serviceProvider)
+    public QuotaHelper(TenantManager tenantManager, IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
-        _regionHelper = regionHelper;
         _serviceProvider = serviceProvider;
     }
 
-    public async IAsyncEnumerable<QuotaDto> GetQuotas()
+    public async IAsyncEnumerable<QuotaDto> GetQuotasAsync()
     {
-        var quotaList = _tenantManager.GetTenantQuotas(false);
-        var priceInfo = _tenantManager.GetProductPriceInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var quotaList = await _tenantManager.GetTenantQuotasAsync(false);
 
         foreach (var quota in quotaList)
         {
-            yield return await ToQuotaDto(quota, priceInfo, currentRegion);
+            yield return await ToQuotaDto(quota);
         }
     }
 
-    public async Task<QuotaDto> GetCurrentQuota(bool refresh = false)
+    public async Task<QuotaDto> GetCurrentQuotaAsync(bool refresh = false)
     {
-        var quota = _tenantManager.GetCurrentTenantQuota(refresh);
-        var priceInfo = _tenantManager.GetProductPriceInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var quota = await _tenantManager.GetCurrentTenantQuotaAsync(refresh);
 
-        return await ToQuotaDto(quota, priceInfo, currentRegion, true, true);
+        return await ToQuotaDto(quota, true, true);
     }
 
-    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false, bool allFeatures = false)
+    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, bool getUsed = false, bool allFeatures = false)
     {
-        var price = GetPrice(quota, priceInfo, currentRegion);
         var features = await GetFeatures(quota, getUsed, allFeatures).ToListAsync();
 
         return new QuotaDto
@@ -77,25 +70,12 @@ public class QuotaHelper
 
             Price = new PriceDto
             {
-                Value = price,
-                CurrencySymbol = currentRegion.CurrencySymbol
+                Value = quota.Price,
+                CurrencySymbol = quota.PriceCurrencySymbol
             },
 
             Features = features
         };
-    }
-
-    private decimal GetPrice(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
-    {
-        if (!string.IsNullOrEmpty(quota.ProductId) && priceInfo.ContainsKey(quota.ProductId))
-        {
-            var prices = priceInfo[quota.ProductId];
-            if (prices.ContainsKey(currentRegion.ISOCurrencySymbol))
-            {
-                return prices[currentRegion.ISOCurrencySymbol];
-            }
-        }
-        return quota.Price;
     }
 
     private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed, bool all)
@@ -179,7 +159,7 @@ public class QuotaHelper
 
                 if (statisticProvider != null)
                 {
-                    used = await statisticProvider.GetValue();
+                    used = await statisticProvider.GetValueAsync();
                 }
             }
         }

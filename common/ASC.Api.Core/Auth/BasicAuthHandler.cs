@@ -59,13 +59,13 @@ public class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
         _passwordHasher = passwordHasher;
     }
 
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         Response.Headers.Add("WWW-Authenticate", "Basic");
 
         if (!Request.Headers.ContainsKey("Authorization"))
         {
-            return Task.FromResult(AuthenticateResult.Fail("Authorization header missing."));
+            return AuthenticateResult.Fail("Authorization header missing.");
         }
 
         // Get authorization key
@@ -74,7 +74,7 @@ public class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
         if (!authHeaderRegex.IsMatch(authorizationHeader))
         {
-            return Task.FromResult(AuthenticateResult.Fail("Authorization code not formatted properly."));
+            return AuthenticateResult.Fail("Authorization code not formatted properly.");
         }
 
         var authBase64 = Encoding.UTF8.GetString(Convert.FromBase64String(authHeaderRegex.Replace(authorizationHeader, "$1")));
@@ -84,17 +84,17 @@ public class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
         try
         {
-            var userInfo = _userManager.GetUserByEmail(authUsername);
+            var userInfo = await _userManager.GetUserByEmailAsync(authUsername);
             var passwordHash = _passwordHasher.GetClientPassword(authPassword);
 
-            _securityContext.AuthenticateMe(userInfo.Email, passwordHash);
+            await _securityContext.AuthenticateMeAsync(userInfo.Email, passwordHash);
 
         }
         catch (Exception)
         {
-            return Task.FromResult(AuthenticateResult.Fail("The username or password is not correct."));
+            return AuthenticateResult.Fail("The username or password is not correct.");
         }
 
-        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, Scheme.Name)));
+        return AuthenticateResult.Success(new AuthenticationTicket(Context.User, Scheme.Name));
     }
 }

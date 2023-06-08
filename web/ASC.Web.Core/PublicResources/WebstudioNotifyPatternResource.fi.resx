@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blogi luotiin: </value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Kirjanmerkki luotiin: </value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Asiakkuushallinnan tapaus luotiin:</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Kommentti lisättiin:</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Asiakkuudenhallinnan kontakti luotiin:</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Asiakkuudenhallinnan mahdollisuus luotiin:</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Keskustelu luotiin:</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Tapahtuma luotiin:</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Asiakirja luotiin/ladattiin: </value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Kansio luotiin:</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Keskusteluryhmä luotiin:</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Kysely luotiin:</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Postaus luotiin:</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Välitavoite luotiin:</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekti luotiin:</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tehtävä luotiin:</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Hallintapaneeliin pääsy</value>
   </data>
@@ -123,9 +75,6 @@
   </data>
   <data name="ButtonRequestCallButton" xml:space="preserve">
     <value>Soittopyyntö</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Lisätietoa &gt;&gt;</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
     <value>h1.Uutta DocSpacessa $Date
@@ -254,13 +203,13 @@ ONLYOFFICE Tiimi</value>
 
 Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
 
-*#* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
 
-*# Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
 
-*# Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
 
-*# Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
 
 $GreenButton
 
@@ -275,13 +224,13 @@ ONLYOFFICE-Tiimi
 
 Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
 
-*#* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
 
-*# Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
 
-*# Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
 
-*# Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
 
 $GreenButton
 
@@ -296,13 +245,13 @@ ONLYOFFICE-Tiimi
 
 Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
 
-*#* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
 
-*# Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
 
-*# Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
 
-*# Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
 
 $GreenButton
 
@@ -317,13 +266,13 @@ ONLYOFFICE-Tiimi
 
 Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
 
-*#* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
 
-*# Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
 
-*# Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
 
-*# Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
 
 $GreenButton
 
@@ -344,5 +293,24 @@ ONLYOFFICE-Tiimi
   </data>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Bonjour, $UserName !
+ 
+Nous espérons que vous apprécierez l'utilisation de votre ONLYOFFICE DocSpace. Voici quelques conseils pour rendre le travail sur les documents plus efficace.
+ 
+*#1. Choisissez votre mode de travail.* Organisez votre flux de travail en fonction de vos besoins en créant des salles de collaboration pour la co-écriture en temps réel ou des salles personnalisées avec des paramètres flexibles pour n'importe quel usage.
+ 
+*#2. Travaillez avec tous les contenus dont vous disposez.* Travaillez avec tous les contenus dont vous disposez. Stockez et travaillez avec des fichiers de différents formats dans vos salles : documents texte, feuilles de calcul, présentations, formulaires numériques, PDF, livres électroniques, multimédia.
+ 
+*#3. Coéditez efficacement.* Collaborez sur des documents grâce à deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivez les modifications, communiquez en temps réel en utilisant le chat intégré ou en effectuant des appels audio et vidéo.
+ 
+*#4. Connectez des clouds tiers.* Connectez n'importe quel stockage en cloud et travaillez sans passer d'une application à l'autre.
+ 
+$GreenButton
+ 
+Bien à vous, 
+équipe ONLYOFFICE 
+"www.onlyoffice.com" : https://www.onlyoffice.com/fr</value>
   </data>
 </root>

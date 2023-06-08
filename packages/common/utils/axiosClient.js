@@ -57,9 +57,10 @@ class AxiosClient {
   initSSR = (headers) => {
     this.isSSR = true;
 
-    const xRewriterUrl = headers["x-rewriter-url"];
+    const proto = headers["x-forwarded-proto"]?.split(",").shift();
+    const host = headers["x-forwarded-host"]?.split(",").shift();
 
-    const origin = apiOrigin || xRewriterUrl;
+    const origin = apiOrigin || `${proto}://${host}`;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
 
@@ -142,13 +143,27 @@ class AxiosClient {
               url: "/authentication/logout",
             }).then(() => {
               this.setWithCredentialsStatus(false);
-              window.location.href = loginURL;
+              window.location.href = `${loginURL}?authError=true`;
             });
             break;
           case 402:
             if (!window.location.pathname.includes("payments")) {
               // window.location.href = this.paymentsURL;
             }
+            break;
+          case 403:
+            const pathname = window.location.pathname;
+            const isArchived = pathname.indexOf("/rooms/archived") !== -1;
+
+            const isRooms =
+              pathname.indexOf("/rooms/shared") !== -1 || isArchived;
+
+            if (!isRooms) return;
+
+            setTimeout(() => {
+              window.DocSpace.navigate(isArchived ? "/archived" : "/");
+            }, 1000);
+
             break;
           default:
             break;

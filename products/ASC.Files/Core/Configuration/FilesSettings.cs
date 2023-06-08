@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Helpers;
+
 namespace ASC.Web.Files.Classes;
 
 [Serializable]
@@ -152,7 +154,7 @@ public class FilesSettingsHelper
     public List<string> ExtsWebTemplate => _fileUtility.ExtsWebTemplate;
     public List<string> ExtsCoAuthoring => _fileUtility.ExtsCoAuthoring;
     public List<string> ExtsMustConvert => _fileUtility.ExtsMustConvert;
-    public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.ExtsConvertible;
+    public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.GetExtsConvertible();
     public List<string> ExtsUploadable => _fileUtility.ExtsUploadable;
     public List<string> ExtsArchive => FileUtility.ExtsArchive;
     public List<string> ExtsVideo => FileUtility.ExtsVideo;

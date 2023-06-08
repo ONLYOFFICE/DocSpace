@@ -94,17 +94,17 @@ public class BaseIndexer<T> where T : class, ISearchItem
         _serviceProvider = serviceProvider;
     }
 
-    public IEnumerable<List<T>> IndexAll(
+    public async Task<IEnumerable<List<T>>> IndexAllAsync(
         Func<DateTime, (int, int, int)> getCount,
         Func<DateTime, List<int>> getIds,
         Func<long, long, DateTime, List<T>> getData)
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         var now = DateTime.UtcNow;
-        var lastIndexed = webstudioDbContext.WebstudioIndex
+        var lastIndexed = await webstudioDbContext.WebstudioIndex
             .Where(r => r.IndexName == Wrapper.IndexName)
             .Select(r => r.LastModified)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
         if (lastIndexed.Equals(DateTime.MinValue))
         {
@@ -118,28 +118,27 @@ public class BaseIndexer<T> where T : class, ISearchItem
         ids.AddRange(getIds(lastIndexed));
         ids.Add(max);
 
-        for (var i = 0; i < ids.Count - 1; i++)
-        {
-            yield return getData(ids[i], ids[i + 1], lastIndexed);
-        }
-
-        webstudioDbContext.AddOrUpdate(webstudioDbContext.WebstudioIndex, new DbWebstudioIndex()
+        await webstudioDbContext.AddOrUpdateAsync(q => q.WebstudioIndex, new DbWebstudioIndex()
         {
             IndexName = Wrapper.IndexName,
             LastModified = now
         });
 
-        webstudioDbContext.SaveChanges();
+        await webstudioDbContext.SaveChangesAsync();
 
         _logger.DebugIndexCompleted(Wrapper.IndexName);
+
+        var list = new List<List<T>>();
+        for (var i = 0; i < ids.Count - 1; i++)
+        {
+            list.Add(getData(ids[i], ids[i + 1], lastIndexed));
+        }
+        return list;
     }
 
-    public Task ReIndex()
+    public async Task ReIndrexAsync()
     {
-        Clear();
-
-        return Task.CompletedTask;
-        //((IIndexer) this).IndexAll();
+        await ClearAsync();
     }
 
     public void CreateIfNotExist(T data)
@@ -208,7 +207,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         _client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
     }
 
-    internal async Task Index(T data, bool immediately = true)
+    internal async Task IndexAsync(T data, bool immediately = true)
     {
         if (!(await BeforeIndex(data)))
         {
@@ -218,7 +217,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         await _client.Instance.IndexAsync(data, idx => GetMeta(idx, data, immediately));
     }
 
-    internal async Task Index(List<T> data, bool immediately = true)
+    internal async Task IndexAsync(List<T> data, bool immediately = true)
     {
         if (data.Count == 0)
         {
@@ -254,7 +253,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
                     {
                         try
                         {
-                            await Index(t, immediately);
+                            await IndexAsync(t, immediately);
                         }
                         catch (ElasticsearchClientException e)
                         {
@@ -320,106 +319,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
             }
 
             _client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
-        }
-    }
-
-    internal async Task IndexAsync(List<T> data, bool immediately = true)
-    {
-        if (!CheckExist(data[0]))
-        {
-            return;
-        }
-
-        if (data is ISearchItemDocument)
-        {
-            var currentLength = 0L;
-            var portion = new List<T>();
-            var portionStart = 0;
-
-            for (var i = 0; i < data.Count; i++)
-            {
-                var t = data[i];
-                var runBulk = i == data.Count - 1;
-
-                await BeforeIndexAsync(t);
-
-                var wwd = t as ISearchItemDocument;
-
-                if (wwd == null || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
-                {
-                    portion.Add(t);
-                }
-                else
-                {
-                    var dLength = wwd.Document.Data.Length;
-                    if (dLength >= _settings.MaxContentLength)
-                    {
-                        try
-                        {
-                            await Index(t, immediately);
-                        }
-                        catch (ElasticsearchClientException e)
-                        {
-                            if (e.Response.HttpStatusCode == 429)
-                            {
-                                throw;
-                            }
-                            _logger.ErrorIndex(e);
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.ErrorIndex(e);
-                        }
-                        finally
-                        {
-                            wwd.Document.Data = null;
-                            wwd.Document = null;
-                            GC.Collect();
-                        }
-                        continue;
-                    }
-
-                    if (currentLength + dLength < _settings.MaxContentLength)
-                    {
-                        portion.Add(t);
-                        currentLength += dLength;
-                    }
-                    else
-                    {
-                        runBulk = true;
-                        i--;
-                    }
-                }
-
-                if (runBulk)
-                {
-                    var portion1 = portion.ToList();
-                    await _client.Instance.BulkAsync(r => r.IndexMany(portion1, GetMeta).SourceExcludes("attachments"));
-                    for (var j = portionStart; j < i; j++)
-                    {
-                        var doc = data[j] as ISearchItemDocument;
-                        if (doc != null && doc.Document != null)
-                        {
-                            doc.Document.Data = null;
-                            doc.Document = null;
-                        }
-                    }
-
-                    portionStart = i;
-                    portion = new List<T>();
-                    currentLength = 0L;
-                    GC.Collect();
-                }
-            }
-        }
-        else
-        {
-            foreach (var item in data)
-            {
-                await BeforeIndexAsync(item);
-            }
-
-            await _client.Instance.BulkAsync(r => r.IndexMany(data, GetMeta));
         }
     }
 
@@ -503,24 +402,26 @@ public class BaseIndexer<T> where T : class, ISearchItem
         return false;
     }
 
-    internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
+    internal async Task<IReadOnlyCollection<T>> SelectAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+        var descriptor = func(selector).Where(r => r.TenantId, tenant.Id);
 
         return _client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
     }
 
-    internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId, out long total)
+    internal async Task<(IReadOnlyCollection<T>, long)> SelectWithTotalAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId)
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+        var descriptor = func(selector).Where(r => r.TenantId, tenant.Id);
         var result = _client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
-        total = result.Total;
+        var total = result.Total;
 
-        return result.Documents;
+        return (result.Documents, total);
     }
 
     protected virtual Task<bool> BeforeIndex(T data)
@@ -533,17 +434,17 @@ public class BaseIndexer<T> where T : class, ISearchItem
         return Task.FromResult(CheckExist(data));
     }
 
-    private void Clear()
+    private async Task ClearAsync()
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var index = webstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefault();
+        var index = await webstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefaultAsync();
 
         if (index != null)
         {
             webstudioDbContext.WebstudioIndex.Remove(index);
         }
 
-        webstudioDbContext.SaveChanges();
+        await webstudioDbContext.SaveChangesAsync();
 
         _logger.DebugIndexDeleted(Wrapper.IndexName);
         _client.Instance.Indices.Delete(Wrapper.IndexName);

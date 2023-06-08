@@ -32,7 +32,7 @@ public static class SecureHelper
     {
         try
         {
-            return httpContext != null && Uri.UriSchemeHttps.Equals(httpContext.Request.GetUrlRewriter().Scheme, StringComparison.OrdinalIgnoreCase);
+            return httpContext != null && Uri.UriSchemeHttps.Equals(httpContext.Request.Url().Scheme, StringComparison.OrdinalIgnoreCase);
         }
         catch (Exception err)
         {

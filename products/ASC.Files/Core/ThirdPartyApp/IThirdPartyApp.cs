@@ -30,7 +30,7 @@ public interface IThirdPartyApp
 {
     Task<bool> RequestAsync(HttpContext context);
     string GetRefreshUrl();
-    File<string> GetFile(string fileId, out bool editable);
+    Task<(File<string>, bool)> GetFileAsync(string fileId);
     string GetFileStreamUrl(File<string> file);
     Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream);
 }

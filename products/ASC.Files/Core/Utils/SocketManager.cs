@@ -48,21 +48,21 @@ public class SocketManager : SocketServiceClient
         _folderDtoHelper = folderDtoHelper;
     }
 
-    public async Task StartEdit<T>(T fileId)
+    public async Task StartEditAsync<T>(T fileId)
     {
-        var room = GetFileRoom(fileId);
+        var room = await GetFileRoomAsync(fileId);
         await MakeRequest("start-edit", new { room, fileId });
     }
 
-    public async Task StopEdit<T>(T fileId)
+    public async Task StopEditAsync<T>(T fileId)
     {
-        var room = GetFileRoom(fileId);
+        var room = await GetFileRoomAsync(fileId);
         await MakeRequest("stop-edit", new { room, fileId });
     }
 
     public async Task CreateFileAsync<T>(File<T> file)
     {
-        var room = GetFolderRoom(file.ParentId);
+        var room = await GetFolderRoomAsync(file.ParentId);
 
         var data = await SerializeFile(file);
 
@@ -71,7 +71,7 @@ public class SocketManager : SocketServiceClient
 
     public async Task CreateFolderAsync<T>(Folder<T> folder)
     {
-        var room = GetFolderRoom(folder.ParentId);
+        var room = await GetFolderRoomAsync(folder.ParentId);
 
         var data = await SerializeFolder(folder);
 
@@ -80,7 +80,7 @@ public class SocketManager : SocketServiceClient
 
     public async Task UpdateFileAsync<T>(File<T> file)
     {
-        var room = GetFolderRoom(file.ParentId);
+        var room = await GetFolderRoomAsync(file.ParentId);
 
         var data = await SerializeFile(file);
 
@@ -89,52 +89,52 @@ public class SocketManager : SocketServiceClient
 
     public async Task UpdateFolderAsync<T>(Folder<T> folder)
     {
-        var room = GetFolderRoom(folder.ParentId);
+        var room = await GetFolderRoomAsync(folder.ParentId);
 
         var data = await SerializeFolder(folder);
 
         await MakeRequest("update-folder", new { room, folderId = folder.Id, data });
     }
 
-    public async Task DeleteFile<T>(File<T> file)
+    public async Task DeleteFileAsync<T>(File<T> file)
     {
-        var room = GetFolderRoom(file.ParentId);
+        var room = await GetFolderRoomAsync(file.ParentId);
 
         await MakeRequest("delete-file", new { room, fileId = file.Id });
     }
 
     public async Task DeleteFolder<T>(Folder<T> folder)
     {
-        var room = GetFolderRoom(folder.ParentId);
+        var room = await GetFolderRoomAsync(folder.ParentId);
 
         await MakeRequest("delete-folder", new { room, folderId = folder.Id });
     }
 
-    public async Task ExecMarkAsNewFile(object fileId, int count, Guid owner)
+    public async Task ExecMarkAsNewFileAsync(object fileId, int count, Guid owner)
     {
-        var room = GetFileRoom(fileId, owner);
+        var room = await GetFileRoomAsync(fileId, owner);
 
         await MakeRequest("markasnew-file", new { room, fileId, count });
     }
 
-    public async Task ExecMarkAsNewFolder(object folderId, int count, Guid owner)
+    public async Task ExecMarkAsNewFolderAsync(object folderId, int count, Guid owner)
     {
-        var room = GetFolderRoom(folderId, owner);
+        var room = await GetFolderRoomAsync(folderId, owner);
 
         await MakeRequest("markasnew-folder", new { room, folderId, count });
     }
 
-    private string GetFileRoom<T>(T fileId, Guid? owner = null)
+    private async Task<string> GetFileRoomAsync<T>(T fileId, Guid? owner = null)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
         return $"{tenantId}-FILE-{fileId}{ownerData}";
     }
 
-    private string GetFolderRoom<T>(T folderId, Guid? owner = null)
+    private async Task<string> GetFolderRoomAsync<T>(T folderId, Guid? owner = null)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
         return $"{tenantId}-DIR-{folderId}{ownerData}";

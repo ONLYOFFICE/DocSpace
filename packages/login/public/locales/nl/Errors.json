@@ -1,0 +1,14 @@
+{
+  "ErrorConfirmURLError": "Ongeldige e-mail of verlopen link",
+  "ErrorExpiredActivationLink": "Koppeling is verlopen",
+  "ErrorInvalidActivationLink": "Ongeldige activatielink",
+  "ErrorNotAllowedOption": "Uw abonnement ondersteunt deze optie niet",
+  "ErrorUserNotFound": "De gebruiker kon niet worden gevonden",
+  "InvalidUsernameOrPassword": "Ongeldige gebruikersnaam of wachtwoord.",
+  "LoginWithAccountNotFound": "Kan het geassocieerde account van de derde partij niet vinden. U moet eerst verbinding maken met uw social media account op de profielbewerkingspagina.",
+  "SsoSettingsCantCreateUser": "Kon de gebruiker met deze authenticatietoken niet aanmaken",
+  "SsoSettingsDisabled": "Single Sign-on is geblokkeerd",
+  "SsoSettingsEmptyToken": "Authenticatie token kon niet worden gevonden",
+  "SsoSettingsNotValidToken": "Ongeldige authenticatietoken",
+  "SsoSettingsUserTerminated": "Deze gebruiker is geblokkeerd"
+}

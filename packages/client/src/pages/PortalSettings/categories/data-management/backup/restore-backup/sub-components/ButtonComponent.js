@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { useNavigate } from "react-router-dom";
 import Button from "@docspace/components/button";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import { TenantStatus } from "@docspace/common/constants";
 import { startRestore } from "@docspace/common/api/portal";
 import { combineUrl } from "@docspace/common/utils";

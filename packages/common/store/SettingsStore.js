@@ -24,7 +24,7 @@ const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
-  isBurgerLoading = false;
+  isBurgerLoading = true;
 
   checkedMaintenance = false;
   maintenanceExist = false;
@@ -723,7 +723,7 @@ class SettingsStore {
 
   setIpRestrictions = async (ips) => {
     const data = {
-      ips: ips,
+      IpRestrictions: ips,
     };
     const res = await api.settings.setIpRestrictions(data);
     this.ipRestrictions = res;

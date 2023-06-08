@@ -12,15 +12,14 @@ import Link from "@docspace/components/link";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const RoomNoAccessContainer = (props) => {
   const {
     t,
     setIsLoading,
     linkStyles,
-    fetchRooms,
-    setAlreadyFetchingRooms,
-    categoryType,
+
     isEmptyPage,
     sectionWidth,
     theme,
@@ -39,22 +38,13 @@ const RoomNoAccessContainer = (props) => {
   const onGoToShared = () => {
     setIsLoading(true);
 
-    setAlreadyFetchingRooms(true);
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const filter = RoomsFilter.getDefault();
 
-        const filterParamsStr = filter.toUrlParams();
+    const filterParamsStr = filter.toUrlParams();
 
-        const url = getCategoryUrl(categoryType, filter.folder);
+    const path = getCategoryUrl(CategoryType.Shared);
 
-        const pathname = `${url}?${filterParamsStr}`;
-
-        navigate(pathname);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    navigate(`${path}?${filterParamsStr}`);
   };
 
   const goToButtons = (
@@ -91,19 +81,16 @@ const RoomNoAccessContainer = (props) => {
   );
 };
 
-export default inject(({ auth, filesStore }) => {
-  const {
-    setIsLoading,
-    fetchRooms,
-    categoryType,
-    setAlreadyFetchingRooms,
-    isEmptyPage,
-  } = filesStore;
+export default inject(({ auth, filesStore, clientLoadingStore }) => {
+  const { setIsSectionFilterLoading } = clientLoadingStore;
+
+  const setIsLoading = (param) => {
+    setIsSectionFilterLoading(param);
+  };
+  const { isEmptyPage } = filesStore;
   return {
     setIsLoading,
-    fetchRooms,
-    categoryType,
-    setAlreadyFetchingRooms,
+
     isEmptyPage,
     theme: auth.settingsStore.theme,
   };

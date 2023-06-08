@@ -26,45 +26,69 @@
 
 namespace ASC.Geolocation;
 
+// hack for EF Core
+public static class EntityFrameworkHelper
+{
+    public static int Compare(this byte[] b1, byte[] b2)
+    {
+        throw new Exception("This method can only be used in EF LINQ Context");
+    }
+}
+
 [Scope]
 public class GeolocationHelper
 {
-    private readonly CreatorDbContext _creatorDbContext;
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
     private readonly ILogger<GeolocationHelper> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICache _cache;
 
     public GeolocationHelper(
-        CreatorDbContext creatorDbContext,
+        IDbContextFactory<CustomDbContext> dbContextFactory,
         ILogger<GeolocationHelper> logger,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        ICache cache)
     {
-        _creatorDbContext = creatorDbContext;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
+        _cache = cache;
     }
 
-    public IPGeolocationInfo GetIPGeolocation(string ip)
+    public async Task<IPGeolocationInfo> GetIPGeolocationAsync(IPAddress address)
     {
         try
         {
-            using var dbContext = _creatorDbContext.CreateDbContext<CustomDbContext>(nameConnectionString: "teamlabsite");
-            var ipformatted = FormatIP(ip);
-            var q = dbContext.DbipLocation
-                .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
-                .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
+            var cacheKey = $"ip_geolocation_info_${address}";
+            var fromCache = _cache.Get<IPGeolocationInfo>(cacheKey);
+
+            if (fromCache != null) return fromCache;
+
+            using var dbContext = _dbContextFactory.CreateDbContext();
+
+            var addrType = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? "ipv4" : "ipv6";
+
+            var result = await dbContext.DbIPLookup
+                .Where(r => r.AddrType == addrType && r.IPStart.Compare(address.GetAddressBytes()) <= 0)
                 .OrderByDescending(r => r.IPStart)
                 .Select(r => new IPGeolocationInfo
                 {
                     City = r.City,
-                    IPEnd = r.IPEnd,
-                    IPStart = r.IPStart,
+                    IPEnd = new IPAddress(r.IPEnd),
+                    IPStart = new IPAddress(r.IPStart),
                     Key = r.Country,
-                    TimezoneOffset = r.TimezoneOffset ?? 0,
-                    TimezoneName = r.TimezoneName
+                    TimezoneOffset = r.TimezoneOffset,
+                    TimezoneName = r.TimezoneName,
+                    Continent = r.Continent
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            return q ?? IPGeolocationInfo.Default;
+            if (result != null)
+            {
+                _cache.Insert(cacheKey, result, TimeSpan.FromSeconds(15));
+            }
+
+            return result ?? IPGeolocationInfo.Default;
         }
         catch (Exception error)
         {
@@ -74,51 +98,20 @@ public class GeolocationHelper
         return IPGeolocationInfo.Default;
     }
 
-    public IPGeolocationInfo GetIPGeolocationFromHttpContext()
+    public async Task<IPGeolocationInfo> GetIPGeolocationFromHttpContextAsync()
     {
         if (_httpContextAccessor.HttpContext?.Request != null)
         {
-            var ip = (string)(_httpContextAccessor.HttpContext.Items["X-Forwarded-For"] ?? _httpContextAccessor.HttpContext.Items["REMOTE_ADDR"]);
-            if (!string.IsNullOrWhiteSpace(ip))
+            var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+
+            if (!ip.Equals(IPAddress.Loopback))
             {
-                return GetIPGeolocation(ip);
+                _logger.DebugRemoteIpAddress(ip.ToString());
+
+                return await GetIPGeolocationAsync(ip);
             }
         }
 
         return IPGeolocationInfo.Default;
-    }
-
-    private static string FormatIP(string ip)
-    {
-        ip = (ip ?? "").Trim();
-        if (ip.Contains('.'))
-        {
-            //ip v4
-            if (ip.Length == 15)
-            {
-                return ip;
-            }
-
-            return string.Join(".", ip.Split(':')[0].Split('.').Select(s => ("00" + s).Substring(s.Length - 1)).ToArray());
-        }
-        else if (ip.Contains(':'))
-        {
-            //ip v6
-            if (ip.Length == 39)
-            {
-                return ip;
-            }
-            var index = ip.IndexOf("::");
-            if (0 <= index)
-            {
-                ip = ip.Insert(index + 2, new string(':', 8 - ip.Split(':').Length));
-            }
-
-            return string.Join(":", ip.Split(':').Select(s => ("0000" + s).Substring(s.Length)).ToArray());
-        }
-        else
-        {
-            throw new ArgumentException("Unknown ip " + ip);
-        }
     }
 }
