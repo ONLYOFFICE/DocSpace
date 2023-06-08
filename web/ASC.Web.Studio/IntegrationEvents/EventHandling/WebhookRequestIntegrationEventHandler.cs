@@ -24,46 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-namespace ASC.Webhooks;
+namespace ASC.Web.Studio.IntegrationEvents.EventHandling;
 [Scope]
-public class SslHelper
+public class WebhookRequestIntegrationEventHandler : IIntegrationEventHandler<WebhookRequestIntegrationEvent>
 {
-    private readonly SettingsManager _settingsManager;
+    private readonly ConcurrentQueue<WebhookRequestIntegrationEvent> _queue;
+    private readonly ILogger _logger;
 
-    public SslHelper(
-        SettingsManager settingsManager
-        )
+    public WebhookRequestIntegrationEventHandler(
+        ILogger<WebhookRequestIntegrationEventHandler> logger,
+        ConcurrentQueue<WebhookRequestIntegrationEvent> concurrentQueue)
     {
-        _settingsManager = settingsManager;
+        _queue = concurrentQueue;
+        _logger = logger;
     }
 
-    public bool ValidateCertificate(SslPolicyErrors sslPolicyErrors)
+    public async Task Handle(WebhookRequestIntegrationEvent @event)
     {
-        if (sslPolicyErrors == SslPolicyErrors.None)
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
-            return true;
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+            _queue.Enqueue(@event);
+
+            await Task.CompletedTask;
         }
-
-        var settings = _settingsManager.Load<WebHooksSettings>();
-
-        if (!settings.EnableSSLVerification)
-        {
-            return true;
-        }
-
-        throw new SslException(sslPolicyErrors);
     }
 }
-
-public class SslException : Exception
-{
-    public SslPolicyErrors Errors { get; set; }
-    public override string Message { get => Errors.ToString(); }
-
-    public SslException(SslPolicyErrors errors)
-    {
-        Errors = errors;
-    }
-}
-

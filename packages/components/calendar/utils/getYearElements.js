@@ -1,10 +1,7 @@
+import React from "react";
 import moment from "moment";
 
-import {
-  CurrentDateItem,
-  DateItem,
-  SecondaryDateItem,
-} from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const onDateClick = (year, setObservedDate, setSelectedScene) => {
   setObservedDate((prevObservedDate) =>
@@ -25,7 +22,9 @@ export const getYearElements = (
     onDateClick(year, setObservedDate, setSelectedScene);
 
   const yearElements = years.map((year) => (
-    <SecondaryDateItem
+    <ColorTheme
+      themeId={ThemeType.DateItem}
+      isSecondary
       big
       key={year}
       onClick={() => onClick(year)}
@@ -35,12 +34,13 @@ export const getYearElements = (
       }
     >
       {year}
-    </SecondaryDateItem>
+    </ColorTheme>
   ));
 
   for (let i = 1; i < 11; i++) {
     yearElements[i] = (
-      <DateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
         big
         key={years[i]}
         onClick={() => onClick(years[i])}
@@ -50,7 +50,7 @@ export const getYearElements = (
         }
       >
         {years[i]}
-      </DateItem>
+      </ColorTheme>
     );
   }
 
@@ -58,7 +58,8 @@ export const getYearElements = (
   const selectedYearIndex = years.indexOf(moment(selectedDate).year());
   if (selectedYearIndex !== -1) {
     yearElements[selectedYearIndex] = (
-      <DateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
         big
         focused
         key={years[selectedYearIndex]}
@@ -71,12 +72,14 @@ export const getYearElements = (
         }
       >
         {years[selectedYearIndex]}
-      </DateItem>
+      </ColorTheme>
     );
   }
   if (currentYearIndex !== -1) {
     yearElements[currentYearIndex] = (
-      <CurrentDateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
+        isCurrent
         big
         key={years[currentYearIndex]}
         onClick={() => onClick(years[currentYearIndex])}
@@ -88,7 +91,7 @@ export const getYearElements = (
         }
       >
         {years[currentYearIndex]}
-      </CurrentDateItem>
+      </ColorTheme>
     );
   }
 
