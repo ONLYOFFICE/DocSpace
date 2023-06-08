@@ -105,19 +105,15 @@ export const DNSSettingsTooltip = ({
   currentColorScheme,
   helpLink,
   organizationName,
+  standalone,
 }) => {
   return (
     <StyledTooltip>
       <div className="font-size">
-        <Trans
-          ns="Settings"
-          i18nKey="DNSSettingsTooltip"
-          organizationName={organizationName}
-        >
-          DNS Settings allow you to set an alternative URL address for your
-          {{ organizationName }} space. Send your request to our support team,
-          and our specialists will help you with the settings.
-        </Trans>
+        {t("DNSSettingsTooltipMain", { organizationName })}{" "}
+        {standalone
+          ? t("DNSSettingsTooltipStandalone", { organizationName })
+          : t("DNSSettingsTooltip", { organizationName })}
         <Link
           color={currentColorScheme.main.accent}
           className="display-block font-size"

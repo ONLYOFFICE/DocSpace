@@ -278,7 +278,7 @@
     <value>Asetukset on päivitetty onnistuneesti</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Profiilin poistoon liittyviä ohjeita on lähetetty sähköpostiosoitteeseesi</value>
+    <value>Profiilin poistoon liittyviä ohjeita on lähetetty sähköpostiosoitteeseesi {0}</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>US (Oregon)</value>

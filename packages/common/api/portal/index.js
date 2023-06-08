@@ -290,3 +290,11 @@ export function sendPaymentRequest(email, userName, message) {
     },
   });
 }
+
+export function getPortal() {
+  const options = {
+    method: "get",
+    url: "/portal",
+  };
+  return request(options);
+}

@@ -12,7 +12,7 @@
   "ChooseNewPayer": "选择新的付款人",
   "ChooseNewPlan": "是否选择新的定价版本？",
   "ContactUs": "如有任何销售问题，可联系我们：",
-  "DelayedPayment": "{{planName}}版本延迟付款日期 {{date}}",
+  "DelayedPayment": "{{planName}}版本延迟付款日期{{date}}",
   "DowngradeNow": "立即降级",
   "ErrorNotification": "更新计费方案失败。请稍后重试或联系销售部门。",
   "GracePeriodActivatedDescription": "宽限期内管理员无法创建新房间或添加新用户。宽限期后协作空间将不可用，直至完成付款。",

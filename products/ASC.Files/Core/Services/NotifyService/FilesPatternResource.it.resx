@@ -125,4 +125,31 @@ $Message</value>
  
 $__AuthorName ha eliminato una stanza: $RoomTitle</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Tutti i firmatari hanno completato il $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Lo stato della firma è cambiato</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notifica di DocSpace. Menzionato nel documento</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Menzionato nel documento</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>L'invio è completato.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notifica di DocSpace. La stanza e stata eliminata</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Accesso autorizzato al documento: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Accesso autorizzato al documento crittografato: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Accesso autorizzato alla cartella: $DocumentTitle</value>
+  </data>
 </root>
