@@ -94,7 +94,7 @@ const Webhooks = (props) => {
   };
 
   useEffect(() => {
-    ready && isWebhooksEmpty && startTranslation(loadWebhooks);
+    ready && startTranslation(loadWebhooks);
   }, [ready]);
 
   return (
