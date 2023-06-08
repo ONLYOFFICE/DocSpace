@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.WebhooksDb
+namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(WebhooksDbContext))]
     partial class WebhooksDbContextModelSnapshot : ModelSnapshot
