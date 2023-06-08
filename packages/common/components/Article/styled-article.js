@@ -112,6 +112,9 @@ const StyledArticle = styled.article`
     `}
 
     .scroll-body {
+      display: flex;
+      flex-direction: column;
+
       overflow-x: hidden !important;
 
       padding: 0 20px !important;
@@ -128,12 +131,14 @@ const StyledArticle = styled.article`
       `}
 
       @media ${mobile} {
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       }
 
       ${isMobileOnly &&
       css`
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       `}
@@ -399,7 +404,12 @@ const StyledArticleAlertsComponent = styled.div`
   display: flex;
   flex-wrap: wrap;
   row-gap: 20px;
+
+  &:empty {
+    display: none;
+  }
 `;
+
 export {
   StyledArticle,
   StyledArticleHeader,
