@@ -5,7 +5,10 @@ import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import ContextMenu from "@docspace/components/context-menu";
-import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
+import {
+  isTablet as isTabletUtils,
+  isMobile as isMobileUtils,
+} from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import {
   StyledArticleProfile,
@@ -22,7 +25,8 @@ const ArticleProfile = (props) => {
   const ref = useRef(null);
   const menuRef = useRef(null);
 
-  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+  const isTabletView =
+    (isTabletUtils() || isTablet) && !isMobileOnly && !isMobileUtils();
   const avatarSize = isTabletView ? "min" : "base";
   const userRole = getUserRole(user);
 
@@ -47,6 +51,8 @@ const ArticleProfile = (props) => {
   const username = user.displayName.split(" ");
 
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoPngUrl;
+
+  if (!isMobileOnly && isMobileUtils()) return <></>;
 
   return (
     <StyledProfileWrapper showText={showText}>
