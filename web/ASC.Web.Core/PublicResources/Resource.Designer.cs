@@ -862,7 +862,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect Rackspace Cloud Storage service to backup and store data from your portal. {0}In the security settings of  Rackspace Cloud Control Panel, click the Show link next to Rackspace API Key. Paste the data you received below:.
+        ///   Looks up a localized string similar to Connect Rackspace Cloud Storage service to backup and store data from your portal. {0}In the security settings of Rackspace Cloud Control Panel, click the Show link next to Rackspace API Key. Paste the data you received below:.
         /// </summary>
         public static string ConsumersRackspaceInstruction {
             get {
@@ -1996,7 +1996,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights was unaffected..
+        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights were unaffected..
         /// </summary>
         public static string LdapSettingsErrorLostRights {
             get {

@@ -241,7 +241,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _autoBackupRestoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
         _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
         _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
-        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Visible = false };
+        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty" };
 
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {

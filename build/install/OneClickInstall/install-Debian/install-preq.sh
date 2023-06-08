@@ -106,7 +106,6 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 
 # install
 apt-get install -o DPkg::options::="--force-confnew" -yq \
-				python3-pip \
 				expect \
 				nano \
 				nodejs \

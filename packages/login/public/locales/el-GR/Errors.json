@@ -1,5 +1,9 @@
 {
   "ErrorConfirmURLError": "Άκυρα email ή ληγμένος σύνδεσμος",
+  "ErrorExpiredActivationLink": "Ο σύνδεσμος έχει λήξει",
+  "ErrorInvalidActivationLink": "Μη έγκυρος σύνδεσμος ενεργοποίησης",
+  "ErrorUserNotFound": "Ο χρήστης δε βρέθηκε",
   "InvalidUsernameOrPassword": "Άκυρο όνομα χρήστη ή κωδικός πρόσβασης.<",
-  "LoginWithAccountNotFound": "Δεν μπορείτε να βρείτε συνδεδεμένο λογαριασμό τρίτου"
+  "LoginWithAccountNotFound": "Δεν μπορείτε να βρείτε συνδεδεμένο λογαριασμό τρίτου",
+  "SsoAuthFailed": "Η αυθεντικοποίηση απέτυχε"
 }

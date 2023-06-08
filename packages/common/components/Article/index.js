@@ -16,6 +16,7 @@ import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 import ArticleAlerts from "./sub-components/article-alerts";
 import ArticleLiveChat from "./sub-components/article-live-chat";
+import ArticleApps from "./sub-components/article-apps";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -40,13 +41,14 @@ const Article = ({
   isBannerVisible,
 
   isLiveChatAvailable,
+
+  theme,
+
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [
-    articleMainButtonContent,
-    setArticleMainButtonContent,
-  ] = React.useState(null);
+  const [articleMainButtonContent, setArticleMainButtonContent] =
+    React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -181,7 +183,7 @@ const Article = ({
           )}
 
           <ArticleAlerts />
-
+          <ArticleApps showText={showText} theme={theme} />
           {!isMobile && isLiveChatAvailable && (
             <ArticleLiveChat
               currentColorScheme={currentColorScheme}
@@ -266,6 +268,7 @@ export default inject(({ auth }) => {
     currentColorScheme,
     setArticleOpen,
     mainBarVisible,
+    theme,
   } = settingsStore;
 
   return {
@@ -283,5 +286,7 @@ export default inject(({ auth }) => {
     isBannerVisible,
 
     isLiveChatAvailable,
+
+    theme,
   };
 })(observer(Article));

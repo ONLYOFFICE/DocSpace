@@ -13,6 +13,7 @@ import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const themes = {
   Dark: Dark,
@@ -312,6 +313,17 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
+  getPortal = async () => {
+    try {
+      const res = await api.portal.getPortal();
+
+      if (!res) return;
+
+      return res;
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
   getSettings = async () => {
     let newSettings = null;
 

@@ -177,6 +177,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    standalone,
   } = rest;
 
   useEffect(() => {
@@ -216,10 +217,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
-    socketHelper.emit({
-      command: "subscribe",
-      data: { roomParts: "quota" },
-    });
+
+    !standalone && // unlimited quota (standalone)
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: "quota" },
+      });
+
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });
@@ -577,6 +581,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
+    standalone,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
@@ -612,6 +617,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         : "Base"
       : auth?.userStore?.user?.theme,
     whiteLabelLogoUrls,
+    standalone,
   };
 })(observer(Shell));
 

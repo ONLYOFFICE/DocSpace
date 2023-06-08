@@ -154,6 +154,9 @@ Summary:        Radicale
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
 Requires:       python3 >= 3.6
+Requires:       python3-pip
+Requires:       python3-requests
+Requires:       python3-setuptools
 AutoReqProv:    no
 %description    radicale
 Radicale

@@ -522,7 +522,7 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"/ds-vpath/\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	echo "OK"
 }

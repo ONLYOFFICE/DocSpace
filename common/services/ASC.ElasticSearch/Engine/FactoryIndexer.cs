@@ -167,7 +167,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
     public bool CanIndexByContent(T t)
     {
-        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(_tenantManager.GetCurrentTenant().Id);
+        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>();
     }
 
     public async Task<bool> Index(T data, bool immediately = true)
