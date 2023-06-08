@@ -76,32 +76,19 @@ const CodeInput = (props) => {
   const elements = [];
   for (let i = 0; i < characters; i++) {
     if (i === 3) elements.push(<hr key="InputCode-line" />);
-    if (interfaceDirection === "rtl")
-      elements.unshift(
-        <input
-          key={`InputCode-${i}`}
-          onChange={handleOnChange}
-          onKeyDown={handleOnKeyDown}
-          onFocus={handleOnFocus}
-          onPaste={handleOnPaste}
-          ref={(el) => (inputsRef.current[i] = el)}
-          maxLength={1}
-          disabled={isDisabled}
-        />
-      );
-    else
-      elements.push(
-        <input
-          key={`InputCode-${i}`}
-          onChange={handleOnChange}
-          onKeyDown={handleOnKeyDown}
-          onFocus={handleOnFocus}
-          onPaste={handleOnPaste}
-          ref={(el) => (inputsRef.current[i] = el)}
-          maxLength={1}
-          disabled={isDisabled}
-        />
-      );
+
+    elements.push(
+      <input
+        key={`InputCode-${i}`}
+        onChange={handleOnChange}
+        onKeyDown={handleOnKeyDown}
+        onFocus={handleOnFocus}
+        onPaste={handleOnPaste}
+        ref={(el) => (inputsRef.current[i] = el)}
+        maxLength={1}
+        disabled={isDisabled}
+      />
+    );
   }
 
   return <InputWrapper {...props}>{elements}</InputWrapper>;
