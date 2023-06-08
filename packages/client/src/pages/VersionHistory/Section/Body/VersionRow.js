@@ -1,3 +1,6 @@
+import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
+import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "@docspace/components/link";
@@ -10,7 +13,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import { StyledVersionRow } from "./StyledVersionHistory";
-import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
+import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg?url";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
@@ -97,19 +100,28 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
+    {
+      key: "open",
+      icon: ExternalLinkIcon,
+      label: t("Files:Open"),
+      onClick: onOpenFile,
+    },
     canChangeVersionFileHistory && {
       key: "edit",
+      icon: AccessCommentReactSvgUrl,
       label: t("EditComment"),
       onClick: onEditComment,
     },
     index !== 0 &&
       canChangeVersionFileHistory && {
         key: "restore",
+        icon: RestoreAuthReactSvgUrl,
         label: t("Common:Restore"),
         onClick: onRestoreClick,
       },
     {
       key: "download",
+      icon: DownloadReactSvgUrl,
       label: `${t("Common:Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
@@ -202,7 +214,7 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Text className="version_text" truncate={true}>
+            <Text className="version_text" color="#A3A9AE" truncate={true}>
               {info.comment}
             </Text>
           </>
