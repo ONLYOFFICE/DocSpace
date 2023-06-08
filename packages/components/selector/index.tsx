@@ -7,6 +7,9 @@ import Footer from "./sub-components/Footer";
 
 import { StyledSelector } from "./StyledSelector";
 
+import { AccessRight, SelectorProps } from "./Selector.types";
+import { Item } from "./sub-components/Item/Item.types";
+
 const Selector = ({
   id,
   className,
@@ -47,22 +50,22 @@ const Selector = ({
   isLoading,
   searchLoader,
   rowLoader,
-}) => {
-  const [footerVisible, setFooterVisible] = React.useState(false);
+}: SelectorProps) => {
+  const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
+  const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
-  const [isSearch, setIsSearch] = React.useState(false);
+  const [renderedItems, setRenderedItems] = React.useState<Item[]>([]);
+  const [newSelectedItems, setNewSelectedItems] = React.useState<Item[]>([]);
 
-  const [renderedItems, setRenderedItems] = React.useState([]);
-  const [newSelectedItems, setNewSelectedItems] = React.useState([]);
-
-  const [selectedAccess, setSelectedAccess] = React.useState({});
+  const [selectedAccess, setSelectedAccess] =
+    React.useState<AccessRight | null>(null);
 
   const onBackClickAction = React.useCallback(() => {
     onBackClick && onBackClick();
   }, [onBackClick]);
 
   const onSearchAction = React.useCallback(
-    (value) => {
+    (value: string) => {
       onSearch && onSearch(value);
 
       setIsSearch(true);
@@ -75,11 +78,11 @@ const Selector = ({
     setIsSearch(false);
   }, [onClearSearch]);
 
-  const onSelectAction = (item) => {
+  const onSelectAction = (item: Item) => {
     onSelect &&
       onSelect({
         id: item.id,
-        email: item.email,
+        email: item.email || "",
         avatar: item.avatar,
         icon: item.icon,
         label: item.label,
@@ -111,9 +114,6 @@ const Selector = ({
           value.push({
             id: item.id,
             email: item.email,
-            avatar: item.avatar,
-            icon: item.icon,
-            label: item.label,
             ...item,
           });
 
@@ -138,9 +138,7 @@ const Selector = ({
       const newItem = {
         id: item.id,
         email: item.email,
-        avatar: item.avatar,
-        icon: item.icon,
-        label: item.label,
+
         ...item,
       };
 
@@ -193,14 +191,14 @@ const Selector = ({
   );
 
   const compareSelectedItems = React.useCallback(
-    (newList) => {
+    (newList: Item[]) => {
       let isEqual = true;
 
-      if (selectedItems.length !== newList.length) {
+      if (selectedItems?.length !== newList.length) {
         return setFooterVisible(true);
       }
 
-      if (newList.length === 0 && selectedItems.length === 0) {
+      if (newList.length === 0 && selectedItems?.length === 0) {
         return setFooterVisible(false);
       }
 
@@ -214,14 +212,14 @@ const Selector = ({
   );
 
   const loadMoreItems = React.useCallback(
-    (startIndex) => {
+    (startIndex: number) => {
       !isNextPageLoading && loadNextPage && loadNextPage(startIndex - 1);
     },
     [isNextPageLoading, loadNextPage]
   );
 
   React.useEffect(() => {
-    setSelectedAccess({ ...selectedAccessRight });
+    if (!!selectedAccessRight) setSelectedAccess({ ...selectedAccessRight });
   }, [selectedAccessRight]);
 
   React.useEffect(() => {

@@ -1,26 +1,9 @@
 import React from "react";
 
-import styled from "styled-components";
-
 import Button from "../../../button";
-import Combobox from "../../../combobox";
 
-import { StyledSelectorFooter } from "../../StyledSelector";
-
-const StyledComboBox = styled(Combobox)`
-  margin-bottom: 2px;
-  max-height: 50px;
-
-  .combo-button {
-    min-height: 40px;
-  }
-
-  .combo-button-label,
-  .combo-button-label:hover {
-    font-size: 14px;
-    text-decoration: none;
-  }
-`;
+import { StyledFooter, StyledComboBox } from "./StyledFooter";
+import { FooterProps } from "./Footer.types";
 
 const Footer = React.memo(
   ({
@@ -35,14 +18,14 @@ const Footer = React.memo(
     onAccept,
     onCancel,
     onChangeAccessRights,
-  }) => {
+  }: FooterProps) => {
     const label =
       selectedItemsCount && isMultiSelect
         ? `${acceptButtonLabel} (${selectedItemsCount})`
         : acceptButtonLabel;
 
     return (
-      <StyledSelectorFooter>
+      <StyledFooter>
         <Button
           className={"button accept-button"}
           label={label}
@@ -75,7 +58,7 @@ const Footer = React.memo(
             onClick={onCancel}
           />
         )}
-      </StyledSelectorFooter>
+      </StyledFooter>
     );
   }
 );

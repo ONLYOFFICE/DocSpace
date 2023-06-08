@@ -1,51 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 
 import Avatar from "../../../avatar";
 import Text from "../../../text";
 import Checkbox from "../../../checkbox";
-import { Base } from "../../../themes";
 
-const StyledSelectAll = styled.div`
-  width: 100%;
-  max-height: 61px;
-  height: 61px;
-  min-height: 61px;
-
-  display: flex;
-  align-items: center;
-
-  cursor: pointer;
-
-  border-bottom: ${(props) => props.theme.selector.border};
-
-  box-sizing: border-box;
-
-  padding: 8px 16px 20px;
-
-  margin-bottom: 12px;
-
-  .select-all_avatar {
-    min-width: 32px;
-  }
-
-  .label {
-    width: 100%;
-    max-width: 100%;
-
-    line-height: 16px;
-
-    margin-left: 8px;
-  }
-
-  .checkbox {
-    svg {
-      margin-right: 0px;
-    }
-  }
-`;
-
-StyledSelectAll.defaultProps = { theme: Base };
+import StyledSelectAll from "./StyledSelectAll";
+import { SelectAllProps } from "./SelectAll.types";
 
 const SelectAll = React.memo(
   ({
@@ -56,9 +16,10 @@ const SelectAll = React.memo(
     isIndeterminate,
     isLoading,
     rowLoader,
-  }) => {
-    const onClick = (e) => {
-      if (e.target.closest(".checkbox")) return;
+  }: SelectAllProps) => {
+    const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target instanceof HTMLElement && e.target.closest(".checkbox"))
+        return;
 
       onSelectAll && onSelectAll();
     };

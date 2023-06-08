@@ -1,64 +1,14 @@
 import React from "react";
-import styled, { css } from "styled-components";
-import { ReactSVG } from "react-svg";
 
 import Avatar from "../../../avatar";
 import Text from "../../../text";
 import Checkbox from "../../../checkbox";
-import { Base } from "../../../themes";
 
-const selectedCss = css`
-  background: ${(props) =>
-    props.theme.selector.item.selectedBackground} !important;
-`;
+import StyledItem from "./StyledItem";
 
-const StyledItem = styled.div`
-  display: flex;
-  align-items: center;
+import { ItemProps, Data, Item as ItemType } from "./Item.types";
 
-  padding: 0 16px;
-
-  box-sizing: border-box;
-
-  ${(props) => props.isSelected && !props.isMultiSelect && selectedCss}
-
-  .room-logo,
-  .user-avatar {
-    min-width: 32px;
-  }
-
-  .room-logo {
-    height: 32px;
-
-    border-radius: 6px;
-  }
-
-  .label {
-    width: 100%;
-    max-width: 100%;
-
-    line-height: 16px;
-
-    margin-left: 8px;
-  }
-
-  .checkbox {
-    svg {
-      margin-right: 0px;
-    }
-  }
-
-  @media (hover: hover) {
-    &:hover {
-      cursor: pointer;
-      background: ${(props) => props.theme.selector.item.hoverBackground};
-    }
-  }
-`;
-
-StyledItem.defaultProps = { theme: Base };
-
-const compareFunction = (prevProps, nextProps) => {
+const compareFunction = (prevProps: ItemProps, nextProps: ItemProps) => {
   const prevData = prevProps.data;
   const prevItems = prevData.items;
   const prevIndex = prevProps.index;
@@ -76,15 +26,17 @@ const compareFunction = (prevProps, nextProps) => {
   );
 };
 
-const Item = React.memo(({ index, style, data }) => {
-  const { items, onSelect, isMultiSelect, isItemLoaded, rowLoader } = data;
+const Item = React.memo(({ index, style, data }: ItemProps) => {
+  const { items, onSelect, isMultiSelect, isItemLoaded, rowLoader }: Data =
+    data;
 
   const isLoaded = isItemLoaded(index);
 
   const renderItem = () => {
-    const item = items[index];
+    const item: ItemType = items[index];
 
-    if (!item && !item?.id) return <div style={style}>{rowLoader}</div>;
+    if (!item || (item && !item.id))
+      return <div style={style}>{rowLoader}</div>;
 
     const { label, avatar, icon, role, isSelected } = item;
 
@@ -96,8 +48,9 @@ const Item = React.memo(({ index, style, data }) => {
       onSelect && onSelect(item);
     };
 
-    const onClick = (e) => {
-      if (e.target.closest(".checkbox")) return;
+    const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target instanceof HTMLElement && e.target.closest(".checkbox"))
+        return;
 
       onSelect && onSelect(item);
     };

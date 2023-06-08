@@ -5,11 +5,12 @@ import Heading from "../../../heading";
 
 import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 
-import { StyledSelectorHeader } from "../../StyledSelector";
+import StyledHeader from "./StyledHeader";
+import { HeaderProps } from "./Header.types";
 
-const Header = React.memo(({ onBackClickAction, headerLabel }) => {
+const Header = React.memo(({ onBackClickAction, headerLabel }: HeaderProps) => {
   return (
-    <StyledSelectorHeader>
+    <StyledHeader>
       <IconButton
         className="arrow-button"
         iconName={ArrowPathReactSvgUrl}
@@ -17,7 +18,7 @@ const Header = React.memo(({ onBackClickAction, headerLabel }) => {
         onClick={onBackClickAction}
       />
       <Heading className={"heading-text"}>{headerLabel}</Heading>
-    </StyledSelectorHeader>
+    </StyledHeader>
   );
 });
 
