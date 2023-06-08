@@ -37,9 +37,16 @@ const StyledCalendar = styled(Calendar)`
     `}
 `;
 
-const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsApplied }) => {
+const DeliveryDatePicker = ({
+  Selectors,
+  filters,
+  setFilters,
+  isApplied,
+  setIsApplied,
+  isTimeOpen,
+  setIsTimeOpen,
+}) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const { t } = useTranslation(["Webhooks"]);
 
@@ -99,11 +106,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
 
   const DateSelector = () => (
     <div>
-      <SelectorAddButton
-        title={t("Add")}
-        onClick={toggleCalendar}
-        style={{ marginRight: "8px" }}
-      />
+      <SelectorAddButton title={t("Add")} onClick={toggleCalendar} style={{ marginRight: "8px" }} />
       <Text isInline fontWeight={600} color="#A3A9AE">
         {t("SelectDate")}
       </Text>
@@ -148,11 +151,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
 
   const TimeSelectorAdder = () => (
     <TimePickerCell>
-      <SelectorAddButton
-        title={t("Add")}
-        onClick={showTimePicker}
-        style={{ marginRight: "8px" }}
-      />
+      <SelectorAddButton title={t("Add")} onClick={showTimePicker} style={{ marginRight: "8px" }} />
       <Text isInline fontWeight={600} color="#A3A9AE">
         {t("SelectDeliveryTime")}
       </Text>

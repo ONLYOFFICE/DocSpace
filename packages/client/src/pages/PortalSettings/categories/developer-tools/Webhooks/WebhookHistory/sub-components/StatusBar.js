@@ -110,15 +110,18 @@ const StatusBar = (props) => {
         ""
       )}
       {SelectedStatuses}
-      <Link
-        type="action"
-        fontWeight={600}
-        isHovered={true}
-        onClick={clearAll}
-        color="#A3A9AE"
-        className="statusActionItem">
-        Clear all
-      </Link>
+      {((historyFilters.deliveryDate !== null && historyFilters.status.length > 0) ||
+        historyFilters.status.length > 1) && (
+          <Link
+            type="action"
+            fontWeight={600}
+            isHovered={true}
+            onClick={clearAll}
+            color="#A3A9AE"
+            className="statusActionItem">
+            Clear all
+          </Link>
+        )}
     </StatusBarWrapper>
   );
 };

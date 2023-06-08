@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
 
@@ -44,7 +44,8 @@ const Separator = styled.hr`
 Separator.defaultProps = { theme: Base };
 
 const FilterDialog = (props) => {
-  const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters } = props;
+  const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters, historyFilters } =
+    props;
   const { t } = useTranslation(["Webhooks", "Files", "Common"]);
 
   const [filters, setFilters] = useState({
@@ -55,6 +56,7 @@ const FilterDialog = (props) => {
   });
 
   const [isApplied, setIsApplied] = useState(false);
+  const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const handleApplyFilters = () => {
     if (filters.deliveryTo > filters.deliveryFrom) {
@@ -68,6 +70,22 @@ const FilterDialog = (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log(historyFilters);
+    if (historyFilters === null && (filters.deliveryDate !== null || filters.status.length > 0)) {
+      setFilters({
+        deliveryDate: null,
+        deliveryFrom: moment().startOf("day"),
+        deliveryTo: moment().endOf("day"),
+        status: [],
+      });
+    } else if (historyFilters !== null) {
+      setFilters(historyFilters);
+      setIsTimeOpen(false);
+      setIsApplied(true);
+    }
+  }, [historyFilters, visible]);
+
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={closeModal} displayType="aside">
       <ModalDialog.Header>{t("Files:Filter")}</ModalDialog.Header>
@@ -79,6 +97,8 @@ const FilterDialog = (props) => {
             setIsApplied={setIsApplied}
             filters={filters}
             setFilters={setFilters}
+            isTimeOpen={isTimeOpen}
+            setIsTimeOpen={setIsTimeOpen}
           />
           <Separator />
           <StatusPicker Selectors={Selectors} filters={filters} setFilters={setFilters} />
@@ -102,7 +122,7 @@ const FilterDialog = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { formatFilters, setHistoryFilters } = webhooksStore;
+  const { formatFilters, setHistoryFilters, historyFilters } = webhooksStore;
 
-  return { formatFilters, setHistoryFilters };
+  return { formatFilters, setHistoryFilters, historyFilters };
 })(observer(FilterDialog));

@@ -51,7 +51,7 @@ const FilterButton = styled.div`
   width: 32px;
   height: 32px;
 
-  z-index: ${(props) => (props.isHeaderVisible ? 199 : 201)};
+  z-index: ${(props) => (props.isGroupMenuVisible ? 199 : 201)};
 
   border: 1px solid;
   border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};
@@ -86,7 +86,7 @@ const FilterButton = styled.div`
 FilterButton.defaultProps = { theme: Base };
 
 const HistoryFilterHeader = (props) => {
-  const { applyFilters, historyFilters, isHeaderVisible } = props;
+  const { applyFilters, historyFilters, isGroupMenuVisible } = props;
   const { t } = useTranslation(["Webhooks"]);
   const { id } = useParams();
 
@@ -107,7 +107,7 @@ const HistoryFilterHeader = (props) => {
           {t("Webhook")} {id}
         </ListHeading>
 
-        <FilterButton onClick={openFiltersModal} isHeaderVisible={isHeaderVisible}>
+        <FilterButton onClick={openFiltersModal} isGroupMenuVisible={isGroupMenuVisible}>
           <IconButton iconName={FilterReactSvrUrl} size={16} />
           <span hidden={historyFilters === null}></span>
         </FilterButton>
@@ -123,9 +123,9 @@ const HistoryFilterHeader = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { historyFilters, isHeaderVisible } = webhooksStore;
+  const { historyFilters, isGroupMenuVisible } = webhooksStore;
   return {
     historyFilters,
-    isHeaderVisible,
+    isGroupMenuVisible,
   };
 })(observer(HistoryFilterHeader));
