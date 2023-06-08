@@ -50,8 +50,6 @@ class AuthStore {
     const { socketHelper } = this.settingsStore;
 
     socketHelper.on("s:change-quota-used-value", ({ featureId, value }) => {
-      if (this.settingsStore.standalone) return;
-
       console.log(`[WS] change-quota-used-value ${featureId}:${value}`);
 
       runInAction(() => {
@@ -60,8 +58,6 @@ class AuthStore {
     });
 
     socketHelper.on("s:change-quota-feature-value", ({ featureId, value }) => {
-      if (this.settingsStore.standalone) return;
-
       console.log(`[WS] change-quota-feature-value ${featureId}:${value}`);
 
       runInAction(() => {
