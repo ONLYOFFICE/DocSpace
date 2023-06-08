@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import Selector from "./";
+import Selector from ".";
 import CustomSvgUrl from "PUBLIC_DIR/images/icons/32/room/custom.svg?url";
 import ArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import EmptyScreenFilter from "PUBLIC_DIR/images/empty_screen_filter.png";
+import { Item } from "./sub-components/Item/Item.types";
 
 const StyledRowLoader = styled.div`
   width: 100%;
@@ -48,8 +49,8 @@ function makeName() {
   return result;
 }
 
-const getItems = (count) => {
-  const items = [];
+const getItems = (count: number) => {
+  const items: Item[] = [];
 
   for (let i = 0; i < count / 2; i++) {
     items.push({
@@ -123,7 +124,7 @@ const totalItems = items.length;
 const Template = (args) => {
   const [rendItems, setRendItems] = React.useState(renderedItems);
 
-  const loadNextPage = (index) => {
+  const loadNextPage = (index: number) => {
     setRendItems((val) => [...val, ...items.slice(index, index + 100)]);
   };
 

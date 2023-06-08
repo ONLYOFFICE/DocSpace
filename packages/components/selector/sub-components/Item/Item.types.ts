@@ -1,8 +1,9 @@
 export type Item = {
+  key?: string;
   id?: number | string;
   label: string;
-  avatar: string;
-  icon: string;
+  avatar?: string;
+  icon?: string;
   role?: string;
   isSelected?: boolean;
   email?: string;
