@@ -925,6 +925,7 @@ const SectionHeaderContent = (props) => {
     tableGroupMenuProps.isChecked = isHeaderChecked;
     tableGroupMenuProps.isIndeterminate = isHeaderIndeterminate;
     tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
+    tableGroupMenuProps.withoutInfoPanelToggler = isPublicRoom;
   }
 
   const stateTitle = location?.state?.title;
