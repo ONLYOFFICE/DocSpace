@@ -19,6 +19,8 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
 import { StyledHeader } from "./StyledHeader";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 const Header = (props) => {
   const {
@@ -39,6 +41,7 @@ const Header = (props) => {
     setChangeAvatarVisible,
 
     isProfileLoaded,
+    profileClicked,
   } = props;
 
   const navigate = useNavigate();
@@ -89,8 +92,7 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    console.log(location.state);
-    if (location?.state?.fromUrl) {
+    if (location?.state?.fromUrl && profileClicked) {
       return navigate(location?.state?.fromUrl);
     }
 
@@ -98,11 +100,14 @@ const Header = (props) => {
       return navigate("/portal-settings/customization/general");
     }
 
-    const url = filter.toUrlParams();
-    const backUrl = `/accounts/filter?/${url}`;
+    const roomsFilter = RoomsFilter.getDefault();
+
+    roomsFilter.searchArea = RoomSearchArea.Active;
+    const urlParams = roomsFilter.toUrlParams();
+    const backUrl = `/rooms/shared/filter?${urlParams}`;
 
     navigate(backUrl);
-    setFilter(filter);
+    // setFilter(filter);
   };
 
   if (!isProfileLoaded) return <Loaders.SectionHeader />;
@@ -156,41 +161,46 @@ const Header = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore, clientLoadingStore }) => {
-  const { isAdmin } = auth;
+export default inject(
+  ({ auth, peopleStore, clientLoadingStore, profileActionsStore }) => {
+    const { isAdmin } = auth;
 
-  const { isVisitor, isCollaborator } = auth.userStore.user;
+    const { isVisitor, isCollaborator } = auth.userStore.user;
 
-  const { targetUserStore, filterStore } = peopleStore;
+    const { targetUserStore, filterStore } = peopleStore;
 
-  const { filter, setFilterParams } = filterStore;
+    const { filter, setFilterParams } = filterStore;
 
-  const { targetUser, isMe } = targetUserStore;
+    const { targetUser, isMe } = targetUserStore;
 
-  const { isProfileLoaded } = clientLoadingStore;
+    const { isProfileLoaded } = clientLoadingStore;
 
-  const {
-    setChangeEmailVisible,
-    setChangePasswordVisible,
-    setChangeAvatarVisible,
-  } = targetUserStore;
+    const { profileClicked } = profileActionsStore;
 
-  return {
-    isAdmin,
-    isVisitor,
-    isCollaborator,
-    filter,
+    const {
+      setChangeEmailVisible,
+      setChangePasswordVisible,
+      setChangeAvatarVisible,
+    } = targetUserStore;
 
-    setFilter: setFilterParams,
+    return {
+      isAdmin,
+      isVisitor,
+      isCollaborator,
+      filter,
 
-    profile: targetUser,
-    isMe,
-    setChangeEmailVisible,
-    setChangePasswordVisible,
-    setChangeAvatarVisible,
+      setFilter: setFilterParams,
 
-    isProfileLoaded,
-  };
-})(
+      profile: targetUser,
+      isMe,
+      setChangeEmailVisible,
+      setChangePasswordVisible,
+      setChangeAvatarVisible,
+
+      isProfileLoaded,
+      profileClicked,
+    };
+  }
+)(
   observer(withTranslation(["Profile", "Common", "PeopleTranslations"])(Header))
 );

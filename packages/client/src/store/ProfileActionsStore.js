@@ -38,6 +38,7 @@ class ProfileActionsStore {
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
   isShowLiveChat = false;
+  profileClicked = false;
 
   constructor(
     authStore,
@@ -94,6 +95,8 @@ class ProfileActionsStore {
   onProfileClick = () => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
     const { isRoomAdmin } = this.authStore;
+
+    this.profileClicked = true;
     const prefix = window.DocSpace.location.pathname.includes("portal-settings")
       ? "/portal-settings"
       : "";
@@ -103,11 +106,9 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    const state = {};
-
-    if (prefix) {
-      state.fromUrl = window.DocSpace.location.pathname;
-    }
+    const state = {
+      fromUrl: `${window.DocSpace.location.pathname}${window.DocSpace.location.search}`,
+    };
 
     window.DocSpace.navigate(`${prefix}${PROFILE_SELF_URL}`, { state });
   };

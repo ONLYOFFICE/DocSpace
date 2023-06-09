@@ -210,12 +210,8 @@ const ArticleBodyContent = (props) => {
       return setActiveItemId("settings");
 
     if (location.pathname.includes("profile")) {
-      if (isVisitor) {
-        if (activeItemId) return;
-        return setActiveItemId(rootFolderId || roomsFolderId);
-      }
-
-      if (activeItemId !== "accounts") return setActiveItemId("accounts");
+      if (activeItemId) return;
+      return setActiveItemId(rootFolderId || roomsFolderId);
     }
 
     if (location.pathname.includes("/products/files/#preview")) {
