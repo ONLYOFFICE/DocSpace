@@ -117,15 +117,14 @@ const Header = (props) => {
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
       isVisitor={isVisitor || isCollaborator}
     >
-      {!(isVisitor || isCollaborator) && (
-        <IconButton
-          iconName={ArrowPathReactSvgUrl}
-          size="17"
-          isFill={true}
-          onClick={onClickBack}
-          className="arrow-button"
-        />
-      )}
+      <IconButton
+        iconName={ArrowPathReactSvgUrl}
+        size="17"
+        isFill={true}
+        onClick={onClickBack}
+        className="arrow-button"
+      />
+
       <Headline className="header-headline" type="content" truncate={true}>
         {t("Profile:MyProfile")}
         {profile?.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
