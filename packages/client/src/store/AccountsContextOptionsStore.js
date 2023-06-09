@@ -56,7 +56,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: ProfileReactSvgUrl,
             label: t("Common:Profile"),
-            onClick: this.onProfileClick,
+            onClick: this.peopleStore.profileActionsStore.onProfileClick,
           };
 
         case "change-name":
@@ -300,14 +300,6 @@ class AccountsContextOptionsStore {
       combineUrl(PROXY_HOMEPAGE_URL, `${url}?${filterParamsStr}`),
       type
     );
-  };
-
-  onProfileClick = () => {
-    const prefix = window.location.pathname.includes("portal-settings")
-      ? "/portal-settings"
-      : "";
-
-    window.DocSpace.navigate(`${prefix}${PROFILE_SELF_URL}`);
   };
 
   toggleChangeNameDialog = () => {

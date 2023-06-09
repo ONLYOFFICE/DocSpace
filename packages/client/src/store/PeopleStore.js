@@ -46,6 +46,7 @@ class PeopleStore {
   dialogStore = null;
   setupStore = null;
   accessRightsStore = null;
+  profileActionsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
   isLoadedProfileSectionBody = false;
