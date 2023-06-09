@@ -88,7 +88,7 @@ class PublicRoomStore {
   };
 
   get isPublicRoom() {
-    return this.isLoaded;
+    return this.isLoaded && window.location.pathname === "/rooms/share";
   }
 
   get roomLinks() {

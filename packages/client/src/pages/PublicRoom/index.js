@@ -1,20 +1,14 @@
 import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Section from "@docspace/common/components/Section";
 import Loader from "@docspace/components/loader";
 import { ValidationResult } from "../../helpers/constants";
 
-import SectionHeaderContent from "../Home/Section/Header";
-import SectionFilterContent from "../Home/Section/Filter";
-import SectionBodyContent from "../Home/Section/Body";
-
 import RoomPassword from "./sub-components/RoomPassword";
 import RoomErrors from "./sub-components/RoomErrors";
 
-import { RoomSharingDialog } from "../../components/dialogs";
-import SelectionArea from "../Home/SelectionArea";
-import MediaViewer from "../Home/MediaViewer";
+import PublicRoomPage from "./PublicRoomPage";
 
 import FilesFilter from "@docspace/common/api/files/filter";
 
@@ -24,19 +18,11 @@ const PublicRoom = (props) => {
     isLoading,
     roomStatus,
     roomId,
-    withPaging,
     validatePublicRoomKey,
-    fetchFiles,
     getFilesSettings,
-
-    showSecondaryProgressBar,
-    secondaryProgressBarValue,
-    secondaryProgressBarIcon,
-    showSecondaryButtonAlert,
-
-    isEmptyPage,
   } = props;
 
+  const navigate = useNavigate();
   const location = useLocation();
   const lastKeySymbol = location.search.indexOf("&");
 
@@ -73,50 +59,22 @@ const PublicRoom = (props) => {
     if (filterObj?.folder && filterObj?.folder !== "@my") {
       const filter = setPublicRoomFilter(filterObj);
 
-      fetchFiles(filter.folder, filter);
+      const url = `${location.pathname}?key=${key}&${filter.toUrlParams()}`;
+
+      navigate(url);
     } else {
-      fetchFiles(roomId);
+      const newFilter = FilesFilter.getDefault();
+      newFilter.folder = roomId;
+
+      const url = `${location.pathname}?key=${key}&${newFilter.toUrlParams()}`;
+
+      navigate(url);
     }
   };
 
   useEffect(() => {
     if (isLoaded) fetchRoomFiles();
-  }, [fetchFiles, isLoaded]);
-
-  const sectionProps = {
-    showSecondaryProgressBar,
-    secondaryProgressBarValue,
-    secondaryProgressBarIcon,
-    showSecondaryButtonAlert,
-  };
-
-  const roomPage = () => (
-    <>
-      <Section
-        withBodyScroll
-        // withBodyAutoFocus={!isMobile}
-        withPaging={withPaging}
-        {...sectionProps}
-      >
-        <Section.SectionHeader>
-          <SectionHeaderContent />
-        </Section.SectionHeader>
-
-        {!isEmptyPage && (
-          <Section.SectionFilter>
-            <SectionFilterContent />
-          </Section.SectionFilter>
-        )}
-
-        <Section.SectionBody>
-          <SectionBodyContent />
-        </Section.SectionBody>
-      </Section>
-      <RoomSharingDialog />
-      <SelectionArea />
-      <MediaViewer />
-    </>
-  );
+  }, [isLoaded]);
 
   const renderLoader = () => {
     return (
@@ -131,7 +89,7 @@ const PublicRoom = (props) => {
   const renderPage = () => {
     switch (roomStatus) {
       case ValidationResult.Ok:
-        return roomPage();
+        return <PublicRoomPage />;
       case ValidationResult.Invalid:
         return <RoomErrors isInvalid />;
       case ValidationResult.Expired:
@@ -144,48 +102,29 @@ const PublicRoom = (props) => {
     }
   };
 
-  return isLoading ? renderLoader() : isLoaded ? roomPage() : renderPage();
+  return isLoading ? (
+    renderLoader()
+  ) : isLoaded ? (
+    <PublicRoomPage />
+  ) : (
+    renderPage()
+  );
 };
 
-export default inject(
-  ({ auth, filesStore, publicRoomStore, uploadDataStore, settingsStore }) => {
-    const { withPaging } = auth.settingsStore;
-    const {
-      validatePublicRoomKey,
-      isLoaded,
-      isLoading,
-      roomStatus,
-      roomId,
-    } = publicRoomStore;
+export default inject(({ publicRoomStore, settingsStore }) => {
+  const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
+    publicRoomStore;
 
-    const { fetchFiles, isEmptyPage, isEmptyFilesList } = filesStore;
-    const { getFilesSettings } = settingsStore;
+  const { getFilesSettings } = settingsStore;
 
-    const {
-      visible: showSecondaryProgressBar,
-      percent: secondaryProgressBarValue,
-      icon: secondaryProgressBarIcon,
-      alert: showSecondaryButtonAlert,
-    } = uploadDataStore.secondaryProgressDataStore;
+  return {
+    roomId,
+    isLoaded,
+    isLoading,
+    roomStatus,
 
-    return {
-      roomId,
-      isLoaded,
-      isLoading,
-      roomStatus,
-      fetchFiles,
-      getFilesSettings,
+    getFilesSettings,
 
-      withPaging,
-      validatePublicRoomKey,
-
-      showSecondaryProgressBar,
-      secondaryProgressBarValue,
-      secondaryProgressBarIcon,
-      showSecondaryButtonAlert,
-
-      isAuthenticated: auth.isAuthenticated,
-      isEmptyPage: isEmptyFilesList || isEmptyPage,
-    };
-  }
-)(observer(PublicRoom));
+    validatePublicRoomKey,
+  };
+})(observer(PublicRoom));

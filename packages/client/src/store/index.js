@@ -41,8 +41,6 @@ import ClientLoadingStore from "./ClientLoadingStore";
 
 const oformsStore = new OformsStore(authStore);
 
-const clientLoadingStore = new ClientLoadingStore();
-
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
 const paymentStore = new PaymentStore();
@@ -59,6 +57,8 @@ const tagsStore = new TagsStore();
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 
 const publicRoomStore = new PublicRoomStore();
+
+const clientLoadingStore = new ClientLoadingStore(publicRoomStore);
 
 const settingsStore = new SettingsStore(
   thirdPartyStore,
