@@ -57,6 +57,8 @@ export default function withContent(WrappedContent) {
         t,
         viewer,
         titleWithoutExt,
+        isPublicRoom,
+        publicKey,
       } = this.props;
 
       const { access, createdBy, fileStatus, href } = item;
@@ -78,7 +80,7 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
-        linkStyles.href = href;
+        linkStyles.href = isPublicRoom ? `${href}&share=${publicKey}` : href;
       }
 
       const newItems =
@@ -106,7 +108,14 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
+      {
+        filesStore,
+        treeFoldersStore,
+        auth,
+        dialogsStore,
+        uploadDataStore,
+        publicRoomStore,
+      },
       { item }
     ) => {
       const {
@@ -123,6 +132,8 @@ export default function withContent(WrappedContent) {
         addActiveItems,
         setCreatedItem,
       } = filesStore;
+
+      const { isPublicRoom, publicKey } = publicRoomStore;
 
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolder } =
@@ -174,6 +185,8 @@ export default function withContent(WrappedContent) {
 
         setCreatedItem,
         personal,
+        isPublicRoom,
+        publicKey,
       };
     }
   )(observer(WithContent));
