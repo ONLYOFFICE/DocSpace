@@ -13,6 +13,7 @@ const usePublic = ({ roomId, location, fetchFiles, setIsLoading }) => {
     }
 
     if (!filterObj) return;
+    setIsLoading(true);
 
     let dataObj = { filter: filterObj };
 

@@ -34,32 +34,13 @@ const PublicRoom = (props) => {
     validatePublicRoomKey(key);
   }, [validatePublicRoomKey]);
 
-  const setPublicRoomFilter = (filterObj) => {
-    const newFilter = new FilesFilter();
-
-    newFilter.filterType = filterObj.filterType;
-    newFilter.page = filterObj.page;
-    newFilter.pageCount = filterObj.pageCount;
-    newFilter.search = filterObj.search;
-    newFilter.sortBy = filterObj.sortBy;
-    newFilter.sortOrder = filterObj.sortOrder;
-    newFilter.total = filterObj.total;
-    newFilter.viewAs = filterObj.viewAs;
-    newFilter.withSubfolders = filterObj.withSubfolders;
-    newFilter.folder = filterObj.folder;
-
-    return newFilter;
-  };
-
   const fetchRoomFiles = async () => {
     await getFilesSettings();
 
     const filterObj = FilesFilter.getFilter(window.location);
 
     if (filterObj?.folder && filterObj?.folder !== "@my") {
-      const filter = setPublicRoomFilter(filterObj);
-
-      const url = `${location.pathname}?key=${key}&${filter.toUrlParams()}`;
+      const url = `${location.pathname}?key=${key}&${filterObj.toUrlParams()}`;
 
       navigate(url);
     } else {
