@@ -28,7 +28,7 @@ import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
-const PROFILE_SELF_URL = "/view/@self";
+const PROFILE_SELF_URL = "/profile";
 
 class AccountsContextOptionsStore {
   authStore = null;

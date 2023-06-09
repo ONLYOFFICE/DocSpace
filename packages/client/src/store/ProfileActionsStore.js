@@ -19,7 +19,7 @@ import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
-const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/view/@self");
+const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/profile");
 //const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(

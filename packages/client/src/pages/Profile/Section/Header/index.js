@@ -89,6 +89,7 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
+    console.log(location.state);
     if (location?.state?.fromUrl) {
       return navigate(location?.state?.fromUrl);
     }

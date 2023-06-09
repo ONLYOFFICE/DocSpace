@@ -209,7 +209,7 @@ const ArticleBodyContent = (props) => {
     if (location.pathname.includes("/settings") && activeItemId !== "settings")
       return setActiveItemId("settings");
 
-    if (location.pathname.includes("view/@self")) {
+    if (location.pathname.includes("profile")) {
       if (isVisitor) {
         if (activeItemId) return;
         return setActiveItemId(rootFolderId || roomsFolderId);
