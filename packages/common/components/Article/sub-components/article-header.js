@@ -35,29 +35,35 @@ const ArticleHeader = ({
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
   if (isMobileOnly) return <></>;
-  return (
-    <StyledArticleHeader showText={showText} {...rest}>
-      {isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="28px" />
-      ) : (
+
+  const isLoadingComponent = isTabletView ? (
+    <Loaders.ArticleHeader height="28px" width={showText ? "100%" : "28px"} />
+  ) : (
+    <Loaders.ArticleHeader height="28px" width="211px" />
+  );
+
+  const mainComponent = (
+    <>
+      {isTabletView && (
         <StyledIconBox name="article-burger" showText={showText}>
           <img src={burgerLogo} onClick={onLogoClick} />
         </StyledIconBox>
       )}
+      <StyledHeading showText={showText} size="large">
+        {isTabletView ? (
+          <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
+        ) : (
+          <Link to="/">
+            <img className="logo-icon_svg" src={logo} />
+          </Link>
+        )}
+      </StyledHeading>
+    </>
+  );
 
-      {!isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="211px" />
-      ) : (
-        <StyledHeading showText={showText} size="large">
-          {isTabletView ? (
-            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
-          ) : (
-            <Link to="/">
-              <img className="logo-icon_svg" src={logo} />
-            </Link>
-          )}
-        </StyledHeading>
-      )}
+  return (
+    <StyledArticleHeader showText={showText} {...rest}>
+      {isBurgerLoading ? isLoadingComponent : mainComponent}
     </StyledArticleHeader>
   );
 };
