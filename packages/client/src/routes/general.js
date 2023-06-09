@@ -9,7 +9,7 @@ const NotificationComponent = loadable(() => import("../pages/Notifications"));
 
 const generalRoutes = [
   {
-    path: "view/@self",
+    path: "profile",
     element: (
       <PrivateRoute>
         <Profile />
@@ -17,7 +17,7 @@ const generalRoutes = [
     ),
   },
   {
-    path: "view/@self/notification",
+    path: "profile/notification",
     element: (
       <PrivateRoute>
         <NotificationComponent />
