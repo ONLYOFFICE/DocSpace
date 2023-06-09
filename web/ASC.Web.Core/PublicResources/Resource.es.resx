@@ -937,4 +937,55 @@
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
     <value>Habilite la aplicación para publicar fácilmente documentos en su sitio web de WordPress. {0}En la página de Desarrolladores de Wordpress, cree una nueva aplicación para la integración de ONLYOFFICE. Pegue los datos que recibió a continuación:</value>
   </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Habilite esta aplicación para crear bibliografías en los editores ONLYOFFICE. {0}Vaya a la página de registro de EasyBib y rellene el formulario para añadir la integración de ONLYOFFICE. Después de obtener la clave de la aplicación, péguela a continuación:</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Habilite la aplicación para iniciar sesión en el portal utilizando una cuenta de Microsoft.</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Conecte la cuenta de Telegram para recibir notificaciones del portal a través de Telegram.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Introduzca el nombre del contenedor privado de Selectel para guardar las copias de seguridad.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Introduzca la dirección URL del contenedor privado Rackspace para guardar las copias de seguridad.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Para recibir notificaciones del portal a través de Telegram, habilite el bot de Telegram. Puede crear un nuevo bot usando BotFather en Telegram Desktop. Para usar este bot, los usuarios del portal deben habilitar las notificaciones a través de Telegram en su página de perfil. {0}Pegue el nombre de usuario del bot y el token que recibió en los campos de abajo.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Application Client ID ID del cliente de aplicación</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Contenedor</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Espacio en la nube para sus documentos ofimáticos</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Enter the AWS region where your Amazon bucket resides. Introduzca la región de AWS en la que reside su cubo de Amazon.</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Introduzca el nombre del contenedor privado de Selectel para almacenar las copias de seguridad.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Enter the name of the Selectel public container for storing backups. Introduzca el nombre del contenedor público de Selectel para almacenar las copias de seguridad.</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Introduzca la región donde se encuentran sus contenedores de Rackspace.</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Introduzca el nombre único del cubo de Amazon para almacenar las copias de seguridad.</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot username Nombre de usuario del bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot token Token del bot</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Introduzca la dirección URL del contenedor público de Rackspace para almacenar las copias de seguridad.</value>
+  </data>
 </root>

@@ -1111,4 +1111,28 @@ El enlace es válido durante 7 días.
   <data name="ButtonConfirmEmail" xml:space="preserve">
     <value>CONFIRMAR</value>
   </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
 </root>
