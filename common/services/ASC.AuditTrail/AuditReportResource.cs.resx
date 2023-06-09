@@ -673,4 +673,7 @@
   <data name="LoginFailViaTfaApp" xml:space="preserve">
     <value>Přihlášení prostřednictvím aplikace autentizátoru se nezdařilo</value>
   </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Nastavení Store forcesave Aktualizováno</value>
+  </data>
 </root>

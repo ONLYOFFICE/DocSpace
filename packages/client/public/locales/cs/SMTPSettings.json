@@ -1,1 +1,13 @@
-{}
+{
+  "Authentication": "Autentizace",
+  "EnableSSL": "Povolit SSL",
+  "EnterPassword": "Zadejte heslo",
+  "Host": "Hostitel",
+  "HostLogin": "Přihlášení hostitele",
+  "HostPassword": "Host-Heslo",
+  "Port": "Port",
+  "SenderDisplayName": "Zobrazit Jméno Odesílatele",
+  "SenderEmailAddress": "E-mailová Adresa Odesílatele",
+  "SendTestMail": "Odeslat testovací e-mail",
+  "SuccessfullyCompletedOperation": "Operace byla úspěšně dokončena."
+}

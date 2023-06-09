@@ -943,4 +943,28 @@
   <data name="Tariffs_admin" xml:space="preserve">
     <value>Business</value>
   </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Activez l'application pour publier les documents facilement vers votre site web WordPress. {0}Sur la page des développeurs Wordpress, créez une nouvelle application d'intégration pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Activez cette application pour créer des bibliographies dans les éditeurs ONLYOFFICE. {0}Passez à la page de connexion EasyBib et remplissez le formulaire pour ajouter l'intégration avec ONLYOFFICE. Après avoir reçu la clé, collez-la ci-dessous :</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Activez cette application pour permettre aux utilisateurs de recevoir les notifications à propos de vos messages même si vous êtes hors connexion. {0}Passez à la console Firebase et ajoutez un nouveau projet pour l'intégration avec ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Connectez le service Google Cloud Storage pour sauvegarder et stocker les données de votre portail. {0}Passez à Google Cloud Platform Console et créez un nouveau compte pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Connectez le service Rackspace Cloud Storage pour sauvegarder et stocker les données depuis votre portail. {0}Dans les paramètres de sécurité de Rackspace Cloud Control Panel, cliquez sur le bouton Afficher le lien, à côté de Rackspace API Key. Collez ci-dessous les données que vous venez de recevoir :</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Activez cette application pour permettre à vos utilisateurs de se connecter à ONLYOFFICE avec Microsoft. {0}Allez à Microsoft Azure et créez une nouvelle application d’intégration ONLYOFFICE. Insérer les données que vous avez reçues ci-dessous :</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Connectez Amazon AWS S3 pour sauvegarder et stocker les données de votre portail. {0}Passez à AWS Management Console et créez les cles d'accès pour ONLYOFFICE. Collez ci-dessous les données que vous avez reçues :</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Connectez le service Selectel Cloud Storage pour sauvegarder et stocker les données de votre portail. {0}Obtenez les données d'accès utilisateur avec les permissions de lecture ou d'édition aux containeurs où vous envisagez de stocker les sauvegardes de vos données et collez-les ci-dessous :</value>
+  </data>
 </root>

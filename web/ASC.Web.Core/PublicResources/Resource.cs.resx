@@ -952,4 +952,7 @@
   <data name="ConsumersS3" xml:space="preserve">
     <value>Amazon AWS S3</value>
   </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha je neplatná</value>
+  </data>
 </root>

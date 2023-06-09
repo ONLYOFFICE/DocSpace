@@ -392,7 +392,7 @@ class SettingsStore {
       this.pluginOptions = origSettings.plugins.allow;
     }
 
-    if (origSettings.tenantAlias) {
+    if (origSettings?.tenantAlias) {
       this.setTenantAlias(origSettings.tenantAlias);
     }
   };

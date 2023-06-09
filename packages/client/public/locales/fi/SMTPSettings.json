@@ -1,1 +1,13 @@
-{}
+{
+  "Authentication": "Tunnistus",
+  "EnableSSL": "Ota käyttöön SSL",
+  "EnterPassword": "Anna salasana",
+  "Host": "Palvelin",
+  "HostLogin": "Käyttäjätunnus",
+  "HostPassword": "Salasana",
+  "Port": "Portti",
+  "SenderDisplayName": "Lähettäjän nimi",
+  "SenderEmailAddress": "Lähettäjän sähköpostiosoite",
+  "SendTestMail": "Lähetä testiviesti",
+  "SuccessfullyCompletedOperation": "Toiminto on valmis."
+}
