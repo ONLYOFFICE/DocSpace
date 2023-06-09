@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Base from "../../themes/base";
 
 export const Title = styled.h2`
+  position: relative;
   font-family: "Open Sans", sans-serif, Arial;
   font-weight: 700;
   font-size: 21px;

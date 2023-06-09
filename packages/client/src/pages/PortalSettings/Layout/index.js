@@ -6,6 +6,11 @@ import { inject, observer } from "mobx-react";
 import Section from "@docspace/common/components/Section";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 //import commonIconsStyles from "@docspace/components/utils/common-icons-style";
+
+import { useParams } from "react-router-dom";
+import HistoryHeader from "../categories/developer-tools/Webhooks/WebhookHistory/sub-components/HistoryHeader";
+import DetailsNavigationHeader from "../categories/developer-tools/Webhooks/WebhookEventDetails/sub-components/DetailsNavigationHeader";
+
 const ArticleSettings = React.memo(() => {
   return (
     <Article>
@@ -32,13 +37,25 @@ const Layout = ({
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
 
+  const { id, eventId } = useParams();
+
+  const webhookHistoryPath = `/portal-settings/developer-tools/webhooks/${id}`;
+  const webhookDetailsPath = `/portal-settings/developer-tools/webhooks/${id}/${eventId}`;
+  const currentPath = window.location.pathname;
+
   return (
     <>
       <ArticleSettings />
       {!isGeneralPage && (
         <Section withBodyScroll={true} settingsStudio={true}>
           <Section.SectionHeader>
-            <SectionHeaderContent />
+            {currentPath === webhookHistoryPath ? (
+              <HistoryHeader />
+            ) : currentPath === webhookDetailsPath ? (
+              <DetailsNavigationHeader />
+            ) : (
+              <SectionHeaderContent />
+            )}
           </Section.SectionHeader>
 
           <Section.SectionBody>{children}</Section.SectionBody>

@@ -33,30 +33,31 @@ public class WorkerService : BackgroundService
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;
     private readonly TimeSpan _waitingPeriod;
-    private readonly ConcurrentQueue<WebhookRequest> _queue;
-    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+    private readonly ConcurrentQueue<WebhookRequestIntegrationEvent> _queue;
+    private readonly IEventBus _eventBus;
 
     public WorkerService(
-        ICacheNotify<WebhookRequest> webhookNotify,
         WebhookSender webhookSender,
         ILogger<WorkerService> logger,
-        Settings settings)
+        Settings settings,
+        IEventBus eventBus,
+        ConcurrentQueue<WebhookRequestIntegrationEvent> concurrentQueue)
     {
-        _webhookNotify = webhookNotify;
-        _queue = new ConcurrentQueue<WebhookRequest>();
+        _queue = concurrentQueue;
         _logger = logger;
         _webhookSender = webhookSender;
         _threadCount = settings.ThreadCount;
         _waitingPeriod = TimeSpan.FromSeconds(5);
+        _eventBus = eventBus;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _webhookNotify.Subscribe(_queue.Enqueue, CacheNotifyAction.Update);
+        _eventBus.Subscribe<WebhookRequestIntegrationEvent, WebhookRequestIntegrationEventHandler>();
 
         stoppingToken.Register(() =>
         {
-            _webhookNotify.Unsubscribe(CacheNotifyAction.Update);
+            _eventBus.Unsubscribe<WebhookRequestIntegrationEvent, WebhookRequestIntegrationEventHandler>();
         });
 
         while (!stoppingToken.IsCancellationRequested)

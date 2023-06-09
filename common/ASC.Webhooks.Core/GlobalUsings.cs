@@ -27,15 +27,16 @@
 global using System.Text.Json.Serialization;
 
 global using ASC.Common;
-global using ASC.Common.Caching;
 global using ASC.Common.Mapping;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Settings;
-global using ASC.Web.Webhooks;
+global using ASC.EventBus.Abstractions;
+global using ASC.EventBus.Events;
 global using ASC.Webhooks.Core.EF.Context;
 global using ASC.Webhooks.Core.EF.Model;
+global using ASC.Webhooks.Core.IntegrationEvents.Events;
 global using ASC.Webhooks.Core.Resources;
 
 global using Microsoft.EntityFrameworkCore;
