@@ -1,1 +1,13 @@
-{}
+{
+  "Authentication": "Заверка",
+  "EnableSSL": "Активиране на SSL",
+  "EnterPassword": "Въведете паролата",
+  "Host": "Домакин",
+  "HostLogin": "Вход за хост",
+  "HostPassword": "Парола на хоста",
+  "Port": "Порт",
+  "SenderDisplayName": "Екранно име на подателя",
+  "SenderEmailAddress": "Имейл адрес на подателя",
+  "SendTestMail": "Изпращане на тестова поща",
+  "SuccessfullyCompletedOperation": "Операцията е завършена успешно."
+}

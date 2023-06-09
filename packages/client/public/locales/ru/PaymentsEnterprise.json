@@ -1,4 +1,5 @@
 {
+  "ActivateLicense": "Активировать лицензию",
   "ActivateLicenseActivated": "Лицензия активирована",
   "ActivatePurchaseBuyLicense": "Чтобы купить лицензию, нажмите кнопку ниже.",
   "ActivatePurchaseBuyNow": "Купить сейчас",
@@ -12,6 +13,7 @@
   "ActivateTariffEnterpriseTrialExpiration": "Пробный период истекает {{date}}",
   "ActivateToProBannerHeaderTrial": "Купите полную версию Enterprise, чтобы получить:",
   "ActivateUploadDescr": "Чтобы активировать лицензию, загрузите ее ниже и нажмите кнопку Активировать.",
+  "FreeDaysLeft": "Осталось {{count}} бесплатных дней",
   "TopBottonsEnterpriseExpired": "Истек срок действия подписки на техническую поддержку и обновления",
   "TopBottonsEnterpriseWarning": "Подписка на техническую поддержку и обновления истекает {0}",
   "UpgradeToProBannerHeader": "Получите бесплатный доступ к профессиональным возможностям на 30 дней",
@@ -35,5 +37,6 @@
   "UpgradeToProBannerItemScalabilityHeader": "Масштабируемость и кластеризация.",
   "UpgradeToProBannerItemSupportDescr": "Получайте профессиональную помощь по всем возникшим вопросам.",
   "UpgradeToProBannerItemSupportHeader": "Техническая поддержка.",
-  "UpgradeToProHeader": "Бесплатный доступ к Pro версии"
+  "UpgradeToProHeader": "Бесплатный доступ к Pro версии",
+  "UploadLicenseFile": "Загрузить файл лицензии"
 }

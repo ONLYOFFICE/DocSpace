@@ -1,1 +1,12 @@
-{}
+{
+  "Authentication": "Autentifikácia",
+  "EnableSSL": "Povoliť SSL",
+  "EnterPassword": "Zadajte heslo",
+  "HostLogin": "Prihlasovacie meno",
+  "HostPassword": "Prihlasovacie heslo",
+  "Port": "Port",
+  "SenderDisplayName": "Zobraziť Meno odosielateľa",
+  "SenderEmailAddress": "E-mailová adresa odosielateľa",
+  "SendTestMail": "Odoslať testovací e-mail",
+  "SuccessfullyCompletedOperation": "Operácia bola úspešne dokončená."
+}

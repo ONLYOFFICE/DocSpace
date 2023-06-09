@@ -967,4 +967,25 @@
   <data name="ConsumersmicrosoftClientId" xml:space="preserve">
     <value>ID клиента приложения</value>
   </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Подключите сервис Google Cloud Storage для резервного копирования и хранения данных портала. {0}Перейдите в консоль Google Cloud Platform и создайте новый сервисный аккаунт для ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли получать оповещения об отправленных им сообщениях даже офлайн. {0}Перейдите в консоль Firebase и добавьте новый проект для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы создавать библиографические списки в редакторах ONLYOFFICE. {0}Перейдите на страницу регистрации EasyBib и заполните форму, чтобы добавить интеграцию ONLYOFFICE. После получения ключа приложения вставьте его ниже:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Подключите сервис Rackspace Cloud Storage для резервного копирования и хранения данных портала. {0}В настройках безопасности панели управления Rackspace Cloud, нажмите на ссылку Show рядом с Rackspace API Key. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Подключите Amazon AWS S3 для резервного копирования и хранения данных портала. {0}Перейдите в AWS Management Console и создайте ключи доступа для ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Подключите сервис Selectel Cloud Storage для резервного копирования и хранения данных портала. {0}Получите имя и пароль пользователя с доступом "Чтение и запись" к контейнерам, которые будут использоваться для хранения резервных копий, и вставьте эти данные ниже:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы легко публиковать документы на сайте WordPress. {0}На странице Wordpress Developers создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
 </root>

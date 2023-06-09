@@ -1753,4 +1753,22 @@ Odkaz je platný pouze 7 dní.</value>
   <data name="subject_send_whats_new" xml:space="preserve">
     <value>Co je nového na vašem portálu pro $Date</value>
   </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrování se nezdařil</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrování zahájen</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Proces dešifrování dokončen</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrování se nezdařil</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrování byl zahájen</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Proces šifrování dokončen</value>
+  </data>
 </root>

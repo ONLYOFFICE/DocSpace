@@ -53,6 +53,7 @@
   "CompanyInfoSettingsDescription": "此信息将展示在 <1>{{link}}</1> 窗口中。",
   "ConfirmEmailSended": "确认邮件已发送至{{ownerName}}",
   "Custom": "自定义",
+  "CustomDomainName": "自定义域名",
   "CustomDomains": "自定义域",
   "Customization": "个性化定制",
   "CustomizationDescription": "改变网站的外观。使用您的公司标志、名称和文字来打造品牌形象。",

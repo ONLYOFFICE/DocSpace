@@ -1,1 +1,7 @@
-{}
+{
+  "EnableSSL": "SSL을 사용하도록 설정",
+  "HostLogin": "로그인 개최",
+  "Port": "포트",
+  "SenderDisplayName": "발신자 표시 이름",
+  "SenderEmailAddress": "보내는 사람 이메일 주소"
+}

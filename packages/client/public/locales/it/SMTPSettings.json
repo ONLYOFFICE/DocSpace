@@ -1,1 +1,14 @@
-{}
+{
+  "Authentication": "Autenticazione",
+  "EnableSSL": "Attiva SSL",
+  "EnterName": "Inserisci nome",
+  "EnterPassword": "Inserisci la Password",
+  "Host": "Dominio",
+  "HostLogin": "Login dominio",
+  "HostPassword": "Password dominio",
+  "Port": "Porta",
+  "SenderDisplayName": "Nome mittente da visualizzare",
+  "SenderEmailAddress": "Indirizzo email mittente",
+  "SendTestMail": "Inivia messaggio di prova",
+  "SuccessfullyCompletedOperation": "L'operazione è stata completata con successo."
+}

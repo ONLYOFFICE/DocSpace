@@ -53,6 +53,7 @@
   "CompanyInfoSettingsDescription": "この情報は、<1>{{link}}</1>ウィンドウに表示されます。",
   "ConfirmEmailSended": "確認のメールが{{ownerName}}に送信されました。",
   "Custom": "カスタム",
+  "CustomDomainName": "カスタムドメイン名",
   "CustomDomains": "カスタムドメイン",
   "Customization": "カスタマイズ",
   "CustomizationDescription": "このサブセクションでは、スペースのルック＆フィールを変更することができます。自社のブランドに合わせて、ロゴ、会社名、テキストを使用できます。",
