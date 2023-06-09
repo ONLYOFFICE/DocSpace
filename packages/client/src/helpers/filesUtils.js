@@ -126,7 +126,7 @@ export const openDocEditor = async (
   }
 
   if (tab) {
-    url ? (tab.location = url) : tab.close();
+    url ? (tab.location = `${url}${share}`) : tab.close();
   } else {
     window.open(url, "_blank");
   }
