@@ -43,9 +43,9 @@ public class DbWebstudioSettings : BaseEntity
 
 public static class WebstudioSettingsExtension
 {
-    public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder, bool ignoreMigration = false)
+    public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder, bool useInMigration = false)
     {
-        if (ignoreMigration) 
+        if (!useInMigration) 
         {
             modelBuilder.Entity<DbWebstudioSettings>().ToTable(t => t.ExcludeFromMigrations());
         }

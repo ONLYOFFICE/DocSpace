@@ -48,7 +48,7 @@ public class UserDbContext : DbContext
         ModelBuilderWrapper
         .From(modelBuilder, Database)
         .AddSubscriptionMethod()
-        .AddUser()
+        .AddUser(true)
         .AddAcl()
         .AddUserSecurity()
         .AddUserPhoto()
@@ -56,6 +56,6 @@ public class UserDbContext : DbContext
         .AddUserGroup()
         .AddSubscription()
         .AddUserDav()
-        .AddDbTenant(true);
+        .AddDbTenant();
     }
 }

@@ -40,7 +40,7 @@ public class BackupsContext : DbContext
     {
         ModelBuilderWrapper
             .From(modelBuilder, Database)
-            .AddDbTenant(true)
+            .AddDbTenant()
             .AddBackupSchedule()
             .AddBackupRecord();
     }

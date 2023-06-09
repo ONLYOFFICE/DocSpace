@@ -39,6 +39,6 @@ public class FirebaseDbContext : DbContext
         ModelBuilderWrapper
             .From(modelBuilder, Database)
             .AddFireBaseUsers()
-            .AddDbTenant(true);
+            .AddDbTenant();
     }
 }

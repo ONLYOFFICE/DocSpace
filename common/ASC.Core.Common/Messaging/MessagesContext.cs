@@ -45,9 +45,9 @@ public class MessagesContext : DbContext
             .From(modelBuilder, Database)
             .AddAuditEvent()
             .AddLoginEvents()
-            .AddUser(true)
-            .AddWebstudioSettings(true)
-            .AddDbTenant(true)
+            .AddUser()
+            .AddWebstudioSettings()
+            .AddDbTenant()
             .AddDbFunction();
     }
 }

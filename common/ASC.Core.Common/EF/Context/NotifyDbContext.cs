@@ -42,6 +42,6 @@ public class NotifyDbContext : DbContext
             .From(modelBuilder, Database)
             .AddNotifyInfo()
             .AddNotifyQueue()
-            .AddDbTenant(true);
+            .AddDbTenant();
     }
 }

@@ -41,6 +41,6 @@ public class WebhooksDbContext : DbContext
         .AddDbWebhooks()
         .AddWebhooksConfig()
         .AddWebhooksLog()
-        .AddDbTenant(true);
+        .AddDbTenant();
     }
 }

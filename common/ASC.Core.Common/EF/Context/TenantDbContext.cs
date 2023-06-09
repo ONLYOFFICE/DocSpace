@@ -40,7 +40,7 @@ public class TenantDbContext : DbContext
     {
         ModelBuilderWrapper
             .From(modelBuilder, Database)
-            .AddDbTenant(true)
+            .AddDbTenant()
             .AddCoreSettings()
             .AddDbTenantForbiden()
             .AddTenantIpRestrictions()

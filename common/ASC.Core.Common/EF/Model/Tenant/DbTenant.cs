@@ -77,9 +77,9 @@ public class DbTenant : IMapFrom<Tenant>
 
 public static class DbTenantExtension
 {
-    public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder, bool ignoreMigration = false)
+    public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder, bool useInMigration = false)
     {
-        if (ignoreMigration)
+        if (!useInMigration)
         {
             modelBuilder.Entity<DbTenant>().ToTable(t => t.ExcludeFromMigrations());
         }

@@ -40,6 +40,6 @@ public class TelegramDbContext : DbContext
         ModelBuilderWrapper
             .From(modelBuilder, Database)
             .AddTelegramUsers()
-            .AddDbTenant(true);
+            .AddDbTenant();
     }
 }
