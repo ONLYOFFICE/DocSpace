@@ -11,5 +11,5 @@ export type FooterProps = {
   selectedAccessRight?: AccessRight | null;
   onAccept?: () => void;
   onCancel?: () => void;
-  onChangeAccessRights?: (access: string | number) => void;
+  onChangeAccessRights?: (access: AccessRight) => void;
 };

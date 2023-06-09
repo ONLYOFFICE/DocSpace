@@ -2285,6 +2285,11 @@ const Base = {
   selector: {
     border: `1px solid ${grayLightMid}`,
 
+    breadCrumbs: {
+      prevItemColor: "#A3A9AE",
+      arrowRightColor: "#A3A9AE",
+    },
+
     item: {
       hoverBackground: grayLight,
       selectedBackground: lightHover,

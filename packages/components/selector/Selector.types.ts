@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Item } from "./sub-components/Item/Item.types";
+import { BreadCrumb } from "./sub-components/BreadCrumbs/BreadCrumbs.types";
 
 export type AccessRight = {
   string: {
@@ -35,7 +36,7 @@ export type SelectorProps = {
   withAccessRights?: boolean;
   accessRights?: AccessRight[];
   selectedAccessRight?: AccessRight;
-  onAccessRightsChange?: (access: string | number) => void;
+  onAccessRightsChange?: (access: AccessRight) => void;
   withCancelButton?: boolean;
   cancelButtonLabel?: string;
   onCancel?: () => void;
@@ -52,4 +53,8 @@ export type SelectorProps = {
   isLoading?: boolean;
   searchLoader?: any;
   rowLoader?: any;
+  withBreadCrumbs?: boolean;
+  breadCrumbs?: BreadCrumb[];
+  onSelectBreadCrumb?: (item: BreadCrumb) => void;
+  breadCrumbsLoader?: any;
 };

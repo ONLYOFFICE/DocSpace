@@ -18,6 +18,12 @@ const StyledSearchLoader = styled.div`
   background: black;
 `;
 
+const StyledBreadCrumbsLoader = styled.div`
+  width: 100%;
+  height: 54px;
+  background: black;
+`;
+
 export default {
   title: "Components/Selector",
   component: Selector,
@@ -153,6 +159,8 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 
+export const BreadCrumbs = Template.bind({});
+
 Default.args = {
   height: "485px", // container height
   headerLabel: "Room list",
@@ -188,4 +196,55 @@ Default.args = {
   hasNextPage: true,
   isNextPageLoading: false,
   isLoading: false,
+  withBreadCrumbs: false,
+  breadCrumbs: [],
+  onSelectBreadCrumb: (item) => {},
+  breadCrumbsLoader: <StyledBreadCrumbsLoader />,
+};
+
+BreadCrumbs.args = {
+  height: "485px", // container height
+  headerLabel: "Room list",
+  onBackClick: () => {},
+  searchPlaceholder: "Search",
+  searchValue: "",
+  items: renderedItems,
+  onSelect: (item) => {},
+  isMultiSelect: false,
+  selectedItems: selectedItems,
+  acceptButtonLabel: "Add",
+  onAccept: (items, access) => {},
+  withSelectAll: false,
+  selectAllLabel: "All accounts",
+  selectAllIcon: ArchiveSvgUrl,
+  onSelectAll: () => {},
+  withAccessRights: false,
+  accessRights,
+  selectedAccessRight,
+  onAccessRightsChange: (access) => {},
+  withCancelButton: false,
+  cancelButtonLabel: "Cancel",
+  onCancel: () => {},
+  emptyScreenImage: EmptyScreenFilter,
+  emptyScreenHeader: "No other accounts here yet",
+  emptyScreenDescription:
+    "The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  searchEmptyScreenImage: EmptyScreenFilter,
+  searchEmptyScreenHeader: "No other accounts here yet search",
+  searchEmptyScreenDescription:
+    " SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  totalItems,
+  hasNextPage: true,
+  isNextPageLoading: false,
+  isLoading: false,
+  withBreadCrumbs: true,
+  breadCrumbs: [
+    { id: 1, label: "DocSpace" },
+    { id: 2, label: "1111111" },
+    { id: 3, label: "21222222222" },
+    { id: 4, label: "32222222222222222222222222222222222222" },
+    { id: 5, label: "4222222222222222222222222222222222222" },
+  ],
+  onSelectBreadCrumb: (item) => {},
+  breadCrumbsLoader: <StyledBreadCrumbsLoader />,
 };

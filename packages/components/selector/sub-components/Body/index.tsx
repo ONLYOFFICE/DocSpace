@@ -11,10 +11,11 @@ import EmptyScreen from "../EmptyScreen";
 
 import StyledBody from "./StyledBody";
 import { BodyProps } from "./Body.types";
+import BreadCrumbs from "../BreadCrumbs";
 
 const CONTAINER_PADDING = 16;
 const HEADER_HEIGHT = 54;
-const BREAD_CRUMBS_HEIGHT = 54;
+const BREAD_CRUMBS_HEIGHT = 38;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
@@ -47,6 +48,10 @@ const Body = ({
   isLoading,
   searchLoader,
   rowLoader,
+  withBreadCrumbs,
+  breadCrumbs,
+  onSelectBreadCrumb,
+  breadCrumbsLoader,
 }: BodyProps) => {
   const [bodyHeight, setBodyHeight] = React.useState(0);
 
@@ -94,6 +99,8 @@ const Body = ({
 
   if (withSearch) listHeight -= SEARCH_HEIGHT;
 
+  if (withBreadCrumbs) listHeight -= BREAD_CRUMBS_HEIGHT;
+
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
 
@@ -104,6 +111,17 @@ const Body = ({
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
     >
+      {withBreadCrumbs ? (
+        isLoading ? (
+          breadCrumbsLoader
+        ) : (
+          <BreadCrumbs
+            breadCrumbs={breadCrumbs}
+            onSelectBreadCrumb={onSelectBreadCrumb}
+          />
+        )
+      ) : null}
+
       {isLoading && !isSearch ? (
         searchLoader
       ) : withSearch ? (

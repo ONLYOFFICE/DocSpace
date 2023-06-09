@@ -39,7 +39,10 @@ import Selector from "@docspace/components/selector";
   selectedAccessRight={{}}
   selectedItems={[]}
   totalItems={0}
-/>
+  withBreadCrumbs={false}
+  breadCrumbs={[]}
+  onSelectBreadCrumb={function noRefCheck() {}}
+  breadCrumbsLoader={<></>}
 ```
 
 ### Properties
@@ -84,3 +87,7 @@ import Selector from "@docspace/components/selector";
 | `isLoading`                    |     `bool`     |    -     |   -    |    -    | Set loading state for select                                  |
 | `searchLoader`                 |     `node`     |    -     |   -    |    -    | Loader element for search block                               |
 | `rowLoader`                    |     `node`     |    -     |   -    |    -    | Loader element for item                                       |
+| `withBreadCrumbs`              |     `bool`     |    -     |   -    |    -    | Add displaying bread crumbs                                   |
+| `breadCrumbs`                  |    `array`     |    -     |   -    |    -    | Bread crumbs items                                            |
+| `onSelectBreadCrumb`           |     `func`     |    -     |   -    |    -    | Function for select bread crumb item                          |
+| `breadCrumbsLoader`            |     `node`     |    -     |   -    |    -    | Loader element for bread crumbs                               |

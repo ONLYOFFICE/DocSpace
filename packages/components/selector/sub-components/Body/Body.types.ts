@@ -1,3 +1,4 @@
+import { BreadCrumb } from "../BreadCrumbs/BreadCrumbs.types";
 import { Item } from "./../Item/Item.types";
 
 export type BodyProps = {
@@ -29,4 +30,8 @@ export type BodyProps = {
   isLoading?: boolean;
   searchLoader: any;
   rowLoader: any;
+  withBreadCrumbs?: boolean;
+  breadCrumbs?: BreadCrumb[];
+  onSelectBreadCrumb?: (item: BreadCrumb) => void;
+  breadCrumbsLoader?: any;
 };

@@ -50,6 +50,10 @@ const Selector = ({
   isLoading,
   searchLoader,
   rowLoader,
+  withBreadCrumbs,
+  breadCrumbs,
+  onSelectBreadCrumb,
+  breadCrumbsLoader,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -183,7 +187,7 @@ const Selector = ({
   }, [onCancel]);
 
   const onChangeAccessRightsAction = React.useCallback(
-    (access) => {
+    (access: AccessRight) => {
       setSelectedAccess({ ...access });
       onAccessRightsChange && onAccessRightsChange(access);
     },
@@ -286,6 +290,10 @@ const Selector = ({
         isLoading={isLoading}
         searchLoader={searchLoader}
         rowLoader={rowLoader}
+        withBreadCrumbs={withBreadCrumbs}
+        breadCrumbs={breadCrumbs}
+        onSelectBreadCrumb={onSelectBreadCrumb}
+        breadCrumbsLoader={breadCrumbsLoader}
       />
 
       {footerVisible && (
