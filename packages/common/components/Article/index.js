@@ -47,8 +47,10 @@ const Article = ({
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [articleMainButtonContent, setArticleMainButtonContent] =
-    React.useState(null);
+  const [
+    articleMainButtonContent,
+    setArticleMainButtonContent,
+  ] = React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -90,6 +92,8 @@ const Article = ({
   }, [children]);
 
   const sizeChangeHandler = React.useCallback(() => {
+    const showArticle = JSON.parse(localStorage.getItem("showArticle"));
+
     if (isMobileOnly || isMobileUtils() || window.innerWidth === 375) {
       setShowText(true);
       setIsMobileArticle(true);
@@ -98,8 +102,11 @@ const Article = ({
       ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
       !isMobileOnly
     ) {
-      setShowText(false);
       setIsMobileArticle(true);
+
+      if (showArticle) return;
+
+      setShowText(false);
     }
     if (isDesktopUtils() && !isMobile) {
       setShowText(true);

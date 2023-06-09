@@ -67,7 +67,6 @@ const Wizard = (props) => {
     hashSettings,
     setPortalOwner,
     setWizardComplete,
-    getPortalSettings,
     isLicenseRequired,
     setLicense,
     licenseUpload,
@@ -253,7 +252,6 @@ const Wizard = (props) => {
         analytics
       );
       setWizardComplete();
-      getPortalSettings();
       history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     } catch (error) {
       console.error(error);
@@ -488,7 +486,6 @@ export default inject(({ auth, wizard }) => {
     timezone,
     urlLicense,
     hashSettings,
-    getPortalSettings,
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
@@ -522,7 +519,6 @@ export default inject(({ auth, wizard }) => {
     machineName,
     isLicenseRequired,
     licenseUpload,
-    getPortalSettings,
     setWizardComplete,
     getPortalPasswordSettings,
     getPortalTimezones,
