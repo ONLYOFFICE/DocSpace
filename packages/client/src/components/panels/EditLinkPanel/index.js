@@ -266,7 +266,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setExternalLinks,
     isLocked: !!link?.sharedTo?.password,
     password: link?.sharedTo?.password ?? "",
-    isDenyDownload: link?.sharedTo?.denyDownload,
+    isDenyDownload: link?.sharedTo?.denyDownload ?? false,
     shareLink,
     externalLinks,
     unsavedChangesDialogVisible,
