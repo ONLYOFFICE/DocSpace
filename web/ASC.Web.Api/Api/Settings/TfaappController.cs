@@ -346,9 +346,14 @@ public class TfaappController : BaseSettingsController
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
 
-        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings)
         {
             throw new Exception(Resource.TfaAppNotAvailable);
+        }
+
+        if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
+        {
+            return string.Empty;
         }
 
         if (await _userManager.IsOutsiderAsync(user))
@@ -359,9 +364,9 @@ public class TfaappController : BaseSettingsController
         await TfaAppUserSettings.DisableForUserAsync(_settingsManager, user.Id);
         await _messageService.SendAsync(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookieAsync();
             return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation);
         }
 
