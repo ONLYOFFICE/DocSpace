@@ -242,7 +242,7 @@ class InfoPanelStore {
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       "/accounts",
-      "/view/@self",
+      "/profile",
     ];
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);

@@ -34,10 +34,6 @@ export const StyledHeader = styled.div`
   }
 
   .header-headline {
-    ${(props) =>
-      !props.isVisitor &&
-      css`
-        margin-left: 16px;
-      `}
+    margin-left: 16px;
   }
 `;

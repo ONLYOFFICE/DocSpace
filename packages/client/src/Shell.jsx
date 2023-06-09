@@ -28,8 +28,6 @@ import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
-import { isMobile as isMobileUtils } from "@docspace/components/utils/device";
-import queryString from "query-string";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
