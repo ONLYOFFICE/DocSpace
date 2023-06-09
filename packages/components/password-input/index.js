@@ -416,6 +416,7 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       isDisabled,
+      isFullWidth,
     } = this.props;
 
     return (
@@ -423,6 +424,7 @@ class PasswordInput extends React.Component {
         onValidateInput={onValidateInput}
         className={className}
         style={style}
+        $isFullWidth={isFullWidth}
       >
         {simpleView ? (
           <>
@@ -527,6 +529,8 @@ PasswordInput.propTypes = {
   simpleView: PropTypes.bool,
   /** Sets a title of the password generation button */
   generatePasswordTitle: PropTypes.string,
+  /** Setting display block to set element to full width*/
+  isfullwidth: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -555,6 +559,7 @@ PasswordInput.defaultProps = {
     digits: false,
     specSymbols: false,
   },
+  isfullwidth: false,
 };
 
 export default PasswordInput;

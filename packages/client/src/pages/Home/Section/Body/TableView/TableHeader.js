@@ -355,7 +355,7 @@ class FilesTableHeader extends React.Component {
     setIsLoading(true);
 
     window.DocSpace.navigate(
-      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams}`
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
     );
   };
 

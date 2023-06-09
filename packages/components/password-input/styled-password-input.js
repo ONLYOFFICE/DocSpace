@@ -16,12 +16,17 @@ SimpleInput.propTypes = {
 };
 
 const StyledInput = styled(SimpleInput)`
-  display: flex;
+  display: ${(props) => (props.$isFullWidth ? "block" : "flex")};
   align-items: center;
   line-height: ${(props) => props.theme.passwordInput.lineHeight};
   flex-direction: row;
   flex-wrap: wrap;
   position: relative;
+
+  input {
+    flex: inherit;
+    width: calc(100% - 40px);
+  }
 
   .input-relative {
     svg {

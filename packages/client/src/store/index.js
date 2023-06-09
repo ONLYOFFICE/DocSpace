@@ -36,6 +36,7 @@ import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
 import PublicRoomStore from "./PublicRoomStore";
 
+import WebhooksStore from "./WebhooksStore";
 import ClientLoadingStore from "./ClientLoadingStore";
 
 const oformsStore = new OformsStore(authStore);
@@ -92,15 +93,10 @@ const dialogsStore = new DialogsStore(
   treeFoldersStore,
   filesStore,
   selectedFolderStore,
-  versionHistoryStore
+  versionHistoryStore,
 );
 
-const peopleStore = new PeopleStore(
-  authStore,
-  setupStore,
-  accessRightsStore,
-  dialogsStore
-);
+const peopleStore = new PeopleStore(authStore, setupStore, accessRightsStore, dialogsStore);
 
 const uploadDataStore = new UploadDataStore(
   authStore,
@@ -110,7 +106,7 @@ const uploadDataStore = new UploadDataStore(
   secondaryProgressDataStore,
   primaryProgressDataStore,
   dialogsStore,
-  settingsStore
+  settingsStore,
 );
 
 const filesActionsStore = new FilesActionsStore(
@@ -147,7 +143,7 @@ const hotkeyStore = new HotkeyStore(
   settingsStore,
   filesActionsStore,
   treeFoldersStore,
-  uploadDataStore
+  uploadDataStore,
 );
 
 const profileActionsStore = new ProfileActionsStore(
@@ -155,7 +151,7 @@ const profileActionsStore = new ProfileActionsStore(
   filesStore,
   peopleStore,
   treeFoldersStore,
-  selectedFolderStore
+  selectedFolderStore,
 );
 
 const tableStore = new TableStore(authStore, treeFoldersStore);
@@ -176,8 +172,10 @@ const createEditRoomStore = new CreateEditRoomStore(
   authStore.settingsStore,
   authStore.infoPanelStore,
   authStore.currentQuotaStore,
-  clientLoadingStore
+  clientLoadingStore,
 );
+
+const webhooksStore = new WebhooksStore();
 
 const store = {
   auth: authStore,
@@ -214,6 +212,8 @@ const store = {
 
   accessRightsStore,
   createEditRoomStore,
+
+  webhooksStore,
   clientLoadingStore,
   publicRoomStore,
 };

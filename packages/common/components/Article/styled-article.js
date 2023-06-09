@@ -94,6 +94,7 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       height: 100% !important;
+      margin-top: 32px;
     }
 
     @media ${hugeMobile} {
