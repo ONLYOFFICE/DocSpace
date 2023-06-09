@@ -1287,6 +1287,9 @@ class FilesActionStore {
   };
 
   openLocationAction = async (item) => {
+    if (this.publicRoomStore.isPublicRoom)
+      return this.moveToPublicRoom(item.id);
+
     this.filesStore.setBufferSelection(null);
 
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
