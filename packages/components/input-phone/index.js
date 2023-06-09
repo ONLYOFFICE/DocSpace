@@ -38,8 +38,8 @@ const InputPhone = ({
       (option) => option.dialCode && str.startsWith(option.dialCode)
     );
 
-    const singleСode = ["1", "7"];
-    const invalidCode = singleСode.find((code) => code === str);
+    const singleCode = ["1", "7"];
+    const invalidCode = singleCode.find((code) => code === str);
 
     if (e.target.value === "" || !e.target.value.includes(invalidCode)) {
       setIsValid(false);

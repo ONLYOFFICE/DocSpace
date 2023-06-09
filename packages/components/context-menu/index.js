@@ -118,8 +118,9 @@ class ContextMenu extends Component {
   position = (event) => {
     if (event) {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
-
       let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
+
+      let right = rects ? rects.right - this.props.leftOffset : event.pageY + 1;
       let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
@@ -167,8 +168,9 @@ class ContextMenu extends Component {
         }
         this.menuRef.current.style.minWidth = "210px";
       }
+
       if (this.props.interfaceDirection === "rtl")
-        this.menuRef.current.style.right = left + "px";
+        this.menuRef.current.style.left = left - width + "px";
       else this.menuRef.current.style.left = left + "px";
       this.menuRef.current.style.top = top + "px";
     }
