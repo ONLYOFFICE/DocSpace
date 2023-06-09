@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Text from "../text";
 import { tablet, mobile } from "../utils/device";
@@ -59,11 +59,20 @@ const StyledInput = styled(SimpleInput)`
   }
 
   .append {
-    padding-right: 8px;
     position: absolute;
-    right: -16px;
     top: 50%;
     transform: translate(-50%, -50%);
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+            left: 16px;
+          `
+        : css`
+            padding-right: 8px;
+            right: -16px;
+          `}
   }
 
   .prepend-children {
