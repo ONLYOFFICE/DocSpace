@@ -64,7 +64,7 @@ class SectionBodyContent extends React.Component {
     this.setState((prevState) => ({
       rowSizes: {
         ...prevState.rowSizes,
-        [i]: itemHeight + 24, //composed of itemHeight = clientHeight of div and padding-top = 12px and padding-bottom = 12px
+        [i]: itemHeight + 27, //composed of itemHeight = clientHeight of div and padding-top = 13px and padding-bottom = 12px
       },
     }));
   };
