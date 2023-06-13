@@ -1608,7 +1608,7 @@ class FilesStore {
         "send-by-email",
         "docu-sign",
         "version", //category
-        "finalize-version",
+        //   "finalize-version",
         "show-version-history",
         "show-info",
         "block-unblock-version", //need split
