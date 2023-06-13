@@ -1,6 +1,6 @@
-import moment from "moment";
+import React from "react";
 
-import { YearsContainer } from "../styled-components";
+import { CalendarContainer } from "../styled-components";
 import { getCalendarYears, getYearElements } from "../utils";
 
 export const YearsBody = ({
@@ -9,7 +9,8 @@ export const YearsBody = ({
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile,
 }) => {
   const years = getCalendarYears(observedDate);
   const yearElements = getYearElements(
@@ -21,5 +22,9 @@ export const YearsBody = ({
     maxDate
   );
 
-  return <YearsContainer>{yearElements}</YearsContainer>;
+  return (
+    <CalendarContainer big isMobile={isMobile}>
+      {yearElements}
+    </CalendarContainer>
+  );
 };

@@ -48,8 +48,6 @@ public static class WebhooksPayloadExtension
 {
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
-        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
-
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)
             .Add(PgSqlAddWebhooksLog, Provider.PostgreSql);

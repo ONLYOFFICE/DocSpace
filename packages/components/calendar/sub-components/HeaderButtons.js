@@ -1,9 +1,6 @@
-import {
-  ButtonsContainer,
-  RoundButton,
-  PrevIcon,
-  NextIcon,
-} from "../styled-components";
+import React from "react";
+import { ButtonsContainer, ArrowIcon } from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 export const HeaderButtons = ({
   onLeftClick,
@@ -13,17 +10,22 @@ export const HeaderButtons = ({
 }) => {
   return (
     <ButtonsContainer>
-      <RoundButton
+      <ColorTheme
+        themeId={ThemeType.RoundButton}
         style={{ marginRight: "12px" }}
         onClick={onLeftClick}
         disabled={isLeftDisabled}
       >
-        <PrevIcon />
-      </RoundButton>
+        <ArrowIcon previous />
+      </ColorTheme>
 
-      <RoundButton onClick={onRightClick} disabled={isRightDisabled}>
-        <NextIcon />
-      </RoundButton>
+      <ColorTheme
+        themeId={ThemeType.RoundButton}
+        onClick={onRightClick}
+        disabled={isRightDisabled}
+      >
+        <ArrowIcon next />
+      </ColorTheme>
     </ButtonsContainer>
   );
 };
