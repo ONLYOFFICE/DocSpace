@@ -69,7 +69,7 @@ class FirebaseHelper {
   }
 
   get isEnabledDB() {
-    return this.isEnabled && this.config["databaseUrl"];
+    return this.isEnabled && this.config["dataBaseUrl"];
   }
 
   async checkMaintenance() {
