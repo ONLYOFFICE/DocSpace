@@ -7,6 +7,8 @@ import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 
 import Error404 from "SRC_DIR/pages/Errors/404";
 
+import { generalRoutes } from "./general";
+
 const PortalSettings = loadable(() => import("../pages/PortalSettings"));
 
 const CustomizationSettings = loadable(() =>
@@ -230,6 +232,7 @@ const PortalSettingsRoutes = {
       path: "restore/restore-backup",
       element: <RestoreBackup />,
     },
+    ...generalRoutes,
   ],
 };
 

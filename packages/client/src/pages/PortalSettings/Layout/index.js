@@ -25,7 +25,14 @@ const ArticleSettings = React.memo(() => {
   );
 });
 
-const Layout = ({ currentProductId, setCurrentProductId, language, children, addUsers }) => {
+const Layout = ({
+  currentProductId,
+  setCurrentProductId,
+  language,
+  children,
+  addUsers,
+  isGeneralPage,
+}) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
@@ -39,24 +46,26 @@ const Layout = ({ currentProductId, setCurrentProductId, language, children, add
   return (
     <>
       <ArticleSettings />
-      <Section withBodyScroll={true} settingsStudio={true}>
-        <Section.SectionHeader>
-          {currentPath === webhookHistoryPath ? (
-            <HistoryHeader />
-          ) : currentPath === webhookDetailsPath ? (
-            <DetailsNavigationHeader />
-          ) : (
-            <SectionHeaderContent />
-          )}
-        </Section.SectionHeader>
+      {!isGeneralPage && (
+        <Section withBodyScroll={true} settingsStudio={true}>
+          <Section.SectionHeader>
+            {currentPath === webhookHistoryPath ? (
+              <HistoryHeader />
+            ) : currentPath === webhookDetailsPath ? (
+              <DetailsNavigationHeader />
+            ) : (
+              <SectionHeaderContent />
+            )}
+          </Section.SectionHeader>
 
-        <Section.SectionBody>{children}</Section.SectionBody>
-        {addUsers && (
-          <Section.SectionPaging>
-            <SectionPagingContent />
-          </Section.SectionPaging>
-        )}
-      </Section>
+          <Section.SectionBody>{children}</Section.SectionBody>
+          {addUsers && (
+            <Section.SectionPaging>
+              <SectionPagingContent />
+            </Section.SectionPaging>
+          )}
+        </Section>
+      )}
     </>
   );
 };
