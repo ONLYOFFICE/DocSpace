@@ -34,6 +34,7 @@ if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 			${package_manager} -y remove ${ds_pkg_installed_name}
 
 			DOCUMENT_SERVER_INSTALLED="false"
+			RECONFIGURE_PRODUCT="true"
 		else
 			${package_manager} -y update ${ds_pkg_name}	
 		fi				
@@ -151,7 +152,7 @@ if [ "$PRODUCT_INSTALLED" = "false" ]; then
 		-mysqld ${MYSQL_SERVER_DB_NAME} \
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
-elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
+elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE || $RECONFIGURE_PRODUCT = "true" ]]; then
 	ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /lib/systemd/system/${product}-api.service)
 	CONNECTION_STRING=$(json -f /etc/${package_sysname}/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	${package_manager} -y update ${product}
