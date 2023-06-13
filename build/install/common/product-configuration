@@ -219,9 +219,6 @@ set_core_machinekey () {
 		if [ "$DIST" = "RedHat" ]; then
 			echo $CORE_MACHINEKEY > $APP_DIR/.private/machinekey
 			chmod o-rwx $APP_DIR/.private/machinekey
-		elif [ "$DIST" = "Debian" ]; then
-			db_set ${PRODUCT}/machinekey $CORE_MACHINEKEY || true
-			echo ${PRODUCT} ${PRODUCT}/machinekey select $CORE_MACHINEKEY | debconf-set-selections || true
 		fi
 	fi
 
