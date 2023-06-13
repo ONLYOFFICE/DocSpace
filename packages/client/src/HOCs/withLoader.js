@@ -19,7 +19,6 @@ const withLoader = (WrappedComponent) => (Loader) => {
       viewAs,
       showBodyLoader,
       isLoadingFilesFind,
-      isPublicRoom,
       accountsViewAs,
     } = props;
 
@@ -29,12 +28,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       ? accountsViewAs
       : viewAs;
 
-    let isPublicRoomLoaded = true;
-    if (window.location.pathname === "/rooms/share") {
-      isPublicRoomLoaded = isPublicRoom;
-    }
-
-    return (!isPublicRoomLoaded && !isEditor && firstLoad && !isGallery) ||
+    return (!isEditor && firstLoad && !isGallery) ||
       !isLoaded ||
       showBodyLoader ||
       (isLoadingFilesFind && !Loader) ||
@@ -69,14 +63,15 @@ const withLoader = (WrappedComponent) => (Loader) => {
       const { settingsStore } = auth;
       const { setIsBurgerLoading } = settingsStore;
       const { isPublicRoom } = publicRoomStore;
+
       return {
-        firstLoad,
-        isLoaded: auth.isLoaded,
+        firstLoad: isPublicRoom ? false : firstLoad,
+        isLoaded: isPublicRoom ? true : auth.isLoaded,
         isLoading,
         viewAs,
         setIsBurgerLoading,
         isLoadingFilesFind,
-        isInit,
+        isInit: isPublicRoom ? true : isInit,
         showBodyLoader,
         isPublicRoom,
         accountsViewAs,
