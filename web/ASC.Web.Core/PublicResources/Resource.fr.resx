@@ -967,4 +967,25 @@
   <data name="ConsumersSelectelInstruction" xml:space="preserve">
     <value>Connectez le service Selectel Cloud Storage pour sauvegarder et stocker les données de votre portail. {0}Obtenez les données d'accès utilisateur avec les permissions de lecture ou d'édition aux containeurs où vous envisagez de stocker les sauvegardes de vos données et collez-les ci-dessous :</value>
   </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID du client de l'application</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Autoriser l’application de se connecter au portail avec un compte Microsoft.</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Nom d'utilisateur du bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Jeton de bot</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Connectez votre compte Telegram pour recevoir les notifications du portail via Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Pour recevoir les notifications du portail via Telegram, activez le bot Telegram. Vous pouvez créer un nouveau bot à l'aide de BotFather dans Telegram Desktop. Pour utiliser ce bot, les utilisateurs du portail doivent activer les notifications Telegram sur leur page de profil. {0}Collez le nom d'utilisateur du bot et le jeton que vous avez reçu dans les champs ci-dessous.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Espace cloud pour vos documents bureautiques</value>
+  </data>
 </root>

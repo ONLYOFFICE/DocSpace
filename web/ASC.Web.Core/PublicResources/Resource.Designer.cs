@@ -2698,6 +2698,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Third-party integrations.
+        /// </summary>
+        public static string TariffsFeature_thirdparty {
+            get {
+                return ResourceManager.GetString("TariffsFeature_thirdparty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} storage space.
         /// </summary>
         public static string TariffsFeature_total_size {

@@ -3,6 +3,8 @@ import MacOSReactSvgUrl from "PUBLIC_DIR/images/macOS.react.svg?url";
 import LinuxReactSvgUrl from "PUBLIC_DIR/images/linux.react.svg?url";
 import AndroidReactSvgUrl from "PUBLIC_DIR/images/android.react.svg?url";
 import IOSReactSvgUrl from "PUBLIC_DIR/images/iOS.react.svg?url";
+import IOSHoverReactSvgUrl from "PUBLIC_DIR/images/iOSHover.react.svg?url";
+
 import React from "react";
 import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
@@ -65,7 +67,7 @@ const ArticleApps = React.memo(({ theme, showText }) => {
           onClick={() => window.open(desktopLink)}
           iconName={WindowsReactSvgUrl}
           size="32"
-          isfill={true}
+          isFill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.winHoverColor}
           title={t("Translations:MobileWin")}
         />
@@ -73,7 +75,7 @@ const ArticleApps = React.memo(({ theme, showText }) => {
           onClick={() => window.open(desktopLink)}
           iconName={MacOSReactSvgUrl}
           size="32"
-          isfill={true}
+          isFill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.macHoverColor}
           title={t("Translations:MobileMac")}
         />
@@ -81,7 +83,7 @@ const ArticleApps = React.memo(({ theme, showText }) => {
           onClick={() => window.open(desktopLink)}
           iconName={LinuxReactSvgUrl}
           size="32"
-          isfill={true}
+          isFill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.linuxHoverColor}
           title={t("Translations:MobileLinux")}
         />
@@ -89,16 +91,16 @@ const ArticleApps = React.memo(({ theme, showText }) => {
           onClick={() => window.open(androidLink)}
           iconName={AndroidReactSvgUrl}
           size="32"
-          isfill={true}
+          isFill={true}
           hoverColor={theme.filesArticleBody.downloadAppList.androidHoverColor}
           title={t("Translations:MobileAndroid")}
         />
         <IconButton
           onClick={() => window.open(iosLink)}
           iconName={IOSReactSvgUrl}
+          iconHoverName={IOSHoverReactSvgUrl}
           size="32"
-          isfill={true}
-          hoverColor={theme.filesArticleBody.downloadAppList.iosHoverColor}
+          isFill={false}
           title={t("Translations:MobileIos")}
         />
       </div>

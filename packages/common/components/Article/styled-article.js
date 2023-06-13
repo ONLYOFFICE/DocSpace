@@ -118,6 +118,7 @@ const StyledArticle = styled.article`
       overflow-x: hidden !important;
 
       padding: 0 20px !important;
+      margin-bottom: 0px !important;
 
       @media ${tablet} {
         padding: 0 8px !important;

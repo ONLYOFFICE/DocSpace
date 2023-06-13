@@ -370,4 +370,49 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrateur de la salle</value>
   </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nouvelle version ne peut pas être identique à la version actuelle</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier le fichier</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier le dossier</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Fournisseur non valide</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Il n'est pas possible d'utiliser ce dossier pour stocker la salle</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Le lien d'invitation n'est pas valide ou sa validité a expiré</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Ce fournisseur est déjà connecté à la salle</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Le rôle n'est pas disponible pour ce type d'utilisateur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'archiver la salle</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier dans ce dossier</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Vous n'avez pas la permission d'éditer la salle</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de déplacer vers ce dossier</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Vous n'avez pas suffisamment d'autorisation pour désarchiver la salle</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Vous ne pouvez pas modifier les salles archivées</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Vous ne pouvez pas épingler une salle</value>
+  </data>
 </root>

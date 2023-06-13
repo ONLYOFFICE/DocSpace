@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ButtonSetPassword" xml:space="preserve">
-    <value>Установка пароля</value>
+    <value>Establecer contraseña</value>
   </data>
   <data name="BackupNotFound" xml:space="preserve">
-    <value>Файл резервной копии недействителен. Пожалуйста, используйте файл, созданный в ONLYOFFICE v11.5 или в более поздней версии.</value>
+    <value>El archivo de copia de seguridad no es válido. Por favor, utilice un archivo creado en ONLYOFFICE v11.5 o superior.</value>
   </data>
 </root>

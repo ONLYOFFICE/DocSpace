@@ -117,10 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ButtonSetPassword" xml:space="preserve">
-    <value>Установка пароля</value>
+  <data name="DumpParse" xml:space="preserve">
+    <value>Análisis de la base de datos</value>
   </data>
-  <data name="BackupNotFound" xml:space="preserve">
-    <value>Файл резервной копии недействителен. Пожалуйста, используйте файл, созданный в ONLYOFFICE v11.5 или в более поздней версии.</value>
+  <data name="GoogleModuleNameContacts" xml:space="preserve">
+    <value>Contactos de correo</value>
+  </data>
+  <data name="OnlyofficeModuleNameCalendar" xml:space="preserve">
+    <value>Calendario</value>
+  </data>
+  <data name="ModuleNameCalendar" xml:space="preserve">
+    <value>Calendario</value>
+  </data>
+  <data name="NextcloudModuleNameContacts" xml:space="preserve">
+    <value>Contactos</value>
+  </data>
+  <data name="OnlyofficeModuleNameMail" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="ModuleNameMail" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>La migración se ha cancelado</value>
+  </data>
+  <data name="GroupMigration" xml:space="preserve">
+    <value>Migración de grupo {0} ({1}/{2})</value>
+  </data>
+  <data name="UserMigration" xml:space="preserve">
+    <value>Migración de usuarios {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserContacts" xml:space="preserve">
+    <value>Migrando contactos de usuario {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserFiles" xml:space="preserve">
+    <value>Migrando archivos de usuario {0} ({1}/{2})</value>
+  </data>
+  <data name="UserCalendarMigration" xml:space="preserve">
+    <value>Migración del calendario de usuario {0} ({1}/{2})</value>
+  </data>
+  <data name="MigrationCompleted" xml:space="preserve">
+    <value>La migración se ha completado</value>
+  </data>
+  <data name="OnlyofficeModuleNamePeople" xml:space="preserve">
+    <value>Personas</value>
+  </data>
+  <data name="PreparingForMigration" xml:space="preserve">
+    <value>Preparando la migración</value>
+  </data>
+  <data name="DataProcessingCompleted" xml:space="preserve">
+    <value>El procesamiento de datos se ha completado</value>
+  </data>
+  <data name="DataProcessing" xml:space="preserve">
+    <value>Procesamiento de datos...</value>
+  </data>
+  <data name="ModuleNameUsers" xml:space="preserve">
+    <value>Usuarios</value>
+  </data>
+  <data name="StartOfDataProcessing" xml:space="preserve">
+    <value>Iniciando el procesamiento de datos...</value>
+  </data>
+  <data name="UnzippingFinished" xml:space="preserve">
+    <value>La descompresión se ha completado...</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>Descomprimiendo...</value>
+  </data>
+  <data name="OnlyofficeModuleNameDocuments" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="UserSkipped" xml:space="preserve">
+    <value>Échec de l'importation de l'utilisateur : {0} ({1}/{2})</value>
+  </data>
+  <data name="ClearingTemporaryData" xml:space="preserve">
+    <value>Effacement des données temporaires</value>
+  </data>
+  <data name="GoogleModuleNameDocuments" xml:space="preserve">
+    <value>Fichiers de Google Drive</value>
+  </data>
+  <data name="NextcloudModuleNameDocuments" xml:space="preserve">
+    <value>Fichiers de l’utilisateur</value>
+  </data>
+  <data name="ModuleNameGroups" xml:space="preserve">
+    <value>Groupes</value>
   </data>
 </root>
