@@ -5,6 +5,7 @@ import Section from "@docspace/common/components/Section";
 import SectionHeaderContent from "../Home/Section/Header";
 import SectionFilterContent from "../Home/Section/Filter";
 import SectionBodyContent from "../Home/Section/Body";
+import FilesPanels from "../../components/FilesPanels";
 
 import { RoomSharingDialog } from "../../components/dialogs";
 import SelectionArea from "../Home/SelectionArea";
@@ -64,7 +65,8 @@ const PublicRoomPage = (props) => {
           <SectionBodyContent />
         </Section.SectionBody>
       </Section>
-      <RoomSharingDialog />
+
+      <FilesPanels />
       <SelectionArea />
       <MediaViewer />
     </>
