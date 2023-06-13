@@ -1,5 +1,6 @@
 import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
 import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
+import { useHistory } from "react-router-dom";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
@@ -46,10 +47,13 @@ const VersionRow = (props) => {
     isEditing,
     theme,
     canChangeVersionFileHistory,
+    openUser,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
+
+  const history = useHistory();
 
   const versionDate = `${new Date(info.updated).toLocaleString(culture)}`;
   const title = `${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
@@ -66,6 +70,10 @@ const VersionRow = (props) => {
     if (value.length > MAX_FILE_COMMENT_LENGTH) return;
 
     setCommentValue(value);
+  };
+
+  const onUserClick = () => {
+    openUser(info?.updatedBy, history);
   };
 
   const onSaveClick = () => {
@@ -161,7 +169,11 @@ const VersionRow = (props) => {
             {...onClickProp}
             t={t}
           />
-          <Box displayProp="flex" flexDirection="column">
+          <Box
+            displayProp="flex"
+            flexDirection="column"
+            marginProp="-2px 0 0 0"
+          >
             <Link
               onClick={onOpenFile}
               fontWeight={600}
@@ -173,7 +185,7 @@ const VersionRow = (props) => {
               {versionDate}
             </Link>
             <Link
-              onClick={onOpenFile}
+              onClick={onUserClick}
               fontWeight={600}
               fontSize="14px"
               title={title}
@@ -193,11 +205,7 @@ const VersionRow = (props) => {
             {info.contentLength}
           </Text>*/}
         </Box>
-        <Box
-          className="version-comment-wrapper"
-          marginProp="0 0 0 70px"
-          displayProp="flex"
-        >
+        <Box className="version-comment-wrapper" displayProp="flex">
           <>
             {showEditPanel && (
               <>
@@ -255,6 +263,7 @@ const VersionRow = (props) => {
 
 export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
   const { user } = auth.userStore;
+  const { openUser } = auth.infoPanelStore;
   const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en";
 
@@ -279,6 +288,7 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     updateCommentVersion,
     isEditing: isEdit,
     canChangeVersionFileHistory,
+    openUser,
   };
 })(
   withRouter(
