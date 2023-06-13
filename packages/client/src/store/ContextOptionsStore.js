@@ -1265,9 +1265,8 @@ class ContextOptionsStore {
       return options;
     }
 
-    const downloadAs =
-      selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
-      -1;
+    const hasDownloadAccess =
+      selection.findIndex((k) => k.security.Download) !== -1;
 
     const sharingItems =
       selection.filter(
@@ -1347,14 +1346,14 @@ class ContextOptionsStore {
           this.filesActionsStore
             .downloadAction(t("Translations:ArchivingData"))
             .catch((err) => toastr.error(err)),
-        disabled: false,
+        disabled: !hasDownloadAccess,
       },
       {
         key: "download-as",
         label: t("Translations:DownloadAs"),
         icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
-        disabled: !downloadAs,
+        disabled: !hasDownloadAccess || this.publicRoomStore.isPublicRoom,
       },
       {
         key: "move-to",
