@@ -145,7 +145,9 @@ class AuthStore {
 
     const { tariff, quota, ...tenantExtra } = result;
 
-    this.tenantExtra = { ...tenantExtra };
+    runInAction(() => {
+      this.tenantExtra = { ...tenantExtra };
+    });
 
     this.currentQuotaStore.setPortalQuotaValue(quota);
     this.currentTariffStatusStore.setPortalTariffValue(tariff);
