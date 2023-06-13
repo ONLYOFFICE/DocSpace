@@ -347,8 +347,13 @@ public class FileHandlerService
 
             if (!readLink && !await _fileSecurity.CanDownloadAsync(file))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                var linkId = await _externalShare.GetLinkIdAsync();
+
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title)) || linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return;
+                }
             }
 
             if (readLink && (linkShare == FileShare.Comment || linkShare == FileShare.Read) && file.DenyDownload)
