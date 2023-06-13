@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import TableContainer from "@docspace/components/table-container";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -103,7 +104,6 @@ const Table = ({
   userId,
   infoPanelVisible,
 
-  isLoading,
   fetchMoreAccounts,
   hasMoreAccounts,
   filterTotal,
@@ -113,6 +113,10 @@ const Table = ({
 }) => {
   const ref = useRef(null);
   const [hideColumns, setHideColumns] = React.useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const width = window.innerWidth;
 
@@ -138,8 +142,6 @@ const Table = ({
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
   const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
 
-  // if (isLoading) return <></>;
-
   return peopleList.length !== 0 || !isFiltered ? (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
@@ -148,6 +150,8 @@ const Table = ({
         sectionWidth={sectionWidth}
         containerRef={ref}
         setHideColumns={setHideColumns}
+        navigate={navigate}
+        location={location}
       />
       <TableBody
         infoPanelVisible={infoPanelVisible}
@@ -198,8 +202,6 @@ export default inject(
 
     const { canChangeUserType } = accessRightsStore;
 
-    const { isLoading } = filesStore;
-
     return {
       peopleList,
       accountsViewAs,
@@ -211,7 +213,7 @@ export default inject(
       userId,
       infoPanelVisible,
       withPaging,
-      isLoading,
+
       fetchMoreAccounts,
       hasMoreAccounts,
       filterTotal,

@@ -1,3 +1,4 @@
+import React from "react";
 import { DaysBody } from "./DaysBody";
 import { DaysHeader } from "./DaysHeader";
 
@@ -9,6 +10,7 @@ export const Days = ({
   selectedDate,
   minDate,
   maxDate,
+  isMobile
 }) => {
   return (
     <>
@@ -25,6 +27,7 @@ export const Days = ({
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
     </>
   );

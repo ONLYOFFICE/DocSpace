@@ -28,7 +28,6 @@ import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
-import queryString from "query-string";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -262,7 +261,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [userId]);
 
   useEffect(() => {
-    console.log(window.DocSpaceConfig.imageThumbnails);
     if (!userId || !window.DocSpaceConfig.imageThumbnails) return;
     initIndexedDb();
 
@@ -341,7 +339,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       {toast}
       <ReactSmartBanner t={t} ready={ready} />
-      {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+      {isEditor ? <></> : <NavMenu />}
       {isMobileOnly && <MainBar />}
       <IndicatorLoader />
       <ScrollToTop />

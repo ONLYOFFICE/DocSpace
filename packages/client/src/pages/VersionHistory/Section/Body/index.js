@@ -137,8 +137,8 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-export default inject(({ auth, filesStore, versionHistoryStore }) => {
-  const { setFirstLoad, setIsLoading, isLoading } = filesStore;
+export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
+  const { setFirstLoad, isLoading } = clientLoadingStore;
   const { versions, fetchFileVersions, fileId, fileSecurity } =
     versionHistoryStore;
 

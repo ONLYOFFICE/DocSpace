@@ -5,6 +5,7 @@ import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
+import { isMobile } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 import {
   StyledArticleHeader,
@@ -17,6 +18,7 @@ const ArticleHeader = ({
   showText,
   children,
   onClick,
+  onLogoClickAction,
   isBurgerLoading,
   whiteLabelLogoUrls,
   theme,
@@ -24,8 +26,13 @@ const ArticleHeader = ({
 }) => {
   const navigate = useNavigate();
 
-  const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
-  const onLogoClick = () => navigate("/");
+  const isTabletView =
+    (isTabletUtils() || isTablet) && !isMobileOnly && !isMobile();
+
+  const onLogoClick = () => {
+    onLogoClickAction && onLogoClickAction();
+    navigate("/");
+  };
 
   const burgerLogo = !theme.isBase
     ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
@@ -34,7 +41,7 @@ const ArticleHeader = ({
     ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
-  if (isMobileOnly) return <></>;
+  if (isMobileOnly || isMobile()) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
       {isTabletView && isBurgerLoading ? (
@@ -46,16 +53,10 @@ const ArticleHeader = ({
       )}
 
       {!isTabletView && isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="211px" />
+        <Loaders.ArticleHeader height="24px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
-          {isTabletView ? (
-            <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
-          ) : (
-            <Link to="/">
-              <img className="logo-icon_svg" src={logo} />
-            </Link>
-          )}
+          <img className="logo-icon_svg" src={logo} onClick={onLogoClick} />
         </StyledHeading>
       )}
     </StyledArticleHeader>

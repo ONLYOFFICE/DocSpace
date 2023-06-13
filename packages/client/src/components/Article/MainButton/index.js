@@ -23,9 +23,7 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import MobileView from "./MobileView";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
-import withLoader from "../../../HOCs/withLoader";
+
 import { Events, EmployeeType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
@@ -89,6 +87,7 @@ const StyledButton = styled(Button)`
 const ArticleMainButtonContent = (props) => {
   const {
     t,
+    tReady,
     isMobileArticle,
 
     isPrivacy,
@@ -97,7 +96,7 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
-    isArticleLoading,
+    showArticleLoader,
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
@@ -105,8 +104,6 @@ const ArticleMainButtonContent = (props) => {
     currentFolderId,
     isRoomsFolder,
     isArchiveFolder,
-
-    selectedTreeNode,
 
     enablePlugins,
 
@@ -124,7 +121,11 @@ const ArticleMainButtonContent = (props) => {
     setInviteUsersWarningDialogVisible,
   } = props;
 
-  const isAccountsPage = selectedTreeNode[0] === "accounts";
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAccountsPage = location.pathname.includes("/accounts/filter");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -133,9 +134,6 @@ const ArticleMainButtonContent = (props) => {
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
   const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
-
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const onCreate = React.useCallback(
     (e) => {
@@ -227,16 +225,12 @@ const ArticleMainButtonContent = (props) => {
   }, [resendInvitesAgain]);
 
   React.useEffect(() => {
-    const isSettingFolder =
-      location.pathname.endsWith("/settings/common") ||
-      location.pathname.endsWith("/settings/admin");
-
     const isFolderHiddenDropdown =
       isArchiveFolder ||
       isFavoritesFolder ||
       isRecentFolder ||
       isRecycleBinFolder ||
-      isSettingFolder;
+      isSettingsPage;
 
     if (isFolderHiddenDropdown) {
       setIsDropdownMainButton(false);
@@ -248,11 +242,11 @@ const ArticleMainButtonContent = (props) => {
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
-    location.pathname,
+    isSettingsPage,
   ]);
 
   React.useEffect(() => {
-    if (isRoomsFolder) return;
+    if (isRoomsFolder || isSettingsPage) return;
 
     const formActions = [
       {
@@ -439,6 +433,7 @@ const ArticleMainButtonContent = (props) => {
     isPrivacy,
     currentFolderId,
     isAccountsPage,
+    isSettingsPage,
     enablePlugins,
     isRoomsFolder,
     isOwner,
@@ -452,35 +447,36 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
-  const canInvite =
-    isAccountsPage &&
-    selectedTreeNode.length > 1 &&
-    selectedTreeNode[1] === "filter";
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled = isAccountsPage ? !canInvite : !security?.Create;
+  const isDisabled = isSettingsPage
+    ? isSettingsPage
+    : isAccountsPage
+    ? !isAccountsPage
+    : !security?.Create;
 
-  const isProfile = location.pathname === "/accounts/view/@self";
+  const isProfile = location.pathname.includes("/profile");
+
+  if (showArticleLoader)
+    return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
 
   return (
     <>
       {isMobileArticle ? (
         <>
-          {!isArticleLoading &&
-            !isProfile &&
-            (security?.Create || canInvite) && (
-              <MobileView
-                t={t}
-                titleProp={t("Upload")}
-                actionOptions={actions}
-                buttonOptions={uploadActions}
-                isRooms={isRoomsFolder}
-                mainButtonMobileVisible={mainButtonMobileVisible}
-                onMainButtonClick={onCreateRoom}
-              />
-            )}
+          {!isProfile && (security?.Create || isAccountsPage) && (
+            <MobileView
+              t={t}
+              titleProp={t("Upload")}
+              actionOptions={actions}
+              buttonOptions={uploadActions}
+              isRooms={isRoomsFolder}
+              mainButtonMobileVisible={mainButtonMobileVisible}
+              onMainButtonClick={onCreateRoom}
+            />
+          )}
         </>
       ) : isRoomsFolder ? (
         <StyledButton
@@ -543,15 +539,10 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
-    accessRightsStore,
+    clientLoadingStore,
   }) => {
-    const {
-      isLoaded,
-      firstLoad,
-      isLoading,
-
-      mainButtonMobileVisible,
-    } = filesStore;
+    const { showArticleLoader } = clientLoadingStore;
+    const { mainButtonMobileVisible } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -568,8 +559,6 @@ export default inject(
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
-    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
-
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
     const security = selectedFolderStore.security;
@@ -585,7 +574,7 @@ export default inject(
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
 
-      isArticleLoading,
+      showArticleLoader,
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
@@ -600,9 +589,6 @@ export default inject(
       setSelectFileDialogVisible,
       setInvitePanelOptions,
 
-      isLoading,
-      isLoaded,
-      firstLoad,
       currentFolderId,
 
       enablePlugins,
@@ -623,9 +609,5 @@ export default inject(
     "Files",
     "People",
     "PeopleTranslations",
-  ])(
-    withLoader(observer(ArticleMainButtonContent))(
-      <Loaders.ArticleButton height="28px" />
-    )
-  )
+  ])(observer(ArticleMainButtonContent))
 );

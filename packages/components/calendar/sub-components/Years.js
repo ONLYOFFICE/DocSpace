@@ -1,7 +1,16 @@
+import React from "react";
 import { YearsBody } from "./YearsBody";
 import { YearsHeader } from "./YearsHeader";
 
-export const Years = ({ observedDate, setObservedDate, setSelectedScene, selectedDate, minDate, maxDate }) => {
+export const Years = ({
+  observedDate,
+  setObservedDate,
+  setSelectedScene,
+  selectedDate,
+  minDate,
+  maxDate,
+  isMobile
+}) => {
   return (
     <>
       <YearsHeader
@@ -17,6 +26,7 @@ export const Years = ({ observedDate, setObservedDate, setSelectedScene, selecte
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
     </>
   );
