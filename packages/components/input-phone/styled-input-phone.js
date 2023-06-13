@@ -1,5 +1,5 @@
 import Box from "@docspace/components/box";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 export const StyledBox = styled(Box)`
@@ -31,6 +31,18 @@ export const StyledBox = styled(Box)`
     padding-left: 20px;
     margin-left: -8px;
     border-left: 1px solid
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          padding-left: 0;
+          padding-right: 20px;
+
+          margin-left: 8px;
+          border-left: 0;
+          border-right: 1px solid;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        `}
       ${(props) => props.theme.inputPhone.inactiveBorderColor};
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
