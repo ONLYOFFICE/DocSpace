@@ -63,7 +63,12 @@ const StatusBar = (props) => {
   );
 
   const SelectedStatuses = historyFilters.status.map((statusCode) => (
-    <SelectedItem label={statusCode} key={statusCode} onClose={clearDate} onClick={clearDate} />
+    <SelectedItem
+      label={statusCode}
+      key={statusCode}
+      onClose={() => unselectStatus(statusCode)}
+      onClick={() => unselectStatus(statusCode)}
+    />
   ));
 
   const isEqualDates = (firstDate, secondDate) => {
