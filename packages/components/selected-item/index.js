@@ -21,14 +21,14 @@ const SelectedItem = (props) => {
   if (!label) return <></>;
 
   const onCloseClick = (e) => {
-    !isDisabled && onClose && onClose(propKey, label, group);
+    !isDisabled && onClose && onClose(propKey, label, group, e);
   };
 
   const handleOnClick = (e) => {
     !isDisabled &&
       onClick &&
       !e.target.classList.contains("selected-tag-removed") &&
-      onClick(propKey, label, group);
+      onClick(propKey, label, group, e);
   };
 
   return (
