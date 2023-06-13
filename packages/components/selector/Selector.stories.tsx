@@ -161,6 +161,8 @@ export const Default = Template.bind({});
 
 export const BreadCrumbs = Template.bind({});
 
+export const NewName = Template.bind({});
+
 Default.args = {
   height: "485px", // container height
   headerLabel: "Room list",
@@ -200,6 +202,9 @@ Default.args = {
   breadCrumbs: [],
   onSelectBreadCrumb: (item) => {},
   breadCrumbsLoader: <StyledBreadCrumbsLoader />,
+  withoutBackButton: false,
+  hideSearch: false,
+  isBreadCrumbsLoading: false,
 };
 
 BreadCrumbs.args = {
@@ -247,4 +252,63 @@ BreadCrumbs.args = {
   ],
   onSelectBreadCrumb: (item) => {},
   breadCrumbsLoader: <StyledBreadCrumbsLoader />,
+  withoutBackButton: false,
+  hideSearch: false,
+  isBreadCrumbsLoading: false,
+  withFooterInput: false,
+  footerInputHeader: "",
+  footerCheckboxLabel: "",
+  currentFooterInputValue: "",
+};
+
+NewName.args = {
+  height: "485px", // container height
+  headerLabel: "Room list",
+  onBackClick: () => {},
+  searchPlaceholder: "Search",
+  searchValue: "",
+  items: renderedItems,
+  onSelect: (item) => {},
+  isMultiSelect: false,
+  selectedItems: selectedItems,
+  acceptButtonLabel: "Add",
+  onAccept: (items, access) => {},
+  withSelectAll: false,
+  selectAllLabel: "All accounts",
+  selectAllIcon: ArchiveSvgUrl,
+  onSelectAll: () => {},
+  withAccessRights: false,
+  accessRights,
+  selectedAccessRight,
+  onAccessRightsChange: (access) => {},
+  withCancelButton: false,
+  cancelButtonLabel: "Cancel",
+  onCancel: () => {},
+  emptyScreenImage: EmptyScreenFilter,
+  emptyScreenHeader: "No other accounts here yet",
+  emptyScreenDescription:
+    "The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  searchEmptyScreenImage: EmptyScreenFilter,
+  searchEmptyScreenHeader: "No other accounts here yet search",
+  searchEmptyScreenDescription:
+    " SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  totalItems,
+  hasNextPage: true,
+  isNextPageLoading: false,
+  isLoading: false,
+  withBreadCrumbs: true,
+  breadCrumbs: [
+    { id: 1, label: "DocSpace" },
+    { id: 2, label: "1111111" },
+    { id: 3, label: "21222222222" },
+  ],
+  onSelectBreadCrumb: (item) => {},
+  breadCrumbsLoader: <StyledBreadCrumbsLoader />,
+  withoutBackButton: false,
+  hideSearch: false,
+  isBreadCrumbsLoading: false,
+  withFooterInput: true,
+  footerInputHeader: "File name",
+  footerCheckboxLabel: "Open saved document in new tab",
+  currentFooterInputValue: "OldFIleName.docx",
 };

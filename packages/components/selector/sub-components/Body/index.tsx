@@ -19,6 +19,7 @@ const BREAD_CRUMBS_HEIGHT = 38;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
+const FOOTER_WITH_NEW_NAME_HEIGHT = 181;
 
 const Body = ({
   footerVisible,
@@ -52,6 +53,9 @@ const Body = ({
   breadCrumbs,
   onSelectBreadCrumb,
   breadCrumbsLoader,
+  hideSearch,
+  isBreadCrumbsLoading,
+  withFooterInput,
 }: BodyProps) => {
   const [bodyHeight, setBodyHeight] = React.useState(0);
 
@@ -107,12 +111,14 @@ const Body = ({
   return (
     <StyledBody
       ref={bodyRef}
-      footerHeight={FOOTER_HEIGHT}
+      footerHeight={
+        withFooterInput ? FOOTER_WITH_NEW_NAME_HEIGHT : FOOTER_HEIGHT
+      }
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
     >
       {withBreadCrumbs ? (
-        isLoading ? (
+        isBreadCrumbsLoading ? (
           breadCrumbsLoader
         ) : (
           <BreadCrumbs
@@ -122,9 +128,9 @@ const Body = ({
         )
       ) : null}
 
-      {isLoading && !isSearch ? (
+      {isBreadCrumbsLoading ? (
         searchLoader
-      ) : withSearch ? (
+      ) : withSearch && !hideSearch ? (
         <Search
           placeholder={placeholder}
           value={value}

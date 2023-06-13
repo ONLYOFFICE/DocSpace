@@ -14,52 +14,76 @@ const Selector = ({
   id,
   className,
   style,
+
   headerLabel,
+  withoutBackButton,
   onBackClick,
+
+  isBreadCrumbsLoading,
+  breadCrumbsLoader,
+  withBreadCrumbs,
+  breadCrumbs,
+  onSelectBreadCrumb,
+
+  hideSearch,
+  searchLoader,
   searchPlaceholder,
   searchValue,
   onSearch,
   onClearSearch,
-  items,
-  onSelect,
-  isMultiSelect,
-  selectedItems,
-  acceptButtonLabel,
-  onAccept,
+
   withSelectAll,
   selectAllLabel,
   selectAllIcon,
   onSelectAll,
+
+  items,
+  isMultiSelect,
+  selectedItems,
+  acceptButtonLabel,
+  onSelect,
+  onAccept,
+  rowLoader,
+
   withAccessRights,
   accessRights,
   selectedAccessRight,
   onAccessRightsChange,
+
   withCancelButton,
   cancelButtonLabel,
   onCancel,
+
   emptyScreenImage,
   emptyScreenHeader,
   emptyScreenDescription,
+
   searchEmptyScreenImage,
   searchEmptyScreenHeader,
   searchEmptyScreenDescription,
+
   hasNextPage,
   isNextPageLoading,
   loadNextPage,
   totalItems,
   isLoading,
-  searchLoader,
-  rowLoader,
-  withBreadCrumbs,
-  breadCrumbs,
-  onSelectBreadCrumb,
-  breadCrumbsLoader,
+
+  withFooterInput,
+  footerInputHeader,
+  footerCheckboxLabel,
+  currentFooterInputValue,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
 
   const [renderedItems, setRenderedItems] = React.useState<Item[]>([]);
   const [newSelectedItems, setNewSelectedItems] = React.useState<Item[]>([]);
+
+  const [newFooterInputValue, setNewFooterInputValue] = React.useState<string>(
+    currentFooterInputValue || ""
+  );
+  const [isFooterCheckboxChecked, setIsFooterCheckboxChecked] =
+    React.useState<boolean>(false);
 
   const [selectedAccess, setSelectedAccess] =
     React.useState<AccessRight | null>(null);
@@ -72,7 +96,7 @@ const Selector = ({
     (value: string) => {
       onSearch && onSearch(value);
 
-      setIsSearch(true);
+      setIsSearch(!!value);
     },
     [onSearch]
   );
@@ -179,8 +203,19 @@ const Selector = ({
   }, [items, newSelectedItems]);
 
   const onAcceptAction = React.useCallback(() => {
-    onAccept && onAccept(newSelectedItems, selectedAccess);
-  }, [newSelectedItems, selectedAccess]);
+    onAccept &&
+      onAccept(
+        newSelectedItems,
+        selectedAccess,
+        newFooterInputValue,
+        isFooterCheckboxChecked
+      );
+  }, [
+    newSelectedItems,
+    selectedAccess,
+    newFooterInputValue,
+    isFooterCheckboxChecked,
+  ]);
 
   const onCancelAction = React.useCallback(() => {
     onCancel && onCancel();
@@ -253,7 +288,11 @@ const Selector = ({
 
   return (
     <StyledSelector id={id} className={className} style={style}>
-      <Header onBackClickAction={onBackClickAction} headerLabel={headerLabel} />
+      <Header
+        onBackClickAction={onBackClickAction}
+        headerLabel={headerLabel}
+        withoutBackButton={withoutBackButton}
+      />
 
       <Body
         footerVisible={footerVisible}
@@ -294,6 +333,9 @@ const Selector = ({
         breadCrumbs={breadCrumbs}
         onSelectBreadCrumb={onSelectBreadCrumb}
         breadCrumbsLoader={breadCrumbsLoader}
+        isBreadCrumbsLoading={isBreadCrumbsLoading}
+        hideSearch={hideSearch}
+        withFooterInput={withFooterInput}
       />
 
       {footerVisible && (
@@ -309,109 +351,122 @@ const Selector = ({
           onAccept={onAcceptAction}
           onCancel={onCancelAction}
           onChangeAccessRights={onChangeAccessRightsAction}
+          withFooterInput={withFooterInput}
+          footerInputHeader={footerInputHeader}
+          footerCheckboxLabel={footerCheckboxLabel}
+          currentFooterInputValue={newFooterInputValue}
+          setNewFooterInputValue={setNewFooterInputValue}
+          isFooterCheckboxChecked={isFooterCheckboxChecked}
+          setIsFooterCheckboxChecked={setIsFooterCheckboxChecked}
         />
       )}
     </StyledSelector>
   );
 };
 
-Selector.propTypes = {
-  /** Accepts id  */
-  id: PropTypes.string,
-  /** Accepts class  */
-  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  /** Accepts css style */
-  style: PropTypes.object,
+// Selector.propTypes = {
+//   /** Accepts id  */
+//   id: PropTypes.string,
+//   /** Accepts class  */
+//   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+//   /** Accepts css style */
+//   style: PropTypes.object,
 
-  /** Selector header text */
-  headerLabel: PropTypes.string,
-  /** Sets a callback function that is triggered when the header arrow is clicked */
-  onBackClick: PropTypes.func,
+//   /** Selector header text */
+//   headerLabel: PropTypes.string,
+//   /** Hide header back button */
+//   withoutBackButton: PropTypes.bool,
+//   /** Sets a callback function that is triggered when the header arrow is clicked */
+//   onBackClick: PropTypes.func,
 
-  /** Placeholder for search input */
-  searchPlaceholder: PropTypes.string,
-  /** Start value for search input */
-  searchValue: PropTypes.string,
-  /** Sets a callback function that is triggered when the user stops typing */
-  onSearch: PropTypes.func,
-  /** Sets a callback function that is triggered when the clear icon of the search input is clicked  */
-  onClearSearch: PropTypes.func,
+//   /** Placeholder for search input */
+//   searchPlaceholder: PropTypes.string,
+//   /** Start value for search input */
+//   searchValue: PropTypes.string,
+//   /** Sets a callback function that is triggered when the user stops typing */
+//   onSearch: PropTypes.func,
+//   /** Sets a callback function that is triggered when the clear icon of the search input is clicked  */
+//   onClearSearch: PropTypes.func,
 
-  /** Displays items */
-  items: PropTypes.array,
-  /** Sets a callback function that is triggered when the item is clicked */
-  onSelect: PropTypes.func,
+//   /** Displays items */
+//   items: PropTypes.array,
+//   /** Sets a callback function that is triggered when the item is clicked */
+//   onSelect: PropTypes.func,
 
-  /** Allows selecting multiple objects */
-  isMultiSelect: PropTypes.bool,
-  /** Sets the items to present a checked state */
-  selectedItems: PropTypes.array,
-  /** Accepts button text */
-  acceptButtonLabel: PropTypes.string,
-  /** Sets a callback function that is triggered when the accept button is clicked */
-  onAccept: PropTypes.func,
+//   /** Allows selecting multiple objects */
+//   isMultiSelect: PropTypes.bool,
+//   /** Sets the items to present a checked state */
+//   selectedItems: PropTypes.array,
+//   /** Accepts button text */
+//   acceptButtonLabel: PropTypes.string,
+//   /** Sets a callback function that is triggered when the accept button is clicked */
+//   onAccept: PropTypes.func,
 
-  /** Adds an option for selecting all items */
-  withSelectAll: PropTypes.bool,
-  /** Text for selecting all components */
-  selectAllLabel: PropTypes.string,
-  /** Icon for selecting all components */
-  selectAllIcon: PropTypes.string,
-  /** Sets a callback function that is triggered when SelectAll is clicked */
-  onSelectAll: PropTypes.func,
+//   /** Adds an option for selecting all items */
+//   withSelectAll: PropTypes.bool,
+//   /** Text for selecting all components */
+//   selectAllLabel: PropTypes.string,
+//   /** Icon for selecting all components */
+//   selectAllIcon: PropTypes.string,
+//   /** Sets a callback function that is triggered when SelectAll is clicked */
+//   onSelectAll: PropTypes.func,
 
-  /** Adds combobox for displaying access rights at the footer */
-  withAccessRights: PropTypes.bool,
-  /** Access rights items */
-  accessRights: PropTypes.array,
-  /** Selected access rights items */
-  selectedAccessRight: PropTypes.object,
-  /** Sets a callback function that is triggered when the access rights are changed */
-  onAccessRightsChange: PropTypes.func,
+//   /** Adds combobox for displaying access rights at the footer */
+//   withAccessRights: PropTypes.bool,
+//   /** Access rights items */
+//   accessRights: PropTypes.array,
+//   /** Selected access rights items */
+//   selectedAccessRight: PropTypes.object,
+//   /** Sets a callback function that is triggered when the access rights are changed */
+//   onAccessRightsChange: PropTypes.func,
 
-  /** Adds a cancel button at the footer */
-  withCancelButton: PropTypes.bool,
-  /** Displays text in the cancel button */
-  cancelButtonLabel: PropTypes.string,
-  /** Sets a callback function that is triggered when the cancel button is clicked */
-  onCancel: PropTypes.func,
+//   /** Adds a cancel button at the footer */
+//   withCancelButton: PropTypes.bool,
+//   /** Displays text in the cancel button */
+//   cancelButtonLabel: PropTypes.string,
+//   /** Sets a callback function that is triggered when the cancel button is clicked */
+//   onCancel: PropTypes.func,
 
-  /** Image for default empty screen */
-  emptyScreenImage: PropTypes.string,
-  /** Header for default empty screen */
-  emptyScreenHeader: PropTypes.string,
-  /** Description for default empty screen */
-  emptyScreenDescription: PropTypes.string,
+//   /** Image for default empty screen */
+//   emptyScreenImage: PropTypes.string,
+//   /** Header for default empty screen */
+//   emptyScreenHeader: PropTypes.string,
+//   /** Description for default empty screen */
+//   emptyScreenDescription: PropTypes.string,
 
-  /** Image for search empty screen */
-  searchEmptyScreenImage: PropTypes.string,
-  /** Header for search empty screen */
-  searchEmptyScreenHeader: PropTypes.string,
-  /** Description for search empty screen */
-  searchEmptyScreenDescription: PropTypes.string,
+//   /** Image for search empty screen */
+//   searchEmptyScreenImage: PropTypes.string,
+//   /** Header for search empty screen */
+//   searchEmptyScreenHeader: PropTypes.string,
+//   /** Description for search empty screen */
+//   searchEmptyScreenDescription: PropTypes.string,
 
-  /** Counts items for infinity scroll */
-  totalItems: PropTypes.number,
-  /** Sets the next page for the infinity scroll */
-  hasNextPage: PropTypes.bool,
-  /** Notifies that the next page is loading */
-  isNextPageLoading: PropTypes.bool,
-  /** Sets a callback function that is invoked to load the next page */
-  loadNextPage: PropTypes.func,
+//   /** Counts items for infinity scroll */
+//   totalItems: PropTypes.number,
+//   /** Sets the next page for the infinity scroll */
+//   hasNextPage: PropTypes.bool,
+//   /** Notifies that the next page is loading */
+//   isNextPageLoading: PropTypes.bool,
+//   /** Sets a callback function that is invoked to load the next page */
+//   loadNextPage: PropTypes.func,
 
-  /** Sets loading state for select */
-  isLoading: PropTypes.bool,
-  /** Loader element for search block */
-  searchLoader: PropTypes.node,
-  /** Loader element for item */
-  rowLoader: PropTypes.node,
-};
+//   /** Sets loading state for select */
+//   isLoading: PropTypes.bool,
+//   /** Loader element for search block */
+//   searchLoader: PropTypes.node,
+//   /** Loader element for item */
+//   rowLoader: PropTypes.node,
+// };
 
 Selector.defaultProps = {
   isMultiSelect: false,
   withSelectAll: false,
   withAccessRights: false,
   withCancelButton: false,
+  withoutBackButton: false,
+  isBreadCrumbsLoading: false,
+  hideSearch: false,
+  withFooterInput: false,
 
   selectedItems: [],
 };

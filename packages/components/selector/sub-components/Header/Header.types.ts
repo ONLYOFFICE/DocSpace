@@ -1,4 +1,5 @@
 export type HeaderProps = {
-  onBackClickAction: () => void;
+  onBackClickAction?: () => void;
+  withoutBackButton?: boolean;
   headerLabel: string;
 };

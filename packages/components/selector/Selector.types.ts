@@ -18,7 +18,9 @@ export type SelectorProps = {
   className?: string;
   style?: React.CSSProperties;
   headerLabel: string;
-  onBackClick: () => void;
+  withoutBackButton?: boolean;
+  onBackClick?: () => void;
+  hideSearch?: boolean;
   searchPlaceholder?: string;
   searchValue?: string;
   onSearch?: (value: string) => void;
@@ -28,7 +30,12 @@ export type SelectorProps = {
   isMultiSelect?: boolean;
   selectedItems?: Item[];
   acceptButtonLabel: string;
-  onAccept: (selectedItems: Item[], access: AccessRight | null) => void;
+  onAccept: (
+    selectedItems: Item[],
+    access: AccessRight | null,
+    fileName: string,
+    isFooterCheckboxChecked: boolean
+  ) => void;
   withSelectAll?: boolean;
   selectAllLabel?: string;
   selectAllIcon?: string;
@@ -57,4 +64,10 @@ export type SelectorProps = {
   breadCrumbs?: BreadCrumb[];
   onSelectBreadCrumb?: (item: BreadCrumb) => void;
   breadCrumbsLoader?: any;
+  isBreadCrumbsLoading?: boolean;
+
+  withFooterInput?: boolean;
+  footerInputHeader?: string;
+  currentFooterInputValue?: string;
+  footerCheckboxLabel?: string;
 };

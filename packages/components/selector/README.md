@@ -10,6 +10,7 @@ import Selector from "@docspace/components/selector";
 <Selector
   acceptButtonLabel="Add"
   accessRights={[]}
+  withoutBackButton={false}
   cancelButtonLabel="Cancel"
   emptyScreenDescription="The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time."
   emptyScreenHeader="No other accounts here yet"
@@ -43,6 +44,13 @@ import Selector from "@docspace/components/selector";
   breadCrumbs={[]}
   onSelectBreadCrumb={function noRefCheck() {}}
   breadCrumbsLoader={<></>}
+  hideSearch={false}
+  isBreadCrumbsLoading={false}
+  withFooterInput={false}
+  footerInputHeader={""}
+  footerCheckboxLabel={""}
+  currentFooterInputValue={""}
+/>
 ```
 
 ### Properties
@@ -53,8 +61,10 @@ import Selector from "@docspace/components/selector";
 | `className`                    |    `string`    |    -     |   -    |    -    | Accepts class                                                 |
 | `style`                        | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                             |
 | `headerLabel`                  |    `string`    |    -     |   -    |    -    | Selector header text                                          |
+| `withoutBackButton`            |     `bool`     |    -     |   -    |    -    | Hide header back button                                       |
 | `onBackClick`                  |     `func`     |    -     |   -    |    -    | What the header arrow will trigger when clicked               |
 | `searchPlaceholder`            |    `string`    |    -     |   -    |    -    | Placeholder for search input                                  |
+| `hideSearch`                   |     `bool`     |    -     |   -    |    -    | Hide search input                                             |
 | `onSearch`                     |     `func`     |    -     |   -    |    -    | What the search input will trigger when user stopped typing   |
 | `onClearSearch`                |     `func`     |    -     |   -    |    -    | What the clear icon of search input will trigger when clicked |
 | `items`                        |    `array`     |    -     |   -    |    -    | Displaying items                                              |
@@ -91,3 +101,8 @@ import Selector from "@docspace/components/selector";
 | `breadCrumbs`                  |    `array`     |    -     |   -    |    -    | Bread crumbs items                                            |
 | `onSelectBreadCrumb`           |     `func`     |    -     |   -    |    -    | Function for select bread crumb item                          |
 | `breadCrumbsLoader`            |     `node`     |    -     |   -    |    -    | Loader element for bread crumbs                               |
+| `isBreadCrumbsLoading`         |     `bool`     |    -     |   -    |  false  | Set loading state for bread crumbs                            |
+| `currentFooterInputValue`      |    `string`    |    -     |   -    |    -    | Current file name                                             |
+| `footerCheckboxLabel`          |    `string`    |    -     |   -    |    -    | Title of checkbox                                             |
+| `footerInputHeader`            |    `string`    |    -     |   -    |    -    | Header of new name block                                      |
+| `withFooterInput`              |     `bool`     |    -     |   -    |  false  | Show name change input                                        |

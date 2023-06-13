@@ -1,21 +1,16 @@
 import styled from "styled-components";
 
 import Combobox from "../../../combobox";
+import Text from "../../../text";
 import Base from "../../../themes/base";
 
-const StyledFooter = styled.div`
+const StyledFooter = styled.div<{ withFooterInput?: boolean }>`
   width: calc(100% - 32px);
-  max-height: 73px;
-  height: 73px;
-  min-height: 73px;
+  max-height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
+  height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
+  min-height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
 
   padding: 0 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 8px;
 
   border-top: ${(props) => props.theme.selector.border};
 
@@ -27,6 +22,28 @@ const StyledFooter = styled.div`
 `;
 
 StyledFooter.defaultProps = { theme: Base };
+
+const StyledNewNameContainer = styled.div`
+  margin-top: 16px;
+
+  .new-file-input {
+    margin-bottom: 16px;
+  }
+`;
+
+const StyledNewNameHeader = styled(Text)`
+  margin-bottom: 4px;
+`;
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  margin-top: 16px;
+`;
 
 const StyledComboBox = styled(Combobox)`
   margin-bottom: 2px;
@@ -43,4 +60,10 @@ const StyledComboBox = styled(Combobox)`
   }
 `;
 
-export { StyledFooter, StyledComboBox };
+export {
+  StyledFooter,
+  StyledNewNameContainer,
+  StyledNewNameHeader,
+  StyledButtonContainer,
+  StyledComboBox,
+};

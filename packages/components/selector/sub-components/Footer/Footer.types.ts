@@ -12,4 +12,12 @@ export type FooterProps = {
   onAccept?: () => void;
   onCancel?: () => void;
   onChangeAccessRights?: (access: AccessRight) => void;
+
+  withFooterInput?: boolean;
+  footerInputHeader?: string;
+  currentFooterInputValue?: string;
+  footerCheckboxLabel?: string;
+  setNewFooterInputValue?: (value: string) => void;
+  isFooterCheckboxChecked?: boolean;
+  setIsFooterCheckboxChecked?: any;
 };

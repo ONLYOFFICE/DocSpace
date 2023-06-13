@@ -8,6 +8,7 @@ export type BodyProps = {
   isAllChecked?: boolean;
   placeholder?: string;
   value?: string;
+  hideSearch?: boolean;
   onSearch: (value: string) => void;
   onClearSearch: () => void;
   items: Item[];
@@ -34,4 +35,7 @@ export type BodyProps = {
   breadCrumbs?: BreadCrumb[];
   onSelectBreadCrumb?: (item: BreadCrumb) => void;
   breadCrumbsLoader?: any;
+  isBreadCrumbsLoading?: boolean;
+
+  withFooterInput?: boolean;
 };
