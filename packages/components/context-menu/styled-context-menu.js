@@ -196,7 +196,8 @@ const StyledContextMenu = styled.div`
     ${(props) =>
       props.theme.interfaceDirection === "rtl" &&
       css`
-        margin-left: -4px;
+        margin-right: 4px;
+        margin-left: 0;
       `}
     margin-top: -4px;
   }

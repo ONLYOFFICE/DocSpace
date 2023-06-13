@@ -5,6 +5,8 @@ import ObjectUtils from "../../utils/objectUtils";
 import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
+import { useTheme } from "styled-components";
+
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
@@ -17,6 +19,8 @@ const SubMenu = (props) => {
 
   const [activeItem, setActiveItem] = useState(null);
   const subMenuRef = useRef();
+
+  const theme = useTheme();
 
   const onItemMouseEnter = (e, item) => {
     if (item.disabled) {
@@ -70,7 +74,9 @@ const SubMenu = (props) => {
     ) {
       subMenuRef.current.style.left = -1 * subListWidth + "px";
     } else {
-      subMenuRef.current.style.left = itemOuterWidth + "px";
+      theme.interfaceDirection === "rtl"
+        ? (subMenuRef.current.style.right = itemOuterWidth + "px")
+        : (subMenuRef.current.style.left = itemOuterWidth + "px");
     }
   };
 
