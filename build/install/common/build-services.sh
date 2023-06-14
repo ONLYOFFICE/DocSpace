@@ -133,7 +133,7 @@ function build_dotnetcore_backend {
 }
 
 # Publish BACKEND dotnetcore services
-function publish_dotnetcore_backend {
+function backend-dotnet-publish {
   # List of names for nodejs backend projects
   get_services_name "${BACKEND_DOTNETCORE_SERVICES}"
   
@@ -158,7 +158,7 @@ function publish_dotnetcore_backend {
 }
 
 # Install BACKEND dependencies for nodjs's projects
-function build_nodejs_backend {
+function backend-nodejs-publish {
   # List of names for nodejs backend projects
   get_services_name "${BACKEND_NODEJS_SERVICES}"
   for i in ${!ARRAY_NAME_SERVICES[@]}; do
@@ -195,25 +195,25 @@ function run {
     case $1 in
       all )
         build_dotnetcore_backend "${MIGRATION_CHECK}"
-        build_nodejs_backend 
+        backend-nodejs-publish 
         build_nodejs_frontend "${DEBUG_INFO_CHECK}"
-        publish_dotnetcore_backend
+        backend-dotnet-publish
 		;;
       frontend-build )
         build_nodejs_frontend "${DEBUG_INFO_CHECK}"
 		;;
       backend-publish )
         build_dotnetcore_backend "${MIGRATION_CHECK}"
-        build_nodejs_backend
-        publish_dotnetcore_backend
+        backend-nodejs-publish
+        backend-dotnet-publish
 		;;
       
       backend-dotnet-publish )
         build_dotnetcore_backend "${MIGRATION_CHECK}"
-        publish_dotnetcore_backend
+        backend-dotnet-publish
 		;;
       backend-nodejs-publish )
-        build_nodejs_backend
+        backend-nodejs-publish
 		;;
       backend-build )
         build_dotnetcore_backend "${MIGRATION_CHECK}"
