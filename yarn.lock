@@ -3031,6 +3031,7 @@ __metadata:
     html-webpack-plugin: 5.3.2
     json-loader: ^0.5.7
     playwright: ^1.18.1
+    queue-promise: 2.2.1
     react-avatar-editor: ^13.0.0
     react-colorful: ^5.5.1
     react-hotkeys-hook: ^3.4.4
@@ -20807,6 +20808,13 @@ __metadata:
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
   checksum: b676f8c040cdc5b12723ad2f91414d267605b26419d5c821ff03befa817ddd10e238d22b25d604920340fd73efd8ba795465a0377c4adf45a4a41e4234e42dc4
+  languageName: node
+  linkType: hard
+
+"queue-promise@npm:2.2.1":
+  version: 2.2.1
+  resolution: "queue-promise@npm:2.2.1"
+  checksum: 139c1844225580545a94c5a234fcde33e47941f473525bb0df3dacbdd55724993754f048c25c3a8b98961cd84221913b633397383ef8bc92476237d0dca6d721
   languageName: node
   linkType: hard
 
