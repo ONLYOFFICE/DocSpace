@@ -57,19 +57,19 @@ class FirebaseHelper {
 
   get isEnabled() {
     return (
-      this.config &&
-      this.config["apiKey"] &&
-      this.config["authDomain"] &&
-      this.config["projectId"] &&
-      this.config["storageBucket"] &&
-      this.config["messagingSenderId"] &&
-      this.config["appId"] /*&&
+      !!this.config &&
+      !!this.config["apiKey"] &&
+      !!this.config["authDomain"] &&
+      !!this.config["projectId"] &&
+      !!this.config["storageBucket"] &&
+      !!this.config["messagingSenderId"] &&
+      !!this.config["appId"] /*&&
       this.config["measurementId"]*/
     );
   }
 
   get isEnabledDB() {
-    return this.isEnabled && this.config["dataBaseUrl"];
+    return this.isEnabled && !!this.config["databaseURL"];
   }
 
   async checkMaintenance() {
