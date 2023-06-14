@@ -26,6 +26,11 @@ const StyledWrapper = styled.div`
   .link {
     margin-top: 24px;
   }
+
+  #customized-text {
+    max-width: 480px;
+    text-align: center;
+  }
 `;
 
 const Error520 = ({ errorLog, currentColorScheme, FirebaseHelper }) => {
