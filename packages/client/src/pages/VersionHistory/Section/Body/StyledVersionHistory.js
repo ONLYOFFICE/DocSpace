@@ -143,10 +143,6 @@ const StyledVersionRow = styled(Row)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    @media ${tablet} {
-      margin-top: -1px;
-    }
   }
   .version-link-file:first-child {
     margin-bottom: 4px;
