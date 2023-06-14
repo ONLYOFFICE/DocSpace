@@ -118,7 +118,7 @@ StyledVersionList.defaultProps = { theme: Base };
 const StyledVersionRow = styled(Row)`
   .row_content {
     position: relative;
-    padding-top: 12px;
+    padding-top: 13px;
     padding-bottom: 12px;
     height: auto;
     ${(props) => !props.isTabletView && "padding-right:16px"};
@@ -143,10 +143,9 @@ const StyledVersionRow = styled(Row)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    @media ${tablet} {
-      margin-top: -1px;
-    }
+  }
+  .version-link-file:first-child {
+    margin-bottom: 4px;
   }
 
   .icon-link {
@@ -164,7 +163,7 @@ const StyledVersionRow = styled(Row)`
   }
 
   .textarea-desktop {
-    margin: 9px 23px 1px -7px;
+    margin: 6px 31px 1px -7px;
   }
 
   .version_content-length {
@@ -214,7 +213,7 @@ const StyledVersionRow = styled(Row)`
   .row_context-menu-wrapper {
     display: block;
     position: absolute;
-    right: 16px !important;
+    right: 13px !important;
     top: 6px;
 
     .expandButton {
