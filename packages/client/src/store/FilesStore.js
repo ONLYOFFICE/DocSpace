@@ -170,18 +170,20 @@ class FilesStore {
             break;
         }
 
-      if (opt?.cmd === "create") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount++;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount++;
-        this.authStore.infoPanelStore.reloadSelection();
-      } else if (opt?.cmd === "delete") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount--;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount--;
-        this.authStore.infoPanelStore.reloadSelection();
+      if (
+        opt?.cmd &&
+        opt.id &&
+        (opt.type === "file" || opt.type === "folder") &&
+        (opt.cmd === "create" || opt.cmd === "delete")
+      ) {
+        runInAction(() => {
+          if (opt.cmd === "create") {
+            this.selectedFolderStore[opt.type + "sCount"]++;
+          } else if (opt.cmd === "delete") {
+            this.selectedFolderStore[opt.type + "sCount"]--;
+          }
+          this.authStore.infoPanelStore.reloadSelection();
+        });
       }
     });
 
