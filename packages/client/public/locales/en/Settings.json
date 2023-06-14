@@ -202,7 +202,7 @@
   "UserAgreement": "I confirm and want to proceed",
   "UseSpecialChar": "Use special characters",
   "UseUpperCase": "Use capital letters",
-  "WhiteLabel": "White label",
+  "WhiteLabel": "Logo settings",
   "WhiteLabelHelper": "Use images with a transparent background. (PNG, SVG, JPG)",
   "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",

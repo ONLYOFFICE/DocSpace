@@ -199,7 +199,7 @@
   "UserAgreement": "Confirmo y deseo proceder",
   "UseSpecialChar": "Usar caracteres especiales",
   "UseUpperCase": "Usar letras mayúsculas",
-  "WhiteLabel": "Etiqueta Blanca",
+  "WhiteLabel": "Ajustes de logo",
   "WhiteLabelHelper": "Utilice imágenes con fondo transparente (PNG, SVG, JPG).",
   "WhiteLabelSubtitle": "Introduzca el nombre de su empresa, cargue el logotipo y personalice el estilo para que coincida con su marca.",
   "WhiteLabelTooltip": "Los tamaños se muestran para las pantallas Retina. Para las pantallas con resoluciones estándar, la anchura y la altura del logotipo se redimensionarán en consecuencia al cargarlo.",

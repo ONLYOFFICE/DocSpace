@@ -199,7 +199,7 @@
   "UserAgreement": "我确认并继续",
   "UseSpecialChar": "必须包含特殊字符",
   "UseUpperCase": "必须包含大写字母",
-  "WhiteLabel": "白标",
+  "WhiteLabel": "标志设置",
   "WhiteLabelHelper": "使用透明背景的图像。（PNG、SVG、JPG）",
   "WhiteLabelSubtitle": "输入公司名称、上传徽标并自定义其风格以匹配您的品牌风格。",
   "WhiteLabelTooltip": "该尺寸将针对 Retina 屏幕进行显示。对于标准分辨率的显示器，徽标宽度和高度将在上传时相应调整。",
