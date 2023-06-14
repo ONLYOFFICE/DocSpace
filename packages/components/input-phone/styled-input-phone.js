@@ -31,19 +31,18 @@ export const StyledBox = styled(Box)`
     padding-left: 20px;
     margin-left: -8px;
     border-left: 1px solid
-      ${(props) =>
-        props.theme.interfaceDirection === "rtl" &&
-        css`
-          padding-left: 0;
-          padding-right: 20px;
-
-          margin-left: 8px;
-          border-left: 0;
-          border-right: 1px solid;
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-        `}
       ${(props) => props.theme.inputPhone.inactiveBorderColor};
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0;
+        padding: 0;
+        padding-right: 20px;
+        border-left: 0;
+        border-right: 1px solid
+          ${(props) => props.theme.inputPhone.inactiveBorderColor};
+      `}
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
@@ -53,6 +52,12 @@ export const StyledBox = styled(Box)`
     position: relative;
     top: 0;
     left: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        right: 12px;
+        left: 0;
+      `}
     font-size: 14px;
     font-weight: 400;
   }

@@ -247,8 +247,7 @@ const StyledIcon = styled.div`
     props.theme.interfaceDirection === "rtl" &&
     css`
       margin-right: 0;
-      margin-left: ${(props) =>
-        props.theme.comboBox.childrenButton.marginRight};
+      margin-left: 0px;
     `}
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
