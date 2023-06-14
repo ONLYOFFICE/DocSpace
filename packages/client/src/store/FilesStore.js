@@ -791,25 +791,29 @@ class FilesStore {
     if (folders.length === 0 && this.folders.length === 0) return;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "unsubscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "unsubscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
 
     this.folders = folders;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "subscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "subscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
   };
 
