@@ -5,7 +5,7 @@ const InputWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
+  direction: ltr;
   input {
     height: 120px;
     width: 100px;
@@ -58,6 +58,9 @@ const InputWrapper = styled.div`
     @media (max-width: 768px) {
       margin: 0 4px;
     }
+  }
+  :placeholder-shown {
+    direction: ltr;
   }
 `;
 
