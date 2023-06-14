@@ -2092,16 +2092,11 @@ class FilesActionStore {
     const { setSelectedNode } = this.treeFoldersStore;
     const { clearFiles } = this.filesStore;
 
-    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+    const categoryType = getCategoryType(window.DocSpace.location);
 
-    const setIsLoading = (param) => {
-      setIsSectionFilterLoading(param);
-    };
-
-    const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
 
-    const urlFilter = getObjectByLocation(location);
+    const urlFilter = getObjectByLocation(window.DocSpace.location);
 
     const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
 
@@ -2134,7 +2129,7 @@ class FilesActionStore {
 
       setSelectedNode(["common"]);
 
-      return navigate(path);
+      return navigate(path, { replace: true });
     }
 
     if (categoryType === CategoryType.Accounts) {
@@ -2143,22 +2138,15 @@ class FilesActionStore {
       const path = getCategoryUrl(CategoryType.Accounts);
 
       clearFiles();
-      setIsLoading(true);
 
       setSelectedNode(["accounts", "filter"]);
 
-      return navigate(`${path}?${params}`);
+      return navigate(`${path}?${params}`, { replace: true });
     }
   };
 
   moveToRoomsPage = () => {
-    const { setIsSectionFilterLoading } = this.clientLoadingStore;
-
-    const setIsLoading = (param) => {
-      setIsSectionFilterLoading(param);
-    };
-
-    const categoryType = getCategoryType(location);
+    const categoryType = getCategoryType(window.DocSpace.location);
 
     const filter = RoomsFilter.getDefault();
 
@@ -2173,35 +2161,20 @@ class FilesActionStore {
       rootFolderType: this.selectedFolderStore.rootFolderType,
     };
 
-    setIsLoading(true);
-
     if (categoryType == CategoryType.Archive) {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, {
+      state,
+      replace: true,
+    });
   };
 
   backToParentFolder = () => {
-    const { setIsSectionFilterLoading } = this.clientLoadingStore;
-
-    const setIsLoading = (param) => {
-      setIsSectionFilterLoading(param);
-    };
-
     let id = this.selectedFolderStore.parentId;
 
     const { navigationPath, rootFolderType } = this.selectedFolderStore;
-
-    if (!id) {
-      const urlFilter = getObjectByLocation(location);
-      id = urlFilter.folder;
-    }
-
-    const path = getCategoryUrl(
-      getCategoryTypeByFolderType(rootFolderType, id),
-      id
-    );
 
     const filter = FilesFilter.getDefault();
 
@@ -2213,9 +2186,10 @@ class FilesActionStore {
       rootFolderType: rootFolderType,
     };
 
-    setIsLoading(true);
-
-    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${filter.toUrlParams()}`,
+      { state, replace: true }
+    );
   };
 
   setGroupMenuBlocked = (blocked) => {
