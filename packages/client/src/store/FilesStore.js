@@ -337,7 +337,13 @@ class FilesStore {
 
       //To update a file version
       if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
-        //this.getFileInfo(file.id);
+        if (
+          this.files[foundIndex].version !== file.version ||
+          this.files[foundIndex].versionGroup !== file.versionGroup
+        ) {
+          this.files[foundIndex].version = file.version;
+          this.files[foundIndex].versionGroup = file.versionGroup;
+        }
         this.checkSelection(file);
       }
 
