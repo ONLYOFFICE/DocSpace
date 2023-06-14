@@ -28,6 +28,7 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import debounce from "lodash.debounce";
+import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -129,6 +130,11 @@ class FilesStore {
   highlightFile = {};
   thumbnails = new Set();
   movingInProgress = false;
+  createNewFilesQueue = new Queue({
+    concurrent: 5,
+    interval: 500,
+    start: true,
+  });
 
   constructor(
     authStore,
@@ -272,7 +278,42 @@ class FilesStore {
 
       this.createThumbnail(this.files[foundIndex]);
     });
+
+    this.createNewFilesQueue.on("resolve", this.onResolveNewFile);
   }
+
+  onResolveNewFile = (fileInfo) => {
+    if (!fileInfo) return;
+
+    //console.log("onResolveNewFiles", { fileInfo });
+
+    if (this.files.findIndex((x) => x.id === fileInfo.id) > -1) return;
+
+    console.log("[WS] create new file", { fileInfo });
+
+    const newFiles = [fileInfo, ...this.files];
+
+    if (
+      newFiles.length > this.filter.pageCount &&
+      this.authStore.settingsStore.withPaging
+    ) {
+      newFiles.pop(); // Remove last
+    }
+
+    const newFilter = this.filter;
+    newFilter.total += 1;
+
+    runInAction(() => {
+      this.setFilter(newFilter);
+      this.setFiles(newFiles);
+    });
+
+    this.debouncefetchTreeFolders();
+  };
+
+  debouncefetchTreeFolders = debounce(() => {
+    this.treeFoldersStore.fetchTreeFolders();
+  }, 1000);
 
   debounceRemoveFiles = debounce(() => {
     this.removeFiles(this.tempActionFilesIds);
@@ -296,34 +337,35 @@ class FilesStore {
 
       //To update a file version
       if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
-        this.getFileInfo(file.id);
+        if (
+          this.files[foundIndex].version !== file.version ||
+          this.files[foundIndex].versionGroup !== file.versionGroup
+        ) {
+          this.files[foundIndex].version = file.version;
+          this.files[foundIndex].versionGroup = file.versionGroup;
+        }
         this.checkSelection(file);
       }
 
       if (foundIndex > -1) return;
 
-      const fileInfo = await api.files.getFileInfo(file.id);
+      setTimeout(() => {
+        const foundIndex = this.files.findIndex((x) => x.id === file.id);
+        if (foundIndex > -1) {
+          //console.log("Skip in timeout");
+          return null;
+        }
 
-      if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
-      console.log("[WS] create new file", fileInfo.id, fileInfo.title);
+        this.createNewFilesQueue.enqueue(() => {
+          const foundIndex = this.files.findIndex((x) => x.id === file.id);
+          if (foundIndex > -1) {
+            //console.log("Skip in queue");
+            return null;
+          }
 
-      const newFiles = [fileInfo, ...this.files];
-
-      if (
-        newFiles.length > this.filter.pageCount &&
-        this.authStore.settingsStore.withPaging
-      ) {
-        newFiles.pop(); // Remove last
-      }
-
-      const newFilter = this.filter;
-      newFilter.total += 1;
-
-      runInAction(() => {
-        this.setFilter(newFilter);
-        this.setFiles(newFiles);
-        this.treeFoldersStore.fetchTreeFolders();
-      });
+          return api.files.getFileInfo(file.id);
+        });
+      }, 300);
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
 
