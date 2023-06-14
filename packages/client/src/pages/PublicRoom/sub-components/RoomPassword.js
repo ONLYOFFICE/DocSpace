@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import PasswordInput from "@docspace/components/password-input";
@@ -15,25 +15,13 @@ import { ValidationResult } from "../../../helpers/constants";
 import PublicRoomIcon from "PUBLIC_DIR/images/icons/32/room/public.svg";
 
 const RoomPassword = (props) => {
-  const {
-    t,
-    settings,
-    // hashSettings,
-    getSettings,
-    roomKey,
-    validatePublicRoomPassword,
-    setRoomData,
-    roomTitle,
-  } = props;
+  const { t, roomKey, validatePublicRoomPassword, setRoomData, roomTitle } =
+    props;
 
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-
-  // useEffect(() => {
-  //   if (!hashSettings) getSettings(true);
-  // }, []);
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
@@ -53,8 +41,6 @@ const RoomPassword = (props) => {
 
     setIsLoading(true);
     try {
-      // const passwordHash = createPasswordHash(password, hashSettings);
-
       const res = await validatePublicRoomPassword(roomKey, password);
 
       setIsLoading(false);
@@ -75,7 +61,6 @@ const RoomPassword = (props) => {
         //   return;
         // }
         case ValidationResult.InvalidPassword: {
-          console.log("asd");
           setErrorMessage(t("Common:IncorrectPassword"));
           return;
         }
@@ -130,7 +115,6 @@ const RoomPassword = (props) => {
               >
                 <PasswordInput
                   simpleView
-                  passwordSettings={settings}
                   id="password"
                   inputName="password"
                   placeholder={t("Common:Password")}
@@ -165,21 +149,11 @@ const RoomPassword = (props) => {
   );
 };
 
-export default inject(({ auth, publicRoomStore }) => {
-  const { hashSettings, defaultPage, passwordSettings, theme, getSettings } =
-    auth.settingsStore;
-
+export default inject(({ publicRoomStore }) => {
   const { validatePublicRoomPassword, setRoomData } = publicRoomStore;
   const { roomTitle } = publicRoomStore;
 
   return {
-    theme,
-    settings: passwordSettings,
-    // hashSettings,
-    defaultPage,
-    isAuthenticated: auth.isAuthenticated,
-    getSettings,
-
     validatePublicRoomPassword,
     setRoomData,
     roomTitle,

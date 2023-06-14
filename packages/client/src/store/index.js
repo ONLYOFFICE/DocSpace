@@ -75,7 +75,7 @@ const filesStore = new FilesStore(
   settingsStore,
   thirdPartyStore,
   accessRightsStore,
-  clientLoadingStore
+  clientLoadingStore,
   publicRoomStore
 );
 
@@ -124,7 +124,7 @@ const filesActionsStore = new FilesActionsStore(
   dialogsStore,
   mediaViewerDataStore,
   accessRightsStore,
-  clientLoadingStore
+  clientLoadingStore,
   publicRoomStore
 );
 
@@ -138,7 +138,7 @@ const contextOptionsStore = new ContextOptionsStore(
   uploadDataStore,
   versionHistoryStore,
   settingsStore,
-  selectedFolderStore
+  selectedFolderStore,
   publicRoomStore
 );
 
