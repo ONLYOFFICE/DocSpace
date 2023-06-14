@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Base } from "@docspace/components/themes";
 
 const FillingStatusContainer = styled.div`
   width: 100%;
@@ -53,11 +54,11 @@ const AccordionItem = styled.div`
     }
 
     .accordion-displayname {
-      color: #333333;
+      color: ${(props) => props.theme.color};
     }
 
     .accordion-role {
-      color: #657077;
+      color: ${(props) => (props.theme.isBase ? "#657077" : "#FFFFFF99")};
     }
 
     .arrow-icon {
@@ -93,11 +94,7 @@ const AccordionItem = styled.div`
 
     .status-text {
       margin-left: 15px;
-      color: #657077;
-    }
-
-    .status-date {
-      color: #657077;
+      color: ${(props) => (props.theme.isBase ? "#657077" : "#FFFFFF99")};
     }
 
     .filled-status-text {
@@ -105,6 +102,12 @@ const AccordionItem = styled.div`
       color: ${(props) => (props.isDone ? "#4781D1" : "#657077")};
     }
   }
+
+  .status-date {
+    color: ${(props) => (props.theme.isBase ? "#657077" : "#FFFFFF99")};
+  }
 `;
+
+AccordionItem.defaultProps = { theme: Base };
 
 export { FillingStatusContainer, AccordionItem };
