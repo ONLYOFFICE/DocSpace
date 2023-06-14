@@ -47,10 +47,8 @@ const Article = ({
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [
-    articleMainButtonContent,
-    setArticleMainButtonContent,
-  ] = React.useState(null);
+  const [articleMainButtonContent, setArticleMainButtonContent] =
+    React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -124,7 +122,8 @@ const Article = ({
   const onResize = React.useCallback(() => {
     let correctTabletHeight = window.innerHeight;
 
-    if (mainBarVisible) correctTabletHeight -= 62;
+    if (mainBarVisible)
+      correctTabletHeight -= window.innerHeight <= 768 ? 62 : 90;
 
     const isTouchDevice =
       "ontouchstart" in window ||

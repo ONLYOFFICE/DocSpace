@@ -199,7 +199,7 @@
   "UserAgreement": "Je confirme et je veux continuer",
   "UseSpecialChar": "Utiliser symboles spéciaux",
   "UseUpperCase": "Utiliser majuscules",
-  "WhiteLabel": "Marque blanche",
+  "WhiteLabel": "Paramètres de logo",
   "WhiteLabelHelper": "Utilisez des images avec un arrière-plan transparent (PNG, SVG, JPG).",
   "WhiteLabelSubtitle": "Saisissez le nom de votre entreprise, téléchargez le logo et personnalisez le style pour qu’il corresponde à votre image de marque.",
   "WhiteLabelTooltip": "Les tailles sont indiquées pour les écrans Retina. Pour les écrans de résolution standard, la largeur et la hauteur du logo seront redimensionnées en conséquence lors du téléchargement.",

@@ -113,8 +113,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         ApiDateTimeHelper apiDateTimeHelper,
         WebItemManager webItemManager,
         SettingsManager settingsManager,
-        IQuotaService quotaService)
-    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
+        IQuotaService quotaService,
+        ILogger<EmployeeDtoHelper> logger)
+    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager, logger)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;

@@ -199,7 +199,7 @@
   "UserAgreement": "確認して、進む",
   "UseSpecialChar": "特殊文字を使用する",
   "UseUpperCase": "大文字を使用",
-  "WhiteLabel": "ホワイトラベル",
+  "WhiteLabel": "ロゴ設定",
   "WhiteLabelHelper": "背景が透明な画像を使用してください(PNG, SVG, JPG)。",
   "WhiteLabelSubtitle": "会社名を入力し、ロゴをアップロードし、ブランディングに合わせたスタイリングにカスタマイズをしましょう。",
   "WhiteLabelTooltip": "サイズはRetinaディスプレイ用に表示されています。標準的な解像度のディスプレイの場合、ロゴの幅と高さはアップロード時に適宜リサイズされます。",

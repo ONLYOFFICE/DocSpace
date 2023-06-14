@@ -196,7 +196,6 @@
   "UserAgreement": "확인하고 진행하겠습니다",
   "UseSpecialChar": "특수 문자를 사용하여",
   "UseUpperCase": "대문자를 사용",
-  "WhiteLabel": "화이트 라벨",
   "WhiteLabelHelper": "배경이 투명한 이미지를 사용하세요. (PNG, SVG, JPG)",
   "WhiteLabelSubtitle": "회사 이름을 입력하고 로고를 업로드하고 브랜딩에 맞게 스타일을 사용자 정의하세요.",
   "WhiteLabelTooltip": "크기는 Retina 디스플레이용으로 표시됩니다. 표준 해상도를 사용하는 디스플레이의 경우 로고 너비와 높이는 업로드 시 그에 따라 크기가 조정됩니다.",

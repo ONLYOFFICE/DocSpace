@@ -538,3 +538,12 @@ export const getDaysRemaining = (autoDelete) => {
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
 };
+
+export const getFileExtension = (fileTitle: string) => {
+  if (!fileTitle) {
+    return "";
+  }
+  fileTitle = fileTitle.trim();
+  const posExt = fileTitle.lastIndexOf(".");
+  return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
+};
