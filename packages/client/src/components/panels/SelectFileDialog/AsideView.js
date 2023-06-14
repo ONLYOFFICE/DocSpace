@@ -32,6 +32,7 @@ const SelectFileDialogAsideView = ({
   isFolderPanelVisible,
   maxInputWidth,
   newFilter,
+  embedded,
 }) => {
   return (
     <ModalDialog
@@ -40,10 +41,11 @@ const SelectFileDialogAsideView = ({
       displayType="aside"
       withoutBodyScroll
       withFooterBorder
+      embedded={embedded}
     >
-      <ModalDialog.Header>{dialogName}</ModalDialog.Header>
+      {!embedded && <ModalDialog.Header>{dialogName}123</ModalDialog.Header>}
       <ModalDialog.Body className="select-file_body-modal-dialog">
-        <StyledAsideBody theme={theme}>
+        <StyledAsideBody embedded={embedded} theme={theme}>
           <div className="selection-panel_aside-body">
             <div className="selection-panel_folder-info">
               <Text

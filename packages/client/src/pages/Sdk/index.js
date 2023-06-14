@@ -20,6 +20,7 @@ const Sdk = ({
   logout,
   hashSettings,
   user,
+  getIcon,
 }) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
@@ -31,6 +32,15 @@ const Sdk = ({
   if (window.parent && !frameConfig) frameCallCommand("setConfig");
 
   const { mode } = match.params;
+
+  const toCallbackData = (data) => {
+    if (Array.isArray(data)) return data;
+
+    data.icon = getIcon(64, data.fileExst);
+    data.label = data.title;
+
+    return [data];
+  };
 
   const handleMessage = async (e) => {
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -80,8 +90,8 @@ const Sdk = ({
 
   const onSelect = useCallback(
     (item) => {
-      console.log("onSelectCallback", item);
-      frameCallEvent({ event: "onSelectCallback", data: item });
+      const data = toCallbackData(item);
+      frameCallEvent({ event: "onSelectCallback", data });
     },
     [frameCallEvent]
   );
@@ -113,6 +123,7 @@ const Sdk = ({
           filteredType="exceptPrivacyTrashArchiveFolders"
           withSubfolders={false}
           displayType="aside"
+          embedded={true}
         />
       );
       break;
@@ -123,10 +134,16 @@ const Sdk = ({
   return component;
 };
 
-export default inject(({ auth }) => {
-  const { login, logout, settingsStore, userStore } = auth;
-  const { theme, setFrameConfig, frameConfig, hashSettings } = settingsStore;
+export default inject(({ auth, settingsStore }) => {
+  const { login, logout, userStore } = auth;
+  const {
+    theme,
+    setFrameConfig,
+    frameConfig,
+    hashSettings,
+  } = auth.settingsStore;
   const { user } = userStore;
+  const { getIcon } = settingsStore;
   return {
     theme,
     setFrameConfig,
@@ -135,5 +152,6 @@ export default inject(({ auth }) => {
     logout,
     hashSettings,
     user,
+    getIcon,
   };
 })(observer(Sdk));

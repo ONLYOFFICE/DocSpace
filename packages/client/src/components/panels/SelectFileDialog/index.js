@@ -224,6 +224,7 @@ class SelectFileDialog extends React.Component {
       dialogName,
       creationButtonPrimary,
       maxInputWidth,
+      embedded,
     } = this.props;
     const {
       isVisible,
@@ -267,6 +268,7 @@ class SelectFileDialog extends React.Component {
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         maxInputWidth={maxInputWidth}
+        embedded={embedded}
       />
     ) : (
       <SelectionPanel
@@ -289,7 +291,6 @@ class SelectFileDialog extends React.Component {
         filesListTitle={filesListTitle}
         fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
-        displayType={displayType}
       />
     );
   }
