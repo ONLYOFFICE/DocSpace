@@ -1670,7 +1670,7 @@ const Dark = {
       defaultColor: white,
       disabledColor: "#858585",
       color: white,
-      selectedColor: white,
+      // selectedColor: white,
     },
   },
 
