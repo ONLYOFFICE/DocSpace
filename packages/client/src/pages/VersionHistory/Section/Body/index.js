@@ -74,7 +74,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderRow = memo(({ index, style }) => {
-    const { versions, culture } = this.props;
+    const { versions, culture, onClose } = this.props;
 
     const prevVersion = versions[index > 0 ? index - 1 : index].versionGroup;
     let isVersion = true;
@@ -85,6 +85,7 @@ class SectionBodyContent extends React.Component {
     return (
       <div style={style}>
         <VersionRow
+          onClose={onClose}
           getFileVersions={this.getFileVersions}
           isVersion={isVersion}
           key={`${versions[index].id}-${index}`}

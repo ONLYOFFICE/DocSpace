@@ -48,6 +48,8 @@ const VersionRow = (props) => {
     theme,
     canChangeVersionFileHistory,
     openUser,
+    onClose,
+    setIsVisible,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -73,6 +75,8 @@ const VersionRow = (props) => {
   };
 
   const onUserClick = () => {
+    onClose(true);
+    setIsVisible(true);
     openUser(info?.updatedBy, history);
   };
 
@@ -263,7 +267,7 @@ const VersionRow = (props) => {
 
 export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
   const { user } = auth.userStore;
-  const { openUser } = auth.infoPanelStore;
+  const { openUser, setIsVisible } = auth.infoPanelStore;
   const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en";
 
@@ -289,6 +293,7 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     isEditing: isEdit,
     canChangeVersionFileHistory,
     openUser,
+    setIsVisible,
   };
 })(
   withRouter(
