@@ -1,1 +1,10 @@
-{}
+{
+  "Authentication": "Preverjanje pristnosti",
+  "EnableSSL": "Omogoči SSL",
+  "HostLogin": "Prihlasovacie meno",
+  "HostPassword": "Geslo gostitelja",
+  "Port": "Port",
+  "SenderDisplayName": "Pošiljateljevo prikazno ime",
+  "SenderEmailAddress": "Pošiljateljev e-naslov",
+  "SendTestMail": "Pošlji poskusno e-pošto"
+}

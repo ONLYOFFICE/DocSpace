@@ -1,4 +1,5 @@
 {
+  "ActivateLicense": "Активировать лицензию",
   "ActivateLicenseActivated": "Лицензия активирована",
   "ActivatePurchaseBuyLicense": "Чтобы купить лицензию, нажмите кнопку ниже.",
   "ActivatePurchaseBuyNow": "Купить сейчас",
@@ -12,10 +13,10 @@
   "ActivateTariffEnterpriseTrialExpiration": "Пробный период истекает {{date}}",
   "ActivateToProBannerHeaderTrial": "Купите полную версию Enterprise, чтобы получить:",
   "ActivateUploadDescr": "Чтобы активировать лицензию, загрузите ее ниже и нажмите кнопку Активировать.",
+  "FreeDaysLeft": "Осталось {{count}} бесплатных дней",
   "TopBottonsEnterpriseExpired": "Истек срок действия подписки на техническую поддержку и обновления",
   "TopBottonsEnterpriseWarning": "Подписка на техническую поддержку и обновления истекает {0}",
   "UpgradeToProBannerHeader": "Получите бесплатный доступ к профессиональным возможностям на 30 дней",
-  "UpgradeToProBannerInstructionReadNow": "Читать",
   "UpgradeToProBannerInformationAboutShort": "Узнайте больше об Enterprise Edition <1>на официальном сайте</1>",
   "UpgradeToProBannerInformationDemo": "Запросить демонстрацию <1>здесь</1>",
   "UpgradeToProBannerInformationPurchase": "Задать вопросы по покупке <1>{{email}}</1>",
@@ -26,6 +27,7 @@
   "UpgradeToProBannerInstructionItemLinux": "Инструкция для Linux.",
   "UpgradeToProBannerInstructionItemWindows": "Инструкция для Windows.",
   "UpgradeToProBannerInstructionNote": "Пожалуйста, обратите внимание, что редакторы будут недоступны в ходе обновления. Сначала рекомендуется выполнить <1>резервное копирование данных</1>.",
+  "UpgradeToProBannerInstructionReadNow": "Читать",
   "UpgradeToProBannerItemLicenseDescr": "+ обновления функциональных возможностей и безопасности в течение 1 года.",
   "UpgradeToProBannerItemLicenseHeader": "Бессрочная лицензия.",
   "UpgradeToProBannerItemMobileDescr": "Редактируйте документы, таблицы и презентации в мобильном браузере.",
@@ -35,5 +37,6 @@
   "UpgradeToProBannerItemScalabilityHeader": "Масштабируемость и кластеризация.",
   "UpgradeToProBannerItemSupportDescr": "Получайте профессиональную помощь по всем возникшим вопросам.",
   "UpgradeToProBannerItemSupportHeader": "Техническая поддержка.",
-  "UpgradeToProHeader": "Бесплатный доступ к Pro версии"
+  "UpgradeToProHeader": "Бесплатный доступ к Pro версии",
+  "UploadLicenseFile": "Загрузить файл лицензии"
 }

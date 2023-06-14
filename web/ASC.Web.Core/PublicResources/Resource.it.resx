@@ -895,4 +895,97 @@
   <data name="ConsumersTelegram" xml:space="preserve">
     <value>Telegram</value>
   </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Spazio cloud per i documenti del tuo ufficio</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Caricato con successo. {0}L'assistenza non è disponibile per questa licenza dal {2}.{1}</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>ID Apple</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID applicazione client</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>Account sviluppatore di 10 caratteri ID Team</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Usa questa app per abilitare l'autenticazione a due fattori con il servizio Clickatell. {0}Accedi al tuo account della piattaforma SMS e crea una nuova integrazione per ONLYOFFICE. Copia un'APIKey e inseriscila di seguito:</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Abilita questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE utilizzando Facebook e collegare gli account Facebook dei loro clienti al modulo CRM. {0}Vai al portale Facebook Developers e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Abilita questa app per connettere il tuo account Google Drive al modulo Documenti. Potrai gestire, modificare e condividere file da Google Drive con gli utenti di ONLYOFFICE. {0}Vai alla console delle API di Google e crea un nuovo progetto per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Abilita questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE utilizzando i loro account LinkedIn. {0}Vai al sito web di LinkedIn Developers e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID applicazione client</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Segreto Cliente</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Abilita l'applicazione per accedere al portale utilizzando un account Microsoft.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Abilita questa app per connettere il tuo account OneDrive al modulo Documenti. Potrai gestire, modificare e condividere file da OneDrive con gli utenti di ONLYOFFICE. {0}Accedi al tuo account Microsoft Azure e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Usa questa app per abilitare l'autenticazione a due fattori con il servizio SMS Center. {0}Inserisci il login del tuo account smsc e la tua password (o l'hash MD5 della password) in minuscolo:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Nome utente del bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token del bot</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Collega l'account Telegram per ricevere le notifiche del portale tramite Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Per ricevere le notifiche del portale tramite Telegram, abilita il bot di Telegram. Puoi creare un nuovo bot usando BotFather in Telegram Desktop. Per utilizzare questo bot, gli utenti del portale devono abilitare le notifiche di Telegram sulla loro pagina del profilo. {0}Incolla il nome utente del bot e il token che hai ricevuto nei campi sottostanti.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Abilita questa app per consentire ai tuoi utenti di chiamare i propri contatti dal modulo CRM utilizzando Twilio. {0}Vai a Twilio Console e incolla i seguenti dati qui sotto:</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Abilita questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE usando il loro Twitter e collegare gli account Twitter dei loro clienti al modulo CRM. {0}Vai su Twitter Developers Portal e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Abilita questa app per aggiungere nuovi utenti del portale dal tuo elenco di contatti Yahoo. {0}Vai alla pagina Crea applicazione in Yahoo Developer Network e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Attiva l'applicazione per pubblicare facilmente documenti sul tuo sito web su WordPress. {0}Nella pagina degli sviluppatori di WordPress, crea una nuova app per l'integrazione di ONLYOFFICE. Incolla di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Attiva questa app per creare bibliografie negli editor di ONLYOFFICE. {0}Vai alla pagina di registrazione su EasyBib e compila il modulo per aggiungere l'integrazione ONLYOFFICE. Dopo aver ottenuto una chiave dell'app, incollala di seguito:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Attiva questa app per consentire ai tuoi utenti di ricevere notifiche sui messaggi anche offline. {0}Vai alla console Firebase e aggiungi un nuovo progetto per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Collega il servizio Cloud Storage Google per eseguire il backup e archiviare i dati dal portale. {0} Vai su Google Cloud Platform Console e crea un nuovo account di servizio per ONLYOFFICE. Incollare i dati ricevuti di seguito:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Connettere il servizio Rackspace Cloud Storage per eseguire il backup e archiviare i dati dal portale. {0}Nelle impostazioni di sicurezza del Pannello di controllo cloud rackspace fare clic sul collegamento Mostra accanto a Chiave API Rackspace. Incollare i dati ricevuti di seguito:</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Attiva questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE utilizzando Microsoft. {0}Vai a Microsoft Azure e crea una nuova integrazione ONLYOFFICE dell'app. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Collega Amazon AWS S3 per eseguire il backup e archiviare i dati dal tuo portale. {0}Vai alla Console di gestione AWS e crea le chiavi di accesso per ONLYOFFICE. Incolla i dati che hai ricevuto di seguito:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Collega il servizio Selectel Cloud Storage per eseguire il backup e archiviare i dati dal tuo portale. {0}Ottieni i dati di accesso per un utente con diritti di lettura/scrittura per i container dove prevedi di archiviare i tuoi backup e incollali di seguito:</value>
+  </data>
 </root>

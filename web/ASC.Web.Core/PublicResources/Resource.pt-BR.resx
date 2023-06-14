@@ -862,4 +862,31 @@
   <data name="Tariffs_admin" xml:space="preserve">
     <value>Business</value>
   </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários recebam notificações sobre as mensagens, mesmo offline. {0}Vá ao console Firebase e adicione um novo projeto para integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Conecte o serviço Google Cloud Storage ao backup e armazenamento de dados de seu portal. {0}Vá ao Console da Plataforma Google Cloud e crie uma nova conta de serviço para ONLYOFFICE. Cole os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Conecte o serviço Rackspace Cloud Storage ao backup e armazenamento de dados de seu portal. {0} Nas configurações de segurança do Painel de Controle do Rackspace Cloud, clique no link Mostrar ao lado da Chave API do Rackspace. Cole os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Conecte a Amazon AWS S3 ao backup e armazenamento de dados de seu portal. {0}Vá ao Console de Gestão AWS e crie chaves de acesso para ONLYOFFICE. Cole os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Conecte o serviço Selectel Cloud Storage ao backup e armazenamento de dados de seu portal. {0} Obtenha os dados de acesso para um usuário com direitos de leitura/gravação de contêineres onde você planeja armazenar seus backups e cole-os abaixo:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Habilite o aplicativo para publicar facilmente documentos em seu site WordPress. {0}Na página Desenvolvedores do Wordpress, crie um novo aplicativo para integração ONLYOFFICE. Cole os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para criar bibliografias em editores ONLYOFFICE. {0}Vá para a página de inscrição no EasyBib e preencha o formulário para adicionar a integração ONLYOFFICE. Depois de obter uma chave do aplicativo, cole-a abaixo:</value>
+  </data>
 </root>

@@ -170,18 +170,20 @@ class FilesStore {
             break;
         }
 
-      if (opt?.cmd === "create") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount++;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount++;
-        this.authStore.infoPanelStore.reloadSelection();
-      } else if (opt?.cmd === "delete") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount--;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount--;
-        this.authStore.infoPanelStore.reloadSelection();
+      if (
+        opt?.cmd &&
+        opt.id &&
+        (opt.type === "file" || opt.type === "folder") &&
+        (opt.cmd === "create" || opt.cmd === "delete")
+      ) {
+        runInAction(() => {
+          if (opt.cmd === "create") {
+            this.selectedFolderStore[opt.type + "sCount"]++;
+          } else if (opt.cmd === "delete") {
+            this.selectedFolderStore[opt.type + "sCount"]--;
+          }
+          this.authStore.infoPanelStore.reloadSelection();
+        });
       }
     });
 
@@ -791,25 +793,29 @@ class FilesStore {
     if (folders.length === 0 && this.folders.length === 0) return;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "unsubscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "unsubscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
 
     this.folders = folders;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "subscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "subscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
   };
 

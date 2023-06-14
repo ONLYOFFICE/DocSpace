@@ -263,9 +263,10 @@ export function toCommunityHostname(hostname) {
 }
 
 export function getProviderTranslation(provider, t, linked = false) {
-  const capitalizeProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
+  const capitalizeProvider =
+    provider.charAt(0).toUpperCase() + provider.slice(1);
   if (linked) {
-    return `${t("Common:Disconnect")} ${capitalizeProvider}`
+    return `${t("Common:Disconnect")} ${capitalizeProvider}`;
   }
 
   switch (provider) {
@@ -526,4 +527,13 @@ export const getDaysRemaining = (autoDelete) => {
 
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
+};
+
+export const getFileExtension = (fileTitle: string) => {
+  if (!fileTitle) {
+    return "";
+  }
+  fileTitle = fileTitle.trim();
+  const posExt = fileTitle.lastIndexOf(".");
+  return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
 };

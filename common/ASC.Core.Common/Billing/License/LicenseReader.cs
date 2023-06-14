@@ -206,8 +206,8 @@ public class LicenseReader
             AutoBackupRestore = true,
             Oauth = true,
             ContentSearch = true,
-            MaxTotalSize = TenantQuota.Default.MaxTotalSize,
-            MaxFileSize = TenantQuota.Default.MaxFileSize,
+            MaxTotalSize = long.MaxValue,
+            MaxFileSize = 100L * 1024 * 1024 * 1024,
             DocsEdition = true,
             Customization = license.Customization
         };

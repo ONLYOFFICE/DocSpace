@@ -13,6 +13,7 @@ import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const themes = {
   Dark: Dark,
@@ -83,7 +84,7 @@ class SettingsStore {
   isHeaderVisible = false;
   isTabletView = false;
 
-  showText = false;
+  showText = JSON.parse(localStorage.getItem("showArticle")) ?? false;
   articleOpen = false;
   isMobileArticle = false;
 
@@ -312,6 +313,17 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
+  getPortal = async () => {
+    try {
+      const res = await api.portal.getPortal();
+
+      if (!res) return;
+
+      return res;
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
   getSettings = async () => {
     let newSettings = null;
 
@@ -380,7 +392,7 @@ class SettingsStore {
       this.pluginOptions = origSettings.plugins.allow;
     }
 
-    if (origSettings.tenantAlias) {
+    if (origSettings?.tenantAlias) {
       this.setTenantAlias(origSettings.tenantAlias);
     }
   };
@@ -638,7 +650,11 @@ class SettingsStore {
   };
 
   toggleShowText = () => {
-    this.showText = !this.showText;
+    const reverseValue = !this.showText;
+
+    localStorage.setItem("showArticle", reverseValue);
+
+    this.showText = reverseValue;
   };
 
   setArticleOpen = (articleOpen) => {

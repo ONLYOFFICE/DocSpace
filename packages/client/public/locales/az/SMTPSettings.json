@@ -1,1 +1,12 @@
-{}
+{
+  "Authentication": "İdentifikasiya",
+  "EnableSSL": "SSL-i aktivləşdirin",
+  "Host": "Ev sahibi",
+  "HostLogin": "Ev sahibi girişi",
+  "HostPassword": "Ev sahibi Parolu",
+  "Port": "Port",
+  "SenderDisplayName": "Göndərənin Göstərilən Adı",
+  "SenderEmailAddress": "Göndərənin Elektron Poçt Ünvanı",
+  "SendTestMail": "Test Poçtu Göndər",
+  "SuccessfullyCompletedOperation": "Əməliyyat uğurla başa çatıb."
+}

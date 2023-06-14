@@ -1,1 +1,12 @@
-{}
+{
+  "Authentication": "Xác thực",
+  "EnableSSL": "Bật SSL",
+  "Host": "Host",
+  "HostLogin": "Đăng nhập Host",
+  "HostPassword": "Mật khẩu Host",
+  "Port": "Cổng",
+  "SenderDisplayName": "Tên hiển thị của người gửi",
+  "SenderEmailAddress": "Địa chỉ email của người gửi",
+  "SendTestMail": "Gửi thư thử nghiệm",
+  "SuccessfullyCompletedOperation": "Thao tác đã được hoàn thành."
+}

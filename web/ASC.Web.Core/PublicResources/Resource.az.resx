@@ -967,4 +967,25 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startap</value>
   </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Sənədləri WordPress veb saytınızda asanlıqla dərc etmək üçün tətbiqi aktivləşdirin. {0}Wordpress Developers səhifəsində ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>ONLYOFFICE redaktorlarında biblioqrafiya yaratmaq üçün bu tətbiqi aktiv edin. {0}EasyBib qeydiyyat səhifəsinə keçin və ONLYOFFICE inteqrasiyasını əlavə etmək üçün formanı doldurun. Proqram açarı əldə etdikdən sonra onu aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə hətta oflayn olsa belə, mesajlar haqqında bildirişlər almağa icazə vermək üçün bu proqramı aktiv edin. {0}Firebase konsoluna keçin və ONLYOFFICE inteqrasiyası üçün yeni layihə əlavə edin. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Portalınızdakı məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Google Bulud Saxlama xidmətinə qoşulun. {0}Google Bulud Platforma Konsoluna keçin və ONLYOFFICE üçün yeni xidmət hesabı yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Rackspace Cloud Storage xidmətinə qoşulun. {0}Rackspace Cloud İdarəetmə Panelinin təhlükəsizlik parametrlərində Rackspace API Açarının yanındakı Göstər linkinə klikləyin. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Amazon AWS S3-ə qoşulun. {0}AWS İdarəetmə Konsoluna keçin və ONLYOFFICE üçün giriş açarları yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Selectel Cloud Storage xidmətinə qoşulun. {0}Yedək nüsxələrinizi saxlamağı planlaşdırdığınız konteynerlər üçün Oxumaq/Yazmaq hüququ olan istifadəçi üçün giriş məlumatını əldə edin və aşağıda yerləşdirin:</value>
+  </data>
 </root>

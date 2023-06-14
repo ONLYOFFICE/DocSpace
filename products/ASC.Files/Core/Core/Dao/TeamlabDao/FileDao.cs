@@ -48,11 +48,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IQuotaService _quotaService;
     private readonly StorageFactory _storageFactory;
     private readonly TenantQuotaController _tenantQuotaController;
+    private readonly FileUtility _fileUtility;
 
     public FileDao(
         ILogger<FileDao> logger,
         FactoryIndexerFile factoryIndexer,
         UserManager userManager,
+        FileUtility fileUtility,
         IDbContextFactory<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
@@ -108,6 +110,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _quotaService = quotaService;
         _storageFactory = storageFactory;
         _tenantQuotaController = tenantQuotaController;
+        _fileUtility = fileUtility;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -377,6 +380,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
+        var storage = _globalStore.GetStore();
+        
+        if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title) 
+            && (_fileUtility.CanMediaView(file.Title) || _fileUtility.CanImageView(file.Title)))
+        {
+            return _globalStore.GetStore().GetCdnPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
+                                                 new List<string>
+                                                     {
+                                                             $"Content-Disposition:{ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true)}",
+                                                             $"Custom-Cache-Key:{file.ModifiedOn.Ticks}"
+                                                     });
+        }
+
         return _globalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                  new List<string>
                                                      {

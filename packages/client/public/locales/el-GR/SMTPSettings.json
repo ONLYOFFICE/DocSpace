@@ -1,1 +1,6 @@
-{}
+{
+  "Authentication": "Πιστοποίηση",
+  "EnableSSL": "Ενεργοποίηση SSL",
+  "Port": "Θύρα",
+  "SenderEmailAddress": "Διεύθυνση Email Αποστολέα"
+}

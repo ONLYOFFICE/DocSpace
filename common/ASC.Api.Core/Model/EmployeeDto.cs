@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-
 namespace ASC.Web.Api.Models;
 
 public class EmployeeDto
@@ -54,7 +52,7 @@ public class EmployeeDtoHelper
 {
     protected readonly UserPhotoManager _userPhotoManager;
     protected readonly UserManager _userManager;
-
+    private readonly ILogger<EmployeeDtoHelper> _logger;
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
@@ -65,10 +63,12 @@ public class EmployeeDtoHelper
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserPhotoManager userPhotoManager,
         CommonLinkUtility commonLinkUtility,
-        UserManager userManager)
+        UserManager userManager,
+        ILogger<EmployeeDtoHelper> logger)
     {
         _userPhotoManager = userPhotoManager;
         _userManager = userManager;
+        _logger = logger;
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
@@ -93,8 +93,9 @@ public class EmployeeDtoHelper
         {
             return await Get(_userManager.GetUsers(userId));
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            _logger.ErrorWithException(e);
             return await Get(ASC.Core.Users.Constants.LostUser);
         }
     }
