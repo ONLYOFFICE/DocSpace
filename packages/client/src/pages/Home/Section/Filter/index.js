@@ -180,6 +180,7 @@ const SectionFilterContent = ({
   setClearSearch,
   setMainButtonMobileVisible,
   isArchiveFolder,
+  canSearchByContent,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -999,14 +1000,16 @@ const SectionFilterContent = ({
             isHeader: true,
             withoutHeader: true,
           },
-          {
+        ];
+        canSearchByContent &&
+          contentOptions.push({
             id: "filter_search-by-file-contents",
             key: "true",
             group: FilterGroups.filterContent,
             label: t("SearchByContent"),
             isCheckbox: true,
-          },
-        ];
+          });
+
         filterOptions.push(...foldersOptions);
         filterOptions.push(...contentOptions);
       }
@@ -1453,9 +1456,10 @@ const SectionFilterContent = ({
     }
   };
 
-  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
-    isLoadedFilter,
-  ]);
+  useEffect(
+    () => (!!isLoadedFilter ? showLoader() : hideLoader()),
+    [isLoadedFilter]
+  );
 
   if (!isLoadedFilter) {
     return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
@@ -1520,6 +1524,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
+      filesSettingsStore,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -1540,6 +1545,8 @@ export default inject(
     const isRooms = isRoomsFolder || isArchiveFolder;
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
+    const { canSearchByContent } = filesSettingsStore;
 
     return {
       user,
@@ -1576,6 +1583,8 @@ export default inject(
       setClearSearch,
 
       setMainButtonMobileVisible,
+
+      canSearchByContent,
     };
   }
 )(
