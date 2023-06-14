@@ -62,12 +62,12 @@ Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, 
 Recommends: ffmpeg, elasticsearch (= 7.10.0)
 Description: {{product}}-files-services
 	The service which launches additional services related to file management:
-	-	ElasticSearchIndexService - indexes documents using elasticsearch;
-	-	FeedAggregatorService - aggregates notifications;
-	-	FeedCleanerService - removes notifications;
-	-	FileConverterService - converts documents;
-	-	ThumbnailBuilderService - generates thumbnails for documents;
-	-	Launcher - removes outdated files from Trash;
+	 - ElasticSearchIndexService - indexes documents using elasticsearch;
+	 - FeedAggregatorService - aggregates notifications;
+	 - FeedCleanerService - removes notifications;
+	 - FileConverterService - converts documents;
+	 - ThumbnailBuilderService - generates thumbnails for documents;
+	 - Launcher - removes outdated files from Trash;
 
 Package: {{product}}-notify
 Architecture: any
@@ -90,7 +90,7 @@ Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Recommends: redis-server
 Description: {{product}}-socket
-	The service which provides two-way communication between a web browser and the server
+	The service which provides two-way communication between a client and a server
 
 Package: {{product}}-studio-notify
 Architecture: any
@@ -112,7 +112,7 @@ Package: {{product}}-api-system
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-api-system
-	The service which is used for working with portals (creating, removing portals, etc.)
+	The service which is used for working with portals (creating, removing, etc.)
 
 Package: {{product}}-studio
 Architecture: any
@@ -141,11 +141,11 @@ Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-backup-background
 	The service which launches additional services related to backup creation:
-	- BackupWorkerService - launches WorkerService which runs backup/restore, etc.;
-	- BackupListenerService - waits for a signal to delete backups;
-	- BackupCleanerTempFileService - removes temporary backup files;
-	- BackupCleanerService - removes outdated backup files;
-	- BackupSchedulerService - runs backup according to a schedule;
+	 - BackupWorkerService - launches WorkerService which runs backup/restore, etc;
+	 - BackupListenerService - waits for a signal to delete backups;
+	 - BackupCleanerTempFileService - removes temporary backup files;
+	 - BackupCleanerService - removes outdated backup files;
+	 - BackupSchedulerService - runs backup according to a schedule;
 
 Package: {{product}}-clear-events
 Architecture: any
