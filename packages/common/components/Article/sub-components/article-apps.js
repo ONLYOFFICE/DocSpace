@@ -96,12 +96,13 @@ const ArticleApps = React.memo(({ theme, showText }) => {
           title={t("Translations:MobileAndroid")}
         />
         <IconButton
-          onClick={() => window.open(iosLink)}
           iconName={IOSReactSvgUrl}
           iconHoverName={IOSHoverReactSvgUrl}
           size="32"
           isFill={false}
           title={t("Translations:MobileIos")}
+          onMouseDown={() => window.open(iosLink)}
+          isClickable={true}
         />
       </div>
     </StyledArticleApps>
