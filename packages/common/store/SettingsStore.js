@@ -141,6 +141,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  publicRoomKey = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -317,17 +318,9 @@ class SettingsStore {
   getSettings = async () => {
     let newSettings = null;
 
-    const lastKeySymbol = location.search.indexOf("&");
-    const lastIndex =
-      lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
-
-    const publicKey = this.isPublicRoom
-      ? location.search.substring(5, lastIndex)
-      : null;
-
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(true, publicKey);
+    else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(window.DocSpaceConfig?.proxy?.url, "/products/files/");
@@ -650,16 +643,15 @@ class SettingsStore {
     return window.firebaseHelper;
   }
 
+  setPublicRoomKey = (key) => {
+    this.publicRoomKey = key;
+  };
+
   get socketHelper() {
-    const lastKeySymbol = location.search.indexOf("&");
-    const lastIndex =
-      lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
+    const socketUrl =
+      this.isPublicRoom && this.publicRoomKey ? this.socketUrl : null;
 
-    const publicKey = this.isPublicRoom
-      ? location.search.substring(5, lastIndex)
-      : null;
-
-    return new SocketIOHelper(this.socketUrl, publicKey);
+    return new SocketIOHelper(socketUrl, this.publicRoomKey);
   }
 
   getBuildVersionInfo = async () => {

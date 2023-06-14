@@ -445,12 +445,10 @@ export function createHtmlFileInCommon(title, content) {
   return request(options);
 }
 
-export function getFileInfo(fileId, publicKey) {
-  const key = publicKey ? `?share=${publicKey}` : "";
-
+export function getFileInfo(fileId) {
   const options = {
     method: "get",
-    url: `/files/file/${fileId}${key}`,
+    url: `/files/file/${fileId}`,
   };
 
   return request(options);

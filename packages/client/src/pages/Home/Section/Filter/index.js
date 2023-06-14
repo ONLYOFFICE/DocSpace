@@ -247,7 +247,7 @@ const SectionFilterContent = ({
   accountsFilter,
   showFilterLoader,
   isPublicRoom,
-  publicKey,
+  publicRoomKey,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -258,7 +258,7 @@ const SectionFilterContent = ({
 
   const onNavigate = (path, filter) => {
     if (isPublicRoom) {
-      navigate(`${path}?key=${publicKey}&${filter.toUrlParams()}`);
+      navigate(`${path}?key=${publicRoomKey}&${filter.toUrlParams()}`);
     } else {
       navigate(`${path}/filter?${filter.toUrlParams()}`);
     }
@@ -2086,7 +2086,7 @@ export default inject(
     const { groups } = groupsStore;
 
     const { filter: accountsFilter } = filterStore;
-    const { isPublicRoom, publicKey } = publicRoomStore;
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     return {
       user,
@@ -2130,7 +2130,7 @@ export default inject(
 
       accountsFilter,
       isPublicRoom,
-      publicKey,
+      publicRoomKey,
     };
   }
 )(

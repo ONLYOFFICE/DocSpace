@@ -24,7 +24,7 @@ const EmptyFilterContainer = ({
   setClearSearch,
   theme,
   isPublicRoom,
-  publicKey,
+  publicRoomKey,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,7 +53,7 @@ const EmptyFilterContainer = ({
 
       if (isPublicRoom) {
         navigate(
-          `${location.pathname}?key=${publicKey}&${newFilter.toUrlParams()}`
+          `${location.pathname}?key=${publicRoomKey}&${newFilter.toUrlParams()}`
         );
       } else {
         navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
@@ -102,7 +102,7 @@ export default inject(
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
-    const { isPublicRoom, publicKey } = publicRoomStore;
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     return {
       selectedFolderId: selectedFolderStore.id,
@@ -114,7 +114,7 @@ export default inject(
       theme: auth.settingsStore.theme,
 
       isPublicRoom,
-      publicKey,
+      publicRoomKey,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

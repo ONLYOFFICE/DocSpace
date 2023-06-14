@@ -306,10 +306,7 @@ class FilesStore {
 
       if (foundIndex > -1) return;
 
-      const fileInfo = await api.files.getFileInfo(
-        file.id,
-        this.publicRoomStore.publicKey
-      );
+      const fileInfo = await api.files.getFileInfo(file.id);
 
       if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
       console.log("[WS] create new file", fileInfo.id, fileInfo.title);
@@ -355,7 +352,7 @@ class FilesStore {
 
       const folderInfo = await api.files.getFolderInfo(
         folder.id,
-        this.publicRoomStore.publicKey
+        this.publicRoomStore.publicRoomKey
       );
 
       console.log("[WS] create new folder", folderInfo.id, folderInfo.title);
@@ -393,7 +390,7 @@ class FilesStore {
       if (!folder || !folder.id) return;
 
       api.files
-        .getFolderInfo(folder.id, this.publicRoomStore.publicKey)
+        .getFolderInfo(folder.id, this.publicRoomStore.publicRoomKey)
         .then(() => this.setFolder(folderInfo))
         .catch(() => {
           // console.log("Folder deleted")
@@ -1103,8 +1100,8 @@ class FilesStore {
     const filterParamsStr = filter.toUrlParams();
 
     const url = getCategoryUrl(this.categoryType, filter.folder);
-    const shareKey = this.publicRoomStore.publicKey
-      ? `key=${this.publicRoomStore.publicKey}&`
+    const shareKey = this.publicRoomStore.publicRoomKey
+      ? `key=${this.publicRoomStore.publicRoomKey}&`
       : "";
 
     const pathname = `${url}?${shareKey}${filterParamsStr}`;
@@ -1313,7 +1310,7 @@ class FilesStore {
                 ? data.current
                 : await api.files.getFolderInfo(
                     folderId,
-                    this.publicRoomStore.publicKey
+                    this.publicRoomStore.publicRoomKey
                   );
 
             const {
@@ -3216,10 +3213,7 @@ class FilesStore {
   unpinRoom = (id) => api.rooms.unpinRoom(id);
 
   getFileInfo = async (id) => {
-    const fileInfo = await api.files.getFileInfo(
-      id,
-      this.publicRoomStore.publicKey
-    );
+    const fileInfo = await api.files.getFileInfo(id);
     this.setFile(fileInfo);
     return fileInfo;
   };
@@ -3227,7 +3221,7 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(
       id,
-      this.publicRoomStore.publicKey
+      this.publicRoomStore.publicRoomKey
     );
     this.setFolder(folderInfo);
     return folderInfo;
@@ -3261,7 +3255,7 @@ class FilesStore {
       tab,
       url,
       isPrivacy,
-      this.publicRoomStore.publicKey
+      this.publicRoomStore.publicRoomKey
     );
   };
 

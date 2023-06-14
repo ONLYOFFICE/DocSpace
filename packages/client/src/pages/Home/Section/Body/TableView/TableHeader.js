@@ -342,7 +342,7 @@ class FilesTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, setIsLoading, isPublicRoom, publicKey } = this.props;
+    const { filter, setIsLoading, isPublicRoom, publicRoomKey } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -358,7 +358,7 @@ class FilesTableHeader extends React.Component {
       window.DocSpace.navigate(
         `${
           window.DocSpace.location.pathname
-        }?key=${publicKey}&${newFilter.toUrlParams()}`
+        }?key=${publicRoomKey}&${newFilter.toUrlParams()}`
       );
     } else {
       window.DocSpace.navigate(
@@ -492,7 +492,7 @@ export default inject(
       setColumnEnable,
     } = tableStore;
 
-    const { isPublicRoom, publicKey } = publicRoomStore;
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     return {
       isHeaderChecked,
@@ -540,7 +540,7 @@ export default inject(
       isRooms,
       isTrashFolder,
       isPublicRoom,
-      publicKey,
+      publicRoomKey,
     };
   }
 )(

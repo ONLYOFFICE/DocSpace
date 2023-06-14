@@ -541,7 +541,7 @@ class FilesActionStore {
     const fileIds = fileConvertIds.map((f) => f.key || f);
     addActiveItems(fileIds, folderIds);
 
-    const shareKey = this.publicRoomStore.publicKey;
+    const shareKey = this.publicRoomStore.publicRoomKey;
 
     try {
       await downloadFiles(fileConvertIds, folderIds, shareKey).then(
@@ -2195,7 +2195,7 @@ class FilesActionStore {
 
   moveToPublicRoom = (folderId) => {
     const { navigationPath, rootFolderType } = this.selectedFolderStore;
-    const { publicKey } = this.publicRoomStore;
+    const { publicRoomKey } = this.publicRoomStore;
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const id = folderId ? folderId : this.selectedFolderStore.parentId;
@@ -2211,7 +2211,7 @@ class FilesActionStore {
 
     setIsSectionFilterLoading(true);
     window.DocSpace.navigate(
-      `${path}?key=${publicKey}&${filter.toUrlParams()}`,
+      `${path}?key=${publicRoomKey}&${filter.toUrlParams()}`,
       { state }
     );
   };

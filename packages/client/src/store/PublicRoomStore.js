@@ -8,7 +8,7 @@ class PublicRoomStore {
   roomId = null;
   roomStatus = null;
   roomType = null;
-  publicKey = null;
+  publicRoomKey = null;
 
   isLoaded = false;
   isLoading = false;
@@ -77,7 +77,7 @@ class PublicRoomStore {
     api.rooms
       .validatePublicRoomKey(key)
       .then((res) => {
-        this.publicKey = key;
+        this.publicRoomKey = key;
         this.setRoomData(res);
       })
       .finally(() => this.setIsLoading(false));

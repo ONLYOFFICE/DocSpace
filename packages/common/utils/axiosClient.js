@@ -29,10 +29,10 @@ class AxiosClient {
     const lastKeySymbol = location.search.indexOf("&");
     const lastIndex =
       lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
-    const publicKey = location.search.substring(5, lastIndex);
+    const publicRoomKey = location.search.substring(5, lastIndex);
 
-    if (publicKey) {
-      headers = { ...headers, "Request-Token": publicKey };
+    if (publicRoomKey) {
+      headers = { ...headers, "Request-Token": publicRoomKey };
     }
 
     const apiBaseURL = combineUrl(origin, proxy, prefix);

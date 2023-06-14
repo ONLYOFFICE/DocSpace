@@ -20,6 +20,7 @@ const PublicRoom = (props) => {
     roomId,
     validatePublicRoomKey,
     getFilesSettings,
+    setPublicRoomKey,
   } = props;
 
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const PublicRoom = (props) => {
   }, [validatePublicRoomKey]);
 
   const fetchRoomFiles = async () => {
+    setPublicRoomKey(key);
     await getFilesSettings();
 
     const filterObj = FilesFilter.getFilter(window.location);
@@ -92,11 +94,12 @@ const PublicRoom = (props) => {
   );
 };
 
-export default inject(({ publicRoomStore, settingsStore }) => {
+export default inject(({ auth, publicRoomStore, settingsStore }) => {
   const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
     publicRoomStore;
 
   const { getFilesSettings } = settingsStore;
+  const { setPublicRoomKey } = auth.settingsStore;
 
   return {
     roomId,
@@ -107,5 +110,6 @@ export default inject(({ publicRoomStore, settingsStore }) => {
     getFilesSettings,
 
     validatePublicRoomKey,
+    setPublicRoomKey,
   };
 })(observer(PublicRoom));
