@@ -139,9 +139,10 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = canChangeVersionFileHistory
-    ? { onClick: onVersionClick }
-    : {};
+  // uncomment if we want to change versions again
+  // const onClickProp = canChangeVersionFileHistory
+  //   ? { onClick: onVersionClick }
+  //   : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -170,7 +171,7 @@ const VersionRow = (props) => {
             isVersion={isVersion}
             index={index}
             versionGroup={info.versionGroup}
-            {...onClickProp}
+            //  {...onClickProp}
             t={t}
           />
           <Box
