@@ -681,6 +681,14 @@ const Dark = {
       large: "550px",
     },
 
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
+    },
+
     paddingRight: {
       base: "37px",
       middle: "48px",
