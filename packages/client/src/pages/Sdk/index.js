@@ -33,10 +33,22 @@ const Sdk = ({
 
   const { mode } = match.params;
 
-  const toCallbackData = (data) => {
-    if (Array.isArray(data)) return data;
+  const toRelativeUrl = (data) => {
+    try {
+      const url = new URL(data);
+      const rel = url.toString().substring(url.origin.length);
+      return rel;
+    } catch {
+      return data;
+    }
+  };
 
-    data.icon = getIcon(64, data.fileExst);
+  const toCallbackData = (data) => {
+    if (Array.isArray(data)) data = data[0];
+
+    data.icon = data.icon
+      ? toRelativeUrl(data.icon)
+      : getIcon(64, data.fileExst);
     data.label = data.title;
 
     return [data];
