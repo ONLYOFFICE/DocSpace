@@ -785,7 +785,6 @@ class SettingsStore {
     this.frameConfig = frameConfig;
 
     frameCallEvent({ event: "onAppReady" });
-
     return frameConfig;
   };
 

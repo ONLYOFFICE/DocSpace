@@ -29,7 +29,9 @@ const Sdk = ({
     };
   }, [handleMessage]);
 
-  if (window.parent && !frameConfig) frameCallCommand("setConfig");
+  useEffect(() => {
+    if (window.parent && !frameConfig) frameCallCommand("setConfig");
+  }, [frameConfig?.frameId, frameCallCommand]);
 
   const { mode } = match.params;
 
@@ -41,17 +43,6 @@ const Sdk = ({
     } catch {
       return data;
     }
-  };
-
-  const toCallbackData = (data) => {
-    if (Array.isArray(data)) data = data[0];
-
-    data.icon = data.icon
-      ? toRelativeUrl(data.icon)
-      : getIcon(64, data.fileExst);
-    data.label = data.title;
-
-    return [data];
   };
 
   const handleMessage = async (e) => {
@@ -100,9 +91,18 @@ const Sdk = ({
     }
   };
 
-  const onSelect = useCallback(
-    (item) => {
-      const data = toCallbackData(item);
+  const onSelectRoom = useCallback(
+    (data) => {
+      data[0].icon = toRelativeUrl(data[0].icon);
+      frameCallEvent({ event: "onSelectCallback", data });
+    },
+    [frameCallEvent]
+  );
+
+  const onSelectFile = useCallback(
+    (data) => {
+      data.icon = getIcon(64, data.fileExst);
+
       frameCallEvent({ event: "onSelectCallback", data });
     },
     [frameCallEvent]
@@ -121,7 +121,7 @@ const Sdk = ({
         <RoomSelector
           withCancelButton
           withHeader={false}
-          onAccept={onSelect}
+          onAccept={onSelectRoom}
           onCancel={onClose}
         />
       );
@@ -130,7 +130,7 @@ const Sdk = ({
       component = (
         <SelectFileDialog
           isPanelVisible={true}
-          onSelectFile={onSelect}
+          onSelectFile={onSelectFile}
           onClose={onClose}
           filteredType="exceptPrivacyTrashArchiveFolders"
           withSubfolders={false}

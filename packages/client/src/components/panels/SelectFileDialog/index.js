@@ -197,7 +197,13 @@ class SelectFileDialog extends React.Component {
   };
 
   onClickSave = () => {
-    const { onClose, onSelectFile, setFile, setFolderId } = this.props;
+    const {
+      onClose,
+      onSelectFile,
+      setFile,
+      setFolderId,
+      embedded,
+    } = this.props;
     const { selectedFileInfo, selectedFolderId } = this.state;
 
     setFile(selectedFileInfo);
@@ -207,7 +213,7 @@ class SelectFileDialog extends React.Component {
     }
 
     onSelectFile && onSelectFile(selectedFileInfo);
-    onClose && onClose();
+    onClose && !embedded && onClose();
   };
 
   render() {
