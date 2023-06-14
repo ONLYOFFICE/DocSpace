@@ -14,8 +14,8 @@ SELF_CONTAINED=${SELF_CONTAINED:-"false"}
 PUBLISH_BACKEND_ARGS=${PUBLISH_BACKEND_ARGS:-"false"}
 PUBLISH_CNF=${PUBLISH_CNF:-"Release"}
 
-YARN_FRONTEND_BUILD_ARGS=${YARN_FRONTEND_BUILD_ARGS:-"build"}
-YARN_FRONTEND_DEPLOY_ARGS=${YARN_FRONTEND_DEPLOY_ARGS:-"deploy"}
+FRONTEND_BUILD_ARGS=${FRONTEND_BUILD_ARGS:-"build"}
+FRONTEND_DEPLOY_ARGS=${FRONTEND_DEPLOY_ARGS:-"deploy"}
 DEBUG_INFO_CHECK=${DEBUG_INFO_CHECK:-""}
 MIGRATION_CHECK=${MIGRATION_CHECK:-"true"}
 
@@ -56,13 +56,13 @@ while [ "$1" != "" ]; do
       ;;
         -yb | --frontend-build-args )
           if [[ "$2" != "" && ! "$2" =~ ^- ]]; then
-            YARN_FRONTEND_BUILD_ARGS=$2
+            FRONTEND_BUILD_ARGS=$2
             shift
           fi
       ;;
         -yd | --frontend-deploy-args )
           if [[ "$2" != "" && ! "$2" =~ ^- ]]; then
-            YARN_FRONTEND_DEPLOY_ARGS=$2
+            FRONTEND_DEPLOY_ARGS=$2
             shift
           fi
       ;;
@@ -184,11 +184,11 @@ function build_nodejs_frontend {
 	    yarn debug-info
     fi
   fi
-  echo "== yarn ${YARN_FRONTEND_BUILD_ARGS} =="
-  yarn ${YARN_FRONTEND_BUILD_ARGS}
+  echo "== yarn ${FRONTEND_BUILD_ARGS} =="
+  yarn ${FRONTEND_BUILD_ARGS}
   
-  echo "== yarn ${YARN_FRONTEND_DEPLOY_ARGS} =="
-  yarn ${YARN_FRONTEND_DEPLOY_ARGS}
+  echo "== yarn ${FRONTEND_DEPLOY_ARGS} =="
+  yarn ${FRONTEND_DEPLOY_ARGS}
 }
 
 function run {
