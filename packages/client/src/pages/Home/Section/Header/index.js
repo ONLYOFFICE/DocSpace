@@ -976,8 +976,7 @@ const SectionHeaderContent = (props) => {
                 showText={showText}
                 isRootFolder={isRoot}
                 canCreate={
-                  (security?.Create || isAccountsPage || !isSettingsPage) &&
-                  !isPublicRoom
+                  (security?.Create || isAccountsPage) && !isSettingsPage && !isPublicRoom
                 }
                 title={currentTitle}
                 isDesktop={isDesktop}

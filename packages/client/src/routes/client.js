@@ -11,12 +11,11 @@ import FilesView from "SRC_DIR/pages/Home/View/Files";
 import AccountsView from "SRC_DIR/pages/Home/View/Accounts";
 import SettingsView from "SRC_DIR/pages/Home/View/Settings";
 
+import { generalRoutes } from "./general";
+
 const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
-
-const Profile = loadable(() => import("../pages/Profile"));
-const NotificationComponent = loadable(() => import("../pages/Notifications"));
 
 const FormGallery = loadable(() => import("../pages/FormGallery"));
 const PublicRoom = loadable(() => import("../pages/PublicRoom"));
@@ -44,192 +43,177 @@ const ClientRoutes = [
         element: <Home />,
         children: [
           {
-        index: true,
-        element: (
-          <PrivateRoute>
-            <Navigate to="/rooms/shared" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms",
-        element: (
-          <PrivateRoute>
-            <Navigate to="/rooms/shared" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "archived",
-        element: (
-          <PrivateRoute>
-            <Navigate to="/rooms/archived" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/personal",
-        element: (
-          <PrivateRoute restricted withManager withCollaborator>
+            index: true,
+            element: (
+              <PrivateRoute>
+                <Navigate to="/rooms/shared" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms",
+            element: (
+              <PrivateRoute>
+                <Navigate to="/rooms/shared" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "archived",
+            element: (
+              <PrivateRoute>
+                <Navigate to="/rooms/archived" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/personal",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/personal/filter",
-        element: (
-          <PrivateRoute restricted withManager withCollaborator>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/personal/filter",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "files/trash",
-        element: (
-          <PrivateRoute restricted withManager withCollaborator>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "files/trash",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "files/trash/filter",
-        element: (
-          <PrivateRoute restricted withManager withCollaborator>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "files/trash/filter",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/shared",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/shared",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/shared/filter",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/shared/filter",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/shared/:room",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/shared/:room",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/shared/:room/filter",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/shared/:room/filter",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/archived",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/archived",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/archived/filter",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/archived/filter",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/archived/:room",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/archived/:room",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "rooms/archived/:room/filter",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/archived/:room/filter",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "products/files",
-        element: (
-          <PrivateRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "products/files",
+            element: (
+              <PrivateRoute>
                 <FilesView />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "accounts",
-        element: (
-          <PrivateRoute restricted withManager>
-            <Navigate to="/accounts/filter" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "accounts/filter",
-        element: (
-          <PrivateRoute restricted withManager>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "accounts",
+            element: (
+              <PrivateRoute restricted withManager>
+                <Navigate to="/accounts/filter" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "accounts/filter",
+            element: (
+              <PrivateRoute restricted withManager>
                 <AccountsView />
-          </PrivateRoute>
-        ),
-      },
-      {
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "settings",
-        element: (
+            element: (
               <PrivateRoute withCollaborator restricted>
                 <Navigate to="/settings/common" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "settings/common",
-        element: (
+            element: (
               <PrivateRoute withCollaborator restricted>
                 <SettingsView />
-          </PrivateRoute>
-        ),
-      },
-      {
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "settings/admin",
-        element: (
-          <PrivateRoute withCollaborator restricted>
+            element: (
+              <PrivateRoute withCollaborator restricted>
                 <SettingsView />
-          </PrivateRoute>
-        ),
-      },
+              </PrivateRoute>
+            ),
+          },
         ],
       },
 
-      {
-        path: "accounts/view/@self",
-        element: (
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "accounts/view/@self/notification",
-        element: (
-          <PrivateRoute>
-            <NotificationComponent />
-          </PrivateRoute>
-        ),
-      },
+      ...generalRoutes,
     ],
   },
   {
