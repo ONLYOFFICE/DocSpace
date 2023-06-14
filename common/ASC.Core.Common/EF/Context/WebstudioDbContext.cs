@@ -46,6 +46,6 @@ public class WebstudioDbContext : DbContext
             .AddWebstudioUserVisit()
             .AddDbWebstudioIndex()
             .AddDbTenant()
-            .AddDbFunction();
+            .AddDbFunctions();
     }
 }
