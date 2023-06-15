@@ -17,6 +17,10 @@
       "path": "packages/editor"
     },
     {
+      "name": "🗂 @docspace/management",
+      "path": "packages/management"
+    },
+    {
       "name": "📦 @docspace/common",
       "path": "packages/common"
     },
