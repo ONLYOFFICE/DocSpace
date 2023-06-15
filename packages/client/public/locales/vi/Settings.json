@@ -167,6 +167,8 @@
   "ShowHelpCenter": "Hiển thị liên kết đến Trung tâm Trợ giúp",
   "ShowVideoGuides": "Hiển thị liên kết đến Video Hướng dẫn",
   "SingleSignOn": "Đăng nhập một lần (SSO)",
+  "SMTPSettings": "Cài đặt SMTP",
+  "SMTPSettingsDescription": "Cài đặt SMTP là cần thiết để thiết lập một tài khoản email sẽ được sử dụng để gửi thông báo từ cổng thông tin sử dụng SMTP server của chính bạn thay vì từ server mà {{organizationName}} sử dụng. Vui lòng điền vào tất cả các trường và bấm nút 'Lưu'. Bạn có thể sử dụng nút 'Gửi Mail thử nghiệm' để kiểm tra xem tất cả các cài đặt bạn đã nhập có chính xác và hoạt động đúng như dự kiến ​​không.",
   "StoragePeriod": "Thời gian lưu trữ",
   "StudioTimeLanguageSettings": "Cài đặt ngôn ngữ và múi giờ",
   "SuccessfullySaveGreetingSettingsMessage": "Cài đặt Trang Chào mừng đã được lưu thành công",

@@ -167,6 +167,8 @@
   "ShowHelpCenter": "Yardım Mərkəzinin keçidini göstərin",
   "ShowVideoGuides": "Video Bələdçilərinə keçidi göstərin",
   "SingleSignOn": "Birdəfəlik giriş",
+  "SMTPSettings": "SMTP Ayarları",
+  "SMTPSettingsDescription": "SMTP parametrləri {{organizationName}}-in istifadə etdiyi server əvəzinə öz SMTP serverinizdən istifadə edərək portaldan bildirişlər göndərmək üçün istifadə olunacaq e-poçt hesabı qurmaq üçün lazımdır. Bütün sahələri doldurun və \"Yadda saxla\" düyməsini basın. Siz daxil etdiyiniz bütün parametrlərin düzgün olub-olmadığını və nəzərdə tutulduğu kimi işlədiyini yoxlamaq üçün \"Sınaq məktubu göndər\" düyməsindən istifadə edə bilərsiniz.",
   "StoragePeriod": "Saxlama müddəti",
   "StudioTimeLanguageSettings": "Dil və Saat Qurşağı Ayarları",
   "SuccessfullySaveGreetingSettingsMessage": "Salamlama Səhifəsi ayarları uğurla yenilənmişdir",

@@ -7,6 +7,5 @@
   "Port": "Poort",
   "SenderDisplayName": "Zender Weergave Naam",
   "SenderEmailAddress": "E-mailadres Zender",
-  "SendTestMail": "Testmail Sturen",
-  "SuccessfullyCompletedOperation": "Darbība veiksmīgi pabeigta."
+  "SendTestMail": "Testmail Sturen"
 }

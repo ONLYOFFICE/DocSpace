@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "De gebruiker kon niet worden gevonden",
   "InvalidUsernameOrPassword": "Ongeldige gebruikersnaam of wachtwoord.",
   "LoginWithAccountNotFound": "Kan het geassocieerde account van de derde partij niet vinden. U moet eerst verbinding maken met uw social media account op de profielbewerkingspagina.",
+  "SsoError": "Interne serverfout",
   "SsoSettingsCantCreateUser": "Kon de gebruiker met deze authenticatietoken niet aanmaken",
   "SsoSettingsDisabled": "Single Sign-on is geblokkeerd",
   "SsoSettingsEmptyToken": "Authenticatie token kon niet worden gevonden",

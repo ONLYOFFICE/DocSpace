@@ -167,6 +167,8 @@
   "ShowHelpCenter": "Yardım Merkezi bağlantısını göster",
   "ShowVideoGuides": "Video Kılavuzlarının bağlantısını göster",
   "SingleSignOn": "Tek Seferlik Giriş",
+  "SMTPSettings": "SMTP Ayarları",
+  "SMTPSettingsDescription": "SMTP ayarları {{organizationName}}'in kullandığının yerine kendi SMTP sunucunuzu kullanarak portalınızdan bildirim göndermek için eposta hesabınızı ayarlarken gerekli olacaktır. Lütfen tüm alanları doldurun ve 'Kaydet' tuşuna başın. 'Test Postası Gönder' tuşunu kullanarak girdğiniz tüm ayarların doğru olduğunu ve çalıştığını deneyebilirsiniz.",
   "StoragePeriod": "Depolama süresi",
   "StudioTimeLanguageSettings": "Dil ve Saat Dilimi Ayarları",
   "SuccessfullySaveGreetingSettingsMessage": "Hoş Geldiniz Sayfası ayarları başarıyla kaydedildi",
