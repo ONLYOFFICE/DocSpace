@@ -1,10 +1,11 @@
 import { Link, ModalDialog } from "@docspace/components";
 import { Button } from "@docspace/components";
-import React from "react";
+import React, { useState } from "react";
 import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
+import SelectFileDialog from "@docspace/client/src/components/panels/SelectFileDialog";
 
 export const StyledModalDialog = styled(ModalDialog)`
   .modal-body {
@@ -16,7 +17,7 @@ export const StyledModalDialog = styled(ModalDialog)`
 
     font-weight: 400;
     line-height: 20px;
-    color: #333333;
+    /* color: #333333; */
 
     .guide-link {
       color: #4781d1;
@@ -72,18 +73,44 @@ const SubmitToFormGallery = ({
   formItem,
   setFormItem,
 }) => {
+  const [isSelectingForm, setIsSelectingForm] = useState(false);
+  const onOpenFormSelector = () => setIsSelectingForm(true);
+
   if (formItem) {
     const splitted = formItem.title.split(".");
     formItem.title = splitted.slice(0, -1).join(".");
     formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
   }
 
+  //TODO-mushka add final step to form submition
+  const onSubmitToGallery = () => {};
+
   const onClose = () => {
     setVisible(false);
+    setIsSelectingForm(false);
     formItem && setFormItem(null);
   };
 
   console.log(formItem);
+
+  if (isSelectingForm)
+    return (
+      <SelectFileDialog
+        key="select-form-dialog"
+        displayType="aside"
+        onSelectFile={onSubmitToGallery}
+        isPanelVisible={true}
+        onClose={onClose}
+        filteredType="exceptPrivacyTrashArchiveFolders"
+        ByExtension
+        searchParam={".docxf"}
+        dialogName={t("Common:SelectAction")}
+        filesListTitle={t("Common:SelectDOCXFFormat")}
+        creationButtonPrimary
+        withSubfolders={false}
+        primaryButtonName={t("FormGallery:SubmitToGallery")}
+      />
+    );
 
   return (
     <StyledModalDialog visible={visible} onClose={onClose} autoMaxHeight>
@@ -139,6 +166,7 @@ const SubmitToFormGallery = ({
             primary
             size="normal"
             label={t("FormGallery:SelectForm")}
+            onClick={onOpenFormSelector}
             scale
           />
         ) : (
@@ -146,6 +174,7 @@ const SubmitToFormGallery = ({
             primary
             size="normal"
             label={t("FormGallery:SubmitToGallery")}
+            onClick={onSubmitToGallery}
             scale
           />
         )}

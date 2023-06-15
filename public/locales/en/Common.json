@@ -218,6 +218,7 @@
   "SelectAction": "Select",
   "SelectAll": "Select all",
   "SelectDOCXFormat": "Select .DOCX file",
+  "SelectDOCXFFormat": "Select .DOCXF file",
   "SelectFile": "Select file",
   "SendButton": "Send",
   "Sending": "Sending...",

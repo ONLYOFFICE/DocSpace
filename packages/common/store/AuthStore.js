@@ -214,6 +214,12 @@ class AuthStore {
     );
   }
 
+  get isSubmitToGalleryAlertAvailable() {
+    const { user } = this.userStore;
+    if (!user) return false;
+    return true;
+  }
+
   get isLiveChatAvailable() {
     const { user } = this.userStore;
 

@@ -13,8 +13,9 @@ const ArticleAlerts = ({
   isFreeTariff,
   isPaymentPageAvailable,
   isTeamTrainingAlertAvailable,
+  isSubmitToGalleryAlertAvailable,
 }) => {
-  //TODO-submit-to-form-gallery clear up about alert switchind functionality, implement and return training alert
+  //TODO-mushka clear up about alert switchind functionality, implement and return training alert
   return (
     <StyledArticleAlertsComponent>
       {isPaymentPageAvailable &&
@@ -22,7 +23,9 @@ const ArticleAlerts = ({
         (isFreeTariff || isGracePeriod) &&
         showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
 
-      {isTeamTrainingAlertAvailable && showText && (
+      {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
+
+      {isSubmitToGalleryAlertAvailable && showText && (
         <ArticleSubmitToFormGalleryAlert />
       )}
     </StyledArticleAlertsComponent>
@@ -35,6 +38,7 @@ export default inject(({ auth }) => {
     settingsStore,
     isPaymentPageAvailable,
     isTeamTrainingAlertAvailable,
+    isSubmitToGalleryAlertAvailable,
     currentTariffStatusStore,
   } = auth;
   const { isFreeTariff, isNonProfit } = currentQuotaStore;
@@ -48,5 +52,6 @@ export default inject(({ auth }) => {
     isFreeTariff,
     isPaymentPageAvailable,
     isTeamTrainingAlertAvailable,
+    isSubmitToGalleryAlertAvailable,
   };
 })(observer(ArticleAlerts));

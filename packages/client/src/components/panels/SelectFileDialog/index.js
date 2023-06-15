@@ -105,16 +105,14 @@ class SelectFileDialog extends React.Component {
       roomsFolder && roomsFolder.foldersCount ? true : false;
 
     try {
-      [
-        resultingFolderTree,
-        resultingId,
-      ] = await SelectionPanel.getBasicFolderInfo(
-        treeFolders,
-        filteredType,
-        folderId,
-        passedFoldersTree,
-        hasSharedFolder
-      );
+      [resultingFolderTree, resultingId] =
+        await SelectionPanel.getBasicFolderInfo(
+          treeFolders,
+          filteredType,
+          folderId,
+          passedFoldersTree,
+          hasSharedFolder
+        );
     } catch (e) {
       toastr.error(e);
 
@@ -220,6 +218,7 @@ class SelectFileDialog extends React.Component {
       footer,
       dialogName,
       creationButtonPrimary,
+      primaryButtonName,
       maxInputWidth,
     } = this.props;
     const {
@@ -232,7 +231,9 @@ class SelectFileDialog extends React.Component {
       selectedFolderId,
     } = this.state;
 
-    const buttonName = creationButtonPrimary
+    const buttonName = !!primaryButtonName
+      ? primaryButtonName
+      : creationButtonPrimary
       ? t("Common:Create")
       : t("Common:SaveButton");
     const name = dialogName ? dialogName : t("Common:SelectFile");

@@ -216,6 +216,7 @@
   "SelectAction": "Выбрать",
   "SelectAll": "Выбрать все",
   "SelectDOCXFormat": "Выбрать файл в формате .DOCX",
+  "SelectDOCXFFormat": "Выбрать файл в формате .DOCXF",
   "SelectFile": "Выбрать файл",
   "SendButton": "Отправить",
   "Sending": "Отправка...",

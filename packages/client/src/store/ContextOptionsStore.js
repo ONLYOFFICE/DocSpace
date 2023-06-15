@@ -695,7 +695,7 @@ class ContextOptionsStore {
           }
         : false;
 
-    //TODO-submit-to-form-gallery change to correct key when added
+    //TODO-mushka change to correct key when added
     const separator1 = contextOptions.includes("make-form")
       ? {
           key: "separator1",
@@ -910,7 +910,7 @@ class ContextOptionsStore {
       },
       separator0,
       {
-        //TODO-submit-to-form-gallery change to correct key when added
+        //TODO-mushka change to correct key when added
         id: "option_make-form",
         key: "make-form",
         label: t("Common:SubmitToFormGallery"),
