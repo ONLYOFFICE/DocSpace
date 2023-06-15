@@ -240,7 +240,7 @@ FROM dotnetrun AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/service/ .
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/products/ASC.Files/Server/DocStore .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
@@ -270,7 +270,7 @@ FROM dotnetrun AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.People/server/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.People/service/ .
 
 CMD ["ASC.People.dll", "ASC.People"]
 
