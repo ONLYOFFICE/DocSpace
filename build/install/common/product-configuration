@@ -398,9 +398,9 @@ change_mysql_config(){
 	fi
 	
 	if ! grep -q "^default-authentication-plugin"  ${CNF_PATH}; then
-		sed '/\[mysqld\]/a default-authentication-plugin = mysql_native_password' -i ${CNF_PATH}
+		sed '/\[mysqld\]/a default-authentication-plugin = caching_sha2_password' -i ${CNF_PATH}
 	else
-		sed "s/default-authentication-plugin.*/default-authentication-plugin = mysql_native_password/" -i ${CNF_PATH} || true # ignore errors
+		sed "s/default-authentication-plugin.*/default-authentication-plugin = caching_sha2_password/" -i ${CNF_PATH} || true # ignore errors
 	fi
 
 	if [ -e ${CNF_SERVICE_PATH} ]; then

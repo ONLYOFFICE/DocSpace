@@ -65,8 +65,8 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		   MYSQL_ROOT_PASS=$(echo $MYSQL_TEMPORARY_ROOT_PASS | sed -e 's/;/%/g' -e 's/=/%/g');
 		fi
 
-		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASS}'" >/dev/null 2>&1 \
-		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
+		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH caching_sha2_password BY '${MYSQL_ROOT_PASS}'" >/dev/null 2>&1 \
+		|| $MYSQL -e "UPDATE user SET plugin='caching_sha2_password', authentication_string=PASSWORD('${MYSQL_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
 
 		systemctl restart mysqld
 	fi
