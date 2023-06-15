@@ -1731,6 +1731,7 @@ const Base = {
     arrowColor: "#555f65",
     disabledArrow: "#A3A9AE",
     weekdayColor: "#A3A9AE",
+    accent: "#4781d1",
   },
 
   datePicker: {

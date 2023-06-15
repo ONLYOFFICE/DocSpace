@@ -21,5 +21,15 @@ export const RoundButton = styled.button`
 
   :hover {
     cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
+    outline: ${(props) =>
+      props.disabled
+        ? `1px solid ${props.theme.calendar.outlineColor}`
+        : `2px solid ${props.theme.calendar.accent}`};
+    span {
+      border-color: ${(props) =>
+        props.disabled
+          ? props.theme.calendar.disabledArrow
+          : props.theme.calendar.accent};
+    }
   }
 `;
