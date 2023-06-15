@@ -45,7 +45,7 @@ const AccessSelector = ({
     : {};
 
   return (
-    <StyledAccessSelector>
+    <StyledAccessSelector className="invite-panel_access-selector">
       <AccessRightSelect
         selectedOption={selectedOption}
         onSelect={onSelectAccess}
