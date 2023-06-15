@@ -120,6 +120,15 @@ public static class DbFileExtension
             entity.HasIndex(e => e.ModifiedOn)
                 .HasDatabaseName("modified_on");
 
+            entity.HasIndex(e => new { e.TenantId, e.Title })
+                .HasDatabaseName("tenant_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_modified_on");
+
+            entity.HasIndex(e => new { e.TenantId, e.ContentLength })
+                .HasDatabaseName("tenant_id_content_length");
+
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -234,6 +243,15 @@ public static class DbFileExtension
 
             entity.HasIndex(e => e.ModifiedOn)
                 .HasDatabaseName("modified_on_files_file");
+            
+            entity.HasIndex(e => new { e.TenantId, e.Title })
+                .HasDatabaseName("tenant_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_modified_on");
+
+            entity.HasIndex(e => new { e.TenantId, e.ContentLength })
+                .HasDatabaseName("tenant_id_content_length");
 
             entity.Property(e => e.Id).HasColumnName("id");
 

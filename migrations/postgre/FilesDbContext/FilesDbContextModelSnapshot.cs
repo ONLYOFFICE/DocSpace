@@ -2985,6 +2985,15 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                     b.HasIndex("ParentId")
                         .HasDatabaseName("folder_id");
 
+                    b.HasIndex("TenantId", "ContentLength")
+                        .HasDatabaseName("tenant_id_content_length");
+
+                    b.HasIndex("TenantId", "ModifiedOn")
+                        .HasDatabaseName("tenant_id_modified_on");
+
+                    b.HasIndex("TenantId", "Title")
+                        .HasDatabaseName("tenant_id_title");
+
                     b.ToTable("files_file", "onlyoffice");
                 });
 
@@ -3416,8 +3425,14 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                     b.HasIndex("ModifiedOn")
                         .HasDatabaseName("modified_on_files_folder");
 
+                    b.HasIndex("TenantId", "ModifiedOn")
+                        .HasDatabaseName("tenant_id_modified_on");
+
                     b.HasIndex("TenantId", "ParentId")
                         .HasDatabaseName("parent_id");
+
+                    b.HasIndex("TenantId", "Title")
+                        .HasDatabaseName("tenant_id_title");
 
                     b.ToTable("files_folder", "onlyoffice");
                 });
