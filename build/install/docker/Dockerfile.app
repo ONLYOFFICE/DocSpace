@@ -70,14 +70,14 @@ RUN cd ${SRC_PATH} && \
     -yb "${FRONTEND_BUILD_ARGS}" \
     -yd "${FRONTEND_DEPLOY_ARGS}" \
     -dc "${DEBUG_INFO_CHECK}" \
-    -mc "${MIGRATION_CHECK}" && \
+    -mc "${MIGRATION_CHECK}"
     #cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
-    rm -rf ${SRC_PATH}/common/* && \
-    rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
-    rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
-    rm -rf ${SRC_PATH}/products/ASC.Files/Server/* && \
-    rm -rf ${SRC_PATH}/products/ASC.Files/Service/* && \
-    rm -rf ${SRC_PATH}/products/ASC.People/Server/* 
+    # rm -rf ${SRC_PATH}/common/* && \
+    # rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
+    # rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
+    # rm -rf ${SRC_PATH}/products/ASC.Files/Server/* && \
+    # rm -rf ${SRC_PATH}/products/ASC.Files/Service/* && \
+    # rm -rf ${SRC_PATH}/products/ASC.People/Server/* 
   
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
