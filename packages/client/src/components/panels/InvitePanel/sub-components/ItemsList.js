@@ -18,6 +18,7 @@ const Row = memo(({ data, index, style }) => {
     setHasErrors,
     roomType,
     isOwner,
+    inputsRef,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -35,6 +36,7 @@ const Row = memo(({ data, index, style }) => {
         setHasErrors={setHasErrors}
         roomType={roomType}
         isOwner={isOwner}
+        inputsRef={inputsRef}
       />
     </StyledRow>
   );
@@ -49,6 +51,7 @@ const ItemsList = ({
   roomType,
   isOwner,
   externalLinksVisible,
+  inputsRef,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
@@ -87,6 +90,7 @@ const ItemsList = ({
           setHasErrors,
           roomType,
           isOwner,
+          inputsRef,
           t,
         }}
         outerElementType={CustomScrollbarsVirtualList}
