@@ -76,7 +76,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 break;
         }
 
-        _logger.LogError(exception,
+        _logger.LogCritical(exception,
     $"error during executing {context.HttpContext.Request?.Method}: {context.HttpContext.Request?.Path.Value}");
 
         var result = new ObjectResult(new ErrorApiResponse(status, exception, message, withStackTrace))
