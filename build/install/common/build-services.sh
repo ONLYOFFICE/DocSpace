@@ -18,6 +18,7 @@ FRONTEND_BUILD_ARGS=${FRONTEND_BUILD_ARGS:-"build"}
 FRONTEND_DEPLOY_ARGS=${FRONTEND_DEPLOY_ARGS:-"deploy"}
 DEBUG_INFO_CHECK=${DEBUG_INFO_CHECK:-""}
 MIGRATION_CHECK=${MIGRATION_CHECK:-"true"}
+DOCKER_ENTRYPOINT=${DOCKER_ENTRYPOINT:-"false"}
 
 ARRAY_NAME_SERVICES=()
 
@@ -78,6 +79,12 @@ while [ "$1" != "" ]; do
             shift
           fi
       ;;
+        -de | --docker-entrypoint )
+          if [[ "$2" != "" && ! "$2" =~ ^- ]]; then
+            DOCKER_ENTRYPOINT=$2
+            shift
+          fi
+      ;;
         -? | -h | --help )
             echo " Usage: bash build-services.sh [PARAMETER] [[PARAMETER], ...]"
             echo "    Parameters:"
@@ -129,6 +136,11 @@ function build_dotnetcore_backend {
       echo "== Build ASC.Migrations.sln =="
       dotnet build ASC.Migrations.sln -o ${BUILD_PATH}/services/ASC.Migration.Runner/service/
     fi
+    if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+    then
+       echo "== ADD ${SRC_PATH}/build/install/docker/docker-migration-entrypoint.sh to ASC.Migration.Runner =="
+       cp ${SRC_PATH}/build/install/docker/docker-migration-entrypoint.sh ${BUILD_PATH}/services/ASC.Migration.Runner/service/
+    fi
   fi
 }
 
@@ -144,6 +156,11 @@ function backend-dotnet-publish {
       SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${ARRAY_NAME_SERVICES[$i]}".csproj)")"
       cd ${SERVICE_DIR}
       dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} -o ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+      if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+      then
+       echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
+       cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+      fi
   done
   else
     for i in ${!ARRAY_NAME_SERVICES[@]}; do
@@ -151,6 +168,11 @@ function backend-dotnet-publish {
       SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${ARRAY_NAME_SERVICES[$i]}".csproj)")"
       cd ${SERVICE_DIR}
       dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} ${PUBLISH_BACKEND_ARGS} -o ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+      if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+      then
+       echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
+       cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+      fi
     done
   fi
   
@@ -166,6 +188,11 @@ function backend-nodejs-publish {
     yarn install --cwd ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]} --frozen-lockfile && \
     mkdir -p ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/ && \
     cp -arfv ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]}/* ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+    if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+    then
+       echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
+       cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+    fi
   done
   ARRAY_NAME_SERVICES=()
 }
@@ -189,6 +216,13 @@ function build_nodejs_frontend {
   
   echo "== yarn ${FRONTEND_DEPLOY_ARGS} =="
   yarn ${FRONTEND_DEPLOY_ARGS}
+  if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+  then
+    echo "== ADD ${DOCKER_ENTRYPOINT} to ASC.Login =="
+    cp ${DOCKER_ENTRYPOINT} {SRC_PATH}/build/deploy/login/
+    echo "== ADD ${DOCKER_ENTRYPOINT} toASC.Editors =="
+    cp ${DOCKER_ENTRYPOINT} {${SRC_PATH}/build/deploy/editor/
+  fi
 }
 
 function run {

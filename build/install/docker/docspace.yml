@@ -7,6 +7,14 @@ x-healthcheck:
   start_period: 20s
   timeout: 10s
 
+x-profiles-backend:
+ &x-profiles-backend
+ profiles: ["prod", "backend"]
+
+x-profiles-frontend:
+ &x-profiles-frontend
+ profiles: ["prod", "frontend"]
+
 x-service: &x-service-base
   container_name: base
   restart: always
@@ -39,6 +47,7 @@ x-service: &x-service-base
 
 services:
   onlyoffice-elasticsearch:
+    <<: [*x-profiles-backend]
     image: onlyoffice/elasticsearch:${ELK_VERSION}
     container_name: ${ELK_HOST}
     restart: always
@@ -60,8 +69,17 @@ services:
     expose:
       - "9200"
       - "9300"
+  
+  onlyoffice-notify:
+    <<: [*x-service-base, *x-profiles-backend]
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-notify:${DOCKER_TAG}"
+    container_name: ${NOTIFY_HOST}
+    healthcheck:
+     <<: *x-healthcheck
+     test: curl --fail http://${SERVICE_NOTIFY}/health/ || exit 1
+   
   onlyoffice-backup-background-tasks:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
     container_name: ${BACKUP_BACKGRUOND_TASKS_HOST}
     healthcheck:
@@ -69,7 +87,7 @@ services:
      test: curl --fail http://${SERVICE_BACKUP_BACKGRUOND_TASKS}/health/ || exit 1
 
   onlyoffice-backup:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
     healthcheck:
@@ -77,7 +95,7 @@ services:
      test: curl --fail http://${SERVICE_BACKUP}/health/ || exit 1
 
   onlyoffice-clear-events:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
     container_name: ${CLEAR_EVENTS_HOST}
     healthcheck:
@@ -85,7 +103,7 @@ services:
      test: curl --fail http://${SERVICE_CLEAR_EVENTS}/health/ || exit 1
 
   onlyoffice-files:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files:${DOCKER_TAG}"
     container_name: ${FILES_HOST}
     healthcheck:
@@ -93,7 +111,7 @@ services:
      test: curl --fail http://${SERVICE_FILES}/health/ || exit 1
 
   onlyoffice-files-services:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files-services:${DOCKER_TAG}"
     container_name: ${FILES_SERVICES_HOST}
     healthcheck:
@@ -101,7 +119,7 @@ services:
      test: curl --fail http://${SERVICE_FILES_SERVICES}/health/ || exit 1
 
   onlyoffice-people-server:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-people-server:${DOCKER_TAG}"
     container_name: ${PEOPLE_SERVER_HOST}
     healthcheck:
@@ -109,14 +127,14 @@ services:
      test: curl --fail http://${SERVICE_PEOPLE_SERVER}/health/ || exit 1
 
   onlyoffice-socket:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-socket:${DOCKER_TAG}"
     container_name: ${SOCKET_HOST}
     expose:
       - ${SERVICE_PORT}
 
   onlyoffice-studio-notify:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}"
     container_name: ${STUDIO_NOTIFY_HOST}
     healthcheck:
@@ -124,7 +142,7 @@ services:
      test: curl --fail http://${SERVICE_STUDIO_NOTIFY}/health/ || exit 1
 
   onlyoffice-api:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
     healthcheck:
@@ -132,7 +150,7 @@ services:
      test: curl --fail http://${SERVICE_API}/health/ || exit 1
 
   onlyoffice-api-system:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
     container_name: ${API_SYSTEM_HOST}
     healthcheck:
@@ -140,7 +158,7 @@ services:
      test: curl --fail http://${SERVICE_API_SYSTEM}/health/ || exit 1
 
   onlyoffice-studio:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
     container_name: ${STUDIO_HOST}
     healthcheck:
@@ -148,7 +166,7 @@ services:
      test: curl --fail http://${SERVICE_STUDIO}/health/ || exit 1
 
   onlyoffice-ssoauth:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-backend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
     container_name: ${SSOAUTH_HOST}
     expose:
@@ -156,7 +174,7 @@ services:
       - "9834"
 
   onlyoffice-doceditor:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-frontend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
     restart: always
@@ -164,7 +182,7 @@ services:
       - "5013"
 
   onlyoffice-login:
-    <<: *x-service-base
+    <<: [*x-service-base, *x-profiles-frontend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
     container_name: ${LOGIN_HOST}
     restart: always
@@ -173,6 +191,7 @@ services:
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
+    profiles: ["prod", "backend", frontend]
     container_name: ${PROXY_HOST}
     restart: always
     healthcheck:

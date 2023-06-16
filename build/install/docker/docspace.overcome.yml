@@ -1,0 +1,61 @@
+x-profiles-local:
+ &x-profiles-local
+ profiles: ["backend-local"]
+ environment:
+  BUILD_PATH: "/var/www"
+  SRC_PATH: "/app/services"
+
+services:
+  onlyoffice-backup-background-tasks:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
+
+  onlyoffice-backup:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
+    
+  onlyoffice-files:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
+
+  onlyoffice-files-services:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
+    
+  onlyoffice-people-server:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
+
+  onlyoffice-socket:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
+
+  onlyoffice-studio-notify:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
+
+  onlyoffice-api:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
+
+  onlyoffice-studio:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
+
+  onlyoffice-ssoauth:
+    <<: *x-profiles-local
+    volumes:
+    - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
+  
+  onlyoffice-proxy:
+    <<: *x-profiles-local 
+   
