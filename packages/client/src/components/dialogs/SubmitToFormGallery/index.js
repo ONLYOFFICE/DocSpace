@@ -79,7 +79,9 @@ const SubmitToFormGallery = ({
   }
 
   //TODO-mushka add final step to form submition
-  const onSubmitToGallery = () => {};
+  const onSubmitToGallery = () => {
+    onClose();
+  };
 
   const onClose = () => {
     setVisible(false);
