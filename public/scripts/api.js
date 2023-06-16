@@ -81,7 +81,7 @@
     #iframe;
     #isConnected = false;
     #callbacks = [];
-    //#tasks = [];
+    #tasks = [];
 
     constructor(config) {
       this.config = config;
@@ -172,7 +172,7 @@
             JSON.stringify(mes),
             this.config.src
           );
-        }, 100);
+        }, 0);
       }
     };
 
@@ -199,9 +199,9 @@
               frameData?.methodReturnData
             );
 
-            /*             if (this.#tasks.length > 0) {
+            if (this.#tasks.length > 0) {
               this.#sendMessage(this.#tasks.shift());
-            } */
+            }
             break;
           }
           case "onEventReturn": {
@@ -237,10 +237,10 @@
         data: params,
       };
 
-      /*       if (this.#callbacks.length !== 1) {
+      if (this.#callbacks.length !== 1) {
         this.#tasks.push(message);
         return;
-      } */
+      }
 
       this.#sendMessage(message);
     };
