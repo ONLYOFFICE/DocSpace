@@ -11,20 +11,11 @@
   "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
   "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
   "UpgradeToProBannerInformationPurchase": "<1>{{email}}</1> adresinden satın alma soruları sorun",
-  "UpgradeToProBannerInformationSupport": "Get tech assistance <1>{{helpUrl}}</1>",
-  "UpgradeToProBannerInstructionDescr": "Use the official documentation to upgrade:",
   "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
   "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
   "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
   "UpgradeToProBannerInstructionNote": "Please note that the editors will be unavailable during the upgrade. We also recommend to {0}backup your data{1} before you start.",
   "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
-  "UpgradeToProBannerItemLicenseHeader": "Lifetime license.",
   "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers.",
-  "UpgradeToProBannerItemMobileEditingHeader": "Mobile editing.",
-  "UpgradeToProBannerItemMobileHeader": "Mobile access.",
-  "UpgradeToProBannerItemScalabilityDescr": "Ekibinizin boyutu ne olursa olsun, belgeleri rahatça düzenleyin ve ortak çalışın.",
-  "UpgradeToProBannerItemScalabilityHeader": "Scalability and clustering.",
-  "UpgradeToProBannerItemSupportDescr": "Get quick professional help for all the issues you face.",
-  "UpgradeToProBannerItemSupportHeader": "Tech support.",
-  "UpgradeToProHeader": "Free access to pro features"
+  "UpgradeToProBannerItemScalabilityDescr": "Ekibinizin boyutu ne olursa olsun, belgeleri rahatça düzenleyin ve ortak çalışın."
 }

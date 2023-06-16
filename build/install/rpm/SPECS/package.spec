@@ -14,7 +14,7 @@ Summary:        Common
 Group:          Applications/Internet
 Requires:       logrotate
 %description    common
-A package containing configs and scripts
+A package containing configure and scripts
 
 %package        files-services
 Packager:       %{packager}
@@ -26,12 +26,12 @@ Requires:       ffmpeg
 AutoReqProv:    no
 %description    files-services
 The service which launches additional services related to file management:
-- ElasticSearchIndexService - indexes documents using elasticsearch;
-- FeedAggregatorService - aggregates notifications;
-- FeedCleanerService - removes notifications;
-- FileConverterService - converts documents;
-- ThumbnailBuilderService - generates thumbnails for documents;
-- Launcher - removes outdated files from Trash;
+ - ElasticSearchIndexService - indexes documents using Elasticsearch;
+ - FeedAggregatorService - aggregates notifications;
+ - FeedCleanerService - removes notifications;
+ - FileConverterService - converts documents;
+ - ThumbnailBuilderService - generates thumbnails for documents;
+ - Launcher - removes outdated files from Trash;
 
 %package        notify
 Packager:       %{packager}
@@ -99,7 +99,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    socket
-The service which provides two-way communication between a web browser and the server
+The service which provides two-way communication between a client and a server
 
 %package        studio
 Packager:       %{packager}
@@ -131,7 +131,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    api-system
-The service which is used for working with portals (creating, removing portals, etc.)
+The service which is used for working with portals (creating, removing, etc.)
 
 %package        ssoauth
 Packager:       %{packager}
@@ -141,7 +141,9 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    ssoauth
-Ssoauth
+The service responsible for enabling and configuring 
+SAML-based single sign-on (SSO) authentication to provide a more quick, 
+easy and secure way to access DocSpace for users
 
 %package        clear-events
 Packager:       %{packager}
@@ -151,7 +153,8 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    clear-events
-Clear-events
+The service responsible for clearing the login_events and audit_events tables 
+by LoginHistoryLifeTime and AuditTrailLifeTime to log out users after a timeout
 
 %package        backup-background
 Packager:       %{packager}
@@ -161,7 +164,12 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    backup-background
-Backup-background
+The service which launches additional services related to backup creation:
+ - BackupWorkerService - launches WorkerService which runs backup/restore, etc;
+ - BackupListenerService - waits for a signal to delete backups;
+ - BackupCleanerTempFileService - removes temporary backup files;
+ - BackupCleanerService - removes outdated backup files;
+ - BackupSchedulerService - runs backup according to a schedule;
 
 %package        radicale
 Packager:       %{packager}
@@ -174,7 +182,9 @@ Requires:       python3-requests
 Requires:       python3-setuptools
 AutoReqProv:    no
 %description    radicale
-Radicale
+Radicale is a server designed to support the CalDav and CardDav protocols.
+It operates either as a standalone package using its own internal HTTP server
+or can be integrated with an existing web server
 
 %package        doceditor
 Packager:       %{packager}
@@ -184,7 +194,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    doceditor
-Doceditor
+The service which allows interaction with document-server
 
 %package        migration-runner
 Packager:       %{packager}
@@ -194,7 +204,9 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    migration-runner
-Migration-runner
+The service responsible for the database creation.
+A database connection is transferred to the service and
+the service creates tables and populates them with values
 
 %package        login
 Packager:       %{packager}
@@ -204,7 +216,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
-Login
+The service which is used for logging users and displaying the wizard
 
 %package        healthchecks
 Packager:       %{packager}
@@ -214,4 +226,4 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    healthchecks
-Healthchecks
+The service which displays launched services

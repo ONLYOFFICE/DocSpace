@@ -167,6 +167,8 @@
   "ShowHelpCenter": "Prikaži povezavo do centra za pomoč",
   "ShowVideoGuides": "Prikaži povezavo do video navodil",
   "SingleSignOn": "Enkratna prijava",
+  "SMTPSettings": "SMTP nastavitve",
+  "SMTPSettingsDescription": "SMTP nastavitve so potrebne za nastavitev email računa, ki bo uporabljen za pošiljanje obvestil s portala z uporabo SMTP strežnika namesto ene  {{organizationName}} uporabe. Prosim izpolnite vsa polja in pritisnite gumb \"Shrani\". Gumb 'Pošli testno sporočilo' lahko uporabite za preverjanje, če vse vnesene nastavitve delujejo pravilno.",
   "StoragePeriod": "Obdobje shranjevanja",
   "StudioTimeLanguageSettings": "Nastavi jezik in časovni pas",
   "SuccessfullySaveGreetingSettingsMessage": "Nastavitve strani dobrodošlice so bile uspešno shranjene",

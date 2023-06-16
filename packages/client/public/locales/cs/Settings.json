@@ -169,6 +169,8 @@
   "ShowHelpCenter": "Zobrazit odkaz na Centrum nápovědy",
   "ShowVideoGuides": "Zobrazit odkaz na videoprůvodce",
   "SingleSignOn": "Jednotné přihlášení",
+  "SMTPSettings": "SMTP Nastavení",
+  "SMTPSettingsDescription": "SMTP nastavení je potřeba k nastavení emailového účtu, který bude sloužit k zasílání oznámení z portálů pomocí Vašeho vlastního SMTP serveru na rozdíl od toho, který používá {{organizationName}}. Prosím vyplňte všechna pole a klikněte na tlačítko \"Uložit\". Můžete použít funkci \"Odeslat Test Mail\", abyste zjistili, zda všechna nastavení, která jste zadali fungují správně.",
   "StoragePeriod": "Doba skladování",
   "StudioTimeLanguageSettings": "Nastavení jazyka a časového pásma",
   "SuccessfullySaveGreetingSettingsMessage": "Nastavení uvítací stránky bylo úspěšně uloženo",

@@ -170,6 +170,8 @@
   "ShowHelpCenter": "ヘルプセンターのリンクを表示する",
   "ShowVideoGuides": "ビデオガイドのリンクを表示する",
   "SingleSignOn": "シングルサインオン",
+  "SMTPSettings": "SMTPの設定",
+  "SMTPSettingsDescription": "SMTP設定は、{{organizationName}}が使用するSMTPサーバーの代わりに、あなた自身のSMTPサーバーを使用してポータルから通知を送信するために使用するメールアカウントを設定するために必要です。すべてのフィールドに入力し、'保存'ボタンをクリックしてください。テストメールを送信する'ボタンを使って、入力したすべての設定が正しく、想定通りに動作するかどうかを確認することができます。",
   "StoragePeriod": "ストレージ期間",
   "StudioTimeLanguageSettings": "言語とタイムゾーンの設定",
   "SuccessfullySaveGreetingSettingsMessage": "ようこそページの設定が正常に保存されました。",
