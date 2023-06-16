@@ -26,16 +26,29 @@ const StyledDropdown = styled.div`
     css`
       top: ${(props) => (props.manualY ? props.manualY : "100%")};
     `}
+
   ${(props) =>
     props.directionX === "right" &&
-    css`
-      right: ${(props) => (props.manualX ? props.manualX : "0px")};
-    `}
+    !props.directionXStylesDisabled &&
+    (props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: ${props.manualX || "0px"};
+        `
+      : css`
+          right: ${props.manualX || "0px"};
+        `)}
+
   ${(props) =>
     props.directionX === "left" &&
-    css`
-      left: ${(props) => (props.manualX ? props.manualX : "0px")};
-    `}
+    !props.directionXStylesDisabled &&
+    (props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: ${props.manualX || "0px"};
+        `
+      : css`
+          left: ${props.manualX || "0px"};
+        `)}
+
   z-index: ${(props) =>
     props.zIndex ? props.zIndex : props.theme.dropDown.zIndex};
   display: ${(props) =>
@@ -67,7 +80,10 @@ const StyledDropdown = styled.div`
 
   .scroll-drop-down-item {
     .scroll-body {
-      padding-right: 0 !important;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? `padding-left: 0 !important;`
+          : `padding-right: 0 !important;`}
     }
   }
   &.download-dialog-dropDown {
@@ -80,11 +96,11 @@ const StyledDropdown = styled.div`
       css`
         top: auto !important;
         bottom: 0;
-        left: 0;
+        ${props.theme.interfaceDirection === "rtl" ? `right: 0;` : `left: 0;`}
         width: 100%;
       `}
   }
 `;
 
-StyledDropdown.defaultProps = { theme: Base };
+StyledDropdown.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 export default StyledDropdown;
