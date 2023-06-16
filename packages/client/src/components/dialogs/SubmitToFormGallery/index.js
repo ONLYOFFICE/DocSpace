@@ -17,11 +17,6 @@ export const StyledModalDialog = styled(ModalDialog)`
 
     font-weight: 400;
     line-height: 20px;
-    /* color: #333333; */
-
-    .guide-link {
-      color: #4781d1;
-    }
   }
 `;
 
@@ -91,8 +86,6 @@ const SubmitToFormGallery = ({
     formItem && setFormItem(null);
   };
 
-  console.log(formItem);
-
   if (isSelectingForm)
     return (
       <SelectFileDialog
@@ -126,7 +119,7 @@ const SubmitToFormGallery = ({
             Learn how to create perfect forms and increase your chance to get
             approval in our
             <Link
-              className="guide-link"
+              color={currentColorScheme.main.accent}
               href="#"
               type={"page"}
               isBold
