@@ -75,7 +75,7 @@ const SelectorRowLoader = ({
 
   const getRowItems = () => {
     const rows = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 5; i++) {
       rows.push(getRowItem(i));
     }
 
