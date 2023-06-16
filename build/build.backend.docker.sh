@@ -48,8 +48,8 @@ echo "SERVICE_CLIENT: $client"
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
 
-echo "Remove all backend containers"
-docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
+# echo "Remove all backend containers"
+# docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
 
 echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
 docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
@@ -83,6 +83,10 @@ else
     docker compose -f ds.dev.yml up -d
 fi
 
+bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
+
+cd $dir/build/install/docker/
+
 echo "Build all backend services"
 DOCKERFILE=$docker_file \
 RELEASE_DATE=$build_date \
@@ -92,11 +96,14 @@ SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
 APP_CORE_BASE_DOMAIN=$core_base_domain \
 ENV_EXTENSION=$env_extension \
+DOCKER_TAG="v9.9.9" \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
+echo "Run backend services"
+DOCKER_TAG="v9.9.9" BUILD_PATH="/var/www" SRC_PATH="$dir/publish/services" docker-compose -f docspace.yml -f docspace.overcome.yml --profile backend-local up -d
+
 echo "Run DB migration"
-DOCKERFILE=$docker_file \
-docker compose -f migration-runner.yml up -d
+DOCKER_TAG="v9.9.9" docker compose -f migration-runner.yml up -d
 
 # Start all backend services"
-$dir/build/start/start.backend.docker.sh
+# $dir/build/start/start.backend.docker.sh
