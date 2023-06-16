@@ -481,7 +481,7 @@ public class EntryManager
             var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesOffset, filesCount)
                 .ToListAsync();
 
-            entries = new List<FileEntry>(count);
+            entries = new List<FileEntry>(folders.Count + files.Count);
             entries.AddRange(folders);
             entries.AddRange(files);
             
