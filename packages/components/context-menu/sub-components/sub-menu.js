@@ -163,7 +163,7 @@ const SubMenu = (props) => {
         {label}
         {subMenuIcon}
         {item.isOutsideLink && (
-          <OutsdideIcon className={`${subMenuIconClassName}-outside`} />
+          <OutsdideIcon className={subMenuIconClassName} />
         )}
       </a>
     );
