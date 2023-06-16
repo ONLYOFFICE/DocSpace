@@ -114,7 +114,7 @@ cd ${SRC_PATH}
 function get_services_name {
   if [[ $# -gt 0 ]]
   then
-    IFS=',' read -ra ARRAY_NAME_SERVICES <<< $(echo $1 | tr -d ' ')
+    ARRAY_NAME_SERVICES=($(echo $1 | tr "," " "))
   fi
 }
 
@@ -187,7 +187,7 @@ function backend-nodejs-publish {
     echo "== Build ${ARRAY_NAME_SERVICES[$i]} project =="
     yarn install --cwd ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]} --frozen-lockfile && \
     mkdir -p ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/ && \
-    cp -arfv ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]}/* ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+    cp -rfv ${SRC_PATH}/common/${ARRAY_NAME_SERVICES[$i]}/* ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
     if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
     then
        echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
