@@ -353,8 +353,8 @@ RUN mkdir -p /app/appserver/ASC.Files/server && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY --from=base /var/www/services/ASC.Files/server/ /app/appserver/ASC.Files/server/
-COPY --from=base /var/www/services/ASC.People/server/ /app/appserver/ASC.People/server/
+COPY --from=base /var/www/services/ASC.Files/service/ /app/appserver/ASC.Files/server/
+COPY --from=base /var/www/services/ASC.People/service/ /app/appserver/ASC.People/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##
