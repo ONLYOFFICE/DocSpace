@@ -51,8 +51,8 @@ $dir/build/start/stop.backend.docker.sh
 # echo "Remove all backend containers"
 # docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
 
-echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
-docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
+# echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
+# docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Run MySQL"
 
@@ -87,7 +87,7 @@ bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -
 
 cd $dir/build/install/docker/
 
-echo "Build all backend services"
+echo "Build backend services images"
 DOCKERFILE=$docker_file \
 RELEASE_DATE=$build_date \
 GIT_BRANCH=$branch \
@@ -99,11 +99,11 @@ ENV_EXTENSION=$env_extension \
 DOCKER_TAG="v9.9.9" \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
+echo "Run migration"
+DOCKER_TAG="v9.9.9" BUILD_PATH="/var/www" SRC_PATH="$dir/publish/services" docker-compose -f docspace.yml -f docspace.overcome.yml --profile migration-runner up -d
+
 echo "Run backend services"
 DOCKER_TAG="v9.9.9" BUILD_PATH="/var/www" SRC_PATH="$dir/publish/services" docker-compose -f docspace.yml -f docspace.overcome.yml --profile backend-local up -d
-
-echo "Run DB migration"
-DOCKER_TAG="v9.9.9" docker compose -f migration-runner.yml up -d
 
 # Start all backend services"
 # $dir/build/start/start.backend.docker.sh
