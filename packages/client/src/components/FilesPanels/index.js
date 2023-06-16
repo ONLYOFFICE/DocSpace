@@ -29,6 +29,7 @@ import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
 import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
+import FilesSelector from "../FilesSelector";
 
 const Panels = (props) => {
   const {
@@ -80,10 +81,10 @@ const Panels = (props) => {
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
     (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
-      <OperationsPanel
-        key="operation-panel"
+      <FilesSelector
+        key="files-selector"
         isCopy={copyPanelVisible}
-        isRestore={restoreAllPanelVisible}
+        isRestoreAll={restoreAllPanelVisible}
       />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
