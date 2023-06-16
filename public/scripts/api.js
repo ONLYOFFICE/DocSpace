@@ -201,7 +201,7 @@
           case "onEventReturn": {
             if (frameData?.eventReturnData?.event in this.config.events) {
               this.config.events[frameData?.eventReturnData.event](
-                frameData?.eventReturnData.data
+                frameData?.eventReturnData?.data
               );
             }
             break;
@@ -405,6 +405,18 @@
 
     logout() {
       return this.#getMethodPromise("logout");
+    }
+
+    createTag(name) {
+      return this.#getMethodPromise("createTag", name);
+    }
+
+    addTagsToRoom(roomId, tags) {
+      return this.#getMethodPromise("addTagsToRoom", { roomId, tags });
+    }
+
+    removeTagsFromRoom(roomId, tags) {
+      return this.#getMethodPromise("removeTagsFromRoom", { roomId, tags });
     }
   }
 

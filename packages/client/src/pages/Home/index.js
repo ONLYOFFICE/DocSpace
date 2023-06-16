@@ -397,6 +397,9 @@ class PureHome extends React.Component {
       hashSettings,
       logout,
       login,
+      addTagsToRoom,
+      createTag,
+      removeTagsFromRoom,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -475,6 +478,36 @@ class PureHome extends React.Component {
             refreshFiles();
           }
           break;
+
+        case "createTag":
+          {
+            try {
+              res = await createTag(data);
+            } catch (e) {
+              res = e;
+            }
+          }
+          break;
+        case "addTagsToRoom":
+          {
+            const { roomId, tags } = data;
+            try {
+              res = await addTagsToRoom(roomId, tags);
+            } catch (e) {
+              res = e;
+            }
+          }
+          break;
+        case "removeTagsFromRoom":
+          {
+            const { roomId, tags } = data;
+            try {
+              res = await removeTagsFromRoom(roomId, tags);
+            } catch (e) {
+              res = e;
+            }
+          }
+          break;
         case "setListView":
           {
             setViewAs(data);
@@ -483,7 +516,11 @@ class PureHome extends React.Component {
         case "createHash":
           {
             const { password, hashSettings } = data;
-            res = createPasswordHash(password, hashSettings);
+            try {
+              res = createPasswordHash(password, hashSettings);
+            } catch (e) {
+              res = e;
+            }
           }
           break;
         case "getHashSettings": {
@@ -641,6 +678,7 @@ export default inject(
     settingsStore,
     filesActionsStore,
     oformsStore,
+    tagsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -677,7 +715,11 @@ export default inject(
       disableDrag,
       isErrorRoomNotAvailable,
       setIsPreview,
+      addTagsToRoom,
+      removeTagsFromRoom,
     } = filesStore;
+
+    const { createTag } = tagsStore;
 
     const { gallerySelected } = oformsStore;
 
@@ -710,8 +752,12 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const { setUploadPanelVisible, startUpload, uploaded, converted } =
-      uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -822,6 +868,10 @@ export default inject(
       hashSettings,
       logout: auth.logout,
       login: auth.login,
+
+      createTag,
+      addTagsToRoom,
+      removeTagsFromRoom,
     };
   }
 )(withRouter(observer(Home)));

@@ -60,7 +60,11 @@ const Sdk = ({
         case "createHash":
           {
             const { password, hashSettings } = data;
-            res = createPasswordHash(password, hashSettings);
+            try {
+              res = createPasswordHash(password, hashSettings);
+            } catch (e) {
+              res = e;
+            }
           }
           break;
         case "getUserInfo": {
@@ -109,8 +113,8 @@ const Sdk = ({
   );
 
   const onClose = useCallback(() => {
-    console.log("onCloseCallback");
     frameCallEvent({ event: "onCloseCallback" });
+    setFrameConfig(null);
   }, [frameCallEvent]);
 
   let component;

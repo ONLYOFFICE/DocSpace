@@ -782,9 +782,12 @@ class SettingsStore {
   };
 
   setFrameConfig = (frameConfig) => {
+    if (frameConfig) {
+      frameCallEvent({ event: "onAppReady" });
+    }
+
     this.frameConfig = frameConfig;
 
-    frameCallEvent({ event: "onAppReady" });
     return frameConfig;
   };
 
