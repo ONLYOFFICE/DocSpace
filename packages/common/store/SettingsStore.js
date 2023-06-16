@@ -2,12 +2,18 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { ThemeKeys, COOKIE_EXPIRATION_YEAR, LANGUAGE, TenantStatus } from "../constants";
+import {
+  ThemeKeys,
+  COOKIE_EXPIRATION_YEAR,
+  LANGUAGE,
+  TenantStatus,
+} from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import { ARTICLE_ALERTS } from "@docspace/client/src/helpers/constants";
 
 const themes = {
   Dark: Dark,
@@ -15,6 +21,22 @@ const themes = {
 };
 
 const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+
+const initArticleAlertsData = () => {
+  const savedArticleAlertsData = localStorage.getItem("articleAlertsData");
+  if (savedArticleAlertsData) return JSON.parse(savedArticleAlertsData);
+
+  const articleAlertsArray = Object.values(ARTICLE_ALERTS);
+  const defaultArticleAlertsData = {
+    current: articleAlertsArray[0],
+    available: articleAlertsArray,
+  };
+  localStorage.setItem(
+    "articleAlertsData",
+    JSON.stringify(defaultArticleAlertsData)
+  );
+  return defaultArticleAlertsData;
+};
 
 class SettingsStore {
   isLoading = false;
@@ -31,7 +53,8 @@ class SettingsStore {
     ? window.RendererProcessVariable?.theme?.type === "dark"
       ? Dark
       : Base
-    : window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
     ? Dark
     : Base;
   trustedDomains = [];
@@ -141,6 +164,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  articleAlertsData = initArticleAlertsData();
 
   constructor() {
     makeAutoObservable(this);
@@ -318,7 +342,10 @@ class SettingsStore {
     else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(window.DocSpaceConfig?.proxy?.url, "/products/files/");
+      const dp = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        "/products/files/"
+      );
       this.setDefaultPage(dp);
     }
 
@@ -328,7 +355,7 @@ class SettingsStore {
           key,
           key === "defaultPage"
             ? combineUrl(window.DocSpaceConfig?.proxy?.url, newSettings[key])
-            : newSettings[key],
+            : newSettings[key]
         );
         if (key === "culture") {
           if (newSettings.wizardToken) return;
@@ -388,7 +415,7 @@ class SettingsStore {
       this.getPortalSettings(),
       this.getAppearanceTheme(),
       this.getWhiteLabelLogoUrls(),
-      this.getBuildVersionInfo(),
+      this.getBuildVersionInfo()
     );
 
     await Promise.all(requests);
@@ -424,12 +451,12 @@ class SettingsStore {
   setAdditionalResources = async (
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
-    helpCenterEnabled,
+    helpCenterEnabled
   ) => {
     return await api.settings.setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
-      helpCenterEnabled,
+      helpCenterEnabled
     );
   };
 
@@ -476,7 +503,13 @@ class SettingsStore {
   };
 
   setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
-    return api.settings.setCompanyInfoSettings(address, companyName, email, phone, site);
+    return api.settings.setCompanyInfoSettings(
+      address,
+      companyName,
+      email,
+      phone,
+      site
+    );
   };
 
   setLogoUrl = (url) => {
@@ -535,11 +568,15 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return combineUrl(window.DocSpaceConfig?.proxy?.url, `/login.ashx?p=${token}&code=${code}`);
+    return combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      `/login.ashx?p=${token}&code=${code}`
+    );
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage === homepage || this.currentProductId === productId) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
 
     console.log(`setModuleInfo('${homepage}', '${productId}')`);
 
@@ -585,12 +622,17 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
-  setPortalPasswordSettings = async (minLength, upperCase, digits, specSymbols) => {
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
     const settings = await api.settings.setPortalPasswordSettings(
       minLength,
       upperCase,
       digits,
-      specSymbols,
+      specSymbols
     );
     this.setPasswordSettings(settings);
   };
@@ -657,7 +699,8 @@ class SettingsStore {
       ...versionInfo,
     };
 
-    if (!this.buildVersionInfo.documentServer) this.buildVersionInfo.documentServer = "6.4.1";
+    if (!this.buildVersionInfo.documentServer)
+      this.buildVersionInfo.documentServer = "6.4.1";
   };
 
   setTheme = (key) => {
@@ -675,7 +718,8 @@ class SettingsStore {
       case ThemeKeys.SystemStr:
       default:
         theme =
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
             ? ThemeKeys.DarkStr
             : ThemeKeys.BaseStr;
     }
@@ -785,6 +829,35 @@ class SettingsStore {
 
   deleteAppearanceTheme = async (id) => {
     return api.settings.deleteAppearanceTheme(id);
+  };
+
+  updateArticleAlertsData = ({ current, available }) => {
+    this.articleAlertsData = {
+      current: current || this.articleAlertsData.current,
+      available: available || this.articleAlertsData.available,
+    };
+    localStorage.setItem(
+      "articleAlertsData",
+      JSON.stringify(this.articleAlertsData)
+    );
+  };
+
+  incrementIndexOfArticleAlertsData = () => {
+    const { current, available } = this.articleAlertsData;
+    if (!available.length) return;
+
+    let next = 0;
+    const indexOfCurrent = available.indexOf(current);
+    if (indexOfCurrent + 1 === available.length) next = available[0];
+    else next = available[indexOfCurrent + 1];
+
+    this.updateArticleAlertsData({ current: next });
+  };
+
+  removeAlertFromArticleAlertsData = (alertToRemove) => {
+    const { available } = this.articleAlertsData;
+    const newAvailable = available.filter((alert) => alert !== alertToRemove);
+    this.updateArticleAlertsData({ available: newAvailable });
   };
 }
 

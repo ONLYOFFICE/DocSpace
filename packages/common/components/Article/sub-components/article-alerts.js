@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import ArticleTeamTrainingAlert from "./article-team-training";
 import ArticleSubmitToFormGalleryAlert from "./article-submit-to-form-gallery";
 import ArticlePaymentAlert from "./article-payment-alert";
 import { StyledArticleAlertsComponent } from "../styled-article";
+import { ARTICLE_ALERTS } from "@docspace/client/src/helpers/constants";
 
 const ArticleAlerts = ({
   showText,
@@ -14,8 +15,13 @@ const ArticleAlerts = ({
   isPaymentPageAvailable,
   isTeamTrainingAlertAvailable,
   isSubmitToGalleryAlertAvailable,
+  articleAlertsData,
+  incrementIndexOfArticleAlertsData,
 }) => {
-  //TODO-mushka clear up about alert switchind functionality, implement and return training alert
+  useEffect(() => {
+    incrementIndexOfArticleAlertsData();
+  }, []);
+
   return (
     <StyledArticleAlertsComponent>
       {isPaymentPageAvailable &&
@@ -23,11 +29,17 @@ const ArticleAlerts = ({
         (isFreeTariff || isGracePeriod) &&
         showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
 
-      {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
+      {isTeamTrainingAlertAvailable &&
+        articleAlertsData.current === ARTICLE_ALERTS.TeamTraining &&
+        articleAlertsData.available.includes(ARTICLE_ALERTS.TeamTraining) &&
+        showText && <ArticleTeamTrainingAlert />}
 
-      {isSubmitToGalleryAlertAvailable && showText && (
-        <ArticleSubmitToFormGalleryAlert />
-      )}
+      {isSubmitToGalleryAlertAvailable &&
+        articleAlertsData.current === ARTICLE_ALERTS.SubmitToFormGallery &&
+        articleAlertsData.available.includes(
+          ARTICLE_ALERTS.SubmitToFormGallery
+        ) &&
+        showText && <ArticleSubmitToFormGalleryAlert />}
     </StyledArticleAlertsComponent>
   );
 };
@@ -43,7 +55,8 @@ export default inject(({ auth }) => {
   } = auth;
   const { isFreeTariff, isNonProfit } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
-  const { showText } = settingsStore;
+  const { showText, articleAlertsData, incrementIndexOfArticleAlertsData } =
+    settingsStore;
 
   return {
     showText,
@@ -53,5 +66,7 @@ export default inject(({ auth }) => {
     isPaymentPageAvailable,
     isTeamTrainingAlertAvailable,
     isSubmitToGalleryAlertAvailable,
+    articleAlertsData,
+    incrementIndexOfArticleAlertsData,
   };
 })(observer(ArticleAlerts));

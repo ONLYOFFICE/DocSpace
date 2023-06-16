@@ -5,21 +5,18 @@ import { useTranslation } from "react-i18next";
 
 import AlertComponent from "../../AlertComponent";
 import Loaders from "../../Loaders";
+import { ARTICLE_ALERTS } from "@docspace/client/src/helpers/constants";
 
-const ArticleTeamTrainingAlert = ({ theme, bookTrainingEmail }) => {
+const ArticleTeamTrainingAlert = ({
+  theme,
+  bookTrainingEmail,
+  removeAlertFromArticleAlertsData,
+}) => {
   const { t, ready } = useTranslation("Common");
-  const [isClose, setIsClose] = useState(
-    localStorage.getItem("teamTrainingAlertClose")
-  );
-
-  const onClick = () => {
-    localStorage.setItem("teamTrainingAlertClose", true);
-    setIsClose(true);
-  };
-
-  if (isClose) return <></>;
-
   const isShowLoader = !ready;
+
+  const onClose = () =>
+    removeAlertFromArticleAlertsData(ARTICLE_ALERTS.TeamTraining);
 
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
@@ -32,7 +29,7 @@ const ArticleTeamTrainingAlert = ({ theme, bookTrainingEmail }) => {
       description={t("Common:BookTeamTraining")}
       link={`mailto:${bookTrainingEmail}`}
       linkTitle={t("Common:BookNow")}
-      onCloseClick={onClick}
+      onCloseClick={onClose}
       needCloseIcon
     />
   );
@@ -41,10 +38,12 @@ const ArticleTeamTrainingAlert = ({ theme, bookTrainingEmail }) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, bookTrainingEmail } = settingsStore;
+  const { theme, bookTrainingEmail, removeAlertFromArticleAlertsData } =
+    settingsStore;
 
   return {
     theme,
     bookTrainingEmail,
+    removeAlertFromArticleAlertsData,
   };
 })(observer(ArticleTeamTrainingAlert));
