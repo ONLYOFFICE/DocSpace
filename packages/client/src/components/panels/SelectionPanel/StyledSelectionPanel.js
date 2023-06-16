@@ -209,6 +209,10 @@ const StyledAsideBody = styled.div`
     height: 100%;
     margin-left: -16px;
     margin-right: -6px;
+
+    .scroll-body {
+      padding-bottom: 64px;
+    }
   }
   .selection-panel_files {
     height: 100%;
