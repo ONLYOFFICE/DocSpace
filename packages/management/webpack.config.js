@@ -272,7 +272,7 @@ module.exports = (env, argv) => {
   }
 
   const remotes = {
-    client: "management@/remoteEntry.js",
+    client: "client@/remoteEntry.js",
   };
 
   config.plugins.push(
