@@ -8,12 +8,10 @@
   "ActivateSwithToProHeader": "Tam Enterprise versiyasına təkmilləşdirin",
   "ActivateTariffDescr": "Siz ONLYOFFICE DocSpace Enterprise istifadə edirsiniz.",
   "ActivateTariffEnterpriseExpiration": "Abunəliyiniz {{date}} tarixində bitir.",
-  "ActivateTariffEnterpriseTrialDescr": "Siz ONLYOFFICE Workspace Enterprise Edition-ın sınaq versiyasından istifadə edirsiniz.",
   "ActivateTariffEnterpriseTrialExpiration": "Sınaq müddətiniz {{date}} tarixində bitir.",
   "ActivateToProBannerHeaderTrial": "Aşağıdakıları əldə etmək üçün tam Müəssisə versiyasını alın:",
   "ActivateUploadDescr": "Lisenziyanızı aktivləşdirmək üçün onu aşağıda yükləyib aktivləşdirmə düyməsinə klikləyin.",
   "TopBottonsEnterpriseExpired": "Dəstək və yeniləmələrə abunəliyiniz başa çatıb",
-  "TopBottonsEnterpriseWarning": "Dəstək və yeniləmə abunəliyiniz {0} tarixində bitir",
   "UpgradeToProBannerHeader": "Təkmil funksiyalara 30 günlük pulsuz giriş əldə edin",
   "UpgradeToProBannerInformationAboutShort": "Rəsmi vebsaytda <1> Enterprise Edition </1> haqqında ətraflı məlumat əldə edin",
   "UpgradeToProBannerInformationDemo": "Demonu {0}buradan{1} tələb edin",
@@ -29,11 +27,9 @@
   "UpgradeToProBannerItemLicenseDescr": "Funksionallıq və təhlükəsizlik yeniləmələri üçün + 1 illik abunə.",
   "UpgradeToProBannerItemLicenseHeader": "Həmişəlik lisenziya.",
   "UpgradeToProBannerItemMobileDescr": "Mobil veb brauzerdə sənədləri, cədvəlləri və slaydları redaktə edin.",
-  "UpgradeToProBannerItemMobileEditingHeader": "Mobil redaktə.",
   "UpgradeToProBannerItemMobileHeader": "Mobil giriş.",
   "UpgradeToProBannerItemScalabilityDescr": "Komandanızın ölçüsündən asılı olmayaraq sənədlərinizi rahat şəkildə redaktə edin və birlikdə işləyin.",
   "UpgradeToProBannerItemScalabilityHeader": "Ölçüləbilənlik və klasterləşmə",
   "UpgradeToProBannerItemSupportDescr": "Qarşılaşdığınız hər hansı bir çətinlik üçün sürətli peşəkar yardımdan yararlanın.",
-  "UpgradeToProBannerItemSupportHeader": "Texniki dəstək.",
-  "UpgradeToProHeader": "Qabaqcıl funksiyalara pulsuz giriş"
+  "UpgradeToProBannerItemSupportHeader": "Texniki dəstək."
 }

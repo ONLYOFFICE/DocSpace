@@ -8,12 +8,10 @@
   "ActivateSwithToProHeader": "Mudar para a versão Enterprise completa",
   "ActivateTariffDescr": "Você está usando o ONLYOFFICE DocSpace Enterprise.",
   "ActivateTariffEnterpriseExpiration": "Sua assinatura expira em {{date}}.",
-  "ActivateTariffEnterpriseTrialDescr": "Você está usando a versão de teste do ONLYOFFICE Workspace Enterprise Edition.",
   "ActivateTariffEnterpriseTrialExpiration": "Seu teste expira em {{date}}.",
   "ActivateToProBannerHeaderTrial": "Compre a versão Enterprise completa para obter:",
   "ActivateUploadDescr": "Para ativar sua licença, faça o upload abaixo e clique no botão Ativar.",
   "TopBottonsEnterpriseExpired": "Sua assinatura de suporte e atualizações expirou",
-  "TopBottonsEnterpriseWarning": "Sua assinatura de suporte e atualizações expira em {0}",
   "UpgradeToProBannerHeader": "Obtenha acesso gratuito a recursos pro por 30 dias",
   "UpgradeToProBannerInformationAboutShort": "Saiba mais sobre a Enterprise Edition <1>no site oficial</1>",
   "UpgradeToProBannerInformationDemo": "Solicite a demonstração <1>aqui</1>",
@@ -29,11 +27,9 @@
   "UpgradeToProBannerItemLicenseDescr": "+ 1 ano de assinatura para atualizações de funcionalidade e segurança.",
   "UpgradeToProBannerItemLicenseHeader": "Licença Vitalícia.",
   "UpgradeToProBannerItemMobileDescr": "Edite documentos, planilhas e slides em navegadores móveis.",
-  "UpgradeToProBannerItemMobileEditingHeader": "Edição móvel.",
   "UpgradeToProBannerItemMobileHeader": "Acesso móvel.",
   "UpgradeToProBannerItemScalabilityDescr": "Edite e colabore confortavelmente em documentos, independentemente do tamanho de sua equipe.",
   "UpgradeToProBannerItemScalabilityHeader": "Escalabilidade e agrupamento.",
   "UpgradeToProBannerItemSupportDescr": "Obtenha ajuda profissional rápida para todos os problemas que você enfrenta.",
-  "UpgradeToProBannerItemSupportHeader": "Suporte técnico.",
-  "UpgradeToProHeader": "Acesso gratuito a recursos profissionais"
+  "UpgradeToProBannerItemSupportHeader": "Suporte técnico."
 }

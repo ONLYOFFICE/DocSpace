@@ -8,12 +8,10 @@
   "ActivateSwithToProHeader": "Passer à la version Enterprise complète",
   "ActivateTariffDescr": "Vous utilisez ONLYOFFICE DocSpace Enterprise.",
   "ActivateTariffEnterpriseExpiration": "Votre abonnement expire le {{date}}.",
-  "ActivateTariffEnterpriseTrialDescr": "Vous utilisez la version d'essai d'ONLYOFFICE Workspace Enterprise Edition.",
   "ActivateTariffEnterpriseTrialExpiration": "Votre période d'essai expire le {{date}}.",
   "ActivateToProBannerHeaderTrial": "Achetez la version complète d'Enterprise pour obtenir :",
   "ActivateUploadDescr": "Pour activer votre licence, chargez-la ci-dessous et cliquez sur le bouton d'activation.",
   "TopBottonsEnterpriseExpired": "Votre abonnement au support et aux mises à jour a expiré",
-  "TopBottonsEnterpriseWarning": "Votre abonnement au support et aux mises à jour expire le {0}",
   "UpgradeToProBannerHeader": "Obtenez un accès gratuit de 30 jours aux outils avancés",
   "UpgradeToProBannerInformationAboutShort": "En savoir plus à propos d'Enterprise Edition <1>sur le site web officiel</1>",
   "UpgradeToProBannerInformationDemo": "Demandez la démo <1>ici</1>",
@@ -29,11 +27,9 @@
   "UpgradeToProBannerItemLicenseDescr": "+ 1 an d'abonnement sur les mises à jour au niveau des fonctionnalités et de la sécurité.",
   "UpgradeToProBannerItemLicenseHeader": "Licence à vie",
   "UpgradeToProBannerItemMobileDescr": "Editez les documents, les feuilles de calcul et les diapositives dans le navigateur web mobile.",
-  "UpgradeToProBannerItemMobileEditingHeader": "Edition sur l'appareil mobile",
   "UpgradeToProBannerItemMobileHeader": "Accès pour mobile",
   "UpgradeToProBannerItemScalabilityDescr": "Editez et coéditez vos documents confortablement quelle que soit la taille de votre équipe.",
   "UpgradeToProBannerItemScalabilityHeader": "Scalabilité et regroupement en grappes",
   "UpgradeToProBannerItemSupportDescr": "Profitez d'une assistance professionnelle rapide pour toutes les difficultés rencontrées.",
-  "UpgradeToProBannerItemSupportHeader": "Assistance technique",
-  "UpgradeToProHeader": "Accès gratuit aux fonctionnalités avancées"
+  "UpgradeToProBannerItemSupportHeader": "Assistance technique"
 }
