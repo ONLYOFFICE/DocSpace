@@ -76,7 +76,6 @@
   "DNSSettings": "Nastavení DNS",
   "DNSSettingsDescription": "Nastavení DNS umožňuje nastavit alternativní adresu URL pro váš prostor.",
   "DNSSettingsMobile": "Pošlete svůj požadavek našemu týmu podpory a naši specialisté vám pomohou s nastavením.",
-  "DNSSettingsTooltip": "Zašlete požadavek našemu týmu podpory a naši specialisté vám s nastavením pomohou.",
   "DNSSettingsTooltipMain": "Nastavení DNS umožňuje nastavit alternativní adresu URL pro váš prostor {{ organizationName }}.",
   "DNSSettingsTooltipStandalone": "Zaškrtněte'Vlastní název domény'a zadejte Váš vlastní název domény pro prostor ONLYOFFICE™ níže. Chcete-li nastavené parametry aktivovat, klikněte na tlačítko 'Uložit' v dolní části.",
   "DownloadCopy": "Stáhnout kopii",
