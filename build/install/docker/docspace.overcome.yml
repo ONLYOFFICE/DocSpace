@@ -43,8 +43,6 @@ services:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-studio-notify:
     <<: *x-profiles-local
@@ -71,8 +69,6 @@ services:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-proxy:
     <<: *x-profiles-local 
