@@ -79,7 +79,7 @@
   "DNSSettingsDescription": "DNS Settings is a way to set an alternative URL for your space.",
   "DNSSettingsMobile": "Send your request to our support team, and our specialists will help you with the settings.",
   "DNSSettingsTooltipMain": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} space.",
-  "DNSSettingsTooltipStandalone": "Check the 'Custom domain name box' and specify your own domain name for the ONLYOFFICE™ space in the field below. To make the parameters you set take effect click the 'Save button' at the bottom of the section.",
+  "DNSSettingsTooltipStandalone": "Check the 'Custom domain name box' and specify your own domain name for the ONLYOFFICE space in the field below. To make the parameters you set take effect click the 'Save button' at the bottom of the section.",
   "DownloadCopy": "Download copy",
   "DownloadReportBtnText": "Download report",
   "DownloadReportDescription": "The report will be saved to My Documents",

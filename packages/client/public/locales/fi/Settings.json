@@ -75,7 +75,7 @@
   "DNSSettingsDescription": "DNS-asetukset on tapa asettaa vaihtoehtoinen URL tilallesi.",
   "DNSSettingsMobile": "Lähetä pyyntösi tukitiimillemme ja asiantuntijamme auttavat sinua asetusten kanssa.",
   "DNSSettingsTooltipMain": "DNS-asetukset antavat mahdollisuuden asettaa  {{organizationName }} tilallesi vaihtoehtoisen URL-osoitteen.",
-  "DNSSettingsTooltipStandalone": "Voit joko syöttää halutun aliaksen 'sivuston osoite' -kenttään tai valita 'oman verkkotunnuksen' ONLYOFFICE™-sivustolle. Ota tekemäsi asetukset käyttöön klikkaamalla 'Tallenna' painiketta.",
+  "DNSSettingsTooltipStandalone": "Voit joko syöttää halutun aliaksen 'sivuston osoite' -kenttään tai valita 'oman verkkotunnuksen' ONLYOFFICE-sivustolle. Ota tekemäsi asetukset käyttöön klikkaamalla 'Tallenna' painiketta.",
   "DownloadCopy": "Lataa kopio",
   "DownloadReportBtnText": "Lataa raportti",
   "DownloadReportDescription": "Raportti tallennetaan Minun dokumentteihin",
