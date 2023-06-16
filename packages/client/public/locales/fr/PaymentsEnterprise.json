@@ -15,7 +15,7 @@
   "UpgradeToProBannerInformationAboutShort": "En savoir plus à propos d'Enterprise Edition <1>sur le site web officiel</1>",
   "UpgradeToProBannerInformationDemo": "Demandez la démo <1>ici</1>",
   "UpgradeToProBannerInformationPurchase": "Pour toute question d'achat contactez-nous à <1>{{email}}</1>",
-  "UpgradeToProBannerInformationSupport": "Obtenir une assistance technique <1>{{helpUrl}}</1",
+  "UpgradeToProBannerInformationSupport": "Obtenir une assistance technique <1>{{helpUrl}}</1>",
   "UpgradeToProBannerInstructionDescr": "Utilisez la documentation officielle pour mettre à niveau :",
   "UpgradeToProBannerInstructionHeader": "L'accès aux outils professionnels, démarrez un essai gratuit de 30 jours sur ONLYOFFICE DocSpace Enterprise Edition.",
   "UpgradeToProBannerInstructionItemDocker": "Consignes d'installation à l'aide de Docker.",
