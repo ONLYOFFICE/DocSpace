@@ -2,7 +2,6 @@
   "Authentication": "認証",
   "AuthViaNTLM": "NTLMによる認証",
   "EnableSSL": "SSLを有効に",
-  "EnterPassword": "パスワードを入力してください",
   "Host": "ホスト",
   "HostLogin": "ログインを開催",
   "HostPassword": "ホスト·パスワード",

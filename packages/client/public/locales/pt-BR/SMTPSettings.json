@@ -2,7 +2,6 @@
   "Authentication": "Autenticação",
   "AuthViaNTLM": "Autenticação via NTLM",
   "EnableSSL": "Habilitar SSL",
-  "EnterPassword": "Inserir senha",
   "Host": "Host",
   "HostLogin": "Login do host",
   "HostPassword": "Senha do host",

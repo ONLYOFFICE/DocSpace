@@ -111,7 +111,7 @@ const CustomSettings = (props) => {
       <TextInput
         className="smtp-settings_input"
         name={HOST_PASSWORD}
-        placeholder={t("EnterPassword")}
+        placeholder={t("Common:EnterPassword")}
         onChange={onChange}
         value={settings[HOST_PASSWORD]}
         isDisabled={isLoading || !settings[AUTHENTICATION]}
@@ -169,7 +169,7 @@ const CustomSettings = (props) => {
         isDisabled={isLoading}
         className="smtp-settings_input"
         name={SENDER_DISPLAY_NAME}
-        placeholder={t("EnterName")}
+        placeholder={t("Common:EnterName")}
         onChange={onChange}
         value={settings[SENDER_DISPLAY_NAME]}
         scale
