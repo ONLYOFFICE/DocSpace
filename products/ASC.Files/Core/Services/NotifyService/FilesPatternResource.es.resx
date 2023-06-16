@@ -113,4 +113,16 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Documentos. Acceso concedido a la carpeta: [$DocumentTitle]($DocumentURL)</value>
   </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName ha eliminado una sala
+ 
+$__AuthorName eliminado la sala: $RoomTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName le ha mencionado en el comentario del documento 
+ 
+$__AuthorName le ha mencionado en el comentario del documento "$DocumentTitle":"$DocumentURL" en la sala "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
 </root>
