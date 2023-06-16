@@ -1,6 +1,5 @@
 {
   "ActivateLicenseActivated": "License activated",
-  "ActivatePurchaseBuyLicense": "To buy license, click the button below.",
   "ActivatePurchaseBuyNow": "Koop nu",
   "ActivateRenewSubscriptionHeader": "Renew subscription for Enterprise",
   "ActivateToProBannerHeaderTrial": "Buy the full Enterprise version to get:",
@@ -12,7 +11,6 @@
   "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
   "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
   "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
-  "UpgradeToProBannerInstructionNote": "Please note that the editors will be unavailable during the upgrade. We also recommend to {0}backup your data{1} before you start.",
   "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
   "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers."
 }

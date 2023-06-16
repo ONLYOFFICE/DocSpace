@@ -21,7 +21,7 @@
   "UpgradeToProBannerInstructionItemDocker": "Consignes d'installation à l'aide de Docker.",
   "UpgradeToProBannerInstructionItemLinux": "Consignes Linux",
   "UpgradeToProBannerInstructionItemWindows": "Consignes pour Windows.",
-  "UpgradeToProBannerInstructionNote": "Veuillez noter que les éditeurs ne seront pas disponibles pendant la mise à jour. Nous vous conseillons également de {0}sauvegarder vos données{1} avant de démarrer.",
+  "UpgradeToProBannerInstructionNote": "Veuillez noter que les éditeurs ne seront pas disponibles pendant la mise à jour. Nous vous conseillons également de <1>sauvegarder vos données</1> avant de démarrer.",
   "UpgradeToProBannerInstructionReadNow": "Lire maintenant",
   "UpgradeToProBannerItemLicenseDescr": "+ 1 an d'abonnement sur les mises à jour au niveau des fonctionnalités et de la sécurité.",
   "UpgradeToProBannerItemLicenseHeader": "Licence à vie",
