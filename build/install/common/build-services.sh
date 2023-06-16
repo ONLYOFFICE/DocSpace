@@ -219,9 +219,9 @@ function build_nodejs_frontend {
   if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
   then
     echo "== ADD ${DOCKER_ENTRYPOINT} to ASC.Login =="
-    cp ${DOCKER_ENTRYPOINT} {SRC_PATH}/build/deploy/login/
+    cp ${DOCKER_ENTRYPOINT} ${SRC_PATH}/build/deploy/login/
     echo "== ADD ${DOCKER_ENTRYPOINT} toASC.Editors =="
-    cp ${DOCKER_ENTRYPOINT} {${SRC_PATH}/build/deploy/editor/
+    cp ${DOCKER_ENTRYPOINT} ${SRC_PATH}/build/deploy/editor/
   fi
 }
 
