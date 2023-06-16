@@ -1119,8 +1119,8 @@ const Base = {
     },
 
     icon: {
-      background: lightHover,
-      color: grayMain,
+      background: "#ECEEF1",
+      color: "#A3A9AE",
     },
 
     width: {
