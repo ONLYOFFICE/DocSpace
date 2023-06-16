@@ -81,7 +81,7 @@
     #iframe;
     #isConnected = false;
     #callbacks = [];
-    #tasks = [];
+    //#tasks = [];
 
     constructor(config) {
       this.config = config;
@@ -193,9 +193,15 @@
               callback && callback(frameData?.methodReturnData);
             }
 
-            if (this.#tasks.length > 0) {
+            console.log(
+              "api onMethodReturn",
+              frameData,
+              frameData?.methodReturnData
+            );
+
+            /*             if (this.#tasks.length > 0) {
               this.#sendMessage(this.#tasks.shift());
-            }
+            } */
             break;
           }
           case "onEventReturn": {
@@ -221,6 +227,8 @@
         return;
       }
 
+      console.log("api #executeMethod", methodName);
+
       this.#callbacks.push(callback);
 
       const message = {
@@ -229,10 +237,10 @@
         data: params,
       };
 
-      if (this.#callbacks.length !== 1) {
+      /*       if (this.#callbacks.length !== 1) {
         this.#tasks.push(message);
         return;
-      }
+      } */
 
       this.#sendMessage(message);
     };
@@ -352,6 +360,7 @@
     }
 
     getHashSettings() {
+      console.log("api getHashSettings");
       return this.#getMethodPromise("getHashSettings");
     }
 
