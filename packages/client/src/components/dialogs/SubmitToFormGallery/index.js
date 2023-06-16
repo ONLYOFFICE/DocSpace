@@ -30,7 +30,7 @@ export const StyledFormItem = styled.div`
   justify-content: start;
   gap: 12px;
   border-radius: 6px;
-  background: #f8f9f9;
+  background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
 
   .icon {
     width: 24px;
