@@ -8,7 +8,7 @@ export type BodyProps = {
   isAllChecked?: boolean;
   placeholder?: string;
   value?: string;
-  hideSearch?: boolean;
+  withSearch?: boolean;
   onSearch: (value: string) => void;
   onClearSearch: () => void;
   items: Item[];

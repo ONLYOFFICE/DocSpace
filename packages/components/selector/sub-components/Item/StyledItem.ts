@@ -9,6 +9,7 @@ const selectedCss = css`
 
 const StyledItem = styled.div<{
   isSelected: boolean | undefined;
+  isDisabled?: boolean;
   isMultiSelect: boolean;
 }>`
   display: flex;
@@ -17,8 +18,6 @@ const StyledItem = styled.div<{
   padding: 0 16px;
 
   box-sizing: border-box;
-
-  ${(props) => props.isSelected && !props.isMultiSelect && selectedCss}
 
   .room-logo,
   .user-avatar {
@@ -46,12 +45,20 @@ const StyledItem = styled.div<{
     }
   }
 
-  @media (hover: hover) {
-    &:hover {
-      cursor: pointer;
-      background: ${(props) => props.theme.selector.item.hoverBackground};
-    }
-  }
+  ${(props) =>
+    props.isDisabled
+      ? css`
+          opacity: 0.5;
+        `
+      : css`
+          ${props.isSelected && !props.isMultiSelect && selectedCss}
+          @media (hover: hover) {
+            &:hover {
+              cursor: pointer;
+              background: ${props.theme.selector.item.hoverBackground};
+            }
+          }
+        `}
 `;
 
 StyledItem.defaultProps = { theme: Base };

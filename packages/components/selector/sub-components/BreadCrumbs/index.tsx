@@ -19,18 +19,29 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
     []
   );
 
-  const onClickItem = React.useCallback((e, open, item: BreadCrumb) => {
-    onSelectBreadCrumb && onSelectBreadCrumb(item);
-  }, []);
+  const onClickItem = React.useCallback(
+    (e, open, item: BreadCrumb) => {
+      onSelectBreadCrumb && onSelectBreadCrumb(item);
+    },
+    [breadCrumbs]
+  );
 
   const calculateDisplayedItems = React.useCallback(
     (items: BreadCrumb[]) => {
       const itemsLength = items.length;
+      const oldItems: BreadCrumb[] = [];
+
+      items.forEach((item) =>
+        oldItems.push({
+          ...item,
+          id: item.id.toString(),
+        })
+      );
       if (itemsLength > 0) {
         const newItems: DisplayedItem[] = [];
 
         if (itemsLength <= 3) {
-          items.forEach((item, index) => {
+          oldItems.forEach((item, index) => {
             newItems.push({
               ...item,
               isArrow: false,
@@ -38,7 +49,7 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
               listItems: [],
             });
 
-            if (index !== items.length - 1) {
+            if (index !== oldItems.length - 1) {
               newItems.push({
                 id: `arrow-${index}`,
                 label: "",
@@ -50,7 +61,7 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
           });
         } else {
           newItems.push({
-            ...items[0],
+            ...oldItems[0],
             isArrow: false,
             isList: false,
             listItems: [],
@@ -81,7 +92,7 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
           });
 
           newItems.push({
-            ...items[itemsLength - 2],
+            ...oldItems[itemsLength - 2],
             isArrow: false,
             isList: false,
             listItems: [],
@@ -96,17 +107,21 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
           });
 
           newItems.push({
-            ...items[itemsLength - 1],
+            ...oldItems[itemsLength - 1],
             isArrow: false,
             isList: false,
             listItems: [],
           });
 
-          items.splice(0, 1);
-          items.splice(items.length - 2, 2);
+          oldItems.splice(0, 1);
+          oldItems.splice(oldItems.length - 2, 2);
 
-          items.forEach((item) => {
-            newItems[2].listItems?.push({ ...item, onClick: onClickItem });
+          oldItems.forEach((item) => {
+            newItems[2].listItems?.push({
+              ...item,
+              minWidth: "150px",
+              onClick: onClickItem,
+            });
           });
         }
 
@@ -124,13 +139,13 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
 
   let gridTemplateColumns = "minmax(1px, max-content)";
 
-  if (displayedItems.length > 3) {
+  if (displayedItems.length > 5) {
     gridTemplateColumns =
       "minmax(1px, max-content) 12px 16px 12px minmax(1px, max-content) 12px minmax(1px, max-content)";
-  } else if (displayedItems.length === 3) {
+  } else if (displayedItems.length === 5) {
     gridTemplateColumns =
       "minmax(1px, max-content) 12px minmax(1px, max-content) 12px minmax(1px, max-content)";
-  } else if (displayedItems.length === 2) {
+  } else if (displayedItems.length === 3) {
     gridTemplateColumns =
       "minmax(1px, max-content) 12px minmax(1px, max-content)";
   }
@@ -162,7 +177,11 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
               if (index === displayedItems.length - 1) return;
 
               onSelectBreadCrumb &&
-                onSelectBreadCrumb({ id: item.id, label: item.label });
+                onSelectBreadCrumb({
+                  id: item.id,
+                  label: item.label,
+                  isRoom: item.isRoom,
+                });
             }}
           >
             {item.label}

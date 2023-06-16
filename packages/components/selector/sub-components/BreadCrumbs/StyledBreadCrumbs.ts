@@ -20,7 +20,7 @@ const StyledBreadCrumbs = styled.div<{
 
   grid-template-columns: ${(props) => props.gridTemplateColumns};
 
-  grid-column-gap: 4px;
+  grid-column-gap: 8px;
 
   align-items: center;
 

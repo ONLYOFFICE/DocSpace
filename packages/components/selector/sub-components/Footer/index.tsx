@@ -24,6 +24,7 @@ const Footer = React.memo(
     accessRights,
     selectedAccessRight,
     onAccept,
+    disableAcceptButton,
     onCancel,
     onChangeAccessRights,
 
@@ -82,6 +83,7 @@ const Footer = React.memo(
             primary
             scale
             size={"normal"}
+            isDisabled={disableAcceptButton}
             onClick={onAccept}
           />
 

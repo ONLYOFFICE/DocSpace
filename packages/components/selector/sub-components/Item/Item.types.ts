@@ -7,6 +7,7 @@ export type Item = {
   role?: string;
   isSelected?: boolean;
   email?: string;
+  isDisabled?: boolean;
 };
 
 export type Data = {

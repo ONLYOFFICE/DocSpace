@@ -44,12 +44,13 @@ import Selector from "@docspace/components/selector";
   breadCrumbs={[]}
   onSelectBreadCrumb={function noRefCheck() {}}
   breadCrumbsLoader={<></>}
-  hideSearch={false}
+  withSearch={true}
   isBreadCrumbsLoading={false}
   withFooterInput={false}
   footerInputHeader={""}
   footerCheckboxLabel={""}
   currentFooterInputValue={""}
+  alwaysShowFooter={false}
 />
 ```
 
@@ -64,7 +65,7 @@ import Selector from "@docspace/components/selector";
 | `withoutBackButton`            |     `bool`     |    -     |   -    |    -    | Hide header back button                                       |
 | `onBackClick`                  |     `func`     |    -     |   -    |    -    | What the header arrow will trigger when clicked               |
 | `searchPlaceholder`            |    `string`    |    -     |   -    |    -    | Placeholder for search input                                  |
-| `hideSearch`                   |     `bool`     |    -     |   -    |    -    | Hide search input                                             |
+| `withSearch`                   |     `bool`     |    -     |   -    |  true   | Show search input                                             |
 | `onSearch`                     |     `func`     |    -     |   -    |    -    | What the search input will trigger when user stopped typing   |
 | `onClearSearch`                |     `func`     |    -     |   -    |    -    | What the clear icon of search input will trigger when clicked |
 | `items`                        |    `array`     |    -     |   -    |    -    | Displaying items                                              |
@@ -106,3 +107,5 @@ import Selector from "@docspace/components/selector";
 | `footerCheckboxLabel`          |    `string`    |    -     |   -    |    -    | Title of checkbox                                             |
 | `footerInputHeader`            |    `string`    |    -     |   -    |    -    | Header of new name block                                      |
 | `withFooterInput`              |     `bool`     |    -     |   -    |  false  | Show name change input                                        |
+| `alwaysShowFooter`             |     `bool`     |    -     |   -    |  false  | Always show buttons                                           |
+| `disableAcceptButton`          |     `bool`     |    -     |   -    |  false  | Disable click at accept button                                |

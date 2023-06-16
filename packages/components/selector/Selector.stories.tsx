@@ -203,8 +203,10 @@ Default.args = {
   onSelectBreadCrumb: (item) => {},
   breadCrumbsLoader: <StyledBreadCrumbsLoader />,
   withoutBackButton: false,
-  hideSearch: false,
+  withSearch: false,
   isBreadCrumbsLoading: false,
+  alwaysShowFooter: false,
+  disableAcceptButton: false,
 };
 
 BreadCrumbs.args = {
@@ -253,12 +255,14 @@ BreadCrumbs.args = {
   onSelectBreadCrumb: (item) => {},
   breadCrumbsLoader: <StyledBreadCrumbsLoader />,
   withoutBackButton: false,
-  hideSearch: false,
+  withSearch: false,
   isBreadCrumbsLoading: false,
   withFooterInput: false,
   footerInputHeader: "",
   footerCheckboxLabel: "",
   currentFooterInputValue: "",
+  alwaysShowFooter: false,
+  disableAcceptButton: false,
 };
 
 NewName.args = {
@@ -305,10 +309,12 @@ NewName.args = {
   onSelectBreadCrumb: (item) => {},
   breadCrumbsLoader: <StyledBreadCrumbsLoader />,
   withoutBackButton: false,
-  hideSearch: false,
+  withSearch: false,
   isBreadCrumbsLoading: false,
   withFooterInput: true,
   footerInputHeader: "File name",
   footerCheckboxLabel: "Open saved document in new tab",
   currentFooterInputValue: "OldFIleName.docx",
+  alwaysShowFooter: false,
+  disableAcceptButton: false,
 };

@@ -20,13 +20,13 @@ export type SelectorProps = {
   headerLabel: string;
   withoutBackButton?: boolean;
   onBackClick?: () => void;
-  hideSearch?: boolean;
+  withSearch?: boolean;
   searchPlaceholder?: string;
   searchValue?: string;
   onSearch?: (value: string) => void;
   onClearSearch?: () => void;
   items: Item[];
-  onSelect: (item: Item) => void;
+  onSelect: (item: any) => void;
   isMultiSelect?: boolean;
   selectedItems?: Item[];
   acceptButtonLabel: string;
@@ -55,14 +55,14 @@ export type SelectorProps = {
   searchEmptyScreenDescription?: string;
   hasNextPage?: boolean;
   isNextPageLoading?: boolean;
-  loadNextPage?: (startIndex: number) => void;
+  loadNextPage?: (startIndex: number, ...rest: any) => Promise<void>;
   totalItems: number;
   isLoading?: boolean;
   searchLoader?: any;
   rowLoader?: any;
   withBreadCrumbs?: boolean;
   breadCrumbs?: BreadCrumb[];
-  onSelectBreadCrumb?: (item: BreadCrumb) => void;
+  onSelectBreadCrumb?: (item: any) => void;
   breadCrumbsLoader?: any;
   isBreadCrumbsLoading?: boolean;
 
@@ -70,4 +70,6 @@ export type SelectorProps = {
   footerInputHeader?: string;
   currentFooterInputValue?: string;
   footerCheckboxLabel?: string;
+  alwaysShowFooter?: boolean;
+  disableAcceptButton?: boolean;
 };

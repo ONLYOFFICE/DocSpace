@@ -25,7 +25,7 @@ const Selector = ({
   breadCrumbs,
   onSelectBreadCrumb,
 
-  hideSearch,
+  withSearch,
   searchLoader,
   searchPlaceholder,
   searchValue,
@@ -72,6 +72,9 @@ const Selector = ({
   footerInputHeader,
   footerCheckboxLabel,
   currentFooterInputValue,
+
+  alwaysShowFooter,
+  disableAcceptButton,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -96,7 +99,7 @@ const Selector = ({
     (value: string) => {
       onSearch && onSearch(value);
 
-      setIsSearch(!!value);
+      setIsSearch(true);
     },
     [onSearch]
   );
@@ -109,6 +112,7 @@ const Selector = ({
   const onSelectAction = (item: Item) => {
     onSelect &&
       onSelect({
+        ...item,
         id: item.id,
         email: item.email || "",
         avatar: item.avatar,
@@ -295,7 +299,7 @@ const Selector = ({
       />
 
       <Body
-        footerVisible={footerVisible}
+        footerVisible={footerVisible || !!alwaysShowFooter}
         isSearch={isSearch}
         isAllIndeterminate={
           newSelectedItems.length !== renderedItems.length &&
@@ -334,11 +338,11 @@ const Selector = ({
         onSelectBreadCrumb={onSelectBreadCrumb}
         breadCrumbsLoader={breadCrumbsLoader}
         isBreadCrumbsLoading={isBreadCrumbsLoading}
-        hideSearch={hideSearch}
+        withSearch={withSearch}
         withFooterInput={withFooterInput}
       />
 
-      {footerVisible && (
+      {(footerVisible || alwaysShowFooter) && (
         <Footer
           isMultiSelect={isMultiSelect}
           acceptButtonLabel={acceptButtonLabel}
@@ -358,6 +362,7 @@ const Selector = ({
           setNewFooterInputValue={setNewFooterInputValue}
           isFooterCheckboxChecked={isFooterCheckboxChecked}
           setIsFooterCheckboxChecked={setIsFooterCheckboxChecked}
+          disableAcceptButton={disableAcceptButton}
         />
       )}
     </StyledSelector>
@@ -465,8 +470,10 @@ Selector.defaultProps = {
   withCancelButton: false,
   withoutBackButton: false,
   isBreadCrumbsLoading: false,
-  hideSearch: false,
+  withSearch: true,
   withFooterInput: false,
+  alwaysShowFooter: false,
+  disableAcceptButton: false,
 
   selectedItems: [],
 };

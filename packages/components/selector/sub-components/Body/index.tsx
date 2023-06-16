@@ -53,7 +53,7 @@ const Body = ({
   breadCrumbs,
   onSelectBreadCrumb,
   breadCrumbsLoader,
-  hideSearch,
+  withSearch,
   isBreadCrumbsLoading,
   withFooterInput,
 }: BodyProps) => {
@@ -63,7 +63,6 @@ const Body = ({
   const listOptionsRef = React.useRef<any>(null);
 
   const itemsCount = hasNextPage ? items.length + 1 : items.length;
-  const withSearch = isSearch || itemsCount > 0;
 
   const resetCache = React.useCallback(() => {
     if (listOptionsRef && listOptionsRef.current) {
@@ -101,7 +100,7 @@ const Body = ({
 
   let listHeight = bodyHeight - CONTAINER_PADDING;
 
-  if (withSearch) listHeight -= SEARCH_HEIGHT;
+  if (withSearch || isSearch || itemsCount > 0) listHeight -= SEARCH_HEIGHT;
 
   if (withBreadCrumbs) listHeight -= BREAD_CRUMBS_HEIGHT;
 
@@ -130,7 +129,7 @@ const Body = ({
 
       {isBreadCrumbsLoading ? (
         searchLoader
-      ) : withSearch && !hideSearch ? (
+      ) : withSearch || isSearch || (itemsCount > 0 && withSearch) ? (
         <Search
           placeholder={placeholder}
           value={value}

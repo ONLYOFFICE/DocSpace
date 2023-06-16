@@ -38,7 +38,7 @@ const Item = React.memo(({ index, style, data }: ItemProps) => {
     if (!item || (item && !item.id))
       return <div style={style}>{rowLoader}</div>;
 
-    const { label, avatar, icon, role, isSelected } = item;
+    const { label, avatar, icon, role, isSelected, isDisabled } = item;
 
     const currentRole = role ? role : "user";
 
@@ -50,8 +50,9 @@ const Item = React.memo(({ index, style, data }: ItemProps) => {
 
     const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
       if (
-        (e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
-        !!e.target.closest(".checkbox")
+        ((e.target instanceof HTMLElement || e.target instanceof SVGElement) &&
+          !!e.target.closest(".checkbox")) ||
+        isDisabled
       )
         return;
 
@@ -65,6 +66,7 @@ const Item = React.memo(({ index, style, data }: ItemProps) => {
         style={style}
         onClick={onClick}
         className="test-22"
+        isDisabled={isDisabled}
       >
         {!isLogo ? (
           <Avatar
