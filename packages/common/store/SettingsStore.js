@@ -788,6 +788,10 @@ class SettingsStore {
 
     this.frameConfig = frameConfig;
 
+    if (frameConfig.theme) {
+      this.setTheme(frameConfig.theme);
+    }
+
     return frameConfig;
   };
 

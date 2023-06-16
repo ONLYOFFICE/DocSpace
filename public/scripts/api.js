@@ -10,7 +10,7 @@
     mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
     id: null,
     locale: "en",
-    theme: "base",
+    theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
     showTitle: true,
