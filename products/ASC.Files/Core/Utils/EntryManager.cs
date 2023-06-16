@@ -395,7 +395,7 @@ public class EntryManager
 
         searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
         
-        if (parent.FolderType == FolderType.TRASH || string.IsNullOrEmpty(searchText))
+        if (parent.FolderType == FolderType.TRASH)
         {
             withSubfolders = false;
         }
