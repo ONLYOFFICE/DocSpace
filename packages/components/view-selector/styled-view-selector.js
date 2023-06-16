@@ -18,27 +18,49 @@ const StyledViewSelector = styled.div`
             z-index: 2;
           }
           .view-selector-icon:not(:first-child) {
-            margin-left: -1px;
+            ${props.theme.interfaceDirection === "rtl"
+              ? `margin-right: -1px;`
+              : `margin-left: -1px;`}
           }
         `
       : css`
           .view-selector-icon:first-child {
-            border-right: none;
+            ${props.theme.interfaceDirection === "rtl"
+              ? `border-left: none;`
+              : `border-right: none;`}
           }
           .view-selector-icon:last-child {
-            border-left: none;
+            ${props.theme.interfaceDirection === "rtl"
+              ? `border-right: none;`
+              : `border-left: none;`}
           }
         `}
 `;
 
 const firstItemStyle = css`
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+        `
+      : css`
+          border-top-left-radius: 3px;
+          border-bottom-left-radius: 3px;
+        `}
 `;
 
 const lastItemStyle = css`
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          border-top-left-radius: 3px;
+          border-bottom-left-radius: 3px;
+        `
+      : css`
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+        `}
 `;
 
 const IconWrapper = styled.div`
