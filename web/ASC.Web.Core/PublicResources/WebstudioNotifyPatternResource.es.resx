@@ -1665,4 +1665,132 @@ Cordialmente,
 Equipo de ONLYOFFICE
 "www.onlyoffice.com":"https://www.onlyoffice.com/es/"</value>
   </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+ 
+Usted acaba de crear ONLYOFFICE DocSpace, un centro de documentos donde puede impulsar la colaboración con su equipo, clientes, socios y más. Su dirección es "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Por favor, confirme su correo electrónico (el enlace es válido durante 7 días):
+ 
+$GreenButton
+ 
+Su plan de tarifas actual es STARTUP. Es totalmente gratis e incluye:
+ 
+* 1 administrador, 2 usuarios avanzados
+* Hasta 12 salas
+* Número ilimitado de usuarios en cada sala
+* 2 GB de espacio de almacenamiento
+ 
+Disfrute de una nueva forma de colaboración en documentos.
+ 
+Cordialmente,
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"https://www.onlyoffice.com/es/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+ 
+Usted acaba de crear ONLYOFFICE DocSpace, un centro de documentos donde puede impulsar la colaboración con su equipo, clientes, socios y más. Su dirección es "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Por favor, confirme su correo electrónico (el enlace es válido durante 7 días):
+ 
+$GreenButton
+ 
+Su plan de tarifas actual es STARTUP. Es totalmente gratis e incluye:
+ 
+* 1 administrador, 2 usuarios avanzados
+* Hasta 12 salas
+* Número ilimitado de usuarios en cada sala
+* 2 GB de espacio de almacenamiento
+ 
+Disfrute de una nueva forma de colaboración en documentos.
+ 
+Cordialmente,
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"https://www.onlyoffice.com/es/"</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Varios consejos para trabajar eficazmente en sus documentos</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra la suscripción empresarial de ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Obtenga gratis las aplicaciones de ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Obtenga gratis las aplicaciones de ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Obtenga gratis las aplicaciones de ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Únase a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Varios consejos para trabajar eficazmente en sus documentos</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Varios consejos para trabajar eficazmente en sus documentos</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Varios consejos para trabajar eficazmente en sus documentos</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Inicie sesión en su cuenta de ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace se ha desactivado</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Configure su ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Su ONLYOFFICE DocSpace se eliminará</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra la suscripción empresarial de ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>El periodo de gracia para su ONLYOFFICE DocSpace está activado</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Su suscripción a ONLYOFFICE DocSpace está a punto de expirar</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>El periodo de gracia para su ONLYOFFICE DocSpace ha expirado</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>El período de gracia para su ONLYOFFICE DocSpace expira mañana</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Novedades en su portal el $Date</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Solicitud al departamento de ventas</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra la suscripción empresarial de ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra la suscripción empresarial de ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Confirme el cambio de su contraseña</value>
+  </data>
 </root>
