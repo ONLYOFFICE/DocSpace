@@ -219,6 +219,7 @@ const Selector = ({
     selectedAccess,
     newFooterInputValue,
     isFooterCheckboxChecked,
+    breadCrumbs,
   ]);
 
   const onCancelAction = React.useCallback(() => {
