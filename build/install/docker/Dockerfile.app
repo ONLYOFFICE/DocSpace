@@ -337,7 +337,7 @@ ENV BUILD_PATH=${BUILD_PATH}
 ENV SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
 COPY  ./docker-migration-entrypoint.sh ./docker-migration-entrypoint.sh
-COPY --from=base ${SRC_PATH}/ASC.Migration.Runner/service/ .
+COPY --from=base ${BUILD_PATH}/services/ASC.Migration.Runner/service/ .
 
 ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 

@@ -127,7 +127,7 @@ function build_dotnetcore_backend {
     if [[ ${migration_check} == "true" ]]
     then
       echo "== Build ASC.Migrations.sln =="
-      dotnet build ASC.Migrations.sln -o ${SRC_PATH}/ASC.Migration.Runner/service/
+      dotnet build ASC.Migrations.sln -o ${BUILD_PATH}/services/ASC.Migration.Runner/service/
     fi
   fi
 }
