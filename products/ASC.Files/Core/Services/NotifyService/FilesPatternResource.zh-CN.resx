@@ -125,4 +125,31 @@ $Message</value>
  
 $__AuthorName 删除了房间：$RoomTitle</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>所有签署者均已签署 $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>签名状态已变更</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>协作空间消息通知。已在文档中提及</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>已在文档中提及</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>邮件发送完成。</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>协作空间消息通知。房间已删除</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>已提供文档访问权限：$DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>已提供加密文档访问权限：$DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>已提供文件夹访问权限：$DocumentTitle</value>
+  </data>
 </root>

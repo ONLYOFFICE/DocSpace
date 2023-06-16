@@ -1,7 +1,6 @@
 {
   "Authentication": "Autentizace",
   "EnableSSL": "Povolit SSL",
-  "EnterPassword": "Zadejte heslo",
   "Host": "Hostitel",
   "HostLogin": "Přihlášení hostitele",
   "HostPassword": "Host-Heslo",

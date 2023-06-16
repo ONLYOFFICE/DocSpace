@@ -113,7 +113,7 @@ export const DNSSettingsTooltip = ({
         {t("DNSSettingsTooltipMain", { organizationName })}{" "}
         {standalone
           ? t("DNSSettingsTooltipStandalone", { organizationName })
-          : t("DNSSettingsTooltip", { organizationName })}
+          : t("DNSSettingsMobile")}
         <Link
           color={currentColorScheme.main.accent}
           className="display-block font-size"

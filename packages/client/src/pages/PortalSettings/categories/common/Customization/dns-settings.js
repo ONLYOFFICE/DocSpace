@@ -211,7 +211,7 @@ const DNSSettings = (props) => {
   const buttonContainer = standalone ? (
     <Button
       {...buttonProps}
-      label={t("Common:Save")}
+      label={t("Common:SaveButton")}
       onClick={onSaveSettings}
       isDisabled={isLoading || isDefaultDNS}
       isLoading={isLoading}
