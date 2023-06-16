@@ -67,6 +67,7 @@ const SubmitToFormGallery = ({
   setVisible,
   formItem,
   setFormItem,
+  currentColorScheme,
 }) => {
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
@@ -182,9 +183,10 @@ const SubmitToFormGallery = ({
   );
 };
 
-export default inject(({ dialogsStore }) => ({
+export default inject(({ auth, dialogsStore }) => ({
   visible: dialogsStore.submitToGalleryDialogVisible,
   setVisible: dialogsStore.setSubmitToGalleryDialogVisible,
   formItem: dialogsStore.formItem,
   setFormItem: dialogsStore.setFormItem,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(withTranslation("Common", "FormGallery")(observer(SubmitToFormGallery)));
