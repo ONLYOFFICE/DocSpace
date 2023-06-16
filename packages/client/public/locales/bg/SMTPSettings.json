@@ -1,7 +1,6 @@
 {
   "Authentication": "Заверка",
   "EnableSSL": "Активиране на SSL",
-  "EnterPassword": "Въведете паролата",
   "Host": "Домакин",
   "HostLogin": "Вход за хост",
   "HostPassword": "Парола на хоста",

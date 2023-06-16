@@ -1,7 +1,6 @@
 {
   "Authentication": "身份验证",
   "EnableSSL": "启用S​​SL",
-  "EnterPassword": "输入密码",
   "Host": "主机",
   "HostLogin": "主机登录",
   "HostPassword": "主机密码",

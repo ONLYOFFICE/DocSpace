@@ -1,7 +1,6 @@
 {
   "Authentication": "Doğrulama",
   "EnableSSL": "SSL'yi etkinleştir",
-  "EnterPassword": "Parola giriniz",
   "Host": "Sunucu",
   "HostLogin": "Sunucu girişi",
   "HostPassword": "Sunucu Şifresi",

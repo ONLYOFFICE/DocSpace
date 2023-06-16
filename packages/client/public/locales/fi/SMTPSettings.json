@@ -1,7 +1,6 @@
 {
   "Authentication": "Tunnistus",
   "EnableSSL": "Ota käyttöön SSL",
-  "EnterPassword": "Anna salasana",
   "Host": "Palvelin",
   "HostLogin": "Käyttäjätunnus",
   "HostPassword": "Salasana",

@@ -1,7 +1,6 @@
 {
   "Authentication": "Poświadczenie",
   "EnableSSL": "Włącz protokół SSL",
-  "EnterPassword": "Wpisz hasło",
   "HostLogin": "Zaloguj się z hostem",
   "HostPassword": "Hasło hosta",
   "Port": "Port",
