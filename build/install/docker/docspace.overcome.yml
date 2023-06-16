@@ -70,6 +70,10 @@ services:
     volumes:
     - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
 
+  onlyoffice-migration-runner:
+    volumes:
+    - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
+  
   onlyoffice-proxy:
     <<: *x-profiles-local 
    
