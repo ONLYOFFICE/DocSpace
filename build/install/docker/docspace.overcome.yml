@@ -10,69 +10,69 @@ services:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-backup:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-files:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-files-services:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-people-server:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
 
   onlyoffice-socket:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-studio-notify:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-api:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-studio:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-ssoauth:
     <<: *x-profiles-local
     volumes:
     - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
-    - ${SRC_PATH}/ASC.Files/service/ASC.Files.dll:${BUILD_PATH}/products/ASC.Files/server/ASC.Files.dll
-    - ${SRC_PATH}/ASC.People/service/ASC.People.dll:${BUILD_PATH}/products/ASC.People/server/ASC.People.dll
+    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
 
   onlyoffice-proxy:
     <<: *x-profiles-local 
