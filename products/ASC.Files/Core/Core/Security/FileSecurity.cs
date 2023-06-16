@@ -138,6 +138,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.SubmitToFormGallery
                 }
             },
             {
@@ -734,6 +735,12 @@ public class FileSecurity : IFileSecurity
             return false;
         }
 
+        if (action == FilesSecurityActions.SubmitToFormGallery &&
+            file is not { FilterType: FilterType.OFormTemplateOnly })
+        {
+            return false;
+        }
+
         if (e.FileEntryType == FileEntryType.Folder)
         {
             if (folder == null)
@@ -1072,6 +1079,14 @@ public class FileSecurity : IFileSecurity
                 if ((e.Access == FileShare.RoomAdmin || 
                      e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID) 
                     && !isRoom)
+                {
+                    return true;
+                } 
+                break;
+            case FilesSecurityActions.SubmitToFormGallery:
+                if ((e.Access == FileShare.RoomAdmin ||
+                     e.Access == FileShare.Collaborator) && 
+                    file is { FilterType: FilterType.OFormTemplateOnly })
                 {
                     return true;
                 }
@@ -1726,5 +1741,6 @@ public class FileSecurity : IFileSecurity
         Mute,
         EditAccess,
         Duplicate,
+        SubmitToFormGallery
     }
 }
