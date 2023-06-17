@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="20.5" version="20.5" Modules="enterprise" RootPath="." Language="en" Id="{5159D3C5-2644-4DB0-AAF9-7FB7ED1201EC}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="20.5" version="20.7.1" Modules="enterprise" RootPath="." Language="en" Id="{5159D3C5-2644-4DB0-AAF9-7FB7ED1201EC}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="AppXProductDetailsComponent;AppXDependenciesComponent;AppXAppDetailsComponent;AppXVisualAssetsComponent;AppXCapabilitiesComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;SccmComponent;ActSyncAppComponent;CPLAppletComponent;AutorunComponent;GameUxComponent;SilverlightSlnComponent;SharePointSlnComponent;FixupComponent;MsiXDiffComponent;MsixManifestEditorComponent"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_FINDEXE_TITLE" Value="Выберите установочный пакет для [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
-    <ROW Property="AI_PREREQ_REPAIR_ENABLED" MultiBuildValue="DefaultBuild:1#Build:1"/>
-    <ROW Property="AI_PRODUCTNAME_ARP" Value="[|PRODUCT_NAME]"/>
-    <ROW Property="AI_UNINSTALLER" Value="msiexec.exe"/>
+    <ROW Property="AI_EMBD_MSI_EXTR_PATH" Value="[TempFolder]" ValueLocId="-"/>
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="AI_PREREQ_REPAIR_ENABLED" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="AMQP_HOST" Value="localhost"/>
     <ROW Property="AMQP_PORT" Value="5672"/>
@@ -19,10 +18,7 @@
     <ROW Property="ARPCONTACT" Value="20A-6, Ernesta Birznieka-Upisha str., Riga, LV-1050"/>
     <ROW Property="ARPHELPLINK" Value="http://dev.onlyoffice.org/"/>
     <ROW Property="ARPHELPTELEPHONE" Value="+371 66016425"/>
-    <ROW Property="ARPNOMODIFY" MultiBuildValue="DefaultBuild:1"/>
-    <ROW Property="ARPNOREPAIR" Value="1" MultiBuildValue="DefaultBuild:1#Build:1"/>
-    <ROW Property="ARPPRODUCTICON" Value="icon.exe" Type="8"/>
-    <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
+    <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://www.onlyoffice.com"/>
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.onlyoffice.com/download.aspx"/>
     <ROW Property="DATABASE_MIGRATION" Value="true"/>
@@ -31,18 +27,22 @@
     <ROW Property="DB_PORT" Value="3306"/>
     <ROW Property="DB_PWD" Value="root"/>
     <ROW Property="DB_USER" Value="root"/>
+    <ROW Property="DOCUMENT_SERVER_HOST" Value="localhost"/>
+    <ROW Property="DOCUMENT_SERVER_PORT" Value="8083"/>
     <ROW Property="ELASTICSEARCH_HOST" Value="localhost"/>
     <ROW Property="ELASTICSEARCH_MSG" Value="Unable to connect to remote Elasticsearch server at "/>
     <ROW Property="ELASTICSEARCH_PORT" Value="9200"/>
     <ROW Property="ELASTICSEARCH_SCHEME" Value="http"/>
-    <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="INSTALL_ROOT_FOLDER_NAME"/>
-    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3#Build:3"/>
+    <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
+    <ROW Property="JWT_ENABLED" Value="true"/>
+    <ROW Property="JWT_HEADER" Value="Authorization"/>
+    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
     <ROW Property="Manufacturer" Value="Ascensio System SIA"/>
-    <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp#Build:vp"/>
+    <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp"/>
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE"/>
-    <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpaceCommunity_Win-install.v[|ProductVersion]" MultiBuildValue="Build:ONLYOFFICE_DocSpaceEnterprise_Win-install.v[|ProductVersion]"/>
+    <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpaceEnterprise_Win-install.v[|ProductVersion]"/>
     <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
     <ROW Property="PS_DB_NAME" Value="onlyoffice"/>
@@ -52,21 +52,21 @@
     <ROW Property="ProductCode" Value="1033:{9EB28D7F-9705-4DBB-97E1-FFCA1F5DBF12} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="[|PRODUCT_NAME]"/>
-    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="ProductVersion" Value="1.0.0" Options="32"/>
     <ROW Property="REDIS_HOST" Value="localhost"/>
     <ROW Property="REDIS_PORT" Value="6379"/>
     <ROW Property="REDIS_PWD" Value=" " Options="1"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{4BCD210E-EB09-4CC7-B23A-ECA6D6AFA76D}"/>
-    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME#Build:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME#Build:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
+    <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT" MultiBuildValue="DefaultBuild:Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0#Build:Windows NT 4.0" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0#Build:Windows NT 4.0" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000#Build:Windows 2000" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000#Build:Windows 2000" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003#Build:Windows XP/2003" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003#Build:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5X" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows Vista x64, Windows Server 2008 x64, Windows 7 x64, Windows Server 2008 R2 x64, Windows 8 x64, Windows 8.1 x64, Windows 10 x64, Windows 11 x64" ValueLocId="-"/>
     <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:32-bit Windows versions" ValueLocId="-"/>
@@ -74,49 +74,28 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="TempFolder" Directory_Parent="TARGETDIR" DefaultDir="TEMPFO~1|TempFolder" IsPseudoRoot="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="AI_CustomARPName" ComponentId="{79759F35-26EB-409E-9014-2F1F7D061DE7}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
-    <ROW Component="AI_DisableModify" ComponentId="{1C1393FC-908F-42F6-8348-EF1F7F9F69C3}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify" Options="1"/>
-    <ROW Component="AI_ExePath" ComponentId="{DE5DCDAB-3939-49A0-BD10-92AEB2206630}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
-    <ROW Component="AMQP_HOST" ComponentId="{E760DC53-7668-4290-BBE6-1CE217EB5DF2}" Directory_="APPDIR" Attributes="4" KeyPath="AMQP_HOST"/>
-    <ROW Component="AMQP_PORT" ComponentId="{A2BB7EDA-8490-4685-AFA9-1D7966FFAC5E}" Directory_="APPDIR" Attributes="4" KeyPath="AMQP_PORT"/>
-    <ROW Component="AMQP_PWD" ComponentId="{E330A45C-EF33-4D9D-B017-EBADB7A1BA62}" Directory_="APPDIR" Attributes="4" KeyPath="AMQP_PWD"/>
-    <ROW Component="AMQP_USER" ComponentId="{57EC75F7-67C2-4EB5-AD4D-0D9CCA2DE527}" Directory_="APPDIR" Attributes="4" KeyPath="AMQP_USER"/>
-    <ROW Component="AMQP_VHOST" ComponentId="{31797CFF-DE0C-44E3-9260-F80BE1650DF1}" Directory_="APPDIR" Attributes="4" KeyPath="AMQP_VHOST"/>
-    <ROW Component="APPDIR" ComponentId="{900ECB1B-D0C1-47FE-8322-54CBE0B1FFE4}" Directory_="APPDIR" Attributes="0"/>
-    <ROW Component="DB_HOST" ComponentId="{B1B2B02E-E817-450B-B2E5-F4559CE01FC1}" Directory_="APPDIR" Attributes="4" KeyPath="DB_HOST"/>
-    <ROW Component="DB_NAME" ComponentId="{73F26769-4339-434A-A228-A6FF6E7DC33B}" Directory_="APPDIR" Attributes="4" KeyPath="DB_NAME"/>
-    <ROW Component="DB_PORT" ComponentId="{F3A9A510-9A7C-473D-9A9F-9C32CB9E3D03}" Directory_="APPDIR" Attributes="4" KeyPath="DB_PORT"/>
-    <ROW Component="DB_PWD" ComponentId="{6E7E0EC0-4FC9-41F4-822F-16BEA0160ECA}" Directory_="APPDIR" Attributes="4" KeyPath="DB_PWD"/>
-    <ROW Component="DB_USER" ComponentId="{F59CF3E0-A7B4-424D-ACE1-CE690F27BE5F}" Directory_="APPDIR" Attributes="4" KeyPath="DB_USER"/>
-    <ROW Component="ELASTICSEARCH_HOST" ComponentId="{13B90E0C-4CDE-4BCD-9948-D797290EAACC}" Directory_="APPDIR" Attributes="4" KeyPath="ELASTICSEARCH_HOST"/>
-    <ROW Component="ELASTICSEARCH_PORT" ComponentId="{D69CF4C4-4680-487C-A62A-2EB5942074C9}" Directory_="APPDIR" Attributes="4" KeyPath="ELASTICSEARCH_PORT"/>
-    <ROW Component="ELASTICSEARCH_SCHEME" ComponentId="{149C8F4A-3F54-4578-852E-2AC23757CC7F}" Directory_="APPDIR" Attributes="4" KeyPath="ELASTICSEARCH_SCHEME"/>
-    <ROW Component="ONLYOFFICEDocSpace" ComponentId="{85FB59DA-AF7B-4149-998B-2CAEB7E6B814}" Directory_="APPDIR" Attributes="4" KeyPath="ONLYOFFICEDocSpace" Options="2"/>
-    <ROW Component="PS_DB_HOST" ComponentId="{D06B2C20-4CBD-428A-9C46-2854F2E797C0}" Directory_="APPDIR" Attributes="4" KeyPath="PS_DB_HOST"/>
-    <ROW Component="PS_DB_NAME" ComponentId="{1E8649C2-F675-4115-98DE-0E0C2EC5AE3E}" Directory_="APPDIR" Attributes="4" KeyPath="PS_DB_NAME"/>
-    <ROW Component="PS_DB_PORT" ComponentId="{6BD356D8-1C12-48FD-943D-CB3092809174}" Directory_="APPDIR" Attributes="4" KeyPath="PS_DB_PORT"/>
-    <ROW Component="PS_DB_PWD" ComponentId="{E939DD13-FE03-4A08-A938-A8A22CEB78D6}" Directory_="APPDIR" Attributes="4" KeyPath="PS_DB_PWD"/>
-    <ROW Component="PS_DB_USER" ComponentId="{B8ADE468-F1A3-470B-B17E-F1A019516B11}" Directory_="APPDIR" Attributes="4" KeyPath="PS_DB_USER"/>
-    <ROW Component="ProductInformation" ComponentId="{4BA25FD6-AAA1-4706-BF67-A9A78BB2C495}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="REDIS_HOST" ComponentId="{003D1DFF-5802-48CA-B0D8-8A755F754030}" Directory_="APPDIR" Attributes="4" KeyPath="REDIS_HOST"/>
-    <ROW Component="REDIS_PORT" ComponentId="{E0F3AEE3-B953-40AD-AF78-74A3CEDFB7EC}" Directory_="APPDIR" Attributes="4" KeyPath="REDIS_PORT"/>
-    <ROW Component="REDIS_PWD" ComponentId="{F5716128-28D8-4571-AF46-F385A13C2540}" Directory_="APPDIR" Attributes="4" KeyPath="REDIS_PWD"/>
-    <ROW Component="RequiredApplication_1" ComponentId="{5220B00B-A680-4900-9927-539F931A0A5C}" Directory_="APPDIR" Attributes="4" KeyPath="RequiredApplication_1" Options="2"/>
+    <ROW Component="APPDIR" ComponentId="{900ECB1B-D0C1-47FE-8322-54CBE0B1FFE4}" Directory_="APPDIR" Attributes="0" Options="2"/>
+    <ROW Component="ONLYOFFICEDocumentS" ComponentId="{BF807396-6118-4767-83CD-B3108EB7F9A3}" Directory_="APPDIR" Attributes="4" KeyPath="ONLYOFFICEDocumentS" Options="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
-    <ROW Feature="ONLYOFFICEDocSpace" Title="ONLYOFFICE DocSpace Enterprise" Description="ONLYOFFICE DocSpace Enterprise" Display="5" Level="1" Attributes="0"/>
-    <ROW Feature="RequiredApplication_1" Title="ONLYOFFICE DocSpace Community" Description="ONLYOFFICE DocSpace Community" Display="3" Level="1" Attributes="0"/>
+    <ROW Feature="ONLYOFFICEDocumentS" Title="ONLYOFFICE DocumentServer" Description="ONLYOFFICE DocumentServer" Display="3" Level="1" Attributes="0"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="Build" BuildName="EXE_ENTERPRISE" BuildOrder="2" BuildType="0" PackageFolder="publish" PackageFileName="[|PACKAGE_NAME]" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="Resources\icon.ico" ExtractionFolder="[AppDataFolder][|INSTALL_ROOT_FOLDER_NAME]\DocSpace\install" UseLargeSchema="true" Unicode="true" ExeName="[|PACKAGE_NAME]" UACExecutionLevel="2"/>
-    <ROW BuildKey="DefaultBuild" BuildName="EXE_COMMUNITY" BuildOrder="1" BuildType="0" PackageFolder="publish" PackageFileName="[|PACKAGE_NAME]" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="Resources\icon.ico" ExtractionFolder="[AppDataFolder][|INSTALL_ROOT_FOLDER_NAME]\DocSpace\install" ExtUI="true" UseLargeSchema="true" Unicode="true" ExeName="[|PACKAGE_NAME]" UACExecutionLevel="2"/>
+    <ROW BuildKey="DefaultBuild" BuildName="EXE_ENTERPRISE" BuildOrder="1" BuildType="0" PackageFolder="publish" PackageFileName="[|PACKAGE_NAME]" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="Resources\icon.ico" ExtractionFolder="[AppDataFolder][|INSTALL_ROOT_FOLDER_NAME]\DocSpace\install" ExtUI="true" UseLargeSchema="true" Unicode="true" ExeName="[|PACKAGE_NAME]" UACExecutionLevel="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.ChainedPackageComponent">
+    <ROW ChainedPackage="ONLYOFFICE_DocSpace" Order="1" Options="108" LogPath="[TempFolder]CHAINERS_LOG\ONLYOFFICE_DocSpace_Enterprise_Win-install.v[ProductVersion].log" InstallCondition="NOT Installed" MaintenanceCondition="UILevel = 5" RemoveCondition="REMOVE=&quot;ALL&quot;"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.ChainedPackageFileComponent">
+    <ROW FileId="ONLYOFFICE_DocSpace_Wininstall.v8" ChainedPackage="ONLYOFFICE_DocSpace" Options="1" TargetPath="ONLYOFFICE_DocSpace_Win-install.msi" Content="publish\ONLYOFFICE_DocSpace_Win-install.msi"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
@@ -146,17 +125,43 @@
     <ROW Action="AI_ConfigureChainer" Description="Configuring prerequisites launcher" DescriptionLocId="ActionText.Description.AI_ConfigureChainer" Template="Configure Launcher" TemplateLocId="ActionText.Template.AI_ConfigureChainer"/>
     <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
     <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
-    <ROW Action="AI_DownloadPrereq" Description="Downloading prerequisite software" DescriptionLocId="ActionText.Description.AI_DownloadPrereq" Template="Downloading [1]{[2] completed}" TemplateLocId="ActionText.Template.AI_DownloadPrereq"/>
+    <ROW Action="AI_DownloadPrereq" Description="Downloading prerequisite software" DescriptionLocId="ActionText.Description.AI_DownloadPrereq" Template="[1]" TemplateLocId="ActionText.Template.AI_DownloadPrereq"/>
     <ROW Action="AI_ExtractFiles" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
     <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
-    <ROW Action="AI_ExtractPrereq" Description="Extracting prerequisite software" DescriptionLocId="ActionText.Description.AI_ExtractPrereq" Template="Extracting [1]{[2] completed}" TemplateLocId="ActionText.Template.AI_ExtractPrereq"/>
-    <ROW Action="AI_InstallPostPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="Installing [1]{[2] completed}" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
-    <ROW Action="AI_InstallPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="Installing [1]{[2] completed}" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
+    <ROW Action="AI_ExtractPrereq" Description="Extracting prerequisite software" DescriptionLocId="ActionText.Description.AI_ExtractPrereq" Template="[1]" TemplateLocId="ActionText.Template.AI_ExtractPrereq"/>
+    <ROW Action="AI_InstallPostPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="[1]" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
+    <ROW Action="AI_InstallPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="[1]" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
     <ROW Action="AI_VerifyPrereq" Description="Verifying prerequisites" DescriptionLocId="ActionText.Description.AI_VerifyPrereq" Template="[1] was not installed correctly." TemplateLocId="ActionText.Template.AI_VerifyPrereq"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
-    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild;Build"/>
-    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild;Build"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+    <ROW Property="REDIS_PWD" Signature_="AppSearchSign"/>
+    <ROW Property="REDIS_PORT" Signature_="AppSearchSign_1"/>
+    <ROW Property="REDIS_HOST" Signature_="AppSearchSign_2"/>
+    <ROW Property="PS_DB_USER" Signature_="AppSearchSign_3"/>
+    <ROW Property="PS_DB_PWD" Signature_="AppSearchSign_4"/>
+    <ROW Property="PS_DB_PORT" Signature_="AppSearchSign_5"/>
+    <ROW Property="PS_DB_NAME" Signature_="AppSearchSign_6"/>
+    <ROW Property="PS_DB_HOST" Signature_="AppSearchSign_7"/>
+    <ROW Property="ELASTICSEARCH_SCHEME" Signature_="AppSearchSign_8"/>
+    <ROW Property="ELASTICSEARCH_PORT" Signature_="AppSearchSign_9"/>
+    <ROW Property="ELASTICSEARCH_MSG" Signature_="AppSearchSign_10"/>
+    <ROW Property="ELASTICSEARCH_HOST" Signature_="AppSearchSign_11"/>
+    <ROW Property="DB_USER" Signature_="AppSearchSign_12"/>
+    <ROW Property="DB_PWD" Signature_="AppSearchSign_13"/>
+    <ROW Property="DB_PORT" Signature_="AppSearchSign_14"/>
+    <ROW Property="DB_NAME" Signature_="AppSearchSign_15"/>
+    <ROW Property="DB_HOST" Signature_="AppSearchSign_16"/>
+    <ROW Property="AMQP_VHOST" Signature_="AppSearchSign_17"/>
+    <ROW Property="AMQP_USER" Signature_="AppSearchSign_18"/>
+    <ROW Property="AMQP_PWD" Signature_="AppSearchSign_19"/>
+    <ROW Property="AMQP_PORT" Signature_="AppSearchSign_20"/>
+    <ROW Property="AMQP_HOST" Signature_="AppSearchSign_21"/>
+    <ROW Property="DOCUMENT_SERVER_JWT_ENABLED" Signature_="AppSearchSign_22"/>
+    <ROW Property="DOCUMENT_SERVER_JWT_HEADER" Signature_="AppSearchSign_23"/>
+    <ROW Property="DOCUMENT_SERVER_JWT_SECRET" Signature_="AppSearchSign_24"/>
+    <ROW Property="DOCUMENT_SERVER_PORT" Signature_="AppSearchSign_25"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
@@ -164,9 +169,11 @@
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="aipackagechainer.exe" SourcePath="&lt;AI_CUSTACTS&gt;aipackagechainer.exe" DigSign="true"/>
     <ROW Name="banner.bmp" SourcePath="Resources\banner.bmp"/>
+    <ROW Name="chainersupport.dll" SourcePath="&lt;AI_CUSTACTS&gt;chainersupport.dll"/>
     <ROW Name="dialog.bmp" SourcePath="Resources\dialog.bmp"/>
     <ROW Name="file_deleter.ps1" SourcePath="&lt;AI_SCRIPTS&gt;file_deleter.ps1"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="msichainer.exe" SourcePath="&lt;AI_CUSTACTS&gt;msichainer.exe"/>
     <ROW Name="utils.vbs" SourcePath="utils.vbs"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
@@ -491,9 +498,6 @@
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRedisServerConnectionMsgBox" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
     <ROW Dialog_="RedisServerConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_17" Condition="AI_INSTALL AND ( RedisServerConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="Next" Event="DoAction" Argument="TestRabbitMQServerConnection" Condition="AI_INSTALL" Ordering="8"/>
-    <ROW Dialog_="ExitDialog" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="301"/>
-    <ROW Dialog_="FatalError" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="102"/>
-    <ROW Dialog_="UserExit" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="101"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestPostgreSqlConnection" Condition="AI_INSTALL" Ordering="1"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestPostgreSqlConnectionMsgBox" Condition="AI_INSTALL AND ( PostgreSqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
@@ -512,6 +516,10 @@
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="ELKConnectionDlg" Condition="AI_INSTALL AND PostgreSQLConnectionDlg_Cond AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;False&quot; )" Ordering="5"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Back" Event="NewDialog" Argument="SQLConnectionDlg" Condition="PostgreSQLConnectionDlg_Cond AND AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="3"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL AND PostgreSQLConnectionDlg_Cond AND ( SqlConnectionError = &quot;&quot; AND PostgreSqlConnectionError = &quot;&quot; AND ELK_CONNECTION = &quot;True&quot; AND RabbitMQServerConnectionError = &quot;&quot; AND RedisServerConnectionError = &quot;&quot; )" Ordering="6"/>
+    <ROW Dialog_="ExitDialog" Control_="Finish" Event="DoAction" Argument="AI_ChainerScheduleReboot" Condition="Not AIEXTERNALUI" Ordering="302"/>
+    <ROW Dialog_="ExitDialog" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="303"/>
+    <ROW Dialog_="FatalError" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="102"/>
+    <ROW Dialog_="UserExit" Control_="Finish" Event="DoAction" Argument="AI_CleanPrereq" Condition="1" Ordering="101"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="APPDIR" Component_="APPDIR" ManualDelete="true"/>
@@ -519,7 +527,9 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ChainerScheduleReboot" Type="1" Source="chainersupport.dll" Target="ScheduleReboot" WithoutSeq="true"/>
     <ROW Action="AI_CleanPrereq" Type="65" Source="Prereq.dll" Target="CleanPrereq" WithoutSeq="true"/>
+    <ROW Action="AI_CommitChainers" Type="11841" Source="chainersupport.dll" Target="CommitChainedPackages" WithoutSeq="true"/>
     <ROW Action="AI_ConfigureChainer" Type="1" Source="Prereq.dll" Target="ConfigurePrereqLauncher"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="HOST=[ELASTICSEARCH_HOST];PORT=[ELASTICSEARCH_PORT];OUTPUT=ELK_CONNECTION"/>
@@ -541,16 +551,17 @@
     <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
     <ROW Action="AI_ExtractPrereq" Type="65" Source="Prereq.dll" Target="ExtractPrereq"/>
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
-    <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_InstallPostPrerequisite" Type="1" Source="Prereq.dll" Target="InstallPostPrereq"/>
     <ROW Action="AI_InstallPrerequisite" Type="1" Source="Prereq.dll" Target="InstallPrereq"/>
     <ROW Action="AI_LaunchChainer" Type="3314" Source="AI_PREREQ_CHAINER"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
+    <ROW Action="AI_PrepareChainers" Type="1" Source="chainersupport.dll" Target="PrepareChainedPackages"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_RollbackChainers" Type="11585" Source="chainersupport.dll" Target="RollbackChainedPackages" WithoutSeq="true"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_VerifyPrereq" Type="1" Source="Prereq.dll" Target="VerifyPrereq"/>
@@ -559,9 +570,13 @@
     <ROW Action="MySQLConfigure" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="PostgreSqlConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
     <ROW Action="RedisSearchSetup" Type="6" Source="utils.vbs" Target="RedisSetup"/>
-    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace#Build:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
-    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace#Build:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+    <ROW Action="SetDocumentServerJWTSecretProp" Type="6" Source="utils.vbs" Target="SetDocumentServerJWTSecretProp"/>
+    <ROW Action="Set_DS_JWT_ENABLED" Type="51" Source="DOCUMENT_SERVER_JWT_ENABLED" Target="[JWT_ENABLED]"/>
+    <ROW Action="Set_DS_JWT_HEADER" Type="51" Source="DOCUMENT_SERVER_JWT_HEADER" Target="[JWT_HEADER]"/>
+    <ROW Action="Set_DS_JWT_SECRET" Type="51" Source="DOCUMENT_SERVER_JWT_SECRET" Target="[JWT_SECRET]"/>
     <ROW Action="TestElasticsearchConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="TestElasticsearchConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER_2"/>
     <ROW Action="TestPostgreSqlConnection" Type="4102" Source="utils.vbs" Target="TestPostgreSqlConnection" WithoutSeq="true"/>
@@ -579,41 +594,15 @@
     <ROW Dialog="RabbitMQConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="RedisServerConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiEmbeddedChainerComponent">
+    <ROW MsiEmbeddedChainer="msichainer.exe" Condition="VersionMsi &gt;= &quot;4.05&quot;" CommandLine="[AI_CHAINER_CMD_LINE]" Source="msichainer.exe" Type="2"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiEventMappingComponent">
     <ROW Dialog_="RabbitMQConnectionDlg" Control_="PasswordLabel" Event="ActionData" Attribute="Visible"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
-    <ROW Feature_="MainFeature" Component_="ProductInformation"/>
-    <ROW Feature_="MainFeature" Component_="AI_ExePath"/>
-    <ROW Feature_="ONLYOFFICEDocSpace" Component_="ONLYOFFICEDocSpace"/>
-    <ROW Feature_="MainFeature" Component_="AI_CustomARPName"/>
-    <ROW Feature_="MainFeature" Component_="AI_DisableModify"/>
-    <ROW Feature_="RequiredApplication_1" Component_="RequiredApplication_1"/>
-    <ROW Feature_="MainFeature" Component_="REDIS_PWD"/>
-    <ROW Feature_="MainFeature" Component_="REDIS_PORT"/>
-    <ROW Feature_="MainFeature" Component_="REDIS_HOST"/>
-    <ROW Feature_="MainFeature" Component_="PS_DB_USER"/>
-    <ROW Feature_="MainFeature" Component_="PS_DB_PWD"/>
-    <ROW Feature_="MainFeature" Component_="PS_DB_PORT"/>
-    <ROW Feature_="MainFeature" Component_="PS_DB_NAME"/>
-    <ROW Feature_="MainFeature" Component_="PS_DB_HOST"/>
-    <ROW Feature_="MainFeature" Component_="ELASTICSEARCH_SCHEME"/>
-    <ROW Feature_="MainFeature" Component_="ELASTICSEARCH_PORT"/>
-    <ROW Feature_="MainFeature" Component_="ELASTICSEARCH_HOST"/>
-    <ROW Feature_="MainFeature" Component_="DB_USER"/>
-    <ROW Feature_="MainFeature" Component_="DB_PWD"/>
-    <ROW Feature_="MainFeature" Component_="DB_PORT"/>
-    <ROW Feature_="MainFeature" Component_="DB_NAME"/>
-    <ROW Feature_="MainFeature" Component_="DB_HOST"/>
-    <ROW Feature_="MainFeature" Component_="AMQP_VHOST"/>
-    <ROW Feature_="MainFeature" Component_="AMQP_USER"/>
-    <ROW Feature_="MainFeature" Component_="AMQP_PWD"/>
-    <ROW Feature_="MainFeature" Component_="AMQP_PORT"/>
-    <ROW Feature_="MainFeature" Component_="AMQP_HOST"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
+    <ROW Feature_="ONLYOFFICEDocumentS" Component_="ONLYOFFICEDocumentS"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -623,26 +612,27 @@
     <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
     <ROW Action="AI_AppSearchEx" Sequence="102"/>
-    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="DefaultBuild;Build"/>
-    <ROW Action="AI_ExtractFiles" Sequence="1399" Builds="DefaultBuild;Build"/>
+    <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild"/>
+    <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractFiles" Sequence="1399" Builds="DefaultBuild"/>
     <ROW Action="AI_DATA_SETTER" Sequence="1398"/>
-    <ROW Action="AI_ConfigureChainer" Condition="((UILevel = 2) OR (UILevel = 3)) AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6598"/>
-    <ROW Action="AI_LaunchChainer" Condition="AI_PREREQ_CHAINER AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6599"/>
-    <ROW Action="AI_VerifyPrereq" Sequence="1101"/>
     <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="6405"/>
     <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="6404"/>
     <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="6403"/>
     <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="6402"/>
     <ROW Action="RedisSearchSetup" Condition="( NOT Installed )" Sequence="6401"/>
-    <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
+    <ROW Action="AI_PrepareChainers" Condition="VersionMsi &gt;= &quot;4.05&quot;" Sequence="5851"/>
+    <ROW Action="AI_ConfigureChainer" Condition="((UILevel = 2) OR (UILevel = 3)) AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6598"/>
+    <ROW Action="AI_LaunchChainer" Condition="AI_PREREQ_CHAINER AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6599"/>
+    <ROW Action="AI_VerifyPrereq" Sequence="1101"/>
+    <ATTRIBUTE name="RegisterProduct" value="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_PRESERVE_INSTALL_TYPE" Sequence="199"/>
@@ -653,90 +643,98 @@
     <ROW Action="AI_AppSearchEx" Sequence="102"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101"/>
+    <ROW Action="MySQLConfigure" Sequence="1101"/>
+    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="1102"/>
     <ROW Action="AI_DownloadPrereq" Sequence="1297"/>
     <ROW Action="AI_ExtractPrereq" Sequence="1298"/>
     <ROW Action="AI_InstallPrerequisite" Sequence="1299"/>
     <ROW Action="AI_InstallPostPrerequisite" Sequence="1301"/>
     <ROW Action="AI_CleanPrereq" Sequence="1302"/>
-    <ROW Action="MySQLConfigure" Sequence="1101"/>
-    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="1102"/>
+    <ROW Action="Set_DS_JWT_ENABLED" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( JWT_ENABLED = &quot;true&quot; )" Sequence="1104"/>
+    <ROW Action="Set_DS_JWT_HEADER" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( JWT_ENABLED = &quot;true&quot; )" Sequence="1105"/>
+    <ROW Action="Set_DS_JWT_SECRET" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( JWT_ENABLED = &quot;true&quot; )" Sequence="1106"/>
+    <ROW Action="SetDocumentServerJWTSecretProp" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( JWT_ENABLED = &quot;true&quot; )" Sequence="1103"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 600) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 601) OR (MsiNTProductType = 1)) AND ((VersionNT64 &lt;&gt; 602) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 603) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1000) OR (MsiNTProductType &lt;&gt; 1)) AND ((VersionNT64 &lt;&gt; 1100) OR (MsiNTProductType &lt;&gt; 1)) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild;Build"/>
-    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild;Build"/>
-    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild;Build"/>
-    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild;Build"/>
+    <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild;Build"/>
+    <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
     <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AppSearchSign" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_1" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_10" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_MSG" Type="2"/>
+    <ROW Signature_="AppSearchSign_11" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_12" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_13" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_14" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_15" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_NAME" Type="2"/>
+    <ROW Signature_="AppSearchSign_16" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_17" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_VHOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_18" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_19" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_2" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_20" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_21" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_22" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Type="2"/>
+    <ROW Signature_="AppSearchSign_23" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Type="2"/>
+    <ROW Signature_="AppSearchSign_24" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Type="2"/>
+    <ROW Signature_="AppSearchSign_25" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_3" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_4" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_5" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_6" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_NAME" Type="2"/>
+    <ROW Signature_="AppSearchSign_7" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_8" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_SCHEME" Type="2"/>
+    <ROW Signature_="AppSearchSign_9" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_PORT" Type="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
-    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
-    <ROW Registry="AMQP_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_HOST" Value="[AMQP_HOST]" Component_="AMQP_HOST"/>
-    <ROW Registry="AMQP_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PORT" Value="[AMQP_PORT]" Component_="AMQP_PORT"/>
-    <ROW Registry="AMQP_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PWD" Value="[AMQP_PWD]" Component_="AMQP_PWD"/>
-    <ROW Registry="AMQP_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_USER" Value="[AMQP_USER]" Component_="AMQP_USER"/>
-    <ROW Registry="AMQP_VHOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_VHOST" Value="[AMQP_VHOST]" Component_="AMQP_VHOST"/>
-    <ROW Registry="AdvancedInstaller" Root="-1" Key="Software\Caphyon\Advanced Installer" Name="\"/>
-    <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\"/>
-    <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
-    <ROW Registry="CurrentVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion" Name="\"/>
-    <ROW Registry="DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_HOST" Value="[DB_HOST]" Component_="DB_HOST"/>
-    <ROW Registry="DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_NAME" Value="[DB_NAME]" Component_="DB_NAME"/>
-    <ROW Registry="DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PORT" Value="[DB_PORT]" Component_="DB_PORT"/>
-    <ROW Registry="DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PWD" Value="[DB_PWD]" Component_="DB_PWD"/>
-    <ROW Registry="DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_USER" Value="[DB_USER]" Component_="DB_USER"/>
-    <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
-    <ROW Registry="ELASTICSEARCH_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_HOST" Value="[ELASTICSEARCH_HOST]" Component_="ELASTICSEARCH_HOST"/>
-    <ROW Registry="ELASTICSEARCH_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_PORT" Value="[ELASTICSEARCH_PORT]" Component_="ELASTICSEARCH_PORT"/>
-    <ROW Registry="ELASTICSEARCH_SCHEME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_SCHEME" Value="[ELASTICSEARCH_SCHEME]" Component_="ELASTICSEARCH_SCHEME"/>
-    <ROW Registry="EstimatedSize" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="EstimatedSize" Value="#[AI_ARP_SIZE]" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
-    <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
-    <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
-    <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\"/>
-    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
-    <ROW Registry="Microsoft" Root="-1" Key="Software\Microsoft" Name="\"/>
-    <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="ModifyPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
-    <ROW Registry="NoModify" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoModify" Value="#1" Component_="AI_DisableModify" VirtualValue="#"/>
-    <ROW Registry="NoRepair" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoRepair" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="ONLYOFFICEDocSpace" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="ONLYOFFICEDocSpace" Value="1" Component_="ONLYOFFICEDocSpace"/>
-    <ROW Registry="PS_DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_HOST" Value="[PS_DB_HOST]" Component_="PS_DB_HOST"/>
-    <ROW Registry="PS_DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_NAME" Value="[PS_DB_NAME]" Component_="PS_DB_NAME"/>
-    <ROW Registry="PS_DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PORT" Value="[PS_DB_PORT]" Component_="PS_DB_PORT"/>
-    <ROW Registry="PS_DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PWD" Value="[PS_DB_PWD]" Component_="PS_DB_PWD"/>
-    <ROW Registry="PS_DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_USER" Value="[PS_DB_USER]" Component_="PS_DB_USER"/>
-    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_HOST" Value="[AMQP_HOST]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PORT" Value="[AMQP_PORT]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PWD" Value="[AMQP_PWD]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_USER" Value="[AMQP_USER]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_VHOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_VHOST" Value="[AMQP_VHOST]" Component_="APPDIR"/>
+    <ROW Registry="AdvancedInstaller" Root="-1" Key="Software\Caphyon\Advanced Installer" Name="\" Component_="APPDIR"/>
+    <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\" Component_="APPDIR"/>
+    <ROW Registry="DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_HOST" Value="[DB_HOST]" Component_="APPDIR"/>
+    <ROW Registry="DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_NAME" Value="[DB_NAME]" Component_="APPDIR"/>
+    <ROW Registry="DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PORT" Value="[DB_PORT]" Component_="APPDIR"/>
+    <ROW Registry="DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PWD" Value="[DB_PWD]" Component_="APPDIR"/>
+    <ROW Registry="DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_USER" Value="[DB_USER]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_ENABLED" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Value="[DOCUMENT_SERVER_JWT_ENABLED]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_HEADER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Value="[DOCUMENT_SERVER_JWT_HEADER]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_SECRET" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Value="[DOCUMENT_SERVER_JWT_SECRET]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_PORT" Value="[DOCUMENT_SERVER_PORT]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_HOST" Value="[ELASTICSEARCH_HOST]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_PORT" Value="[ELASTICSEARCH_PORT]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_SCHEME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_SCHEME" Value="[ELASTICSEARCH_SCHEME]" Component_="APPDIR"/>
+    <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\" Component_="APPDIR"/>
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\" Component_="APPDIR"/>
+    <ROW Registry="ONLYOFFICEDocumentS" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="ONLYOFFICEDocumentS" Value="1" Component_="ONLYOFFICEDocumentS"/>
+    <ROW Registry="PS_DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_HOST" Value="[PS_DB_HOST]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_NAME" Value="[PS_DB_NAME]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PORT" Value="[PS_DB_PORT]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PWD" Value="[PS_DB_PWD]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_USER" Value="[PS_DB_USER]" Component_="APPDIR"/>
+    <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="APPDIR"/>
     <ROW Registry="Prereqs" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs" Name="\"/>
-    <ROW Registry="ProductCode" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]" Name="\"/>
+    <ROW Registry="ProductCode" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductCode_1" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]" Name="\"/>
-    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
-    <ROW Registry="ProductNameProductVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="\"/>
-    <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\" Component_="APPDIR"/>
+    <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductVersion_1" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="\"/>
-    <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
-    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Value="REDIS_HOST" Component_="REDIS_HOST"/>
-    <ROW Registry="REDIS_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Value="[REDIS_PORT]" Component_="REDIS_PORT"/>
-    <ROW Registry="REDIS_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Value="[REDIS_PWD]" Component_="REDIS_PWD"/>
-    <ROW Registry="Readme" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Readme" Value="[ARPREADME]" Component_="AI_CustomARPName"/>
-    <ROW Registry="RequiredApplication_1" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="RequiredApplication_1" Value="1" Component_="RequiredApplication_1"/>
+    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Value="REDIS_HOST" Component_="APPDIR"/>
+    <ROW Registry="REDIS_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Value="[REDIS_PORT]" Component_="APPDIR"/>
+    <ROW Registry="REDIS_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Value="[REDIS_PWD]" Component_="APPDIR"/>
     <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
-    <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
-    <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Uninstall" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall" Name="\"/>
-    <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
-    <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
-    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="Windows" Root="-1" Key="Software\Microsoft\Windows" Name="\"/>
+    <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -764,14 +762,13 @@
     <ROW PrereqKey="MySQLInstallerCo" DisplayName="MySQL Installer Community 8.0.32 x86" VersionMin="1.6.5.0" SetupFileUrl="redist\mysql-installer-community-8.0.32.0.msi" Location="0" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="MySQL Installer Community 8.0.32 x86\mysql-installer-community-8.0.32.0.msi"/>
     <ROW PrereqKey="MySQLInstallerRunn" DisplayName="MySQL Installer Community 8.0.32 x86 Runner" SetupFileUrl="MySQL Installer Runner.exe" Location="0" ExactSize="0" Operator="1" ComLine="/VERYSILENT /DB_PWD=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.32&quot;" BasicUiComLine="/VERYSILENT /DB_PWD=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.32&quot;" NoUiComLine="/VERYSILENT /DB_PWD=&quot;root&quot; /MYSQL_VERSION=&quot;8.0.32&quot;" Options="y" TargetName="MySQL Installer Runner                                      \MySQL Installer Runner.exe" ParentPrereq="MySQLInstallerCo"/>
     <ROW PrereqKey="Node.js" DisplayName="Node.js 18.12.1" VersionMin="18.12.1" SetupFileUrl="redist\node-v18.16.0-x64.msi" Location="0" ExactSize="0" Operator="0" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="ym" TargetName="Node.js v18.12.1 x64\node-v18.16.0-x64.msi"/>
-    <ROW PrereqKey="ONLYOFFICEDocSpace" DisplayName="ONLYOFFICE DocSpace Enterprise" VersionMin="1.0.0.0" SetupFileUrl="publish\ONLYOFFICE_DocSpace_Enterprise_Win-install.v1.0.0.exe" Location="0" ExactSize="0" Operator="1" ComLine="/exenoui /qn /norestart" BasicUiComLine="/exenoui /qn /norestart" NoUiComLine="/exenoui /qn /norestart" Options="fi" TargetName="ONLYOFFICE DocSpace\ONLYOFFICE_DocSpace_Enterprise_Win-install.v1.0.0.exe" Builds="Build" Feature="ONLYOFFICEDocSpace"/>
+    <ROW PrereqKey="ONLYOFFICEDocumentS" DisplayName="ONLYOFFICE DocumentServer" SetupFileUrl="onlyoffice-documentserver-ee.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" BasicUiComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" NoUiComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG" Options="fi=" TargetName="                           \onlyoffice-documentserver-ee.exe" Feature="ONLYOFFICEDocumentS" RepairComLine="/VERYSILENT /norestart /DIR=&quot;[APPDIR]..\DocumentServer&quot; /DS_PORT=&quot;[DOCUMENT_SERVER_PORT]&quot; /JWT_ENABLED=&quot;[DOCUMENT_SERVER_JWT_ENABLED]&quot; /JWT_SECRET=&quot;[DOCUMENT_SERVER_JWT_SECRET]&quot; /JWT_HEADER=&quot;[DOCUMENT_SERVER_JWT_HEADER]&quot; /DB_HOST=&quot;[PS_DB_HOST]&quot; /DB_USER=&quot;[PS_DB_USER]&quot; /DB_PWD=&quot;[PS_DB_PWD]&quot; /DB_NAME=&quot;[PS_DB_NAME]&quot; /LOG"/>
     <ROW PrereqKey="PostgreSQL" DisplayName="PostgresSQL v12.9 x64" VersionMin="12.9" SetupFileUrl="redist\postgresql-12.9-1-windows-x64.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="--unattendedmodeui none --install_runtimes 0 --mode unattended --superaccount &quot;postgres&quot; --superpassword &quot;postgres&quot;" BasicUiComLine="--unattendedmodeui none --install_runtimes 0 --mode unattended --superaccount &quot;postgres&quot; --superpassword &quot;postgres&quot;" NoUiComLine="--unattendedmodeui none --install_runtimes 0 --mode unattended --superaccount &quot;postgres&quot; --superpassword &quot;postgres&quot;" Options="yx" TargetName="postgresql-12.9-1-windows-x64.exe"/>
     <ROW PrereqKey="RabbitMQServer" DisplayName="RabbitMQ v3.7.4 x64" VersionMin="3.7.4" SetupFileUrl="redist\rabbitmq-server-3.7.4.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="RabbitMQ v3.7.4 x64\rabbitmq-server-3.7.4.exe"/>
     <ROW PrereqKey="RedisonWindows" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="redist\Redis-x64-5.0.10.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="yx" TargetName="Redis 5.0.10 x64\Redis-x64-5.0.10.msi"/>
     <ROW PrereqKey="RequiredApplication" DisplayName="Erlang v20.3 x64" VersionMin="20.3" SetupFileUrl="redist\otp_win64_20.3.exe" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="Erlang v20.3 x64\otp_win64_20.3.exe"/>
-    <ROW PrereqKey="RequiredApplication_1" DisplayName="ONLYOFFICE DocSpace Community" VersionMin="1.0.0.0" SetupFileUrl="publish\ONLYOFFICE_DocSpace_Community_Win-install.v1.0.0.exe" Location="0" ExactSize="0" Operator="1" ComLine="/exenoui /qn /norestart" BasicUiComLine="/exenoui /qn /norestart" NoUiComLine="/exenoui /qn /norestart" Options="if" TargetName="ONLYOFFICE DocSpace\ONLYOFFICE_DocSpace_Community_Win-install.v1.0.0.exe" Builds="DefaultBuild" Feature="RequiredApplication_1"/>
     <ROW PrereqKey="psqlODBC_x64" DisplayName="PostgreSQL ODBC Driver x64" SetupFileUrl="redist\psqlodbc_x64.msi" Location="0" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="myx" TargetName="psqlodbc_x64.msi"/>
-    <ATTRIBUTE name="PrereqsOrder" value="Microsoft.NETFrame C5949268848C59079D60551E525B7 F3520F64DA5998338D97129FAD2 FC441DA8855740179A0DFCF9560D3DEE EA5B60A5CAD4115A8386D017CC889B9 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 MicrosoftVisualC_2 MicrosoftVisualC_3 MySQLConnectorODBC MySQLInstallerCo MySQLInstallerRunn Node.js Elasticsearch7.16.3 RequiredApplication RabbitMQServer RedisonWindows FFmpegEssentials psqlODBC_x64 PostgreSQL RequiredApplication_1 ONLYOFFICEDocSpace"/>
+    <ATTRIBUTE name="PrereqsOrder" value="Microsoft.NETFrame C5949268848C59079D60551E525B7 F3520F64DA5998338D97129FAD2 FC441DA8855740179A0DFCF9560D3DEE EA5B60A5CAD4115A8386D017CC889B9 D564007E3BBE4F85950A09B470A7CA65 CA62D813A4E74FA2AAE86A7D7B7B1493 MicrosoftVisualC_2 MicrosoftVisualC_3 MySQLConnectorODBC MySQLInstallerCo MySQLInstallerRunn Node.js Elasticsearch7.16.3 RequiredApplication RabbitMQServer RedisonWindows FFmpegEssentials psqlODBC_x64 PostgreSQL ONLYOFFICEDocumentS"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="C5949268848C59079D60551E525B7System" Prereq="C5949268848C59079D60551E525B7" SearchType="12" SearchString="HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App" VerMin="7.0" Order="1" Property="PreReqSearch_3_C5949268848C59079D60"/>
@@ -783,10 +780,10 @@
     <ROW SearchKey="F3520F64DA5998338D97129FAD2SystemFo" Prereq="F3520F64DA5998338D97129FAD2" SearchType="12" SearchString="HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.NETCore.App" VerMin="7.0" Order="1" Property="PreReqSearch_2_F3520F64DA5998338D97"/>
     <ROW SearchKey="FC441DA8855740179A0DFCF9560D3DEESys" Prereq="FC441DA8855740179A0DFCF9560D3DEE" SearchType="1" SearchString="HKLM\SOFTWARE\Microsoft\ASP.NET Core\Shared Framework\v7.0" VerMin="7.0" Order="1" Property="PreReqSearch_6_FC441DA8855740179A0D"/>
     <ROW SearchKey="SystemFolderfile.dll" Prereq="Microsoft.NETFrame" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G528048" Order="1" Property="PreReqSearch"/>
+    <ROW SearchKey="SystemFolderfile.dll_1" Prereq="ONLYOFFICEDocumentS" SearchType="0" SearchString="[SystemFolder]file.dll" VerMin="1.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_10" Prereq="RequiredApplication" SearchType="5" SearchString="HKLM\SOFTWARE\Wow6432Node\Ericsson\Erlang\9.3" Order="1" Property="PreReqSearch_19"/>
     <ROW SearchKey="SystemFolderfile.dll_11" Prereq="RabbitMQServer" SearchType="5" SearchString="HKLM\SOFTWARE\Ericsson\Erlang\ErlSrv\1.1\RabbitMQ" Order="1" Property="PreReqSearch_20"/>
     <ROW SearchKey="SystemFolderfile.dll_12" Prereq="PostgreSQL" SearchType="5" SearchString="HKLM\SOFTWARE\PostgreSQL\Installations\postgresql-x64-12" Order="1" Property="PreReqSearch_24"/>
-    <ROW SearchKey="SystemFolderfile.dll_13" Prereq="ONLYOFFICEDocSpace" SearchType="0" SearchString="[SystemFolder]file.dll" VerMin="1.0" Order="1" Property="PreReqSearch_25"/>
     <ROW SearchKey="SystemFolderfile.dll_7" Prereq="MicrosoftVisualC_2" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.26" Order="1" Property="PreReqSearch_9"/>
     <ROW SearchKey="SystemFolderfile.dll_8" Prereq="MicrosoftVisualC_3" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.26" Order="1" Property="PreReqSearch_11"/>
     <ROW SearchKey="SystemFolderfile.dll_9" Prereq="MySQLInstallerRunn" SearchType="2" SearchString="HKLM\SOFTWARE\MySQL AB\MySQL Server 5.5\Version" VerMin="5.5" Order="1" Property="PreReqSearch_14"/>
