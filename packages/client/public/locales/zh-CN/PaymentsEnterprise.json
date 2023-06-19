@@ -1,10 +1,7 @@
 {
   "ActivateLicenseActivated": "License activated",
-  "ActivatePurchaseBuyLicense": "To buy license, click the button below.",
   "ActivatePurchaseBuyNow": "立即购买",
   "ActivateRenewSubscriptionHeader": "Renew subscription for Enterprise",
-  "ActivateToProBannerHeaderTrial": "Buy the full Enterprise version to get:",
-  "ActivateUploadDescr": "To activate your license, upload it below and click the Activate.",
   "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
   "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
   "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
@@ -12,7 +9,6 @@
   "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
   "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
   "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
-  "UpgradeToProBannerInstructionNote": "Please note that the editors will be unavailable during the upgrade. We also recommend to {0}backup your data{1} before you start.",
   "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
   "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers."
 }

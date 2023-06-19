@@ -21,7 +21,7 @@
   "UpgradeToProBannerInstructionItemDocker": "Instrucción para Docker.",
   "UpgradeToProBannerInstructionItemLinux": "Instrucción para Linux.",
   "UpgradeToProBannerInstructionItemWindows": "Instrucción para Windows.",
-  "UpgradeToProBannerInstructionNote": "Tenga en cuenta que los editores no estarán disponibles durante la actualización. También recomendamos {0}hacer una copia de seguridad de sus datos{1} antes de empezar.",
+  "UpgradeToProBannerInstructionNote": "Tenga en cuenta que los editores no estarán disponibles durante la actualización. También recomendamos <1>hacer una copia de seguridad de sus datos</1> antes de empezar.",
   "UpgradeToProBannerInstructionReadNow": "Leer ahora",
   "UpgradeToProBannerItemLicenseDescr": "+ 1 año de suscripción para las actualizaciones de funcionalidad y seguridad.",
   "UpgradeToProBannerItemLicenseHeader": "Licencia de por vida.",

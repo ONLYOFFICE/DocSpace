@@ -1776,4 +1776,26 @@ $Body</value>
   <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>Période de grâce pour votre ONLYOFFICE DocSpace activé</value>
   </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+ 
+Vous venez de créer ONLYOFFICE DocSpace, un centre documentaire où vous pouvez optimiser la collaboration avec votre équipe, vos clients, vos partenaires, et plus encore. Son adresse est "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Veuillez confirmer votre adresse e-mail (le lien est valable pendant 7 jours) :
+ 
+$GreenButton
+ 
+Votre plan tarifaire actuel est STARTUP. Il est totalement gratuit et comprend :
+ 
+* 1 administrateur, 2 utilisateurs avancés
+* Jusqu’à 12 salles
+* Nombre illimité d'utilisateurs dans chaque salle
+* 2 Go d'espace de stockage
+ 
+Profitez d'un nouveau mode de collaboration documentaire !
+ 
+Bien à vous,
+équipe ONLYOFFICE
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
+  </data>
 </root>
