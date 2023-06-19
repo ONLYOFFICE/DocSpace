@@ -161,7 +161,6 @@
         data: message,
       };
 
-      console.log("api #sendMessage src", this.config.src);
       if (!!this.#iframe.contentWindow) {
         setTimeout(() => {
           this.#iframe.contentWindow.postMessage(
@@ -188,8 +187,6 @@
               const callback = this.#callbacks.shift();
               callback && callback(data?.methodReturnData);
             }
-
-            console.log("api onMethodReturn", data, data?.methodReturnData);
 
             if (this.#tasks.length > 0) {
               this.#sendMessage(this.#tasks.shift());
@@ -366,7 +363,7 @@
     setConfig(newConfig = {}, reload = false) {
       if (this.#oneOfExistInObject(this.config.keysForReload, newConfig))
         reload = true;
-      console.log("api call setConfig");
+      console.log("api setConfig");
 
       this.config = { ...this.config, ...newConfig };
 

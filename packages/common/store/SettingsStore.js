@@ -357,7 +357,7 @@ class SettingsStore {
           }
         }
       } else if (key === "passwordHash") {
-        console.log("store getSettings passwordHash", newSettings);
+        console.log("client store getSettings passwordHash", newSettings[key]);
         this.setValue("hashSettings", newSettings[key]);
       }
     });
@@ -413,8 +413,6 @@ class SettingsStore {
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
-
-    console.log("CLIENT init settings store");
   };
 
   setRoomsMode = (mode) => {
@@ -784,23 +782,21 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = (frameConfig) => {
+  setFrameConfig = async (frameConfig) => {
+    if (!!!this.hashSettings) {
+      console.log("client store setFrameConfig getSettings");
+      await this.getSettings();
+    }
+
     runInAction(() => {
       this.frameConfig = frameConfig;
-
-      if (frameConfig) {
-        frameCallEvent({ event: "onAppReady" });
-        console.log("client response onAppReady");
-        console.log("client setFrameConfig", frameConfig);
-      }
-
-      if (frameConfig?.theme) {
-        console.log("client theme", frameConfig?.theme);
-        this.setTheme(frameConfig.theme);
-      }
-
-      return frameConfig;
     });
+
+    if (frameConfig) {
+      this.setTheme(frameConfig.theme);
+      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 200);
+    }
+    return frameConfig;
   };
 
   get isFrame() {

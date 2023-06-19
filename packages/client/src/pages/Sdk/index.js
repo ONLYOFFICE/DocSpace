@@ -55,7 +55,11 @@ const Sdk = ({
 
       switch (methodName) {
         case "setConfig":
-          res = setFrameConfig(data);
+          try {
+            res = await setFrameConfig(data);
+          } catch (e) {
+            res = e;
+          }
           break;
         case "createHash":
           {
@@ -161,7 +165,6 @@ export default inject(({ auth, settingsStore }) => {
   const { user } = userStore;
   const { getIcon } = settingsStore;
 
-  console.log("sdk observ hashSettings", hashSettings);
   return {
     theme,
     setFrameConfig,
