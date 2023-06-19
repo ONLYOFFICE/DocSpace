@@ -20,15 +20,10 @@
     destroyText: "",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
-      //folder: "@my",
       count: 100,
       page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
-      //search: "",
-      //filterType: null,
-      //authorType: null,
-      //withSubfolders: true,
     },
     keysForReload: [
       "src",
@@ -45,7 +40,7 @@
     events: {
       onSelectCallback: null,
       onCloseCallback: null,
-      onAppReady: () => console.log("onAppReady"),
+      onAppReady: null,
       onAppError: null,
     },
   };
@@ -179,26 +174,22 @@
 
     #onMessage = (e) => {
       if (typeof e.data == "string") {
-        let frameData = {};
+        let data = {};
 
         try {
-          frameData = JSON.parse(e.data);
+          data = JSON.parse(e.data);
         } catch (err) {
-          frameData = {};
+          data = {};
         }
 
-        switch (frameData.type) {
+        switch (data.type) {
           case "onMethodReturn": {
             if (this.#callbacks.length > 0) {
               const callback = this.#callbacks.shift();
-              callback && callback(frameData?.methodReturnData);
+              callback && callback(data?.methodReturnData);
             }
 
-            console.log(
-              "api onMethodReturn",
-              frameData,
-              frameData?.methodReturnData
-            );
+            console.log("api onMethodReturn", data, data?.methodReturnData);
 
             if (this.#tasks.length > 0) {
               this.#sendMessage(this.#tasks.shift());
@@ -206,15 +197,19 @@
             break;
           }
           case "onEventReturn": {
-            if (frameData?.eventReturnData?.event in this.config.events) {
-              this.config.events[frameData?.eventReturnData.event](
-                frameData?.eventReturnData?.data
+            if (
+              data?.eventReturnData?.event in this.config.events &&
+              typeof this.config.events[data?.eventReturnData.event] ===
+                "function"
+            ) {
+              this.config.events[data?.eventReturnData.event](
+                data?.eventReturnData?.data
               );
             }
             break;
           }
           case "onCallCommand": {
-            this[frameData.commandName].call(this, frameData.commandData);
+            this[data.commandName].call(this, data.commandData);
             break;
           }
           default:
@@ -246,8 +241,9 @@
       this.#sendMessage(message);
     };
 
-    initFrame(frameConfig) {
-      this.config = { ...this.config, ...frameConfig };
+    initFrame(config) {
+      const configFull = { ...defaultConfig, ...config };
+      this.config = { ...this.config, ...configFull };
 
       const target = document.getElementById(this.config.frameId);
 
@@ -268,40 +264,40 @@
       return this.#iframe;
     }
 
-    initManager(frameConfig = {}) {
-      frameConfig.mode = "manager";
+    initManager(config = {}) {
+      config.mode = "manager";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
-    initEditor(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "editor";
+    initEditor(config = {}) {
+      config.mode = "editor";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
-    initViewerEditor(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "viewer";
+    initViewer(config = {}) {
+      config.mode = "viewer";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
-    initRoomSelector(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "room-selector";
+    initRoomSelector(config = {}) {
+      config.mode = "room-selector";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
-    initFileSelector(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "file-selector";
+    initFileSelector(config = {}) {
+      config.mode = "file-selector";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
-    initSystem(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "system";
+    initSystem(config = {}) {
+      config.mode = "system";
 
-      return this.initFrame(frameConfig);
+      return this.initFrame(config);
     }
 
     destroyFrame() {
@@ -319,6 +315,8 @@
         this.#iframe.parentNode &&
           this.#iframe.parentNode.replaceChild(target, this.#iframe);
       }
+
+      this.config = {};
     }
 
     #getMethodPromise = (methodName, params = null, withReload = false) => {
