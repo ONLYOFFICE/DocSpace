@@ -94,7 +94,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.roomColumnIsEnabled,
           resizable: true,
           sortBy: "Room",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -112,7 +112,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.createdTrashColumnIsEnabled,
           resizable: true,
           sortBy: "DateAndTimeCreation",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -130,7 +130,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.sizeTrashColumnIsEnabled,
           resizable: true,
           sortBy: "Size",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -139,7 +139,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.typeTrashColumnIsEnabled,
           resizable: true,
           sortBy: "Type",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -169,7 +169,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.authorColumnIsEnabled,
           resizable: true,
           sortBy: "Author",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -178,7 +178,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.createdColumnIsEnabled,
           resizable: true,
           sortBy: "DateAndTimeCreation",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -205,7 +205,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.typeColumnIsEnabled,
           resizable: true,
           sortBy: "Type",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
