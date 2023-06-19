@@ -4,6 +4,9 @@ x-profiles-local:
  environment:
   BUILD_PATH: "/var/www"
   SRC_PATH: "/app/services"
+  ROOT_DIR: "/app"
+ volumes:
+  - ${ROOT_DIR}/Data:/app/onlyoffice/data
 
 services:
   onlyoffice-backup-background-tasks:
@@ -82,4 +85,7 @@ services:
 
   onlyoffice-redis:
     <<: *x-profiles-local
-   
+  
+  onlyoffice-document-server:
+    <<: *x-profiles-local
+    

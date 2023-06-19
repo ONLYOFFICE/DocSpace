@@ -9,11 +9,11 @@ x-healthcheck:
 
 x-profiles-backend:
  &x-profiles-backend
- profiles: ["prod", "backend", "saas"]
+ profiles: ["prod", "backend"]
 
 x-profiles-frontend:
  &x-profiles-frontend
- profiles: ["prod", "frontend", "saas"]
+ profiles: ["prod", "frontend"]
 
 x-profiles-extra-services:
  &x-profiles-extra-services
@@ -89,7 +89,23 @@ services:
     container_name: onlyoffice-redis
     restart: always
     expose:
-      - "6379"    
+      - "6379"
+
+  onlyoffice-document-server:
+    <<: [*x-profiles-extra-services]
+    image: "${DOCUMENT_SERVER_IMAGE_NAME}"
+    container_name: ${DOCUMENT_SERVER_HOST}
+    # Strings below enable the JSON Web Token validation.
+    environment:
+      - JWT_ENABLED=true
+      - JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET}
+      - JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER}
+      - JWT_IN_BODY=true
+    expose:
+      - '80'
+    stdin_open: true
+    restart: always
+    stop_grace_period: 60s    
   
   onlyoffice-notify:
     <<: [*x-service-base, *x-profiles-backend]
