@@ -70,10 +70,6 @@ else
     exit 1
 fi
 
-echo "Run environments (redis, rabbitmq)"
-DOCKERFILE=$docker_file \
-docker compose -f redis.yml -f rabbitmq.yml up -d
-
 if [ "$1" = "--no_ds" ]; then
     echo "SKIP Document server"
 else 
