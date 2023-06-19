@@ -228,7 +228,7 @@ CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
 
 ## ASC.Data.Backup ##
 FROM dotnetrun AS backup
-WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup/
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service/ .
