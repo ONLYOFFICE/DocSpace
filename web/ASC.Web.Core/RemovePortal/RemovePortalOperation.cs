@@ -67,6 +67,8 @@ public class RemovePortalOperation : DistributedTaskProgress
     {
         try
         {
+            CustomSynchronizationContext.CreateContext();
+
             _logger.DebugStartRemoveTenant(TenantId);
 
             var tenant = _tenantManager.GetTenant(TenantId);
