@@ -6,7 +6,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    backup
-Backup
+The service which handles API requests related to backup
 
 %package        common
 Packager:       %{packager}
@@ -14,7 +14,7 @@ Summary:        Common
 Group:          Applications/Internet
 Requires:       logrotate
 %description    common
-Common
+A package containing configure and scripts
 
 %package        files-services
 Packager:       %{packager}
@@ -25,7 +25,13 @@ Requires:       dotnet-sdk-7.0
 Requires:       ffmpeg
 AutoReqProv:    no
 %description    files-services
-Files-services
+The service which launches additional services related to file management:
+ - ElasticSearchIndexService - indexes documents using Elasticsearch;
+ - FeedAggregatorService - aggregates notifications;
+ - FeedCleanerService - removes notifications;
+ - FileConverterService - converts documents;
+ - ThumbnailBuilderService - generates thumbnails for documents;
+ - Launcher - removes outdated files from Trash;
 
 %package        notify
 Packager:       %{packager}
@@ -35,7 +41,10 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    notify
-Notify
+The service which launches additional services
+related to notifications about DocSpace events:
+NotifySenderService which sends messages from the base,
+and NotifyCleanerService which removes messages
 
 %package        files
 Packager:       %{packager}
@@ -45,7 +54,8 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    files
-Files
+The service which handles API requests related to
+documents and launches the OFormService service
 
 %package        proxy
 Packager:       %{packager}
@@ -56,7 +66,9 @@ Requires:       nginx >= 1.9.5
 Requires:       mysql-community-client >= 5.7.0
 AutoReqProv:    no
 %description    proxy
-Proxy
+The service which is used as a web server and reverse proxy, 
+it receives and handles requests, transmits them to other services, 
+receives a response from them and returns it to the client
 
 %package        studio-notify
 Packager:       %{packager}
@@ -66,7 +78,8 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    studio-notify
-Studio-notify
+The service responsible for creating notifications and
+sending them to other services, for example, TelegramService and NotifyService
 
 %package        people-server
 Packager:       %{packager}
@@ -76,7 +89,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    people-server
-People-server
+The service which handles API requests related to the People module
 
 %package        socket
 Packager:       %{packager}
@@ -86,7 +99,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    socket
-Socket
+The service which provides two-way communication between a client and a server
 
 %package        studio
 Packager:       %{packager}
@@ -96,7 +109,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    studio
-Studio
+The service which processes storage handlers and authorization pages
 
 %package        api
 Packager:       %{packager}
@@ -106,7 +119,9 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    api
-Api
+The service which is used for working with a certain portal. This service
+handles API requests not related to backup, documents, and the People
+module, for example, requests related to settings, audit, authentication, etc.
 
 %package        api-system
 Packager:       %{packager}
@@ -116,7 +131,7 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    api-system
-Api-system
+The service which is used for working with portals (creating, removing, etc.)
 
 %package        ssoauth
 Packager:       %{packager}
@@ -126,7 +141,9 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    ssoauth
-Ssoauth
+The service responsible for enabling and configuring 
+SAML-based single sign-on (SSO) authentication to provide a more quick, 
+easy and secure way to access DocSpace for users
 
 %package        clear-events
 Packager:       %{packager}
@@ -136,7 +153,8 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    clear-events
-Clear-events
+The service responsible for clearing the login_events and audit_events tables 
+by LoginHistoryLifeTime and AuditTrailLifeTime to log out users after a timeout
 
 %package        backup-background
 Packager:       %{packager}
@@ -146,7 +164,12 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    backup-background
-Backup-background
+The service which launches additional services related to backup creation:
+ - BackupWorkerService - launches WorkerService which runs backup/restore, etc;
+ - BackupListenerService - waits for a signal to delete backups;
+ - BackupCleanerTempFileService - removes temporary backup files;
+ - BackupCleanerService - removes outdated backup files;
+ - BackupSchedulerService - runs backup according to a schedule;
 
 %package        radicale
 Packager:       %{packager}
@@ -159,7 +182,9 @@ Requires:       python3-requests
 Requires:       python3-setuptools
 AutoReqProv:    no
 %description    radicale
-Radicale
+Radicale is a server designed to support the CalDav and CardDav protocols.
+It operates either as a standalone package using its own internal HTTP server
+or can be integrated with an existing web server
 
 %package        doceditor
 Packager:       %{packager}
@@ -169,7 +194,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    doceditor
-Doceditor
+The service which allows interaction with document-server
 
 %package        migration-runner
 Packager:       %{packager}
@@ -179,7 +204,9 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    migration-runner
-Migration-runner
+The service responsible for the database creation.
+A database connection is transferred to the service and
+the service creates tables and populates them with values
 
 %package        login
 Packager:       %{packager}
@@ -189,7 +216,7 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 16.0
 AutoReqProv:    no
 %description    login
-Login
+The service which is used for logging users and displaying the wizard
 
 %package        healthchecks
 Packager:       %{packager}
@@ -199,4 +226,4 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-7.0
 AutoReqProv:    no
 %description    healthchecks
-Healthchecks
+The service which displays launched services

@@ -1,1 +1,12 @@
-{}
+{
+  "Authentication": "Doğrulama",
+  "EnableSSL": "SSL'yi etkinleştir",
+  "Host": "Sunucu",
+  "HostLogin": "Sunucu girişi",
+  "HostPassword": "Sunucu Şifresi",
+  "Port": "Bağlantı noktası",
+  "SenderDisplayName": "Gönderici Ekran İsmi",
+  "SenderEmailAddress": "Gönderici Eposta Adresi",
+  "SendTestMail": "Test Postası Gönder",
+  "SuccessfullyCompletedOperation": "İşlem başarıyla tamamlandı."
+}

@@ -200,7 +200,7 @@
     <value>ユーザー数はライセンスで許可されたユーザー数を超過した</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>メールアドレスの変更手順は、{0}メールアドレスに送信されました</value>
+    <value>メールアドレスの変更手順は、メールアドレスに送信されました</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>{0}メールアドレスを持つユーザが存在する場合は、パスワード変更手順はこのメールアドレスに送信されます。</value>
@@ -263,7 +263,7 @@
     <value>設定が正常に更新されました</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>プロファイルの削除方法は、お使いのメールアドレスに送信されました</value>
+    <value>プロフィールの削除方法は、「{0}」メールアドレスに送信されました</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>不正なコード</value>
@@ -840,5 +840,26 @@
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>ログイン</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、ONLYOFFICEエディターで書誌を作成できます。{0}EasyBibサインアップページでフォームを入力して、ONLYOFFICE統合を追加してください。その後、アプリキーをを以下に貼り付けてください：</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、オフラインであっても送信されたメッセージ通知を受信できます。{0}FirebaseコンソールでONLYOFFICE統合のために新しいプロジェクトを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Googleクラウドストーレジを接続すると、ポータルデータのバックアップと保存するように使用できます。{0} Google Cloud PlatformコンソールでONLYOFFICEのために新しいサービスアカウントを作成してください。その後、受けたデータを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Rackspace Cloud Storageを接続すると、ポータルデータのバックアップと保存するように使用できます。{0}Rackspace Cloudコントロールパネルのセキュリティ設定でRackspace APIキーの隣に［リンク表示］というオプションをクリックしてください。以下に受けたデータを入力してください：</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>ポータルデータを保存とバックアップするように、Amazon AWS S3を接続してください。{0}AWS マネジメントコンソールでONLYOFFICEのためにアクセスキーを作成してください。以下にそのキーを入力してください：</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>お選びのクラウドストレージを接続すると、ポータルデータのバックアップと保存ができます。{0}バックアップをする予定のコンテナ用の閲覧のみ/編集権限を持つユーザーのアクセスデータを取得し、以下に入力してください：</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>このアプリを接続すると、WordPressウェブサイトに文書を投稿に使用できます。{0}Wordpress開発者ページでONLYOFFICE統合のために新しいアプリを作成します。その後、データを以下に入力してください：</value>
   </data>
 </root>

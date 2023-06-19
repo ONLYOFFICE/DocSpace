@@ -1,1 +1,11 @@
-{}
+{
+  "Authentication": "Poświadczenie",
+  "EnableSSL": "Włącz protokół SSL",
+  "HostLogin": "Zaloguj się z hostem",
+  "HostPassword": "Hasło hosta",
+  "Port": "Port",
+  "SenderDisplayName": "Nazwa wyświetlana nadawcy",
+  "SenderEmailAddress": "Adres e-mail nadawcy",
+  "SendTestMail": "Wyślij pocztę testową",
+  "SuccessfullyCompletedOperation": "Operacja została pomyślnie zakończona."
+}

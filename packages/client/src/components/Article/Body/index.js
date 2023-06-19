@@ -11,7 +11,6 @@ import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
-import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import Loaders from "@docspace/common/components/Loaders";
@@ -147,7 +146,6 @@ const ArticleBodyContent = (props) => {
 
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
-          <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&
             !firstLoad &&

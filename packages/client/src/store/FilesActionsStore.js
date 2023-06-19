@@ -2154,6 +2154,22 @@ class FilesActionStore {
   };
 
   backToParentFolder = () => {
+    const {
+      archiveFolderId,
+      myFolderId,
+      myRoomsId,
+      isTrashFolder,
+    } = this.treeFoldersStore;
+    const currentFolderId = this.selectedFolderStore?.id;
+
+    if (
+      currentFolderId === archiveFolderId ||
+      currentFolderId === myFolderId ||
+      currentFolderId === myRoomsId ||
+      isTrashFolder
+    )
+      return;
+
     const { setIsLoading, fetchFiles } = this.filesStore;
 
     let id = this.selectedFolderStore.parentId;
@@ -2162,8 +2178,6 @@ class FilesActionStore {
       const urlFilter = getObjectByLocation(location);
       id = urlFilter.folder;
     }
-
-    if (id === undefined) return;
 
     setIsLoading(true);
 

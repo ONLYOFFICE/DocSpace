@@ -47,10 +47,18 @@ export function setMailDomainSettings(data) {
   });
 }
 
+// export function setDNSSettings(dnsName, enable) {
+//   return request({
+//     method: "post",
+//     url: "/settings/maildomainsettings",
+//     data: { dnsName, enable },
+//   });
+// }
+
 export function setDNSSettings(dnsName, enable) {
   return request({
-    method: "post",
-    url: "/settings/maildomainsettings",
+    method: "put",
+    url: "/settings/dns",
     data: { dnsName, enable },
   });
 }

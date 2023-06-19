@@ -8,15 +8,11 @@ const getDefaultStyles = ({ $currentColorScheme, $isVersion, theme, index }) =>
       path {
         fill: ${!$isVersion
           ? theme.filesVersionHistory.badge.defaultFill
-          : index === 0
-          ? theme.filesVersionHistory.badge.fill
-          : $currentColorScheme.main.accent};
+          : theme.filesVersionHistory.badge.fill};
 
         stroke: ${!$isVersion
           ? theme.filesVersionHistory.badge.stroke
-          : index === 0
-          ? theme.filesVersionHistory.badge.fill
-          : $currentColorScheme.main.accent};
+          : theme.filesVersionHistory.badge.fill};
       }
     }
 

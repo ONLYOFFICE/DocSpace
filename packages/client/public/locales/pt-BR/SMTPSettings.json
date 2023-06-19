@@ -1,1 +1,13 @@
-{}
+{
+  "Authentication": "Autenticação",
+  "AuthViaNTLM": "Autenticação via NTLM",
+  "EnableSSL": "Habilitar SSL",
+  "Host": "Host",
+  "HostLogin": "Login do host",
+  "HostPassword": "Senha do host",
+  "Port": "Porta",
+  "SenderDisplayName": "Nome de exibição do remetente",
+  "SenderEmailAddress": "E-mail do remetente",
+  "SendTestMail": "Enviar e-mail de teste",
+  "SuccessfullyCompletedOperation": "Operação foi concluída com sucesso."
+}

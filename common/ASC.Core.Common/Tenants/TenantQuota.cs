@@ -239,9 +239,9 @@ public class TenantQuota : IMapFrom<DbQuota>
         _customizationFeature = new TenantQuotaFeatureFlag(this) { Name = "customization", Visible = false };
         _customFeature = new TenantQuotaFeatureFlag(this) { Name = "custom", Visible = false };
         _autoBackupRestoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
-        _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
+        _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth" };
         _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
-        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty" };
+        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Order = 9 };
 
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {

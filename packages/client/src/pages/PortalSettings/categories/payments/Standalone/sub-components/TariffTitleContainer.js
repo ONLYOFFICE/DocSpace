@@ -36,7 +36,7 @@ const TariffTitleContainer = ({
     return (
       isLicenseDateExpired && (
         <Text className="payments_subscription-expired" isBold fontSize="14px">
-          {t("TopBottonsEnterpriseExpired")}
+          {t("Common:SubscriptionExpired")}
         </Text>
       )
     );
@@ -77,11 +77,8 @@ const TariffTitleContainer = ({
 
 export default inject(({ auth }) => {
   const { currentTariffStatusStore, currentQuotaStore } = auth;
-  const {
-    trialDaysLeft,
-    paymentDate,
-    isLicenseDateExpired,
-  } = currentTariffStatusStore;
+  const { trialDaysLeft, paymentDate, isLicenseDateExpired } =
+    currentTariffStatusStore;
   const { isTrial } = currentQuotaStore;
   return { isTrial, trialDaysLeft, paymentDate, isLicenseDateExpired };
 })(observer(TariffTitleContainer));

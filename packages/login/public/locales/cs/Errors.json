@@ -6,6 +6,8 @@
   "ErrorUserNotFound": "Uživatel nemohl být nalezen",
   "InvalidUsernameOrPassword": "Špatné uživatelské jméno nebo heslo.",
   "LoginWithAccountNotFound": "Nemůže najít přidružený účet třetí strany. Nejdříve musíte na první straně úpravy profilu připojit účet sociální sítě.",
+  "RecaptchaInvalid": "Recaptcha je neplatná",
+  "SsoError": "Interní chyba serveru",
   "SsoSettingsCantCreateUser": "Nelze vytvořit uživatele s tímto autentizačním tokenem",
   "SsoSettingsDisabled": "Funkce Single Sign-on je zakázána",
   "SsoSettingsEmptyToken": "Autentizační token nebyl nalezen",

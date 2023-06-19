@@ -16,7 +16,9 @@ case "$1" in
 		CORE_MACHINEKEY="$RET"
 
 		args+=(-e "$ENVIRONMENT" -ash "$APP_HOST" -asp "$APP_PORT" );
-		[ -n "$CORE_MACHINEKEY" ] && args+=(-mk "$CORE_MACHINEKEY" );
+
+		[ -z "$CORE_MACHINEKEY" ] && CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12) && db_set {{product}}/machinekey $CORE_MACHINEKEY
+		args+=(-mk "$CORE_MACHINEKEY" )
 
 		db_get {{product}}/db-host || true
 		DB_HOST="$RET"

@@ -125,16 +125,7 @@ class CurrentTariffStatusStore {
   };
 
   setPortalTariff = async () => {
-    let refresh = false;
-
-    if (window.location.search === "?complete=true") {
-      refresh = true;
-    }
-
-    const res = await api.portal.getPortalTariff(refresh);
-
-    if (refresh)
-      window.history.replaceState({}, document.title, window.location.pathname);
+    const res = await api.portal.getPortalTariff();
 
     if (!res) return;
 

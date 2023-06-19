@@ -1,1 +1,13 @@
-{}
+{
+  "Authentication": "認証",
+  "AuthViaNTLM": "NTLMによる認証",
+  "EnableSSL": "SSLを有効に",
+  "Host": "ホスト",
+  "HostLogin": "ログインを開催",
+  "HostPassword": "ホスト·パスワード",
+  "Port": "ポート",
+  "SenderDisplayName": "送信者の表示名",
+  "SenderEmailAddress": "送信者の電子メールアドレス",
+  "SendTestMail": "テスト　メールを送信する",
+  "SuccessfullyCompletedOperation": "操作は正常に完了した。"
+}

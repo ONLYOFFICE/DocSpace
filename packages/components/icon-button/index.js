@@ -76,13 +76,8 @@ class IconButton extends React.PureComponent {
     onMouseDown && onMouseDown(e);
   }
   onMouseUp(e) {
-    const {
-      isDisabled,
-      iconHoverName,
-      iconName,
-      color,
-      onMouseUp,
-    } = this.props;
+    const { isDisabled, iconHoverName, iconName, color, onMouseUp } =
+      this.props;
 
     if (isDisabled) return;
 
@@ -162,6 +157,7 @@ class IconButton extends React.PureComponent {
         id={id}
         style={style}
         color={this.state.currentIconColor}
+        isFill={isFill}
         {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {

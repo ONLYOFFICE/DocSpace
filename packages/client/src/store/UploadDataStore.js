@@ -906,7 +906,7 @@ class UploadDataStore {
         return Promise.reject(res.data.message);
       }
 
-      const { uploaded, id: fileId } = res.data.data;
+      const { uploaded, id: fileId, file: fileInfo } = res.data.data;
 
       let uploadedSize, newPercent;
 
@@ -947,7 +947,6 @@ class UploadDataStore {
       });
 
       if (uploaded) {
-        const fileInfo = await getFileInfo(fileId);
         runInAction(() => {
           this.files[indexOfFile].action = "uploaded";
           this.files[indexOfFile].fileId = fileId;

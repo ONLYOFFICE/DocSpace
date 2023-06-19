@@ -946,4 +946,13 @@
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Odeslali jste příliš mnoho textových zpráv. Zkuste to prosím později.</value>
   </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha je neplatná</value>
+  </data>
 </root>

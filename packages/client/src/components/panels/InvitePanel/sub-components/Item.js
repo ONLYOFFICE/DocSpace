@@ -8,7 +8,6 @@ import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
 
 import {
-  StyledComboBox,
   StyledEditInput,
   StyledEditButton,
   StyledCheckIcon,
@@ -17,6 +16,7 @@ import {
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import AccessSelector from "./AccessSelector";
 
 const Item = ({
   t,
@@ -27,6 +27,7 @@ const Item = ({
   setHasErrors,
   roomType,
   isOwner,
+  inputsRef,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -37,7 +38,7 @@ const Item = ({
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = getAccessOptions(t, roomType, true, false, isOwner);
+  const accesses = getAccessOptions(t, roomType, true, true, isOwner);
 
   const filteredAccesses = filterUserRoleOptions(accesses, item, true);
 
@@ -130,20 +131,15 @@ const Item = ({
           <StyledDeleteIcon size="medium" onClick={removeItem} />
         </>
       ) : (
-        <StyledComboBox
-          onSelect={selectItemAccess}
-          noBorder
-          options={filteredAccesses}
-          size="content"
-          scaled={false}
-          manualWidth="fit-content"
-          selectedOption={defaultAccess}
-          showDisabledItems
-          modernView
-          directionX="right"
-          directionY="bottom"
-          isDefaultMode={false}
-          fixedDirection={true}
+        <AccessSelector
+          t={t}
+          roomType={roomType}
+          defaultAccess={defaultAccess?.access}
+          onSelectAccess={selectItemAccess}
+          containerRef={inputsRef}
+          isOwner={isOwner}
+          withRemove={true}
+          filteredAccesses={filteredAccesses}
         />
       )}
     </>

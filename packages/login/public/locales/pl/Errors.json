@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "Użytkownik nie został odnaleziony",
   "InvalidUsernameOrPassword": "Nieprawidłowa nazwa użytkownika lub hasło.",
   "LoginWithAccountNotFound": "Nie można znaleźć powiązanego konta osób trzecich. Musisz połączyć swoje konto społecznościowe na stronie edycji profilu.",
+  "SsoError": "Wewnętrzny błąd serwera",
   "SsoSettingsCantCreateUser": "Nie można utworzyć użytkownika z tym tokenem uwierzytelniania",
   "SsoSettingsDisabled": "Pojedyncze logowanie jest wyłączone",
   "SsoSettingsEmptyToken": "Nie można odnaleźć tokenu uwierzytelniania",

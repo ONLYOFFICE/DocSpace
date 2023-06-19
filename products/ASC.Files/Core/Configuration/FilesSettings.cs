@@ -125,19 +125,22 @@ public class FilesSettingsHelper
     private readonly SetupInfo _setupInfo;
     private readonly FileUtility _fileUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly SearchSettingsHelper _searchSettingsHelper;
 
     public FilesSettingsHelper(
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         FileUtility fileUtility,
-        FilesLinkUtility filesLinkUtility)
+        FilesLinkUtility filesLinkUtility,
+        SearchSettingsHelper searchSettingsHelper)
     {
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
         _fileUtility = fileUtility;
         _filesLinkUtility = filesLinkUtility;
+        _searchSettingsHelper = searchSettingsHelper;
     }
 
     public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
@@ -393,6 +396,14 @@ public class FilesSettingsHelper
             AutomaticallyCleanUp = setting;
 
             return setting;
+        }
+    }
+
+    public bool CanSearchByContent
+    {
+        get
+        {
+            return _searchSettingsHelper.CanSearchByContent<DbFile>();
         }
     }
 

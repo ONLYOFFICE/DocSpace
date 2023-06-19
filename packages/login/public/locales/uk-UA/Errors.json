@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "Користувач не знайдений",
   "InvalidUsernameOrPassword": "Невірний логін або пароль.",
   "LoginWithAccountNotFound": "Пов'язаний аккаунт не знайдено",
+  "SsoError": "Внутрішня помилка сервера",
   "SsoSettingsCantCreateUser": "Не вдалося створити користувача з цим маркером автентифікації",
   "SsoSettingsDisabled": "Єдиний вхід відключено",
   "SsoSettingsEmptyToken": "Токен авторизації не знайдено",
