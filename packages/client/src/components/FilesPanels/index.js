@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
   UploadPanel,
-  OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
@@ -83,6 +82,7 @@ const Panels = (props) => {
     (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
       <FilesSelector
         key="files-selector"
+        isMove={moveToPanelVisible}
         isCopy={copyPanelVisible}
         isRestoreAll={restoreAllPanelVisible}
       />
