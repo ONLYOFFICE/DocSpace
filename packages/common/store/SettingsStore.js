@@ -357,11 +357,14 @@ class SettingsStore {
           }
         }
       } else if (key === "passwordHash") {
+        console.log("store getSettings passwordHash", newSettings);
         this.setValue("hashSettings", newSettings[key]);
       }
     });
 
     this.setGreetingSettings(newSettings.greetingSettings);
+
+    console.log("store getSettings", newSettings);
 
     return newSettings;
   };
@@ -786,9 +789,12 @@ class SettingsStore {
 
     if (frameConfig) {
       frameCallEvent({ event: "onAppReady" });
+      console.log("client response onAppReady");
+      console.log("client setFrameConfig", frameConfig);
     }
 
     if (frameConfig?.theme) {
+      console.log("client theme", frameConfig?.theme);
       this.setTheme(frameConfig.theme);
     }
 

@@ -31,7 +31,7 @@ const Sdk = ({
 
   useEffect(() => {
     if (window.parent && !frameConfig) frameCallCommand("setConfig");
-  }, [frameConfig?.frameId, frameCallCommand]);
+  }, [frameCallCommand]);
 
   const { mode } = match.params;
 
@@ -160,6 +160,8 @@ export default inject(({ auth, settingsStore }) => {
   } = auth.settingsStore;
   const { user } = userStore;
   const { getIcon } = settingsStore;
+
+  console.log("sdk observ hashSettings", hashSettings);
   return {
     theme,
     setFrameConfig,

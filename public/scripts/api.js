@@ -45,7 +45,7 @@
     events: {
       onSelectCallback: null,
       onCloseCallback: null,
-      onAppReady: null,
+      onAppReady: () => console.log("onAppReady"),
       onAppError: null,
     },
   };
@@ -166,6 +166,7 @@
         data: message,
       };
 
+      console.log("api #sendMessage src", this.config.src);
       if (!!this.#iframe.contentWindow) {
         setTimeout(() => {
           this.#iframe.contentWindow.postMessage(
@@ -367,6 +368,7 @@
     setConfig(newConfig = {}, reload = false) {
       if (this.#oneOfExistInObject(this.config.keysForReload, newConfig))
         reload = true;
+      console.log("api call setConfig");
 
       this.config = { ...this.config, ...newConfig };
 

@@ -241,6 +241,10 @@ class PureHome extends React.Component {
       });
 
     window.addEventListener("message", this.handleMessage, false);
+
+    if (window.parent && !!!this.props.frameConfig?.frameId) {
+      frameCallCommand("setConfig");
+    }
   }
 
   fetchDefaultFiles = () => {
@@ -360,6 +364,13 @@ class PureHome extends React.Component {
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
+    }
+
+    if (
+      window.parent &&
+      this.props.frameConfig?.frameId !== prevProps.frameConfig?.frameId
+    ) {
+      frameCallCommand("setConfig");
     }
 
     if (
@@ -580,10 +591,6 @@ class PureHome extends React.Component {
       isEmptyPage,
       isLoadedEmptyPage,
     } = this.props;
-
-    if (window.parent && !frameConfig) {
-      frameCallCommand("setConfig");
-    }
 
     return (
       <>
