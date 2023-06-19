@@ -195,6 +195,8 @@ class DropDown extends React.PureComponent {
     let bottom = parentRects.bottom;
 
     const viewport = DomHelpers.getViewport();
+    const scrollBarWidth =
+      viewport.width - document.documentElement.clientWidth;
     const dropDownRects = this.dropDownRef.current.getBoundingClientRect();
 
     if (
@@ -234,7 +236,8 @@ class DropDown extends React.PureComponent {
         dropDown.style.left =
           parentRects.right -
           dropDown.clientWidth -
-          this.props.offsetLeft +
+          this.props.offsetLeft -
+          scrollBarWidth +
           "px";
       }
     }
