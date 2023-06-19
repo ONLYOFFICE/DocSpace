@@ -45,20 +45,20 @@ class DbAzService : IAzService
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces = await
             userDbContext.Acl
-            .Where(r => r.Tenant == Tenant.DefaultTenant)
+            .Where(r => r.TenantId == Tenant.DefaultTenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
-            .ToDictionaryAsync(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
+            .ToDictionaryAsync(a => string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
 
         var tenantAces = await
             userDbContext.Acl
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
         // remove excaped rows
         foreach (var a in tenantAces)
         {
-            var key = string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
+            var key = string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
             if (commonAces.TryGetValue(key, out var common))
             {
                 commonAces.Remove(key);
@@ -74,34 +74,34 @@ class DbAzService : IAzService
 
     public async Task<AzRecord> SaveAceAsync(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         if (!await ExistEscapeRecordAsync(r))
         {
             await InsertRecordAsync(r);
-        }
-        else
-        {
-            // unescape
+            }
+            else
+            {
+                // unescape
             await DeleteRecordAsync(r);
-        }
+            }
 
         return r;
     }
 
     public async Task RemoveAceAsync(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         if (await ExistEscapeRecordAsync(r))
         {
-            // escape
+                // escape
             await InsertRecordAsync(r);
-        }
-        else
-        {
+            }
+            else
+            {
             await DeleteRecordAsync(r);
-        }
+            }
 
     }
 
@@ -110,7 +110,7 @@ class DbAzService : IAzService
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         return await userDbContext.Acl
-            .Where(a => a.Tenant == Tenant.DefaultTenant)
+            .Where(a => a.TenantId == Tenant.DefaultTenant)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))
@@ -122,7 +122,7 @@ class DbAzService : IAzService
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var record = await userDbContext.Acl
-            .Where(a => a.Tenant == r.Tenant)
+            .Where(a => a.TenantId == r.TenantId)
             .Where(a => a.Subject == r.Subject)
             .Where(a => a.Action == r.Action)
             .Where(a => a.Object == (r.Object ?? string.Empty))

@@ -28,10 +28,13 @@ namespace ASC.Core.Common.EF;
 
 public class UserSecurity : BaseEntity
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public Guid UserId { get; set; }
     public string PwdHash { get; set; }
     public DateTime? LastModified { get; set; }
+
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { UserId };
@@ -42,13 +45,15 @@ public static class UserSecurityExtension
 {
     public static ModelBuilderWrapper AddUserSecurity(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<UserSecurity>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddUserSecurity, Provider.MySql)
             .Add(PgSqlAddUserSecurity, Provider.PostgreSql)
             .HasData(
             new UserSecurity
             {
-                Tenant = 1,
+                TenantId = 1,
                 UserId = Guid.Parse("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
                 PwdHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=",
                 LastModified = new DateTime(2022, 7, 8)
@@ -70,7 +75,7 @@ public static class UserSecurityExtension
             entity.HasIndex(e => e.PwdHash)
                 .HasDatabaseName("pwdhash");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant");
 
             entity.Property(e => e.UserId)
@@ -89,7 +94,7 @@ public static class UserSecurityExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
     public static void PgSqlAddUserSecurity(this ModelBuilder modelBuilder)
@@ -104,7 +109,7 @@ public static class UserSecurityExtension
             entity.HasIndex(e => e.PwdHash)
                 .HasDatabaseName("pwdhash");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_core_usersecurity");
 
             entity.Property(e => e.UserId)
@@ -118,7 +123,7 @@ public static class UserSecurityExtension
                 .HasMaxLength(512)
                 .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
 }

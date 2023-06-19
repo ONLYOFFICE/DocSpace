@@ -42,12 +42,15 @@ public class WebhooksLog
     public DateTime? Delivery { get; set; }
 
     public WebhooksConfig Config { get; set; }
+    public DbTenant Tenant { get; set; }
 }
 
 public static class WebhooksPayloadExtension
 {
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Tenant).AutoInclude();
+
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)
             .Add(PgSqlAddWebhooksLog, Provider.PostgreSql);
@@ -84,8 +87,7 @@ public static class WebhooksPayloadExtension
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
@@ -154,8 +156,7 @@ public static class WebhooksPayloadExtension
                 .HasMaxLength(50);
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()

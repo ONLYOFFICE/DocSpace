@@ -32,6 +32,8 @@ public class DbFilesBunchObjects : BaseEntity, IDbFile
     public string RightNode { get; set; }
     public string LeftNode { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, RightNode };
@@ -42,6 +44,8 @@ public static class DbFilesBunchObjectsExtension
 {
     public static ModelBuilderWrapper AddDbFilesBunchObjects(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesBunchObjects>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesBunchObjects, Provider.MySql)
             .Add(PgSqlAddDbFilesBunchObjects, Provider.PostgreSql);

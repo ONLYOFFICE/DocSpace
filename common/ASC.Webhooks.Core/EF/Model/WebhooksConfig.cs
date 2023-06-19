@@ -36,6 +36,8 @@ public class WebhooksConfig : BaseEntity
     public bool Enabled { get; set; }
     public bool SSL { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -46,6 +48,8 @@ public static class WebhooksConfigExtension
 {
     public static ModelBuilderWrapper AddWebhooksConfig(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<WebhooksConfig>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddWebhooksConfig, Provider.MySql)
             .Add(PgSqlAddWebhooksConfig, Provider.PostgreSql);
@@ -69,8 +73,7 @@ public static class WebhooksConfigExtension
                 .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Uri)
                 .HasColumnName("uri")
@@ -118,8 +121,7 @@ public static class WebhooksConfigExtension
                 .HasColumnName("id");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                 .HasColumnName("tenant_id");
 
             entity.Property(e => e.Uri)
                 .HasColumnName("uri")
