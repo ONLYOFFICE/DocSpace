@@ -136,11 +136,23 @@ export const StyledBox = styled(Box)`
 
   .country-name {
     margin-left: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0px;
+        margin-right: 10px;
+      `}
     color: ${(props) => props.theme.inputPhone.color};
   }
 
   .country-prefix {
     margin-left: 5px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0px;
+        margin-right: 5px;
+      `}
     color: ${(props) => props.theme.inputPhone.dialCodeColor};
   }
 
@@ -151,6 +163,11 @@ export const StyledBox = styled(Box)`
   .country-item {
     display: flex;
     align-items: center;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        flex-direction: row-reverse;
+      `}
     max-width: 100%;
     padding: 0;
     height: 36px;

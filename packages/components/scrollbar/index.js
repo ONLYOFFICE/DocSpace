@@ -1,8 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useTheme } from "styled-components";
+
 import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 import { classNames } from "../utils/classNames";
+
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
     smallWhite: {
@@ -66,31 +69,42 @@ const Scrollbar = React.forwardRef((props, ref) => {
   const thumbV = stype ? stype.thumbV : {};
   const thumbH = stype ? stype.thumbH : {};
   const view = stype ? stype.view : {};
+  const theme = useTheme();
 
-  const renderNavThumbVertical = ({ style, ...props }) => (
-    <div
-      {...props}
-      className="nav-thumb-vertical"
-      style={{ ...style, ...thumbV }}
-    />
-  );
+  const renderNavThumbVertical = ({ style, ...props }) => {
+    return (
+      <div
+        {...props}
+        className="nav-thumb-vertical"
+        style={{ ...style, ...thumbV }}
+      />
+    );
+  };
 
-  const renderNavThumbHorizontal = ({ style, ...props }) => (
-    <div
-      className="nav-thumb-horizontal"
-      {...props}
-      style={{ ...style, ...thumbH }}
-    />
-  );
+  const renderNavThumbHorizontal = ({ style, ...props }) => {
+    return (
+      <div
+        className="nav-thumb-horizontal"
+        {...props}
+        style={{ ...style, ...thumbH, left: 0, margin: "10px" }}
+      />
+    );
+  };
 
-  const renderView = ({ style, ...rest }) => (
-    <div
-      {...rest}
-      style={{ ...style, ...view }}
-      tabIndex={-1}
-      className={classNames("scroll-body", props.scrollclass)}
-    />
-  );
+  const renderView = ({ style, ...rest }) => {
+    return (
+      <div
+        {...rest}
+        style={{
+          ...style,
+          ...view,
+          marginLeft: theme.interfaceDirection === "rtl" ? "-15px" : "0",
+        }}
+        tabIndex={-1}
+        className={classNames("scroll-body", props.scrollclass)}
+      />
+    );
+  };
 
   return (
     <StyledScrollbar

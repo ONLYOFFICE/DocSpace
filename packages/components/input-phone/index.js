@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
-import { options } from "./options";
+import { useTheme } from "styled-components";
 import { FixedSizeList as List } from "react-window";
-import { StyledBox } from "./styled-input-phone";
-import InvalidSvgUrl from "PUBLIC_DIR/images/phoneFlags/invalid.svg?url";
 import PropTypes from "prop-types";
+
+import { options } from "./options";
+import { StyledBox } from "./styled-input-phone";
+
+import InvalidSvgUrl from "PUBLIC_DIR/images/phoneFlags/invalid.svg?url";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import ComboBox from "@docspace/components/combobox";
@@ -31,6 +34,7 @@ const InputPhone = ({
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isValid, setIsValid] = useState(true);
+  const theme = useTheme();
 
   const onInputChange = (e) => {
     const str = e.target.value.replace(/\D/g, "");
@@ -104,6 +108,13 @@ const InputPhone = ({
   const Row = ({ data, index, style }) => {
     const country = data[index];
     const prefix = "+";
+    const RtlRowComponent = () => (
+      <>
+        <Text className="country-dialcode">{country.dialCode}</Text>
+        <Text className="country-prefix">{prefix}</Text>
+        <Text className="country-name">{country.name}</Text>
+      </>
+    );
 
     return (
       <DropDownItem
@@ -115,9 +126,15 @@ const InputPhone = ({
         data-option={index}
         onClick={onCountryClick}
       >
-        <Text className="country-name">{country.name}</Text>
-        <Text className="country-prefix">{prefix}</Text>
-        <Text className="country-dialcode">{country.dialCode}</Text>
+        {theme.interfaceDirection === "rtl" ? (
+          <RtlRowComponent />
+        ) : (
+          <>
+            <Text className="country-name">{country.name}</Text>
+            <Text className="country-prefix">{prefix}</Text>
+            <Text className="country-dialcode">{country.dialCode}</Text>
+          </>
+        )}
       </DropDownItem>
     );
   };
