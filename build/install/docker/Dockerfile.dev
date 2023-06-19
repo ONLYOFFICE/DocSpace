@@ -334,10 +334,9 @@ ENV SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
 
 RUN apt-get update && \
-    apt-get install -yq dos2unix && \
-    chown onlyoffice:onlyoffice docker-migration-entrypoint.sh
+    apt-get install -yq dos2unix
 
-#COPY docker-migration-entrypoint.sh docker-migration-entrypoint.sh
+COPY docker-migration-entrypoint.sh docker-migration-entrypoint.sh
 
 RUN dos2unix docker-migration-entrypoint.sh && \
     apt-get --purge remove -y dos2unix && \
