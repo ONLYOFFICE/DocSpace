@@ -17,9 +17,16 @@ const Selectors = styled.div`
   position: relative;
   margin-top: 8px;
   margin-bottom: 16px;
+  height: 32px;
+  display: flex;
+  align-items: center;
 
   .mr-8 {
     margin-right: 8px;
+  }
+
+  .selectedItem {
+    margin-bottom: 0;
   }
 `;
 
@@ -144,6 +151,7 @@ const DateTimePicker = (props) => {
     return (
       <div>
         <SelectedItem
+          className="selectedItem"
           onClose={deleteSelectedDate}
           label={dateObj.date.format("DD MMM YYYY") + formattedTime}
           onClick={toggleCalendar}
@@ -197,6 +205,7 @@ const DateTimePicker = (props) => {
         <SelectedDateTime />
       ) : (
         <SelectedItem
+          className="selectedItem"
           onClose={deleteSelectedDate}
           label={dateObj.date.format("DD MMM YYYY")}
         />
