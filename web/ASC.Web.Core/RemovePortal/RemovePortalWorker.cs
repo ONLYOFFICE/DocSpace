@@ -43,7 +43,7 @@ public class RemovePortalWorker
         _queue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
-    public void Start(int tenantId, string redirectLink)
+    public void Start(int tenantId)
     {
         lock (_locker)
         {
@@ -59,7 +59,7 @@ public class RemovePortalWorker
 
                 item = _serviceProvider.GetService<RemovePortalOperation>();
 
-                item.Init(tenantId, redirectLink);
+                item.Init(tenantId);
 
                 _queue.EnqueueTask(item);
             }

@@ -37,7 +37,4 @@ public record RemovePortalIntegrationEvent : IntegrationEvent
     public RemovePortalIntegrationEvent(Guid createBy, int tenantId) : base(createBy, tenantId)
     {
     }
-
-    [ProtoMember(1)]
-    public string RedirectLink { get; set; }
 }

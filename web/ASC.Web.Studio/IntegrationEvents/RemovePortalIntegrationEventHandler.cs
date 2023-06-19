@@ -46,7 +46,7 @@ public class RemovePortalIntegrationEventHandler : IIntegrationEventHandler<Remo
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            _worker.Start(@event.TenantId, @event.RedirectLink);
+            _worker.Start(@event.TenantId);
 
             return Task.CompletedTask;
         }

@@ -32,11 +32,9 @@ public class RemovePortalOperation : DistributedTaskProgress
     private readonly StorageFactory _storageFactory;
     private readonly ITenantService _tenantService;
     private readonly StorageFactoryConfig _storageFactoryConfig;
-    private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly ILogger<RemovePortalOperation> _logger;
-    private string _redirectLink;
     public int TenantId { get; set; }
 
 
@@ -45,7 +43,6 @@ public class RemovePortalOperation : DistributedTaskProgress
         ITenantService tenantService,
         TenantManager tenantManager,
         UserManager userManager,
-        StudioNotifyService studioNotifyService,
         ILogger<RemovePortalOperation> logger)
     {
         _storageFactory = storageFactory;
@@ -53,14 +50,12 @@ public class RemovePortalOperation : DistributedTaskProgress
         _tenantService = tenantService;
         _tenantManager = tenantManager;
         _userManager = userManager;
-        _studioNotifyService = studioNotifyService;
         _logger = logger;
     }
 
-    public void Init(int tenantId, string redirectLink)
+    public void Init(int tenantId)
     {
         TenantId = tenantId;
-        _redirectLink = redirectLink;
     }
 
     protected override async Task DoJob()
@@ -93,8 +88,6 @@ public class RemovePortalOperation : DistributedTaskProgress
             await _tenantService.PermanentlyRemoveTenantAsync(TenantId);
 
             _logger.DebugEndRemoveTenant(TenantId);
-
-            await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, _redirectLink);
             Percentage = 100;
         }
         catch (Exception e)
