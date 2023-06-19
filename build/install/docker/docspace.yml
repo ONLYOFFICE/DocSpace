@@ -9,11 +9,15 @@ x-healthcheck:
 
 x-profiles-backend:
  &x-profiles-backend
- profiles: ["prod", "backend"]
+ profiles: ["prod", "backend", "saas"]
 
 x-profiles-frontend:
  &x-profiles-frontend
- profiles: ["prod", "frontend"]
+ profiles: ["prod", "frontend", "saas"]
+
+x-profiles-extra-services:
+ &x-profiles-extra-services
+ profiles: ["prod", "extra-services"] 
 
 x-service: &x-service-base
   container_name: base
@@ -47,7 +51,7 @@ x-service: &x-service-base
 
 services:
   onlyoffice-elasticsearch:
-    <<: [*x-profiles-backend]
+    <<: [*x-profiles-extra-services]
     image: onlyoffice/elasticsearch:${ELK_VERSION}
     container_name: ${ELK_HOST}
     restart: always
@@ -69,6 +73,23 @@ services:
     expose:
       - "9200"
       - "9300"
+
+  onlyoffice-rabbitmq:
+    <<: [*x-profiles-extra-services]
+    image: rabbitmq:3
+    container_name: onlyoffice-rabbitmq
+    restart: always
+    expose:
+      - "5672"
+      - "80"
+
+  onlyoffice-redis:
+    <<: [*x-profiles-extra-services]
+    image: redis:7
+    container_name: onlyoffice-redis
+    restart: always
+    expose:
+      - "6379"    
   
   onlyoffice-notify:
     <<: [*x-service-base, *x-profiles-backend]
