@@ -75,5 +75,11 @@ services:
     - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
   
   onlyoffice-proxy:
-    <<: *x-profiles-local 
+    <<: *x-profiles-local
+  
+  onlyoffice-rabbitmq:
+    <<: *x-profiles-local
+
+  onlyoffice-redis:
+    <<: *x-profiles-local
    
