@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { combineUrl, setCookie, getCookie, frameCallEvent } from "../utils";
 import FirebaseHelper from "../utils/firebase";
@@ -364,8 +364,6 @@ class SettingsStore {
 
     this.setGreetingSettings(newSettings.greetingSettings);
 
-    console.log("store getSettings", newSettings);
-
     return newSettings;
   };
 
@@ -415,6 +413,8 @@ class SettingsStore {
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
+
+    console.log("CLIENT init settings store");
   };
 
   setRoomsMode = (mode) => {
@@ -785,20 +785,22 @@ class SettingsStore {
   };
 
   setFrameConfig = (frameConfig) => {
-    this.frameConfig = frameConfig;
+    runInAction(() => {
+      this.frameConfig = frameConfig;
 
-    if (frameConfig) {
-      frameCallEvent({ event: "onAppReady" });
-      console.log("client response onAppReady");
-      console.log("client setFrameConfig", frameConfig);
-    }
+      if (frameConfig) {
+        frameCallEvent({ event: "onAppReady" });
+        console.log("client response onAppReady");
+        console.log("client setFrameConfig", frameConfig);
+      }
 
-    if (frameConfig?.theme) {
-      console.log("client theme", frameConfig?.theme);
-      this.setTheme(frameConfig.theme);
-    }
+      if (frameConfig?.theme) {
+        console.log("client theme", frameConfig?.theme);
+        this.setTheme(frameConfig.theme);
+      }
 
-    return frameConfig;
+      return frameConfig;
+    });
   };
 
   get isFrame() {
