@@ -79,6 +79,10 @@ services:
   
   onlyoffice-proxy:
     <<: *x-profiles-local
+    environment:
+      - SERVICE_CLIENT=${SERVICE_CLIENT}
+    volumes:
+      - ${ROOT_DIR}/public:/var/www/public/
   
   onlyoffice-rabbitmq:
     <<: *x-profiles-local
@@ -88,4 +92,6 @@ services:
   
   onlyoffice-document-server:
     <<: *x-profiles-local
+    volumes:
+      - ${ROOT_DIR}/Data:/var/www/onlyoffice/Data
     
