@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="20.5" version="20.7.1" Modules="enterprise" RootPath="." Language="en" Id="{5159D3C5-2644-4DB0-AAF9-7FB7ED1201EC}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="20.0" version="20.0" Modules="enterprise" RootPath="." Language="en" Id="{5159D3C5-2644-4DB0-AAF9-7FB7ED1201EC}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="AppXProductDetailsComponent;AppXDependenciesComponent;AppXAppDetailsComponent;AppXVisualAssetsComponent;AppXCapabilitiesComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;SccmComponent;ActSyncAppComponent;CPLAppletComponent;AutorunComponent;GameUxComponent;SilverlightSlnComponent;SharePointSlnComponent;FixupComponent;MsiXDiffComponent;MsixManifestEditorComponent"/>
   </COMPONENT>
