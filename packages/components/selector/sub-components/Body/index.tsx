@@ -123,6 +123,7 @@ const Body = ({
           <BreadCrumbs
             breadCrumbs={breadCrumbs}
             onSelectBreadCrumb={onSelectBreadCrumb}
+            isLoading={isLoading}
           />
         )
       ) : null}

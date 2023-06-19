@@ -14,16 +14,21 @@ import {
   StyledArrowRightSvg,
 } from "./StyledBreadCrumbs";
 
-const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
+const BreadCrumbs = ({
+  breadCrumbs,
+  onSelectBreadCrumb,
+  isLoading,
+}: BreadCrumbsProps) => {
   const [displayedItems, setDisplayedItems] = React.useState<DisplayedItem[]>(
     []
   );
 
   const onClickItem = React.useCallback(
     (e, open, item: BreadCrumb) => {
+      if (isLoading) return;
       onSelectBreadCrumb && onSelectBreadCrumb(item);
     },
-    [breadCrumbs]
+    [breadCrumbs, isLoading]
   );
 
   const calculateDisplayedItems = React.useCallback(
@@ -173,8 +178,9 @@ const BreadCrumbs = ({ breadCrumbs, onSelectBreadCrumb }: BreadCrumbsProps) => {
             noSelect
             truncate
             isCurrent={index === displayedItems.length - 1}
+            isLoading={isLoading}
             onClick={() => {
-              if (index === displayedItems.length - 1) return;
+              if (index === displayedItems.length - 1 || isLoading) return;
 
               onSelectBreadCrumb &&
                 onSelectBreadCrumb({

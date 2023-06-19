@@ -29,13 +29,13 @@ const StyledBreadCrumbs = styled.div<{
   }
 `;
 
-const StyledItemText = styled(Text)<{ isCurrent: boolean }>`
+const StyledItemText = styled(Text)<{ isCurrent: boolean; isLoading: boolean }>`
   ${(props) =>
     !props.isCurrent &&
     css`
       color: ${props.theme.selector.breadCrumbs.prevItemColor};
 
-      cursor: pointer;
+      ${!props.isLoading && `cursor: pointer`};
     `}
 `;
 

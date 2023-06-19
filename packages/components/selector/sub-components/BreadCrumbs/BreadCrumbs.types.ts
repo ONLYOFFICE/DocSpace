@@ -19,4 +19,5 @@ export type DisplayedItem = {
 export type BreadCrumbsProps = {
   breadCrumbs?: BreadCrumb[];
   onSelectBreadCrumb?: (item: BreadCrumb) => void;
+  isLoading?: boolean;
 };
