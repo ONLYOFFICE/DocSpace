@@ -234,6 +234,7 @@ export const useFilesHelper = ({
   searchValue,
   disabledItems,
   setSelectedItemSecurity,
+  isThirdParty,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -292,7 +293,7 @@ export const useFilesHelper = ({
           })
         );
 
-        breadCrumbs.unshift({ ...defaultBreadCrumb });
+        !isThirdParty && breadCrumbs.unshift({ ...defaultBreadCrumb });
 
         setBreadCrumbs(breadCrumbs);
         setIsBreadCrumbsLoading(false);
@@ -312,6 +313,7 @@ export const useFilesHelper = ({
     },
     [selectedItemId, searchValue, isFirstLoad, disabledItems]
   );
+
   return { getFileList };
 };
 

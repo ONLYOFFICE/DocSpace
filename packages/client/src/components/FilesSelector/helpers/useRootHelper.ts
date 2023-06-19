@@ -14,6 +14,9 @@ const useRootHelper = ({
   setIsBreadCrumbsLoading,
   setItems,
   treeFolders,
+  setIsNextPageLoading,
+  setTotal,
+  setHasNextPage,
 }: useRootHelperProps) => {
   const [isRoot, setIsRoot] = React.useState<boolean>(false);
 
@@ -48,6 +51,9 @@ const useRootHelper = ({
     });
 
     setItems(newItems);
+    setTotal(newItems.length);
+    setHasNextPage(false);
+    setIsNextPageLoading(false);
   }, [treeFolders]);
 
   return { isRoot, setIsRoot, getRootData };

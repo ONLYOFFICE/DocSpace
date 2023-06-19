@@ -47,6 +47,8 @@ export type useRootHelperProps = {
   setTotal: (value: number) => void;
   setItems: (items: Item[] | setItems) => void;
   treeFolders?: Item[];
+  setIsNextPageLoading: (value: boolean) => void;
+  setHasNextPage: (value: boolean) => void;
 };
 
 export type useRoomsHelperProps = {
@@ -74,34 +76,50 @@ export type useFilesHelpersProps = {
   searchValue?: string;
   disabledItems: string[] | number[];
   setSelectedItemSecurity: (value: Security) => void;
+  isThirdParty: boolean;
 };
 
 export type FilesSelectorProps = {
+  isPanelVisible: boolean;
+  withoutBasicSelection: boolean;
+  withoutImmediatelyClose: boolean;
+  isThirdParty: boolean;
+
+  onClose?: () => void;
+
+  isMove?: boolean;
+  isCopy?: boolean;
+  isRestoreAll?: boolean;
+
   currentFolderId?: number;
   parentId?: number;
   rootFolderType?: number;
+
   treeFolders?: Item[];
-  isVisible: boolean;
-  setMoveToPanelVisible: (value: boolean) => void;
+
   theme: any;
+
   selection: any[];
   disabledItems: string[] | number[];
   isFolderActions?: boolean;
-  checkFileConflicts: (
-    selectedItemId: string | number | undefined,
-    folderIds: string[] | number[],
-    fileIds: string[] | number[]
-  ) => Promise<any>;
+  setMoveToPanelVisible: (value: boolean) => void;
+  setCopyPanelVisible: (value: boolean) => void;
+  setRestoreAllPanelVisible: (value: boolean) => void;
+  setIsFolderActions: (value: boolean) => void;
+  setMovingInProgress: (value: boolean) => void;
   setConflictDialogData: (conflicts: any, operationData: any) => void;
   itemOperationToFolder: (operationData: any) => Promise<void>;
   clearActiveOperations: (
     folderIds: string[] | number[],
     fileIds: string[] | number[]
   ) => void;
-  setMovingInProgress: (value: boolean) => void;
-  isCopy?: boolean;
-  isRestoreAll?: boolean;
-  setIsFolderActions: (value: boolean) => void;
-  setCopyPanelVisible: (value: boolean) => void;
-  setRestoreAllPanelVisible: (value: boolean) => void;
+  checkFileConflicts: (
+    selectedItemId: string | number | undefined,
+    folderIds: string[] | number[],
+    fileIds: string[] | number[]
+  ) => Promise<any>;
+
+  onSetBaseFolderPath?: (value: number | string | undefined) => void;
+  onSetNewFolderPath?: (value: number | string | undefined) => void;
+  onSelectFolder?: (value: number | string | undefined) => void;
 };
