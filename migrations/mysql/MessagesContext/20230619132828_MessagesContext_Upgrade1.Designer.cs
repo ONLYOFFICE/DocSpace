@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Migrations.MySql.Migrations.Messages
 {
     [DbContext(typeof(MessagesContext))]
-    [Migration("20230609104736_MessagesContext_Upgrade1")]
+    [Migration("20230619132828_MessagesContext_Upgrade1")]
     partial class MessagesContextUpgrade1
     {
         /// <inheritdoc />

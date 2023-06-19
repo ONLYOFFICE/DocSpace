@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20230609104735_WebhooksDbContext_Upgrade2")]
+    [Migration("20230619132827_WebhooksDbContext_Upgrade2")]
     partial class WebhooksDbContextUpgrade2
     {
         /// <inheritdoc />
@@ -233,6 +233,18 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("true");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<bool>("SSL")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("ssl")
+                        .HasDefaultValueSql("true");
+
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
@@ -246,8 +258,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("text")
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 

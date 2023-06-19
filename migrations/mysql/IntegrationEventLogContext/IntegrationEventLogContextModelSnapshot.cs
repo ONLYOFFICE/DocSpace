@@ -23,71 +23,167 @@ namespace ASC.Migrations.MySql.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
                     b.Property<string>("Alias")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("alias")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Calls")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("calls")
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime")
+                        .HasColumnName("creationdatetime");
 
                     b.Property<int>("Industry")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("industry")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<string>("Language")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(10)")
+                        .HasColumnName("language")
+                        .HasDefaultValueSql("'en-US'")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp")
+                        .HasColumnName("last_modified");
 
                     b.Property<string>("MappedDomain")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("mappeddomain")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<Guid?>("OwnerId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("owner_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("PaymentId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("payment_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<bool>("Spam")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("spam")
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<DateTime?>("StatusChanged")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("StatusChangedHack")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime")
+                        .HasColumnName("statuschanged");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("timezone")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("TrustedDomainsEnabled")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("trusteddomainsenabled")
+                        .HasDefaultValueSql("'1'");
 
                     b.Property<string>("TrustedDomainsRaw")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(1024)")
+                        .HasColumnName("trusteddomains")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<int>("Version")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("VersionChanged")
-                        .HasColumnType("datetime(6)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("version")
+                        .HasDefaultValueSql("'2'");
 
                     b.Property<DateTime?>("Version_Changed")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime")
+                        .HasColumnName("version_changed");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DbTenant");
+                    b.HasIndex("Alias")
+                        .IsUnique()
+                        .HasDatabaseName("alias");
+
+                    b.HasIndex("LastModified")
+                        .HasDatabaseName("last_modified");
+
+                    b.HasIndex("MappedDomain")
+                        .HasDatabaseName("mappeddomain");
+
+                    b.HasIndex("Version")
+                        .HasDatabaseName("version");
+
+                    b.ToTable("tenants_tenants", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Alias = "localhost",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+                            Spam = false,
+                            Status = 0,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = "00000000-0000-0000-0000-000000000000",
+                            Spam = false,
+                            Status = 1,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        });
                 });
 
             modelBuilder.Entity("ASC.EventBus.Extensions.Logger.IntegrationEventLogEntry", b =>

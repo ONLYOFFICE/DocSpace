@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.UserDb
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20230609104739_UserDbContext_Upgrade1")]
+    [Migration("20230619132831_UserDbContext_Upgrade1")]
     partial class UserDbContextUpgrade1
     {
         /// <inheritdoc />

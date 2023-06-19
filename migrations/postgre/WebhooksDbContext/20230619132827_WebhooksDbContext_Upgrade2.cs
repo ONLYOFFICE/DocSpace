@@ -13,14 +13,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "name",
-                table: "webhooks_config");
-
-            migrationBuilder.DropColumn(
-                name: "ssl",
-                table: "webhooks_config");
-
             migrationBuilder.AlterColumn<int>(
                 name: "tenant_id",
                 table: "webhooks_logs",
@@ -28,18 +20,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int unsigned");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "uri",
-                table: "webhooks_config",
-                type: "character varying(50)",
-                maxLength: 50,
-                nullable: true,
-                defaultValueSql: "''",
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true,
-                oldDefaultValueSql: "''");
 
             migrationBuilder.AlterColumn<int>(
                 name: "tenant_id",
@@ -109,18 +89,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 oldClrType: typeof(int),
                 oldType: "integer");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "uri",
-                table: "webhooks_config",
-                type: "text",
-                nullable: true,
-                defaultValueSql: "''",
-                oldClrType: typeof(string),
-                oldType: "character varying(50)",
-                oldMaxLength: 50,
-                oldNullable: true,
-                oldDefaultValueSql: "''");
-
             migrationBuilder.AlterColumn<int>(
                 name: "tenant_id",
                 table: "webhooks_config",
@@ -128,21 +96,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "integer");
-
-            migrationBuilder.AddColumn<string>(
-                name: "name",
-                table: "webhooks_config",
-                type: "character varying(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<bool>(
-                name: "ssl",
-                table: "webhooks_config",
-                type: "boolean",
-                nullable: false,
-                defaultValueSql: "true");
         }
     }
 }

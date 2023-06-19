@@ -26,71 +26,166 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Alias")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("alias");
 
                     b.Property<bool>("Calls")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("calls")
+                        .HasDefaultValueSql("true");
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("creationdatetime");
 
                     b.Property<int>("Industry")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("industry");
 
                     b.Property<string>("Language")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character(10)")
+                        .HasColumnName("language")
+                        .HasDefaultValueSql("'en-US'")
+                        .IsFixedLength();
 
                     b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("MappedDomain")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("mappeddomain")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
 
                     b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("PaymentId")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(38)
+                        .HasColumnType("character varying(38)")
+                        .HasColumnName("payment_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<bool>("Spam")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasColumnName("spam")
+                        .HasDefaultValueSql("true");
 
                     b.Property<int>("Status")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
 
                     b.Property<DateTime?>("StatusChanged")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StatusChangedHack")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("statuschanged");
 
                     b.Property<string>("TimeZone")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("timezone")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("TrustedDomainsEnabled")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("trusteddomainsenabled")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("TrustedDomainsRaw")
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)")
+                        .HasColumnName("trusteddomains")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<int>("Version")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("VersionChanged")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("version")
+                        .HasDefaultValueSql("2");
 
                     b.Property<DateTime?>("Version_Changed")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("version_changed");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DbTenant");
+                    b.HasIndex("Alias")
+                        .IsUnique()
+                        .HasDatabaseName("alias");
+
+                    b.HasIndex("LastModified")
+                        .HasDatabaseName("last_modified_tenants_tenants");
+
+                    b.HasIndex("MappedDomain")
+                        .HasDatabaseName("mappeddomain");
+
+                    b.HasIndex("Version")
+                        .HasDatabaseName("version");
+
+                    b.ToTable("tenants_tenants", "onlyoffice", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Alias = "localhost",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"),
+                            Spam = false,
+                            Status = 0,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        },
+                        new
+                        {
+                            Id = -1,
+                            Alias = "settings",
+                            Calls = false,
+                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
+                            Industry = 0,
+                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Web Office",
+                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Spam = false,
+                            Status = 1,
+                            TrustedDomainsEnabled = 0,
+                            Version = 0
+                        });
                 });
 
             modelBuilder.Entity("ASC.EventBus.Extensions.Logger.IntegrationEventLogEntry", b =>

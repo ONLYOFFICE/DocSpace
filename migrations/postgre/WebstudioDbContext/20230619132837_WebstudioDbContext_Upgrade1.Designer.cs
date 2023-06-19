@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations.TelegramDb
+namespace ASC.Migrations.PostgreSql.Migrations.WebstudioDb
 {
-    [DbContext(typeof(TelegramDbContext))]
-    [Migration("20230609104855_TelegramDbContext_Upgrade1")]
-    partial class TelegramDbContextUpgrade1
+    [DbContext(typeof(WebstudioDbContext))]
+    [Migration("20230619132837_WebstudioDbContext_Upgrade1")]
+    partial class WebstudioDbContextUpgrade1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,31 +191,116 @@ namespace ASC.Migrations.PostgreSql.Migrations.TelegramDb
                         });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
+                {
+                    b.Property<string>("IndexName")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("index_name");
+
+                    b.Property<DateTime>("LastModified")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.HasKey("IndexName")
+                        .HasName("webstudio_index_pkey");
+
+                    b.ToTable("webstudio_index", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
                 {
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
-                        .HasColumnName("tenant_id");
+                        .HasColumnName("TenantID");
 
-                    b.Property<Guid>("PortalUserId")
-                        .HasMaxLength(38)
+                    b.Property<Guid>("Id")
+                        .HasMaxLength(64)
                         .HasColumnType("uuid")
-                        .HasColumnName("portal_user_id");
+                        .HasColumnName("ID");
 
-                    b.Property<long>("TelegramUserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("telegram_user_id");
+                    b.Property<Guid>("UserId")
+                        .HasMaxLength(64)
+                        .HasColumnType("uuid")
+                        .HasColumnName("UserID");
 
-                    b.HasKey("TenantId", "PortalUserId")
-                        .HasName("telegram_users_pkey");
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasIndex("TelegramUserId")
-                        .HasDatabaseName("tgId");
+                    b.HasKey("TenantId", "Id", "UserId")
+                        .HasName("webstudio_settings_pkey");
 
-                    b.ToTable("telegram_users", "onlyoffice");
+                    b.HasIndex("Id")
+                        .HasDatabaseName("ID");
+
+                    b.ToTable("webstudio_settings", "onlyoffice");
+
+                    b.HasData(
+                        new
+                        {
+                            TenantId = 1,
+                            Id = new Guid("9a925891-1f92-4ed7-b277-d6f649739f06"),
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            Data = "{\"Completed\":false}"
+                        });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tenantid");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("visitdate");
+
+                    b.Property<Guid>("ProductId")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("productid");
+
+                    b.Property<Guid>("UserId")
+                        .HasMaxLength(38)
+                        .HasColumnType("uuid")
+                        .HasColumnName("userid");
+
+                    b.Property<DateTime?>("FirstVisitTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("firstvisittime");
+
+                    b.Property<DateTime?>("LastVisitTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("lastvisittime");
+
+                    b.Property<int>("VisitCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("visitcount");
+
+                    b.HasKey("TenantId", "VisitDate", "ProductId", "UserId")
+                        .HasName("webstudio_uservisit_pkey");
+
+                    b.HasIndex("VisitDate")
+                        .HasDatabaseName("visitdate");
+
+                    b.ToTable("webstudio_uservisit", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
                 {
                     b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
                         .WithMany()

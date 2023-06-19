@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.NotifyDb
+namespace ASC.Migrations.MySql.Migrations.WebstudioDb
 {
-    [DbContext(typeof(NotifyDbContext))]
-    [Migration("20230609104853_NotifyDbContext_Upgrade1")]
-    partial class NotifyDbContextUpgrade1
+    [DbContext(typeof(WebstudioDbContext))]
+    [Migration("20230619132835_WebstudioDbContext_Upgrade1")]
+    partial class WebstudioDbContextUpgrade1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,125 +189,133 @@ namespace ASC.Migrations.MySql.Migrations.NotifyDb
                         });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyInfo", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioIndex", b =>
                 {
-                    b.Property<int>("NotifyId")
-                        .HasColumnType("int")
-                        .HasColumnName("notify_id");
+                    b.Property<string>("IndexName")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("index_name")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("Attempts")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("attempts")
-                        .HasDefaultValueSql("'0'");
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("last_modified");
 
-                    b.Property<DateTime>("ModifyDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("modify_date");
-
-                    b.Property<int>("Priority")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("priority")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<int>("State")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("state")
-                        .HasDefaultValueSql("'0'");
-
-                    b.HasKey("NotifyId")
+                    b.HasKey("IndexName")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("State")
-                        .HasDatabaseName("state");
-
-                    b.ToTable("notify_info", (string)null);
+                    b.ToTable("webstudio_index", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
                 {
-                    b.Property<int>("NotifyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("notify_id");
-
-                    b.Property<string>("Attachments")
-                        .HasColumnType("text")
-                        .HasColumnName("attachments")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("AutoSubmitted")
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("auto_submitted")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text")
-                        .HasColumnName("content")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("ContentType")
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("content_type")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("creation_date");
-
-                    b.Property<string>("Reciever")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("reciever")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("ReplyTo")
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("reply_to")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Sender")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("sender")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("SenderType")
-                        .HasColumnType("varchar(64)")
-                        .HasColumnName("sender_type")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("subject")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
                     b.Property<int>("TenantId")
                         .HasColumnType("int")
-                        .HasColumnName("tenant_id");
+                        .HasColumnName("TenantID");
 
-                    b.HasKey("NotifyId")
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("ID")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("UserID")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("mediumtext")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasKey("TenantId", "Id", "UserId")
                         .HasName("PRIMARY");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("Id")
+                        .HasDatabaseName("ID");
 
-                    b.ToTable("notify_queue", (string)null);
+                    b.ToTable("webstudio_settings", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasData(
+                        new
+                        {
+                            TenantId = 1,
+                            Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
+                            UserId = "00000000-0000-0000-0000-000000000000",
+                            Data = "{\"Completed\":false}"
+                        });
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int")
+                        .HasColumnName("tenantid");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("visitdate");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("productid")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(38)")
+                        .HasColumnName("userid")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<DateTime?>("FirstVisitTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("firstvisittime")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<DateTime?>("LastVisitTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("lastvisittime")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<int>("VisitCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("visitcount")
+                        .HasDefaultValueSql("'0'");
+
+                    b.HasKey("TenantId", "VisitDate", "ProductId", "UserId")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("VisitDate")
+                        .HasDatabaseName("visitdate");
+
+                    b.ToTable("webstudio_uservisit", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
                 {
                     b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
                         .WithMany()

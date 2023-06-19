@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.Messages
 {
     [DbContext(typeof(MessagesContext))]
-    [Migration("20230609104737_MessagesContext_Upgrade1")]
+    [Migration("20230619132829_MessagesContext_Upgrade1")]
     partial class MessagesContextUpgrade1
     {
         /// <inheritdoc />

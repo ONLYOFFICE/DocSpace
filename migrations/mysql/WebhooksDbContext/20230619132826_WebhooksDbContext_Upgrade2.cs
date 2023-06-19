@@ -11,14 +11,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "name",
-                table: "webhooks_config");
-
-            migrationBuilder.DropColumn(
-                name: "ssl",
-                table: "webhooks_config");
-
             migrationBuilder.AlterColumn<int>(
                 name: "tenant_id",
                 table: "webhooks_logs",
@@ -26,21 +18,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 nullable: false,
                 oldClrType: typeof(uint),
                 oldType: "int unsigned");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "uri",
-                table: "webhooks_config",
-                type: "varchar(50)",
-                maxLength: 50,
-                nullable: true,
-                defaultValueSql: "''",
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true,
-                oldDefaultValueSql: "''",
-                oldCollation: "utf8_general_ci")
-                .Annotation("MySql:CharSet", "utf8")
-                .OldAnnotation("MySql:CharSet", "utf8");
 
             migrationBuilder.AlterColumn<int>(
                 name: "tenant_id",
@@ -106,21 +83,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 oldClrType: typeof(int),
                 oldType: "int");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "uri",
-                table: "webhooks_config",
-                type: "text",
-                nullable: true,
-                defaultValueSql: "''",
-                collation: "utf8_general_ci",
-                oldClrType: typeof(string),
-                oldType: "varchar(50)",
-                oldMaxLength: 50,
-                oldNullable: true,
-                oldDefaultValueSql: "''")
-                .Annotation("MySql:CharSet", "utf8")
-                .OldAnnotation("MySql:CharSet", "utf8");
-
             migrationBuilder.AlterColumn<uint>(
                 name: "tenant_id",
                 table: "webhooks_config",
@@ -128,22 +90,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
-
-            migrationBuilder.AddColumn<string>(
-                name: "name",
-                table: "webhooks_config",
-                type: "varchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "")
-                .Annotation("MySql:CharSet", "utf8");
-
-            migrationBuilder.AddColumn<bool>(
-                name: "ssl",
-                table: "webhooks_config",
-                type: "tinyint(1)",
-                nullable: false,
-                defaultValueSql: "'1'");
         }
     }
 }
