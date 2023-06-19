@@ -527,9 +527,7 @@ public class PortalController : ControllerBase
             }
         }
 
-        _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id)
-        {
-        });
+        _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id));
         
         await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, redirectLink);
 
