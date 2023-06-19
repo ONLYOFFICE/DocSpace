@@ -3110,6 +3110,11 @@ const Dark = {
   portalUnavailable: {
     textDescriptionColor: "#858585",
   },
+
+  emailChips: {
+    borderColor: "#858585",
+    dashedBorder: "1px dashed #fff",
+  },
 };
 
 export default Dark;

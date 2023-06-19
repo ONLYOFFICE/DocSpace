@@ -3107,6 +3107,11 @@ const Base = {
   portalUnavailable: {
     textDescriptionColor: "#A3A9AE",
   },
+
+  emailChips: {
+    borderColor: "#A3A9AE",
+    dashedBorder: "1px dashed #5299E0",
+  },
 };
 
 export default Base;
