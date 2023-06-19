@@ -49,7 +49,6 @@ public static class WebhooksPayloadExtension
 {
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
-        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
         modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Tenant).AutoInclude();
 
         modelBuilder

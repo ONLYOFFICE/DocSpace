@@ -5,6 +5,8 @@ import {
   MainButtonTheme,
   CatalogItemTheme,
   CalendarTheme,
+  DateItemTheme,
+  RoundButtonTheme,
   BadgeTheme,
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
@@ -194,6 +196,24 @@ const ColorTheme = forwardRef(
       case ThemeType.Calendar: {
         return (
           <CalendarTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.RoundButton: {
+        return (
+          <RoundButtonTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.DateItem: {
+        return (
+          <DateItemTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}

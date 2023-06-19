@@ -1,9 +1,6 @@
+import React from "react";
 import moment from "moment";
-import {
-  CurrentDateItem,
-  DateItem,
-  SecondaryDateItem,
-} from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
   setObservedDate((prevObservedDate) =>
@@ -26,32 +23,37 @@ export const getMonthElements = (
   const onClick = (dateString) =>
     onDateClick(dateString, setObservedDate, setSelectedScene);
 
+  const dateFormat = "YYYY-M";
+
   const monthsElements = months.map((month) => (
-    <DateItem
+    <ColorTheme
+      themeId={ThemeType.DateItem}
       big
       key={month.key}
       onClick={() => onClick(month.key)}
       disabled={
-        moment(month.key).endOf("month") < minDate ||
-        moment(month.key).startOf("month") > maxDate
+        moment(month.key, dateFormat).endOf("month") < minDate ||
+        moment(month.key, dateFormat).startOf("month") > maxDate
       }
     >
       {month.value}
-    </DateItem>
+    </ColorTheme>
   ));
   for (let i = 12; i < 16; i++) {
     monthsElements[i] = (
-      <SecondaryDateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
+        isSecodary
         big
         key={months[i].key}
         onClick={() => onClick(months[i].key)}
         disabled={
-          moment(months[i].key).endOf("month") < minDate ||
-          moment(months[i].key).startOf("month") > maxDate
+          moment(months[i].key, dateFormat).endOf("month") < minDate ||
+          moment(months[i].key, dateFormat).startOf("month") > maxDate
         }
       >
         {months[i].value}
-      </SecondaryDateItem>
+      </ColorTheme>
     );
   }
 
@@ -63,32 +65,35 @@ export const getMonthElements = (
   months.forEach((month, index) => {
     if (month.key === currentDate) {
       monthsElements[index] = (
-        <CurrentDateItem
+        <ColorTheme
+          themeId={ThemeType.DateItem}
+          isCurrent
           big
           key={month.key}
           onClick={() => onClick(month.key)}
           disabled={
-            moment(month.key).endOf("month") < minDate ||
-            moment(month.key).startOf("month") > maxDate
+            moment(month.key, dateFormat).endOf("month") < minDate ||
+            moment(month.key, dateFormat).startOf("month") > maxDate
           }
         >
           {month.value}
-        </CurrentDateItem>
+        </ColorTheme>
       );
     } else if (month.key === formattedDate) {
       monthsElements[index] = (
-        <DateItem
+        <ColorTheme
+          themeId={ThemeType.DateItem}
           big
           key={month.key}
           focused
           onClick={() => onClick(month.key)}
           disabled={
-            moment(month.key).endOf("month") < minDate ||
-            moment(month.key).startOf("month") > maxDate
+            moment(month.key, dateFormat).endOf("month") < minDate ||
+            moment(month.key, dateFormat).startOf("month") > maxDate
           }
         >
           {month.value}
-        </DateItem>
+        </ColorTheme>
       );
     }
   });

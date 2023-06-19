@@ -63,12 +63,12 @@ public class DbWorker
         _mapper = mapper;
     }
 
-    public async Task<WebhooksConfig> AddWebhookConfig(string uri, string secretKey)
+    public async Task<WebhooksConfig> AddWebhookConfig(string uri, string name, string secretKey, bool? enabled, bool? ssl)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var objForCreate = await webhooksDbContext.WebhooksConfigs
-           .Where(it => it.TenantId == Tenant && it.Uri == uri)
+           .Where(it => it.TenantId == Tenant && it.Uri == uri && it.Name == name)
            .FirstOrDefaultAsync();
 
         if (objForCreate != null)
@@ -80,7 +80,10 @@ public class DbWorker
         {
             TenantId = Tenant,
             Uri = uri,
-            SecretKey = secretKey
+            SecretKey = secretKey,
+            Name = name,
+            Enabled = enabled ?? true,
+            SSL = ssl ?? true
         };
 
         toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
@@ -89,13 +92,20 @@ public class DbWorker
         return toAdd;
     }
 
-    public async IAsyncEnumerable<WebhooksConfig> GetTenantWebhooks()
+    public async IAsyncEnumerable<WebhooksConfigWithStatus> GetTenantWebhooksWithStatus()
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var q = webhooksDbContext.WebhooksConfigs
             .AsNoTracking()
             .Where(it => it.TenantId == Tenant)
+            .GroupJoin(webhooksDbContext.WebhooksLogs, c => c.Id, l => l.ConfigId, (configs, logs) => new { configs, logs })
+            .Select(it =>
+                new WebhooksConfigWithStatus
+                {
+                    WebhooksConfig = it.configs,
+                    Status = it.logs.OrderBy(it => it.Delivery).LastOrDefault().Status
+                })
             .AsAsyncEnumerable();
 
         await foreach (var webhook in q)
@@ -113,7 +123,7 @@ public class DbWorker
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string uri, string key, bool? enabled)
+    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled, bool? ssl)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -123,6 +133,11 @@ public class DbWorker
 
         if (updateObj != null)
         {
+            if (!string.IsNullOrEmpty(name))
+            {
+                updateObj.Name = name;
+            }
+
             if (!string.IsNullOrEmpty(uri))
             {
                 updateObj.Uri = uri;
@@ -136,6 +151,11 @@ public class DbWorker
             if (enabled.HasValue)
             {
                 updateObj.Enabled = enabled.Value;
+            }
+
+            if (ssl.HasValue)
+            {
+                updateObj.SSL = ssl.Value;
             }
 
             webhooksDbContext.WebhooksConfigs.Update(updateObj);
@@ -164,29 +184,9 @@ public class DbWorker
         return removeObj;
     }
 
-    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookUri, int hookId)
+    public IAsyncEnumerable<DbWebhooks> ReadJournal(int startIndex, int limit, DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
     {
-        var webhooksDbContext = _dbContextFactory.CreateDbContext();
-
-        var q = webhooksDbContext.WebhooksLogs
-            .AsNoTracking()
-            .Where(r => r.TenantId == Tenant);
-
-        if (delivery.HasValue)
-        {
-            var date = delivery.Value;
-            q = q.Where(r => r.Delivery == date);
-        }
-
-        if (!string.IsNullOrEmpty(hookUri))
-        {
-            q = q.Where(r => r.Config.Uri == hookUri);
-        }
-
-        if (hookId != 0)
-        {
-            q = q.Where(r => r.WebhookId == hookId);
-        }
+        var q = GetQueryForJournal(deliveryFrom, deliveryTo, hookUri, hookId, configId, eventId, webhookGroupStatus);
 
         if (startIndex != 0)
         {
@@ -198,17 +198,30 @@ public class DbWorker
             q = q.Take(limit);
         }
 
-        return q.OrderByDescending(t => t.Id).AsAsyncEnumerable();
+        return q.AsAsyncEnumerable();
+    }
+
+    public async Task<int> GetTotalByQuery(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
+    {
+        return await GetQueryForJournal(deliveryFrom, deliveryTo, hookUri, hookId, configId, eventId, webhookGroupStatus).CountAsync();
     }
 
     public async Task<WebhooksLog> ReadJournal(int id)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return await webhooksDbContext.WebhooksLogs
+        var fromDb = await webhooksDbContext.WebhooksLogs
             .AsNoTracking()
             .Where(it => it.Id == id)
+            .Join(webhooksDbContext.WebhooksConfigs, r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config })
             .FirstOrDefaultAsync();
+
+        if (fromDb != null)
+        {
+            fromDb.Log.Config = fromDb.Config;
+        }
+
+        return fromDb.Log;
     }
 
     public async Task<WebhooksLog> WriteToJournal(WebhooksLog webhook)
@@ -228,15 +241,21 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var webhook = await webhooksDbContext.WebhooksLogs.Where(t => t.Id == id).FirstOrDefaultAsync();
-        webhook.Status = status;
-        webhook.RequestHeaders = requestHeaders;
-        webhook.ResponsePayload = responsePayload;
-        webhook.ResponseHeaders = responseHeaders;
-        webhook.Delivery = delivery;
+        var webhook = await webhooksDbContext.WebhooksLogs
+            .Where(t => t.Id == id)
+            .FirstOrDefaultAsync();
 
-        webhooksDbContext.WebhooksLogs.Update(webhook);
-        await webhooksDbContext.SaveChangesAsync();
+        if (webhook != null)
+        {
+            webhook.Status = status;
+            webhook.RequestHeaders = requestHeaders;
+            webhook.ResponsePayload = responsePayload;
+            webhook.ResponseHeaders = responseHeaders;
+            webhook.Delivery = delivery;
+
+            webhooksDbContext.WebhooksLogs.Update(webhook);
+            await webhooksDbContext.SaveChangesAsync();
+        }
 
         return webhook;
     }
@@ -289,4 +308,89 @@ public class DbWorker
 
         return _mapper.Map<DbWebhook, Webhook>(webHook);
     }
+
+    private IQueryable<DbWebhooks> GetQueryForJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
+    {
+        var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = webhooksDbContext.WebhooksLogs
+            .AsNoTracking()
+            .OrderByDescending(t => t.Id)
+            .Where(r => r.TenantId == Tenant)
+            .Join(webhooksDbContext.WebhooksConfigs.AsNoTracking(), r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config });
+
+        if (deliveryFrom.HasValue)
+        {
+            var from = deliveryFrom.Value;
+            q = q.Where(r => r.Log.Delivery >= from);
+        }
+
+        if (deliveryTo.HasValue)
+        {
+            var to = deliveryTo.Value;
+            q = q.Where(r => r.Log.Delivery <= to);
+        }
+
+        if (!string.IsNullOrEmpty(hookUri))
+        {
+            q = q.Where(r => r.Config.Uri == hookUri);
+        }
+
+        if (hookId != null)
+        {
+            q = q.Where(r => r.Log.WebhookId == hookId);
+        }
+
+        if (configId != null)
+        {
+            q = q.Where(r => r.Log.ConfigId == configId);
+        }
+
+        if (eventId != null)
+        {
+            q = q.Where(r => r.Log.Id == eventId);
+        }
+
+        if (webhookGroupStatus != null && webhookGroupStatus != WebhookGroupStatus.None)
+        {
+            if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
+            {
+                q = q.Where(r => r.Log.Status != 0);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status2xx) != WebhookGroupStatus.Status2xx)
+            {
+                q = q.Where(r => r.Log.Status < 200 || r.Log.Status >= 300);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status3xx) != WebhookGroupStatus.Status3xx)
+            {
+                q = q.Where(r => r.Log.Status < 300 || r.Log.Status >= 400);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status4xx) != WebhookGroupStatus.Status4xx)
+            {
+                q = q.Where(r => r.Log.Status < 400 || r.Log.Status >= 500);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status5xx) != WebhookGroupStatus.Status5xx)
+            {
+                q = q.Where(r => r.Log.Status < 500);
+            }
+        }
+
+        return q;
+    }
+}
+public class DbWebhooks
+{
+    public WebhooksLog Log { get; set; }
+    public WebhooksConfig Config { get; set; }
+}
+
+[Flags]
+public enum WebhookGroupStatus
+{
+    None = 0,
+    NotSent = 1,
+    Status2xx = 2,
+    Status3xx = 4,
+    Status4xx = 8,
+    Status5xx = 16
 }

@@ -35,6 +35,7 @@ import AccessRightsStore from "./AccessRightsStore";
 import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
 
+import WebhooksStore from "./WebhooksStore";
 import ClientLoadingStore from "./ClientLoadingStore";
 
 const oformsStore = new OformsStore(authStore);
@@ -146,6 +147,8 @@ const profileActionsStore = new ProfileActionsStore(
   selectedFolderStore
 );
 
+peopleStore.profileActionsStore = profileActionsStore;
+
 const tableStore = new TableStore(authStore, treeFoldersStore);
 
 authStore.infoPanelStore.authStore = authStore;
@@ -166,6 +169,8 @@ const createEditRoomStore = new CreateEditRoomStore(
   authStore.currentQuotaStore,
   clientLoadingStore
 );
+
+const webhooksStore = new WebhooksStore();
 
 const store = {
   auth: authStore,
@@ -202,6 +207,8 @@ const store = {
 
   accessRightsStore,
   createEditRoomStore,
+
+  webhooksStore,
   clientLoadingStore,
 };
 

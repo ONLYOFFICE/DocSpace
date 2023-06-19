@@ -1,4 +1,5 @@
-import { MonthsContainer } from "../styled-components/MonthsContainer";
+import React from "react";
+import { CalendarContainer } from "../styled-components";
 import { getCalendarMonths, getMonthElements } from "../utils";
 
 export const MonthsBody = ({
@@ -7,7 +8,8 @@ export const MonthsBody = ({
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile,
 }) => {
   const months = getCalendarMonths(observedDate);
   const monthsElements = getMonthElements(
@@ -19,5 +21,9 @@ export const MonthsBody = ({
     maxDate
   );
 
-  return <MonthsContainer>{monthsElements}</MonthsContainer>;
+  return (
+    <CalendarContainer big isMobile={isMobile}>
+      {monthsElements}
+    </CalendarContainer>
+  );
 };

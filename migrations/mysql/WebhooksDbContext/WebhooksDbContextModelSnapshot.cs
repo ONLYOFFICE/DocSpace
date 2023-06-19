@@ -228,6 +228,18 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("enabled")
                         .HasDefaultValueSql("'1'");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("name");
+
+                    b.Property<bool>("SSL")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("ssl")
+                        .HasDefaultValueSql("'1'");
+
                     b.Property<string>("SecretKey")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
@@ -241,10 +253,11 @@ namespace ASC.Migrations.MySql.Migrations
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("text")
                         .HasColumnName("uri")
-                        .HasDefaultValueSql("''");
+                        .HasDefaultValueSql("''")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
