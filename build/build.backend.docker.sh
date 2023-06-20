@@ -70,14 +70,14 @@ else
     exit 1
 fi
 
-if [ "$1" = "--no_ds" ]; then
-    echo "SKIP Document server"
-else 
-    echo "Run Document server"
-    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-    ROOT_DIR=$dir \
-    docker compose -f ds.dev.yml up -d
-fi
+# if [ "$1" = "--no_ds" ]; then
+#     echo "SKIP Document server"
+# else 
+#     echo "Run Document server"
+#     DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+#     ROOT_DIR=$dir \
+#     docker compose -f ds.dev.yml up -d
+# fi
 
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
 
@@ -91,15 +91,31 @@ SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
 APP_CORE_BASE_DOMAIN=$core_base_domain \
+ROOT_DIR=$dir \
 ENV_EXTENSION=$env_extension \
 DOCKER_TAG="v9.9.9" \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run migration"
-DOCKER_TAG="v9.9.9" BUILD_PATH="/var/www" SRC_PATH="$dir/publish/services" docker-compose -f docspace.yml -f docspace.overcome.yml --profile migration-runner up -d
+DOCKER_TAG="v9.9.9" \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
+ROOT_DIR=$dir \
+DATA_DIR="$dir\Data" \
+ENV_EXTENSION=$env_extension \
+docker-compose -f docspace.yml -f docspace.overcome.yml --profile migration-runner up -d
 
 echo "Run backend services"
-DOCKER_TAG="v9.9.9" BUILD_PATH="/var/www" SRC_PATH="$dir/publish/services" docker-compose -f docspace.yml -f docspace.overcome.yml --profile backend-local up -d
+DOCKER_TAG="v9.9.9" \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
+SERVICE_DOCEDITOR=$doceditor \
+SERVICE_LOGIN=$login \
+SERVICE_CLIENT=$client \
+ROOT_DIR=$dir \
+DATA_DIR="$dir/Data" \
+ENV_EXTENSION=$env_extension \
+docker-compose -f docspace.yml -f docspace.overcome.yml --profile backend-local up -d
 
 # Start all backend services"
 # $dir/build/start/start.backend.docker.sh
