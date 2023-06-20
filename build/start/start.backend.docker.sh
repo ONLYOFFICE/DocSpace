@@ -38,10 +38,12 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+WebPlugins=${local_ip}:5014
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "SERVICE_WEB_PLUGINS: $WebPlugins"
 
 docker_file=Dockerfile.dev
 env_extension="dev"
@@ -55,6 +57,7 @@ GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+SERVICE_WEB_PLUGINS=$WebPlugins \
 APP_CORE_BASE_DOMAIN=$core_base_domain \
 APP_URL_PORTAL="http://$local_ip:8092" \
 ENV_EXTENSION=$env_extension \

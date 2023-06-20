@@ -22,6 +22,7 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
+$WebPlugins = ($LocalIp + ":5014")
 
 $DockerFile = "Dockerfile.dev"
 $EnvExtension = "dev"
@@ -69,6 +70,7 @@ $Env:GIT_BRANCH = $Branch
 $Env:SERVICE_DOCEDITOR = $Doceditor
 $Env:SERVICE_LOGIN = $Login
 $Env:SERVICE_CLIENT = $Client
+$Env:SERVICE_WEB_PLUGINS = $WebPlugins
 $Env:APP_CORE_BASE_DOMAIN = $CoreBaseDomain
 $Env:ENV_EXTENSION = $EnvExtension
 docker compose -f ($DockerDir + "\build.dev.yml") build --build-arg GIT_BRANCH=$Branch --build-arg RELEASE_DATE=$BuildDate
