@@ -248,7 +248,6 @@ const Selector = ({
       compareSelectedItems(cloneSelectedItems);
     }
   }, [items, selectedItems, isMultiSelect, compareSelectedItems]);
-
   return (
     <StyledSelector id={id} className={className} style={style}>
       <Header onBackClickAction={onBackClickAction} headerLabel={headerLabel} />

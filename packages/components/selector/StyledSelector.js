@@ -30,6 +30,13 @@ const StyledSelectorHeader = styled.div`
   .arrow-button {
     cursor: pointer;
     margin-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+        margin-right: 0;
+        margin-left: 12px;
+      `}
   }
 
   .heading-text {
@@ -43,14 +50,12 @@ StyledSelectorHeader.defaultProps = { theme: Base };
 
 const StyledSelectorBody = styled.div`
   width: 100%;
-
   height: ${(props) =>
     props.footerVisible
       ? `calc(100% - 16px - ${props.footerHeight}px - ${props.headerHeight}px)`
       : `calc(100% - 16px - ${props.headerHeight}px)`};
 
   padding: 16px 0 0 0;
-
   .search-input,
   .search-loader {
     padding: 0 16px;

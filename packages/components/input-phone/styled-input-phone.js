@@ -55,7 +55,7 @@ export const StyledBox = styled(Box)`
     ${(props) =>
       props.theme.interfaceDirection === "rtl" &&
       css`
-        right: 12px;
+        right: 16px;
         left: 0;
       `}
     font-size: 14px;
@@ -75,6 +75,12 @@ export const StyledBox = styled(Box)`
       width: 26px;
       height: 20px;
       margin-left: 6px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          margin-left: 0px;
+          margin-right: 6px;
+        `}
       margin-top: 9px;
     }
 
