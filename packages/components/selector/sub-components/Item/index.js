@@ -15,7 +15,11 @@ const selectedCss = css`
 const StyledItem = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: row-reverse;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      flex-direction: row-reverse;
+    `}
   padding: 0 16px;
 
   box-sizing: border-box;
