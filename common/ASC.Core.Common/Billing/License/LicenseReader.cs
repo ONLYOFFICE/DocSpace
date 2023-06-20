@@ -194,6 +194,8 @@ public class LicenseReader
 
         CustomerId = license.CustomerId;
 
+        var defaultQuota = _tenantManager.GetTenantQuota(Tenant.DefaultTenant);
+
         var quota = new TenantQuota(-1000)
         {
             Name = "license",
@@ -206,8 +208,8 @@ public class LicenseReader
             AutoBackupRestore = true,
             Oauth = true,
             ContentSearch = true,
-            MaxTotalSize = long.MaxValue,
-            MaxFileSize = 100L * 1024 * 1024 * 1024,
+            MaxFileSize = defaultQuota.MaxFileSize,
+            MaxTotalSize = defaultQuota.MaxTotalSize,
             DocsEdition = true,
             Customization = license.Customization
         };

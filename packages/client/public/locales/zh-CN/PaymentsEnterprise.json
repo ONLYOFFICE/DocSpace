@@ -1,14 +1,3 @@
 {
-  "ActivateLicenseActivated": "License activated",
-  "ActivatePurchaseBuyNow": "立即购买",
-  "ActivateRenewSubscriptionHeader": "Renew subscription for Enterprise",
-  "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
-  "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
-  "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
-  "UpgradeToProBannerInformationPurchase": "Ask purchase questions at <1>{{email}}</1>",
-  "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
-  "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
-  "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
-  "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
-  "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers."
+  "ActivatePurchaseBuyNow": "立即购买"
 }

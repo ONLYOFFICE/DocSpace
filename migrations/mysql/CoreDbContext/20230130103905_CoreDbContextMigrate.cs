@@ -116,7 +116,12 @@ public partial class CoreDbContextMigrate : Migration
                 table.PrimaryKey("PRIMARY", x => new { x.tenant, x.tariffid, x.quota });
             })
             .Annotation("MySql:CharSet", "utf8mb4");
-
+#if Standalone
+        migrationBuilder.InsertData(
+            table: "tenants_quota",
+            columns: new[] { "tenant", "description", "features", "name", "product_id" },
+            values: new object[] { -1, null, "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:102400", "default", null });
+#else
         migrationBuilder.InsertData(
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "product_id" },
@@ -131,6 +136,7 @@ public partial class CoreDbContextMigrate : Migration
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "product_id" },
             values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,thirdparty,restore,oauth,total_size:107374182400,file_size:100,manager:1", "trial", null });
+#endif
 
         migrationBuilder.CreateIndex(
             name: "last_modified",
