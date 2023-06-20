@@ -217,7 +217,7 @@ class AuthStore {
   get isSubmitToGalleryAlertAvailable() {
     const { user } = this.userStore;
     if (!user) return false;
-    return true;
+    return !user.isVisitor;
   }
 
   get isLiveChatAvailable() {

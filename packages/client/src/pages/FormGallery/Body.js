@@ -9,12 +9,13 @@ import Loaders from "@docspace/common/components/Loaders";
 import SubmitToGalleryTile from "./TilesView/sub-components/SubmitToGalleryTile";
 
 const SectionBodyContent = ({
+  t,
+  tReady,
   oformFiles,
   hasGalleryFiles,
   setGallerySelected,
   submitToGalleryTileIsVisible,
-  t,
-  tReady,
+  canSubmitToFormGallery,
 }) => {
   const onMouseDown = (e) => {
     if (
@@ -47,7 +48,9 @@ const SectionBodyContent = ({
     />
   ) : (
     <TileContainer className="tile-container">
-      {submitToGalleryTileIsVisible && <SubmitToGalleryTile />}
+      {submitToGalleryTileIsVisible && canSubmitToFormGallery() && (
+        <SubmitToGalleryTile />
+      )}
       {oformFiles.map((item, index) => (
         <FileTile key={`${item.id}_${index}`} item={item} />
       ))}
@@ -55,9 +58,10 @@ const SectionBodyContent = ({
   );
 };
 
-export default inject(({ oformsStore }) => ({
+export default inject(({ accessRightsStore, oformsStore }) => ({
   oformFiles: oformsStore.oformFiles,
   hasGalleryFiles: oformsStore.hasGalleryFiles,
   setGallerySelected: oformsStore.setGallerySelected,
   submitToGalleryTileIsVisible: oformsStore.submitToGalleryTileIsVisible,
+  canSubmitToFormGallery: accessRightsStore.canSubmitToFormGallery,
 }))(withTranslation("FormGallery")(observer(SectionBodyContent)));
