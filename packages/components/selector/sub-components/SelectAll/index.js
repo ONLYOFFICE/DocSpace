@@ -11,7 +11,6 @@ const StyledSelectAll = styled.div`
   max-height: 61px;
   height: 61px;
   min-height: 61px;
-  direction: rtl !important;
   display: flex;
   align-items: center;
 

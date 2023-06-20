@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ToastContainer } from "react-toastify";
 import { tablet } from "../utils/device";
 import Base from "../themes/base";
@@ -13,6 +13,12 @@ const StyledToastContainer = styled(ToastContainer)`
   color: ${(props) => props.theme.toast.color};
   top: ${(props) => parseInt(props.theme.toast.top) + props.$topOffset + "px"};
   right: ${(props) => props.theme.toast.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.toast.right};
+      right: auto;
+    `}
   margin-top: ${(props) => props.theme.toast.marginTop};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -48,6 +54,11 @@ const StyledToastContainer = styled(ToastContainer)`
   @keyframes SlideIn {
     from {
       transform: translate3d(150%, 0, 0);
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          transform: translate3d(-150%, 0, 0);
+        `}
     }
 
     50% {
@@ -139,6 +150,7 @@ const StyledToastContainer = styled(ToastContainer)`
     font: normal 12px "Open Sans", sans-serif;
     width: ${(props) => props.theme.toast.main.width};
     right: ${(props) => props.theme.toast.main.right};
+
     transition: ${(props) => props.theme.toast.main.transition};
 
     @media ${tablet} {
@@ -167,6 +179,12 @@ const StyledToastContainer = styled(ToastContainer)`
 
   @media ${tablet} {
     right: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        left: 16px;
+        right: auto;
+      `}
   }
 
   @media only screen and (max-width: 480px) {
