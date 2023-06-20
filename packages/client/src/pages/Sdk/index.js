@@ -18,10 +18,10 @@ const Sdk = ({
   setFrameConfig,
   login,
   logout,
-  hashSettings,
   user,
   getIcon,
   isLoaded,
+  getSettings,
 }) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
@@ -32,7 +32,6 @@ const Sdk = ({
 
   useEffect(() => {
     if (window.parent && !frameConfig && isLoaded) {
-      console.log("client sdk setConfig");
       frameCallCommand("setConfig");
     }
   }, [frameCallCommand, isLoaded]);
@@ -80,7 +79,12 @@ const Sdk = ({
           break;
         }
         case "getHashSettings": {
-          res = hashSettings;
+          try {
+            const settings = await getSettings();
+            res = settings.passwordHash;
+          } catch (e) {
+            res = e;
+          }
           break;
         }
         case "login":
@@ -164,7 +168,7 @@ export default inject(({ auth, settingsStore }) => {
     theme,
     setFrameConfig,
     frameConfig,
-    hashSettings,
+    getSettings,
     isLoaded,
   } = auth.settingsStore;
   const { user } = userStore;
@@ -176,7 +180,7 @@ export default inject(({ auth, settingsStore }) => {
     frameConfig,
     login,
     logout,
-    hashSettings,
+    getSettings,
     user,
     getIcon,
     isLoaded,

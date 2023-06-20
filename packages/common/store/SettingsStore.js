@@ -357,10 +357,7 @@ class SettingsStore {
           }
         }
       } else if (key === "passwordHash") {
-        console.log("client store getSettings passwordHash", newSettings[key]);
-        runInAction(() => {
-          this.setValue("hashSettings", newSettings[key]);
-        });
+        this.setValue("hashSettings", newSettings[key]);
       }
     });
 
@@ -785,11 +782,6 @@ class SettingsStore {
   };
 
   setFrameConfig = async (frameConfig) => {
-    if (!!!this.hashSettings) {
-      console.log("client store setFrameConfig getSettings");
-      await this.getSettings();
-    }
-
     runInAction(() => {
       this.frameConfig = frameConfig;
     });

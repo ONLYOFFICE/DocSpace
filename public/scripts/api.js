@@ -220,8 +220,6 @@
         return;
       }
 
-      console.log("api #executeMethod", methodName);
-
       this.#callbacks.push(callback);
 
       const message = {
@@ -356,14 +354,12 @@
     }
 
     getHashSettings() {
-      console.log("api getHashSettings");
       return this.#getMethodPromise("getHashSettings");
     }
 
     setConfig(newConfig = {}, reload = false) {
       if (this.#oneOfExistInObject(this.config.keysForReload, newConfig))
         reload = true;
-      console.log("api setConfig");
 
       this.config = { ...this.config, ...newConfig };
 
