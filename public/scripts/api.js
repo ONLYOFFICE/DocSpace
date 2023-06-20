@@ -167,7 +167,7 @@
             JSON.stringify(mes),
             this.config.src
           );
-        }, 0);
+        }, 20);
       }
     };
 
