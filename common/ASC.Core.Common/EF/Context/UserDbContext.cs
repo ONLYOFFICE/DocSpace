@@ -48,13 +48,14 @@ public class UserDbContext : DbContext
         ModelBuilderWrapper
         .From(modelBuilder, Database)
         .AddSubscriptionMethod()
-        .AddUser()
+        .AddUser(true)
         .AddAcl()
         .AddUserSecurity()
         .AddUserPhoto()
         .AddDbGroup()
         .AddUserGroup()
         .AddSubscription()
-        .AddUserDav();
+        .AddUserDav()
+        .AddDbTenant();
     }
 }
