@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import JavascriptSDK from "./JavascriptSDK";
 import Webhooks from "./Webhooks";
+import WebPlugins from "./WebPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
@@ -48,6 +49,11 @@ const DeveloperToolsWrapper = (props) => {
       name: t("Webhooks:Webhooks"),
       content: <Webhooks />,
     },
+    {
+      id: "web-plugins",
+      name: "Web Plugins",
+      content: <WebPlugins />,
+    },
   ];
 
   const load = async () => {
@@ -71,8 +77,8 @@ const DeveloperToolsWrapper = (props) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/developer-tools/${e.id}`,
-      ),
+        `/portal-settings/developer-tools/${e.id}`
+      )
     );
   };
 
@@ -85,7 +91,9 @@ const DeveloperToolsWrapper = (props) => {
       <AppLoader />
     );
 
-  return <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />;
+  return (
+    <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />
+  );
 };
 
 export default inject(({ setup, webhooksStore }) => {

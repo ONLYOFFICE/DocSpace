@@ -44,13 +44,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const PortalPlugins = ({
-  t,
-  setDocumentTitle,
-  theme,
-  withDelete,
-  withUpload,
-}) => {
+const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
   const [plugins, setPlugins] = React.useState(null);
   const inputPluginElement = React.useRef(null);
 
@@ -224,5 +218,5 @@ export default inject(({ auth }) => {
     "People",
     "Article",
     "FilesSettings",
-  ])(observer(PortalPlugins))
+  ])(observer(WebPlugins))
 );
