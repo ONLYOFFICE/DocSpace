@@ -903,8 +903,7 @@ class ContextOptionsStore {
       },
       separator0,
       {
-        //TODO-mushka change to correct key when added
-        id: "option_make-form",
+        id: "option_submit-to-gallery",
         key: "submit-to-gallery",
         label: t("Common:SubmitToFormGallery"),
         icon: FormFileReactSvgUrl,
