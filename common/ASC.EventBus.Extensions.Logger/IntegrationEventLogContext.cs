@@ -38,7 +38,8 @@ public class IntegrationEventLogContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper.From(modelBuilder, Database)
-                           .AddIntegrationEventLog();
+                           .AddIntegrationEventLog()
+                           .AddDbTenant();
 
     }
 }

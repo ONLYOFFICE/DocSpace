@@ -129,7 +129,7 @@ public class SmsManager
 
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { Tenant = await _tenantManager.GetCurrentTenantIdAsync(), Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
+            await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { TenantId = await _tenantManager.GetCurrentTenantIdAsync(), Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
         }
     }
 
@@ -166,7 +166,7 @@ public class SmsManager
         if (!_securityContext.IsAuthenticated)
         {
             var action = isEntryPoint ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaSms;
-            await _cookieManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
+            await _cookieManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id, action);
         }
 
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)

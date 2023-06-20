@@ -55,6 +55,7 @@ const commonInputStyle = css`
     props.theme.interfaceDirection === "rtl" &&
     css`
       // If current interface direction is rtl, set cursor in the right side of the input
+      // Will work only if placeholder exists (placeholder=" " by default required)
       :placeholder-shown {
         direction: rtl;
       }
