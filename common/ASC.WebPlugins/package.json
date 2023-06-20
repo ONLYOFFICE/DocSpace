@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Server for docspace-plugins",
   "private": true,
+  "engines": {
+    "node": ">=18",
+    "yarn": ">=3"
+  },
+  "packageManager": "yarn@3.2.4",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rimraf dist & nest build",
