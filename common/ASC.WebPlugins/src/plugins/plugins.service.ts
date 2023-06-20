@@ -15,7 +15,7 @@ export class PluginsService {
   constructor(
     @InjectRepository(Plugin)
     private pluginsRepository: Repository<Plugin>
-  ) { }
+  ) {}
 
   findAll(): Promise<Plugin[]> {
     return this.pluginsRepository.find();
@@ -80,6 +80,8 @@ export class PluginsService {
       });
       return { error: "It is not a plugin" };
     }
+
+    await this.pluginsRepository.save(plugin);
 
     return plugin;
   }
