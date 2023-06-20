@@ -109,6 +109,12 @@ public partial class CoreDbContextMigrate : Migration
                 table.PrimaryKey("PRIMARY", x => new { x.tenant, x.tariffid, x.quota });
             });
 
+#if Standalone
+        migrationBuilder.InsertData(
+            table: "tenants_quota",
+            columns: new[] { "tenant", "description", "features", "name", "product_id" },
+            values: new object[] { -1, null, "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:102400", "default", null });
+#else
         migrationBuilder.InsertData(
             schema: "onlyoffice",
             table: "tenants_quota",
@@ -126,6 +132,7 @@ public partial class CoreDbContextMigrate : Migration
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "visible" },
             values: new object[] { -1, null, "trial,audit,ldap,sso,whitelabel,thirdparty,restore,oauth,total_size:107374182400,file_size:100,manager:1", "trial", false });
+#endif
 
         migrationBuilder.CreateIndex(
             name: "last_modified_tenants_quotarow",

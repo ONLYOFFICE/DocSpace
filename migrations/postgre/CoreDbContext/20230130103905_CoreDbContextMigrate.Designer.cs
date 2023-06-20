@@ -64,6 +64,17 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
 
                     b.ToTable("tenants_quota", "onlyoffice");
 
+#if Standalone
+                    b.HasData(
+                        new
+                        {
+                            Tenant = -1,
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:102400",
+                            Name = "default",
+                            Price = 0m,
+                            Visible = false
+                        });
+#else
                     b.HasData(
                         new
                         {
@@ -90,6 +101,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
                             Price = 0m,
                             Visible = false
                         });
+#endif
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuotaRow", b =>

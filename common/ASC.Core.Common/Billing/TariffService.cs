@@ -939,11 +939,10 @@ public class TariffService : ITariffService
         if (_trialEnabled)
         {
             toAdd = allQuotas.FirstOrDefault(r => r.Trial && !r.Custom);
-
         }
         else
         {
-            toAdd = allQuotas.FirstOrDefault(r => r.Free && !r.Custom);
+            toAdd = allQuotas.FirstOrDefault(r => _coreBaseSettings.Standalone || r.Free && !r.Custom);
         }
 
         if (toAdd != null)
