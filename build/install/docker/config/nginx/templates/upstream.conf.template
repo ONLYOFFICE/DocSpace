@@ -20,8 +20,6 @@ map $SERVICE_WEB_PLUGINS $service_web_plugins {
     $SERVICE_WEB_PLUGINS $SERVICE_WEB_PLUGINS;
 }
 
-
-
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;
     $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
