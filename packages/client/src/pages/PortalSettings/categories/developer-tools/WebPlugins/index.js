@@ -134,6 +134,8 @@ const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
       newPlugins.push(value)
     );
 
+    console.log(newPlugins);
+
     setPlugins(newPlugins);
   }, [window.PluginStore]);
 

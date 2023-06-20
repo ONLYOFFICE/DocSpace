@@ -5,7 +5,6 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { isMobile } from "react-device-detect";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
@@ -37,10 +36,6 @@ const IntegrationWrapper = (props) => {
       content: <SSO />,
     },
   ];
-
-  if (!isMobile) {
-    enablePlugins && data.push(pluginData);
-  }
 
   const load = async () => {
     const path = location.pathname;
