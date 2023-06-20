@@ -1,97 +1,110 @@
-x-profiles-local:
- &x-profiles-local
- profiles: ["backend-local"]
- environment:
-  BUILD_PATH: "/var/www"
-  SRC_PATH: "/app/services"
-  ROOT_DIR: "/app"
- volumes:
-  - ${ROOT_DIR}/Data:/app/onlyoffice/data
+x-profiles-local: &x-profiles-local
+  profiles: ["backend-local"]
+  environment:
+    BUILD_PATH: "/var/www"
+    SRC_PATH: "/app/services"
+    ROOT_DIR: ""
+    ENV_EXTENSION: "dev"
 
 services:
   onlyoffice-backup-background-tasks:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-backup:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-files:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-files-services:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-people-server:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-socket:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
+      - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
 
   onlyoffice-studio-notify:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-api:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-studio:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
-    - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
-    - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
   onlyoffice-ssoauth:
     <<: *x-profiles-local
     volumes:
-    - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
+      - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
 
   onlyoffice-migration-runner:
     volumes:
-    - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
-  
+      - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
+
   onlyoffice-proxy:
     <<: *x-profiles-local
     environment:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
     volumes:
       - ${ROOT_DIR}/public:/var/www/public/
-  
+
   onlyoffice-rabbitmq:
     <<: *x-profiles-local
 
   onlyoffice-redis:
     <<: *x-profiles-local
-  
+
   onlyoffice-document-server:
     <<: *x-profiles-local
     volumes:
-      - ${ROOT_DIR}/Data:/var/www/onlyoffice/Data
-    
+      - ${DATA_DIR}:/var/www/onlyoffice/Data
