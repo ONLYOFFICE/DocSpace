@@ -137,7 +137,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         var size = await GetUserSpaceUsageAsync(userId);
 
         await _tenantManager.SetTenantQuotaRowAsync(
-           new TenantQuotaRow { Tenant = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
+           new TenantQuotaRow { TenantId = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
            false);
     }
 }
