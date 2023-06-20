@@ -21,6 +21,7 @@ const Sdk = ({
   hashSettings,
   user,
   getIcon,
+  isLoaded,
 }) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
@@ -30,8 +31,11 @@ const Sdk = ({
   }, [handleMessage]);
 
   useEffect(() => {
-    if (window.parent && !frameConfig) frameCallCommand("setConfig");
-  }, [frameCallCommand]);
+    if (window.parent && !frameConfig && isLoaded) {
+      console.log("client sdk setConfig");
+      frameCallCommand("setConfig");
+    }
+  }, [frameCallCommand, isLoaded]);
 
   const { mode } = match.params;
 
@@ -161,6 +165,7 @@ export default inject(({ auth, settingsStore }) => {
     setFrameConfig,
     frameConfig,
     hashSettings,
+    isLoaded,
   } = auth.settingsStore;
   const { user } = userStore;
   const { getIcon } = settingsStore;
@@ -174,5 +179,6 @@ export default inject(({ auth, settingsStore }) => {
     hashSettings,
     user,
     getIcon,
+    isLoaded,
   };
 })(observer(Sdk));

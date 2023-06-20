@@ -358,7 +358,9 @@ class SettingsStore {
         }
       } else if (key === "passwordHash") {
         console.log("client store getSettings passwordHash", newSettings[key]);
-        this.setValue("hashSettings", newSettings[key]);
+        runInAction(() => {
+          this.setValue("hashSettings", newSettings[key]);
+        });
       }
     });
 
