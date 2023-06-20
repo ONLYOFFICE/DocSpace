@@ -695,14 +695,6 @@ class ContextOptionsStore {
           }
         : false;
 
-    //TODO-mushka change to correct key when added
-    const separator1 = contextOptions.includes("make-form")
-      ? {
-          key: "separator1",
-          isSeparator: true,
-        }
-      : false;
-
     const onlyShowVersionHistory =
       !contextOptions.includes("finalize-version") &&
       contextOptions.includes("show-version-history");
@@ -843,6 +835,7 @@ class ContextOptionsStore {
       t
     );
 
+    console.log(item.security);
     const optionsModel = [
       {
         id: "option_select",
@@ -912,14 +905,17 @@ class ContextOptionsStore {
       {
         //TODO-mushka change to correct key when added
         id: "option_make-form",
-        key: "make-form",
+        key: "submit-to-gallery",
         label: t("Common:SubmitToFormGallery"),
         icon: FormFileReactSvgUrl,
         onClick: () => this.onClickSubmitToFormGallery(item),
         isOutsideLink: true,
-        disabled: false,
+        disabled: !item.security.SubmitToFormGallery,
       },
-      separator1,
+      {
+        key: "separator-SubmitToGallery",
+        isSeparator: true,
+      },
       {
         id: "option_reconnect-storage",
         key: "reconnect-storage",
