@@ -1223,7 +1223,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(authorOption);
+          // !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("CreatedTrash")) {
           const idx = availableSort.findIndex((x) => x === "CreatedTrash");
@@ -1250,7 +1250,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          // !hide && commonOptions.push(size);
+          !hide && commonOptions.push(size);
         }
         if (availableSort?.includes("TypeTrash")) {
           const idx = availableSort.findIndex((x) => x === "TypeTrash");
@@ -1323,10 +1323,10 @@ const SectionFilterContent = ({
         commonOptions.push(owner);
         commonOptions.push(modifiedDate);
       } else if (isTrash) {
-        commonOptions.push(authorOption);
+        // commonOptions.push(authorOption);
         // commonOptions.push(creationDate);
         commonOptions.push(erasure);
-        // commonOptions.push(size);
+        commonOptions.push(size);
         // commonOptions.push(type);
       } else {
         // commonOptions.push(authorOption);

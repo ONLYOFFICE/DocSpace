@@ -103,7 +103,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.authorTrashColumnIsEnabled,
           resizable: true,
           sortBy: "Author",
-          onClick: this.onFilter,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -130,7 +130,7 @@ class FilesTableHeader extends React.Component {
           enable: this.props.sizeTrashColumnIsEnabled,
           resizable: true,
           sortBy: "Size",
-          // onClick: this.onFilter,
+          onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
