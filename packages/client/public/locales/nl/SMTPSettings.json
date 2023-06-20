@@ -2,7 +2,6 @@
   "Authentication": "Authenticatie",
   "EnableSSL": "Activeer SSL",
   "Host": "Host",
-  "HostLogin": "Host Login",
   "HostPassword": "Host Wachtwoord",
   "Port": "Poort",
   "SenderDisplayName": "Zender Weergave Naam",

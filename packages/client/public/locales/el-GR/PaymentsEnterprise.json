@@ -1,17 +1,4 @@
 {
   "ActivateLicenseActivated": "Η άδεια ενεργοποιήθηκε",
-  "ActivatePurchaseBuyNow": "Αγορά τώρα",
-  "ActivateRenewSubscriptionHeader": "Renew subscription for Enterprise",
-  "ActivateToProBannerHeaderTrial": "Buy the full Enterprise version to get:",
-  "ActivateUploadDescr": "To activate your license, upload it below and click the Activate.",
-  "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
-  "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
-  "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
-  "UpgradeToProBannerInformationPurchase": "Ask purchase questions at <1>{{email}}</1>",
-  "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
-  "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
-  "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
-  "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
-  "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers.",
-  "UpgradeToProBannerItemScalabilityDescr": "Comfortably edit and collaborate on docs no matter what size your team is."
+  "ActivatePurchaseBuyNow": "Αγορά τώρα"
 }

@@ -1,17 +1,6 @@
 {
-  "ActivateLicenseActivated": "License activated",
   "ActivatePurchaseBuyNow": "Şimdi satın al",
-  "ActivateRenewSubscriptionHeader": "Renew subscription for Enterprise",
   "ActivateToProBannerHeaderTrial": "Aşağıdakileri elde etmek için Tam Enterprise Sürümünü satın alın:",
-  "ActivateUploadDescr": "To activate your license, upload it below and click the Activate.",
-  "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
-  "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition <1>on the official website</1>",
-  "UpgradeToProBannerInformationDemo": "Request demonstration <1>here</1>",
   "UpgradeToProBannerInformationPurchase": "<1>{{email}}</1> adresinden satın alma soruları sorun",
-  "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
-  "UpgradeToProBannerInstructionItemLinux": "Linux instruction.",
-  "UpgradeToProBannerInstructionItemWindows": "Windows instruction.",
-  "UpgradeToProBannerItemLicenseDescr": "+ 1-year subscription for functionality and security updates.",
-  "UpgradeToProBannerItemMobileDescr": "Edit docs, sheets, and slides in mobile browsers.",
   "UpgradeToProBannerItemScalabilityDescr": "Ekibinizin boyutu ne olursa olsun, belgeleri rahatça düzenleyin ve ortak çalışın."
 }

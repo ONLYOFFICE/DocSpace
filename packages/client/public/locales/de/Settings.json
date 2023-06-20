@@ -67,6 +67,7 @@
   "DataBackup": "Datensicherung",
   "Deactivate": "Deaktivieren",
   "DeactivateOrDeletePortal": "Deaktivieren oder entfernen Sie den Bereich.",
+  "DefaultSettings": "Standardeinstellungen",
   "DeleteDocSpace": "DocSpace löschen",
   "DeleteDocSpaceInfo": "Bevor Sie den Bereich löschen, vergewissern Sie sich bitte, dass die automatische Rechnungsstellung ausgeschaltet ist. Sie können den Status der automatischen Rechnungsstellung in <1>Ihrem Stripe-Kundenportal überprüfen</1>.",
   "DeleteTheme": "Thema löschen",

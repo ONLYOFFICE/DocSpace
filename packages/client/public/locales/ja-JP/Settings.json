@@ -67,6 +67,7 @@
   "DataBackup": "データのバックアップ",
   "Deactivate": "停止する",
   "DeactivateOrDeletePortal": "スペースを無効にする、または削除する。",
+  "DefaultSettings": "デフォルトの設定",
   "DeleteDocSpace": "DocSpaceを解除する",
   "DeleteDocSpaceInfo": "スペースを削除する前に、自動課金がオフになっていることをご確認ください。自動課金の状態は、<1>Stripeカスタマーポータルで確認できます</1>。",
   "DeleteTheme": "テーマを解除する",
