@@ -9,14 +9,13 @@
     frameId: "ds-frame",
     mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
     id: null,
-    locale: "en",
+    locale: "en-US",
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
     showTitle: true,
     showMenu: false,
     showFilter: false,
-    showAction: false,
     destroyText: "",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
@@ -162,12 +161,10 @@
       };
 
       if (!!this.#iframe.contentWindow) {
-        setTimeout(() => {
-          this.#iframe.contentWindow.postMessage(
-            JSON.stringify(mes),
-            this.config.src
-          );
-        }, 20);
+        this.#iframe.contentWindow.postMessage(
+          JSON.stringify(mes),
+          this.config.src
+        );
       }
     };
 

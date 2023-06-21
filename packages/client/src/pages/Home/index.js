@@ -405,12 +405,14 @@ class PureHome extends React.Component {
       createRoom,
       refreshFiles,
       setViewAs,
-      hashSettings,
+      getSettings,
       logout,
       login,
       addTagsToRoom,
       createTag,
       removeTagsFromRoom,
+      loadCurrentUser,
+      updateProfileCulture,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -422,7 +424,15 @@ class PureHome extends React.Component {
 
       switch (methodName) {
         case "setConfig":
-          res = await setFrameConfig(data);
+          try {
+            const requests = await Promise.all([
+              setFrameConfig(data),
+              updateProfileCulture(user.id, data.locale),
+            ]);
+            res = requests[0];
+          } catch (e) {
+            res = e;
+          }
           break;
         case "getFolderInfo":
           res = selectedFolderStore;
@@ -440,7 +450,11 @@ class PureHome extends React.Component {
           res = selection;
           break;
         case "getUserInfo":
-          res = user;
+          try {
+            res = await loadCurrentUser();
+          } catch (e) {
+            res = e;
+          }
           break;
         case "openModal": {
           const { type, options } = data;
@@ -535,7 +549,12 @@ class PureHome extends React.Component {
           }
           break;
         case "getHashSettings": {
-          res = hashSettings;
+          try {
+            const settings = await getSettings();
+            res = settings.passwordHash;
+          } catch (e) {
+            res = e;
+          }
           break;
         }
         case "login":
@@ -682,7 +701,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
-    settingsStore,
+    peopleStore,
     filesActionsStore,
     oformsStore,
     tagsStore,
@@ -725,6 +744,8 @@ export default inject(
       addTagsToRoom,
       removeTagsFromRoom,
     } = filesStore;
+
+    const { updateProfileCulture } = peopleStore.targetUserStore;
 
     const { createTag } = tagsStore;
 
@@ -782,8 +803,10 @@ export default inject(
       frameConfig,
       isFrame,
       withPaging,
-      hashSettings,
+      getSettings,
     } = auth.settingsStore;
+
+    const { loadCurrentUser, user } = auth.userStore;
 
     if (!firstLoad) {
       if (isLoading) {
@@ -872,13 +895,16 @@ export default inject(
       isEmptyPage,
       isLoadedEmptyPage,
 
-      hashSettings,
+      getSettings,
       logout: auth.logout,
       login: auth.login,
 
       createTag,
       addTagsToRoom,
       removeTagsFromRoom,
+      loadCurrentUser,
+      user,
+      updateProfileCulture,
     };
   }
 )(withRouter(observer(Home)));

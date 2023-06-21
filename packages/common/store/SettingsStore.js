@@ -784,11 +784,11 @@ class SettingsStore {
   setFrameConfig = async (frameConfig) => {
     runInAction(() => {
       this.frameConfig = frameConfig;
+      this.setTheme(frameConfig?.theme);
     });
 
-    if (frameConfig) {
-      this.setTheme(frameConfig.theme);
-      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 200);
+    if (!!frameConfig) {
+      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 100);
     }
     return frameConfig;
   };

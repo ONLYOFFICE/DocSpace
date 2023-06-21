@@ -18,10 +18,12 @@ const Sdk = ({
   setFrameConfig,
   login,
   logout,
-  user,
+  loadCurrentUser,
   getIcon,
   isLoaded,
   getSettings,
+  user,
+  updateProfileCulture,
 }) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
@@ -59,7 +61,11 @@ const Sdk = ({
       switch (methodName) {
         case "setConfig":
           try {
-            res = await setFrameConfig(data);
+            const requests = await Promise.all([
+              setFrameConfig(data),
+              updateProfileCulture(user.id, data.locale),
+            ]);
+            res = requests[0];
           } catch (e) {
             res = e;
           }
@@ -75,7 +81,11 @@ const Sdk = ({
           }
           break;
         case "getUserInfo": {
-          res = user;
+          try {
+            res = await loadCurrentUser();
+          } catch (e) {
+            res = e;
+          }
           break;
         }
         case "getHashSettings": {
@@ -162,7 +172,7 @@ const Sdk = ({
   return component;
 };
 
-export default inject(({ auth, settingsStore }) => {
+export default inject(({ auth, settingsStore, peopleStore }) => {
   const { login, logout, userStore } = auth;
   const {
     theme,
@@ -171,7 +181,8 @@ export default inject(({ auth, settingsStore }) => {
     getSettings,
     isLoaded,
   } = auth.settingsStore;
-  const { user } = userStore;
+  const { loadCurrentUser, user } = userStore;
+  const { updateProfileCulture } = peopleStore.targetUserStore;
   const { getIcon } = settingsStore;
 
   return {
@@ -181,8 +192,10 @@ export default inject(({ auth, settingsStore }) => {
     login,
     logout,
     getSettings,
-    user,
+    loadCurrentUser,
     getIcon,
     isLoaded,
+    updateProfileCulture,
+    user,
   };
 })(observer(Sdk));
