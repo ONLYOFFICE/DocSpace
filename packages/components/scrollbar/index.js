@@ -5,6 +5,7 @@ import { useTheme } from "styled-components";
 import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 import { classNames } from "../utils/classNames";
+import Scrollbar2 from "./customScrollbar";
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
@@ -98,7 +99,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
         style={{
           ...style,
           ...view,
-          margin: isRtl ? "0 -15px -15px -15px" : "0 -15px -15px 0",
+          margin: isRtl ? "0 0 -15px -15px" : "0 -15px -15px 0",
         }}
         tabIndex={-1}
         className={classNames("scroll-body", props.scrollclass)}
@@ -120,14 +121,33 @@ const Scrollbar = React.forwardRef((props, ref) => {
     );
   };
   return (
-    <StyledScrollbar
-      renderView={renderView}
-      renderThumbVertical={renderNavThumbVertical}
-      renderThumbHorizontal={renderNavThumbHorizontal}
-      renderTrackVertical={renderTrackNavVertical}
-      {...props}
-      ref={ref}
-    />
+    <>
+      <Scrollbar2>
+        ================================================================ Lorem
+        ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+        esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+        id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+        officia deserunt mollit anim id est laborum.
+        ================================================================
+      </Scrollbar2>
+      <StyledScrollbar
+        renderView={renderView}
+        renderThumbVertical={renderNavThumbVertical}
+        renderThumbHorizontal={renderNavThumbHorizontal}
+        renderTrackVertical={renderTrackNavVertical}
+        {...props}
+        ref={ref}
+      />
+    </>
   );
 });
 

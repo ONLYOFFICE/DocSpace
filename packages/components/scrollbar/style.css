@@ -1,0 +1,56 @@
+.custom-scrollbars__container {
+    background-color: white;
+    display: grid;
+    height: 100%;
+    width: 300px;
+    grid-template: auto / 1fr 24px;
+    gap: 1rem;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .custom-scrollbars__content {
+    height: 300px;
+    max-width: 300px;
+    -ms-overflow-style: none;
+    overflow: auto;
+    scrollbar-width: none;
+  }
+  
+  .custom-scrollbars__content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .custom-scrollbars__scrollbar {
+    display: grid;
+    gap: 1rem;
+    grid-auto-flow: row;
+    grid-template: auto 1fr auto / 1fr;
+    padding: 1rem;
+    place-items: center;
+  }
+  
+  .custom-scrollbars__track-and-thumb {
+    display: block;
+    height: 100%;
+    position: relative;
+    width: 7px;
+  }
+  
+  .custom-scrollbars__track {
+    background-color: #ccc;
+    border-radius: 12px;
+    bottom: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    width: 7px;
+  }
+  
+  .custom-scrollbars__thumb {
+    border-radius: 12px;
+    background-color: #333;
+    position: absolute;
+    width: 7px;
+  }
+  
