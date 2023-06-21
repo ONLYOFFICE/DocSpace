@@ -42,7 +42,7 @@ public class WebstudioDbContext : DbContext
     {
         ModelBuilderWrapper
             .From(modelBuilder, Database)
-            .AddWebstudioSettings(true)
+            .AddWebstudioSettings()
             .AddWebstudioUserVisit()
             .AddDbWebstudioIndex()
             .AddDbTenant()
