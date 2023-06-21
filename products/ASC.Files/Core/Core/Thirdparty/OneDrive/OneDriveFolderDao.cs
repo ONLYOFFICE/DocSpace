@@ -110,7 +110,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType))
         {

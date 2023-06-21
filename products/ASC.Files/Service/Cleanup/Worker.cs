@@ -150,12 +150,12 @@ public class Worker
             .Join(dbContext.WebstudioSettings, a => a.Id, b => b.TenantId, (tenants, settings) => new { tenants, settings })
             .Where(x => x.tenants.Status == TenantStatus.Active &&
                         x.settings.Id == filesSettingsId &&
-                        Convert.ToBoolean(JsonExtensions.JsonValue(nameof(x.settings.Data).ToLower(), "AutomaticallyCleanUp.IsAutoCleanUp")) == true)
+                        Convert.ToBoolean(DbFunctionsExtension.JsonValue(nameof(x.settings.Data).ToLower(), "AutomaticallyCleanUp.IsAutoCleanUp")) == true)
             .Select(r => new TenantUserSettings()
             {
                 TenantId = r.tenants.Id,
                 UserId = r.settings.UserId,
-                Setting = (DateToAutoCleanUp)Convert.ToInt32(JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), "AutomaticallyCleanUp.Gap"))
+                Setting = (DateToAutoCleanUp)Convert.ToInt32(DbFunctionsExtension.JsonValue(nameof(r.settings.Data).ToLower(), "AutomaticallyCleanUp.Gap"))
             })
             .ToList();
     }
