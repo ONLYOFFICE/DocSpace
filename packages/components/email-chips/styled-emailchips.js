@@ -12,12 +12,6 @@ const StyledChipWithInput = styled.div`
   flex-wrap: wrap;
   height: fit-content;
   width: ${(props) => props.length === 0 && "100%"};
-
-  .scroll.scroll-body {
-    // Temporary solution. Should be removed after changing custom scroll for rtl
-    ${({ theme }) =>
-      theme.interfaceDirection === "rtl" && `margin-right: 0 !important;`}
-  }
 `;
 
 const StyledContent = styled.div`
