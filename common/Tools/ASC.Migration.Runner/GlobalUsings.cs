@@ -37,6 +37,7 @@ global using ASC.EventBus.Extensions.Logger;
 global using ASC.Feed.Context;
 global using ASC.Files.Core.EF;
 global using ASC.MessagingSystem.EF.Context;
+global using ASC.Migration.Core.Models;
 global using ASC.Webhooks.Core.EF.Context;
 
 global using Microsoft.EntityFrameworkCore;
