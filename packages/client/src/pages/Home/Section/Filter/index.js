@@ -1214,7 +1214,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(room);
+          // !hide && commonOptions.push(room);
         }
         if (availableSort?.includes("AuthorTrash")) {
           const idx = availableSort.findIndex((x) => x === "AuthorTrash");
@@ -1223,7 +1223,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(authorOption);
+          // !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("CreatedTrash")) {
           const idx = availableSort.findIndex((x) => x === "CreatedTrash");
@@ -1232,7 +1232,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(creationDate);
+          // !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Erasure")) {
           const idx = availableSort.findIndex((x) => x === "Erasure");
@@ -1259,7 +1259,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(type);
+          // !hide && commonOptions.push(type);
         }
       } else {
         const availableSort = localStorage
@@ -1277,7 +1277,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(authorOption);
+          // !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("Created")) {
           const idx = availableSort.findIndex((x) => x === "Created");
@@ -1286,7 +1286,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(creationDate);
+          // !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Modified")) {
           const idx = availableSort.findIndex((x) => x === "Modified");
@@ -1313,7 +1313,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(type);
+          // !hide && commonOptions.push(type);
         }
       }
     } else {
@@ -1323,17 +1323,17 @@ const SectionFilterContent = ({
         commonOptions.push(owner);
         commonOptions.push(modifiedDate);
       } else if (isTrash) {
-        commonOptions.push(authorOption);
-        commonOptions.push(creationDate);
+        // commonOptions.push(authorOption);
+        // commonOptions.push(creationDate);
         commonOptions.push(erasure);
         commonOptions.push(size);
-        commonOptions.push(type);
+        // commonOptions.push(type);
       } else {
-        commonOptions.push(authorOption);
-        commonOptions.push(creationDate);
+        // commonOptions.push(authorOption);
+        // commonOptions.push(creationDate);
         commonOptions.push(modifiedDate);
         commonOptions.push(size);
-        commonOptions.push(type);
+        // commonOptions.push(type);
       }
     }
 

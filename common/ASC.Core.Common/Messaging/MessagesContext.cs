@@ -49,6 +49,6 @@ public class MessagesContext : DbContext
             .AddUser()
             .AddWebstudioSettings()
             .AddDbTenant()
-            .AddDbFunction();
+            .AddDbFunctions();
     }
 }

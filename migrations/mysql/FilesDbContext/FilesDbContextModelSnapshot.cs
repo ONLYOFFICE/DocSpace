@@ -3004,6 +3004,15 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
                     b.HasIndex("ParentId")
                         .HasDatabaseName("folder_id");
 
+                    b.HasIndex("TenantId", "ParentId", "ContentLength")
+                        .HasDatabaseName("tenant_id_folder_id_content_length");
+
+                    b.HasIndex("TenantId", "ParentId", "ModifiedOn")
+                        .HasDatabaseName("tenant_id_folder_id_modified_on");
+
+                    b.HasIndex("TenantId", "ParentId", "Title")
+                        .HasDatabaseName("tenant_id_folder_id_title");
+
                     b.ToTable("files_file", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
@@ -3496,6 +3505,12 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
 
                     b.HasIndex("TenantId", "ParentId")
                         .HasDatabaseName("parent_id");
+
+                    b.HasIndex("TenantId", "ParentId", "ModifiedOn")
+                        .HasDatabaseName("tenant_id_parent_id_modified_on");
+
+                    b.HasIndex("TenantId", "ParentId", "Title")
+                        .HasDatabaseName("tenant_id_parent_id_title");
 
                     b.ToTable("files_folder", (string)null);
 
