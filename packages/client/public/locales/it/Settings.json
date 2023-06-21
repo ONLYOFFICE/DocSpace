@@ -67,6 +67,7 @@
   "DataBackup": "Backup dei dati",
   "Deactivate": "Disattiva",
   "DeactivateOrDeletePortal": "Disattiva o cancella lo spazio.",
+  "DefaultSettings": "Impostazioni predefinite",
   "DeleteDocSpace": "Elimina DocSpace",
   "DeleteDocSpaceInfo": "Prima di eliminare lo spazio, assicurati che la fatturazione automatica sia disattivata. Puoi controllare lo stato della fatturazione automatica nel <1>tuo portale clienti Stripe</1>.",
   "DeleteTheme": "Elimina tema",

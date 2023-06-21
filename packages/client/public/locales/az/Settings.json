@@ -64,6 +64,7 @@
   "DataBackup": "Məlumatların yedəklənməsi",
   "Deactivate": "Deaktiv edin",
   "DeactivateOrDeletePortal": "Sahəni deaktivləşdirin və ya silin",
+  "DefaultSettings": "Defolt parametrlər",
   "DeleteDocSpace": "DocSpace-i silin",
   "DeleteDocSpaceInfo": "Domeni silməzdən əvvəl, lütfən, avtomatik ödənişin söndürüldüyünə əmin olun. Siz <1>Stripe müştəri portalınızda</1> avtomatik fakturanın statusunu yoxlaya bilərsiniz.",
   "DeleteTheme": "Temanı silin",

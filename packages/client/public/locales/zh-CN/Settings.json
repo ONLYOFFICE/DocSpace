@@ -67,6 +67,7 @@
   "DataBackup": "数据备份",
   "Deactivate": "停用",
   "DeactivateOrDeletePortal": "停用或删除协作空间。",
+  "DefaultSettings": "默认设置",
   "DeleteDocSpace": "删除协作空间",
   "DeleteDocSpaceInfo": "删除空间前，请确保已关闭自动计费。您可在 <1>Stripe 客户门户</1>中查看自动计费状态。",
   "DeleteTheme": "删除主题",

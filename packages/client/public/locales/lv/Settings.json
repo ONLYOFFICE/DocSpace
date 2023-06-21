@@ -64,6 +64,7 @@
   "DataBackup": "Datu dublēšana",
   "Deactivate": "Deaktivēt",
   "DeactivateOrDeletePortal": "Deaktivizēt vai dzēst portālu.",
+  "DefaultSettings": "Noklusējuma uzstādījumi",
   "DeleteDocSpace": "Izdzēst DocSpace",
   "DeleteDocSpaceInfo": "Pirms izdzēst telpu, pārliecinieties, vai automātiska norēķināšanās ir izslēgta. Automātisko norēķinu statusu varat pārbaudīt <1> Stripe klientu portālā</1>.",
   "DeleteTheme": "Izdzēst tēmu",

@@ -1,4 +1,5 @@
 {
+  "ActivateLicense": "Ativar licença",
   "ActivateLicenseActivated": "Licença ativada",
   "ActivatePurchaseBuyLicense": "Para comprar a licença, clique no botão abaixo.",
   "ActivatePurchaseBuyNow": "Comprar agora",
@@ -11,11 +12,13 @@
   "ActivateTariffEnterpriseTrialExpiration": "Seu teste expira em {{date}}.",
   "ActivateToProBannerHeaderTrial": "Compre a versão Enterprise completa para obter:",
   "ActivateUploadDescr": "Para ativar sua licença, faça o upload abaixo e clique no botão Ativar.",
+  "FreeDaysLeft": "{{count}} dias livres restantes",
   "UpgradeToProBannerHeader": "Obtenha acesso gratuito a recursos pro por 30 dias",
   "UpgradeToProBannerInformationAboutShort": "Saiba mais sobre a Enterprise Edition <1>no site oficial</1>",
   "UpgradeToProBannerInformationDemo": "Solicite a demonstração <1>aqui</1>",
   "UpgradeToProBannerInformationPurchase": "Faça perguntas sobre compra em <1>{{email}}</1>",
   "UpgradeToProBannerInformationSupport": "Obtenha assistência técnica <1>{{helpUrl}}</1>",
+  "UpgradeToProBannerInstructionDescr": "Use a documentação oficial para atualizar:",
   "UpgradeToProBannerInstructionHeader": "Para acessar os recursos profissionais, comece a avaliação gratuita de 30 dias do ONLYOFFICE DocSpace Enterprise Edition.",
   "UpgradeToProBannerInstructionItemDocker": "Instruções do Docker.",
   "UpgradeToProBannerInstructionItemLinux": "Instrução do Linux.",
@@ -29,5 +32,6 @@
   "UpgradeToProBannerItemScalabilityDescr": "Edite e colabore confortavelmente em documentos, independentemente do tamanho de sua equipe.",
   "UpgradeToProBannerItemScalabilityHeader": "Escalabilidade e agrupamento.",
   "UpgradeToProBannerItemSupportDescr": "Obtenha ajuda profissional rápida para todos os problemas que você enfrenta.",
-  "UpgradeToProBannerItemSupportHeader": "Suporte técnico."
+  "UpgradeToProBannerItemSupportHeader": "Suporte técnico.",
+  "UploadLicenseFile": "Carregar arquivo de licença"
 }

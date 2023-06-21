@@ -64,6 +64,7 @@
   "DataBackup": "Sao lưu dữ liệu",
   "Deactivate": "Vô hiệu hóa",
   "DeactivateOrDeletePortal": "Vô hiệu hóa hoặc xóa không gian.",
+  "DefaultSettings": "Cài đặt mặc định",
   "DeleteDocSpace": "Xóa DocSpace",
   "DeleteDocSpaceInfo": "Trước khi bạn xóa không gian, xin vui lòng đảm bảo rằng thanh toán tự động đã được tắt. Bạn có thể kiểm tra trạng thái thanh toán tự động trong <1> cổng thông tin khách hàng Stripe của mình</1>.",
   "DeleteTheme": "Xóa theme",
