@@ -3,16 +3,19 @@ using System;
 using ASC.Migration.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.Migrations.Migration
 {
     [DbContext(typeof(MigrationContext))]
-    partial class MigrationContextModelSnapshot : ModelSnapshot
+    [Migration("20230621124714_MigrationContext_Upgrade1")]
+    partial class MigrationContextUpgrade1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

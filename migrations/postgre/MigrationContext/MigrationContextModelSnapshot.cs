@@ -6381,6 +6381,465 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
                     b.ToTable("webhooks_logs", (string)null);
                 });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbGroup", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbQuotaRow", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbSubscriptionMethod", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbTariff", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.FireBaseUser", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbCoreSettings", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioUserVisit", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.NotifyQueue", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.TenantIpRestrictions", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Subscription", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserDav", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserPhoto", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.UserSecurity", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupRecord", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithOne()
+                        .HasForeignKey("ASC.Data.Backup.EF.Model.BackupSchedule", "TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.EventBus.Extensions.Logger.IntegrationEventLogEntry", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Feed.Model.FeedAggregate", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Feed.Model.FeedReaded", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Feed.Model.FeedUsers", b =>
+                {
+                    b.HasOne("ASC.Feed.Model.FeedAggregate", "Feed")
+                        .WithMany()
+                        .HasForeignKey("FeedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Feed");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFile", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesBunchObjects", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesLink", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesProperties", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesSecurity", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTag", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesTagLink", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyAccount", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyApp", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFilesThirdpartyIdMapping", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFolder", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Files.Core.EF.DbFolderTree", b =>
+                {
+                    b.HasOne("ASC.Files.Core.EF.DbFolder", "Folder")
+                        .WithMany()
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Folder");
+                });
+
+            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.AuditEvent", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.LoginEvent", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
+                {
+                    b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
+                        .WithMany()
+                        .HasForeignKey("ConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Config");
+
+                    b.Navigation("Tenant");
+                });
 #pragma warning restore 612, 618
         }
     }
