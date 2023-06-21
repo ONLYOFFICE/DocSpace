@@ -42,11 +42,13 @@ RUN apt-get -y update && \
     apt-get install -yq \
         locales \
         npm  && \
+        git && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
+RUN git clone -b main/community-server https://github.com/ONLYOFFICE/document-templates ${SRC_PATH}/products/ASC.Files/Server/DocStore
 
 RUN mkdir -p /app/onlyoffice/ && \
     find config/ -maxdepth 1 -name "*.json" | grep -v test | grep -v dev | xargs tar -cvf config.tar && \
@@ -87,6 +89,9 @@ RUN mkdir -p /var/log/onlyoffice && \
     apt-get -y update && \
     apt-get install -yq \
         python3-pip \
+        nano \
+        curl \
+        vim \
         libgdiplus && \
     pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
     rm -rf /var/lib/apt/lists/*
@@ -112,6 +117,9 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
     apt-get install -yq \ 
+            nano \
+            curl \
+            vim \
             python3-pip && \
     pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
     rm -rf /var/lib/apt/lists/*
@@ -158,6 +166,9 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
+    if [[ -z "${SERVICE_CLIENT}" ]] ; then \
+    sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf \
+    fi && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
@@ -218,18 +229,18 @@ CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup"]
 
 ## ASC.Files ##
 FROM dotnetrun AS files
-WORKDIR ${BUILD_PATH}/services/ASC.Files/service/
+WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/service/ .
-#COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/products/ASC.Files/Server/DocStore .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/products/ASC.Files/Server/DocStore .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM dotnetrun AS files_services
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64
-WORKDIR ${BUILD_PATH}/services/ASC.Files.Service/service/
+WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
@@ -248,7 +259,7 @@ CMD ["ASC.Notify.dll", "ASC.Notify", "core:eventBus:subscriptionClientName=asc_e
 
 ## ASC.People ##
 FROM dotnetrun AS people_server
-WORKDIR ${BUILD_PATH}/services/ASC.People/service/
+WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.People/service/ .
