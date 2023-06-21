@@ -9,7 +9,6 @@ env:
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
     DOCKERFILE: "{DOCKER_PATH}/Dockerfile"
-    DOCKER_TAG: dev-profile
 
 jobs:
   build:
@@ -32,6 +31,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build 4testing
         run: |
+          export DOCKER_TAG="dev-profile"
           docker buildx bake -f ${DOCKER_PATH}/build.yml \
           --set *.platform=linux/amd64 \
           --push
