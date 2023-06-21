@@ -188,7 +188,7 @@ public class MigrationRunner
             {
                 TenantId = tenantId,
                 LastModified = DateTime.UtcNow,
-                RefType = Core.UserGroupRefType.Contains,
+                RefType = ASC.Core.UserGroupRefType.Contains,
                 Removed = false,
                 UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
                 Userid = tenant.OwnerId.Value
