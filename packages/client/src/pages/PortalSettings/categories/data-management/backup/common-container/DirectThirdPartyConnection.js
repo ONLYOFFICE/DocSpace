@@ -187,10 +187,8 @@ const DirectThirdPartyConnection = (props) => {
   const onConnect = () => {
     clearLocalStorage();
 
-    const {
-      provider_key,
-      provider_link: directConnection,
-    } = selectedThirdPartyAccount;
+    const { provider_key, provider_link: directConnection } =
+      selectedThirdPartyAccount;
 
     if (directConnection) {
       let authModal = window.open(
@@ -299,6 +297,7 @@ const DirectThirdPartyConnection = (props) => {
       id={id}
       onSelectFolder={onSelectFolder}
       name={"thirdParty"}
+      isThirdParty={true}
       onClose={onClose}
       onClickInput={onClickInput}
       onSetLoadingData={onSetLoadingData}

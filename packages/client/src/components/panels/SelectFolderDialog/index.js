@@ -62,16 +62,14 @@ class SelectFolderDialog extends React.Component {
         roomsFolder && roomsFolder.foldersCount ? true : false;
 
       try {
-        [
-          resultingFolderTree,
-          resultingId,
-        ] = await SelectionPanel.getBasicFolderInfo(
-          treeFolders,
-          filteredType,
-          initialFolderId,
-          passedFoldersTree,
-          hasSharedFolder
-        );
+        [resultingFolderTree, resultingId] =
+          await SelectionPanel.getBasicFolderInfo(
+            treeFolders,
+            filteredType,
+            initialFolderId,
+            passedFoldersTree,
+            hasSharedFolder
+          );
       } catch (e) {
         toastr.error(e);
 
@@ -183,6 +181,7 @@ class SelectFolderDialog extends React.Component {
     onSave && onSave(e, resultingFolderId);
     onSetNewFolderPath && onSetNewFolderPath(resultingFolderId);
     onSelectFolder && onSelectFolder(resultingFolderId);
+    console.log(selectedTreeNode);
     onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
     //setResultingFolderId(resultingFolderId);
     !withoutImmediatelyClose && this.onClose();

@@ -62,7 +62,9 @@ const FilesSelector = ({
   onSelectFolder,
   onSetBaseFolderPath,
   onSetNewFolderPath,
+  onSelectTreeNode,
 }: FilesSelectorProps) => {
+
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
   const [breadCrumbs, setBreadCrumbs] = React.useState<BreadCrumb[]>([]);
@@ -77,6 +79,7 @@ const FilesSelector = ({
   const [selectedItemSecurity, setSelectedItemSecurity] = React.useState<
     Security | undefined
   >(undefined);
+  const [selectedTreeNode, setSelectedTreeNode] = React.useState(null);
 
   const [total, setTotal] = React.useState<number>(0);
   const [hasNextPage, setHasNextPage] = React.useState<boolean>(false);
@@ -129,6 +132,8 @@ const FilesSelector = ({
     disabledItems,
     setSelectedItemSecurity,
     isThirdParty,
+    onSelectTreeNode,
+    setSelectedTreeNode,
   });
 
   const onSelectAction = (item: Item) => {
@@ -168,7 +173,11 @@ const FilesSelector = ({
       getRootData();
     } else {
       setSelectedItemId(currentFolderId);
-      if (parentId === 0 && rootFolderType === FolderType.Rooms) {
+      if (
+        parentId === 0 &&
+        rootFolderType === FolderType.Rooms &&
+        !isThirdParty
+      ) {
         setSelectedItemType("rooms");
         getRoomList(0, true);
       } else {
@@ -312,9 +321,13 @@ const FilesSelector = ({
     } else {
       onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
       onSelectFolder && onSelectFolder(selectedItemId);
+    
+      onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
       !withoutImmediatelyClose && onCloseAction();
     }
   };
+
+
 
   const headerLabel = getHeaderLabel(t, isCopy, isRestoreAll, isMove);
 
@@ -428,6 +441,8 @@ export default inject(
 
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
+
+
 
     const currentFolderId = id
       ? id

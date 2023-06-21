@@ -77,6 +77,8 @@ export type useFilesHelpersProps = {
   disabledItems: string[] | number[];
   setSelectedItemSecurity: (value: Security) => void;
   isThirdParty: boolean;
+  onSelectTreeNode?: (treeNode: any) => void;
+  setSelectedTreeNode: (treeNode: any) => void;
 };
 
 export type FilesSelectorProps = {
@@ -122,4 +124,5 @@ export type FilesSelectorProps = {
   onSetBaseFolderPath?: (value: number | string | undefined) => void;
   onSetNewFolderPath?: (value: number | string | undefined) => void;
   onSelectFolder?: (value: number | string | undefined) => void;
+  onSelectTreeNode?: (treeNode: any) => void;
 };

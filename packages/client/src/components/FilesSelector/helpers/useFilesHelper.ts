@@ -235,6 +235,8 @@ export const useFilesHelper = ({
   disabledItems,
   setSelectedItemSecurity,
   isThirdParty,
+  onSelectTreeNode,
+  setSelectedTreeNode,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -278,25 +280,36 @@ export const useFilesHelper = ({
 
       setHasNextPage(count === PAGE_COUNT);
 
+      onSelectTreeNode && setSelectedTreeNode({ ...current, path: pathParts });
+
       if (isInit) {
-        const breadCrumbs: BreadCrumb[] = await Promise.all(
-          pathParts.map(async (folderId: number | string) => {
-            const folderInfo: any = await getFolderInfo(folderId);
+        if (isThirdParty) {
+          const breadCrumbs: BreadCrumb[] = [
+            { label: current.title, isRoom: false, id: current.id },
+          ];
 
-            const { title, id, parentId, rootFolderType } = folderInfo;
+          setBreadCrumbs(breadCrumbs);
+          setIsBreadCrumbsLoading(false);
+        } else {
+          const breadCrumbs: BreadCrumb[] = await Promise.all(
+            pathParts.map(async (folderId: number | string) => {
+              const folderInfo: any = await getFolderInfo(folderId);
 
-            return {
-              label: title,
-              id: id,
-              isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
-            };
-          })
-        );
+              const { title, id, parentId, rootFolderType } = folderInfo;
 
-        !isThirdParty && breadCrumbs.unshift({ ...defaultBreadCrumb });
+              return {
+                label: title,
+                id: id,
+                isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+              };
+            })
+          );
 
-        setBreadCrumbs(breadCrumbs);
-        setIsBreadCrumbsLoading(false);
+          breadCrumbs.unshift({ ...defaultBreadCrumb });
+
+          setBreadCrumbs(breadCrumbs);
+          setIsBreadCrumbsLoading(false);
+        }
       }
 
       if (isFirstLoad || startIndex === 0) {

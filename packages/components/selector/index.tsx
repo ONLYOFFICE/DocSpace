@@ -206,7 +206,7 @@ const Selector = ({
     }
   }, [items, newSelectedItems]);
 
-  const onAcceptAction = React.useCallback(() => {
+  const onAcceptAction = () => {
     onAccept &&
       onAccept(
         newSelectedItems,
@@ -214,13 +214,7 @@ const Selector = ({
         newFooterInputValue,
         isFooterCheckboxChecked
       );
-  }, [
-    newSelectedItems,
-    selectedAccess,
-    newFooterInputValue,
-    isFooterCheckboxChecked,
-    breadCrumbs,
-  ]);
+  };
 
   const onCancelAction = React.useCallback(() => {
     onCancel && onCancel();
