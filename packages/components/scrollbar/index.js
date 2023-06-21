@@ -70,7 +70,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
   const thumbH = stype ? stype.thumbH : {};
   const view = stype ? stype.view : {};
   const theme = useTheme();
-
+  const isRtl = theme.interfaceDirection === "rtl";
   const renderNavThumbVertical = ({ style, ...props }) => {
     return (
       <div
@@ -86,7 +86,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       <div
         className="nav-thumb-horizontal"
         {...props}
-        style={{ ...style, ...thumbH, left: 0, margin: "10px" }}
+        style={{ ...style, ...thumbH }}
       />
     );
   };
@@ -98,7 +98,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
         style={{
           ...style,
           ...view,
-          marginLeft: theme.interfaceDirection === "rtl" ? "-15px" : "0",
+          margin: isRtl ? "0 -15px -15px -15px" : "0 -15px -15px 0",
         }}
         tabIndex={-1}
         className={classNames("scroll-body", props.scrollclass)}
@@ -106,11 +106,25 @@ const Scrollbar = React.forwardRef((props, ref) => {
     );
   };
 
+  const renderTrackNavVertical = ({ style }) => {
+    return isRtl ? (
+      <div
+        className="track-vertical"
+        style={{ ...style, left: "2px", top: "2px", bottom: "2px" }}
+      />
+    ) : (
+      <div
+        className="track-vertical"
+        style={{ ...style, right: "2px", top: "2px", bottom: "2px" }}
+      />
+    );
+  };
   return (
     <StyledScrollbar
       renderView={renderView}
       renderThumbVertical={renderNavThumbVertical}
       renderThumbHorizontal={renderNavThumbHorizontal}
+      renderTrackVertical={renderTrackNavVertical}
       {...props}
       ref={ref}
     />
