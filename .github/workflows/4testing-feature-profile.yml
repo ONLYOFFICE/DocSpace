@@ -32,5 +32,5 @@ jobs:
 
           docker buildx bake -f ./build/install/docker/build.yml \
           --set *.platform=linux/amd64 \
-          --push
+          --print
         shell: bash
