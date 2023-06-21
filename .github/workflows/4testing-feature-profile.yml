@@ -8,7 +8,7 @@ env:
     DOCKER_PATH: "./build/install/docker"
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
-    DOCKERFILE: "{DOCKER_PATH}/Dockerfile"
+    DOCKERFILE: "${DOCKER_PATH}/Dockerfile"
 
 jobs:
   build:
