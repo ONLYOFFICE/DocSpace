@@ -1,21 +1,15 @@
 import React from "react";
 import { DocsContainer as BaseContainer } from "@storybook/blocks";
-import { themes } from "@storybook/theming";
+import { useDarkMode } from "storybook-dark-mode";
+import darkTheme from "./darkTheme";
+import lightTheme from "./lightTheme";
 
 export const DocsContainer = ({ children, context }) => {
-  const modifiedDarkTheme = {
-    ...themes.dark,
-    appBg: "#333", // Replace 'new-color' with the desired background color
-  };
 
   return (
     <BaseContainer
       context={context}
-      theme={
-        context.store?.globals.globals.theme === "Dark"
-          ? modifiedDarkTheme
-          : themes.light
-      }
+      theme={useDarkMode() ? darkTheme : lightTheme}
     >
       {children}
     </BaseContainer>

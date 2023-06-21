@@ -30,6 +30,7 @@ module.exports = {
       },
     },
     "@storybook/addon-mdx-gfm",
+    "storybook-dark-mode",
   ],
   framework: {
     name: "@storybook/react-webpack5",
