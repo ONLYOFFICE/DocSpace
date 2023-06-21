@@ -28,8 +28,9 @@ jobs:
           export DOCKER_TAG="dev-profile"
           export REPO="onlyoffice"
           export DOCKER_IMAGE_PREFIX="4testing-docspace"
+          export DOCKERFILE="./build/install/docker/Dockerfile"
 
-          docker buildx bake -f ./build/install/docker/Dockerfile/build.yml \
+          docker buildx bake -f ./build/install/docker/build.yml \
           --set *.platform=linux/amd64 \
           --push
         shell: bash
