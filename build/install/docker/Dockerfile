@@ -40,9 +40,10 @@ COPY . .
 
 RUN apt-get -y update && \
     apt-get install -yq \
+        sudo \
         locales \
-        npm   \
-        git && \
+        git \
+        npm  && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
