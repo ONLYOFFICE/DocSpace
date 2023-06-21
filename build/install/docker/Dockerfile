@@ -49,7 +49,7 @@ RUN apt-get -y update && \
     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
-RUN git clone -b main/community-server https://github.com/ONLYOFFICE/document-templates ${SRC_PATH}/products/ASC.Files/Server/DocStore
+RUN git clone -b main/community-server https://github.com/ONLYOFFICE/document-templates ${SRC_PATH}/ASC.Files/Server/DocStore
 
 RUN mkdir -p /app/onlyoffice/ && \
     find config/ -maxdepth 1 -name "*.json" | grep -v test | grep -v dev | xargs tar -cvf config.tar && \
@@ -71,7 +71,13 @@ RUN mkdir -p /app/onlyoffice/ && \
     -yb "${FRONTEND_BUILD_ARGS}" \
     -yd "${FRONTEND_DEPLOY_ARGS}" \
     -dc "${DEBUG_INFO_CHECK}" \
-    -mc "${MIGRATION_CHECK}"
+    -mc "${MIGRATION_CHECK}" &&\
+    rm -rf ${SRC_PATH}/common/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Service/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.People/Server/* 
   
 FROM $DOTNET_RUN as dotnetrun
 ARG BUILD_PATH
@@ -232,7 +238,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/service/ .
-COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/products/ASC.Files/Server/DocStore .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/ASC.Files/Server/DocStore .
 
 CMD ["ASC.Files.dll", "ASC.Files"]
 
