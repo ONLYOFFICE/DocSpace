@@ -41,7 +41,7 @@ COPY . .
 RUN apt-get -y update && \
     apt-get install -yq \
         locales \
-        npm  && \
+        npm   \
         git && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
