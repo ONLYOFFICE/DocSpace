@@ -25,6 +25,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build 4testing
         run: |
+          pwd
+          ls -l
           export DOCKER_TAG="dev-profile"
           export REPO="onlyoffice"
           export DOCKER_IMAGE_PREFIX="4testing-docspace"
@@ -33,4 +35,8 @@ jobs:
           docker buildx bake -f ./build/install/docker/build.yml \
           --set *.platform=linux/amd64 \
           --print
+
+          docker buildx bake -f ./build/install/docker/build.yml \
+          --set *.platform=linux/amd64 \
+          --push
         shell: bash
