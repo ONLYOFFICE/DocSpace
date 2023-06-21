@@ -8,7 +8,7 @@ env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
-    DOCKERFILE: "/build/install/docker/Dockerfile"
+    DOCKERFILE: "{DOCKER_PATH}/Dockerfile"
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
         run: |
           DOCKER_TAG=dev-profile
 
-          docker buildx bake -f build.yml \
+          docker buildx bake -f ${DOCKER_PATH}/build.yml \
           --set *.platform=linux/amd64 \
           --push
         shell: bash
