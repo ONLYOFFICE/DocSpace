@@ -334,6 +334,11 @@ ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
 RUN mkdir -p /app/appserver/ASC.Files/server && \
     mkdir -p /app/appserver/ASC.People/server/ && \
     mkdir -p /app/appserver/ASC.CRM/server/ && \
@@ -350,6 +355,11 @@ ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##
 FROM busybox:latest AS wait_bin_share
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
 RUN mkdir /app
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/wait-bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
