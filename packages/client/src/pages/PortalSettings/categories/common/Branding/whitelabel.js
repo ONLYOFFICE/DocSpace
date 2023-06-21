@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -15,19 +15,19 @@ import CommonWhiteLabel from "./CommonWhiteLabel";
 
 import isEqual from "lodash/isEqual";
 
-const WhiteLabel = (props) => {
-  const {
-    t,
-    isSettingPaid,
-    logoText,
-    logoUrls,
-    restoreWhiteLabelSettings,
-    getWhiteLabelLogoUrls,
-    setWhiteLabelSettings,
-    defaultWhiteLabelLogoUrls,
-    getWhiteLabelLogoText,
-    getWhiteLabelLogoUrlsAction,
-  } = props;
+const WhiteLabel = ({
+  isSettingPaid,
+  logoText,
+  logoUrls,
+  restoreWhiteLabelSettings,
+  getWhiteLabelLogoUrls,
+  setWhiteLabelSettings,
+  defaultWhiteLabelLogoUrls,
+  getWhiteLabelLogoText,
+  getWhiteLabelLogoUrlsAction,
+}) => {
+  const { t } = useTranslation("Settings");
+
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] = useState(
@@ -233,4 +233,4 @@ export default inject(({ setup, auth, common }) => {
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoUrlsAction,
   };
-})(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));
+})(observer(WhiteLabel));
