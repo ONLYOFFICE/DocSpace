@@ -344,7 +344,7 @@ RUN mkdir -p /app/appserver/ASC.Files/server && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 
-COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
 COPY --from=base /var/www/services/ASC.Files/service/ /app/appserver/ASC.Files/server/
 COPY --from=base /var/www/services/ASC.People/service/ /app/appserver/ASC.People/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
