@@ -265,9 +265,6 @@
   <data name="ProductDescription" xml:space="preserve">
     <value>Створюйте, редагуйте, зберігайте та спільно використовуйте документи на порталі. Долучайте облікові записи Google Drive, Dropbox і Box та зберігайте всі документи в одному місці.</value>
   </data>
-  <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Створюйте, редагуйте, зберігайте та спільно використовуйте документи на порталі. Долучайте облікові записи Google Drive, Dropbox і Box та зберігайте всі документи в одному місці.</value>
-  </data>
   <data name="ProductName" xml:space="preserve">
     <value>Документи</value>
   </data>
@@ -366,5 +363,8 @@
   </data>
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Редактор</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Адміністратор кімнати</value>
   </data>
 </root>

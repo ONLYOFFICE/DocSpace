@@ -988,4 +988,7 @@
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
     <value>Подключите это приложение, чтобы легко публиковать документы на сайте WordPress. {0}На странице Wordpress Developers создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Сторонние интеграции</value>
+  </data>
 </root>

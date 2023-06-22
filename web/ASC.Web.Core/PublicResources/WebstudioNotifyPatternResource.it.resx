@@ -1802,4 +1802,25 @@ Il tuo portale è di nuovo disponibile.</value>
   <data name="subject_personal_already_exist" xml:space="preserve">
     <value>Accedi al tuo account ONLYOFFICE Personal</value>
   </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Collaborate in DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Il tuo ONLYOFFICE DocSpace verrà eliminato</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Periodo di grazia è stato attivato per il tuo ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Il tuo abbonamento a ONLYOFFICE DocSpace sta per scadere</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Il periodo di grazia per il tuo ONLYOFFICE DocSpace è scaduto</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Il periodo di grazia per il tuo ONLYOFFICE DocSpace scade domani</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Unisciti a ${__VirtualRootPath}</value>
+  </data>
 </root>

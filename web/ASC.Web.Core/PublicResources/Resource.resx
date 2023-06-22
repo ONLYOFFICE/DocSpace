@@ -797,7 +797,7 @@
     <value>Updating user photos</value>
   </data>
   <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
-    <value>A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.</value>
+    <value>A more secure authentication type is required. Please use encrypted connection or enable plain authentication on the server.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
     <value>The current pricing plan user limit has been reached</value>

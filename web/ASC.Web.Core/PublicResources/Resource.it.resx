@@ -988,4 +988,7 @@
   <data name="ConsumersSelectelInstruction" xml:space="preserve">
     <value>Collega il servizio Selectel Cloud Storage per eseguire il backup e archiviare i dati dal tuo portale. {0}Ottieni i dati di accesso per un utente con diritti di lettura/scrittura per i container dove prevedi di archiviare i tuoi backup e incollali di seguito:</value>
   </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrazioni di terze parti</value>
+  </data>
 </root>

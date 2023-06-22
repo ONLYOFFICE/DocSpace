@@ -988,4 +988,7 @@
   <data name="PortalName" xml:space="preserve">
     <value>Espace cloud pour vos documents bureautiques</value>
   </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Intégrations tierces</value>
+  </data>
 </root>

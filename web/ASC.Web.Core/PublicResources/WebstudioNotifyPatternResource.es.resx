@@ -1793,4 +1793,19 @@ Equipo de ONLYOFFICE
   <data name="subject_change_password_v115" xml:space="preserve">
     <value>Confirme el cambio de su contraseña</value>
   </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Colaborar en DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Confirmar invitación a DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirmar invitación a la sala</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Visitar la sección de pagos</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} asistencia de contraseña</value>
+  </data>
 </root>

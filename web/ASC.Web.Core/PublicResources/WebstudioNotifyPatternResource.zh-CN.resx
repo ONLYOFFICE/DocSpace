@@ -777,7 +777,7 @@ ONLYOFFICE 团队
 
 * 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
 
-如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+如果您至少有一个答案为“是”，敬请选择专业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
 
 为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
  
@@ -785,7 +785,7 @@ _请注意：支付订阅费的人是付款人。只有付款人可以更改订�
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
@@ -798,7 +798,7 @@ ONLYOFFICE 团队
 
 * 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
 
-如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+如果您至少有一个答案为“是”，敬请选择专业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
 
 为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
  
@@ -806,7 +806,7 @@ _请注意：支付订阅费的人是付款人。只有付款人可以更改订�
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
@@ -819,7 +819,7 @@ ONLYOFFICE 团队
 
 * 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
 
-如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+如果您至少有一个答案为“是”，敬请选择专业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
 
 为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
  
@@ -827,12 +827,12 @@ _请注意：支付订阅费的人是付款人。只有付款人可以更改订�
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
 
-以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
 
 * 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
 
@@ -840,7 +840,7 @@ ONLYOFFICE 团队
 
 * 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
 
-如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+如果您至少有一个答案为“是”，敬请选择专业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
 
 为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
  
@@ -848,7 +848,7 @@ _请注意：支付订阅费的人是付款人。只有付款人可以更改订�
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>您好！
@@ -1092,55 +1092,51 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>尊敬的$UserName！，
+您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
 
-请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
-
-请确保在宽限期到期之前支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+请确保在宽限期到期之前支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
 
 $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"https://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
     <value>尊敬的$UserName！，
-
 您好！请注意，您的 ONLYOFFICE 协作空间订阅将在三天后到期。之后，$PaymentDelay 天的宽限期将被激活。
 
-我们建议您即刻支付企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+我们建议您即刻支付专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
 
 $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"https://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
     <value>尊敬的$UserName！，
-
 您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已结束。
 
-请尽快支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+请尽快支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
 
 $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"https://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
     <value>尊敬的$UserName！，
-
 您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期将于明天结束。
 
-请在今天支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+请在今天支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
 
 $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"https://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_saas_room_invite" xml:space="preserve">
     <value>你好！
@@ -1655,7 +1651,7 @@ $GreenButton
     <value>一些高效处理文档的建议</value>
   </data>
   <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
-    <value>探索 ONLYOFFICE 协作空间的企业订阅</value>
+    <value>了解 ONLYOFFICE 协作空间的专业订阅计划</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>加入 ${__VirtualRootPath}</value>
@@ -1736,13 +1732,13 @@ $GreenButton
     <value>一些高效处理文档的建议</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
-    <value>探索 ONLYOFFICE 协作空间的企业订阅</value>
+    <value>了解 ONLYOFFICE 协作空间的专业订阅计划</value>
   </data>
   <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
-    <value>探索 ONLYOFFICE 协作空间的企业订阅</value>
+    <value>了解 ONLYOFFICE 协作空间的专业订阅计划</value>
   </data>
   <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
-    <value>探索 ONLYOFFICE 协作空间的企业订阅</value>
+    <value>了解 ONLYOFFICE 协作空间的专业订阅计划</value>
   </data>
   <data name="subject_for_sales_notify" xml:space="preserve">
     <value>销售部门请求</value>

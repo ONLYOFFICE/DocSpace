@@ -1798,4 +1798,19 @@ Bien à vous,
 équipe ONLYOFFICE
 "www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Collaborer à DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Confirmer l’invitation à DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirmer l'invitation à la salle</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Aller à la section Paiements</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>Aide au mot de passe ${LetterLogoText}</value>
+  </data>
 </root>

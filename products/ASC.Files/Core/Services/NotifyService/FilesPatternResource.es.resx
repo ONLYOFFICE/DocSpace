@@ -125,4 +125,31 @@ $__AuthorName le ha mencionado en el comentario del documento "$DocumentTitle":"
  
 $Message</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Todos los firmantes han completado $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>El estado de la firma ha cambiado</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notificación de DocSpace. Se le ha mencionado en el documento</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Se le ha mencionado en el documento</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>El envío ha finalizado.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notificación de DocSpace. Se ha eliminado la sala</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Acceso concedido al documento: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Acceso concedido al documento: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Acceso concedido a la carpeta: $DocumentTitle</value>
+  </data>
 </root>

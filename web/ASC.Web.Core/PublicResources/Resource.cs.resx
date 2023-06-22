@@ -955,4 +955,28 @@
   <data name="RecaptchaInvalid" xml:space="preserve">
     <value>Recaptcha je neplatná</value>
   </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Povolte tuto aplikaci pro vytváření bibliografií v editorech ONLYOFFICE. {0}Přejděte na registrační stránku EasyBib a vyplňte formulář pro přidání integrace s ONLYOFFICE. Po získání klíče aplikace jej vložte níže:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Povolte tuto aplikaci, aby vaši uživatelé mohli dostávat oznámení o zprávách i offline. {0}Přejděte do konzole Firebase a přidejte nový projekt pro integraci ONLYOFFICE. Níže vložte údaje, které jste obdrželi:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Připojte službu Google Cloud Storage pro zálohování a ukládání dat z vašeho portálu. {0}Přejděte do konzoly Google Cloud Platform a vytvořte nový účet služby pro ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Připojte službu Rackspace Cloud Storage k zálohování a ukládání dat z vašeho portálu. {0}V nastavení zabezpečení v ovládacím panelu služby Rackspace Cloud klikněte na odkaz Zobrazit vedle klíče Rackspace API. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Připojte službu Amazon AWS S3 k zálohování a ukládání dat z vašeho portálu. {0}Přejděte do konzoly pro správu AWS a vytvořte přístupové klíče pro ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Připojte službu Selectel Cloud Storage k zálohování a ukládání dat z vašeho portálu. {0}Získejte přístupové údaje pro uživatele s právy čtení/zápisu pro kontejnery, do kterých plánujete ukládat zálohy, a vložte je níže:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Povolte aplikaci pro snadné publikování dokumentů na vašem webu WordPress. {0}Na stránce Wordpress Developers vytvořte novou aplikaci pro integraci ONLYOFFICE. Níže vložte údaje, které jste obdrželi:</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrace třetích stran</value>
+  </data>
 </root>

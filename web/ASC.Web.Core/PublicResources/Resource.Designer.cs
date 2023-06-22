@@ -2275,7 +2275,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server..
+        ///   Looks up a localized string similar to A more secure authentication type is required. Please use encrypted connection or enable plain authentication on the server..
         /// </summary>
         public static string LdapSettingsStrongAuthRequired {
             get {

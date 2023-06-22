@@ -269,7 +269,8 @@
     <value>Tạo, chỉnh sửa và chia sẻ tài liệu. Cộng tác làm việc trên chúng theo thời gian thực. Đảm bảo tương thích 100% với các định dạng MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Tạo, chỉnh sửa và chia sẻ tài liệu. Cộng tác làm việc trên chúng theo thời gian thực. Đảm bảo tương thích 100% với các định dạng MS Office.</value>
+    <value>Tạo, chỉnh sửa và chia sẻ tài liệu. Cộng tác làm việc trên chúng theo thời gian thực.
+Đảm bảo tương thích 100% với các định dạng MS Office.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Tài liệu</value>
@@ -369,5 +370,8 @@
   </data>
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Biên tập viên</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Quản trị viên phòng</value>
   </data>
 </root>

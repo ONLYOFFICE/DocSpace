@@ -988,4 +988,7 @@
   <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
     <value>Introduzca la dirección URL del contenedor público de Rackspace para almacenar las copias de seguridad.</value>
   </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integraciones de terceros</value>
+  </data>
 </root>
