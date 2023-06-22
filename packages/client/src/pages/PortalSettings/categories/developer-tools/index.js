@@ -102,6 +102,7 @@ const PortalIntegration = (props) => {
     showTitle: true,
     showMenu: false,
     showFilter: false,
+    destroyText: t("Common:Preview"),
   });
 
   const [sortBy, setSortBy] = useState(dataSortBy[0]);

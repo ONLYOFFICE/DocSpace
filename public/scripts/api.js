@@ -76,6 +76,7 @@
     #isConnected = false;
     #callbacks = [];
     #tasks = [];
+    #classNames = "";
 
     constructor(config) {
       this.config = config;
@@ -241,6 +242,7 @@
 
       if (target) {
         this.#iframe = this.#createIframe(this.config);
+        this.#classNames = target.className;
 
         target.parentNode &&
           target.parentNode.replaceChild(this.#iframe, target);
@@ -297,6 +299,7 @@
 
       target.setAttribute("id", this.config.frameId);
       target.innerHTML = this.config.destroyText;
+      target.className = this.#classNames;
 
       if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
