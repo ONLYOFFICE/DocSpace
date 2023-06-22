@@ -26,7 +26,7 @@ import useRootHelper from "./helpers/useRootHelper";
 import useRoomsHelper from "./helpers/useRoomsHelper";
 import useLoadersHelper from "./helpers/useLoadersHelper";
 import useFilesHelper from "./helpers/useFilesHelper";
-import { getAcceptButtonLabel, getHeaderLabel } from "./utils";
+import { getAcceptButtonLabel, getHeaderLabel, getIsDisabled } from "./utils";
 
 const FilesSelector = ({
   isPanelVisible = false,
@@ -86,6 +86,9 @@ const FilesSelector = ({
   const [hasNextPage, setHasNextPage] = React.useState<boolean>(false);
 
   const [searchValue, setSearchValue] = React.useState<string>("");
+
+  const [isRequestRunning, setIsRequestRunning] =
+    React.useState<boolean>(false);
 
   const {
     setIsBreadCrumbsLoading,
@@ -298,15 +301,15 @@ const FilesSelector = ({
           },
         };
 
-        setIsFirstLoad(true);
+        setIsRequestRunning(true);
 
         checkFileConflicts(selectedItemId, folderIds, fileIds)
           .then(async (conflicts: any) => {
             if (conflicts.length) {
               setConflictDialogData(conflicts, operationData);
-              setIsFirstLoad(false);
+              setIsRequestRunning(false);
             } else {
-              setIsFirstLoad(false);
+              setIsRequestRunning(false);
               onCloseAction();
               const move = !isCopy;
               if (move) setMovingInProgress(move);
@@ -315,11 +318,12 @@ const FilesSelector = ({
           })
           .catch((e: any) => {
             toastr.error(e);
-            setIsFirstLoad(false);
+            setIsRequestRunning(false);
             clearActiveOperations(fileIds, folderIds);
           });
       }
     } else {
+      setIsRequestRunning(true);
       onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
       onSelectFolder && onSelectFolder(selectedItemId);
 
@@ -335,6 +339,18 @@ const FilesSelector = ({
     isCopy,
     isRestoreAll,
     isMove
+  );
+
+  const isDisabled = getIsDisabled(
+    isFirstLoad,
+    currentFolderId === selectedItemId,
+    selectedItemType === "rooms",
+    isRoot,
+    isCopy,
+    isMove,
+    isRestoreAll,
+    isRequestRunning,
+    selectedItemSecurity
   );
 
   return (
@@ -408,15 +424,7 @@ const FilesSelector = ({
               ? getRoomList
               : getFileList
           }
-          disableAcceptButton={
-            isFirstLoad ||
-            currentFolderId === selectedItemId ||
-            selectedItemType === "rooms" ||
-            isRoot ||
-            isCopy
-              ? !selectedItemSecurity?.CopyTo
-              : !selectedItemSecurity?.MoveTo
-          }
+          disableAcceptButton={isDisabled}
         />
       </Aside>
     </>

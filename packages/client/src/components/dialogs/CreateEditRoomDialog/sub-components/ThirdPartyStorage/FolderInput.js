@@ -4,8 +4,7 @@ import styled from "styled-components";
 
 import { IconButton } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
-import SelectFolderDialog from "@docspace/client/src/components/panels/SelectFolderDialog";
-import FilesFilter from "@docspace/common/api/files/filter";
+
 import FilesSelector from "SRC_DIR/components/FilesSelector";
 
 const StyledFolderInput = styled.div`

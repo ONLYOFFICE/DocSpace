@@ -1,4 +1,4 @@
-import { BreadCrumb } from "./FilesSelector.types";
+import { BreadCrumb, Security } from "./FilesSelector.types";
 
 export const PAGE_COUNT = 100;
 
@@ -35,4 +35,26 @@ export const getAcceptButtonLabel = (
   if (isRestoreAll) return t("Common:RestoreHere");
 
   return t("Common:SaveHereButton");
+};
+
+export const getIsDisabled = (
+  isFirstLoad: boolean,
+  sameId?: boolean,
+  isRooms?: boolean,
+  isRoot?: boolean,
+  isCopy?: boolean,
+  isMove?: boolean,
+  isRestoreAll?: boolean,
+  isRequestRunning?: boolean,
+  security?: Security
+) => {
+  if (isFirstLoad) return true;
+  if (isRequestRunning) return true;
+  if (sameId) return true;
+  if (isRooms) return true;
+  if (isRoot) return true;
+  if (isCopy) return !security?.CopyTo;
+  if (isMove || isRestoreAll) return !security?.MoveTo;
+
+  return false;
 };
