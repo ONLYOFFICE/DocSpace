@@ -781,7 +781,7 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = async (frameConfig) => {
+  setFrameConfig = (frameConfig) => {
     runInAction(() => {
       this.frameConfig = frameConfig;
       this.setTheme(frameConfig?.theme);

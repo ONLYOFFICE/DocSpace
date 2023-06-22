@@ -43,7 +43,7 @@ const SelectFileDialogAsideView = ({
       withFooterBorder
       embedded={embedded}
     >
-      {!embedded && <ModalDialog.Header>{dialogName}123</ModalDialog.Header>}
+      {!embedded && <ModalDialog.Header>{dialogName}</ModalDialog.Header>}
       <ModalDialog.Body className="select-file_body-modal-dialog">
         <StyledAsideBody embedded={embedded} theme={theme}>
           <div className="selection-panel_aside-body">
