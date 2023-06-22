@@ -1,1 +1,11 @@
-{}
+{
+  "Authentication": "Autentifikācija",
+  "EnableSSL": "Izmantot SSL",
+  "Host": "Hosts",
+  "HostLogin": "Hosta logins",
+  "HostPassword": "Hosta parole",
+  "Port": "Ports",
+  "SenderDisplayName": "Sūtītāja parādāmais vārds",
+  "SenderEmailAddress": "Sūtītāja e-pasta adrese",
+  "SuccessfullyCompletedOperation": "Darbība veiksmīgi pabeigta."
+}

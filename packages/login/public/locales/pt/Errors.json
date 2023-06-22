@@ -4,5 +4,6 @@
   "ErrorInvalidActivationLink": "Link de ativação inválido",
   "ErrorUserNotFound": "O utilizadore não pôde ser encontrado",
   "InvalidUsernameOrPassword": "Nome de utilizador ou senha inválidos.",
-  "LoginWithAccountNotFound": "Não é possível localizar a conta associada de terceiros"
+  "LoginWithAccountNotFound": "Não é possível localizar a conta associada de terceiros",
+  "SsoError": "Erro interno do servidor"
 }

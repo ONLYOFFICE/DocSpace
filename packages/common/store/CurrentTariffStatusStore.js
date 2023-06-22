@@ -87,9 +87,9 @@ class CurrentTariffStatusStore {
     return this.isValidDate(this.dueDate);
   }
   get isLicenseDateExpired() {
-    if (!this.licenseDate) return;
+    if (!this.isPaymentDateValid) return;
 
-    return this.isValidDate(this.licenseDate);
+    return moment() > moment(this.dueDate);
   }
   get gracePeriodEndDate() {
     moment.locale(authStore.language);
@@ -125,16 +125,7 @@ class CurrentTariffStatusStore {
   };
 
   setPortalTariff = async () => {
-    let refresh = false;
-
-    if (window.location.search === "?complete=true") {
-      refresh = true;
-    }
-
-    const res = await api.portal.getPortalTariff(refresh);
-
-    if (refresh)
-      window.history.replaceState({}, document.title, window.location.pathname);
+    const res = await api.portal.getPortalTariff();
 
     if (!res) return;
 

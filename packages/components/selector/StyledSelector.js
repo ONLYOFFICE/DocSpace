@@ -46,7 +46,9 @@ const StyledSelectorBody = styled.div`
 
   height: ${(props) =>
     props.footerVisible
-      ? `calc(100% - 16px - ${props.footerHeight}px - ${props.headerHeight}px)`
+      ? `calc(100% - 16px - ${props.footerHeight}px - ${
+          props.withHeader ? props.headerHeight : 0
+        }px)`
       : `calc(100% - 16px - ${props.headerHeight}px)`};
 
   padding: 16px 0 0 0;

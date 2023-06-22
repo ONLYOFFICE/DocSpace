@@ -48,11 +48,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IQuotaService _quotaService;
     private readonly StorageFactory _storageFactory;
     private readonly TenantQuotaController _tenantQuotaController;
+    private readonly FileUtility _fileUtility;
 
     public FileDao(
         ILogger<FileDao> logger,
         FactoryIndexerFile factoryIndexer,
         UserManager userManager,
+        FileUtility fileUtility,
         IDbContextFactory<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
@@ -108,6 +110,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _quotaService = quotaService;
         _storageFactory = storageFactory;
         _tenantQuotaController = tenantQuotaController;
+        _fileUtility = fileUtility;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -282,86 +285,23 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false,
+        int offset = 0, int count = -1)
     {
-        if (filterType == FilterType.FoldersOnly)
+        if (filterType == FilterType.FoldersOnly || count == 0)
         {
             yield break;
         }
 
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
-
         var filesDbContext = _dbContextFactory.CreateDbContext();
-        var q = GetFileQuery(filesDbContext, r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();
+        
+        var q = GetFilesQueryWithFilters(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext);
 
-        if (withSubfolders)
+        q = q.Skip(offset);
+
+        if (count > 0)
         {
-            q = GetFileQuery(filesDbContext, r => r.CurrentVersion)
-                .AsNoTracking()
-                .Join(filesDbContext.Tree, r => r.ParentId, a => a.FolderId, (file, tree) => new { file, tree })
-                .Where(r => r.tree.ParentId == parentId)
-                .Select(r => r.file);
-        }
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
-
-            Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
-
-            if (_factoryIndexer.TrySelectIds(expression, out var searchIds))
-            {
-                q = q.Where(r => searchIds.Contains(r.Id));
-            }
-            else
-            {
-                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
-            }
-        }
-
-        q = orderBy.SortedBy switch
-        {
-            SortedByType.Author => orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy),
-            SortedByType.Size => orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength),
-            SortedByType.AZ => orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title),
-            SortedByType.DateAndTime => orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn),
-            SortedByType.DateAndTimeCreation => orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn),
-            _ => q.OrderBy(r => r.Title),
-        };
-        if (subjectID != Guid.Empty)
-        {
-            if (subjectGroup)
-            {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
-                q = q.Where(r => users.Contains(r.CreateBy));
-            }
-            else
-            {
-                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
-            }
-        }
-
-        switch (filterType)
-        {
-            case FilterType.OFormOnly:
-            case FilterType.OFormTemplateOnly:
-            case FilterType.DocumentsOnly:
-            case FilterType.ImagesOnly:
-            case FilterType.PresentationsOnly:
-            case FilterType.SpreadsheetsOnly:
-            case FilterType.ArchiveOnly:
-            case FilterType.MediaOnly:
-                q = q.Where(r => r.Category == (int)filterType);
-                break;
-            case FilterType.ByExtension:
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
-                }
-                break;
+            q = q.Take(count);
         }
 
         await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
@@ -377,6 +317,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
+        var storage = _globalStore.GetStore();
+        
+        if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title) 
+            && (_fileUtility.CanMediaView(file.Title) || _fileUtility.CanImageView(file.Title)))
+        {
+            return _globalStore.GetStore().GetCdnPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
+                                                 new List<string>
+                                                     {
+                                                             $"Content-Disposition:{ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true)}",
+                                                             $"Custom-Cache-Key:{file.ModifiedOn.Ticks}"
+                                                     });
+        }
+
         return _globalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                  new List<string>
                                                      {
@@ -586,6 +539,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         return InternalReplaceFileVersionAsync(file, fileStream);
+    }
+    
+    public async Task<int> GetFilesCountAsync(int parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, 
+        bool withSubfolders = false, bool excludeSubject = false)
+    {
+        if (filterType == FilterType.FoldersOnly)
+        {
+            return 0;
+        }
+        
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        return await GetFilesQueryWithFilters(parentId, null, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext).CountAsync();
     }
 
     private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
@@ -1710,6 +1676,88 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         return dbFile;
+    }
+    
+    private IQueryable<DbFile> GetFilesQueryWithFilters(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent,
+        bool withSubfolders, bool excludeSubject, FilesDbContext filesDbContext)
+    {
+        var q = GetFileQuery(filesDbContext, r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();
+
+        if (withSubfolders)
+        {
+            q = GetFileQuery(filesDbContext, r => r.CurrentVersion)
+                .AsNoTracking()
+                .Join(filesDbContext.Tree, r => r.ParentId, a => a.FolderId, (file, tree) => new { file, tree })
+                .Where(r => r.tree.ParentId == parentId)
+                .Select(r => r.file);
+        }
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
+
+            Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
+
+            if (_factoryIndexer.TrySelectIds(expression, out var searchIds))
+            {
+                q = q.Where(r => searchIds.Contains(r.Id));
+            }
+            else
+            {
+                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
+            }
+        }
+
+        q = orderBy == null
+            ? q
+            : orderBy.SortedBy switch
+            {
+                SortedByType.Author => orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy),
+                SortedByType.Size => orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength),
+                SortedByType.AZ => orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn),
+                SortedByType.Type => orderBy.IsAsc
+                    ? q.OrderBy(r => DbFunctionsExtension.SubstringIndex(r.Title, '.', -1))
+                    : q.OrderByDescending(r => DbFunctionsExtension.SubstringIndex(r.Title, '.', -1)),
+                _ => q.OrderBy(r => r.Title)
+            };
+
+        if (subjectID != Guid.Empty)
+        {
+            if (subjectGroup)
+            {
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                q = q.Where(r => users.Contains(r.CreateBy));
+            }
+            else
+            {
+                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
+            }
+        }
+
+        switch (filterType)
+        {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
+            case FilterType.DocumentsOnly:
+            case FilterType.ImagesOnly:
+            case FilterType.PresentationsOnly:
+            case FilterType.SpreadsheetsOnly:
+            case FilterType.ArchiveOnly:
+            case FilterType.MediaOnly:
+                q = q.Where(r => r.Category == (int)filterType);
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
+                }
+
+                break;
+        }
+
+        return q;
     }
 }
 

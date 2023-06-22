@@ -48,6 +48,7 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
+  displayType,
 }) => {
   const isLoaded = folderId && resultingFolderTree;
   return (
@@ -60,9 +61,11 @@ const SelectionPanelBody = ({
       isDoubleFooterLine
       autoMaxWidth
     >
-      <ModalDialog.Header className={"select-panel-modal-header"}>
-        {dialogName}
-      </ModalDialog.Header>
+      {displayType !== "embedded" && (
+        <ModalDialog.Header className={"select-panel-modal-header"}>
+          {dialogName}
+        </ModalDialog.Header>
+      )}
       <ModalDialog.Body className="select-file_body-modal-dialog">
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">

@@ -43,6 +43,7 @@ const ModalDialog = ({
   containerVisible,
   isDoubleFooterLine,
   isCloseable,
+  embedded,
 }) => {
   const onCloseEvent = () => {
     isCloseable && onClose();
@@ -116,6 +117,7 @@ const ModalDialog = ({
           modalSwipeOffset={modalSwipeOffset}
           containerVisible={containerVisible}
           isCloseable={isCloseable}
+          embedded={embedded}
         />
       }
     />

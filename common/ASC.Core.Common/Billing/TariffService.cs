@@ -27,6 +27,34 @@
 namespace ASC.Core.Billing;
 
 [Singletone]
+public class TenantExtraConfig
+{
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly LicenseReaderConfig _licenseReaderConfig;
+
+    public TenantExtraConfig(CoreBaseSettings coreBaseSettings, LicenseReaderConfig licenseReaderConfig)
+    {
+        _coreBaseSettings = coreBaseSettings;
+        _licenseReaderConfig = licenseReaderConfig;
+    }
+
+    public bool Saas
+    {
+        get { return !_coreBaseSettings.Standalone; }
+    }
+
+    public bool Enterprise
+    {
+        get { return _coreBaseSettings.Standalone && !string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+
+    public bool Opensource
+    {
+        get { return _coreBaseSettings.Standalone && string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+}
+
+[Singletone]
 public class TariffServiceStorage
 {
     private static readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromMinutes(5);
@@ -106,6 +134,7 @@ public class TariffService : ITariffService
     private readonly TariffServiceStorage _tariffServiceStorage;
     private readonly BillingClient _billingClient;
     private readonly IServiceProvider _serviceProvider;
+    private readonly TenantExtraConfig _tenantExtraConfig;
 
     //private readonly int _activeUsersMin;
     //private readonly int _activeUsersMax;
@@ -124,8 +153,8 @@ public class TariffService : ITariffService
         TariffServiceStorage tariffServiceStorage,
         ILogger<TariffService> logger,
         BillingClient billingClient,
-        IServiceProvider serviceProvider)
-
+        IServiceProvider serviceProvider,
+        TenantExtraConfig tenantExtraConfig)
     {
         _logger = logger;
         _quotaService = quotaService;
@@ -134,6 +163,7 @@ public class TariffService : ITariffService
         _tariffServiceStorage = tariffServiceStorage;
         _billingClient = billingClient;
         _serviceProvider = serviceProvider;
+        _tenantExtraConfig = tenantExtraConfig;
         _coreBaseSettings = coreBaseSettings;
 
         var paymentConfiguration = configuration.GetSection("core:payment").Get<PaymentConfiguration>() ?? new PaymentConfiguration();
@@ -254,6 +284,29 @@ public class TariffService : ITariffService
 
                     UpdateCache(tariff.Id);
                 }
+            }
+            else if (_tenantExtraConfig.Enterprise && tariff.Id == 0)
+            {
+                var defaultQuota = _quotaService.GetTenantQuota(Tenant.DefaultTenant);
+
+                var quota = new TenantQuota(defaultQuota)
+                {
+                    Name = "start_trial",
+                    Trial = true,
+                    Tenant = -1000
+                };
+
+                _quotaService.SaveTenantQuota(quota);
+
+                tariff = new Tariff
+                {
+                    Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+                    DueDate = DateTime.UtcNow.AddDays(DefaultTrialPeriod),
+                    Id = 1000
+                };
+
+                SetTariff(-1, tariff, new List<TenantQuota> { quota });
+                UpdateCache(tariff.Id);
             }
         }
         else
@@ -939,11 +992,10 @@ public class TariffService : ITariffService
         if (_trialEnabled)
         {
             toAdd = allQuotas.FirstOrDefault(r => r.Trial && !r.Custom);
-
         }
         else
         {
-            toAdd = allQuotas.FirstOrDefault(r => r.Free && !r.Custom);
+            toAdd = allQuotas.FirstOrDefault(r => _coreBaseSettings.Standalone || r.Free && !r.Custom);
         }
 
         if (toAdd != null)

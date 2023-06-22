@@ -548,31 +548,12 @@ install_service () {
 }
 
 install_docker_compose () {
-	if ! command_exists python3; then
-		install_service python3
-	fi
-
-	py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
-	if [[ $py3_version -lt 6 ]]; then
-		curl -O https://bootstrap.pypa.io/pip/3.$py3_version/get-pip.py
-	else
-		curl -O https://bootstrap.pypa.io/get-pip.py
-	fi
-	python3 get-pip.py
-	rm get-pip.py
-
-	python3 -m pip install --upgrade pip
-	python3 -m pip install docker-compose
-	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-	if ! command_exists docker-compose; then
-		echo "command docker-compose not found"
-		exit 1;
-	fi
+	curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+	chmod +x /usr/bin/docker-compose
 }
 
 check_ports () {
-	RESERVED_PORTS=(3306 8092);
+	RESERVED_PORTS=(3306);
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -941,6 +922,10 @@ download_files () {
 		install_service jq
 	fi
 
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
@@ -962,10 +947,6 @@ reconfigure () {
 }
 
 install_mysql_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
 	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
@@ -973,10 +954,6 @@ install_mysql_server () {
 }
 
 install_document_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
@@ -985,26 +962,14 @@ install_document_server () {
 }
 
 install_rabbitmq () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
 }
 
 install_redis () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/redis.yml up -d
 }
 
 install_product () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
 	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
 
@@ -1024,6 +989,12 @@ install_product () {
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	
+	if [ ${TOTAL_MEMORY} -gt 12228 ]; then #RAM ~12Gb
+		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
+	else
+		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
+	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d

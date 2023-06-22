@@ -24,6 +24,7 @@
   "DaysRemaining": "Giorni rimanenti: {{daysRemaining}}",
   "DisableNotifications": "Disattiva notifiche",
   "Document": "Documento",
+  "DocumentEdited": "Impossibile eseguire l'azione perché il documento è in fase di modifica.",
   "EditRoom": "Modifica la stanza",
   "EmptyFile": "File vuoto",
   "EmptyFilterDescriptionText": "Nessun file o cartella corrisponde a questo filtro. Provane uno diverso o cancella il filtro per visualizzare tutti i file.",

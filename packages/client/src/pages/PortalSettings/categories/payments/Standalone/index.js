@@ -4,13 +4,13 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
+import Loaders from "@docspace/common/components/Loaders";
 
 import LicenseContainer from "./LicenseContainer";
 import { StyledComponent } from "./StyledComponent";
 import ContactContainer from "SRC_DIR/components/StandaloneComponents/ContactContainer";
 import EnterpriseContainer from "./EnterpriseContainer";
 import TrialContainer from "./TrialContainer";
-import Loaders from "@docspace/common/components/Loaders";
 
 const StandalonePage = (props) => {
   const {
@@ -19,30 +19,27 @@ const StandalonePage = (props) => {
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
     isTrial,
+    isUpdatingBasicSettings,
   } = props;
-  const { t, ready } = useTranslation(["PaymentsEnterprise", "Common"]);
 
-  useEffect(() => {
-    setDocumentTitle(t("Common:PaymentsTitle"));
-  }, [ready]);
+  const { t, ready } = useTranslation(["PaymentsEnterprise", "Common"]);
 
   useEffect(() => {
     if (!isLoadedTariffStatus || !isLoadedCurrentQuota || !ready) return;
 
-    standaloneInit();
+    setDocumentTitle(t("Common:PaymentsTitle"));
+
+    standaloneInit(t);
   }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
   if (
     !isInitPaymentPage ||
     !isLoadedTariffStatus ||
     !isLoadedCurrentQuota ||
-    !ready
+    !ready ||
+    isUpdatingBasicSettings
   )
-    return isTrial ? (
-      <Loaders.PaymentsStandaloneLoader />
-    ) : (
-      <Loaders.PaymentsStandaloneLoader isEnterprise />
-    );
+    return <Loaders.PaymentsStandaloneLoader isEnterprise={!isTrial} />;
 
   return (
     <StyledComponent>
@@ -56,7 +53,11 @@ const StandalonePage = (props) => {
 export default inject(({ auth, payments }) => {
   const { currentQuotaStore, currentTariffStatusStore } = auth;
 
-  const { standaloneInit, isInitPaymentPage } = payments;
+  const {
+    standaloneInit,
+    isInitPaymentPage,
+    isUpdatingBasicSettings,
+  } = payments;
   const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
 
@@ -66,5 +67,6 @@ export default inject(({ auth, payments }) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
+    isUpdatingBasicSettings,
   };
 })(withRouter(observer(StandalonePage)));

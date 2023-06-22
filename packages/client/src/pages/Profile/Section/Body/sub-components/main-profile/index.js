@@ -20,12 +20,7 @@ import { getUserRole, convertLanguage } from "@docspace/common/utils";
 import { Trans } from "react-i18next";
 //import TimezoneCombo from "./timezoneCombo";
 
-import {
-  AvatarEditorDialog,
-  ChangeEmailDialog,
-  ChangePasswordDialog,
-  ChangeNameDialog,
-} from "SRC_DIR/components/dialogs";
+import { AvatarEditorDialog } from "SRC_DIR/components/dialogs";
 
 import {
   StyledWrapper,
@@ -48,11 +43,8 @@ const MainProfile = (props) => {
     helpLink,
     cultureNames,
     setIsLoading,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
@@ -433,30 +425,6 @@ const MainProfile = (props) => {
         {/* <TimezoneCombo title={t("Common:ComingSoon")} /> */}
       </StyledInfo>
 
-      {changeEmailVisible && (
-        <ChangeEmailDialog
-          visible={changeEmailVisible}
-          onClose={() => setChangeEmailVisible(false)}
-          user={profile}
-        />
-      )}
-
-      {changePasswordVisible && (
-        <ChangePasswordDialog
-          visible={changePasswordVisible}
-          onClose={() => setChangePasswordVisible(false)}
-          email={profile.email}
-        />
-      )}
-
-      {changeNameVisible && (
-        <ChangeNameDialog
-          visible={changeNameVisible}
-          onClose={() => setChangeNameVisible(false)}
-          profile={profile}
-        />
-      )}
-
       {changeAvatarVisible && (
         <AvatarEditorDialog
           t={t}
@@ -481,11 +449,8 @@ export default inject(({ auth, peopleStore }) => {
 
   const {
     targetUser: profile,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
@@ -498,11 +463,8 @@ export default inject(({ auth, peopleStore }) => {
     culture,
     helpLink,
     setIsLoading,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,

@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "Lietotājs nevar būt atrasts",
   "InvalidUsernameOrPassword": "Nepareizs lietotājvārds vai parole.",
   "LoginWithAccountNotFound": "Nevar atrast saistīto trešo personu kontu. Vispirms Jums ir nepieciešams savienot savu sociāla tīkla kontu profila rediģēšanas lapā.",
+  "SsoError": "Iekšējā servera kļūda",
   "SsoSettingsCantCreateUser": "Neizdevās izveidot lietotāju ar šo autentifikācijas marķieri",
   "SsoSettingsDisabled": "Vienreizējā ieeja atspējota",
   "SsoSettingsEmptyToken": "Neizdevās atrast autentifikācijas marķieri",

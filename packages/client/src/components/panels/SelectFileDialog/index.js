@@ -151,8 +151,11 @@ class SelectFileDialog extends React.Component {
   }
 
   getDisplayType = () => {
-    const displayType =
-      window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+    const displayType = this.props.displayType
+      ? this.props.displayType
+      : window.innerWidth < desktop.match(/\d+/)[0]
+      ? "aside"
+      : "modal";
 
     return displayType;
   };
@@ -194,7 +197,13 @@ class SelectFileDialog extends React.Component {
   };
 
   onClickSave = () => {
-    const { onClose, onSelectFile, setFile, setFolderId } = this.props;
+    const {
+      onClose,
+      onSelectFile,
+      setFile,
+      setFolderId,
+      embedded,
+    } = this.props;
     const { selectedFileInfo, selectedFolderId } = this.state;
 
     setFile(selectedFileInfo);
@@ -204,7 +213,7 @@ class SelectFileDialog extends React.Component {
     }
 
     onSelectFile && onSelectFile(selectedFileInfo);
-    onClose && onClose();
+    onClose && !embedded && onClose();
   };
 
   render() {
@@ -221,6 +230,7 @@ class SelectFileDialog extends React.Component {
       dialogName,
       creationButtonPrimary,
       maxInputWidth,
+      embedded,
     } = this.props;
     const {
       isVisible,
@@ -264,6 +274,7 @@ class SelectFileDialog extends React.Component {
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         maxInputWidth={maxInputWidth}
+        embedded={embedded}
       />
     ) : (
       <SelectionPanel

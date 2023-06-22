@@ -92,11 +92,9 @@ class PaymentStore {
     } = authStore;
     const { setPayerInfo } = currentTariffStatusStore;
     const { addedManagersCount } = currentQuotaStore;
-    const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
+    const { setPortalPaymentQuotas } = paymentQuotasStore;
 
-    const requests = [this.getSettingsPayment()];
-
-    if (!isLoaded) requests.push(setPortalPaymentQuotas());
+    const requests = [this.getSettingsPayment(), setPortalPaymentQuotas()];
 
     this.isAlreadyPaid
       ? requests.push(this.setPaymentAccount())
@@ -158,10 +156,38 @@ class PaymentStore {
       });
   };
 
-  standaloneInit = async () => {
-    if (this.isInitPaymentPage) return;
+  standaloneBasicSettings = async (t) => {
+    const { getTenantExtra } = authStore;
 
-    await this.getSettingsPayment();
+    this.setIsUpdatingBasicSettings(true);
+
+    try {
+      await getTenantExtra();
+    } catch (e) {
+      toastr.error(t("Common:UnexpectedError"));
+
+      return;
+    }
+
+    this.setIsUpdatingBasicSettings(false);
+  };
+
+  standaloneInit = async (t) => {
+    const { getTenantExtra } = authStore;
+
+    if (this.isInitPaymentPage) {
+      this.standaloneBasicSettings(t);
+
+      return;
+    }
+
+    try {
+      await Promise.all([this.getSettingsPayment(), getTenantExtra()]);
+    } catch (error) {
+      toastr.error(t("Common:UnexpectedError"));
+      console.error(error);
+      return;
+    }
 
     this.isInitPaymentPage = true;
   };
@@ -215,15 +241,14 @@ class PaymentStore {
 
   acceptPaymentsLicense = async (t) => {
     try {
-      const { currentTariffStatusStore, currentQuotaStore } = authStore;
-      const { setPortalQuota } = currentQuotaStore;
-      const { setPortalTariff } = currentTariffStatusStore;
+      const { getTenantExtra } = authStore;
 
       await acceptLicense();
+
       toastr.success(t("ActivateLicenseActivated"));
       localStorage.removeItem("enterpriseAlertClose");
 
-      await Promise.all([setPortalTariff(), setPortalQuota()]);
+      await getTenantExtra();
     } catch (e) {
       toastr.error(e);
     }

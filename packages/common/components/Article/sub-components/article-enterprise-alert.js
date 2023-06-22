@@ -104,7 +104,7 @@ export default withRouter(
       isEnterprise,
     } = auth;
     const { isTrial } = currentQuotaStore;
-    const { theme } = settingsStore;
+    const { theme, toggleArticleOpen } = settingsStore;
     const {
       isLicenseDateExpired,
       trialDaysLeft,
@@ -117,6 +117,7 @@ export default withRouter(
       trialDaysLeft,
       paymentDate,
       theme,
+      toggleArticleOpen,
     };
   })(observer(ArticleEnterpriseAlert))
 );

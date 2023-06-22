@@ -686,6 +686,14 @@ const Base = {
       large: "550px",
     },
 
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
+    },
+
     paddingRight: {
       base: "37px",
       middle: "48px",
@@ -2123,10 +2131,9 @@ const Base = {
     downloadAppList: {
       color: "#83888d",
       winHoverColor: "#3785D3",
-      macHoverColor: black,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",

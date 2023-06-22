@@ -47,6 +47,16 @@ const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
+const Sdk = React.lazy(() => import("./pages/Sdk"));
+
+const SdkRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Sdk {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -167,6 +177,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    standalone,
   } = rest;
 
   useEffect(() => {
@@ -206,10 +217,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
-    socketHelper.emit({
-      command: "subscribe",
-      data: { roomParts: "quota" },
-    });
+
+    !standalone && // unlimited quota (standalone)
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: "quota" },
+      });
+
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });
@@ -540,6 +554,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/sdk/:mode"} component={SdkRoute} />
               <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
@@ -566,6 +581,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
+    standalone,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
@@ -601,6 +617,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
         : "Base"
       : auth?.userStore?.user?.theme,
     whiteLabelLogoUrls,
+    standalone,
   };
 })(observer(Shell));
 

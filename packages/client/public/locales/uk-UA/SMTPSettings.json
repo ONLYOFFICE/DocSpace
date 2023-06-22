@@ -1,1 +1,11 @@
-{}
+{
+  "Authentication": "Автентифікація",
+  "EnableSSL": "Увімкнути SSL",
+  "Host": "Хост",
+  "HostLogin": "Логін хосту",
+  "HostPassword": "Пароль хосту",
+  "Port": "Порт",
+  "SenderDisplayName": "Коротке ім'я відправника",
+  "SenderEmailAddress": "Адреса електронної пошти відправника",
+  "SendTestMail": "Надіслати тестове поштове повідомлення"
+}

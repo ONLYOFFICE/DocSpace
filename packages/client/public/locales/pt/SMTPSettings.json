@@ -1,1 +1,6 @@
-{}
+{
+  "EnableSSL": "Habilitar SSL",
+  "Port": "Porta",
+  "SenderDisplayName": "Nome do remetente a mostrar",
+  "SenderEmailAddress": "Endereço de E-mail do remetente"
+}

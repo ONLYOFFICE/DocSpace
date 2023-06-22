@@ -219,14 +219,11 @@ set_core_machinekey () {
 		if [ "$DIST" = "RedHat" ]; then
 			echo $CORE_MACHINEKEY > $APP_DIR/.private/machinekey
 			chmod o-rwx $APP_DIR/.private/machinekey
-		elif [ "$DIST" = "Debian" ]; then
-			db_set ${PRODUCT}/machinekey $CORE_MACHINEKEY || true
-			echo ${PRODUCT} ${PRODUCT}/machinekey select $CORE_MACHINEKEY | debconf-set-selections || true
 		fi
 	fi
 
-	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
+	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
@@ -313,7 +310,7 @@ Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 
-	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//&/\\&}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
+	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//_/\\_}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 	change_mysql_config
 
 	#Enable database migration
@@ -522,7 +519,7 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"/ds-vpath/\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	echo "OK"
 }
