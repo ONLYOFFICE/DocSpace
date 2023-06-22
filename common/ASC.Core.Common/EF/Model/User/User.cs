@@ -64,13 +64,8 @@ public class User : BaseEntity, IMapFrom<UserInfo>
 
 public static class DbUserExtension
 {
-    public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder, bool useInMigration = false)
+    public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder)
     {
-        if (!useInMigration)
-        {
-            modelBuilder.Entity<User>().ToTable(t => t.ExcludeFromMigrations());
-        }
-
         modelBuilder.Entity<User>().Navigation(e => e.Tenant).AutoInclude(false);
 
         modelBuilder

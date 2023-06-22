@@ -24,12 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Migration.Core;
+
 namespace Migration.Creator;
 
 public class MigrationCreator
 {
     private readonly IServiceProvider _serviceProvider;
-    private int _counter;
 
     public MigrationCreator(IServiceProvider serviceProvider)
     {
@@ -38,31 +39,17 @@ public class MigrationCreator
 
     public void RunCreateMigrations(Options options)
     {
-
-        foreach (var projectInfo in Solution.GetProjects(options.Path))
+        foreach (var providerInfo in options.Providers)
         {
-            var ctxTypesFinder = new ProjectInfoContextFinder(projectInfo);
-
-            foreach (var contextType in ctxTypesFinder.GetDependetContextsTypes())
-            {
-                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
-                {
-                    foreach (var providerInfo in options.TeamlabsiteProviders)
-                    {
-                        CreateMigration(options, contextType, providerInfo);
-                    }
-                }
-                else
-                {
-                    foreach (var providerInfo in options.Providers)
-                    {
-                        CreateMigration(options, contextType, providerInfo);
-                    }
-                }
-            }
+            CreateMigration(options, typeof(MigrationContext), providerInfo);
         }
-
-        Console.WriteLine($"Created {_counter} migrations");
+        
+        foreach (var providerInfo in options.TeamlabsiteProviders)
+        {
+            CreateMigration(options, typeof(TeamlabSiteContext), providerInfo);
+        }
+        
+        Console.WriteLine($"Update migrations");
     }
 
     private void CreateMigration(Options options, Type contextType, ProviderInfo providerInfo)
@@ -82,6 +69,5 @@ public class MigrationCreator
         var providerInfoProjectPath = Solution.GetProviderProjectPath(options.Path, providerInfo);
         var migrationGenerator = new MigrationGenerator(context, providerInfo.Provider, providerInfoProjectPath);
         migrationGenerator.Generate();
-        _counter++;
     }
 }
