@@ -182,7 +182,7 @@
           case "onMethodReturn": {
             if (this.#callbacks.length > 0) {
               const callback = this.#callbacks.shift();
-              callback && callback(data?.methodReturnData);
+              callback && callback(data.methodReturnData);
             }
 
             if (this.#tasks.length > 0) {

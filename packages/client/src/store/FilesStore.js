@@ -1207,7 +1207,6 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-    const { isFrame } = this.authStore.settingsStore;
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
