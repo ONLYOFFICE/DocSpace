@@ -788,7 +788,7 @@ class SettingsStore {
     });
 
     if (!!frameConfig) {
-      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 100);
+      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 200);
     }
     return frameConfig;
   };
