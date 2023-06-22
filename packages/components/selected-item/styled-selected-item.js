@@ -12,17 +12,25 @@ const StyledSelectedItem = styled.div`
   border: ${(props) => props.theme.selectedItem.border};
   border-radius: ${(props) => props.theme.selectedItem.borderRadius};
 `;
-StyledSelectedItem.defaultProps = { theme: Base };
+StyledSelectedItem.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const StyledSelectedTextBox = styled.div`
   display: grid;
   padding: ${(props) => props.theme.selectedItem.textBox.padding};
   height: ${(props) => props.theme.selectedItem.textBox.height};
   align-items: ${(props) => props.theme.selectedItem.textBox.alignItems};
-  border-right: ${(props) => props.theme.selectedItem.textBox.borderRight};
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `border-left: ${theme.selectedItem.textBox.borderRight};`
+      : `border-right: ${theme.selectedItem.textBox.borderRight};`}
   cursor: default;
 `;
-StyledSelectedTextBox.defaultProps = { theme: Base };
+StyledSelectedTextBox.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const StyledCloseButton = styled.div`
   display: flex;
@@ -50,7 +58,9 @@ const StyledCloseButton = styled.div`
       `background-color: ${props.theme.selectedItem.closeButton.backgroundColor};`}
   }
 `;
-StyledCloseButton.defaultProps = { theme: Base };
+StyledCloseButton.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const StyledText = styled(Text)`
   color: ${(props) =>
@@ -58,7 +68,7 @@ const StyledText = styled(Text)`
       ? props.theme.selectedItem.text.disabledColor
       : props.theme.selectedItem.text.color};
 `;
-StyledText.defaultProps = { theme: Base };
+StyledText.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 
 export {
   StyledCloseButton,
