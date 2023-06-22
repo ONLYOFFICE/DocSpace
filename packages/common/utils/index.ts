@@ -421,7 +421,6 @@ export function checkIsSSR() {
 }
 
 export const frameCallbackData = (methodReturnData: any) => {
-  console.log("frameCallbackData", methodReturnData);
   window.parent.postMessage(
     JSON.stringify({
       type: "onMethodReturn",
@@ -432,7 +431,6 @@ export const frameCallbackData = (methodReturnData: any) => {
 };
 
 export const frameCallEvent = (eventReturnData: any) => {
-  console.log("frameCallEvent", eventReturnData);
   window.parent.postMessage(
     JSON.stringify({
       type: "onEventReturn",
@@ -443,7 +441,6 @@ export const frameCallEvent = (eventReturnData: any) => {
 };
 
 export const frameCallCommand = (commandName: string, commandData: any) => {
-  console.log("frameCallCommand", commandName, commandData);
   window.parent.postMessage(
     JSON.stringify({
       type: "onCallCommand",

@@ -782,7 +782,6 @@ class SettingsStore {
   };
 
   setFrameConfig = async (frameConfig) => {
-    console.log("setFrameConfig", frameConfig);
     runInAction(() => {
       this.frameConfig = frameConfig;
       this.setTheme(frameConfig?.theme);
@@ -790,7 +789,6 @@ class SettingsStore {
 
     if (!!frameConfig) {
       frameCallEvent({ event: "onAppReady" });
-      console.log("frameCallEvent onAppReady");
     }
     return frameConfig;
   };
