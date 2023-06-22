@@ -100,8 +100,9 @@ const PortalIntegration = (props) => {
     frameId: "ds-frame",
     showHeader: false,
     showTitle: true,
-    showArticle: false,
+    showMenu: false,
     showFilter: false,
+    destroyText: t("Common:Preview"),
   });
 
   const [sortBy, setSortBy] = useState(dataSortBy[0]);
@@ -113,20 +114,22 @@ const PortalIntegration = (props) => {
   const frameId = config.frameId || "ds-frame";
 
   const destroyFrame = () => {
-    DocSpace.destroyFrame();
+    DocSpace.SDK.frames[frameId].destroyFrame();
   };
 
   const loadFrame = () => {
     const script = document.getElementById("integration");
 
     if (script) {
-      destroyFrame();
+      //destroyFrame();
       script.remove();
     }
 
     const params = objectToGetParams(config);
 
-    loadScript(`${scriptUrl}${params}`, "integration");
+    loadScript(`${scriptUrl}${params}`, "integration", () =>
+      DocSpace.SDK.initFrame(config)
+    );
   };
 
   const onChangeWidth = (e) => {
@@ -205,9 +208,9 @@ const PortalIntegration = (props) => {
     });
   };
 
-  const onChangeShowArticle = (e) => {
+  const onChangeShowMenu = (e) => {
     setConfig((config) => {
-      return { ...config, showArticle: !config.showArticle };
+      return { ...config, showMenu: !config.showMenu };
     });
   };
 
@@ -292,8 +295,8 @@ const PortalIntegration = (props) => {
             />
             <Checkbox
               label={t("Menu")}
-              onChange={onChangeShowArticle}
-              isChecked={config.showArticle}
+              onChange={onChangeShowMenu}
+              isChecked={config.showMenu}
             />
             <Checkbox
               label={t("Files:Filter")}

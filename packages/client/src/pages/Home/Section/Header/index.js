@@ -680,6 +680,7 @@ class SectionHeaderContent extends React.Component {
       security,
       onClickBack,
       hideContextMenuInsideArchiveRoom,
+      isFrame,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -747,6 +748,7 @@ class SectionHeaderContent extends React.Component {
                     onPlusClick={this.onCreateRoom}
                     isEmptyPage={isEmptyPage}
                     isRoom={isRoom}
+                    isFrame={isFrame}
                   />
                 )}
               </div>
@@ -851,7 +853,7 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins } = auth.settingsStore;
+    const { enablePlugins, isFrame } = auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
@@ -875,19 +877,29 @@ export default inject(
       ? !isArchiveFolder
       : false;
 
+    let folderPath = navigationPath;
+
+    if (isFrame && !!pathParts) {
+      folderPath = navigationPath.filter((item) => !item.isRootRoom);
+    }
+
+    const isRoot = isFrame
+      ? pathParts?.length === 1 || pathParts?.length === 2
+      : pathParts?.length === 1;
+
     return {
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
 
-      isRootFolder: pathParts?.length === 1,
+      isRootFolder: isRoot,
       isPersonalRoom,
       title,
       isRoom,
       currentFolderId: id,
       pathParts: pathParts,
-      navigationPath: navigationPath,
+      navigationPath: folderPath,
 
       setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
@@ -960,6 +972,7 @@ export default inject(
       moveToRoomsPage,
       onClickBack,
       emptyTrashInProgress,
+      isFrame,
     };
   }
 )(
