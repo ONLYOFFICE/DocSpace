@@ -87,7 +87,7 @@ class SectionBodyContent extends React.Component {
         <VersionRow
           onClose={onClose}
           getFileVersions={this.getFileVersions}
-          isVersion={isVersion}
+          isVersion={true}
           key={`${versions[index].id}-${index}`}
           info={versions[index]}
           versionsListLength={versions.length}

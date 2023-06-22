@@ -246,6 +246,7 @@
   "SortBy": "排序方式",
   "SpacesInLocalPart": "本地部分中不能包含空格",
   "Standard": "标准",
+  "SubscriptionExpired": "您的支持和更新订阅已经过期了",
   "SubscriptionIsExpiring": "您的订阅将于 {{date}}到期",
   "Support": "支持",
   "SwitchToThumbnails": "切换到缩略图视图",
