@@ -176,6 +176,7 @@ const FilterBlockItem = ({
           id={item.id}
           isChecked={item.isSelected}
           label={item.label}
+          isDisabled={item.isDisabled}
           onChange={() =>
             changeFilterValueAction(item.key, item.isSelected, false)
           }

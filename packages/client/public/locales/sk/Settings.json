@@ -64,6 +64,7 @@
   "DataBackup": "Zálohovanie dát",
   "Deactivate": "Deaktivovať",
   "DeactivateOrDeletePortal": "Deaktivovať alebo odstrániť priestor.",
+  "DefaultSettings": "Predvolené nastavenia",
   "DeleteDocSpace": "Vymazať DocSpace",
   "DeleteDocSpaceInfo": "Pred vymazaním priestoru sa uistite, že je vypnutá automatická fakturácia. Stav automatickej fakturácie môžete skontrolovať na <1>zákazníckom portáli Stripe</1>.",
   "DeleteTheme": "Vymazať tému",

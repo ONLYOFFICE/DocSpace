@@ -53,17 +53,7 @@ public static class DbQuotaExtension
         modelBuilder
             .Add(MySqlAddDbQuota, Provider.MySql)
             .Add(PgSqlAddDbQuota, Provider.PostgreSql);
-#if Standalone
-                    modelBuilder.HasData(
-                        new DbQuota
-                        {
-                            Tenant = -1,
-                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:102400",
-                            Name = "default",
-                            Price = 0m,
-                            Visible = false
-                        });
-#else
+
         modelBuilder
             .HasData(
                 new DbQuota
@@ -97,7 +87,6 @@ public static class DbQuotaExtension
                     Visible = false
                 }
                 );
-#endif
 
         return modelBuilder;
     }

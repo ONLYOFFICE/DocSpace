@@ -1,4 +1,5 @@
 {
+  "ActivateLicense": "Activar licencia",
   "ActivateLicenseActivated": "Licencia activada",
   "ActivatePurchaseBuyLicense": "Para comprar una licencia, haga clic en el botón de abajo.",
   "ActivatePurchaseBuyNow": "Comprar ahora",
@@ -11,6 +12,7 @@
   "ActivateTariffEnterpriseTrialExpiration": "Su prueba expira el {{date}}.",
   "ActivateToProBannerHeaderTrial": "Compre la versión completa de Enterprise para obtener:",
   "ActivateUploadDescr": "Para activar su licencia, cárguela a continuación y haga clic en el botón Activar.",
+  "FreeDaysLeft": "{{count}} días gratis restantes",
   "UpgradeToProBannerHeader": "Obtenga acceso gratuito a las características profesionales durante 30 días",
   "UpgradeToProBannerInformationAboutShort": "Aprender más sobre Enterprise Edition <1>en el sitio web oficial</1>",
   "UpgradeToProBannerInformationDemo": "Solicitar demostración <1>aquí</1>",
@@ -30,5 +32,6 @@
   "UpgradeToProBannerItemScalabilityDescr": "Edite y colabore cómodamente en los documentos sin importar el tamaño de su equipo.",
   "UpgradeToProBannerItemScalabilityHeader": "Escalabilidad y clustering.",
   "UpgradeToProBannerItemSupportDescr": "Obtenga ayuda profesional rápida para todos los problemas que enfrenta.",
-  "UpgradeToProBannerItemSupportHeader": "Soporte técnico."
+  "UpgradeToProBannerItemSupportHeader": "Soporte técnico.",
+  "UploadLicenseFile": "Cargar archivo de licencia"
 }

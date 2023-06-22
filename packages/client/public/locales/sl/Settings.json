@@ -64,6 +64,7 @@
   "DataBackup": "Varnostno kopiranje podatkov",
   "Deactivate": "Deaktiviraj",
   "DeactivateOrDeletePortal": "Deaktivirajte ali izbrišite prostor.",
+  "DefaultSettings": "Privzete nastavitve",
   "DeleteDocSpace": "Izbriši DocSpace",
   "DeleteDocSpaceInfo": "Preden izbrišete prostor, se prepričajte, da je samodejno zaračunavanje izklopljeno. Stanje samodejnega zaračunavanja lahko preverite na <1>vašem portalu za stranke Stripe</1>.",
   "DeleteTheme": "Izbriši temo",

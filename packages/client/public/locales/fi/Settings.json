@@ -64,6 +64,7 @@
   "DataBackup": "Tietojen varmuuskopiointi",
   "Deactivate": "Poista käytöstä",
   "DeactivateOrDeletePortal": "Ota tila pois käytöstä tai poista se.",
+  "DefaultSettings": "Oletusasetukset",
   "DeleteDocSpace": "Poista DocSpace",
   "DeleteDocSpaceInfo": "Varmista, että automaattinen laskutus on pois päältä, ennen kuin poistat tilan. Voit tarkistaa automaattisen laskutuksen tilan <1>Stripe-asiakasportaalissasi</1>.",
   "DeleteTheme": "Poista teema",

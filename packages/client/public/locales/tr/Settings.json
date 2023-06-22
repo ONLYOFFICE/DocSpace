@@ -64,6 +64,7 @@
   "DataBackup": "Veri yedekleme",
   "Deactivate": "Devre dışı bırak",
   "DeactivateOrDeletePortal": "Alanı devre dışı bırak veya sil.",
+  "DefaultSettings": "Varsayılan Ayarlar",
   "DeleteDocSpace": "DocSpace'i Sil",
   "DeleteDocSpaceInfo": "Alanı silmeden önce lütfen otomatik faturalandırmanın kapalı olduğundan emin olun. Otomatik faturalandırmanın durumunu <1>Stripe müşteri portalınızdan</1> kontrol edebilirsiniz.",
   "DeleteTheme": "Temayı sil",

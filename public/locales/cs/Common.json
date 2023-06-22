@@ -258,7 +258,7 @@
   "Title": "Titulek",
   "TitleSelectFile": "Vybrat",
   "Today": "Dnes",
-  "TrialDaysLeft": "Zkušební verze {{number}} dní",
+  "TrialDaysLeft": "Zkušební verze {{count}} dní",
   "TrialExpired": "Zkušební verze vypršela",
   "Type": "Typ",
   "UnexpectedError": "Došlo k neočekávané chybě. Zkuste to později nebo kontaktujte podporu.",

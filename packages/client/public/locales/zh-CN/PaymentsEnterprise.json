@@ -1,3 +1,19 @@
 {
-  "ActivatePurchaseBuyNow": "立即购买"
+  "ActivatePurchaseBuyLicense": "要购买许可证，请单击下方按钮。",
+  "ActivatePurchaseBuyNow": "立即购买",
+  "ActivatePurchaseRenewLicense": "要继续获得支持和更新，请购买续订。",
+  "ActivateRenewDescr": "要获取您的个人续订条款，请联系您的专属经理或给我们发送邮件至<1>{{email}}</1>",
+  "ActivateSwithToProHeader": "切换到完整的企业版",
+  "ActivateUploadDescr": "要激活您的许可证，请在下方上传许可证并单击“激活”。",
+  "FreeDaysLeft": "剩余{{count}}天可免费使用",
+  "UpgradeToProBannerInformationAboutShort": "<1>在官方网站上</1>了解更多有关企业版的信息",
+  "UpgradeToProBannerInformationSupport": "获取技术帮助 <1>{{helpUrl}}</1>",
+  "UpgradeToProBannerInstructionDescr": "使用官方文档进行升级：",
+  "UpgradeToProBannerInstructionHeader": "免费试用 ONLYOFFICE 协作空间企业版30 天，体验专业功能。",
+  "UpgradeToProBannerInstructionReadNow": "立即阅读",
+  "UpgradeToProBannerItemMobileHeader": "移动访问。",
+  "UpgradeToProBannerItemScalabilityHeader": "可扩展性和集群。",
+  "UpgradeToProBannerItemSupportDescr": "获得快速的专业帮助，解决你的任何问题",
+  "UpgradeToProBannerItemSupportHeader": "技术支持。",
+  "UploadLicenseFile": "上传许可证文件"
 }
