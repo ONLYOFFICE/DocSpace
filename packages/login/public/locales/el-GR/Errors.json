@@ -5,5 +5,6 @@
   "ErrorUserNotFound": "Ο χρήστης δε βρέθηκε",
   "InvalidUsernameOrPassword": "Άκυρο όνομα χρήστη ή κωδικός πρόσβασης.<",
   "LoginWithAccountNotFound": "Δεν μπορείτε να βρείτε συνδεδεμένο λογαριασμό τρίτου",
-  "SsoAuthFailed": "Η αυθεντικοποίηση απέτυχε"
+  "SsoAuthFailed": "Η αυθεντικοποίηση απέτυχε",
+  "SsoError": "Σφάλμα εσωτερικού διακομιστή"
 }
