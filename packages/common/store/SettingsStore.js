@@ -781,14 +781,16 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = (frameConfig) => {
+  setFrameConfig = async (frameConfig) => {
+    console.log("setFrameConfig", frameConfig);
     runInAction(() => {
       this.frameConfig = frameConfig;
       this.setTheme(frameConfig?.theme);
     });
 
     if (!!frameConfig) {
-      setTimeout(() => frameCallEvent({ event: "onAppReady" }), 200);
+      frameCallEvent({ event: "onAppReady" });
+      console.log("frameCallEvent onAppReady");
     }
     return frameConfig;
   };
