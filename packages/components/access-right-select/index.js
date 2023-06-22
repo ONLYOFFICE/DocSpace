@@ -17,6 +17,7 @@ const AccessRightSelect = ({
   onSelect,
   advancedOptions,
   selectedOption,
+  className,
   ...props
 }) => {
   const [currentItem, setCurrentItem] = useState(selectedOption);
@@ -46,6 +47,7 @@ const AccessRightSelect = ({
         <DropDownItem key={item.key} isSeparator />
       ) : (
         <DropDownItem
+          className="access-right-item"
           key={item.key}
           data-key={item.key}
           onClick={onSelectCurrentItem}
@@ -80,6 +82,7 @@ const AccessRightSelect = ({
 
   return (
     <StyledWrapper
+      className={className}
       advancedOptions={formattedOptions}
       onSelect={onSelectCurrentItem}
       options={[]}
@@ -95,6 +98,8 @@ const AccessRightSelect = ({
 };
 
 AccessRightSelect.propTypes = {
+  /** Accepts class */
+  className: PropTypes.string,
   /** Indicates that component`s options are scaled by ComboButton */
   scaledOptions: PropTypes.bool,
   /** Combo box options */
