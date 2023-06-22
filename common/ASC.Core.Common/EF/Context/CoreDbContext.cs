@@ -43,6 +43,6 @@ public class CoreDbContext : DbContext
               .AddDbQuota()
               .AddDbTariff()
               .AddDbTariffRow()
-              .AddDbTenant(true);
+              .AddDbTenant();
     }
 }
