@@ -9,8 +9,8 @@ import "../index";
 import lightTheme from "./lightTheme";
 import darkTheme from "./darkTheme";
 
-import lightLogo from "./lightsmall.png";
-import darkLogo from "./darksmall.png";
+import lightLogo from "./lightsmall.svg?url";
+import darkLogo from "./darksmall.svg?url";
 
 const preview = {
   parameters: {
@@ -30,14 +30,8 @@ const preview = {
     },
     darkMode: {
       current: "light",
-      light: {
-        ...lightTheme,
-        brandImage: lightLogo,
-      },
-      dark: {
-        ...darkTheme,
-        brandImage: darkLogo,
-      },
+      light: lightTheme,
+      dark: darkTheme,
     },
   },
   decorators: [

@@ -1,9 +1,9 @@
 import { create } from "@storybook/theming/create";
-import Logo from "./lightsmall.svg";
+import Logo from "./lightsmall.svg?url";
 
 export default create({
-  base: 'light',
-  
+  base: "light",
+
   brandTitle: "OnlyOffice",
   brandUrl: "https://www.onlyoffice.com/docspace.aspx",
   brandImage: Logo,
