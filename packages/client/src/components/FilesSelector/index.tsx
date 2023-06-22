@@ -33,6 +33,7 @@ const FilesSelector = ({
   withoutBasicSelection = false,
   withoutImmediatelyClose = false,
   isThirdParty = false,
+  isEditorDialog = false,
 
   onClose,
 
@@ -65,6 +66,13 @@ const FilesSelector = ({
   onSetBaseFolderPath,
   onSetNewFolderPath,
   onSelectTreeNode,
+  onSave,
+
+  withFooterInput,
+  withFooterCheckbox,
+  footerInputHeader,
+  currentFooterInputValue,
+  footerCheckboxLabel,
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -194,6 +202,7 @@ const FilesSelector = ({
   const onClickBreadCrumb = (item: BreadCrumb) => {
     if (!isFirstLoad) {
       setSearchValue("");
+      setIsFirstLoad(true);
 
       if (+item.id === 0) {
         setSelectedItemSecurity(undefined);
@@ -201,7 +210,6 @@ const FilesSelector = ({
         getRootData();
       } else {
         setItems(null);
-        setIsFirstLoad(true);
 
         const idx = breadCrumbs.findIndex(
           (value) => value.id.toString() === item.id.toString()
@@ -263,8 +271,13 @@ const FilesSelector = ({
     setSearchValue("");
   };
 
-  const onAcceptAction = () => {
-    if (isMove || isCopy || isRestoreAll) {
+  const onAcceptAction = (
+    items: any,
+    accessRights: any,
+    fileName: string,
+    isChecked: boolean
+  ) => {
+    if ((isMove || isCopy || isRestoreAll) && !isEditorDialog) {
       const folderTitle = breadCrumbs[breadCrumbs.length - 1].label;
 
       let fileIds: any[] = [];
@@ -326,7 +339,9 @@ const FilesSelector = ({
       setIsRequestRunning(true);
       onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
       onSelectFolder && onSelectFolder(selectedItemId);
-
+      onSave &&
+        selectedItemId &&
+        onSave(null, selectedItemId, fileName, isChecked);
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
       !withoutImmediatelyClose && onCloseAction();
     }
@@ -425,6 +440,11 @@ const FilesSelector = ({
               : getFileList
           }
           disableAcceptButton={isDisabled}
+          withFooterInput={withFooterInput}
+          withFooterCheckbox={withFooterCheckbox}
+          footerInputHeader={footerInputHeader}
+          currentFooterInputValue={currentFooterInputValue}
+          footerCheckboxLabel={footerCheckboxLabel}
         />
       </Aside>
     </>

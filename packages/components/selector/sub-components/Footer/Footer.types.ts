@@ -15,6 +15,7 @@ export type FooterProps = {
   onChangeAccessRights?: (access: AccessRight) => void;
 
   withFooterInput?: boolean;
+  withFooterCheckbox?: boolean;
   footerInputHeader?: string;
   currentFooterInputValue?: string;
   footerCheckboxLabel?: string;

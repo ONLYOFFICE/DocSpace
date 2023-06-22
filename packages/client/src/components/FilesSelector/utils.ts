@@ -50,7 +50,7 @@ export const getIsDisabled = (
 ) => {
   if (isFirstLoad) return true;
   if (isRequestRunning) return true;
-  if (sameId) return true;
+  if (sameId && !isCopy) return true;
   if (isRooms) return true;
   if (isRoot) return true;
   if (isCopy) return !security?.CopyTo;

@@ -303,7 +303,7 @@ module.exports = (env, argv) => {
         "./SelectFileInput":
           "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":
-          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+          "./src/components/FilesSelector/FilesSelectorWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
         "./PeopleSelector": "./src/components/PeopleSelector",

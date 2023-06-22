@@ -1,6 +1,8 @@
 import React from "react";
 
 import { FolderType } from "@docspace/common/constants";
+// @ts-ignore
+import { getFoldersTree } from "@docspace/common/api/files";
 
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
@@ -20,13 +22,21 @@ const useRootHelper = ({
 }: useRootHelperProps) => {
   const [isRoot, setIsRoot] = React.useState<boolean>(false);
 
-  const getRootData = React.useCallback(() => {
+  const getRootData = React.useCallback(async () => {
     setBreadCrumbs([defaultBreadCrumb]);
     setIsRoot(true);
     setIsBreadCrumbsLoading(false);
     const newItems: Item[] = [];
 
-    treeFolders?.forEach((folder) => {
+    let currentTree: Item[] | null = null;
+
+    if (treeFolders && treeFolders?.length > 0) {
+      currentTree = treeFolders;
+    } else {
+      currentTree = await getFoldersTree();
+    }
+
+    currentTree?.forEach((folder) => {
       if (
         folder.rootFolderType === FolderType.Rooms ||
         folder.rootFolderType === FolderType.USER

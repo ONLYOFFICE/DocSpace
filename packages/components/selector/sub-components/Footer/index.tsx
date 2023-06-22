@@ -29,6 +29,7 @@ const Footer = React.memo(
     onChangeAccessRights,
 
     withFooterInput,
+    withFooterCheckbox,
     footerInputHeader,
     footerCheckboxLabel,
     currentFooterInputValue,
@@ -52,7 +53,10 @@ const Footer = React.memo(
     };
 
     return (
-      <StyledFooter withFooterInput={withFooterInput}>
+      <StyledFooter
+        withFooterInput={withFooterInput}
+        withFooterCheckbox={withFooterCheckbox}
+      >
         {withFooterInput && (
           <StyledNewNameContainer>
             <StyledNewNameHeader
@@ -68,11 +72,13 @@ const Footer = React.memo(
               scale
               onChange={onChangeFileName}
             />
-            <Checkbox
-              label={footerCheckboxLabel}
-              isChecked={isFooterCheckboxChecked}
-              onChange={onChangeCheckbox}
-            />
+            {withFooterCheckbox && (
+              <Checkbox
+                label={footerCheckboxLabel}
+                isChecked={isFooterCheckboxChecked}
+                onChange={onChangeCheckbox}
+              />
+            )}
           </StyledNewNameContainer>
         )}
 

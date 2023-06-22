@@ -67,6 +67,7 @@ export type SelectorProps = {
   isBreadCrumbsLoading?: boolean;
 
   withFooterInput?: boolean;
+  withFooterCheckbox?: boolean;
   footerInputHeader?: string;
   currentFooterInputValue?: string;
   footerCheckboxLabel?: string;

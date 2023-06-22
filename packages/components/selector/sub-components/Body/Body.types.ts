@@ -38,4 +38,5 @@ export type BodyProps = {
   isBreadCrumbsLoading?: boolean;
 
   withFooterInput?: boolean;
+  withFooterCheckbox?: boolean;
 };

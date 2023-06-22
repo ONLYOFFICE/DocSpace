@@ -4,11 +4,29 @@ import Combobox from "../../../combobox";
 import Text from "../../../text";
 import Base from "../../../themes/base";
 
-const StyledFooter = styled.div<{ withFooterInput?: boolean }>`
+const StyledFooter = styled.div<{
+  withFooterInput?: boolean;
+  withFooterCheckbox?: boolean;
+}>`
   width: calc(100% - 32px);
-  max-height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
-  height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
-  min-height: ${(props) => (props.withFooterInput ? "181px" : "73px")};
+  max-height: ${(props) =>
+    props.withFooterCheckbox
+      ? "181px"
+      : props.withFooterInput
+      ? "145px"
+      : "73px"};
+  height: ${(props) =>
+    props.withFooterCheckbox
+      ? "181px"
+      : props.withFooterInput
+      ? "145px"
+      : "73px"};
+  min-height: ${(props) =>
+    props.withFooterCheckbox
+      ? "181px"
+      : props.withFooterInput
+      ? "145px"
+      : "73px"};
 
   padding: 0 16px;
 

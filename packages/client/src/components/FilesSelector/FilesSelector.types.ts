@@ -86,6 +86,7 @@ export type FilesSelectorProps = {
   withoutBasicSelection: boolean;
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
+  isEditorDialog: boolean;
 
   onClose?: () => void;
 
@@ -125,4 +126,16 @@ export type FilesSelectorProps = {
   onSetNewFolderPath?: (value: number | string | undefined) => void;
   onSelectFolder?: (value: number | string | undefined) => void;
   onSelectTreeNode?: (treeNode: any) => void;
+  onSave?: (
+    e: any,
+    folderId: string | number,
+    fileTitle: string,
+    openNewTab: boolean
+  ) => void;
+
+  withFooterInput?: boolean;
+  withFooterCheckbox?: boolean;
+  footerInputHeader?: string;
+  currentFooterInputValue?: string;
+  footerCheckboxLabel?: string;
 };

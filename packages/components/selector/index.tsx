@@ -69,6 +69,7 @@ const Selector = ({
   isLoading,
 
   withFooterInput,
+  withFooterCheckbox,
   footerInputHeader,
   footerCheckboxLabel,
   currentFooterInputValue,
@@ -335,6 +336,7 @@ const Selector = ({
         isBreadCrumbsLoading={isBreadCrumbsLoading}
         withSearch={withSearch}
         withFooterInput={withFooterInput}
+        withFooterCheckbox={withFooterCheckbox}
       />
 
       {(footerVisible || alwaysShowFooter) && (
@@ -351,13 +353,18 @@ const Selector = ({
           onCancel={onCancelAction}
           onChangeAccessRights={onChangeAccessRightsAction}
           withFooterInput={withFooterInput}
+          withFooterCheckbox={withFooterCheckbox}
           footerInputHeader={footerInputHeader}
           footerCheckboxLabel={footerCheckboxLabel}
           currentFooterInputValue={newFooterInputValue}
           setNewFooterInputValue={setNewFooterInputValue}
           isFooterCheckboxChecked={isFooterCheckboxChecked}
           setIsFooterCheckboxChecked={setIsFooterCheckboxChecked}
-          disableAcceptButton={disableAcceptButton}
+          disableAcceptButton={
+            withFooterInput
+              ? disableAcceptButton
+              : disableAcceptButton && !newFooterInputValue.trim()
+          }
         />
       )}
     </StyledSelector>
