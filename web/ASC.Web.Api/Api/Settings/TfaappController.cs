@@ -346,14 +346,9 @@ public class TfaappController : BaseSettingsController
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
 
-        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings)
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
-        }
-        
-        if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
-        {
-            return string.Empty;
         }
 
         if (_userManager.IsOutsider(user))
