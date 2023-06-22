@@ -58,60 +58,47 @@ const Sdk = ({
 
       let res;
 
-      switch (methodName) {
-        case "setConfig":
-          try {
-            const requests = await Promise.all([
-              setFrameConfig(data),
-              updateProfileCulture(user?.id, data.locale),
-            ]);
-            res = requests[0];
-          } catch (e) {
-            res = e;
-          }
-          break;
-        case "createHash":
-          {
-            const { password, hashSettings } = data;
-            try {
+      try {
+        switch (methodName) {
+          case "setConfig":
+            {
+              const requests = await Promise.all([
+                setFrameConfig(data),
+                updateProfileCulture(user?.id, data.locale),
+              ]);
+              res = requests[0];
+            }
+            break;
+          case "createHash":
+            {
+              const { password, hashSettings } = data;
               res = createPasswordHash(password, hashSettings);
-            } catch (e) {
-              res = e;
             }
-          }
-          break;
-        case "getUserInfo": {
-          try {
+            break;
+          case "getUserInfo":
             res = await loadCurrentUser();
-          } catch (e) {
-            res = e;
-          }
-          break;
-        }
-        case "getHashSettings": {
-          try {
-            const settings = await getSettings();
-            res = settings.passwordHash;
-          } catch (e) {
-            res = e;
-          }
-          break;
-        }
-        case "login":
-          {
-            const { email, passwordHash } = data;
-            try {
-              res = await login(email, passwordHash);
-            } catch (e) {
-              res = e;
+            break;
+
+          case "getHashSettings":
+            {
+              const settings = await getSettings();
+              res = settings.passwordHash;
             }
-          }
-          break;
-        case "logout":
-          res = await logout();
-          break;
-        default:
-          res = "Wrong method";
+            break;
+          case "login":
+            {
+              const { email, passwordHash } = data;
+              res = await login(email, passwordHash);
+            }
+            break;
+          case "logout":
+            res = await logout();
+            break;
+          default:
+            res = "Wrong method";
+        }
+      } catch (e) {
+        res = e;
       }
       frameCallbackData(res);
     }
