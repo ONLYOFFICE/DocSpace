@@ -87,9 +87,9 @@ class CurrentTariffStatusStore {
     return this.isValidDate(this.dueDate);
   }
   get isLicenseDateExpired() {
-    if (!this.licenseDate) return;
+    if (!this.isPaymentDateValid) return;
 
-    return this.isValidDate(this.licenseDate);
+    return moment() > moment(this.dueDate);
   }
   get gracePeriodEndDate() {
     moment.locale(authStore.language);
