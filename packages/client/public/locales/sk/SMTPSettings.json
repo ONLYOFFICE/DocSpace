@@ -1,7 +1,6 @@
 {
   "Authentication": "Autentifikácia",
   "EnableSSL": "Povoliť SSL",
-  "EnterPassword": "Zadajte heslo",
   "HostLogin": "Prihlasovacie meno",
   "HostPassword": "Prihlasovacie heslo",
   "Port": "Port",

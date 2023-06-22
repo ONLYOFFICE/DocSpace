@@ -46,6 +46,6 @@ public static class Solution
 
     public static string GetProviderProjectPath(string solutionPath, ProviderInfo providerInfo)
     {
-        return GetProjects(solutionPath).FirstOrDefault(r => r.AssemblyName == $"ASC.Migrations.{providerInfo.Provider}")?.Path;
+        return GetProjects(solutionPath).FirstOrDefault(r => r.AssemblyName == $"ASC.Migrations.{providerInfo.Provider}.SaaS")?.Path;
     }
 }

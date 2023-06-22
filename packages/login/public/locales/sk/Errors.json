@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "Používateľa sa nepodarilo nájsť",
   "InvalidUsernameOrPassword": "Nesprávne používateľské meno alebo heslo.",
   "LoginWithAccountNotFound": "Nepodarilo sa nájsť pridružený účet tretej strany. Musíte najskôr pripojiť svoj účet sociálnych sietí na stránke úpravy profilu.",
+  "SsoError": "Interná chyba servera",
   "SsoSettingsCantCreateUser": "Nepodarilo sa vytvoriť používateľa s týmto autentizačným tokenom",
   "SsoSettingsDisabled": "Jednoduché prihlásenie je zakázané",
   "SsoSettingsEmptyToken": "Autentifikačný token nebol nájdený",

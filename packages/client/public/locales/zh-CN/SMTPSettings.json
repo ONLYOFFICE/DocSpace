@@ -1,7 +1,11 @@
 {
   "Authentication": "身份验证",
+  "AuthViaNTLM": "通过 NTLM 授权",
   "EnableSSL": "启用S​​SL",
-  "EnterPassword": "输入密码",
+  "EnterDomain": "输入域",
+  "EnterEmail": "输入电子邮件",
+  "EnterLogin": "输入登录名",
+  "EnterPort": "输入端口",
   "Host": "主机",
   "HostLogin": "主机登录",
   "HostPassword": "主机密码",

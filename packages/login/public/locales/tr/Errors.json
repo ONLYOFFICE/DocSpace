@@ -6,6 +6,7 @@
   "ErrorUserNotFound": "Kullanıcı bulunamadı",
   "InvalidUsernameOrPassword": "Geçersiz kullanıcı adı veya şifre.",
   "LoginWithAccountNotFound": "İlişkili üçüncü parti hesap bulunamıyor. Sosyal ağ hesabınızı profil düzenleme sayfasında bağlamanız gerekiyor.",
+  "SsoError": "İç sunucu hatası",
   "SsoSettingsCantCreateUser": "Bu akıllı anahtarla kullanıcı oluşturulamadı",
   "SsoSettingsDisabled": "Tek giriş devre dışı bırakıldı",
   "SsoSettingsEmptyToken": "Şifre üretici bulunamadı",

@@ -35,7 +35,7 @@ public class MigrationRunner
         _dbContextActivator = new DbContextActivator(serviceProvider);
     }
 
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
+    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider, ConfigurationInfo configurationInfo)
     {
         var counter = 0;
 
@@ -45,16 +45,17 @@ public class MigrationRunner
 
             foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
             {
-                DbContext context = null;
-                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, teamlabsiteProvider);
-                }
-                else
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, dbProvider);
-                }
+                var provider = contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)) ? teamlabsiteProvider : dbProvider;
+
+                var context = _dbContextActivator.CreateInstance(contextType, provider);
                 context.Database.Migrate();
+
+                if (configurationInfo == ConfigurationInfo.Standalone)
+                {
+                    context = _dbContextActivator.CreateInstance(contextType, provider, ConfigurationInfo.Standalone);
+                    context.Database.Migrate();
+                }
+
                 counter++;
             }
         }

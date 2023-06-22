@@ -7,6 +7,7 @@
   "InvalidUsernameOrPassword": "用户名或密码无效。",
   "LoginWithAccountNotFound": "找不到相关的第三方帐户",
   "RecaptchaInvalid": "无效的Recaptcha",
+  "SsoError": "内部服务器错误",
   "SsoSettingsCantCreateUser": "无法使用此身份验证令牌创建用户",
   "SsoSettingsDisabled": "单点登录已禁用",
   "SsoSettingsEmptyToken": "找不到身份验证令牌",

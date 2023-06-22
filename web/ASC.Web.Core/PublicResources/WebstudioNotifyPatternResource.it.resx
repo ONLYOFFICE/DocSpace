@@ -1166,8 +1166,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore Ã
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1790,5 +1789,17 @@ Il tuo portale Ã¨ di nuovo disponibile.</value>
   </data>
   <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
     <value>Ottieni le app di ONLYOFFICE gratuite</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Richiesta ufficio vendite</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Accedi al tuo account ONLYOFFICE Personal</value>
   </data>
 </root>

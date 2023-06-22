@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Collections.Concurrent;
+
 namespace ASC.Web.Api.Models;
 
 public class EmployeeDto
@@ -56,7 +58,7 @@ public class EmployeeDtoHelper
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly Dictionary<Guid, EmployeeDto> _dictionary;
+    private readonly ConcurrentDictionary<Guid, EmployeeDto> _dictionary;
 
     public EmployeeDtoHelper(
         ApiContext httpContext,
@@ -72,18 +74,19 @@ public class EmployeeDtoHelper
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
-        _dictionary = new Dictionary<Guid, EmployeeDto>();
+        _dictionary = new ConcurrentDictionary<Guid, EmployeeDto>();
     }
 
     public async Task<EmployeeDto> Get(UserInfo userInfo)
     {
-        if (_dictionary.ContainsKey(userInfo.Id))
+        if (!_dictionary.TryGetValue(userInfo.Id, out var employee))
         {
-            return _dictionary[userInfo.Id];
-        }
-        var employee = await Init(new EmployeeDto(), userInfo);
-        _dictionary.Add(userInfo.Id, employee);
+            employee = await Init(new EmployeeDto(), userInfo);
 
+            _dictionary.AddOrUpdate(userInfo.Id, i => employee, (i, v) => employee);
+
+        }
+        
         return employee;
     }
 
