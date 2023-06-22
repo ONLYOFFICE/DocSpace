@@ -30,9 +30,9 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
 
   const navigate = useNavigate();
 
-  const setting = window.location.pathname.endsWith("/settings/common")
-    ? "common"
-    : "admin";
+  const setting = window.location.pathname.endsWith("/settings/personal")
+    ? "personal"
+    : "general";
 
   const commonSettings = {
     id: "personal",

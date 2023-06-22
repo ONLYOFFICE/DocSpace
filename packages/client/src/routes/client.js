@@ -189,7 +189,7 @@ const ClientRoutes = [
             path: "settings",
             element: (
               <PrivateRoute withCollaborator restricted>
-                <Navigate to="/settings/common" replace />
+                <Navigate to="/settings/personal" replace />
               </PrivateRoute>
             ),
           },
