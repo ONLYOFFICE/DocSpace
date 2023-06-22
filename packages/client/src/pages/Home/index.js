@@ -427,7 +427,7 @@ class PureHome extends React.Component {
           try {
             const requests = await Promise.all([
               setFrameConfig(data),
-              updateProfileCulture(user.id, data.locale),
+              updateProfileCulture(user?.id, data.locale),
             ]);
             res = requests[0];
           } catch (e) {
