@@ -9,6 +9,7 @@ on:
     paths:
     - build/install/deb**
     - build/install/rpm**
+    - build/install/common**
   workflow_dispatch:
   
 env:
