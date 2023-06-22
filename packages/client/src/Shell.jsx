@@ -47,6 +47,16 @@ const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
+const Sdk = React.lazy(() => import("./pages/Sdk"));
+
+const SdkRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Sdk {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -544,6 +554,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/sdk/:mode"} component={SdkRoute} />
               <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />

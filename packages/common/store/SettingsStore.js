@@ -1,6 +1,6 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
-import { combineUrl, setCookie, getCookie } from "../utils";
+import { combineUrl, setCookie, getCookie, frameCallEvent } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
   ThemeKeys,
@@ -781,8 +781,15 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = (frameConfig) => {
-    this.frameConfig = frameConfig;
+  setFrameConfig = async (frameConfig) => {
+    runInAction(() => {
+      this.frameConfig = frameConfig;
+      this.setTheme(frameConfig?.theme);
+    });
+
+    if (!!frameConfig) {
+      frameCallEvent({ event: "onAppReady" });
+    }
     return frameConfig;
   };
 

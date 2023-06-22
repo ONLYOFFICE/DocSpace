@@ -359,9 +359,9 @@ public class TfaappController : BaseSettingsController
         TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
         _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
+        await _cookiesManager.ResetUserCookie(user.Id);
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookie();
             return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
         }
 

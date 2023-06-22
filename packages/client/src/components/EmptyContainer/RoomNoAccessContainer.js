@@ -25,6 +25,7 @@ const RoomNoAccessContainer = (props) => {
     isEmptyPage,
     sectionWidth,
     theme,
+    isFrame,
   } = props;
 
   const descriptionRoomNoAccess = t("NoAccessRoomDescription");
@@ -36,6 +37,7 @@ const RoomNoAccessContainer = (props) => {
   }, []);
 
   const onGoToShared = () => {
+    if (isFrame) return;
     setIsLoading(true);
 
     setAlreadyFetchingRooms(true);
@@ -78,11 +80,11 @@ const RoomNoAccessContainer = (props) => {
 
   const propsRoomNotFoundOrMoved = {
     headerText: titleRoomNoAccess,
-    descriptionText: descriptionRoomNoAccess,
+    descriptionText: isFrame ? "" : descriptionRoomNoAccess,
     imageSrc: theme.isBase
       ? ManageAccessRightsReactSvgUrl
       : ManageAccessRightsReactSvgDarkUrl,
-    buttons: goToButtons,
+    buttons: isFrame ? <></> : goToButtons,
   };
 
   return (
@@ -104,6 +106,7 @@ export default inject(({ auth, filesStore }) => {
     setAlreadyFetchingRooms,
     isEmptyPage,
   } = filesStore;
+  const { isFrame } = auth.settingsStore;
   return {
     setIsLoading,
     fetchRooms,
@@ -111,5 +114,6 @@ export default inject(({ auth, filesStore }) => {
     setAlreadyFetchingRooms,
     isEmptyPage,
     theme: auth.settingsStore.theme,
+    isFrame,
   };
 })(withTranslation(["Files"])(observer(RoomNoAccessContainer)));
