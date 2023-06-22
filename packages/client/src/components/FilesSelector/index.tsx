@@ -2,12 +2,14 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
+// @ts-ignore
 import Loaders from "@docspace/common/components/Loaders";
 import { FolderType } from "@docspace/common/constants";
 
 import Aside from "@docspace/components/aside";
 import Backdrop from "@docspace/components/backdrop";
 import Selector from "@docspace/components/selector";
+// @ts-ignore
 import toastr from "@docspace/components/toast/toastr";
 
 import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
@@ -64,7 +66,6 @@ const FilesSelector = ({
   onSetNewFolderPath,
   onSelectTreeNode,
 }: FilesSelectorProps) => {
-
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
   const [breadCrumbs, setBreadCrumbs] = React.useState<BreadCrumb[]>([]);
@@ -321,13 +322,11 @@ const FilesSelector = ({
     } else {
       onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
       onSelectFolder && onSelectFolder(selectedItemId);
-    
+
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
       !withoutImmediatelyClose && onCloseAction();
     }
   };
-
-
 
   const headerLabel = getHeaderLabel(t, isCopy, isRestoreAll, isMove);
 
@@ -441,8 +440,6 @@ export default inject(
 
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
-
-
 
     const currentFolderId = id
       ? id

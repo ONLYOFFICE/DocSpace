@@ -55,7 +55,7 @@ export type SelectorProps = {
   searchEmptyScreenDescription?: string;
   hasNextPage?: boolean;
   isNextPageLoading?: boolean;
-  loadNextPage?: (startIndex: number, ...rest: any) => Promise<void>;
+  loadNextPage?: ((startIndex: number, ...rest: any) => Promise<void>) | null;
   totalItems: number;
   isLoading?: boolean;
   searchLoader?: any;

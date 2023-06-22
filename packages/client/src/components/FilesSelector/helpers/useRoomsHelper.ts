@@ -1,8 +1,12 @@
 import React from "react";
 
+// @ts-ignore
 import { getRooms } from "@docspace/common/api/rooms";
+// @ts-ignore
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+// @ts-ignore
 import { RoomsType } from "@docspace/common/constants";
+// @ts-ignore
 import { iconSize32 } from "@docspace/common/utils/image-helpers";
 
 import { PAGE_COUNT, defaultBreadCrumb } from "../utils";
