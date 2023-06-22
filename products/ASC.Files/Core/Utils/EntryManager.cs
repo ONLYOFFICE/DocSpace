@@ -394,7 +394,7 @@ public class EntryManager
         var entries = new List<FileEntry>();
 
         searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
-        
+
         if (parent.FolderType == FolderType.TRASH)
         {
             withSubfolders = false;
@@ -443,7 +443,7 @@ public class EntryManager
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
 
-            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText,  withSubfolders);
+            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders);
             var files = fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
             //share
             var shared = _fileSecurity.GetPrivacyForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
@@ -471,7 +471,7 @@ public class EntryManager
 
             var allFoldersCountTask = folderDao.GetFoldersCountAsync(parent.Id, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
             var allFilesCountTask = fileDao.GetFilesCountAsync(parent.Id, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
-            
+
             var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject, from, count)
                 .ToListAsync();
 
@@ -484,7 +484,7 @@ public class EntryManager
             entries = new List<FileEntry>(folders.Count + files.Count);
             entries.AddRange(folders);
             entries.AddRange(files);
-            
+
             var fileStatusTask = _entryStatusManager.SetFileStatusAsync(files);
             var tagsNewTask = _fileMarker.SetTagsNewAsync(parent, entries);
             var originsTask = SetOriginsAsync(parent, entries);
@@ -981,19 +981,20 @@ public class EntryManager
                 {
                     return 0;
                 }
-                
+
                 if (x1 == null)
                 {
                     return c * 1;
                 }
-                
+
                 if (x2 == null)
                 {
                     return c * -1;
                 }
 
                 return c * x1.EnumerableComparer(x2);
-            },
+            }
+            ,
             _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
         };
 
@@ -1451,6 +1452,11 @@ public class EntryManager
                 }
             }
             file.Version++;
+
+            if (file.VersionGroup == 1)
+            {
+                file.VersionGroup++;
+            }
         }
         file.Forcesave = forcesave ?? ForcesaveType.None;
 
@@ -1692,9 +1698,10 @@ public class EntryManager
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                var CopyThumbnailsAsync = async () => {
-                    await using (var scope =  _serviceProvider.CreateAsyncScope())
-                    { 
+                var CopyThumbnailsAsync = async () =>
+                {
+                    await using (var scope = _serviceProvider.CreateAsyncScope())
+                    {
                         var _fileDao = scope.ServiceProvider.GetService<IDaoFactory>().GetFileDao<T>();
                         var _globalStoreLocal = scope.ServiceProvider.GetService<GlobalStore>();
 
