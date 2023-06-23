@@ -586,6 +586,14 @@ const ShellWrapper = inject(({ auth, backup }) => {
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
 
+  const userTheme = isDesktopClient
+    ? auth?.userStore?.user?.theme
+      ? auth?.userStore?.user?.theme
+      : window.RendererProcessVariable?.theme?.type === "dark"
+      ? "Dark"
+      : "Base"
+    : auth?.userStore?.user?.theme;
+
   return {
     loadBaseInfo: async () => {
       await init();
@@ -611,11 +619,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: isDesktopClient
-      ? window.RendererProcessVariable?.theme?.type === "dark"
-        ? "Dark"
-        : "Base"
-      : auth?.userStore?.user?.theme,
+    userTheme: userTheme,
     whiteLabelLogoUrls,
     standalone,
   };

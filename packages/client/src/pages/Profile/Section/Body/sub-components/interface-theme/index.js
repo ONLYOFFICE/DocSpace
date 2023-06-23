@@ -11,7 +11,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import { smallTablet } from "@docspace/components/utils/device";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import { showLoader, hideLoader, getSystemTheme } from "@docspace/common/utils";
 
 import ThemePreview from "./theme-preview";
 
@@ -85,11 +85,7 @@ const InterfaceTheme = (props) => {
   };
 
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
-  const systemThemeValue =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? ThemeKeys.DarkStr
-      : ThemeKeys.BaseStr;
+  const systemThemeValue = getSystemTheme();
 
   return (
     <StyledWrapper>
