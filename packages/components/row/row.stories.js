@@ -109,7 +109,7 @@ export const Default = Template.bind({});
 Default.args = {
   contextButton: true,
   checked: true,
-  element: "",
+  element: "ComboBox",
   content: "Sample text",
   checkbox: true,
 };

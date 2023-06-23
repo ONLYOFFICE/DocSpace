@@ -247,13 +247,18 @@ const StyledIcon = styled.div`
     props.theme.interfaceDirection === "rtl" &&
     css`
       margin-right: 0;
-      margin-left: 0px;
+      margin-left: ${(props) =>
+        props.theme.comboBox.childrenButton.marginRight};
     `}
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
 
   visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      transform: scaleX(-1);
+    `}
   .combo-button_selected-icon {
     path {
       fill: ${(props) =>
