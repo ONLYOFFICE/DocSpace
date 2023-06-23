@@ -46,7 +46,6 @@ const Calendar = ({
     // setSelectedDate(initialDate);
     setObservedDate(initialDate);
   }, []);
-
   return (
     <ColorTheme
       themeId={ThemeType.Calendar}
