@@ -586,4 +586,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Roskakori tyhjennetty</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Lisätyt merkit: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Poistetut merkit: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Huone arkistoitu</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Lisätty käyttäjä: [{0}]. Rooli: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Huone poistettu</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Linkki luotu. Rooli: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Linkki poistettu</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Linkki päivitetty. Rooli: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo luotu</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo poistettu</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Poistettu käyttäjä: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Huone nimetty uudelleen: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Huone palautettu</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} nimitetty: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Merkki luotu: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Merkit poistettu: {0}</value>
+  </data>
 </root>

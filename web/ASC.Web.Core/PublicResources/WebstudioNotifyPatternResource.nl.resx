@@ -1173,4 +1173,127 @@ ONLYOFFICE team
   <data name="ButtonAccept" xml:space="preserve">
     <value>Accepteren</value>
   </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Uw ONLYOFFICE DocSpace configureren</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Bevestig het veranderen van uw wachtwoord</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Ontdek het zakelijk abonnement van ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Ontdek het zakelijk abonnement van ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Ontdek het zakelijk abonnement van ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Ontdek het zakelijk abonnement van ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ontvang gratis ONLYOFFICE apps</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ontvang gratis ONLYOFFICE apps</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ontvang gratis ONLYOFFICE apps</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Wachtperiode voor uw ONLYOFFICE DocSpace geactiveerd</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Wachtperiode voor uw ONLYOFFICE DocSpace verlopen</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Wachtperiode voor uw ONLYOFFICE DocSpace verloopt morgen</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Aanmelden bij ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Log in op uw ONLYOFFICE Personal account</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace is gedeactiveerd</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Aanvraag verkoopafdeling</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Enkele tips voor effectief werken aan uw documenten</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Enkele tips voor effectief werken aan uw documenten</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Enkele tips voor effectief werken aan uw documenten</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Enkele tips voor effectief werken aan uw documenten</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Uw ONLYOFFICE DocSpace abonnement is bijna verlopen.</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Uw ONLYOFFICE DocSpace wordt verwijderd.</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACCEPTEREN</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Kameruitnodiging Bevestigen</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Samenwerken in DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Bevestig DocSpace Uitnodiging</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>BEVESTIGEN</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Ga Naar De Sectie Betalingen</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Bevestigen</value>
+  </data>
 </root>

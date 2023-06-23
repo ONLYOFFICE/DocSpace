@@ -496,4 +496,10 @@
   <data name="ConsumersBox" xml:space="preserve">
     <value>Box</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Yritys</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Aloitus</value>
+  </data>
 </root>

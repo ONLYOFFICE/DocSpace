@@ -1092,6 +1092,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
 
 请确保在宽限期到期之前支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
@@ -1116,6 +1117,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已结束。
 
 请尽快支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
@@ -1128,6 +1130,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期将于明天结束。
 
 请在今天支付您的专业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。

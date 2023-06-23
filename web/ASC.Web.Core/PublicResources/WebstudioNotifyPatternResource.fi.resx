@@ -313,4 +313,707 @@ Bien à vous,
 équipe ONLYOFFICE 
 "www.onlyoffice.com" : https://www.onlyoffice.com/fr</value>
   </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>HYVÄKSY</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Hyväksy</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Tee yhteistyötä DocSpacessa</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Vahvista DocSpace-kutsusi</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Vahvista</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>VAHVISTA</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Vahvista kutsu huoneeseen</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Käy maksuosiossa</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Haluatko vaihtaa ONLYOFFICE-tilisi salasanan? Klikkaa alla olevaa painiketta vahvistaaksesi.
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.
+
+Etkö halua vaihtaa salasanaasi? Jätä tämä viesti huomiotta</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Olet juuri luonut ONLYOFFICE DocSpacen, asiakirjakeskittymän, jossa voit tehostaa yhteistyötä tiimisi, asiakkaittesi, kumppaneittesi jne kanssa. Sen osoite on "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Vahvista sähköpostiosoitteesi (linkki on voimassa 7 päivää): 
+
+$GreenButton
+
+
+Nykyinen hinnoittelusi on ALOITTELIJA. Se on täysin ilmainen ja sisältää:
+
+*1 ylläpitäjä, 2 tehokäyttäjää
+*Enintään 12 huonetta
+*Rajoittamaton määrä käyttäjiä jokaisessa huoneessa
+*2GB levytilaa
+
+Nauti uudesta tavasta tehdä yhteistyötä asiakirjoilla!
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Olet juuri luonut ONLYOFFICE DocSpacen, asiakirjakeskittymän, jossa voit tehostaa yhteistyötä tiimisi, asiakkaittesi, kumppaneittesi jne kanssa. Sen osoite on "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Vahvista sähköpostiosoitteesi (linkki on voimassa 7 päivää): 
+
+$GreenButton
+
+
+Nykyinen hinnoittelusi on ALOITTELIJA. Se on täysin ilmainen ja sisältää:
+
+*1 ylläpitäjä, 2 tehokäyttäjää
+*Enintään 12 huonetta
+*Rajoittamaton määrä käyttäjiä jokaisessa huoneessa
+*2GB levytilaa
+
+Nauti uudesta tavasta tehdä yhteistyötä asiakirjoilla!
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Olet juuri luonut ONLYOFFICE DocSpacen, asiakirjakeskittymän, jossa voit tehostaa yhteistyötä tiimisi, asiakkaittesi, kumppaneittesi jne kanssa. Sen osoite on "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Vahvista sähköpostiosoitteesi (linkki on voimassa 7 päivää): 
+
+$GreenButton
+
+
+Nykyinen hinnoittelusi on ALOITTELIJA. Se on täysin ilmainen ja sisältää:
+
+*1 ylläpitäjä, 2 tehokäyttäjää
+*Enintään 12 huonetta
+*Rajoittamaton määrä käyttäjiä jokaisessa huoneessa
+*2GB levytilaa
+
+Nauti uudesta tavasta tehdä yhteistyötä asiakirjoilla!
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Olet juuri luonut ONLYOFFICE DocSpacen, asiakirjakeskittymän, jossa voit tehostaa yhteistyötä tiimisi, asiakkaittesi, kumppaneittesi jne kanssa. Sen osoite on "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Vahvista sähköpostiosoitteesi (linkki on voimassa 7 päivää): 
+
+$GreenButton
+
+
+Nykyinen hinnoittelusi on ALOITTELIJA. Se on täysin ilmainen ja sisältää:
+
+*1 ylläpitäjä, 2 tehokäyttäjää
+*Enintään 12 huonetta
+*Rajoittamaton määrä käyttäjiä jokaisessa huoneessa
+*2GB levytilaa
+
+Nauti uudesta tavasta tehdä yhteistyötä asiakirjoilla!
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Hanki ilmaiset ONLYOFFICE-sovellukset työstääksesi asiakirjoja miltä tahansa laitteeltasi.
+
+#Työstääksesi asiakirjoja offlinessa Windowsilla, Linuxilla ja Macilla, lataa "ONLYOFFICE Desktop Editorit"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Muokataksesi asiakirjoja mobiililaitteilla, hanki ONLYOFFICE Documents- sovellus "iOS":ille":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" tai
+"Androidille":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Toivottavasti nautit ONLYOFFICE DocSpacesi käytöstä. Tässä on vinkkejä tehokkaampaan asiakirjojen työstöön.
+
+*#1. Valitse tapasi työskennellä. *Järjestä työsi tarpeen mukaan luomalla yhteistyöhuoneita reaaliaikaista yhteiskirjoittamista varten tai mukautettuja huoneita, joissa on joustavat asetukset mihin tahansa tarkoitukseen.
+
+*#2.Työstä mitä tahansa sisältöä. * Tallenna ja työstä asiakirjoja eri formaateissa huoneiden sisällä: tekstiasiakirjoja, laskentataulukoita, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#3. Kirjoita yhdessä tehokkaasti. *Tee yhteistyötä asiakirjoissa kahdessa eri yhteismuokkaustilassa: reaaliajassa tai lukiten kappaleita. Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita.
+
+*#4. Yhdistä 3 osapuolien pilviin. *Yhdistä mihin tahansa pilvitilaan ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Ystävällisin terveisin;
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Toivottavasti nautit ONLYOFFICE DocSpacesi käytöstä. Tässä on vinkkejä tehokkaampaan asiakirjojen työstöön.
+
+*#1. Valitse tapasi työskennellä. *Järjestä työsi tarpeen mukaan luomalla yhteistyöhuoneita reaaliaikaista yhteiskirjoittamista varten tai mukautettuja huoneita, joissa on joustavat asetukset mihin tahansa tarkoitukseen.
+
+*#2.Työstä mitä tahansa sisältöä. * Tallenna ja työstä asiakirjoja eri formaateissa huoneiden sisällä: tekstiasiakirjoja, laskentataulukoita, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#3. Kirjoita yhdessä tehokkaasti. *Tee yhteistyötä asiakirjoissa kahdessa eri yhteismuokkaustilassa: reaaliajassa tai lukiten kappaleita. Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita.
+
+*#4. Yhdistä 3 osapuolien pilviin. *Yhdistä mihin tahansa pilvitilaan ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Ystävällisin terveisin;
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Toivottavasti nautit ONLYOFFICE DocSpacesi käytöstä. Tässä on vinkkejä tehokkaampaan asiakirjojen työstöön.
+
+*#1. Valitse tapasi työskennellä. *Järjestä työsi tarpeen mukaan luomalla yhteistyöhuoneita reaaliaikaista yhteiskirjoittamista varten tai mukautettuja huoneita, joissa on joustavat asetukset mihin tahansa tarkoitukseen.
+
+*#2.Työstä mitä tahansa sisältöä. * Tallenna ja työstä asiakirjoja eri formaateissa huoneiden sisällä: tekstiasiakirjoja, laskentataulukoita, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#3. Kirjoita yhdessä tehokkaasti. *Tee yhteistyötä asiakirjoissa kahdessa eri yhteismuokkaustilassa: reaaliajassa tai lukiten kappaleita. Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita.
+
+*#4. Yhdistä 3 osapuolien pilviin. *Yhdistä mihin tahansa pilvitilaan ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Ystävällisin terveisin;
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä parantamaan käyttäjäkokemusta.
+
+*Onko sinulla iso tiimi tai paljon asiakkaita tai kumppaneita, joiden kanssa tehdä yhteistyötä ONLYOFFICE DocSpacessasi?
+
+*Haluaisitko luoda rajattomasti huoneita työstääksesi lukuisia asiakirjoja?
+
+*Haluatko käyttää ONLYOFFICE DocSpacea oman brändisi alla?
+
+Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
+
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+
+_Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä parantamaan käyttäjäkokemusta.
+
+*Onko sinulla iso tiimi tai paljon asiakkaita tai kumppaneita, joiden kanssa tehdä yhteistyötä ONLYOFFICE DocSpacessasi?
+
+*Haluaisitko luoda rajattomasti huoneita työstääksesi lukuisia asiakirjoja?
+
+*Haluatko käyttää ONLYOFFICE DocSpacea oman brändisi alla?
+
+Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
+
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+
+_Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä parantamaan käyttäjäkokemusta.
+
+*Onko sinulla iso tiimi tai paljon asiakkaita tai kumppaneita, joiden kanssa tehdä yhteistyötä ONLYOFFICE DocSpacessasi?
+
+*Haluaisitko luoda rajattomasti huoneita työstääksesi lukuisia asiakirjoja?
+
+*Haluatko käyttää ONLYOFFICE DocSpacea oman brändisi alla?
+
+Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
+
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+
+_Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä parantamaan käyttäjäkokemusta.
+
+*Onko sinulla iso tiimi tai paljon asiakkaita tai kumppaneita, joiden kanssa tehdä yhteistyötä ONLYOFFICE DocSpacessasi?
+
+*Haluaisitko luoda rajattomasti huoneita työstääksesi lukuisia asiakirjoja?
+
+*Haluatko käyttää ONLYOFFICE DocSpacea oman brändisi alla?
+
+Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
+
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+
+_Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään ONLYOFFICE DocSpaceen "${__VirtualRootPath}":"${__VirtualRootPath}". Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään ONLYOFFICE DocSpaceen "${__VirtualRootPath}":"${__VirtualRootPath}". Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään ONLYOFFICE DocSpaceen "${__VirtualRootPath}":"${__VirtualRootPath}". Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään ONLYOFFICE DocSpaceen "${__VirtualRootPath}":"${__VirtualRootPath}". Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+
+*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+
+*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+
+*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+
+*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+
+*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+
+*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Hei, $ UserName!
+
+Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+
+*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+
+*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+
+*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1. Viesti "${__VirtualRootPath}":"${__VirtualRootPath}"  portaalista
+
+Nimi: $UserName
+
+Sähköposti: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Hanki ilmaiset ONLYOFFICE-sovellukset työstääksesi asiakirjoja miltä tahansa laitteelta.
+
+#Työstääksesi asiakirjoja offlinessa Windowsilla, Linuxilla ja Macilla, lataa "ONLYOFFICE Desktop Editorit":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Muokataksesi asiakirjoja mobiililaitteilla, hanki ONLYOFFICE Documents-sovellus "iOS:ille":https://apps.apple.com/us/app/onlyoffice-documents/id944896972" tai "Androidille":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Hanki ilmaiset ONLYOFFICE-sovellukset työstääksesi asiakirjoja miltä tahansa laitteelta.
+
+#Työstääksesi asiakirjoja offlinessa Windowsilla, Linuxilla ja Macilla, lataa "ONLYOFFICE Desktop Editorit":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Muokataksesi asiakirjoja mobiililaitteilla, hanki ONLYOFFICE Documents-sovellus "iOS:ille":https://apps.apple.com/us/app/onlyoffice-documents/id944896972" tai "Androidille":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Hei!
+Tätä sähköpostia yritettiin käyttää rekisteröimään "ONLYOFFICE Personal":"$PortalUrl" tili. Mikäli kyseessä olit sinä, haluamme ilmoittaa, että kyseinen tili on jo olemassa— jatka ONLYOFFICE Personalissa ja kirjaudu sisään.
+Jos olet hukannut salasanasi, voit saada sen takaisin "salasanan palautussivulla":"$LinkToRecovery".
+Jos et yrittänyt rekisteröidä uutta tiliä, luultavasti se tehtiin vahingossa. Tässä tapauksessa voit jättää tämän sähköpostin huomiotta.
+
+Mukavaa päivää!
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Haluatko vaihtaa ONLYOFFICE henkilökohtaisen tilisi salasanan? Klikkaa alla olevasta painikkeesta vahvistaaksesi. 
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.
+
+Etkö halua vaihtaa salasanaasi? Jätä tämä viesti huomiotta.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpacesi on onnistuneesti poistettu käytöstä. Ole hyvä ja huomioi, että kaikki tiedot poistetaan "Tietosuojakäytäntömme" mukaisesti:"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Miksi päätit lähteä? Jaa kokemuksesi kanssamme.
+
+$GreenButton
+
+Kiitos ja hyvää jatkoa!
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Säädä  ONLYOFFICE DocSPacesi turvallisuusasetuksia tehdäksesi siitä vielä turvallisemman:
+
+*Aseta salasanan vahvuus.
+
+* Ota käyttöön kaksivaiheinen todennus ja kertakirjautuminen
+
+* Määritä luotetut sähköpostinimet ja istunnon kesto.
+
+*Rajoita pääsyä tietyistä IP-osoitteista.
+
+*Salli tai rajoita pääkäyttäjäviestejä.
+
+*Hallitse pääkäyttäjän pääsyoikeuksia.
+
+* Tee tietojen varmuuskopiointia.
+
+$GreenButton
+
+Käy "Help Centerissämme":"https://helpcenter.onlyoffice.com/" oppiaksesi enemmän ONLYOFFICE DocSpacesi konfiguroinnista ja hallinnasta. Olet myös tervetullut kysymään neuvoja, jos sinulla on kysymyksiä käytettävyydestä.
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Et ole käyttänyt ONLYOFFICE DocSpaceasi "${__VirtualRootPath}":"${__VirtualRootPath}" yli puoleen vuoteen.
+
+Koska olet päättänyt olla käyttämättä sitä enää, ONLYOFFICE DocSpacesi ja kaikki sen tiedot poistetaan "Tietosuojakäytäntömme" mukaisesti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Arvostamme palautettasi. Miksi olet päättänyt lopettaa ONLYOFFICE DocSpacen käytön?
+
+
+$GreenButton
+
+Jos tämä on mielestäsi virhe ja haluat jatkaa ONLYOFFICE DocSpacen käyttöä, ole hyvä ja ota yhteyttä "tukitiimiimme": https://www.onlyoffice.com/support-contact-form.aspx". 
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään ONLYOFFICE DocSpaceen "${__VirtualRootPath }":"${__VirtualRootPath }". 
+
+$GreenButton
+
+Aseta uusi salasana tilillesi kutsulinkin klikkaamisen jälkeen.
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Ole hyvä ja ota huomioon, että armonaika $PaymentDelay päivää ONLYOFFICE DocSpaceen on aktivoitu.
+
+Varmista, että maksat Yritystilauksesi ennen kuin armonaika päättyy. Näin pystyt jatkamaan kaikkien ONLYOFFICE DocSpacen etujen käyttöä.
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Ole hyvä ja ota huomioon, että ONLYOFFICE DocSpacesi tilaus päättyy kolmen päivän päästä. Sen jälkeen armonaika $PaymentDelay päivää aktivoidaan.
+
+Suosittelemme, että maksat Yritystilauksesi nyt ja voit jatkaa kaikkien ONLYOFFICE DocSpacen etujen käyttöä.
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Ole hyvä ja ota huomioon, että armonaika $PaymentDelay päivää ONLYOFFICE DocSpaceesi päättyy huomenna.
+
+Varmista, että maksat Yritystilauksesi tänään. Näin pystyt käyttämään kaikkia ONLYOFFICE DocSpacen etuja.
+
+$GreenButton
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Ole hyvä ja ota huomioon, että armonaika $PaymentDelay päivää ONLYOFFICE DocSpaceesi päättyy huomenna.
+
+Varmista, että maksat Yritystilauksesi tänään. Näin pystyt käyttämään kaikkia ONLYOFFICE DocSpacen etuja.
+
+$VihreäPainike
+
+Ystävällisin terveisin,
+ONLYOFFICE Team
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään $Viesti huoneeseen "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+$GreenButton
+
+Ole hyvä ja aseta tilillesi uusi salasana kutsulinkin klikkaamisen jälkeen.
+
+Ystävällisin terveisin,
+
+ONLYOFFICE- tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Määritä ONLYOFFICE DocSpacesi</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Vahvista salasanasi vaihtaminen</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Tutustu ONLYOFFICE DocSpace-yritystilaukseen</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Tutustu ONLYOFFICE DocSpace-yritystilaukseen</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Tutustu ONLYOFFICE DocSpace-yritystilaukseen</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Tutustu ONLYOFFICE DocSpace-yritystilaukseen</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ilmaisia ONLYOFFICE sovelluksia</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ilmaisia ONLYOFFICE sovelluksia</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ilmaisia ONLYOFFICE sovelluksia</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Armonaika ONLYOFFICE DocSpaceesi on aktivoitu</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Armonaika ONLYOFFICE DocSpaceesi on päättynyt</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Armonaika ONLYOFFICE DocSpaceesi päättyy huomenna</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Liity ONLYOFFICE DocSpaceen</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Kirjaudu henkilökohtaiseen ONLYOFFICE- tiliisi</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace on poistettu käytöstä</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Pyyntö myyntiosastolle</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Useita tehokkaita neuvoja asiakirjojen työstöön</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Useita tehokkaita neuvoja asiakirjojen työstöön</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Useita tehokkaita neuvoja asiakirjojen työstöön</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Useita tehokkaita neuvoja asiakirjojen työstöön</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Mitä uutta on portaalissasi $Date</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Sinut on kutsuttu liittymään ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace- tilauksesi on päättymässä</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpacesi poistetaan</value>
+  </data>
 </root>

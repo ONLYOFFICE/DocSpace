@@ -304,4 +304,52 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Yhteistyökumppani</value>
   </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Lähetetty lomake</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Uusi versio ei voi olla sama kuin nykyinen</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia tiedoston kopioimiseen</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia kansion kopioimiseen</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Virheellinen palveluntarjoaja</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Tätä kansiota ei ole mahdollista käyttää huoneen tallentamiseen</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Kutsulinkki on virheellinen tai sen voimassaolo on päättynyt</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Tämä palveluntarjoaja on jo yhdistetty huoneeseen</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Rooli ei ole mahdollinen tälle käyttäjätyypille</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia huoneen arkistoimiseen</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia tämän kansion kopioimiseen</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia tämän huoneen muokkaamiseen</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia tämän kansion siirtämiseen</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia huoneen palauttamiseen</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Et voi muokata arkistoituja huoneita</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Et voi kiinnittää huonetta</value>
+  </data>
 </root>
