@@ -7,15 +7,27 @@ const StyledPaging = styled.div`
   justify-content: flex-start;
 
   & > button {
-    margin-right: ${(props) => props.theme.paging.button.marginRight};
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: ${theme.paging.button.marginRight};`
+        : `margin-right: ${theme.paging.button.marginRight};`}
+
     max-width: ${(props) => props.theme.paging.button.maxWidth};
   }
 `;
-StyledPaging.defaultProps = { theme: Base };
+StyledPaging.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 
 const StyledOnPage = styled.div`
-  margin-left: ${(props) => props.theme.paging.comboBox.marginLeft};
-  margin-right: ${(props) => props.theme.paging.comboBox.marginRight};
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `
+        margin-right: ${theme.paging.comboBox.marginLeft};
+        margin-left: ${theme.paging.comboBox.marginRight};
+      `
+      : `
+        margin-left: ${theme.paging.comboBox.marginLeft};
+        margin-right: ${theme.paging.comboBox.marginRight};
+      `}
 
   .hideDisabled {
     div[disabled] {
@@ -27,10 +39,13 @@ const StyledOnPage = styled.div`
     display: none;
   }
 `;
-StyledOnPage.defaultProps = { theme: Base };
+StyledOnPage.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 
 const StyledPage = styled.div`
-  margin-right: ${(props) => props.theme.paging.page.marginRight};
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: ${theme.paging.page.marginRight};`
+      : `margin-right: ${theme.paging.page.marginRight};`}
 
   .manualWidth {
     .dropdown-container {
@@ -38,6 +53,6 @@ const StyledPage = styled.div`
     }
   }
 `;
-StyledPage.defaultProps = { theme: Base };
+StyledPage.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 
 export { StyledPage, StyledOnPage, StyledPaging };
