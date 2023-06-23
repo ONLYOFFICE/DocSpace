@@ -5,7 +5,7 @@ export default create({
   base: "dark",
   appBg: "#333",
 
-  brandTitle: "OnlyOffice",
+  brandTitle: "ONLYOFFICE",
   brandUrl: "https://www.onlyoffice.com/docspace.aspx",
   brandImage: Logo,
   brandTarget: "_self",
