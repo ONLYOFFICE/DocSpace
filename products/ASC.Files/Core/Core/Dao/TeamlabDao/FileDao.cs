@@ -294,7 +294,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
-        
+
         var q = GetFilesQueryWithFilters(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext);
 
         q = q.Skip(offset);
@@ -318,8 +318,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
     public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
         var storage = _globalStore.GetStore();
-        
-        if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title) 
+
+        if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title)
             && (_fileUtility.CanMediaView(file.Title) || _fileUtility.CanImageView(file.Title)))
         {
             return _globalStore.GetStore().GetCdnPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
@@ -540,15 +540,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         return InternalReplaceFileVersionAsync(file, fileStream);
     }
-    
-    public async Task<int> GetFilesCountAsync(int parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, 
+
+    public async Task<int> GetFilesCountAsync(int parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent,
         bool withSubfolders = false, bool excludeSubject = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
             return 0;
         }
-        
+
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
         return await GetFilesQueryWithFilters(parentId, null, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext).CountAsync();
@@ -1154,6 +1154,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (!uploadSession.KeepVersion)
             {
                 file.Version++;
+                file.VersionGroup++;
             }
             file.ContentLength = uploadSession.BytesTotal;
             file.ConvertedType = null;
@@ -1677,7 +1678,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         return dbFile;
     }
-    
+
     private IQueryable<DbFile> GetFilesQueryWithFilters(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent,
         bool withSubfolders, bool excludeSubject, FilesDbContext filesDbContext)
     {
