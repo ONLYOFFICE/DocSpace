@@ -17,7 +17,7 @@ class ChangeEmail extends React.PureComponent {
           tryRedirectTo(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              `/accounts/view/@self?email_change=success`
+              `/profile?email_change=success`
             )
           );
         })
@@ -54,7 +54,7 @@ class ChangeEmail extends React.PureComponent {
           tryRedirectTo(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              `/accounts/view/@self?email_change=success`
+              `/profile?email_change=success`
             )
           );
         })

@@ -61,7 +61,7 @@ public class QuotaHelper
 
         return new QuotaDto
         {
-            Id = quota.Tenant,
+            Id = quota.TenantId,
             Title = Resource.ResourceManager.GetString($"Tariffs_{quota.Name}"),
 
             NonProfit = quota.NonProfit,

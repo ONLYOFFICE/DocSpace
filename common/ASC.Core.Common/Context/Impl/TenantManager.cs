@@ -382,7 +382,7 @@ public class TenantManager
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync(bool all)
     {
-        return (await QuotaService.GetTenantQuotasAsync()).Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        return (await QuotaService.GetTenantQuotasAsync()).Where(q => q.TenantId < 0 && (all || q.Visible)).OrderByDescending(q => q.TenantId).ToList();
     }
 
     public async Task<TenantQuota> GetCurrentTenantQuotaAsync(bool refresh = false)
@@ -393,7 +393,7 @@ public class TenantManager
     public async Task<TenantQuota> GetTenantQuotaAsync(int tenant, bool refresh = false)
     {
         var defaultQuota = await QuotaService.GetTenantQuotaAsync(tenant) ?? await QuotaService.GetTenantQuotaAsync(Tenant.DefaultTenant) ?? TenantQuota.Default;
-        if (defaultQuota.Tenant != tenant && TariffService != null)
+        if (defaultQuota.TenantId != tenant && TariffService != null)
         {
             var tariff = await TariffService.GetTariffAsync(tenant, refresh: refresh);
 
@@ -456,7 +456,7 @@ public class TenantManager
         catch
         {
             throw;
-        }
+    }
         finally
         {
             _semaphore.Release();

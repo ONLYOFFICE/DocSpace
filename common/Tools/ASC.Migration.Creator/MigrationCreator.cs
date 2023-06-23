@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Migration.Core;
+
 namespace Migration.Creator;
 
 public class MigrationCreator
@@ -37,34 +39,17 @@ public class MigrationCreator
 
     public void RunCreateMigrations(Options options)
     {
-        var counter = 0;
-
-        foreach (var projectInfo in Solution.GetProjects(options.Path))
+        foreach (var providerInfo in options.Providers)
         {
-            var ctxTypesFinder = new ProjectInfoContextFinder(projectInfo);
-
-            foreach (var contextType in ctxTypesFinder.GetDependetContextsTypes())
-            {
-                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
-                {
-                    foreach (var providerInfo in options.TeamlabsiteProviders)
-                    {
-                        CreateMigration(options, contextType, providerInfo);
-                        counter++;
-                    }
-                }
-                else
-                {
-                    foreach (var providerInfo in options.Providers)
-                    {
-                        CreateMigration(options, contextType, providerInfo);
-                        counter++;
-                    }
-                }
-            }
+            CreateMigration(options, typeof(MigrationContext), providerInfo);
         }
-
-        Console.WriteLine($"Created {counter} migrations");
+        
+        foreach (var providerInfo in options.TeamlabsiteProviders)
+        {
+            CreateMigration(options, typeof(TeamlabSiteContext), providerInfo);
+        }
+        
+        Console.WriteLine($"Update migrations");
     }
 
     private void CreateMigration(Options options, Type contextType, ProviderInfo providerInfo)

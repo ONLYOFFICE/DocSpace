@@ -44,6 +44,7 @@ public interface ITenantService
     Task<Tenant> SaveTenantAsync(CoreSettings coreSettings, Tenant tenant);
     Task RemoveTenantAsync(int id, bool auto = false);
     Task SetTenantSettingsAsync(int tenant, string key, byte[] data);
+    Task PermanentlyRemoveTenantAsync(int id);
     void SetTenantSettings(int tenant, string key, byte[] data);
     Task ValidateDomainAsync(string domain);
 }
