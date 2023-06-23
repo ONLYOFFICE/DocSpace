@@ -1,6 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
-import { combineUrl, setCookie, getCookie, frameCallEvent } from "../utils";
+import {
+  combineUrl,
+  setCookie,
+  getCookie,
+  frameCallEvent,
+  getSystemTheme,
+} from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
   ThemeKeys,
@@ -711,11 +717,7 @@ class SettingsStore {
       case ThemeKeys.System:
       case ThemeKeys.SystemStr:
       default:
-        theme =
-          window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? ThemeKeys.DarkStr
-            : ThemeKeys.BaseStr;
+        theme = getSystemTheme();
     }
 
     this.theme = themes[theme];
