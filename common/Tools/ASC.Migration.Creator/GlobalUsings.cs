@@ -39,8 +39,10 @@ global using ASC.Webhooks.Core.EF.Context;
 
 global using Microsoft.Extensions.Hosting.WindowsServices;
 
-global using Migration.Core.Models;
-global using Migration.Core.Utils;
+global using ASC.Migrations.Core.Models;
+global using ASC.Migrations.Core.Utils;
 global using Migration.Creator;
+global using ASC.Migrations.Core;
+global using ASC.Migrations;
 
-global using DbContextActivator = Migration.Core.Utils.DbContextActivator;
+global using DbContextActivator = ASC.Migrations.Core.Utils.DbContextActivator;

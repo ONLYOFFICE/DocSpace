@@ -26,7 +26,7 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Migration.Core.Utils;
+namespace ASC.Migrations.Core.Utils;
 
 public class DbContextActivator
 {

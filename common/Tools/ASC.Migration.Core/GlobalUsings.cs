@@ -41,5 +41,5 @@ global using Microsoft.EntityFrameworkCore.Migrations.Operations;
 global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.Extensions.DependencyInjection;
 
-global using Migration.Core.Models;
-global using Migration.Core.Utils;
+global using ASC.Migrations.Core.Models;
+global using ASC.Migrations.Core.Utils;
