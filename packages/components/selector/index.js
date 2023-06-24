@@ -260,6 +260,7 @@ const Selector = ({
       )}
 
       <Body
+        withHeader={withHeader}
         footerVisible={footerVisible}
         isSearch={isSearch}
         isAllIndeterminate={
