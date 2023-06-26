@@ -49,7 +49,7 @@ export const LanguageTimeSettingsTooltip = ({
           button at the bottom of the section.
           <Link
             color={currentColorScheme.main.accent}
-            className="display-block font-size"
+            className="tooltip-link display-block font-size"
             isHovered={true}
             target="_blank"
             href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}

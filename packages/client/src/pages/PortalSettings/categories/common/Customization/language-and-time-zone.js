@@ -520,6 +520,8 @@ const LanguageAndTimeZone = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={hasScroll}
+        additionalClassSaveButton="language-time-zone-save"
+        additionalClassCancelButton="language-time-zone-cancel"
       />
     </StyledSettingsComponent>
   );
