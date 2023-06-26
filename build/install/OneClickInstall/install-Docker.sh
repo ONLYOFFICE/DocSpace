@@ -41,7 +41,7 @@ INSTALLATION_TYPE="ENTERPRISE"
 IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
 CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
-NETWORK=${PACKAGE_SYSNAME}
+NETWORK_NAME=${PACKAGE_SYSNAME}
 
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
@@ -698,14 +698,6 @@ docker_login () {
 	fi
 }
 
-create_network () {
-	EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK} || true; });
-
-	if [[ -z ${EXIST} ]]; then
-		docker network create --driver bridge ${NETWORK}
-	fi
-}
-
 get_container_env_parameter () {
 	local CONTAINER_NAME=$1;
 	local PARAMETER_NAME=$2;
@@ -930,6 +922,7 @@ download_files () {
 
 	reconfigure STATUS ${STATUS}
 	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
+	reconfigure NETWORK_NAME ${NETWORK_NAME}
 	
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
@@ -1034,8 +1027,6 @@ start_installation () {
 	set_jwt_header
 
 	set_core_machinekey
-
-	create_network
 
 	set_mysql_params
 
