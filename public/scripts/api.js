@@ -386,10 +386,10 @@
       });
     }
 
-    createRoom(title, type) {
+    createRoom(title, roomType) {
       return this.#getMethodPromise("createRoom", {
         title,
-        type,
+        roomType,
       });
     }
 

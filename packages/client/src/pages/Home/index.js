@@ -493,8 +493,7 @@ class PureHome extends React.Component {
             break;
           case "createRoom":
             {
-              const { title, type } = data;
-              res = await createRoom(title, type);
+              res = await createRoom(data);
 
               refreshFiles();
             }
@@ -751,12 +750,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
