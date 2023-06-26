@@ -207,6 +207,7 @@ Default.args = {
   isBreadCrumbsLoading: false,
   alwaysShowFooter: false,
   disableAcceptButton: false,
+  descriptionText: "",
 };
 
 BreadCrumbs.args = {
@@ -263,6 +264,7 @@ BreadCrumbs.args = {
   currentFooterInputValue: "",
   alwaysShowFooter: false,
   disableAcceptButton: false,
+  descriptionText: "",
 };
 
 NewName.args = {
@@ -317,4 +319,5 @@ NewName.args = {
   currentFooterInputValue: "OldFIleName.docx",
   alwaysShowFooter: false,
   disableAcceptButton: false,
+  descriptionText: "",
 };

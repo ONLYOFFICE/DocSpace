@@ -39,4 +39,6 @@ export type BodyProps = {
 
   withFooterInput?: boolean;
   withFooterCheckbox?: boolean;
+
+  descriptionText?: string;
 };

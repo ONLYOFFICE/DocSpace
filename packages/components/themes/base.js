@@ -2290,6 +2290,8 @@ const Base = {
       arrowRightColor: "#A3A9AE",
     },
 
+    bodyDescriptionText: "#A3A9AE",
+
     item: {
       hoverBackground: grayLight,
       selectedBackground: lightHover,

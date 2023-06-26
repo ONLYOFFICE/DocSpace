@@ -22,6 +22,17 @@ const StyledBody = styled.div<{
 
     margin-bottom: 12px;
   }
+
+  .body-description-text {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 12px;
+
+    padding: 0 16px;
+
+    color: ${(props) => props.theme.selector.bodyDescriptionText};
+  }
 `;
 
 StyledBody.defaultProps = { theme: Base };

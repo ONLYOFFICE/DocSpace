@@ -2294,6 +2294,8 @@ const Dark = {
       arrowRightColor: "#858585",
     },
 
+    bodyDescriptionText: "#858585",
+
     item: {
       hoverBackground: "#3d3d3d",
       selectedBackground: "#3d3d3d",

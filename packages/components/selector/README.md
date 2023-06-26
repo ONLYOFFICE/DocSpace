@@ -51,6 +51,7 @@ import Selector from "@docspace/components/selector";
   footerCheckboxLabel={""}
   currentFooterInputValue={""}
   alwaysShowFooter={false}
+  descriptionText={""}
 />
 ```
 
@@ -109,3 +110,4 @@ import Selector from "@docspace/components/selector";
 | `withFooterInput`              |     `bool`     |    -     |   -    |  false  | Show name change input                                        |
 | `alwaysShowFooter`             |     `bool`     |    -     |   -    |  false  | Always show buttons                                           |
 | `disableAcceptButton`          |     `bool`     |    -     |   -    |  false  | Disable click at accept button                                |
+| `descriptionText`              |    `string`    |    -     |   -    |    -    | Description body text                                         |
