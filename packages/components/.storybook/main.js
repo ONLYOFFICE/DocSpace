@@ -14,6 +14,7 @@ module.exports = {
     "@storybook/addon-viewport",
     "@storybook/addon-contexts/register",
     "@react-theming/storybook-addon",
+    "storybook-addon-designs",
     {
       name: "@storybook/addon-docs",
       options: {

@@ -104,6 +104,7 @@
     "sass-loader": "^13.2.1",
     "serve": "^14.2.0",
     "storybook": "7.0.23",
+    "storybook-addon-designs": "beta",
     "storybook-dark-mode": "^3.0.0",
     "style-loader": "^3.3.2",
     "styled-components": "^5.3.9",

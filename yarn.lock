@@ -3612,6 +3612,7 @@ __metadata:
     sass-loader: ^13.2.1
     serve: ^14.2.0
     storybook: 7.0.23
+    storybook-addon-designs: beta
     storybook-dark-mode: ^3.0.0
     style-loader: ^3.3.2
     styled-components: ^5.3.9
@@ -4145,6 +4146,27 @@ __metadata:
   version: 2.1.2
   resolution: "@fal-works/esbuild-plugin-global-externals@npm:2.1.2"
   checksum: c59715902b9062aa7ff38973f298b509499fd146dbf564dc338b3f9e896da5bffb4ca676c27587fde79b3586003e24d65960acb62f009bca43dca34c76f8cbf7
+  languageName: node
+  linkType: hard
+
+"@figspec/components@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@figspec/components@npm:1.0.1"
+  dependencies:
+    lit: ^2.1.3
+  checksum: db33333ad2c3925cc8264e24b4a7b7d0e3a477eaaebbff9033f78c3e2f3273e6c7dbdfb453ee16af6d1ab21d49c2c704882aabcb1a693d2cf627b1fa2494849b
+  languageName: node
+  linkType: hard
+
+"@figspec/react@npm:^1.0.0":
+  version: 1.0.3
+  resolution: "@figspec/react@npm:1.0.3"
+  dependencies:
+    "@figspec/components": ^1.0.1
+    "@lit-labs/react": ^1.0.2
+  peerDependencies:
+    react: ^16.14.0 || ^17.0.0 || ^18.0.0
+  checksum: 8cfc1be1d8b6aa089fb4a7461a46bc96cdd4ad40ee49b0dea46507221d6036a81644b732ed5be0e8047ef6436e776036bcf0a72db724f0f9358837270f4278cf
   languageName: node
   linkType: hard
 
@@ -4975,6 +4997,29 @@ __metadata:
   dependencies:
     "@lezer/common": ^0.15.0
   checksum: e741225d6ac9cf08f8016bad49622fbd4a4e0d20c2e8c2b38a0abf0ddca69c58275b0ebdb9d5dde2905cf84f6977bc302f7ed5e5ba42c23afa27e9e65b900f36
+  languageName: node
+  linkType: hard
+
+"@lit-labs/react@npm:^1.0.2":
+  version: 1.2.0
+  resolution: "@lit-labs/react@npm:1.2.0"
+  checksum: a5dbcbb29dc0fd3848e51487b231ee3815ed739586f2abffd2bc96554e5313657b4d930dc651ca2695b12062eb0f6d85e27b8aaa5daa7f1b75c9f2c053e70849
+  languageName: node
+  linkType: hard
+
+"@lit-labs/ssr-dom-shim@npm:^1.0.0, @lit-labs/ssr-dom-shim@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "@lit-labs/ssr-dom-shim@npm:1.1.1"
+  checksum: 7a7add78e3ee570a7b987b9bf85e700b20d35d31c8b54cf4c8b2e3c8458ed4e2b0ff328706e5be7887f0ca8a02878c186e76609defb78f0d1b3c0e6b47c9f6ef
+  languageName: node
+  linkType: hard
+
+"@lit/reactive-element@npm:^1.3.0, @lit/reactive-element@npm:^1.6.0":
+  version: 1.6.2
+  resolution: "@lit/reactive-element@npm:1.6.2"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": ^1.0.0
+  checksum: 011a3ef0933fda86ec726d29ebc14e829e2f1ba23eca8ed8ed4d5c6f2a102c55cc6986000c5f4c8c3d0c549bc671f5d84d00ce91adc5bbd95970eec3662c0a92
   languageName: node
   linkType: hard
 
@@ -17256,6 +17301,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit-element@npm:^3.3.0":
+  version: 3.3.2
+  resolution: "lit-element@npm:3.3.2"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": ^1.1.0
+    "@lit/reactive-element": ^1.3.0
+    lit-html: ^2.7.0
+  checksum: afe50825be05a8c83be418432dfed2f9a84ca1c6c1d1807e2090def9f94cc403dcbf832b338cdfe39cd168518664c02a6c7392868ca323e356e5744e3b4f45e6
+  languageName: node
+  linkType: hard
+
+"lit-html@npm:^2.7.0":
+  version: 2.7.4
+  resolution: "lit-html@npm:2.7.4"
+  dependencies:
+    "@types/trusted-types": ^2.0.2
+  checksum: 3809d62d8b8e66c047a582fe62d430384c63af8c8444da4ca565b41d03e0295be2ce3eaa3c03b58d35a5d74fd8c98976585902204fc28006cfb9adf29fc1761e
+  languageName: node
+  linkType: hard
+
+"lit@npm:^2.1.3":
+  version: 2.7.5
+  resolution: "lit@npm:2.7.5"
+  dependencies:
+    "@lit/reactive-element": ^1.6.0
+    lit-element: ^3.3.0
+    lit-html: ^2.7.0
+  checksum: 61a3f87c57136618f47a30b36cdfb592fcba42dcfbdb104d2b5ca291148c2d9a32fcb713bb91090bd08d6897a00e73f8425da6e3626aa080eaf410a32397ae69
+  languageName: node
+  linkType: hard
+
 "load-json-file@npm:^4.0.0":
   version: 4.0.0
   resolution: "load-json-file@npm:4.0.0"
@@ -23438,6 +23514,28 @@ __metadata:
   version: 2.14.2
   resolution: "store2@npm:2.14.2"
   checksum: 6f270fc5bab99b63f45fcc7bd8b99c2714b4adf880f557ed7ffb5ed3987131251165bccde425a00928aaf044870aee79ddeef548576d093c68703ed2edec45d7
+  languageName: node
+  linkType: hard
+
+"storybook-addon-designs@npm:beta":
+  version: 7.0.0-beta.2
+  resolution: "storybook-addon-designs@npm:7.0.0-beta.2"
+  dependencies:
+    "@figspec/react": ^1.0.0
+  peerDependencies:
+    "@storybook/addon-docs": ^6.4.0 || ^7.0.0
+    "@storybook/addons": ^6.4.0 || ^7.0.0
+    "@storybook/api": ^6.4.0 || ^7.0.0
+    "@storybook/components": ^6.4.0 || ^7.0.0
+    "@storybook/theming": ^6.4.0 || ^7.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 14a199d2b36959ec0db9298564d0c410ceee1404566766cf8f8400aedab4510cddeb19e15c33b2257e31a7562ea91ebe47d0d2358f0ddcd31193ae9dc43781fe
   languageName: node
   linkType: hard
 
