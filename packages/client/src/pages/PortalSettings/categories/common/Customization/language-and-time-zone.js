@@ -83,13 +83,11 @@ const LanguageAndTimeZone = (props) => {
 
   React.useEffect(() => {
     languageFromSessionStorage = getFromSessionStorage("language");
-    languageDefaultFromSessionStorage = getFromSessionStorage(
-      "languageDefault"
-    );
+    languageDefaultFromSessionStorage =
+      getFromSessionStorage("languageDefault");
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
-    timezoneDefaultFromSessionStorage = getFromSessionStorage(
-      "timezoneDefault"
-    );
+    timezoneDefaultFromSessionStorage =
+      getFromSessionStorage("timezoneDefault");
 
     setDocumentTitle(t("StudioTimeLanguageSettings"));
 
@@ -240,9 +238,8 @@ const LanguageAndTimeZone = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -499,6 +496,7 @@ const LanguageAndTimeZone = (props) => {
             {t("StudioTimeLanguageSettings")}
           </div>
           <HelpButton
+            className="language-time-zone-help-button"
             offsetRight={0}
             iconName={CombinedShapeSvgUrl}
             size={12}
@@ -544,12 +542,8 @@ export default inject(({ auth, setup, common }) => {
   const { user } = auth.userStore;
 
   const { setLanguageAndTime } = setup;
-  const {
-    isLoaded,
-    setIsLoadedLngTZSettings,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedLngTZSettings, initSettings, setIsLoaded } =
+    common;
   return {
     theme: auth.settingsStore.theme,
     user,
