@@ -54,8 +54,8 @@ basic.args = {
   offsetLeft: 0,
 };
 
-const BodyStyle_2 = { marginTop: -22, marginLeft: 50, position: "absolute" };
-const BodyStyle_3 = { marginTop: 70, marginLeft: 250 };
+const BodyStyle_2 = {};
+const BodyStyle_3 = {};
 
 const arrayUsers = [
   {
