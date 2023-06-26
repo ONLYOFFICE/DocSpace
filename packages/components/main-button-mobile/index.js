@@ -265,6 +265,7 @@ const MainButtonMobile = (props) => {
               return (
                 <div key="mobile-submenu">
                   <StyledDropDownItem
+                    id={option.id}
                     key={option.key}
                     label={option.label}
                     className={`${option.className} ${
@@ -287,6 +288,7 @@ const MainButtonMobile = (props) => {
 
                       return (
                         <StyledDropDownItem
+                          id={item.id}
                           key={item.key}
                           label={item.label}
                           className={`${item.className} sublevel`}
@@ -303,6 +305,7 @@ const MainButtonMobile = (props) => {
 
             return (
               <StyledDropDownItem
+                id={option.id}
                 key={option.key}
                 label={option.label}
                 className={`${option.className} ${
@@ -347,6 +350,7 @@ const MainButtonMobile = (props) => {
                   </div>
                 ) : (
                   <StyledDropDownItem
+                    id={option.id}
                     className={`drop-down-item-button ${
                       option.isSeparator ? "is-separator" : ""
                     }`}
