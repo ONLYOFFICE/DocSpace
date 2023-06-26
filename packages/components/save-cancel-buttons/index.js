@@ -53,6 +53,8 @@ class SaveCancelButtons extends React.Component {
       cancelEnable,
       tabIndex,
       saveButtonDisabled,
+      additionalClassSaveButton,
+      additionalClassCancelButton,
     } = this.props;
 
     const cancelButtonDisabled = cancelEnable
@@ -63,6 +65,14 @@ class SaveCancelButtons extends React.Component {
 
     const tabIndexSaveButton = tabIndex ? tabIndex : -1;
     const tabIndexCancelButton = tabIndex ? tabIndex + 1 : -1;
+
+    const classNameSave = additionalClassSaveButton
+      ? `save-button ` + additionalClassSaveButton
+      : `save-button`;
+
+    const classNameCancel = additionalClassCancelButton
+      ? `cancel-button ` + additionalClassCancelButton
+      : `cancel-button`;
 
     return (
       <StyledSaveCancelButtons
@@ -75,7 +85,7 @@ class SaveCancelButtons extends React.Component {
         <div className="buttons-flex">
           <Button
             tabIndex={tabIndexSaveButton}
-            className="save-button"
+            className={classNameSave}
             size="normal"
             isDisabled={!showReminder || saveButtonDisabled}
             primary
@@ -86,7 +96,7 @@ class SaveCancelButtons extends React.Component {
           />
           <Button
             tabIndex={tabIndexCancelButton}
-            className="cancel-button"
+            className={classNameCancel}
             size="normal"
             isDisabled={cancelButtonDisabled || isSaving}
             onClick={onCancelClick}
