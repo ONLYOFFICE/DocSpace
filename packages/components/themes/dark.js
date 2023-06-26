@@ -1728,6 +1728,7 @@ const Dark = {
     arrowColor: "#F6F9FC",
     disabledArrow: "#474747",
     weekdayColor: "#858585",
+    accent: "#4781d1",
   },
 
   datePicker: {
