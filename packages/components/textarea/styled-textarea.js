@@ -42,7 +42,7 @@ const StyledScrollbar = styled(ClearScrollbar)`
 `;
 
 StyledScrollbar.defaultProps = {
-  theme: Base,
+  theme: { ...Base, interfaceDirection: "ltr" },
 };
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
@@ -78,7 +78,11 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
   resize: none;
   overflow: ${(props) => (props.isJSONField ? "visible !important" : "hidden")};
   padding: ${(props) => (props.enableCopy ? "5px 28px 2px" : "5px 8px 2px")};
-  padding-left: ${(props) => props.paddingLeftProp};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `padding-right: ${props.paddingLeftProp};`
+      : `padding-left: ${props.paddingLeftProp};`}
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
@@ -123,7 +127,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
 `;
 
 StyledTextarea.defaultProps = {
-  theme: Base,
+  theme: { ...Base, interfaceDirection: "ltr" },
 };
 
 const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
@@ -140,7 +144,7 @@ const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
 `;
 
 StyledCopyIcon.defaultProps = {
-  theme: Base,
+  theme: { ...Base, interfaceDirection: "ltr" },
 };
 
 const CopyIconWrapper = styled.div`
@@ -149,8 +153,10 @@ const CopyIconWrapper = styled.div`
   height: 20px;
   z-index: 2;
 
-  right: ${(props) =>
-    props.isJSONField && props.heightScale ? "18px" : "10px"};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `left: ${props.isJSONField && props.heightScale ? "18px" : "10px"};`
+      : `right: ${props.isJSONField && props.heightScale ? "18px" : "10px"};`}
   top: 6px;
 
   display: flex;
@@ -160,7 +166,7 @@ const CopyIconWrapper = styled.div`
 `;
 
 CopyIconWrapper.defaultProps = {
-  theme: Base,
+  theme: { ...Base, interfaceDirection: "ltr" },
 };
 
 const Wrapper = styled.div`
@@ -177,8 +183,10 @@ const Numeration = styled.pre`
   line-height: 1.5;
   margin: 0;
   top: 6px;
-  left: 18px;
   text-align: right;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 18px;` : `left: 18px;`}
   color: ${(props) => props.theme.textArea.numerationColor};
 
   -webkit-user-select: none; /* Safari */
@@ -188,7 +196,7 @@ const Numeration = styled.pre`
 `;
 
 Numeration.defaultProps = {
-  theme: Base,
+  theme: { ...Base, interfaceDirection: "ltr" },
 };
 
 export {
