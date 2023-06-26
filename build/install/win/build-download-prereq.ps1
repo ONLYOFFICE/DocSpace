@@ -174,8 +174,8 @@ $enterprise_prerequisites = @(
 
   @{  
     download_allways = $false; 
-    name = "node-v18.16.0-x64.msi"; 
-    link = "https://nodejs.org/dist/v18.12.1/node-v18.12.1-x64.msi";
+    name = "node-v18.16.1-x64.msi"; 
+    link = "https://nodejs.org/dist/v18.16.1/node-v18.16.1-x64.msi";
   }
 
   @{  
