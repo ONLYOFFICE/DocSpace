@@ -86,6 +86,8 @@ export const FilterType = Object.freeze({
   MediaOnly: 12,
   OFormTemplateOnly: 18,
   OFormOnly: 19,
+  FoldersDocuments: 20,
+  FoldersImages: 21,
 });
 
 /**
