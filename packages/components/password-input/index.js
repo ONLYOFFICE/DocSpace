@@ -552,8 +552,6 @@ PasswordInput.defaultProps = {
 
   generatorSpecial: "!@#$%^&*",
   className: "",
-  tooltipOffsetLeft: 175,
-  tooltipOffsetTop: 50,
   simpleView: false,
   passwordSettings: {
     minLength: 8,
