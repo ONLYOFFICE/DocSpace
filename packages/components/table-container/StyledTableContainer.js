@@ -106,7 +106,7 @@ const StyledTableContainer = styled.div`
 `;
 
 StyledTableContainer.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const StyledTableGroupMenu = styled.div`
@@ -135,10 +135,10 @@ const StyledTableGroupMenu = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? `
         margin-right: 28px;
-        ${props.checkboxMargin && `margin-right: ${props.checkboxMargin}`}`
+        ${props.checkboxMargin && `margin-right: ${props.checkboxMargin};`}`
         : `
         margin-left: 28px;
-        ${props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}`}
+        ${props.checkboxMargin && `margin-left: ${props.checkboxMargin};`}`}
 
     @media ${tablet} {
       ${({ theme }) =>
@@ -247,7 +247,7 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   }
 `;
 StyledInfoPanelToggleColorThemeWrapper.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const StyledTableHeader = styled.div`
@@ -274,7 +274,7 @@ const StyledTableHeader = styled.div`
 `;
 
 StyledTableHeader.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const StyledTableHeaderCell = styled.div`
@@ -359,7 +359,7 @@ const StyledTableHeaderCell = styled.div`
 `;
 
 StyledTableHeaderCell.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const StyledTableBody = styled.div`
@@ -436,7 +436,7 @@ const StyledTableCell = styled.div`
 `;
 
 StyledTableCell.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const StyledTableSettings = styled.div`
@@ -470,7 +470,7 @@ const StyledScrollbar = styled(Scrollbar)`
   }
 `;
 
-StyledTableRow.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledTableRow.defaultProps = { theme: Base };
 
 const StyledSettingsIcon = styled(IconButton)`
   ${(props) =>
@@ -486,7 +486,7 @@ const StyledSettingsIcon = styled(IconButton)`
 `;
 
 StyledSettingsIcon.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 export {
