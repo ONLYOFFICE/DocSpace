@@ -35,7 +35,7 @@
 	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
-	  <ProjectReference Include="..\ASC.Migration.Core\ASC.Migration.Core.csproj" />
+	  <ProjectReference Include="..\ASC.Migrations.Core\ASC.Migrations.Core.csproj" />
 	</ItemGroup>
 
 </Project>
