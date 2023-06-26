@@ -5,7 +5,7 @@ import { useTheme } from "styled-components";
 import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 import { classNames } from "../utils/classNames";
-import Scrollbar2 from "./customScrollbar";
+import CustomScrollbars from "./customScrollbar2";
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
@@ -122,6 +122,23 @@ const Scrollbar = React.forwardRef((props, ref) => {
   };
   return (
     <>
+      <CustomScrollbars>
+        ================================================================ Lorem
+        ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+        esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+        id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+        enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+        aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+        officia deserunt mollit anim id est laborum.
+        ================================================================
+      </CustomScrollbars>
       <StyledScrollbar
         renderView={renderView}
         renderThumbVertical={renderNavThumbVertical}
