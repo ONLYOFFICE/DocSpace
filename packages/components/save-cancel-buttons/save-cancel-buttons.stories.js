@@ -29,9 +29,8 @@ const StyledWrapper = styled.div`
 `;
 
 const Template = ({ onSaveClick, onCancelClick, ...args }) => {
-  const isAutoDocs = !!(
-    typeof window !== "undefined" && window?.location?.href.includes("docs")
-  );
+  const isAutoDocs =
+    typeof window !== "undefined" && window?.location?.href.includes("docs");
 
   return (
     <StyledWrapper>
