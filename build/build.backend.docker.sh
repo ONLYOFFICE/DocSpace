@@ -85,6 +85,7 @@ cd $dir/build/install/docker/
 
 echo "Build backend services images"
 DOCKERFILE=$docker_file \
+DOCKER_TAG="v9.9.9" \
 RELEASE_DATE=$build_date \
 GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
@@ -93,10 +94,10 @@ SERVICE_CLIENT=$client \
 APP_CORE_BASE_DOMAIN=$core_base_domain \
 ROOT_DIR=$dir \
 ENV_EXTENSION=$env_extension \
-DOCKER_TAG="v9.9.9" \
-docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
+docker compose -f build.dev.yml --profile backend-dev build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run migration"
+DOCKERFILE=$docker_file \
 DOCKER_TAG="v9.9.9" \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
@@ -106,6 +107,7 @@ ENV_EXTENSION=$env_extension \
 docker-compose -f docspace.yml -f docspace.overcome.yml --profile migration-runner up -d
 
 echo "Run backend services"
+DOCKERFILE=$docker_file \
 DOCKER_TAG="v9.9.9" \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
