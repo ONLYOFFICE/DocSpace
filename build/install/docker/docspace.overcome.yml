@@ -129,6 +129,7 @@ services:
 
   onlyoffice-migration-runner:
     image: ${Baseimage_Dotnet_Run}
+    entrypoint: docker-migration-entrypoint.sh
     working_dir: ${BUILD_PATH}/services/ASC.Migration.Runner/
     volumes:
       - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
