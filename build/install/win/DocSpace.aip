@@ -1549,7 +1549,7 @@
     <ROW Key="YourFile.txt" Component="conf" FileName="onlyoffice.conf" Directory="conf_Dir" Options="17"/>
     <ROW Key="YourFile.txt_1" Component="conf" FileName="onlyoffice-client.conf" Directory="conf_Dir" Options="17"/>
     <ROW Key="YourFile.txt_2" Component="includes" FileName="onlyoffice-public.conf" Directory="includes_Dir" Options="17"/>
-    <ROW Key="xml" Component="AI_ExePath" FileName="*.xml" Directory="tools_Dir" Options="17"/>
+    <ROW Key="xml" Component="tools" FileName="*.xml" Directory="tools_Dir" Options="17"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
     <ROW XmlAttribute="minlevel" XmlElement="logger" Name="minlevel" Flags="14" Order="0" Value="Trace"/>

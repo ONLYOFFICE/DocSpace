@@ -397,10 +397,13 @@ change_mysql_config(){
 		sed "s/collation_server.*/collation_server = utf8_general_ci/" -i ${CNF_PATH} || true # ignore errors
 	fi
 	
+	MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}')
+	MYSQL_AUTHENTICATION_PLUGIN=${MYSQL_AUTHENTICATION_PLUGIN:-caching_sha2_password}
+
 	if ! grep -q "^default-authentication-plugin"  ${CNF_PATH}; then
-		sed '/\[mysqld\]/a default-authentication-plugin = mysql_native_password' -i ${CNF_PATH}
+		sed "/\[mysqld\]/a default-authentication-plugin = ${MYSQL_AUTHENTICATION_PLUGIN}" -i ${CNF_PATH}
 	else
-		sed "s/default-authentication-plugin.*/default-authentication-plugin = mysql_native_password/" -i ${CNF_PATH} || true # ignore errors
+		sed "s/default-authentication-plugin.*/default-authentication-plugin = ${MYSQL_AUTHENTICATION_PLUGIN}/" -i ${CNF_PATH} || true # ignore errors
 	fi
 
 	if [ -e ${CNF_SERVICE_PATH} ]; then
