@@ -730,7 +730,7 @@
     <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductVersion_1" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="\"/>
-    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Value="REDIS_HOST" Component_="APPDIR"/>
+    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Value="[REDIS_HOST]" Component_="APPDIR"/>
     <ROW Registry="REDIS_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Value="[REDIS_PORT]" Component_="APPDIR"/>
     <ROW Registry="REDIS_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Value="[REDIS_PWD]" Component_="APPDIR"/>
     <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
