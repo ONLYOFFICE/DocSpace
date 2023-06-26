@@ -142,6 +142,7 @@ updateJsonData(jsonData,"$.ConnectionStrings.default.connectionString", "Server=
 updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 updateJsonData(jsonData,"$.core.products.subfolder", "server")
+updateJsonData(jsonData,"$.core.notify.postman", "services")
 updateJsonData(jsonData,"$.web.hub.internal", "http://onlyoffice-socket:" + SERVICE_PORT + "/")
 updateJsonData(jsonData,"$.files.docservice.url.portal", APP_URL_PORTAL)
 updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUBLIC)
