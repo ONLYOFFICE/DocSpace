@@ -35,13 +35,13 @@ const InputPhone = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const theme = useTheme();
+  const isRtl = theme.interfaceDirection === "rtl";
 
   const onInputChange = (e) => {
     const str = e.target.value.replace(/\D/g, "");
     const el = options.find(
       (option) => option.dialCode && str.startsWith(option.dialCode)
     );
-
     const singleCode = ["1", "7"];
     const invalidCode = singleCode.find((code) => code === str);
 
@@ -126,7 +126,7 @@ const InputPhone = ({
         data-option={index}
         onClick={onCountryClick}
       >
-        {theme.interfaceDirection === "rtl" ? (
+        {isRtl ? (
           <RtlRowComponent />
         ) : (
           <>
@@ -157,7 +157,7 @@ const InputPhone = ({
         fillIcon={true}
         selectedOption={country}
       />
-      <Label text={PLUS} className="prefix" />
+      {!isRtl && <Label text={PLUS} className="prefix" />}
       <TextInput
         type="tel"
         className="input-phone"
@@ -168,6 +168,8 @@ const InputPhone = ({
         value={phoneValue}
         onChange={onInputChange}
       />
+      {isRtl && <Label text={PLUS} className="prefix" />}
+
       <DropDown
         open={isOpen}
         clickOutsideAction={handleClick}

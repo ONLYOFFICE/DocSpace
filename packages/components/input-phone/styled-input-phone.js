@@ -37,7 +37,6 @@ export const StyledBox = styled(Box)`
       props.theme.interfaceDirection === "rtl" &&
       css`
         margin-left: 0;
-        padding: 0;
         padding-right: 20px;
         border-left: 0;
         border-right: 1px solid
@@ -52,12 +51,7 @@ export const StyledBox = styled(Box)`
     position: relative;
     top: 0;
     left: 12px;
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl" &&
-      css`
-        right: 16px;
-        left: 0;
-      `}
+
     font-size: 14px;
     font-weight: 400;
   }
@@ -111,6 +105,12 @@ export const StyledBox = styled(Box)`
     position: absolute;
     top: 20px;
     right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        left: 8px;
+        right: auto;
+      `}
     svg {
       path {
         fill: ${(props) => props.theme.inputPhone.placeholderColor};
@@ -169,11 +169,7 @@ export const StyledBox = styled(Box)`
   .country-item {
     display: flex;
     align-items: center;
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl" &&
-      css`
-        flex-direction: row-reverse;
-      `}
+
     max-width: 100%;
     padding: 0;
     height: 36px;

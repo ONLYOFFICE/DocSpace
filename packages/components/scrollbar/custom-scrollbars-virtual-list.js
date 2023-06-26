@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import Scrollbar from "../scrollbar";
+import Scrollbar from "./";
 
 export class CustomScrollbars extends React.Component {
   refSetter = (scrollbarsRef, forwardedRef) => {
