@@ -11,7 +11,12 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
-    command: ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks", "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"]
+    command:
+      [
+        "ASC.Data.Backup.BackgroundTasks.dll",
+        "ASC.Data.Backup.BackgroundTasks",
+        "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue",
+      ]
     volumes:
       - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -46,7 +51,12 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/products/ASC.Files/service/
-    command: ["ASC.Files.Service.dll", "ASC.Files.Service", "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"]
+    command:
+      [
+        "ASC.Files.Service.dll",
+        "ASC.Files.Service",
+        "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue",
+      ]
     volumes:
       - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -125,6 +135,7 @@ services:
 
   onlyoffice-proxy:
     <<: *x-profiles-local
+    image: ${Baseimage_Proxy_Run}
     environment:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
     volumes:
