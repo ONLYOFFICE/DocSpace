@@ -9,6 +9,9 @@ x-profiles-local: &x-profiles-local
 services:
   onlyoffice-backup-background-tasks:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
+    command: ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks", "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"]
     volumes:
       - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -18,6 +21,9 @@ services:
 
   onlyoffice-backup:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Data.Backup/service/
+    command: ["ASC.Data.Backup.dll", "ASC.Data.Backup"]
     volumes:
       - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -27,6 +33,9 @@ services:
 
   onlyoffice-files:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/products/ASC.Files/server/
+    command: ["ASC.Files.dll", "ASC.Files"]
     volumes:
       - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
@@ -35,6 +44,9 @@ services:
 
   onlyoffice-files-services:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/products/ASC.Files/service/
+    command: ["ASC.Files.Service.dll", "ASC.Files.Service", "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"]
     volumes:
       - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -44,6 +56,9 @@ services:
 
   onlyoffice-people-server:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/products/ASC.People/server/
+    command: ["ASC.People.dll", "ASC.People"]
     volumes:
       - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -52,11 +67,17 @@ services:
 
   onlyoffice-socket:
     <<: *x-profiles-local
+    image: ${Baseimage_Nodejs_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Socket.IO/
+    command: ["server.js", "ASC.Socket.IO"]
     volumes:
       - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
 
   onlyoffice-studio-notify:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Studio.Notify/service/
+    command: ["ASC.Studio.Notify.dll", "ASC.Studio.Notify"]
     volumes:
       - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -66,6 +87,9 @@ services:
 
   onlyoffice-api:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/studio/ASC.Web.Api/
+    command: ["ASC.Web.Api.dll", "ASC.Web.Api"]
     volumes:
       - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -75,6 +99,9 @@ services:
 
   onlyoffice-studio:
     <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/studio/ASC.Web.Studio/
+    command: ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
     volumes:
       - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -84,10 +111,15 @@ services:
 
   onlyoffice-ssoauth:
     <<: *x-profiles-local
+    image: ${Baseimage_Nodejs_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.SsoAuth/
+    command: ["app.js", "ASC.SsoAuth"]
     volumes:
       - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
 
   onlyoffice-migration-runner:
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Migration.Runner/
     volumes:
       - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
 
