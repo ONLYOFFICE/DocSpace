@@ -47,4 +47,6 @@ public enum FilterType
     [EnumMember] CustomRooms = 17,
     [EnumMember] OFormTemplateOnly = 18,
     [EnumMember] OFormOnly = 19,
+    [EnumMember] FoldersDocumentsOnly = 20,
+    [EnumMember] FoldersImagesOnly = 21,
 }
