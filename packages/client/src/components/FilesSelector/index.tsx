@@ -35,6 +35,8 @@ const FilesSelector = ({
   isThirdParty = false,
   isEditorDialog = false,
 
+  filterParam,
+
   onClose,
 
   isMove,
@@ -67,12 +69,15 @@ const FilesSelector = ({
   onSetNewFolderPath,
   onSelectTreeNode,
   onSave,
+  onSelectFile,
 
   withFooterInput,
   withFooterCheckbox,
   footerInputHeader,
   currentFooterInputValue,
   footerCheckboxLabel,
+
+  descriptionText,
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -89,6 +94,10 @@ const FilesSelector = ({
     Security | undefined
   >(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = React.useState(null);
+  const [selectedFileInfo, setSelectedFileInfo] = React.useState<{
+    id: number | string;
+    title: string;
+  } | null>(null);
 
   const [total, setTotal] = React.useState<number>(0);
   const [hasNextPage, setHasNextPage] = React.useState<boolean>(false);
@@ -146,6 +155,7 @@ const FilesSelector = ({
     isThirdParty,
     onSelectTreeNode,
     setSelectedTreeNode,
+    filterParam,
   });
 
   const onSelectAction = (item: Item) => {
@@ -172,7 +182,7 @@ const FilesSelector = ({
         getFileList(0, item.id, false, null);
       }
     } else {
-      console.log("select file");
+      setSelectedFileInfo({ id: item.id, title: item.title });
     }
   };
 
@@ -343,17 +353,25 @@ const FilesSelector = ({
         selectedItemId &&
         onSave(null, selectedItemId, fileName, isChecked);
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
+      onSelectFile && selectedFileInfo && onSelectFile(selectedFileInfo);
       !withoutImmediatelyClose && onCloseAction();
     }
   };
 
-  const headerLabel = getHeaderLabel(t, isCopy, isRestoreAll, isMove);
+  const headerLabel = getHeaderLabel(
+    t,
+    isCopy,
+    isRestoreAll,
+    isMove,
+    filterParam
+  );
 
   const acceptButtonLabel = getAcceptButtonLabel(
     t,
     isCopy,
     isRestoreAll,
-    isMove
+    isMove,
+    filterParam
   );
 
   const isDisabled = getIsDisabled(
@@ -365,7 +383,9 @@ const FilesSelector = ({
     isMove,
     isRestoreAll,
     isRequestRunning,
-    selectedItemSecurity
+    selectedItemSecurity,
+    filterParam,
+    !!selectedFileInfo
   );
 
   return (
@@ -445,6 +465,7 @@ const FilesSelector = ({
           footerInputHeader={footerInputHeader}
           currentFooterInputValue={currentFooterInputValue}
           footerCheckboxLabel={footerCheckboxLabel}
+          descriptionText={descriptionText ?? t("Common:SelectDOCXFormat")}
         />
       </Aside>
     </>
@@ -462,7 +483,7 @@ export default inject(
       dialogsStore,
       filesStore,
     }: any,
-    { isCopy, isRestoreAll, isPanelVisible, id, passedFoldersTree }: any
+    { isCopy, isRestoreAll, isMove, isPanelVisible, id, passedFoldersTree }: any
   ) => {
     const { id: selectedId, parentId, rootFolderType } = selectedFolderStore;
 
@@ -497,11 +518,14 @@ export default inject(
     const { selection, bufferSelection, filesList, setMovingInProgress } =
       filesStore;
 
-    const selections = isRestoreAll
-      ? filesList
-      : selection.length
-      ? selection
-      : [bufferSelection];
+    const selections =
+      isMove || isCopy || isRestoreAll
+        ? isRestoreAll
+          ? filesList
+          : selection.length
+          ? selection
+          : [bufferSelection]
+        : [];
 
     const selectionsWithoutEditing = isRestoreAll
       ? filesList

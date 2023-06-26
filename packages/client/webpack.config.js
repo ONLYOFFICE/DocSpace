@@ -299,7 +299,7 @@ module.exports = (env, argv) => {
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/filesUtils.js",
         "./SelectFileDialog":
-          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+          "./src/components/FilesSelector/FilesSelectorWrapper",
         "./SelectFileInput":
           "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":

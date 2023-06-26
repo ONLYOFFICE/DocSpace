@@ -162,7 +162,11 @@ const getIconUrl = (extension: string) => {
   return iconSize32.get(path);
 };
 
-const convertFoldersToItems = (folders: any, disabledItems: any[]) => {
+const convertFoldersToItems = (
+  folders: any,
+  disabledItems: any[],
+  filterParam?: number
+) => {
   const items = folders.map((room: any) => {
     const {
       id,
@@ -195,14 +199,14 @@ const convertFoldersToItems = (folders: any, disabledItems: any[]) => {
       parentId,
       rootFolderType,
       isFolder: true,
-      isDisabled: disabledItems.includes(id),
+      isDisabled: !!filterParam ? false : disabledItems.includes(id),
     };
   });
 
   return items;
 };
 
-const convertFilesToItems = (files: any, disabledItems: any[]) => {
+const convertFilesToItems = (files: any, filterParam?: number) => {
   const items = files.map((file: any) => {
     const { id, title, security, parentId, rootFolderType, fileExst } = file;
 
@@ -218,7 +222,7 @@ const convertFilesToItems = (files: any, disabledItems: any[]) => {
       parentId,
       rootFolderType,
       isFolder: false,
-      isDisabled: true,
+      isDisabled: !filterParam,
     };
   });
   return items;
@@ -240,6 +244,7 @@ export const useFilesHelper = ({
   isThirdParty,
   onSelectTreeNode,
   setSelectedTreeNode,
+  filterParam,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -263,6 +268,9 @@ export const useFilesHelper = ({
       filter.page = page;
       filter.pageCount = PAGE_COUNT;
       filter.search = currentSearch;
+      if (filterParam) {
+        filter.filterType = filterParam;
+      }
 
       const id = itemId ? itemId : selectedItemId || "";
 
@@ -275,9 +283,13 @@ export const useFilesHelper = ({
 
       setSelectedItemSecurity(current.security);
 
-      const foldersList: Item[] = convertFoldersToItems(folders, disabledItems);
+      const foldersList: Item[] = convertFoldersToItems(
+        folders,
+        disabledItems,
+        filterParam
+      );
 
-      const filesList: Item[] = convertFilesToItems(files, disabledItems);
+      const filesList: Item[] = convertFilesToItems(files, filterParam);
 
       const itemList = [...foldersList, ...filesList];
 
