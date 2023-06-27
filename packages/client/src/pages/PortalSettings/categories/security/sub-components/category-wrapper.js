@@ -14,6 +14,7 @@ const CategoryWrapper = (props) => {
     tooltipUrl,
     theme,
     currentColorScheme,
+    classNameTooltip,
   } = props;
 
   const tooltip = () => (
@@ -23,6 +24,7 @@ const CategoryWrapper = (props) => {
       </Text>
       {tooltipUrl && (
         <Link
+          className="link-tooltip"
           fontSize="12px"
           target="_blank"
           isHovered
@@ -41,6 +43,7 @@ const CategoryWrapper = (props) => {
         {title}
       </Text>
       <HelpButton
+        className={classNameTooltip}
         iconName={InfoReactSvgUrl}
         displayType="dropdown"
         place="right"

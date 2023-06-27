@@ -49,6 +49,7 @@ const AccessPortal = (props) => {
         tooltipTitle={t("SettingPasswordStrengthDescription")}
         tooltipUrl={passwordStrengthSettingsUrl}
         currentColorScheme={currentColorScheme}
+        classNameTooltip="password-strength"
       />
       <PasswordStrengthSection />
       <StyledSettingsSeparator />
