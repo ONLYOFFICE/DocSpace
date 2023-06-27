@@ -246,6 +246,7 @@
   "SortBy": "정렬",
   "SpacesInLocalPart": "로컬 파트는 공백을 포함할 수 없습니다",
   "Standard": "기준",
+  "SubscriptionExpired": "지원 및 업데이트 구독이 만료되었습니다",
   "SubscriptionIsExpiring": "구독이 {{date}}에 만료됩니다",
   "Support": "지원하다",
   "SwitchToThumbnails": "썸네일 보기로 전환",

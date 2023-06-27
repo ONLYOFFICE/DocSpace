@@ -258,7 +258,7 @@
   "Title": "Başlıq",
   "TitleSelectFile": "Seçin",
   "Today": "Bu gün",
-  "TrialDaysLeft": "Sınaq {{say}} günləri",
+  "TrialDaysLeft": "Sınaq {{count}} günləri",
   "TrialExpired": "Sınaq müddəti bitdi",
   "Type": "Növ",
   "UnexpectedError": "Gözlənilməz xəta baş verdi. Daha sonra yenidən cəhd edin və ya dəstək xidməti ilə əlaqə saxlayın.",
