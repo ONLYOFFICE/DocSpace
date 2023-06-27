@@ -199,7 +199,7 @@ const IpSecurity = (props) => {
             value: "disabled",
           },
           {
-            id: "ip-security-enabled",
+            id: "ip-security-enable",
             label: t("Common:Enable"),
             value: "enable",
           },
