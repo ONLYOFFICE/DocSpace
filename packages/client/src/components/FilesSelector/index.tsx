@@ -12,8 +12,10 @@ import Selector from "@docspace/components/selector";
 // @ts-ignore
 import toastr from "@docspace/components/toast/toastr";
 
-import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
-import EmptyScreenCorporateDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
+import EmptyScreenFilterAltSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt.svg?url";
+import EmptyScreenFilterAltDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt_dark.svg?url";
+import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+import EmptyScreenAltSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_alt_dark.svg?url";
 
 import {
   BreadCrumb,
@@ -418,16 +420,14 @@ const FilesSelector = ({
           cancelButtonLabel={t("Common:CancelButton")}
           onCancel={onCloseAction}
           emptyScreenImage={
-            theme.isBase
-              ? EmptyScreenCorporateSvgUrl
-              : EmptyScreenCorporateDarkSvgUrl
+            theme.isBase ? EmptyScreenAltSvgUrl : EmptyScreenAltSvgDarkUrl
           }
           emptyScreenHeader={t("SelectorEmptyScreenHeader")}
           emptyScreenDescription=""
           searchEmptyScreenImage={
             theme.isBase
-              ? EmptyScreenCorporateSvgUrl
-              : EmptyScreenCorporateDarkSvgUrl
+              ? EmptyScreenFilterAltSvgUrl
+              : EmptyScreenFilterAltDarkSvgUrl
           }
           searchEmptyScreenHeader={t("Common:NotFoundTitle")}
           searchEmptyScreenDescription={t("EmptyFilterDescriptionText")}
@@ -465,7 +465,9 @@ const FilesSelector = ({
           footerInputHeader={footerInputHeader}
           currentFooterInputValue={currentFooterInputValue}
           footerCheckboxLabel={footerCheckboxLabel}
-          descriptionText={descriptionText ?? t("Common:SelectDOCXFormat")}
+          descriptionText={
+            !filterParam ? "" : descriptionText ?? t("Common:SelectDOCXFormat")
+          }
         />
       </Aside>
     </>
