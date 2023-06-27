@@ -24,18 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration;
+global using System.Reflection;
+global using System.Text.RegularExpressions;
 
-public class AssemblyContextFinder : ContextFinder
-{
-    private readonly Assembly _assembly;
-    public AssemblyContextFinder(Assembly assembly)
-    {
-        _assembly = assembly;
-    }
+global using ASC.Core.Common.EF;
 
-    protected override Type[] GetAssemblyTypes()
-    {
-        return _assembly.GetTypes();
-    }
-}
+global using Microsoft.Build.Construction;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.EntityFrameworkCore.Infrastructure;
+global using Microsoft.EntityFrameworkCore.Migrations.Design;
+global using Microsoft.EntityFrameworkCore.Migrations.Operations;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using Microsoft.Extensions.DependencyInjection;
+
+global using ASC.Migrations.Core.Models;
+global using ASC.Migrations.Core.Utils;

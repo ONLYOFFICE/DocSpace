@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASC.Migrations.PostgreSql.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationContextUpgrade1 : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class MigrationContextUpgrade1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

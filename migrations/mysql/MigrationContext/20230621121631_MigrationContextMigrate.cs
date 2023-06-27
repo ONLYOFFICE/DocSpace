@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASC.Migrations.MySql.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationContextMigrate : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class MigrationContextMigrate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

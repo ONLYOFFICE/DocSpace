@@ -24,26 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Runner;
 
-public class MigrationRunner
+namespace ASC.Migrations.Core.Utils;
+
+public class Options
 {
-    private readonly DbContextActivator _dbContextActivator;
-
-    public MigrationRunner(IServiceProvider serviceProvider)
-    {
-        _dbContextActivator = new DbContextActivator(serviceProvider);
-    }
-
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
-    {
-
-        var migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider);
-        migrationContext.Database.Migrate();
-        
-        var teamlabContext = _dbContextActivator.CreateInstance(typeof(TeamlabSiteContext), teamlabsiteProvider);
-        teamlabContext.Database.Migrate();
-        
-        Console.WriteLine("Applied migrations");
-    }
+    public string Path { get; set; }
+    public IEnumerable<ProviderInfo> Providers { get; set; }
+    public IEnumerable<ProviderInfo> TeamlabsiteProviders { get; set; }
 }
