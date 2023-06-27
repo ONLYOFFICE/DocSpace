@@ -273,6 +273,7 @@ const DirectThirdPartyConnection = (props) => {
 
   const { isLoading, folderList, isInitialLoading, isUpdatingInfo } = state;
 
+  // TODO: need update enum for filter
   const fileSelection = isFileSelection ? (
     <SelectFileInput
       passedFoldersTree={[folderList]}

@@ -4,6 +4,7 @@ import SelectFileInputWrapper from "client/SelectFileInput";
 class RoomsModule extends React.Component {
   render() {
     const { t } = this.props;
+    // TODO: need update enum for filter
     return (
       <SelectFileInputWrapper
         {...this.props}
