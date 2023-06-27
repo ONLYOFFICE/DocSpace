@@ -194,8 +194,8 @@ public class TariffService : ITariffService
                         var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
                         asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
-                        asynctariff.Quotas = asynctariff.Quotas.Where(r => r.Id != quota.Tenant).ToList();
-                        asynctariff.Quotas.Add(new Quota(quota.Tenant, currentPayment.Quantity));
+                        asynctariff.Quotas = asynctariff.Quotas.Where(r => r.Id != quota.TenantId).ToList();
+                        asynctariff.Quotas.Add(new Quota(quota.TenantId, currentPayment.Quantity));
                         email = currentPayment.PaymentEmail;
                     }
 
@@ -203,7 +203,7 @@ public class TariffService : ITariffService
 
                     foreach (var quota in asynctariff.Quotas)
                     {
-                        var tenantQuota = tenantQuotas.SingleOrDefault(q => q.Tenant == quota.Id);
+                        var tenantQuota = tenantQuotas.SingleOrDefault(q => q.TenantId == quota.Id);
 
                         tenantQuota *= quota.Quantity;
                         updatedQuota += tenantQuota;
@@ -297,7 +297,7 @@ public class TariffService : ITariffService
 
             var quota = await _quotaService.GetTenantQuotaAsync(quotaId);
 
-            var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.Tenant == quota.Tenant);
+            var mustUpdateQuota = newQuotas.FirstOrDefault(q => q.TenantId == quota.TenantId);
             if (mustUpdateQuota != null)
             {
                 qty = quantity[mustUpdateQuota.Name];
@@ -308,7 +308,7 @@ public class TariffService : ITariffService
         }
 
         // add new quotas
-        var addedQuotas = newQuotas.Where(q => !tariff.Quotas.Any(t => t.Id == q.Tenant));
+        var addedQuotas = newQuotas.Where(q => !tariff.Quotas.Any(t => t.Id == q.TenantId));
         foreach (var addedQuota in addedQuotas)
         {
             var qty = quantity[addedQuota.Name];
@@ -424,7 +424,7 @@ public class TariffService : ITariffService
                         var quota = quotas.SingleOrDefault(q => q.ProductId == pi.ProductRef.ToString());
                         if (quota != null)
                         {
-                            pi.QuotaId = quota.Tenant;
+                            pi.QuotaId = quota.TenantId;
                         }
                         payments.Add(pi);
                     }
@@ -680,7 +680,7 @@ public class TariffService : ITariffService
     private async Task<Tariff> GetBillingInfoAsync(int? tenant = null, int? id = null)
     {
         await using var coreDbContext = _dbContextFactory.CreateDbContext();
-        
+
         var r = await Queries.TariffAsync(coreDbContext, tenant, id);
 
         if (r == null)
@@ -692,7 +692,7 @@ public class TariffService : ITariffService
         tariff.Id = r.Id;
         tariff.DueDate = r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue;
         tariff.CustomerId = r.CustomerId;
-        tariff.Quotas = await Queries.QuotasAsync(coreDbContext, r.Tenant, r.Id).ToListAsync();
+        tariff.Quotas = await Queries.QuotasAsync(coreDbContext, r.TenantId, r.Id).ToListAsync();
 
         return tariff;
     }
@@ -706,7 +706,7 @@ public class TariffService : ITariffService
             try
             {
                 await using var dbContext = _dbContextFactory.CreateDbContext();
-                
+
                 var stamp = tariffInfo.DueDate;
                 if (stamp.Equals(DateTime.MaxValue))
                 {
@@ -716,7 +716,7 @@ public class TariffService : ITariffService
                 var efTariff = new DbTariff
                 {
                     Id = tariffInfo.Id,
-                    Tenant = tenant,
+                    TenantId = tenant,
                     Stamp = stamp,
                     CustomerId = tariffInfo.CustomerId,
                     CreateOn = DateTime.UtcNow
@@ -743,7 +743,7 @@ public class TariffService : ITariffService
                         TariffId = efTariff.Id,
                         Quota = q.Id,
                         Quantity = q.Quantity,
-                        Tenant = tenant
+                        TenantId = tenant
                     });
                 }
 
@@ -779,7 +779,7 @@ public class TariffService : ITariffService
 
         await using var coreDbContext = _dbContextFactory.CreateDbContext();
         await Queries.UpdateTariffs(coreDbContext, tenant);
-        
+
         ClearCache(tenant);
     }
 
@@ -888,7 +888,7 @@ public class TariffService : ITariffService
 
         if (toAdd != null)
         {
-            tariff.Quotas.Add(new Quota(toAdd.Tenant, 1));
+            tariff.Quotas.Add(new Quota(toAdd.TenantId, 1));
         }
     }
 
@@ -975,25 +975,25 @@ public class TariffService : ITariffService
 static file class Queries
 {
     public static readonly Func<CoreDbContext, int?, int?, Task<DbTariff>> TariffAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (CoreDbContext ctx, int? tenantId, int? id) =>
                 ctx.Tariffs
-                    .Where(r => tenantId.HasValue && r.Tenant == tenantId)
+                    .Where(r => tenantId.HasValue && r.TenantId == tenantId)
                     .Where(r => id.HasValue && r.Id == id.Value)
                     .OrderByDescending(r => r.Id)
                     .FirstOrDefault());
 
     public static readonly Func<CoreDbContext, int, int, IAsyncEnumerable<Quota>> QuotasAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (CoreDbContext ctx, int tenantId, int id) =>
                 ctx.TariffRows
-                    .Where(r => r.TariffId == id && r.Tenant == tenantId)
+                    .Where(r => r.TariffId == id && r.TenantId == tenantId)
                     .Select(r => new Quota(r.Quota, r.Quantity)));
 
     public static readonly Func<CoreDbContext, int, Task<int>> UpdateTariffs =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (CoreDbContext ctx, int tenantId) =>
-                ctx.Tariffs.Where(r => r.Tenant == tenantId).ExecuteUpdate(t =>
-                    t.SetProperty(p => p.Tenant, -2)
+                ctx.Tariffs.Where(r => r.TenantId == tenantId).ExecuteUpdate(t =>
+                    t.SetProperty(p => p.TenantId, -2)
                         .SetProperty(p => p.CreateOn, DateTime.UtcNow)));
 }

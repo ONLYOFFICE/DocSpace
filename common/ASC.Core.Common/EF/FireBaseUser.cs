@@ -35,6 +35,8 @@ public class FireBaseUser : BaseEntity
     public string Application { get; set; }
     public bool? IsSubscribed { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -45,6 +47,8 @@ public static class FireBaseUserExtension
 {
     public static ModelBuilderWrapper AddFireBaseUsers(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<FireBaseUser>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddFireBaseUsers, Provider.MySql)
             .Add(PgSqlAddFireBaseUsers, Provider.PostgreSql);

@@ -149,7 +149,7 @@ public class Worker
 static file class Queries
 {
     public static readonly Func<WebstudioDbContext, Guid, IAsyncEnumerable<TenantUserSettings>>
-        TenantUserSettingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        TenantUserSettingsAsync = EF.CompileAsyncQuery(
             (WebstudioDbContext ctx, Guid filesSettingsId) =>
                 ctx.Tenants
                     .Join(ctx.WebstudioSettings, a => a.Id, b => b.TenantId,

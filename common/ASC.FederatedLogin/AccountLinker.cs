@@ -170,7 +170,7 @@ public class AccountLinker
 static file class Queries
 {
     public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedObjectsByHashIdAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (AccountLinkContext ctx, string hashId) =>
                 ctx.AccountLinks
                     .Where(r => r.UId == hashId)
@@ -178,7 +178,7 @@ static file class Queries
                     .Select(r => r.Id));
 
     public static readonly Func<AccountLinkContext, string, string, string, Task<AccountLinks>> AccountLinkAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (AccountLinkContext ctx, string id, string provider, string hashId) =>
                 ctx.AccountLinks
                     .Where(r => r.Id == id)
@@ -187,7 +187,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedProfilesFromDbAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (AccountLinkContext ctx, string id) =>
                 ctx.AccountLinks
                     .Where(r => r.Id == id)

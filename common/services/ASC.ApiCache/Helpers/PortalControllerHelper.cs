@@ -98,18 +98,18 @@ public class PortalControllerHelper
 static file class Queries
 {
     public static readonly Func<TeamlabSiteContext, string, Task<DbCache>> DbCacheAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (TeamlabSiteContext ctx, string portalName) =>
                 ctx.Cache.SingleOrDefault(q => q.TenantAlias == portalName));
 
     public static readonly Func<TeamlabSiteContext, string, Task<bool>> AnyDbCacheAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (TeamlabSiteContext ctx, string portalName) =>
                 ctx.Cache
                     .Any(q => q.TenantAlias.Equals(portalName)));
 
     public static readonly Func<TeamlabSiteContext, string, IAsyncEnumerable<string>> TenantAliasesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (TeamlabSiteContext ctx, string portalName) =>
                 ctx.Cache
                     .Select(q => q.TenantAlias)

@@ -117,7 +117,7 @@ public class PeopleController : ControllerBase
 
     private async Task<string> GetUserProfileLinkAsync(UserInfo user)
     {
-        var tenantDomain = await GetTenantDomainAsync(user.Tenant);
+        var tenantDomain = await GetTenantDomainAsync(user.TenantId);
         return string.Format("{0}{1}{2}/{3}",
                              _httpContextAccessor.HttpContext.Request.Scheme,
                              Uri.SchemeDelimiter,

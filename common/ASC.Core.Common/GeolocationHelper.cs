@@ -106,7 +106,7 @@ public class GeolocationHelper
 static file class Queries
 {
     public static readonly Func<CustomDbContext, string, byte[], Task<IPGeolocationInfo>> IpGeolocationInfoAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (CustomDbContext ctx, string addrType, byte[] address) =>
                 ctx.DbIPLookup
                     .Where(r => r.AddrType == addrType && r.IPStart.Compare(address) <= 0)

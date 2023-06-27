@@ -100,17 +100,17 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 static file class Queries
 {
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFile>> DbFilesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.Files
-                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating &&
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Files.Core.Thumbnail.Creating &&
                                 EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5));
 
     public static readonly Func<FilesDbContext, Task<int>> UpdateDbFilesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.Files
-                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating &&
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Files.Core.Thumbnail.Creating &&
                                 EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5)
-                    .ExecuteUpdate(s => s.SetProperty(b => b.ThumbnailStatus, b => ASC.Files.Core.Thumbnail.Waiting)));
+                    .ExecuteUpdate(s => s.SetProperty(b => b.ThumbnailStatus, b => Files.Core.Thumbnail.Waiting)));
 }

@@ -44,6 +44,8 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -54,6 +56,8 @@ public static class DbFilesThirdpartyAccountExtension
 {
     public static ModelBuilderWrapper AddDbFilesThirdpartyAccount(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesThirdpartyAccount>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesThirdpartyAccount, Provider.MySql)
             .Add(PgSqlAddDbFilesThirdpartyAccount, Provider.PostgreSql);

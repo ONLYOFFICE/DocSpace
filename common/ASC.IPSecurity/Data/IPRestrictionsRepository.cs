@@ -42,7 +42,7 @@ public class IPRestrictionsRepository
     {
         await using var tenantDbContext = _dbContextManager.CreateDbContext();
         return await tenantDbContext.TenantIpRestrictions
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
             .ToListAsync();
     }
@@ -55,7 +55,7 @@ public class IPRestrictionsRepository
 
         var ipsList = ips.Select(r => new TenantIpRestrictions
         {
-            Tenant = tenant,
+                TenantId = tenant,
             Ip = r.Ip,
             ForAdmin = r.ForAdmin
 
@@ -71,7 +71,7 @@ public class IPRestrictionsRepository
 static file class Queries
 {
     public static readonly Func<TenantDbContext, int, IAsyncEnumerable<TenantIpRestrictions>>
-        TenantIpRestrictionsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        TenantIpRestrictionsAsync = EF.CompileAsyncQuery(
             (TenantDbContext ctx, int tenantId) =>
-                ctx.TenantIpRestrictions.Where(r => r.Tenant == tenantId));
+                ctx.TenantIpRestrictions.Where(r => r.TenantId == tenantId));
 }

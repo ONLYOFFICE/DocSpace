@@ -609,29 +609,29 @@ public class TagLinkComparer : IEqualityComparer<TagLink>
 static file class Queries
 {
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
-        AllThirdpartyIdMappingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        AllThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.ThirdpartyIdMapping.AsQueryable());
 
     public static readonly Func<FilesDbContext, string, Task<bool>>
-        AnyTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        AnyTagLinksAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, string entryId) =>
                 ctx.TagLink
                     .Join(ctx.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
                     .Where(r => r.tag.Type == TagType.Custom).Any(t => t.EntryId == entryId));
     
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTagLink>>
-        AllTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        AllTagLinksAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.TagLink.AsQueryable());
     
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>>
-        AllTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        AllTagsAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.Tag.AsQueryable());
 
     public static readonly Func<FilesDbContext, string, Task<string>>
-        IdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        IdAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, string hashId) =>
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.HashId == hashId)

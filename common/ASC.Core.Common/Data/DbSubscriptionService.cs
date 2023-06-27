@@ -118,7 +118,7 @@ public class DbSubscriptionService : ISubscriptionService
             Recipient = s.RecipientId,
             Source = s.SourceId,
             Unsubscribed = !s.Subscribed,
-            Tenant = s.Tenant
+            TenantId = s.Tenant
         };
 
         await using var userDbContext = _dbContextFactory.CreateDbContext();
@@ -202,7 +202,7 @@ public class DbSubscriptionService : ISubscriptionService
                 Action = m.Action,
                 Recipient = m.Recipient,
                 Source = m.Source,
-                Tenant = m.Tenant,
+                    TenantId = m.Tenant,
                 Sender = string.Join("|", m.Methods)
             };
             await userDbContext.AddOrUpdateAsync(q => q.SubscriptionMethods, sm);
@@ -242,104 +242,104 @@ public class DbSubscriptionService : ISubscriptionService
 static file class Queries
 {
     public static readonly Func<UserDbContext, int, string, string, string, IAsyncEnumerable<string>> RecipientsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string objectId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Object == objectId)
                     .Where(r => !r.Unsubscribed)
-                    .OrderBy(r => r.Tenant)
+                    .OrderBy(r => r.TenantId)
                     .Select(r => r.Recipient)
                     .Distinct());
 
     public static readonly Func<UserDbContext, int, string, string, IAsyncEnumerable<Subscription>> SubscriptionsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
-                    .OrderBy(r => r.Tenant)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
+                    .OrderBy(r => r.TenantId)
                     .AsQueryable());
 
     public static readonly Func<UserDbContext, int, string, string, string, string, IAsyncEnumerable<Subscription>>
-        SubscriptionsByRecipientAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        SubscriptionsByRecipientAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string recipientId, string objectId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Recipient == recipientId)
                     .Where(r => r.Object == objectId)
-                    .OrderBy(r => r.Tenant)
+                    .OrderBy(r => r.TenantId)
                     .AsQueryable());
 
     public static readonly Func<UserDbContext, int, string, string, string, string, Task<bool>>
-        AnySubscriptionsByRecipientAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        AnySubscriptionsByRecipientAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string recipientId, string objectId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Recipient == recipientId)
                     .Where(r => r.Unsubscribed)
                     .Where(r => r.Object == objectId)
                     .Any());
 
     public static readonly Func<UserDbContext, int, string, string, string, bool, IAsyncEnumerable<string>>
-        ObjectsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        ObjectsAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string recipientId,
                     bool checkSubscribe) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Recipient == recipientId)
                     .Where(r => checkSubscribe && !r.Unsubscribed)
                     .Distinct()
-                    .OrderBy(r => r.Tenant)
+                    .OrderBy(r => r.TenantId)
                     .Select(r => r.Object));
 
     public static readonly Func<UserDbContext, int, string, string, string, Task<Subscription>>
-        SubscriptionsByObjectAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        SubscriptionsByObjectAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string objectId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Object == objectId)
                     .FirstOrDefault());
 
     public static readonly Func<UserDbContext, int, string, string, string, string, IAsyncEnumerable<Subscription>>
-        SubscriptionsByRecipientIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        SubscriptionsByRecipientIdAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string recipientId, string objectId) =>
                 ctx.Subscriptions
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => recipientId != null && r.Recipient == recipientId ||
                                 recipientId == null && r.Object == objectId)
-                    .OrderBy(r => r.Tenant)
+                    .OrderBy(r => r.TenantId)
                     .AsQueryable());
 
     public static readonly Func<UserDbContext, int, string, string, IAsyncEnumerable<DbSubscriptionMethod>>
-        DbSubscriptionMethodsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        DbSubscriptionMethodsAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string recipientId) =>
                 ctx.SubscriptionMethods
-                    .Where(r => r.Tenant == -1 || r.Tenant == tenantId)
+                    .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Source == sourceId)
                     .Where(r => recipientId != null && r.Recipient == recipientId)
-                    .OrderBy(r => r.Tenant)
+                    .OrderBy(r => r.TenantId)
                     .Distinct()
                     .AsQueryable());
 
     public static readonly Func<UserDbContext, int, string, string, string, Task<DbSubscriptionMethod>>
-        DbSubscriptionMethodAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        DbSubscriptionMethodAsync = EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string sourceId, string actionId, string recipientId) =>
                 ctx.SubscriptionMethods
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
                     .Where(r => r.Recipient == recipientId)

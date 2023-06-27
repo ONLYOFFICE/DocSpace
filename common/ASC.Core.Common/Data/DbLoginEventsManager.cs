@@ -136,7 +136,7 @@ public class DbLoginEventsManager
 static file class Queries
 {
     public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<LoginEvent>>
-        LoginEventsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        LoginEventsAsync = EF.CompileAsyncQuery(
             (MessagesContext ctx, int tenantId, Guid userId, IEnumerable<int> loginActions, DateTime date) =>
                 ctx.LoginEvents
                     .Where(r => r.TenantId == tenantId
@@ -148,14 +148,14 @@ static file class Queries
                     .AsQueryable());
 
     public static readonly Func<MessagesContext, int, Task<int>> DeleteLoginEventsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, int loginEventId) =>
                 ctx.LoginEvents
                     .Where(r => r.Id == loginEventId)
                     .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
 
     public static readonly Func<MessagesContext, int, Guid, Task<int>> DeleteLoginEventsByUserIdAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, int tenantId, Guid userId) =>
                 ctx.LoginEvents
                     .Where(r => r.TenantId == tenantId
@@ -164,7 +164,7 @@ static file class Queries
                     .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
 
     public static readonly Func<MessagesContext, int, Task<int>> UpdateLoginEventsByTenantIdAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, int tenantId) =>
                 ctx.LoginEvents
                     .Where(r => r.TenantId == tenantId
@@ -172,7 +172,7 @@ static file class Queries
                     .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
 
     public static readonly Func<MessagesContext, int, Guid, int, Task<int>> UpdateLoginEventsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, int tenantId, Guid userId, int loginEventId) =>
                 ctx.LoginEvents
                     .Where(r => r.TenantId == tenantId

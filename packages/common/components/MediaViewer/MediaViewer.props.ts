@@ -1,4 +1,11 @@
-import { IFile, NumberOrString, PlaylistType, TranslationType } from "./types";
+import {
+  ContextMenuAction,
+  IFile,
+  NumberOrString,
+  OmitSecondArg,
+  PlaylistType,
+  TranslationType,
+} from "./types";
 export interface MediaViewerProps {
   t: TranslationType;
 
@@ -28,17 +35,21 @@ export interface MediaViewerProps {
   onClose: VoidFunction;
   onError?: VoidFunction;
   onEmptyPlaylistError: VoidFunction;
+  onChangeUrl: (id: NumberOrString) => void;
+  onShowInfoPanel: OmitSecondArg<ContextMenuAction>;
   onDelete: (id: NumberOrString) => void;
   onDownload: (id: NumberOrString) => void;
-  onChangeUrl: (id: NumberOrString) => void;
 
+  onClickDownloadAs: VoidFunction;
   onMoveAction: VoidFunction;
   onCopyAction: VoidFunction;
-  onClickRename: (file: IFile) => void;
-  onShowInfoPanel: (file: IFile) => void;
-  onDuplicate: (file: IFile, t: TranslationType) => void;
-  onClickDelete: (file: IFile, t: TranslationType) => void;
-  onClickDownload: (file: IFile, t: TranslationType) => void;
+  onClickRename: OmitSecondArg<ContextMenuAction>;
+  onDuplicate: ContextMenuAction;
+  onClickDelete: ContextMenuAction;
+  onClickDownload: ContextMenuAction;
+  onClickLinkEdit: OmitSecondArg<ContextMenuAction>;
+  onPreviewClick: OmitSecondArg<ContextMenuAction>;
+  onCopyLink: ContextMenuAction;
 
   nextMedia: VoidFunction;
   prevMedia: VoidFunction;

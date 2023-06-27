@@ -676,7 +676,7 @@ static class CamelCaseExtension
 static file class Queries
 {
     public static readonly Func<WebstudioDbContext, string, Task<DateTime>> LastIndexedAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (WebstudioDbContext ctx, string indexName) =>
                 ctx.WebstudioIndex
                     .Where(r => r.IndexName == indexName)
@@ -684,7 +684,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<WebstudioDbContext, string, Task<DbWebstudioIndex>> IndexAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (WebstudioDbContext ctx, string indexName) =>
                 ctx.WebstudioIndex
                     .FirstOrDefault(r => r.IndexName == indexName));

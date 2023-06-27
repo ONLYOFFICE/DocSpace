@@ -8,7 +8,7 @@ import CatalogFavoritesReactSvgUrl from "PUBLIC_DIR/images/catalog.favorites.rea
 import CatalogRecentReactSvgUrl from "PUBLIC_DIR/images/catalog.recent.react.svg?url";
 import CatalogPrivateReactSvgUrl from "PUBLIC_DIR/images/catalog.private.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
@@ -104,6 +104,13 @@ const Item = ({
     setIsDragActive(false);
   }, []);
 
+  const onClickAction = React.useCallback(
+    (folderId) => {
+      onClick && onClick(folderId, item.title, item.rootFolderType);
+    },
+    [onClick, item.title, item.rootFolderType]
+  );
+
   return (
     <StyledDragAndDrop
       key={item.id}
@@ -113,17 +120,18 @@ const Item = ({
       dragging={dragging && isDragging}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
+      className={"document-catalog"}
     >
       <CatalogItem
         key={item.id}
         id={item.id}
         folderId={folderId}
-        className={`tree-drag ${item.folderClassName}`}
+        className={`tree-drag ${item.folderClassName} document-catalog`}
         icon={getFolderIcon(item)}
         showText={showText}
         text={item.title}
-        isActive={isActive(item)}
-        onClick={onClick}
+        isActive={isActive}
+        onClick={onClickAction}
         onDrop={onMoveTo}
         isEndOfBlock={getEndOfBlock(item)}
         isDragging={isDragging}
@@ -139,14 +147,11 @@ const Item = ({
   );
 };
 
-let dataMainTree = [];
 const Items = ({
   t,
   data,
   showText,
-  pathParts,
-  rootFolderType,
-  selectedTreeNode,
+
   onClick,
   onBadgeClick,
 
@@ -173,45 +178,12 @@ const Items = ({
   firstLoad,
   deleteAction,
   startDrag,
+
+  activeItemId,
   emptyTrashInProgress,
 }) => {
-  useEffect(() => {
-    data.forEach((elem) => {
-      const elemId = elem.id;
-      dataMainTree.push(elemId.toString());
-    });
-  }, [data]);
-
-  const isActive = React.useCallback(
-    (item) => {
-      if (selectedTreeNode.length > 0) {
-        const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
-
-        if (
-          rootFolderType === FolderType.Rooms &&
-          item.rootFolderType === FolderType.Rooms
-        ) {
-          return true;
-        }
-
-        if (pathParts && pathParts.includes(item.id) && !isMainFolder)
-          return true;
-
-        if (
-          (selectedTreeNode[0] === "@my" || selectedTreeNode[0] === "@rooms") &&
-          item.key === "0-0"
-        ) {
-          return true;
-        }
-        return `${item.id}` === selectedTreeNode[0];
-      }
-    },
-    [selectedTreeNode, pathParts, docSpace, rootFolderType]
-  );
   const getEndOfBlock = React.useCallback(
     (item) => {
-      if (docSpace) return false;
-
       switch (item.key) {
         case "0-3":
         case "0-5":
@@ -360,7 +332,7 @@ const Items = ({
             item={item}
             dragging={dragging}
             getFolderIcon={getFolderIcon}
-            isActive={isActive}
+            isActive={item.id === activeItemId}
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
@@ -376,9 +348,25 @@ const Items = ({
       });
 
       if (!firstLoad && !isVisitor)
-        items.splice(3, 0, <SettingsItem key="settings-item" />);
+        items.splice(
+          3,
+          0,
+          <SettingsItem
+            key="settings-item"
+            onClick={onClick}
+            isActive={activeItemId === "settings"}
+          />
+        );
       if (!isVisitor && !isCollaborator)
-        items.splice(3, 0, <AccountsItem key="accounts-item" />);
+        items.splice(
+          3,
+          0,
+          <AccountsItem
+            key="accounts-item"
+            onClick={onClick}
+            isActive={activeItemId === "accounts"}
+          />
+        );
 
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
@@ -389,7 +377,6 @@ const Items = ({
       t,
       dragging,
       getFolderIcon,
-      isActive,
       onClick,
       onMoveTo,
       getEndOfBlock,
@@ -403,6 +390,7 @@ const Items = ({
       isAdmin,
       isVisitor,
       firstLoad,
+      activeItemId,
       emptyTrashInProgress,
     ]
   );
@@ -413,7 +401,6 @@ const Items = ({
 Items.propTypes = {
   data: PropTypes.array,
   showText: PropTypes.bool,
-  selectedTreeNode: PropTypes.array,
   onClick: PropTypes.func,
   onClickBadge: PropTypes.func,
   onHide: PropTypes.func,
@@ -428,6 +415,7 @@ export default inject(
     filesActionsStore,
     uploadDataStore,
     dialogsStore,
+    clientLoadingStore,
   }) => {
     const {
       selection,
@@ -435,21 +423,18 @@ export default inject(
       dragging,
       setDragging,
       trashIsEmpty,
-      firstLoad,
+
       startDrag,
     } = filesStore;
 
+    const { firstLoad } = clientLoadingStore;
+
     const { startUpload } = uploadDataStore;
 
-    const {
-      selectedTreeNode,
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      isPrivacyFolder,
-    } = treeFoldersStore;
+    const { treeFolders, myFolderId, commonFolderId, isPrivacyFolder } =
+      treeFoldersStore;
 
-    const { id, pathParts, rootFolderType } = selectedFolderStore;
+    const { id } = selectedFolderStore;
     const {
       moveDragItems,
       uploadEmptyFolders,
@@ -468,9 +453,9 @@ export default inject(
       currentId: id,
       showText: auth.settingsStore.showText,
       docSpace: auth.settingsStore.docSpace,
-      pathParts,
+
       data: treeFolders,
-      selectedTreeNode,
+
       draggableItems: dragging
         ? bufferSelection
           ? [bufferSelection]
@@ -484,7 +469,7 @@ export default inject(
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
       trashIsEmpty,
-      rootFolderType,
+
       firstLoad,
       startDrag,
       emptyTrashInProgress,

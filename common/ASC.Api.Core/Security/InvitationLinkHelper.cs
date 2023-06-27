@@ -183,7 +183,7 @@ public class LinkValidationResult
 static file class Queries
 {
     public static readonly Func<MessagesContext, string, string, Task<AuditEvent>> AuditEventsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, string target, string description) =>
                 ctx.AuditEvents.FirstOrDefault(a => a.Target == target && a.DescriptionRaw == description));
 }

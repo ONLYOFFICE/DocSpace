@@ -1,8 +1,15 @@
 declare global {
   interface Window {
     Tiff: new (arg: object) => any;
+    DocSpaceConfig: any;
   }
 }
+
+export type ContextMenuAction = (file: IFile, t: TranslationType) => void;
+
+export type OmitSecondArg<F> = F extends (x: infer P, arg: any) => infer R
+  ? (file: P) => R
+  : never;
 
 export type TranslationType = (key: string, opt?: object) => string;
 
@@ -18,6 +25,8 @@ export type PlaylistType = {
   fileStatus: number;
   src: string;
   title: string;
+  thumbnailUrl: string;
+  version: number;
 };
 
 export type CreatedType = {

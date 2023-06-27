@@ -2,6 +2,8 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { isIOS, isFirefox, isMobileOnly } from "react-device-detect";
 
+import { mobile } from "@docspace/components/utils/device";
+
 const StyledMain = styled.main`
   height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
   width: 100vw;
@@ -18,6 +20,15 @@ const StyledMain = styled.main`
     flex-direction: row;
     box-sizing: border-box;
   }
+
+  ${!isMobileOnly &&
+  css`
+    @media ${mobile} {
+      height: ${isIOS && !isFirefox
+        ? "calc(var(--vh, 1vh) * 100)"
+        : "calc(100vh - 64px)"};
+    }
+  `}
 
   ${isMobileOnly &&
   css`

@@ -36,23 +36,7 @@ builder.Configuration.AddJsonFile($"appsettings.creator.json", true)
                .AddCommandLine(args);
 
 builder.Services.AddScoped<EFLoggerFactory>();
-builder.Services.AddBaseDbContext<AccountLinkContext>();
-builder.Services.AddBaseDbContext<CoreDbContext>();
-builder.Services.AddBaseDbContext<TenantDbContext>();
-builder.Services.AddBaseDbContext<UserDbContext>();
-builder.Services.AddBaseDbContext<TelegramDbContext>();
-builder.Services.AddBaseDbContext<CustomDbContext>();
-builder.Services.AddBaseDbContext<WebstudioDbContext>();
-builder.Services.AddBaseDbContext<InstanceRegistrationContext>();
-builder.Services.AddBaseDbContext<IntegrationEventLogContext>();
-builder.Services.AddBaseDbContext<FeedDbContext>();
-builder.Services.AddBaseDbContext<MessagesContext>();
-builder.Services.AddBaseDbContext<WebhooksDbContext>();
-builder.Services.AddBaseDbContext<BackupsContext>();
-builder.Services.AddBaseDbContext<FilesDbContext>();
-builder.Services.AddBaseDbContext<NotifyDbContext>();
-builder.Services.AddBaseDbContext<UrlShortenerFakeDbContext>();
-builder.Services.AddBaseDbContext<FirebaseDbContext>();
+builder.Services.AddBaseDbContext<MigrationContext>();
 builder.Services.AddBaseDbContext<TeamlabSiteContext>();
 
 var app = builder.Build();

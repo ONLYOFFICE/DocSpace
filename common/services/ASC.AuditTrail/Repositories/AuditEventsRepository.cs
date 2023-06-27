@@ -267,7 +267,7 @@ public static class AuditEventsRepositoryExtensions
 static file class Queries
 {
     public static readonly Func<MessagesContext, DateTime?, DateTime?, IAsyncEnumerable<int>> TenantsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (MessagesContext ctx, DateTime? from, DateTime? to) =>
                 ctx.AuditEvents
                     .Where(r => r.Date >= from && r.Date <= to)

@@ -28,9 +28,12 @@ namespace ASC.Core.Common.EF;
 
 public class UserPhoto : BaseEntity
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public Guid UserId { get; set; }
     public byte[] Photo { get; set; }
+
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { UserId };
@@ -40,6 +43,8 @@ public static class UserPhotoExtension
 {
     public static ModelBuilderWrapper AddUserPhoto(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<UserPhoto>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddUserPhoto, Provider.MySql)
             .Add(PgSqlAddUserPhoto, Provider.PostgreSql);
@@ -56,7 +61,7 @@ public static class UserPhotoExtension
             entity.ToTable("core_userphoto")
                 .HasCharSet("utf8");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant");
 
             entity.Property(e => e.UserId)
@@ -70,7 +75,7 @@ public static class UserPhotoExtension
                 .HasColumnName("photo")
                 .HasColumnType("mediumblob");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
     public static void PgSqlAddUserPhoto(this ModelBuilder modelBuilder)
@@ -82,7 +87,7 @@ public static class UserPhotoExtension
 
             entity.ToTable("core_userphoto", "onlyoffice");
 
-            entity.HasIndex(e => e.Tenant)
+            entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_core_userphoto");
 
             entity.Property(e => e.UserId)
@@ -93,7 +98,7 @@ public static class UserPhotoExtension
                 .IsRequired()
                 .HasColumnName("photo");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
 }

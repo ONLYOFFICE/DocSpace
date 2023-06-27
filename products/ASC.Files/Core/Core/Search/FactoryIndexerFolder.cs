@@ -147,7 +147,7 @@ public static class FactoryIndexerFolderExtension
 static file class Queries
 {
     public static readonly Func<FilesDbContext, DateTime, int> FolderMinId =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed) =>
                 ctx.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
@@ -159,7 +159,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, DateTime, int> FolderMaxId =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed) =>
                 ctx.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
@@ -171,7 +171,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, DateTime, int> FoldersCount =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed) =>
                 ctx.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
@@ -181,7 +181,7 @@ static file class Queries
                     .Count());
 
     public static readonly Func<FilesDbContext, DateTime, long, int> FolderId =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed, long start) =>
                 ctx.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)
@@ -195,7 +195,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, DateTime, long, long, IEnumerable<DbFolder>> FolderData =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed, long start, long stop) =>
                 ctx.Folders
                     .Where(r => r.ModifiedOn >= lastIndexed)

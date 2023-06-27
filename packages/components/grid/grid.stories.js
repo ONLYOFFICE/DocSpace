@@ -34,13 +34,13 @@ const Template = (args) => {
   return (
     <Grid {...args} {...gridProps}>
       <Box {...boxProps} backgroundProp="#F4991A">
-        <Text>200px</Text>
+        <Text color={"#000"}>200px</Text>
       </Box>
       <Box {...boxProps} backgroundProp="#F2EAD3">
-        <Text>minmax(100px,1fr)</Text>
+        <Text color={"#000"}>minmax(100px,1fr)</Text>
       </Box>
       <Box {...boxProps} backgroundProp="#F9F5F0">
-        <Text>auto</Text>
+        <Text color={"#000"}>auto</Text>
       </Box>
     </Grid>
   );
@@ -55,37 +55,37 @@ const TemplateColumns = (args) => {
         columnsProp={["200px", ["100px", "1fr"], "auto"]}
       >
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>200px</Text>
+          <Text color={"#000"}>200px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>minmax(100px,1fr)</Text>
+          <Text color={"#000"}>minmax(100px,1fr)</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>auto</Text>
+          <Text color={"#000"}>auto</Text>
         </Box>
       </Grid>
 
       <Grid {...args} {...gridProps} columnsProp="25%">
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>25%</Text>
+          <Text color={"#000"}>25%</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>25%</Text>
+          <Text color={"#000"}>25%</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>25%</Text>
+          <Text color={"#000"}>25%</Text>
         </Box>
       </Grid>
 
       <Grid {...args} {...gridProps} columnsProp={{ count: 3, size: "100px" }}>
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>100px</Text>
+          <Text color={"#000"}>100px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>100px</Text>
+          <Text color={"#000"}>100px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>100px</Text>
+          <Text color={"#000"}>100px</Text>
         </Box>
       </Grid>
 
@@ -95,13 +95,13 @@ const TemplateColumns = (args) => {
         columnsProp={{ count: 3, size: ["100px", "1fr"] }}
       >
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>minmax(100px,1fr)</Text>
+          <Text color={"#000"}>minmax(100px,1fr)</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>minmax(100px,1fr)</Text>
+          <Text color={"#000"}>minmax(100px,1fr)</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>minmax(100px,1fr)</Text>
+          <Text color={"#000"}>minmax(100px,1fr)</Text>
         </Box>
       </Grid>
     </>
@@ -117,25 +117,25 @@ const TemplateRows = (args) => {
         rowsProp={["100px", ["100px", "1fr"], "auto"]}
       >
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>100px</Text>
+          <Text color={"#000"}>100px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>minmax(100px,1fr)</Text>
+          <Text color={"#000"}>minmax(100px,1fr)</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>auto</Text>
+          <Text color={"#000"}>auto</Text>
         </Box>
       </Grid>
 
       <Grid {...args} {...gridProps} rowsProp="50px">
         <Box {...boxProps} backgroundProp="#F4991A">
-          <Text>50px</Text>
+          <Text color={"#000"}>50px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F2EAD3">
-          <Text>50px</Text>
+          <Text color={"#000"}>50px</Text>
         </Box>
         <Box {...boxProps} backgroundProp="#F9F5F0">
-          <Text>50px</Text>
+          <Text color={"#000"}>50px</Text>
         </Box>
       </Grid>
     </>
@@ -160,19 +160,19 @@ const TemplateLayout = (args) => {
       ]}
     >
       <Box {...boxProps} gridArea="header" backgroundProp="#F4991A">
-        <Text>header</Text>
+        <Text color={"#000"}>header</Text>
       </Box>
       <Box {...boxProps} gridArea="navbar" backgroundProp="#F2EAD3">
-        <Text>navbar</Text>
+        <Text color={"#000"}>navbar</Text>
       </Box>
       <Box {...boxProps} gridArea="main" backgroundProp="#F9F5F0">
-        <Text>main</Text>
+        <Text color={"#000"}>main</Text>
       </Box>
       <Box {...boxProps} gridArea="sidebar" backgroundProp="#F2EAD3">
-        <Text>sidebar</Text>
+        <Text color={"#000"}>sidebar</Text>
       </Box>
       <Box {...boxProps} gridArea="footer" backgroundProp="#F4991A">
-        <Text>footer</Text>
+        <Text color={"#000"}>footer</Text>
       </Box>
     </Grid>
   );

@@ -174,20 +174,20 @@ public class DbWorker : IDisposable
 static file class Queries
 {
     public static readonly Func<NotifyDbContext, Task<int>> ResetStatesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx) =>
                 ctx.NotifyInfo
                     .Where(r => r.State == 1)
                     .ExecuteUpdate(q => q.SetProperty(p => p.State, 0)));
 
     public static readonly Func<NotifyDbContext, int, Task<NotifyInfo>> NotifyInfoAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx, int id) =>
                 ctx.NotifyInfo
                     .FirstOrDefault(r => r.NotifyId == id));
 
     public static readonly Func<NotifyDbContext, int, Task<int>> AttemptsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx, int id) =>
                 ctx.NotifyInfo
                     .Where(r => r.NotifyId == id)
@@ -195,7 +195,7 @@ static file class Queries
                     .FirstOrDefault());
 
     public static readonly Func<NotifyDbContext, int, int, Task<int>> UpdateNotifyInfoAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx, int id, int result) =>
                 ctx.NotifyInfo
                     .Where(r => r.NotifyId == id)

@@ -64,12 +64,12 @@ public class DbRadicale
 static file class Queries
 {
     public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> UserDavAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, Guid userId) =>
                 ctx.UsersDav.FirstOrDefault(r => r.TenantId == tenantId && r.UserId == userId));
 
     public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, Guid userId) =>
                 ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId));
 }

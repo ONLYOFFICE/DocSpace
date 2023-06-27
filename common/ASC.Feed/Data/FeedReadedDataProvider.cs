@@ -85,7 +85,7 @@ public class FeedReadedDataProvider
             UserId = user,
             TimeStamp = time,
             Module = module,
-            Tenant = tenant
+            TenantId = tenant
         };
 
         await using var feedDbContext = _dbContextFactory.CreateDbContext();
@@ -118,19 +118,19 @@ public class FeedReadedDataProvider
 static file class Queries
 {
     public static readonly Func<FeedDbContext, int, Guid, string, Task<DateTime>> MaxTimeStampAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FeedDbContext ctx, int tenantId, Guid userId, string module) =>
                 ctx.FeedReaded
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.UserId == userId)
                     .Where(r => r.Module == module)
                     .Max(r => r.TimeStamp));
 
     public static readonly Func<FeedDbContext, int, Guid, DateTime, IAsyncEnumerable<string>> ModulesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FeedDbContext ctx, int tenantId, Guid userId, DateTime fromTime) =>
                 ctx.FeedReaded
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.UserId == userId)
                     .Where(r => r.TimeStamp >= fromTime)
                     .Select(r => r.Module));

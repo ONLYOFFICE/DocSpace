@@ -721,7 +721,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 static file class Queries
 {
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>>
-        TagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        TagLinksAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.TagLink
                     .Where(r => r.TenantId == tenantId)
@@ -731,7 +731,7 @@ static file class Queries
                         .Select(m => m.HashId).Any(h => h == r.EntryId)));
 
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> TagsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 from ft in ctx.Tag
                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
@@ -742,7 +742,7 @@ static file class Queries
                 select ft);
 
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.Security
                     .Where(r => r.TenantId == tenantId)
@@ -752,7 +752,7 @@ static file class Queries
                         .Select(m => m.HashId).Any(h => h == r.EntryId)));
 
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
-        ThirdpartyIdMappingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        ThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.TenantId == tenantId)

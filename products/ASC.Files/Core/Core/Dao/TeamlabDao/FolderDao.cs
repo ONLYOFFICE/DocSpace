@@ -522,8 +522,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             filesDbContext.Folders.RemoveRange(folderToDelete);
 
-            await Queries.DeleteTreesAsync(filesDbContext, subfolders);
-
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
 
             await Queries.DeleteTagLinksAsync(filesDbContext, TenantID, subfoldersStrings);
@@ -1778,12 +1776,6 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => subfolders.Contains(r.Id)));
 
-    public static readonly Func<FilesDbContext, IEnumerable<int>, Task<int>> DeleteTreesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, IEnumerable<int> subfolders) =>
-                ctx.Tree
-                    .Where(r => subfolders.Contains(r.FolderId))
-                    .ExecuteDelete());
 
     public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>> DeleteTagLinksAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

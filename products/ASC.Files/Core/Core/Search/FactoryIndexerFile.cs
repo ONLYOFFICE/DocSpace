@@ -211,7 +211,7 @@ file class FilesFoldersPair
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, DateTime, int> FileMinId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    public static readonly Func<FilesDbContext, DateTime, int> FileMinId = EF.CompileQuery(
         (FilesDbContext ctx, DateTime lastIndexed) =>
             ctx.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
@@ -223,7 +223,7 @@ static file class Queries
                 .Select(r => r.Id)
                 .FirstOrDefault());
 
-    public static readonly Func<FilesDbContext, DateTime, int> FileMaxId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    public static readonly Func<FilesDbContext, DateTime, int> FileMaxId = EF.CompileQuery(
         (FilesDbContext ctx, DateTime lastIndexed) =>
             ctx.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
@@ -235,7 +235,7 @@ static file class Queries
                 .Select(r => r.Id)
                 .FirstOrDefault());
 
-    public static readonly Func<FilesDbContext, DateTime, int> FilesCount = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    public static readonly Func<FilesDbContext, DateTime, int> FilesCount = EF.CompileQuery(
         (FilesDbContext ctx, DateTime lastIndexed) =>
             ctx.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
@@ -246,7 +246,7 @@ static file class Queries
                 .Count());
 
     public static readonly Func<FilesDbContext, DateTime, long, long, IEnumerable<FilesFoldersPair>> FilesFoldersPair =
-        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+        EF.CompileQuery(
             (FilesDbContext ctx, DateTime lastIndexed, long start, long stop) =>
                 ctx.Files
                     .Where(r => r.ModifiedOn >= lastIndexed)
@@ -260,7 +260,7 @@ static file class Queries
                         File = file, Folders = ctx.Tree.Where(b => b.FolderId == file.ParentId).ToList()
                     }));
     
-    public static readonly Func<FilesDbContext, DateTime, long, int> FileId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    public static readonly Func<FilesDbContext, DateTime, long, int> FileId = EF.CompileQuery(
     (FilesDbContext ctx, DateTime lastIndexed, long start) =>
         ctx.Files
             .Where(r => r.ModifiedOn >= lastIndexed)

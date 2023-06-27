@@ -22,18 +22,21 @@ const FilesMediaViewer = (props) => {
     previewFile,
     fetchFiles,
     setIsLoading,
-    setFirstLoad,
+
     setToPreviewFile,
     setScrollToItem,
     setCurrentId,
-    setAlreadyFetchingRooms,
+
     setBufferSelection,
-    isFavoritesFolder,
+
     archiveRoomsId,
-    onClickFavorite,
+
     onShowInfoPanel,
     onClickDownload,
-    onClickDownloadAs,
+
+    onClickLinkEdit,
+    onPreviewClick,
+    onCopyLink,
     onClickRename,
     onClickDelete,
     onMoveAction,
@@ -52,6 +55,7 @@ const FilesMediaViewer = (props) => {
     setSelection,
     activeFiles,
     activeFolders,
+    onClickDownloadAs,
   } = props;
 
   const navigate = useNavigate();
@@ -77,8 +81,6 @@ const FilesMediaViewer = (props) => {
       // fetch file after preview with
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
-        setFirstLoad(false);
-        setAlreadyFetchingRooms(false);
       });
     }
   }, [previewFile]);
@@ -205,6 +207,10 @@ const FilesMediaViewer = (props) => {
         onMoveAction={onMoveAction}
         onCopyAction={onCopyAction}
         onDuplicate={onDuplicate}
+        onClickLinkEdit={onClickLinkEdit}
+        onPreviewClick={onPreviewClick}
+        onCopyLink={onCopyLink}
+        onClickDownloadAs={onClickDownloadAs}
         onClose={onMediaViewerClose}
         getIcon={getIcon}
         onEmptyPlaylistError={onMediaViewerClose}
@@ -229,14 +235,23 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     contextOptionsStore,
+    clientLoadingStore,
   }) => {
+    const {
+      firstLoad,
+
+      setIsSectionFilterLoading,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     const {
       files,
       userAccess,
       fetchFiles,
-      setIsLoading,
-      firstLoad,
-      setFirstLoad,
+
       setScrollToItem,
       setBufferSelection,
       setIsPreview,
@@ -274,6 +289,9 @@ export default inject(
       onMoveAction,
       onCopyAction,
       onDuplicate,
+      onClickLinkEdit,
+      onPreviewClick,
+      onCopyLink,
     } = contextOptionsStore;
 
     return {
@@ -295,7 +313,7 @@ export default inject(
       previewFile,
       setIsLoading,
       firstLoad,
-      setFirstLoad,
+
       setToPreviewFile,
       setIsPreview,
       resetUrl,
@@ -310,6 +328,9 @@ export default inject(
       onClickDelete,
       onClickDownload,
       onShowInfoPanel,
+      onClickLinkEdit,
+      onPreviewClick,
+      onCopyLink,
       onClickRename,
       onMoveAction,
       getIcon,

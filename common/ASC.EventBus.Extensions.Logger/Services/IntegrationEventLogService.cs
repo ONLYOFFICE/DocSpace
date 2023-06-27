@@ -108,13 +108,13 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 static file class Queries
 {
     public static readonly Func<IntegrationEventLogContext, string, IAsyncEnumerable<IntegrationEventLogEntry>>
-        IntegrationEventLogEntriesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        IntegrationEventLogEntriesAsync = EF.CompileAsyncQuery(
             (IntegrationEventLogContext ctx, string tid) =>
                 ctx.IntegrationEventLogs
                     .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished));
 
     public static readonly Func<IntegrationEventLogContext, Guid, Task<IntegrationEventLogEntry>>
-        IntegrationEventLogEntryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        IntegrationEventLogEntryAsync = EF.CompileAsyncQuery(
             (IntegrationEventLogContext ctx, Guid eventId) =>
                 ctx.IntegrationEventLogs.Single(ie => ie.EventId == eventId));
 }

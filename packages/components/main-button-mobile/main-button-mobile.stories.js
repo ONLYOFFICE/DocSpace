@@ -5,13 +5,67 @@ import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.fol
 import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
 import MobileStartReactSvgUrl from "PUBLIC_DIR/images/mobile.star.react.svg?url";
 
+import MobileMainButtonDocs from "./main-button-mobile-docs.mdx";
+
 export default {
   title: "Components/MainButtonMobile",
   component: MainButtonMobile,
+  tags: ["autodocs"],
   parameters: {
-    docs: { description: { component: "Components/MainButtonMobile" } },
+    docs: {
+      page: MobileMainButtonDocs,
+    },
   },
 };
+
+const actionOptions = [
+  {
+    key: "1",
+    label: "New document",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "2",
+    label: "New presentation",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "3",
+    label: "New spreadsheet",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "4",
+    label: "New folder",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+];
+
+const buttonOptions = [
+  {
+    key: "1",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+  {
+    key: "2",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+  {
+    key: "3",
+    label: "Import point",
+    isSeparator: true,
+  },
+  {
+    key: "4",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+];
 
 const Template = ({ ...args }) => {
   const maxUploads = 10;
@@ -82,29 +136,6 @@ const Template = ({ ...args }) => {
   const uploadPercent = (state.uploads / maxUploads) * 100;
   const operationPercent = (state.operations / maxOperations) * 100;
 
-  const actionOptions = [
-    {
-      key: "1",
-      label: "New document",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "2",
-      label: "New presentation",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "3",
-      label: "New spreadsheet",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "4",
-      label: "New folder",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-  ];
-
   const progressOptions = [
     {
       key: "1",
@@ -127,47 +158,24 @@ const Template = ({ ...args }) => {
     },
   ];
 
-  const buttonOptions = [
-    {
-      key: "1",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-    {
-      key: "2",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-    {
-      key: "3",
-      label: "Import point",
-      isSeparator: true,
-    },
-    {
-      key: "4",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-  ];
-
   return (
-    <MainButtonMobile
-      {...args}
-      style={{ position: "absolute", bottom: "26px", right: "44px" }}
-      actionOptions={actionOptions}
-      dropdownStyle={{ right: "104px", bottom: "55px" }}
-      progressOptions={progressOptions}
-      buttonOptions={buttonOptions}
-      onUploadClick={onUploadClick}
-      withButton={true}
-      isOpenButton={isOpenButton}
-      title="Upload"
-      percent={uploadPercent}
-      opened={opened}
-    />
+    <div style={{ width: "600px", height: "500px" }}>
+      <MainButtonMobile
+        {...args}
+        style={{ position: "absolute", bottom: "26px", right: "44px" }}
+        actionOptions={actionOptions}
+        dropdownStyle={{ position: "absolute", right: "60px", bottom: "25px" }}
+        progressOptions={progressOptions}
+        buttonOptions={buttonOptions}
+        onUploadClick={onUploadClick}
+        withButton={true}
+        isOpenButton={isOpenButton}
+        isDefaultMode={false}
+        title="Upload"
+        percent={uploadPercent}
+        opened={opened}
+      />
+    </div>
   );
 };
 

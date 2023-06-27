@@ -183,7 +183,7 @@ public class DbHelper : IDisposable
                         if (table.Columns.Contains("id"))
                         {
                             var tariff = await Queries.TariffAsync(_coreDbContext, tenant.Id);
-                            tariff.Tenant = (int)r[table.Columns["id"]];
+                            tariff.TenantId = (int)r[table.Columns["id"]];
                             tariff.CreateOn = DateTime.Now;
                             //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
                             _coreDbContext.Entry(tariff).State = EntityState.Modified;
@@ -306,5 +306,5 @@ static file class Queries
     public static readonly Func<CoreDbContext, int, Task<DbTariff>> TariffAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (CoreDbContext ctx, int tenantId) =>
-                ctx.Tariffs.FirstOrDefault(t => t.Tenant == tenantId));
+                ctx.Tariffs.FirstOrDefault(t => t.TenantId == tenantId));
 }

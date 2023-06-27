@@ -76,7 +76,7 @@ Slider.propTypes = {
   /** Default input value */
   step: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Default input value */
-  value: PropTypes.number,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Sets the background color of the runnableTrack */
   withPouring: PropTypes.bool,
   /** Default input value */

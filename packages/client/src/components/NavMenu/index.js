@@ -1,6 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import {
+  isMobileOnly,
+  isDesktop as isDesktopDevice,
+} from "react-device-detect";
+import { isMobile as isMobileUtils } from "@docspace/components/utils/device";
 import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 
@@ -12,7 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import Loaders from "@docspace/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
-import { isMobileOnly } from "react-device-detect";
+
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
@@ -60,6 +65,10 @@ const NavMenu = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [showNavMenu, setShowNavMenu] = React.useState(
+    isMobileOnly || isMobileUtils()
+  );
 
   const [isBackdropVisible, setIsBackdropVisible] = React.useState(
     props.isBackdropVisible
@@ -115,6 +124,16 @@ const NavMenu = (props) => {
     setIsNavHoverEnabled(false);
   };
 
+  const onResize = React.useCallback(() => {
+    setShowNavMenu(isMobileUtils() || isMobileOnly);
+  }, []);
+
+  React.useEffect(() => {
+    if (isDesktopDevice) window.addEventListener("resize", onResize);
+
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const {
     isAuthenticated,
     isLoaded,
@@ -127,6 +146,8 @@ const NavMenu = (props) => {
 
   const isAsideAvailable = !!asideContent;
   const hideHeader = isDesktop || (!showHeader && isFrame);
+
+  if (!showNavMenu) return <></>;
 
   const isPreparationPortal = location.pathname === "/preparation-portal";
   return (

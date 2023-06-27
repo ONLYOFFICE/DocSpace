@@ -102,13 +102,13 @@ public class NotifyCleanerService : BackgroundService
 static file class Queries
 {
     public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> NotifyInfosAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx, DateTime date) =>
                 ctx.NotifyInfo
                     .Where(r => r.ModifyDate < date && r.State == 4));
 
     public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> NotifyQueuesAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (NotifyDbContext ctx, DateTime date) =>
                 ctx.NotifyQueue
                     .Where(r => r.CreationDate < date));

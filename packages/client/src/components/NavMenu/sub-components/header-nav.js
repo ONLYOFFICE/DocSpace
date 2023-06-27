@@ -36,7 +36,7 @@ const StyledNav = styled.nav`
   `}
 
   @media ${mobile} {
-    padding: 0 0 0 16px;
+    padding: 0 16px 0 16px;
   }
 
   ${isMobileOnly &&

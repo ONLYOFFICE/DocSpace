@@ -135,7 +135,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         var size = await GetUserSpaceUsageAsync(userId);
 
         await _tenantManager.SetTenantQuotaRowAsync(
-           new TenantQuotaRow { Tenant = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
+           new TenantQuotaRow { TenantId = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
            false);
     }
 }
@@ -151,7 +151,7 @@ public static class FilesSpaceUsageStatExtension
 static file class Queries
 {
     public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>
                 ctx.Files
                     .Where(r => r.TenantId == tenantId && r.CreateBy == userId &&

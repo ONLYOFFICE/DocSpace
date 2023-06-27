@@ -10,7 +10,6 @@ const RenameEvent = ({
   item,
   onClose,
 
-  setIsLoading,
   addActiveItems,
 
   updateFile,
@@ -135,8 +134,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const { setIsLoading, addActiveItems, updateFile, renameFolder } =
-      filesStore;
+    const { addActiveItems, updateFile, renameFolder } = filesStore;
 
     const { id, setSelectedFolder } = selectedFolderStore;
 
@@ -146,7 +144,6 @@ export default inject(
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
 
     return {
-      setIsLoading,
       addActiveItems,
       updateFile,
       renameFolder,

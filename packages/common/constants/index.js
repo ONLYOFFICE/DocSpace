@@ -437,6 +437,10 @@ export const FilterKeys = Object.freeze({
   user: "user",
 });
 
+export const IndexedDBStores = Object.freeze({
+  images: "images",
+});
+
 export const FilterSelectorTypes = Object.freeze({
   people: "people-selector",
   rooms: "rooms-selector",

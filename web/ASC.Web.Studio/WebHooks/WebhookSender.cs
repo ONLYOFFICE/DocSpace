@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Net;
-
 namespace ASC.Webhooks;
 
 [Singletone]
@@ -36,6 +34,9 @@ public class WebhookSender
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private const string SignatureHeader = "x-docspace-signature-256";
+
+    public const string WEBHOOK = "webhook";
+    public const string WEBHOOK_SKIP_SSL = "webhookSkipSSL";
 
     public WebhookSender(ILoggerProvider options, IServiceScopeFactory scopeFactory, IHttpClientFactory clientFactory)
     {
@@ -49,12 +50,14 @@ public class WebhookSender
         };
     }
 
-    public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
+    public async Task Send(WebhookRequestIntegrationEvent webhookRequest, CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
-        var entry = await dbWorker.ReadJournal(webhookRequest.Id);
+        var entry = await dbWorker.ReadJournal(webhookRequest.WebhookId);
+
+        var ssl = entry.Config.SSL;
 
         var status = 0;
         string responsePayload = null;
@@ -64,7 +67,9 @@ public class WebhookSender
 
         try
         {
-            var httpClient = _clientFactory.CreateClient("webhook");
+            var clientName = ssl ? WEBHOOK : WEBHOOK_SKIP_SSL;
+
+            var httpClient = _clientFactory.CreateClient(clientName);
             var request = new HttpRequestMessage(HttpMethod.Post, entry.Config.Uri)
             {
                 Content = new StringContent(entry.RequestPayload, Encoding.UTF8, "application/json")
@@ -81,13 +86,6 @@ public class WebhookSender
             responsePayload = await response.Content.ReadAsStringAsync();
 
             _log.DebugResponse(response);
-        }
-        catch (SslException e)
-        {
-            status = (int)e.Errors;
-            responsePayload = e.Message;
-
-            _log.ErrorSSLVerification(e);
         }
         catch (HttpRequestException e)
         {

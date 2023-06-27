@@ -45,20 +45,20 @@ class DbAzService : IAzService
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces = await
             userDbContext.Acl
-            .Where(r => r.Tenant == Tenant.DefaultTenant)
+            .Where(r => r.TenantId == Tenant.DefaultTenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
-            .ToDictionaryAsync(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
+            .ToDictionaryAsync(a => string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
 
         var tenantAces = await
             userDbContext.Acl
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
         // remove excaped rows
         foreach (var a in tenantAces)
         {
-            var key = string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
+            var key = string.Concat(a.TenantId.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
             if (commonAces.TryGetValue(key, out var common))
             {
                 commonAces.Remove(key);
@@ -74,7 +74,7 @@ class DbAzService : IAzService
 
     public async Task<AzRecord> SaveAceAsync(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         if (!await ExistEscapeRecordAsync(r))
         {
@@ -91,7 +91,7 @@ class DbAzService : IAzService
 
     public async Task RemoveAceAsync(int tenant, AzRecord r)
     {
-        r.Tenant = tenant;
+        r.TenantId = tenant;
 
         if (await ExistEscapeRecordAsync(r))
         {
@@ -115,7 +115,7 @@ class DbAzService : IAzService
     private async Task DeleteRecordAsync(AzRecord r)
     {
         await using var userDbContext = _dbContextFactory.CreateDbContext();
-        var record = await Queries.AclAsync(userDbContext, r.Tenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
+        var record = await Queries.AclAsync(userDbContext, r.TenantId, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
 
         if (record != null)
         {
@@ -127,7 +127,7 @@ class DbAzService : IAzService
     private async Task InsertRecordAsync(AzRecord r)
     {
         await using var userDbContext = _dbContextFactory.CreateDbContext();
-        await userDbContext.AddOrUpdateAsync(q=> q.Acl, _mapper.Map<AzRecord, Acl>(r));
+        await userDbContext.AddOrUpdateAsync(q => q.Acl, _mapper.Map<AzRecord, Acl>(r));
         await userDbContext.SaveChangesAsync();
     }
 }
@@ -135,10 +135,10 @@ class DbAzService : IAzService
 static file class Queries
 {
     public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<bool>> AnyAclAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
                 ctx.Acl
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Subject == subject)
                     .Where(r => r.Action == action)
                     .Where(r => r.Object == obj)
@@ -146,10 +146,10 @@ static file class Queries
                     .Any());
 
     public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<Acl>> AclAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
                 ctx.Acl
-                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Subject == subject)
                     .Where(r => r.Action == action)
                     .Where(r => r.Object == obj)

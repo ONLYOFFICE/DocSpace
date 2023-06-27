@@ -29,7 +29,10 @@ const Template = ({ ...args }) => {
         <ModalDialog.Body>
           <span>
             Send the password change instruction to the{" "}
-            <a href="mailto:asc@story.book">asc@story.book</a> email address
+            <a style={{ color: "#5299E0" }} href="mailto:asc@story.book">
+              asc@story.book
+            </a>{" "}
+            email address
           </span>
         </ModalDialog.Body>
         <ModalDialog.Footer>

@@ -27,10 +27,8 @@ export default {
   },
   argTypes: {
     children: {
-      description: "Property for story",
-      control: {
-        type: "multi-select",
-        options: optionsChildren,
+      table: {
+        disable: true,
       },
     },
     buttonLabel: {
@@ -41,15 +39,20 @@ export default {
       action: "button clicked!",
       table: { disable: true },
     },
-    text: { control: "text", description: "Property for story" },
+    text: {
+      table: {
+        disable: true,
+      },
+    },
     onChange: {
       control: "action",
       description:
         "The change event is triggered when the element's value is modified",
     },
     textInnerToggleContent: {
-      description: "Property for story",
-      control: "text",
+      table: {
+        disable: true,
+      },
     },
   },
 };

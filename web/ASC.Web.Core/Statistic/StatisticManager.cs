@@ -122,7 +122,7 @@ public class StatisticManager
 static file class Queries
 {
     public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
-        UserVisitsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        UserVisitsAsync = EF.CompileAsyncQuery(
             (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
                 ctx.WebstudioUserVisit
                     .Where(r => r.TenantId == tenantId)
@@ -132,7 +132,7 @@ static file class Queries
                     .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) }));
 
     public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
-        UserVisitsGroupByUserIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        UserVisitsGroupByUserIdAsync = EF.CompileAsyncQuery(
             (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
                 ctx.WebstudioUserVisit
                     .Where(r => r.TenantId == tenantId)

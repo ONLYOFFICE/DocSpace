@@ -30,7 +30,6 @@ namespace ASC.Webhooks.Core;
 [Serializable]
 public class WebHooksSettings : ISettings<WebHooksSettings>
 {
-    public bool EnableSSLVerification { get; set; }
     public List<int> Ids { get; set; }
 
     [JsonIgnore]
@@ -38,7 +37,6 @@ public class WebHooksSettings : ISettings<WebHooksSettings>
 
     public WebHooksSettings GetDefault() => new WebHooksSettings()
     {
-        EnableSSLVerification = true,
         Ids = new List<int> { }
     };
 }

@@ -94,6 +94,7 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       height: 100% !important;
+      margin-top: 32px;
     }
 
     @media ${hugeMobile} {
@@ -145,7 +146,7 @@ StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
   height: 24px;
-  padding: 24px 21px 21px 20px;
+  padding: 22px 21px 23px 20px;
   margin: 0;
   display: flex;
   justify-content: flex-start;

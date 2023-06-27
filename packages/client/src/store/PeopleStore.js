@@ -16,7 +16,7 @@ import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
-import LoadingStore from "./LoadingStore";
+
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import {
   isMobile,
@@ -44,9 +44,9 @@ class PeopleStore {
   avatarEditorStore = null;
   inviteLinksStore = null;
   dialogStore = null;
-  loadingStore = null;
   setupStore = null;
   accessRightsStore = null;
+  profileActionsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
   isLoadedProfileSectionBody = false;
@@ -64,7 +64,7 @@ class PeopleStore {
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
-    this.loadingStore = new LoadingStore();
+
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
     this.dialogsStore = dialogsStore;
@@ -86,21 +86,16 @@ class PeopleStore {
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
     await this.authStore.tfaStore.getTfaType();
-
-    this.loadingStore.setIsLoaded(true);
   };
 
   reset = () => {
     this.isInit = false;
-    this.loadingStore.setIsLoaded(false);
   };
 
   resetFilter = () => {
-    const { getUsersList } = this.usersStore;
-
     const filter = Filter.getDefault();
 
-    return getUsersList(filter, true);
+    window.DocSpace.navigate(`accounts/filter?${filter.toUrlParams()}`);
   };
 
   onChangeType = (e) => {
@@ -167,10 +162,8 @@ class PeopleStore {
   };
 
   changeStatus = (status, users) => {
-    const {
-      setChangeUserStatusDialogVisible,
-      setDialogData,
-    } = this.dialogStore;
+    const { setChangeUserStatusDialogVisible, setDialogData } =
+      this.dialogStore;
 
     const userIDs = users.map((user) => {
       return user?.id ? user.id : user;
@@ -195,10 +188,8 @@ class PeopleStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.selectionStore;
-    const {
-      setSendInviteDialogVisible,
-      setDeleteDialogVisible,
-    } = this.dialogStore;
+    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+      this.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
 

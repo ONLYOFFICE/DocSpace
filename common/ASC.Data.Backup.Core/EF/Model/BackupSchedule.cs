@@ -29,18 +29,14 @@ namespace ASC.Data.Backup.EF.Model;
 public class BackupSchedule : BaseEntity
 {
     public int TenantId { get; set; }
-
     public string Cron { get; set; }
-
     public int BackupsStored { get; set; }
-
     public BackupStorageType StorageType { get; set; }
-
     public string StorageBasePath { get; set; }
-
     public DateTime LastBackupTime { get; set; }
-
     public string StorageParams { get; set; }
+
+    public DbTenant Tenant { get; set; }
 
     public override object[] GetKeys()
     {
@@ -52,6 +48,8 @@ public static class BackupScheduleExtension
 {
     public static ModelBuilderWrapper AddBackupSchedule(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<BackupSchedule>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddBackupSchedule, Provider.MySql)
             .Add(PgSqlAddBackupSchedule, Provider.PostgreSql);
@@ -109,6 +107,11 @@ public static class BackupScheduleExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
+
+            entity.HasOne(e => e.Tenant)
+                   .WithOne()
+                   .HasForeignKey<BackupSchedule>(b => b.TenantId)
+                   .OnDelete(DeleteBehavior.Cascade);
         });
     }
     public static void PgSqlAddBackupSchedule(this ModelBuilder modelBuilder)
@@ -160,6 +163,11 @@ public static class BackupScheduleExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
+
+            entity.HasOne(e => e.Tenant)
+                   .WithOne()
+                   .HasForeignKey<BackupSchedule>(b => b.TenantId)
+                   .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

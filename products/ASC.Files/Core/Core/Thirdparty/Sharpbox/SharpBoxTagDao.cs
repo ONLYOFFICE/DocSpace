@@ -102,7 +102,7 @@ file class TagLinkTagPair
 static file class Queries
 {
     public static readonly Func<FilesDbContext, string, IAsyncEnumerable<string>> HashIdsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+        EF.CompileAsyncQuery(
             (FilesDbContext ctx, string idStart) =>
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.Id.StartsWith(idStart))
@@ -110,7 +110,7 @@ static file class Queries
 
     public static readonly Func<FilesDbContext, int, IEnumerable<string>, Guid, IAsyncEnumerable<TagLinkTagPair>>
         TagLinkTagPairAsync =
-            Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            EF.CompileAsyncQuery(
                 (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIds, Guid owner) =>
                     (from r in ctx.Tag
                         from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()

@@ -40,13 +40,13 @@ const Article = ({
   isBannerVisible,
 
   isLiveChatAvailable,
+
+  onLogoClickAction,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [
-    articleMainButtonContent,
-    setArticleMainButtonContent,
-  ] = React.useState(null);
+  const [articleMainButtonContent, setArticleMainButtonContent] =
+    React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -156,7 +156,10 @@ const Article = ({
         correctTabletHeight={correctTabletHeight}
         {...rest}
       >
-        <SubArticleHeader showText={showText}>
+        <SubArticleHeader
+          showText={showText}
+          onLogoClickAction={onLogoClickAction}
+        >
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
 
