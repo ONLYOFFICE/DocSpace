@@ -153,7 +153,7 @@ const TwoFactorAuth = (props) => {
         spacing="8px"
         options={[
           {
-            id: "disabled",
+            id: "tfa-disabled",
             label: t("Disabled"),
             value: "none",
           },

@@ -194,10 +194,12 @@ const IpSecurity = (props) => {
         spacing="8px"
         options={[
           {
+            id: "ip-security-disabled",
             label: t("Disabled"),
             value: "disabled",
           },
           {
+            id: "ip-security-enabled",
             label: t("Common:Enable"),
             value: "enable",
           },
@@ -215,6 +217,7 @@ const IpSecurity = (props) => {
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
           regexp={regexp}
+          classNameAdditional="add-allowed-ip-address"
         />
       )}
 
@@ -243,6 +246,8 @@ const IpSecurity = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="ip-security-save"
+        additionalClassCancelButton="ip-security-cancel"
       />
     </MainContainer>
   );

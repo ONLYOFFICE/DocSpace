@@ -183,7 +183,7 @@ const TrustedMail = (props) => {
         spacing="8px"
         options={[
           {
-            id: "disabled",
+            id: "trusted-mail-disabled",
             label: t("Disabled"),
             value: "0",
           },
@@ -204,13 +204,13 @@ const TrustedMail = (props) => {
 
       {type === "1" && (
         <UserFields
-          className="add-trusted-domain"
           inputs={domains}
           buttonLabel={t("AddTrustedDomain")}
           onChangeInput={onChangeInput}
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
           regexp={regexp}
+          classNameAdditional="add-trusted-domain"
         />
       )}
 

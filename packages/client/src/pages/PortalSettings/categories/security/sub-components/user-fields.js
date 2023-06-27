@@ -64,6 +64,7 @@ const UserFields = (props) => {
     onClickAdd,
     inputs,
     regexp,
+    classNameAdditional,
   } = props;
 
   const [errors, setErrors] = useState(new Array(inputs.length).fill(false));
@@ -114,7 +115,7 @@ const UserFields = (props) => {
           return (
             <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
-                className="user-input"
+                className={`${classNameAdditional}-input`}
                 id={`user-input-${index}`}
                 isAutoFocussed={false}
                 value={input}
@@ -124,7 +125,7 @@ const UserFields = (props) => {
                 hasError={errors[index] && error}
               />
               <StyledTrashIcon
-                className="delete-icon"
+                className={`${classNameAdditional}-delete-icon`}
                 size="medium"
                 onClick={() => onDelete(index)}
               />
@@ -135,7 +136,11 @@ const UserFields = (props) => {
         <></>
       )}
 
-      <StyledAddWrapper onClick={onClickAdd} inputsLength={inputs.length}>
+      <StyledAddWrapper
+        className={classNameAdditional}
+        onClick={onClickAdd}
+        inputsLength={inputs.length}
+      >
         <StyledPlusIcon size="small" />
         <Link type="action" isHovered={true} fontWeight={600}>
           {buttonLabel}
