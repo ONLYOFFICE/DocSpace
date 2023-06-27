@@ -250,6 +250,7 @@ class FilesTableHeader extends React.Component {
   };
 
   componentDidMount() {
+    console.log(document.getElementsByClassName("section-scroll"));
     this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
     this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
   }

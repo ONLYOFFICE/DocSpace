@@ -3,9 +3,6 @@ import Base from "../themes/base";
 
 const StyledScrollbar = styled.div`
   .container {
-    ${(props) => {
-      console.log(props.thumbv.width);
-    }}
     width: ${(props) => props?.style?.width && props.style.width + "px"};
     height: ${(props) => props?.style?.height && props.style.height + "px"};
 
@@ -30,7 +27,9 @@ const StyledScrollbar = styled.div`
       transparent;
     scrollbar-width: thin;
   }
-
+  .container::-webkit-scrollbar-corner {
+    background: transparent;
+  }
   .container::-webkit-scrollbar {
     width: ${(props) => props.thumbv.width};
     height: ${(props) => (props.stype === "thumbV" ? 0 : props.thumbh.height)};

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
@@ -153,7 +152,12 @@ class TabContainer extends Component {
 
     return (
       <>
-        <CustomScrollbarsVirtualList>
+        <StyledScrollbar
+          autoHide={onScrollHide}
+          stype="preMediumBlack"
+          className="scrollbar"
+          ref={this.scrollRef}
+        >
           <NavItem className="className_items">
             {elements.map((item, index) => (
               <ColorTheme
@@ -173,7 +177,7 @@ class TabContainer extends Component {
               </ColorTheme>
             ))}
           </NavItem>
-        </CustomScrollbarsVirtualList>
+        </StyledScrollbar>
         <div>{elements[activeTab].content}</div>
       </>
     );
