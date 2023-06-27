@@ -76,6 +76,8 @@ const Selector = ({
 
   alwaysShowFooter,
   disableAcceptButton,
+
+  descriptionText,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -337,6 +339,7 @@ const Selector = ({
         withSearch={withSearch}
         withFooterInput={withFooterInput}
         withFooterCheckbox={withFooterCheckbox}
+        descriptionText={descriptionText}
       />
 
       {(footerVisible || alwaysShowFooter) && (

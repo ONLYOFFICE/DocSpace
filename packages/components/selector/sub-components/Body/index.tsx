@@ -4,6 +4,8 @@ import { FixedSizeList as List } from "react-window";
 
 import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-virtual-list";
 
+import Text from "../../../text";
+
 import Search from "../Search";
 import SelectAll from "../SelectAll";
 import Item from "../Item";
@@ -17,6 +19,7 @@ const CONTAINER_PADDING = 16;
 const HEADER_HEIGHT = 54;
 const BREAD_CRUMBS_HEIGHT = 38;
 const SEARCH_HEIGHT = 44;
+const BODY_DESCRIPTION_TEXT_HEIGHT = 32;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
 const FOOTER_WITH_NEW_NAME_HEIGHT = 145;
@@ -58,6 +61,7 @@ const Body = ({
   isBreadCrumbsLoading,
   withFooterInput,
   withFooterCheckbox,
+  descriptionText,
 }: BodyProps) => {
   const [bodyHeight, setBodyHeight] = React.useState(0);
 
@@ -109,6 +113,8 @@ const Body = ({
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
 
+  if (!!descriptionText) listHeight -= BODY_DESCRIPTION_TEXT_HEIGHT;
+
   return (
     <StyledBody
       ref={bodyRef}
@@ -159,6 +165,9 @@ const Body = ({
         />
       ) : (
         <>
+          {!!descriptionText && (
+            <Text className="body-description-text">{descriptionText}</Text>
+          )}
           {isMultiSelect && withSelectAll && !isSearch && (
             <SelectAll
               label={selectAllLabel}

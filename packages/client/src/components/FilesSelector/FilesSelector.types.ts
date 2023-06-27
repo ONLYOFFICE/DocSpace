@@ -79,6 +79,7 @@ export type useFilesHelpersProps = {
   isThirdParty: boolean;
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
+  filterParam?: number;
 };
 
 export type FilesSelectorProps = {
@@ -93,6 +94,8 @@ export type FilesSelectorProps = {
   isMove?: boolean;
   isCopy?: boolean;
   isRestoreAll?: boolean;
+
+  filterParam?: number;
 
   currentFolderId?: number;
   parentId?: number;
@@ -132,10 +135,13 @@ export type FilesSelectorProps = {
     fileTitle: string,
     openNewTab: boolean
   ) => void;
+  onSelectFile?: (fileInfo: { id: string | number; title: string }) => void;
 
   withFooterInput?: boolean;
   withFooterCheckbox?: boolean;
   footerInputHeader?: string;
   currentFooterInputValue?: string;
   footerCheckboxLabel?: string;
+
+  descriptionText?: string;
 };

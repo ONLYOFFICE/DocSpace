@@ -73,4 +73,6 @@ export type SelectorProps = {
   footerCheckboxLabel?: string;
   alwaysShowFooter?: boolean;
   disableAcceptButton?: boolean;
+
+  descriptionText?: string;
 };
