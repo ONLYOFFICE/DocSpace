@@ -372,7 +372,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, T roomId = default, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None, SubjectFilter subjectFilter = SubjectFilter.Owner, ApplyFilterOption applyFilterOption = ApplyFilterOption.All)
     {
         var total = 0;
 
@@ -394,19 +394,9 @@ public class EntryManager
         var entries = new List<FileEntry>();
 
         searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, await _globalFolderHelper.FolderTrashAsync);
-        
-        var foldersFilterType = filterType switch
-        {
-            FilterType.FoldersDocumentsOnly or FilterType.FoldersImagesOnly => FilterType.None,
-            _ => filterType
-        };
 
-        var filesFilterType = filterType switch
-        {
-            FilterType.FoldersDocumentsOnly => FilterType.DocumentsOnly,
-            FilterType.FoldersImagesOnly => FilterType.ImagesOnly,
-            _ => filterType
-        };
+        var (foldersFilterType, foldersSearchText) = applyFilterOption != ApplyFilterOption.Files ? (filterType, searchText) : (FilterType.None, string.Empty);
+        var (filesFilterType, filesSearchText) = applyFilterOption != ApplyFilterOption.Folders ? (filterType, searchText) : (FilterType.None, string.Empty);
 
         if (parent.FolderType == FolderType.Projects && parent.Id.Equals(await _globalFolderHelper.FolderProjectsAsync))
         {
@@ -479,8 +469,8 @@ public class EntryManager
                 withSubfolders = false;
             }
 
-            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, foldersFilterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
-            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filesFilterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject);
+            var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, foldersFilterType, subjectGroup, subjectId, foldersSearchText, withSubfolders, excludeSubject);
+            var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filesFilterType, subjectGroup, subjectId, filesSearchText, searchInContent, withSubfolders, excludeSubject);
 
             var task1 = _fileSecurity.FilterReadAsync(folders).ToListAsync();
             var task2 = _fileSecurity.FilterReadAsync(files).ToListAsync();
