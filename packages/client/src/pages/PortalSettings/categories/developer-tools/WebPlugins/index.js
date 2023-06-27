@@ -46,6 +46,7 @@ const StyledContainer = styled.div`
 
 const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
   const [plugins, setPlugins] = React.useState(null);
+
   const inputPluginElement = React.useRef(null);
 
   setDocumentTitle(t("PortalIntegration"));
@@ -162,7 +163,7 @@ const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
       ) : (
         <EmptyFolderContainer
           headerText={t("FilesSettings:ConnectEmpty")}
-          descriptionText={t("UploadPluginsHere")}
+          descriptionText={t("FilesSettings:UploadPluginsHere")}
           style={{ gridColumnGap: "39px" }}
           buttonStyle={{ marginTop: "16px" }}
           imageSrc={EmptyScreenAltSvgUrl}
