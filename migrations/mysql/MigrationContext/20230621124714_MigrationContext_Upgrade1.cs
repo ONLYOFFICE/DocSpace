@@ -10,6 +10,8 @@ namespace ASC.Migrations.MySql.Migrations.Migration
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("UPDATE tenants_quotarow SET tenant = -1 WHERE tenant = 0;");
+            
             migrationBuilder.AddForeignKey(
                 name: "FK_audit_events_tenants_tenants_tenant_id",
                 table: "audit_events",
