@@ -57,6 +57,9 @@ export const getDefaultRoomName = (room, t) => {
 
     case RoomsType.ReadOnlyRoom:
       return t("Files:ViewOnlyRooms");
+
+    case RoomsType.PublicRoom:
+      return t("Files:PublicRoom");
   }
 };
 
