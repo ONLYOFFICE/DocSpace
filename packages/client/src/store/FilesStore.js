@@ -555,8 +555,8 @@ class FilesStore {
     this.isPreview = predicate;
   };
 
-  setTempFilter = (filser) => {
-    this.tempFilter = filser;
+  setTempFilter = (filter) => {
+    this.tempFilter = filter;
   };
 
   setHighlightFile = (highlightFile) => {
@@ -3482,6 +3482,13 @@ class FilesStore {
   get roomsForDelete() {
     return this.folders.filter((f) => f.security.Delete);
   }
+
+  getRooms = async (filter) => {
+    let newFilter = RoomsFilter.getDefault();
+    Object.assign(newFilter, filter);
+
+    return await api.rooms.getRooms(newFilter);
+  };
 }
 
 export default FilesStore;

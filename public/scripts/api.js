@@ -345,6 +345,10 @@
       return this.#getMethodPromise("getList");
     }
 
+    getRooms(filter) {
+      return this.#getMethodPromise("getRooms", filter);
+    }
+
     getUserInfo() {
       return this.#getMethodPromise("getUserInfo");
     }
