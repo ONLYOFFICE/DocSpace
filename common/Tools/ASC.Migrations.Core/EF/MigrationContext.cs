@@ -35,7 +35,7 @@ using ASC.Files.Core.EF;
 using ASC.MessagingSystem.EF.Model;
 using ASC.Webhooks.Core.EF.Model;
 
-namespace ASC.Migration.Core;
+namespace ASC.Migrations.Core;
 
 public class MigrationContext: DbContext
 {

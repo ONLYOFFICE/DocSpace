@@ -24,39 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration;
-public abstract class ContextFinder
+namespace ASC.Migrations.Core.Utils;
+
+public static class EFCoreDesignTimeServices
 {
-    private readonly Type _baseType = typeof(DbContext);
-
-    public IEnumerable<Type> GetDependetContextsTypes()
+    public static ServiceProvider GetServiceProvider(DbContext context)
     {
-        var assemblyTypes = GetAssemblyTypes();
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddEntityFrameworkDesignTimeServices();
+        serviceCollection.AddDbContextDesignTimeServices(context);
+        serviceCollection.AddSingleton<MigrationsCodeGeneratorDependencies>();
+        serviceCollection.AddSingleton<AnnotationCodeGeneratorDependencies>();
+        serviceCollection.AddSingleton<IAnnotationCodeGenerator, AnnotationCodeGenerator>();
+        serviceCollection.AddSingleton(context.GetService<ITypeMappingSource>());
 
-        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
+        var designTimeServices = serviceCollection.BuildServiceProvider();
 
-        foreach (var contextType in independetProviderTypes)
-        {
-            yield return contextType;
-        }
-    }
-
-    public IEnumerable<Type> GetIndependentContextsTypes()
-    {
-        var assemblyTypes = GetAssemblyTypes();
-
-        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
-
-        foreach (var contextType in independetProviderTypes)
-        {
-            yield return contextType;
-        }
-    }
-
-    protected abstract Type[] GetAssemblyTypes();
-
-    private IEnumerable<Type> GetProviderIndependentContextTypes(IEnumerable<Type> assemblyTypes)
-    {
-        return assemblyTypes.Where(b => b.BaseType == _baseType);
+        return designTimeServices;
     }
 }

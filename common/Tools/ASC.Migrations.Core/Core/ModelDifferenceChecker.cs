@@ -24,27 +24,49 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.Extensions.Configuration;
+namespace ASC.Migrations;
 
-namespace Migration.Core.Utils;
-
-public class DbContextActivator
+public class ModelDifferenceChecker
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public DbContextActivator(IServiceProvider serviceProvider)
+    private readonly DbContext _dbContext;
+    public ModelDifferenceChecker(DbContext context)
     {
-        _serviceProvider = serviceProvider;
+        _dbContext = context;
     }
 
-    public DbContext CreateInstance(Type contextType, ProviderInfo provider)
+    public bool IsDifferent()
     {
-        var scope = _serviceProvider.CreateScope();
-        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
-        configuration["ConnectionStrings:default:name"] = "default";
-        configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
-        configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;
-        return (DbContext)scope.ServiceProvider.GetRequiredService(contextType);
+        var scaffolderDependecies = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
+            .GetService<MigrationsScaffolderDependencies>();
+
+        var modelSnapshot = scaffolderDependecies.MigrationsAssembly.ModelSnapshot;
+
+        if (modelSnapshot == null)
+        {
+            return true;
+        }
+
+        var lastModel = scaffolderDependecies.SnapshotModelProcessor.Process(modelSnapshot.Model)
+            .GetRelationalModel();
+
+        if (lastModel == null)
+        {
+            return true;
+        }
+
+        var upMethodOperations = scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
+            lastModel, scaffolderDependecies.Model.GetRelationalModel());
+
+        var downMethodOperations = upMethodOperations.Count != 0 ?
+            scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
+                scaffolderDependecies.Model.GetRelationalModel(), lastModel)
+            : new List<MigrationOperation>();
+
+        if (upMethodOperations.Count > 0 || downMethodOperations.Count > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

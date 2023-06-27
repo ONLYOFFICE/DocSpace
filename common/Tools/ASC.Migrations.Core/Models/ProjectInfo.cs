@@ -24,22 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Core.Utils;
+namespace ASC.Migrations.Core.Models;
 
-public static class EFCoreDesignTimeServices
+public class ProjectInfo
 {
-    public static ServiceProvider GetServiceProvider(DbContext context)
-    {
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddEntityFrameworkDesignTimeServices();
-        serviceCollection.AddDbContextDesignTimeServices(context);
-        serviceCollection.AddSingleton<MigrationsCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<AnnotationCodeGeneratorDependencies>();
-        serviceCollection.AddSingleton<IAnnotationCodeGenerator, AnnotationCodeGenerator>();
-        serviceCollection.AddSingleton(context.GetService<ITypeMappingSource>());
-
-        var designTimeServices = serviceCollection.BuildServiceProvider();
-
-        return designTimeServices;
-    }
+    public string AssemblyName { get; set; }
+    public string Path { get; set; }
 }
