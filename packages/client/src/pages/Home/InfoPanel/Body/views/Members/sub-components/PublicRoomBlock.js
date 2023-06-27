@@ -43,13 +43,9 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
       </LinksBlock>
 
       {externalLinks.length ? (
-        externalLinks.map(
-          (link) =>
-            !link.sharedTo.isTemplate &&
-            link.sharedTo.linkType === LinkType.External && (
-              <LinkRow link={link} key={link?.sharedTo?.id} />
-            )
-        )
+        externalLinks.map((link) => (
+          <LinkRow link={link} key={link?.sharedTo?.id} />
+        ))
       ) : (
         <>{/* <LinkRow link={defaultLink} /> */}</>
       )}
@@ -58,9 +54,9 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
 };
 
 export default inject(({ publicRoomStore }) => {
-  const { externalLinks } = publicRoomStore;
+  const { roomLinks } = publicRoomStore;
 
   return {
-    externalLinks,
+    externalLinks: roomLinks,
   };
 })(observer(PublicRoomBlock));
