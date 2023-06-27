@@ -26,13 +26,6 @@ docker_dir="$( pwd )"
 
 echo "Docker directory:" $docker_dir
 
-docker_file=Dockerfile.dev
-core_base_domain="localhost"
-build_date=$(date +%Y-%m-%d)
-env_extension="dev"
-
-echo "BUILD DATE: $build_date"
-
 local_ip=$(ipconfig getifaddr en0)
 
 echo "LOCAL IP: $local_ip"
@@ -64,31 +57,10 @@ else
     exit 1
 fi
 
-# if [ "$1" = "--no_ds" ]; then
-#     echo "SKIP Document server"
-# else 
-#     echo "Run Document server"
-#     DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-#     ROOT_DIR=$dir \
-#     docker compose -f ds.dev.yml up -d
-# fi
-
+echo "Build backend services (to "publish/" folder)"
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
 
 cd $dir/build/install/docker/
-
-# echo "Build backend services images"
-# DOCKERFILE=$docker_file \
-# DOCKER_TAG="v9.9.9" \
-# RELEASE_DATE=$build_date \
-# GIT_BRANCH=$branch \
-# SERVICE_DOCEDITOR=$doceditor \
-# SERVICE_LOGIN=$login \
-# SERVICE_CLIENT=$client \
-# APP_CORE_BASE_DOMAIN=$core_base_domain \
-# ROOT_DIR=$dir \
-# ENV_EXTENSION=$env_extension \
-# docker compose -f build.dev.yml --profile backend-dev build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run migration"
 Baseimage_Dotnet_Run="sk81biz/baseimage-dotnet-run:v1.0.0" \
@@ -107,8 +79,5 @@ SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
 ROOT_DIR=$dir \
 DATA_DIR="$dir/Data" \
-ENV_EXTENSION=$env_extension \
+ENV_EXTENSION="dev" \
 docker-compose -f docspace.yml -f docspace.overcome.yml --profile backend-local up -d
-
-# Start all backend services"
-# $dir/build/start/start.backend.docker.sh
