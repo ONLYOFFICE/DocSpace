@@ -79,7 +79,7 @@ export type useFilesHelpersProps = {
   isThirdParty: boolean;
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
-  filterParam?: number;
+  filterParam?: string;
 };
 
 export type FilesSelectorProps = {
@@ -95,7 +95,7 @@ export type FilesSelectorProps = {
   isCopy?: boolean;
   isRestoreAll?: boolean;
 
-  filterParam?: number;
+  filterParam?: string;
 
   currentFolderId?: number;
   parentId?: number;

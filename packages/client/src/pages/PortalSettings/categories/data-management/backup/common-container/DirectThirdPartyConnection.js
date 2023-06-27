@@ -18,6 +18,7 @@ import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
 import { withTranslation } from "react-i18next";
 import { getOAuthToken } from "@docspace/common/utils";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 
 let accounts = [],
   capabilities;
@@ -273,7 +274,6 @@ const DirectThirdPartyConnection = (props) => {
 
   const { isLoading, folderList, isInitialLoading, isUpdatingInfo } = state;
 
-  // TODO: need update enum for filter
   const fileSelection = isFileSelection ? (
     <SelectFileInput
       passedFoldersTree={[folderList]}
@@ -281,8 +281,8 @@ const DirectThirdPartyConnection = (props) => {
       onSelectFile={onSelectFile}
       onClickInput={onClickInput}
       isPanelVisible={isPanelVisible}
-      searchParam=".gz"
-      filesListTitle={t("Settings:SelectFileInGZFormat")}
+      filterParam={FilesSelectorFilterTypes.GZ}
+      descriptionText={t("Settings:SelectFileInGZFormat")}
       withoutResetFolderTree
       isArchiveOnly
       isDisabled={

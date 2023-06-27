@@ -11,8 +11,8 @@ class RoomsModule extends React.Component {
         filteredType="exceptSortedByTags"
         withoutProvider
         isArchiveOnly
-        searchParam=".gz"
-        filesListTitle={t("SelectFileInGZFormat")}
+        filterParam={FilesSelectorFilterTypes.GZ}
+        descriptionText={t("SelectFileInGZFormat")}
         withSubfolders={false}
         maxFolderInputWidth="446px"
         withoutBasicSelection

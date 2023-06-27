@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getPresignedUri } from "@docspace/common/api/files";
-import { EDITOR_ID, FilterType } from "@docspace/common/constants";
+import {
+  EDITOR_ID,
+  FilesSelectorFilterTypes,
+  FilterType,
+} from "@docspace/common/constants";
 import { useTranslation } from "react-i18next";
 //import SharingDialog from "../components/SharingDialog";
 import SelectFileDialog from "../components/SelectFileDialog";
@@ -134,7 +138,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const insertImageActionProps = {
-      filterParam: FilterType.FoldersImages,
+      filterParam: FilesSelectorFilterTypes.IMG,
     };
 
     const mailMergeActionProps = {

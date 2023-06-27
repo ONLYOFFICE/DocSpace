@@ -15,7 +15,12 @@ import {
   BreadCrumb,
   Security,
 } from "../FilesSelector.types";
-import { FolderType } from "@docspace/common/constants";
+import {
+  ApplyFilterOption,
+  FilesSelectorFilterTypes,
+  FilterType,
+  FolderType,
+} from "@docspace/common/constants";
 
 const getIconUrl = (extension: string) => {
   let path = "";
@@ -165,7 +170,7 @@ const getIconUrl = (extension: string) => {
 const convertFoldersToItems = (
   folders: any,
   disabledItems: any[],
-  filterParam?: number
+  filterParam?: string
 ) => {
   const items = folders.map((room: any) => {
     const {
@@ -206,7 +211,7 @@ const convertFoldersToItems = (
   return items;
 };
 
-const convertFilesToItems = (files: any, filterParam?: number) => {
+const convertFilesToItems = (files: any, filterParam?: string) => {
   const items = files.map((file: any) => {
     const { id, title, security, parentId, rootFolderType, fileExst } = file;
 
@@ -268,8 +273,25 @@ export const useFilesHelper = ({
       filter.page = page;
       filter.pageCount = PAGE_COUNT;
       filter.search = currentSearch;
+      filter.applyFilterOption = null;
+      filter.withSubfolders = false;
       if (filterParam) {
-        filter.filterType = filterParam;
+        switch (filterParam) {
+          case FilesSelectorFilterTypes.DOCX:
+            filter.applyFilterOption = ApplyFilterOption.Files;
+            filter.filterType = FilterType.DocumentsOnly;
+            break;
+
+          case FilesSelectorFilterTypes.IMG:
+            filter.applyFilterOption = ApplyFilterOption.Files;
+            filter.filterType = FilterType.ImagesOnly;
+            break;
+
+          case FilesSelectorFilterTypes.GZ:
+            filter.applyFilterOption = ApplyFilterOption.Files;
+            filter.search = ".gz";
+            break;
+        }
       }
 
       const id = itemId ? itemId : selectedItemId || "";

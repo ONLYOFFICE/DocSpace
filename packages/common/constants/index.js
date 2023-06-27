@@ -60,6 +60,24 @@ export const AccountLoginType = Object.freeze({
   STANDART: "2",
 });
 /**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const ApplyFilterOption = Object.freeze({
+  All: "All",
+  Files: "Files",
+  Folder: "Folder",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const FilesSelectorFilterTypes = Object.freeze({
+  DOCX: "DOCX",
+  IMG: "IMG",
+  GZ: "GZ",
+});
+/**
  * Enum for filter subject.
  * @readonly
  */
@@ -86,8 +104,6 @@ export const FilterType = Object.freeze({
   MediaOnly: 12,
   OFormTemplateOnly: 18,
   OFormOnly: 19,
-  FoldersDocuments: 20,
-  FoldersImages: 21,
 });
 
 /**

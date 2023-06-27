@@ -28,7 +28,7 @@ import ArchiveDialog from "../dialogs/ArchiveDialog";
 import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 import FilesSelector from "../FilesSelector";
-import { FilterType } from "@docspace/common/constants";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 
 const Panels = (props) => {
   const {
@@ -113,7 +113,7 @@ const Panels = (props) => {
     selectFileDialogVisible && (
       <FilesSelector
         key="select-file-dialog"
-        filterParam={FilterType.FoldersDocuments}
+        filterParam={FilesSelectorFilterTypes.DOCX}
         isPanelVisible={selectFileDialogVisible}
         onSelectFile={createMasterForm}
         onClose={onClose}
