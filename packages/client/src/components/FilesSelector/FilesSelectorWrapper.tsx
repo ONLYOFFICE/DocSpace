@@ -5,8 +5,6 @@ import { I18nextProvider } from "react-i18next";
 import store from "client/store";
 import FilesSelector from "./";
 import i18n from "./i18n";
-// @ts-ignore
-import { getFolder } from "@docspace/common/api/files";
 import { FilesSelectorProps } from "./FilesSelector.types";
 const { auth: authStore } = store;
 
@@ -14,8 +12,6 @@ const FilesSelectorWrapper = (props: FilesSelectorProps) => {
   React.useEffect(() => {
     authStore.init(true);
   }, []);
-
-  console.log(props);
 
   return (
     <MobxProvider {...store}>
