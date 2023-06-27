@@ -28,7 +28,8 @@ export default function withLoader(WrappedComponent) {
       if (
         (type === "PasswordChange" ||
           type === "LinkInvite" ||
-          type === "Activation") &&
+          type === "Activation" ||
+          type === "EmpInvite") &&
         !passwordSettings
       ) {
         axios
@@ -57,7 +58,7 @@ export default function withLoader(WrappedComponent) {
     }, [passwordSettings]);
 
     useEffect(() => {
-      if (type === "LinkInvite") {
+      if (type === "LinkInvite" || type === "EmpInvite") {
         axios.all([getAuthProviders(), getCapabilities()]).catch((error) => {
           let errorMessage = "";
           if (typeof error === "object") {
@@ -85,7 +86,8 @@ export default function withLoader(WrappedComponent) {
         ? props.isLoaded
         : type === "PasswordChange" ||
           type === "LinkInvite" ||
-          type === "Activation"
+          type === "Activation" ||
+          type === "EmpInvite"
         ? !!passwordSettings
         : true;
 
