@@ -413,6 +413,7 @@ class PureHome extends React.Component {
       removeTagsFromRoom,
       loadCurrentUser,
       updateProfileCulture,
+      getRooms,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -450,6 +451,11 @@ class PureHome extends React.Component {
             break;
           case "getUserInfo":
             res = await loadCurrentUser();
+            break;
+          case "getRooms":
+            {
+              res = await getRooms(data);
+            }
             break;
           case "openModal":
             {
@@ -713,6 +719,7 @@ export default inject(
       setIsPreview,
       addTagsToRoom,
       removeTagsFromRoom,
+      getRooms,
     } = filesStore;
 
     const { updateProfileCulture } = peopleStore.targetUserStore;
@@ -750,8 +757,12 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const { setUploadPanelVisible, startUpload, uploaded, converted } =
-      uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -871,6 +882,7 @@ export default inject(
       loadCurrentUser,
       user,
       updateProfileCulture,
+      getRooms,
     };
   }
 )(withRouter(observer(Home)));

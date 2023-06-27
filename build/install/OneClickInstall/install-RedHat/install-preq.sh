@@ -50,9 +50,10 @@ yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusi
 MONOREV=$REV
 if [ "$REV" = "9" ]; then
 	MONOREV="8"
-	TESTING_REPO="--enablerepo=crb"
+	[ $DIST != "redhat" ] && TESTING_REPO="--enablerepo=crb" || /usr/bin/crb enable
+	update-crypto-policies --set DEFAULT:SHA1
 elif [ "$REV" = "8" ]; then
-	POWERTOOLS_REPO="--enablerepo=powertools"
+	[ $DIST != "redhat" ] && POWERTOOLS_REPO="--enablerepo=powertools" || /usr/bin/crb enable
 fi
 
 #add rabbitmq & erlang repo
