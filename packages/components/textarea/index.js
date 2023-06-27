@@ -134,7 +134,7 @@ const Textarea = ({
           paddingLeftProp={paddingLeftProp}
           isJSONField={isJSONField}
           enableCopy={enableCopy}
-          placeholder={placeholder}
+          placeholder={placeholder || " "}
           onChange={(e) => onChange && onChange(e)}
           maxLength={maxLength}
           name={name}
@@ -147,6 +147,7 @@ const Textarea = ({
           color={color}
           autoFocus={autoFocus}
           ref={areaRef}
+          dir="auto"
         />
       </ColorTheme>
     </Wrapper>

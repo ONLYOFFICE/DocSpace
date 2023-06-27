@@ -5,6 +5,10 @@ import IconButton from "../icon-button";
 import Scrollbar from "../scrollbar";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { ColorTheme } from "@docspace/components/ColorTheme";
+import {
+  getCorrectBorderRadius,
+  getCorrectFourValuesStyle,
+} from "../utils/rtlUtils";
 
 const reactWindowContainerStyles = css`
   height: 100%;
@@ -35,9 +39,15 @@ const StyledTableContainer = styled.div`
     display: block;
     cursor: ew-resize;
     height: 10px;
-    margin: 14px 0px 0 auto;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("14px 0px 0 auto", theme.interfaceDirection)};
     z-index: 1;
-    border-right: ${(props) => props.theme.tableContainer.borderRight};
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `border-left: ${theme.tableContainer.borderRight};`
+        : `border-right: ${theme.tableContainer.borderRight};`}
+
     &:hover {
       border-color: ${(props) => props.theme.tableContainer.hoverBorderColor};
     }
@@ -53,7 +63,11 @@ const StyledTableContainer = styled.div`
     border-image-source: ${(props) =>
       props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
-    border-left: 0;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `border-right: 0;`
+        : `border-left: 0;`}
   }
 
   .lengthen-header {
@@ -91,7 +105,9 @@ const StyledTableContainer = styled.div`
   ${({ useReactWindow }) => useReactWindow && reactWindowContainerStyles}
 `;
 
-StyledTableContainer.defaultProps = { theme: Base };
+StyledTableContainer.defaultProps = {
+  theme: Base,
+};
 
 const StyledTableGroupMenu = styled.div`
   position: relative;
@@ -100,7 +116,8 @@ const StyledTableGroupMenu = styled.div`
   border-bottom: ${(props) =>
     props.theme.tableContainer.groupMenu.borderBottom};
   box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
-  border-radius: 0px 0px 6px 6px;
+  border-radius: ${({ theme }) =>
+    getCorrectBorderRadius("0px 0px 6px 6px", theme.interfaceDirection)};
 
   display: flex;
   flex-direction: row;
@@ -114,25 +131,40 @@ const StyledTableGroupMenu = styled.div`
   margin: 0;
 
   .table-container_group-menu-checkbox {
-    margin-left: 28px;
-    ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `
+        margin-right: 28px;
+        ${props.checkboxMargin && `margin-right: ${props.checkboxMargin};`}`
+        : `
+        margin-left: 28px;
+        ${props.checkboxMargin && `margin-left: ${props.checkboxMargin};`}`}
 
     @media ${tablet} {
-      margin-left: 24px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: 24px;`
+          : `margin-left: 24px;`}
     }
 
     ${isMobile &&
     css`
-      margin-left: 24px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: 24px;`
+          : `margin-left: 24px;`}
     `}
   }
 
   .table-container_group-menu-separator {
-    border-right: ${(props) =>
-      props.theme.tableContainer.groupMenu.borderRight};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `border-left: ${props.theme.tableContainer.groupMenu.borderRight};`
+        : `border-right: ${props.theme.tableContainer.groupMenu.borderRight};`}
     width: 1px;
     height: 21px;
-    margin: 0 16px 0 20px;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 16px 0 20px", theme.interfaceDirection)};
 
     @media ${tablet} {
       height: 36px;
@@ -154,24 +186,31 @@ const StyledTableGroupMenu = styled.div`
   }
 
   .table-container_group-menu_button {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 
   .table-container_group-menu-combobox {
     height: 24px;
     width: 16px;
-    margin: 7px 2px 0px 9px;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("7px 2px 0px 9px", theme.interfaceDirection)};
     background: transparent;
 
     .combo-button {
       .combo-buttons_arrow-icon {
-        margin: 1px 16px 0 0;
+        margin: ${({ theme }) =>
+          getCorrectFourValuesStyle("1px 16px 0 0", theme.interfaceDirection)};
       }
     }
   }
 `;
 
-StyledTableGroupMenu.defaultProps = { theme: Base };
+StyledTableGroupMenu.defaultProps = {
+  theme: { ...Base, interfaceDirection: "ltr" },
+};
 
 const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   display: flex;
@@ -179,15 +218,26 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin: ${isMobile ? "0 16px 0 auto" : "0 20px 0 auto"};
+  margin: ${({ theme }) =>
+    isMobile
+      ? getCorrectFourValuesStyle("0 16px 0 auto", theme.interfaceDirection)
+      : getCorrectFourValuesStyle("0 20px 0 auto", theme.interfaceDirection)};
   height: 100%;
   width: auto;
-  padding-left: 20px;
-  padding-right: 0;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `
+      padding-right: 20px;
+      padding-left: 0;`
+      : `
+      padding-left: 20px;
+      padding-right: 0;`}
 
   @media ${tablet} {
     display: none;
-    margin: 0 16px 0 auto;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 16px 0 auto", theme.interfaceDirection)};
   }
 
   margin-top: 1px;
@@ -196,7 +246,9 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
     margin-bottom: 1px;
   }
 `;
-StyledInfoPanelToggleColorThemeWrapper.defaultProps = { theme: Base };
+StyledInfoPanelToggleColorThemeWrapper.defaultProps = {
+  theme: Base,
+};
 
 const StyledTableHeader = styled.div`
   position: fixed;
@@ -209,7 +261,11 @@ const StyledTableHeader = styled.div`
   padding: 0 20px;
 
   .table-container_header-checkbox {
-    ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+    ${(props) =>
+      props.checkboxMargin &&
+      (props.interfaceDirection === "rtl"
+        ? `margin-right: ${props.checkboxMargin}`
+        : `margin-left: ${props.checkboxMargin}`)}
   }
 
   .table-container_header-cell {
@@ -217,14 +273,17 @@ const StyledTableHeader = styled.div`
   }
 `;
 
-StyledTableHeader.defaultProps = { theme: Base };
+StyledTableHeader.defaultProps = {
+  theme: Base,
+};
 
 const StyledTableHeaderCell = styled.div`
   cursor: ${(props) =>
     props.showIcon && props.sortingVisible ? "pointer" : "default"};
 
   .header-container-text-icon {
-    padding: 13px 0 0 4px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("13px 0 0 4px", theme.interfaceDirection)};
 
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
@@ -232,7 +291,10 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 14px 4px;
+        padding: ${getCorrectFourValuesStyle(
+          "14px 0 14px 4px",
+          props.theme.interfaceDirection
+        )};
       `}
 
     svg {
@@ -268,7 +330,10 @@ const StyledTableHeaderCell = styled.div`
     display: grid;
     grid-template-columns: 1fr 22px;
 
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
 
     user-select: none;
   }
@@ -293,7 +358,9 @@ const StyledTableHeaderCell = styled.div`
   }
 `;
 
-StyledTableHeaderCell.defaultProps = { theme: Base };
+StyledTableHeaderCell.defaultProps = {
+  theme: Base,
+};
 
 const StyledTableBody = styled.div`
   display: contents;
@@ -332,7 +399,10 @@ const StyledTableCell = styled.div`
   display: flex;
   align-items: center;
 
-  padding-right: 30px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `padding-left: 30px;`
+      : `padding-right: 30px;`}
 
   .react-svg-icon svg {
     margin-top: 2px;
@@ -344,7 +414,11 @@ const StyledTableCell = styled.div`
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     padding: 16px;
-    margin-left: -4px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: -4px;`
+        : `margin-left: -4px;`}
   }
 
   ${(props) =>
@@ -361,10 +435,13 @@ const StyledTableCell = styled.div`
     `}
 `;
 
-StyledTableCell.defaultProps = { theme: Base };
+StyledTableCell.defaultProps = {
+  theme: Base,
+};
 
 const StyledTableSettings = styled.div`
-  margin: 14px 0 0px 2px;
+  margin: ${({ theme }) =>
+    getCorrectFourValuesStyle("14px 0 0px 2px", theme.interfaceDirection)};
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -408,7 +485,9 @@ const StyledSettingsIcon = styled(IconButton)`
     `}
 `;
 
-StyledSettingsIcon.defaultProps = { theme: Base };
+StyledSettingsIcon.defaultProps = {
+  theme: Base,
+};
 
 export {
   StyledTableContainer,
