@@ -116,9 +116,8 @@ const CreateUserForm = (props) => {
         const confirmKey = linkData.confirmHeader;
         const user = await getUserFromConfirm(uid, confirmKey);
         setUser(user);
-      } else {
-        setUser(null);
       }
+
       window.authCallback = authCallback;
 
       setSsoLabel(capabilities?.ssoLabel);
@@ -207,6 +206,7 @@ const CreateUserForm = (props) => {
         }
 
         console.error("confirm error", errorMessage);
+        setIsEmailErrorShow(true);
         setEmailErrorText(errorMessage);
         setEmailValid(false);
         setIsLoading(false);
