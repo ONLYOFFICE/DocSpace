@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.TeamlabSite
+namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(TeamlabSiteContext))]
     partial class TeamlabSiteContextModelSnapshot : ModelSnapshot
@@ -15,7 +15,7 @@ namespace ASC.Migrations.MySql.Migrations.TeamlabSite
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Teamlabsite.Model.DbCache", b =>
