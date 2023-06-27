@@ -301,7 +301,8 @@ export default inject(
     const roomType =
       selectedFolderStore.roomType ?? selectionParentRoom?.roomType;
 
-    const isPublicRoomType = roomType === RoomsType.PublicRoom;
+    const isPublicRoomType =
+      roomType === RoomsType.PublicRoom || roomType === RoomsType.CustomRoom;
 
     return {
       setView,
