@@ -43,9 +43,11 @@ class PluginStore {
             this.addContextMenuItem(key, item)
           );
           return;
+
         case PluginType.ACTION_BUTTON:
           Array.from(value, ([key, item]) => this.addMainButtonItem(key, item));
           return;
+
         case PluginType.PROFILE_MENU:
           Array.from(value, ([key, item]) =>
             this.addProfileMenuItem(key, item)

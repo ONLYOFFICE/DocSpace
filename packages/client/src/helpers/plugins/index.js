@@ -3,6 +3,7 @@ import PluginStore from "./PluginStore";
 import api from "@docspace/common/api";
 
 import { loadScript } from "@docspace/common/utils";
+
 import { PluginContextMenuItemType } from "./constants";
 
 export const initPluginStore = async () => {

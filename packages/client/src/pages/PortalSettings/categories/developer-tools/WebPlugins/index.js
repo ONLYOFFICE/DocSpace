@@ -1,53 +1,33 @@
-﻿import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
-import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
-import React from "react";
-import styled from "styled-components";
-import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
+﻿import React from "react";
 
-import Button from "@docspace/components/button";
-import Box from "@docspace/components/box";
-import Link from "@docspace/components/link";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+
 import api from "@docspace/common/api";
 
 import toastr from "@docspace/components/toast/toastr";
+import Button from "@docspace/components/button";
 
-import EmptyFolderContainer from "SRC_DIR/components/EmptyContainer/EmptyContainer";
 import { initPlugin } from "SRC_DIR/helpers/plugins";
 
 import PluginList from "./sub-components/plugin-list";
+import EmptyContainer from "./sub-components/empty-container";
 
-const linkStyles = {
-  isHovered: true,
-  type: "action",
-  fontWeight: "600",
-  className: "empty-folder_link",
-  display: "flex",
-};
+import { StyledContainer } from "./StyledWebPlugins";
 
-const StyledContainer = styled.div`
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  .plugins__upload-button {
-    width: 110px;
-
-    margin-bottom: 24px;
-  }
-
-  .custom-plugin-input {
-    display: none;
-  }
-`;
-
-const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
+const WebPlugins = ({ setDocumentTitle, theme, withDelete, withUpload }) => {
   const [plugins, setPlugins] = React.useState(null);
 
   const inputPluginElement = React.useRef(null);
+
+  const { t } = useTranslation([
+    "Settings",
+    "Common",
+    "PeopleTranslations",
+    "People",
+    "Article",
+    "FilesSettings",
+  ]);
 
   setDocumentTitle(t("PortalIntegration"));
 
@@ -135,8 +115,6 @@ const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
       newPlugins.push(value)
     );
 
-    console.log(newPlugins);
-
     setPlugins(newPlugins);
   }, [window.PluginStore]);
 
@@ -161,31 +139,10 @@ const WebPlugins = ({ t, setDocumentTitle, theme, withDelete, withUpload }) => {
           withDelete={withDelete}
         />
       ) : (
-        <EmptyFolderContainer
-          headerText={t("FilesSettings:ConnectEmpty")}
-          descriptionText={t("FilesSettings:UploadPluginsHere")}
-          style={{ gridColumnGap: "39px" }}
-          buttonStyle={{ marginTop: "16px" }}
-          imageSrc={EmptyScreenAltSvgUrl}
-          buttons={
-            <>
-              {withUpload && (
-                <div className="empty-folder_container-links empty-connect_container-links">
-                  <img
-                    className="empty-folder_container_plus-image"
-                    src={PlusSvgUrl}
-                    onClick={onUploadPluginClick}
-                    alt="plus_icon"
-                  />
-                  <Box className="flex-wrapper_container">
-                    <Link {...linkStyles} onClick={onUploadPluginClick}>
-                      {t("Article:Upload")}
-                    </Link>
-                  </Box>
-                </div>
-              )}
-            </>
-          }
+        <EmptyContainer
+          t={t}
+          withUpload={withUpload}
+          onUploadPluginClick={onUploadPluginClick}
         />
       )}
       <input
@@ -213,13 +170,4 @@ export default inject(({ auth }) => {
     withUpload,
     withDelete,
   };
-})(
-  withTranslation([
-    "Settings",
-    "Common",
-    "PeopleTranslations",
-    "People",
-    "Article",
-    "FilesSettings",
-  ])(observer(WebPlugins))
-);
+})(observer(WebPlugins));
