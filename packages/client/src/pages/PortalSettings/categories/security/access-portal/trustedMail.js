@@ -183,14 +183,17 @@ const TrustedMail = (props) => {
         spacing="8px"
         options={[
           {
+            id: "disabled",
             label: t("Disabled"),
             value: "0",
           },
           {
+            id: "any-domains",
             label: t("AllDomains"),
             value: "2",
           },
           {
+            id: "custom-domains",
             label: t("CustomDomains"),
             value: "1",
           },
@@ -201,6 +204,7 @@ const TrustedMail = (props) => {
 
       {type === "1" && (
         <UserFields
+          className="add-trusted-domain"
           inputs={domains}
           buttonLabel={t("AddTrustedDomain")}
           onChangeInput={onChangeInput}
@@ -221,6 +225,8 @@ const TrustedMail = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="trusted-mail-save"
+        additionalClassCancelButton="trusted-mail-cancel"
       />
     </MainContainer>
   );

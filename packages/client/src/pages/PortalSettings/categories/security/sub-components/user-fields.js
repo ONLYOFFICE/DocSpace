@@ -114,6 +114,7 @@ const UserFields = (props) => {
           return (
             <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
+                className="user-input"
                 id={`user-input-${index}`}
                 isAutoFocussed={false}
                 value={input}
@@ -122,7 +123,11 @@ const UserFields = (props) => {
                 onFocus={() => onFocus(index)}
                 hasError={errors[index] && error}
               />
-              <StyledTrashIcon size="medium" onClick={() => onDelete(index)} />
+              <StyledTrashIcon
+                className="delete-icon"
+                size="medium"
+                onClick={() => onDelete(index)}
+              />
             </StyledInputWrapper>
           );
         })
