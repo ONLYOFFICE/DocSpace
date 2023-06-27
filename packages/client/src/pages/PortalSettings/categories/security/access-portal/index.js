@@ -59,6 +59,7 @@ const AccessPortal = (props) => {
         tooltipTitle={t("TwoFactorAuthDescription")}
         tooltipUrl={tfaSettingsUrl}
         currentColorScheme={currentColorScheme}
+        classNameTooltip="two-factor-auth"
       />
       <TfaSection />
       <StyledSettingsSeparator />
@@ -68,6 +69,7 @@ const AccessPortal = (props) => {
         tooltipTitle={t("TrustedMailDescription")}
         tooltipUrl={trustedMailDomainSettingsUrl}
         currentColorScheme={currentColorScheme}
+        classNameTooltip="trusted-mail"
       />
       <TrustedMailSection />
       <StyledSettingsSeparator />
@@ -76,6 +78,7 @@ const AccessPortal = (props) => {
         title={t("IPSecurity")}
         tooltipContent={t("IPSecurityDescription")}
         tooltipTitle={t("IPSecurityDescription")}
+        classNameTooltip="ip-security"
       />
       <IpSecuritySection />
       <StyledSettingsSeparator />
@@ -85,6 +88,7 @@ const AccessPortal = (props) => {
         tooltipTitle={t("AdminsMessageDescription")}
         tooltipUrl={administratorMessageSettingsUrl}
         currentColorScheme={currentColorScheme}
+        classNameTooltip="admins-message"
       />
       <AdminMessageSection />
 
@@ -93,6 +97,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("SessionLifetime")}
         tooltipTitle={t("SessionLifetimeDescription")}
+        classNameTooltip="session-lifetime"
       />
       <SessionLifetimeSection />
     </MainContainer>
