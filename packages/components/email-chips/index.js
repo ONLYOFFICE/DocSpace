@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import Scrollbar from "../scrollbar";
+import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+
 import { useClickOutside } from "../utils/useClickOutside.js";
 
 import {
@@ -291,7 +292,7 @@ const EmailChips = ({
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
-          <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
+          <CustomScrollbarsVirtualList>
             <ChipsRender
               chips={chips}
               checkSelected={checkSelected}
@@ -304,7 +305,7 @@ const EmailChips = ({
               onDoubleClick={onDoubleClick}
               onSaveNewChip={onSaveNewChip}
             />
-          </Scrollbar>
+          </CustomScrollbarsVirtualList>
 
           <InputGroup
             placeholder={placeholder}

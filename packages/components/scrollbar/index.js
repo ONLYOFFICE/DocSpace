@@ -61,14 +61,12 @@ const Scrollbar = React.forwardRef((props, ref) => {
       view: { outline: "none", WebkitOverflowScrolling: "auto" },
     },
   };
-
   const stype = scrollbarType[props.stype];
-
   const thumbV = stype ? stype.thumbV : {};
   const thumbH = stype ? stype.thumbH : {};
   const view = stype ? stype.view : {};
   return (
-    <CustomScrollbars thumbH={thumbH} thumbV={thumbV} view={view} {...props} />
+    <CustomScrollbars thumbh={thumbH} thumbv={thumbV} view={view} {...props} />
   );
 });
 

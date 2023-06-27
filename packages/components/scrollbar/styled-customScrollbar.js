@@ -3,11 +3,12 @@ import Base from "../themes/base";
 
 const StyledScrollbar = styled.div`
   .container {
-    width: ${(props) => props.style.width && props.style.width + "px"};
-    height: ${(props) => props.style.height && props.style.height + "px"};
     ${(props) => {
-      console.log(props.width);
+      console.log(props.thumbv.width);
     }}
+    width: ${(props) => props?.style?.width && props.style.width + "px"};
+    height: ${(props) => props?.style?.height && props.style.height + "px"};
+
     padding-right: ${(props) => props.view.paddingRight};
     ${(props) =>
       props.theme.interfaceDirection === "rtl" &&
@@ -29,9 +30,10 @@ const StyledScrollbar = styled.div`
       transparent;
     scrollbar-width: thin;
   }
+
   .container::-webkit-scrollbar {
-    width: ${(props) => props.thumbV.width};
-    height: ${(props) => props.thumbH.height};
+    width: ${(props) => props.thumbv.width};
+    height: ${(props) => (props.stype === "thumbV" ? 0 : props.thumbh.height)};
   }
 
   .container::-webkit-scrollbar-track {

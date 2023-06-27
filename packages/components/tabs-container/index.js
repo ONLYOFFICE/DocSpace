@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import Text from "../text";
 import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
+import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
@@ -73,8 +74,8 @@ class TabContainer extends Component {
 
   setTabPosition = (index, currentRef) => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
-    const scrollLeft = this.scrollRef.current.getScrollLeft(); // get scroll position relative to left side
-    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
+    const scrollLeft = this.scrollRef.current?.getScrollLeft(); // get scroll position relative to left side
+    const staticScroll = this.scrollRef.current?.getScrollWidth(); //get static scroll width
     const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
     const currentTabWidth = currentRef.current.offsetWidth;
     const marginRight = 8;
@@ -108,13 +109,13 @@ class TabContainer extends Component {
       const difference = containerWidth - widthBlocksInContainer;
       const currentContainerWidth = currentTabWidth;
 
-      this.scrollRef.current.scrollLeft(
+      this.scrollRef.current?.scrollLeft(
         difference * -1 + currentContainerWidth + marginRight
       );
     }
     //Out of range of left side
     else if (rightFullWidth > staticScroll - scrollLeft) {
-      this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+      this.scrollRef.current?.scrollLeft(staticScroll - rightFullWidth);
     }
   };
 
@@ -128,8 +129,8 @@ class TabContainer extends Component {
       rightTabs--;
     }
     rightFullWidth -= marginRight;
-    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
-    this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+    const staticScroll = this.scrollRef.current?.getScrollWidth(); //get static scroll width
+    this.scrollRef.current?.scrollLeft(staticScroll - rightFullWidth);
   };
 
   onMouseEnter = () => {
@@ -152,12 +153,7 @@ class TabContainer extends Component {
 
     return (
       <>
-        <StyledScrollbar
-          autoHide={onScrollHide}
-          stype="preMediumBlack"
-          className="scrollbar"
-          ref={this.scrollRef}
-        >
+        <CustomScrollbarsVirtualList>
           <NavItem className="className_items">
             {elements.map((item, index) => (
               <ColorTheme
@@ -177,7 +173,7 @@ class TabContainer extends Component {
               </ColorTheme>
             ))}
           </NavItem>
-        </StyledScrollbar>
+        </CustomScrollbarsVirtualList>
         <div>{elements[activeTab].content}</div>
       </>
     );
