@@ -122,7 +122,7 @@
 
 Դուք հենց նոր եք ստեղծել ձեր անձնական գրասենյակը ամպի մեջ.
 
-h3. Դա վիրտուալ աշխատանքային տարածք է, որտեղ դուք կարող եք խմբագրել և պահել փաստաթղթերը, աշխատել դրանց հետ ցանկացած վայրից՝ ապահովելով ձեր ընկերներին կամ գործընկերներին հասանելիություն:.
+h3. Դա վիրտուալ աշխատանքային տարածք է, որտեղ դուք կարող եք խմբագրել և պահել փաստաթղթերը, աշխատել դրանց հետ ցանկացած վայրից՝ ապահովելով ձեր ընկերներին կամ գործընկերներին հասանելիություն:
 
 h3. Արագ սկսելու համար ահա թե ինչ կարող եք անել ONLYOFFICE-ում:
 
@@ -138,7 +138,7 @@ h3. Արագ սկսելու համար ահա թե ինչ կարող եք անե
 
 - Հեշտ մուտք դեպի ձեր անձնական ամպ միջոցով "Chrome ընդլայնման":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
 
-Դուք կարող եք նաև փաստաթղթեր խմբագրել անցանց մեր անվճար միջոցով միջոցով "սեղանի խմբագրի":"https://www.onlyoffice.com/download-desktop.aspx" կամ ստացեք բջջային խմբագրման փաթեթ ձեզ համար "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+Դուք կարող եք նաև փաստաթղթեր խմբագրել անցանց մեր անվճար միջոցով միջոցով "սեղանի խմբագրի":"https://www.onlyoffice.com/download-desktop.aspx " կամ ստացեք բջջային խմբագրման փաթեթ ձեզ համար "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 
 Սիրով՝
 ONLYOFFICE թիմ</value>
@@ -180,7 +180,7 @@ ONLYOFFICE թիմ</value>
 
 Հաստատեք հաշվի դադարեցումը
 
-*Նշում*. Ջնջումից հետո ձեր հաշիվը և դրա հետ կապված բոլոր տվյալները ընդմիշտ կջնջվեն՝ համաձայն մեր "Գաղտնիության քաղաքականությունը":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+*Նշում*. Ջնջումից հետո ձեր հաշիվը և դրա հետ կապված բոլոր տվյալները ընդմիշտ կջնջվեն՝ համաձայն մեր "Գաղտնիության քաղաքականությունը":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
 
 "Կարդացեք ավելին հաշվի դադարեցման մասին":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
 
@@ -232,5 +232,26 @@ ONLYOFFICE թիմ</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Գրանցվել է նոր պորտալ</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Ողջույն, $UserName!
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտվողի պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}". Այժմ դուք կարող եք: 
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք *: Համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*. 
+
+* *Աշխատեք տարբեր ձևաչափերի ֆայլերի հետ*: տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա.
+
+* *Համագործակցեք փաստաթղթերի շուրջ * երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցարանը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու. 
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոնը":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցող թիմ":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Սիրով Ձեր՝
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
 </root>

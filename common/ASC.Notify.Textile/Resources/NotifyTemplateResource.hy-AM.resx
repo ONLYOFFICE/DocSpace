@@ -119,7 +119,7 @@
   </resheader>
   <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
     <value>Այս նամակը ստեղծվում է ավտոմատ կերպով, և դուք կարիք չունեք դրան պատասխանել.&lt;br /&gt;Դուք ստացել եք այս նամակը, քանի որ գրանցված օգտվող եք&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
-&lt;br /&gt; Սեղմեք այստեղ՝ DocSpace-ի ծանուցման նամակներից բաժանորդագրվելու համար: &lt;a href="{1}"  target="_blank"&gt;Unsubscribe&lt;/a&gt;
+&lt;br /&gt; Սեղմեք այստեղ՝ DocSpace-ի ծանուցման նամակներից բաժանորդագրվելու համար: &lt;a href="{1}"  target="_blank"&gt;Ապաբաժանորդագրվել&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
   <data name="FooterCommonV10" xml:space="preserve">
