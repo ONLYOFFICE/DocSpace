@@ -118,8 +118,8 @@ public class TfaManager
 
         int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
 
-        var loginSettings = await _settingsManager.LoadAsync<LoginSettings>();
-        var attemptsCount = loginSettings.AttemptCount;
+        var bruteForceProtectionSettings = await _settingsManager.LoadAsync<BruteForceProtectionSettings>();
+        var attemptsCount = bruteForceProtectionSettings.AttemptCount;
 
         if (++counter > attemptsCount)
         {

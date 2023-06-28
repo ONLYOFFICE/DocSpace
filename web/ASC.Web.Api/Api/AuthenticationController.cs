@@ -68,7 +68,7 @@ public class AuthenticationController : ControllerBase
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
-    private readonly BruteForceLoginManager _bruteForceLoginManager;
+    private readonly BruteForceProtectionManager _bruteForceProtectionManager;
     private readonly ILogger<AuthenticationController> _logger;
     private readonly InvitationLinkService _invitationLinkService;
 
@@ -104,7 +104,7 @@ public class AuthenticationController : ControllerBase
         AuthContext authContext,
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
-        BruteForceLoginManager bruteForceLoginManager,
+        BruteForceProtectionManager bruteForceProtectionManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
@@ -141,7 +141,7 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
-        _bruteForceLoginManager = bruteForceLoginManager;
+        _bruteForceProtectionManager = bruteForceProtectionManager;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
@@ -422,7 +422,7 @@ public class AuthenticationController : ControllerBase
 
                 var requestIp = MessageSettings.GetIP(Request);
 
-                (_, user) = await _bruteForceLoginManager.AttemptAsync(inDto.UserName, inDto.PasswordHash, requestIp);
+                (_, user) = await _bruteForceProtectionManager.AttemptAsync(inDto.UserName, inDto.PasswordHash, requestIp);
             }
             else
             {

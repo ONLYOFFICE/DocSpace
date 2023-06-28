@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class LoginSettingsDto : IMapFrom<LoginSettings>
+public class BruteForceProtectionSettingsDto : IMapFrom<BruteForceProtectionSettings>
 {
     public int AttemptCount { get; set; }
 

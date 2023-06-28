@@ -27,7 +27,7 @@
 namespace ASC.Web.Core;
 
 [Scope]
-public class BruteForceLoginManager
+public class BruteForceProtectionManager
 {
     private readonly SettingsManager _settingsManager;
     private readonly UserManager _userManager;
@@ -35,7 +35,7 @@ public class BruteForceLoginManager
     private readonly IDistributedCache _distributedCache;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
-    public BruteForceLoginManager(SettingsManager settingsManager, UserManager userManager, TenantManager tenantManager, IDistributedCache distributedCache)
+    public BruteForceProtectionManager(SettingsManager settingsManager, UserManager userManager, TenantManager tenantManager, IDistributedCache distributedCache)
     {
         _settingsManager = settingsManager;
         _userManager = userManager;
@@ -66,7 +66,7 @@ public class BruteForceLoginManager
 
             string historyCacheKey = null;
             var now = DateTime.UtcNow;
-            LoginSettingsWrapper settings = null;
+            BruteForceProtectionSettingsWrapper settings = null;
             List<DateTime> history = null;
             var secretEmail = SetupInfo.IsSecretEmail(login);
 
@@ -74,7 +74,7 @@ public class BruteForceLoginManager
             {
                 historyCacheKey = GetHistoryCacheKey(login, requestIp);
 
-                settings = new LoginSettingsWrapper(await _settingsManager.LoadAsync<LoginSettings>());
+                settings = new BruteForceProtectionSettingsWrapper(await _settingsManager.LoadAsync<BruteForceProtectionSettings>());
                 var checkTime = now.Subtract(settings.CheckPeriod);
 
                 history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();

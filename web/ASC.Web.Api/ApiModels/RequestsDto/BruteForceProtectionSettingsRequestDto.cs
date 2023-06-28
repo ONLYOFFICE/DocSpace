@@ -24,41 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.Utility.Settings;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-public class LoginSettings : ISettings<LoginSettings>
+public class BruteForceProtectionSettingsRequestDto
 {
     public int AttemptCount { get; set; }
 
     public int BlockTime { get; set; }
 
     public int CheckPeriod { get; set; }
-
-    public Guid ID => new Guid("{588C7E01-8D41-4FCE-9779-D4126E019765}");
-
-    public LoginSettings GetDefault()
-    {
-        return new LoginSettings
-        {
-            AttemptCount = 5,
-            BlockTime = 60,
-            CheckPeriod = 60
-        };
-    }
-}
-
-public class LoginSettingsWrapper
-{
-    private readonly LoginSettings _loginSettings;
-
-    public int AttemptCount { get => _loginSettings.AttemptCount; }
-
-    public TimeSpan BlockTime { get => TimeSpan.FromSeconds(_loginSettings.BlockTime); }
-
-    public TimeSpan CheckPeriod { get => TimeSpan.FromSeconds(_loginSettings.CheckPeriod); }
-
-    public LoginSettingsWrapper(LoginSettings loginSettings)
-    {
-        _loginSettings = loginSettings;
-    }
 }

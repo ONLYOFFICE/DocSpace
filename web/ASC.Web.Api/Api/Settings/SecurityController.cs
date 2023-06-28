@@ -296,14 +296,14 @@ public class SecurityController : BaseSettingsController
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
     }
 
-    [HttpPut("security/loginSettings")]
-    public async Task<LoginSettingsDto> UpdateLoginSettingsAsync(LoginSettingsRequestDto loginSettingsRequestDto)
+    [HttpPut("security/bruteforceprotectionsettings")]
+    public async Task<BruteForceProtectionSettingsDto> UpdateBruteForceProtectionSettingsAsync(BruteForceProtectionSettingsRequestDto bruteForceProtectionSettingsRequestDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var attemptsCount = loginSettingsRequestDto.AttemptCount;
-        var checkPeriod = loginSettingsRequestDto.CheckPeriod;
-        var blockTime = loginSettingsRequestDto.BlockTime;
+        var attemptsCount = bruteForceProtectionSettingsRequestDto.AttemptCount;
+        var checkPeriod = bruteForceProtectionSettingsRequestDto.CheckPeriod;
+        var blockTime = bruteForceProtectionSettingsRequestDto.BlockTime;
 
         if (attemptsCount < 1)
         {
@@ -318,7 +318,7 @@ public class SecurityController : BaseSettingsController
             throw new ArgumentOutOfRangeException(nameof(blockTime));
         }
 
-        var settings = new LoginSettings
+        var settings = new BruteForceProtectionSettings
         {
             AttemptCount = attemptsCount,
             CheckPeriod = checkPeriod,
@@ -327,16 +327,16 @@ public class SecurityController : BaseSettingsController
 
         await _settingsManager.SaveAsync(settings);
 
-        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
+        return _mapper.Map<BruteForceProtectionSettings, BruteForceProtectionSettingsDto>(settings);
     }
 
-    [HttpGet("security/loginSettings")]
-    public async Task<LoginSettingsDto> GetLoginSettingsAsync()
+    [HttpGet("security/bruteforceprotectionsettings")]
+    public async Task<BruteForceProtectionSettingsDto> GetBruteForceProtectionSettingsAsync()
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = await _settingsManager.LoadAsync<LoginSettings>();
+        var settings = await _settingsManager.LoadAsync<BruteForceProtectionSettings>();
 
-        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
+        return _mapper.Map<BruteForceProtectionSettings, BruteForceProtectionSettingsDto>(settings);
     }
 }
