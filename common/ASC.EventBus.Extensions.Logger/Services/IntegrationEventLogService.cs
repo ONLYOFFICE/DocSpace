@@ -46,12 +46,14 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
         await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
 
-        var result = Queries.IntegrationEventLogEntriesAsync(integrationEventLogContext, tid);
+        var result = await Queries.IntegrationEventLogEntriesAsync(integrationEventLogContext, tid).ToListAsync();
 
-        if (result != null && await result.AnyAsync())
+        if (result != null && result.Any())
         {
-            return await result.OrderBy(o => o.CreateOn)
-                .Select(e => e.DeserializeJsonContent(_eventTypes.Find(t => t.Name == e.EventTypeShortName))).ToListAsync();
+            return result
+                .OrderBy(o => o.CreateOn)
+                .Select(e => e.DeserializeJsonContent(_eventTypes.Find(t => t.Name == e.EventTypeShortName)))
+                .ToList();
         }
 
         return new List<IntegrationEventLogEntry>();
