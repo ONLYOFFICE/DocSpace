@@ -38,7 +38,6 @@ public class IPSecurity
     private readonly IPRestrictionsService _ipRestrictionsService;
     private readonly string _currentIpForTest;
     private readonly string _myNetworks;
-    private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
 
     public IPSecurity(
@@ -47,7 +46,6 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        SecurityContext securityContext,
         UserManager userManager,
         ILogger<IPSecurity> logger)
     {
@@ -56,7 +54,6 @@ public class IPSecurity
         _authContext = authContext;
         _tenantManager = tenantManager;
         _ipRestrictionsService = iPRestrictionsService;
-        _securityContext = securityContext;
         _userManager = userManager;
         _currentIpForTest = configuration["ipsecurity:test"];
         _myNetworks = configuration["ipsecurity:mynetworks"];
@@ -97,7 +94,6 @@ public class IPSecurity
 
             if (string.IsNullOrWhiteSpace(requestIps))
             {
-                var request = _httpContextAccessor.HttpContext.Request;
                 requestIps = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
@@ -105,7 +101,7 @@ public class IPSecurity
                           ? Array.Empty<string>()
                           : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            var isDocSpaceAdmin = await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
+            var isDocSpaceAdmin = await _userManager.IsUserInGroupAsync(_authContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
 
             if (ips.Any(requestIp => restrictions.Any(restriction => (restriction.ForAdmin ? isDocSpaceAdmin : true) && MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {
