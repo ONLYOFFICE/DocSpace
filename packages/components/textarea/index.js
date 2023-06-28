@@ -128,7 +128,6 @@ const Textarea = ({
             {numerationValue.join("\n")}
           </Numeration>
         )}
-
         <StyledTextarea
           id={id}
           paddingLeftProp={paddingLeftProp}

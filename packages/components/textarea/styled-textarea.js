@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import TextareaAutosize from "react-autosize-textarea";
 
-import Scrollbar from "../scrollbar/index";
+import Scrollbar from "../scrollbar";
 import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
 import { CopyIcon } from "./svg";
@@ -17,32 +17,30 @@ const ClearScrollbar = ({
 
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
-
   :focus-within {
     border-color: ${(props) =>
       props.hasError
         ? props.theme.textArea.focusErrorBorderColor
         : props.theme.textArea.focusBorderColor};
   }
-
   :focus {
     outline: ${(props) => props.theme.textArea.focusOutline};
   }
 
   width: ${(props) => props.theme.textArea.scrollWidth} !important;
-  height: ${(props) =>
-    props.heightScale
+  height: ${(props) => {
+    return props.heightScale
       ? "67vh"
       : props.heightTextArea
       ? props.heightTextArea + 2 + "px"
-      : "91px"} !important;
-
+      : "91px";
+  }} !important;
   background-color: ${(props) =>
     props.isDisabled && props.theme.textArea.disabledColor};
 `;
 
 StyledScrollbar.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 // eslint-disable-next-line react/prop-types, no-unused-vars

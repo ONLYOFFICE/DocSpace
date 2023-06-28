@@ -69,7 +69,6 @@ const Scrollbar = React.forwardRef((props, ref) => {
   const view = stype ? stype.view : {};
   return (
     <CustomScrollbars
-      className={"section-scroll"}
       thumbh={thumbH}
       thumbv={thumbV}
       view={view}

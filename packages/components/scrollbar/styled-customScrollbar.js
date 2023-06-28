@@ -6,13 +6,8 @@ const StyledScrollbar = styled.div`
     width: ${(props) => props?.style?.width && props.style.width + "px"};
     height: ${(props) => props?.style?.height && props.style.height + "px"};
 
-    padding-right: ${(props) => props.view.paddingRight};
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl" &&
-      css`
-        padding-left: ${(props) => props.view.paddingRight};
-        padding-right: 0;
-      `}
+    padding-left: ${(props) => props.view?.paddingRight};
+    padding-right: ${(props) => props.view?.paddingRight};
     overflow: scroll;
     position: relative;
     box-sizing: border-box;
@@ -31,8 +26,8 @@ const StyledScrollbar = styled.div`
     background: transparent;
   }
   .container::-webkit-scrollbar {
-    width: ${(props) => props.thumbv.width};
-    height: ${(props) => (props.stype === "thumbV" ? 0 : props.thumbh.height)};
+    width: ${(props) => props.thumbv?.width};
+    height: ${(props) => (props.stype === "thumbV" ? 0 : props.thumbh?.height)};
   }
 
   .container::-webkit-scrollbar-track {
