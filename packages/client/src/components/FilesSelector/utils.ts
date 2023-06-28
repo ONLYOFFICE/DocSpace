@@ -1,4 +1,4 @@
-import { FilterType } from "@docspace/common/constants";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 import { BreadCrumb, Security } from "./FilesSelector.types";
 
 export const PAGE_COUNT = 100;
@@ -17,12 +17,12 @@ export const getHeaderLabel = (
   isCopy?: boolean,
   isRestoreAll?: boolean,
   isMove?: boolean,
-  filterParam?: number
+  filterParam?: string
 ) => {
   if (isMove) return t("Common:MoveTo");
   if (isCopy) return t("Common:Copy");
   if (isRestoreAll) return t("Common:Restore");
-  if (filterParam === FilterType.FoldersDocuments)
+  if (filterParam === FilesSelectorFilterTypes.DOCX)
     return t("Translations:CreateMasterFormFromFile");
   if (!!filterParam) return t("Common:SelectFile");
 
@@ -34,12 +34,12 @@ export const getAcceptButtonLabel = (
   isCopy?: boolean,
   isRestoreAll?: boolean,
   isMove?: boolean,
-  filterParam?: number
+  filterParam?: string
 ) => {
   if (isMove) return t("Translations:MoveHere");
   if (isCopy) return t("Translations:CopyHere");
   if (isRestoreAll) return t("Common:RestoreHere");
-  if (filterParam === FilterType.FoldersDocuments) return t("Common:Create");
+  if (filterParam === FilesSelectorFilterTypes.DOCX) return t("Common:Create");
   if (!!filterParam) return t("Common:SaveButton");
 
   return t("Common:SaveHereButton");

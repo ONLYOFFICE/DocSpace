@@ -276,20 +276,18 @@ export const useFilesHelper = ({
       filter.applyFilterOption = null;
       filter.withSubfolders = false;
       if (filterParam) {
+        filter.applyFilterOption = ApplyFilterOption.Files;
         switch (filterParam) {
           case FilesSelectorFilterTypes.DOCX:
-            filter.applyFilterOption = ApplyFilterOption.Files;
             filter.filterType = FilterType.DocumentsOnly;
             break;
 
           case FilesSelectorFilterTypes.IMG:
-            filter.applyFilterOption = ApplyFilterOption.Files;
             filter.filterType = FilterType.ImagesOnly;
             break;
 
           case FilesSelectorFilterTypes.GZ:
-            filter.applyFilterOption = ApplyFilterOption.Files;
-            filter.search = ".gz";
+            filter.filterType = FilterType.ArchiveOnly;
             break;
         }
       }
