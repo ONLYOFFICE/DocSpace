@@ -57,6 +57,7 @@ class SelectelSettings extends React.Component {
     return (
       <>
         <TextInput
+          id="private-container-input"
           name={private_container}
           className="backup_text-input"
           scale={true}
@@ -68,6 +69,7 @@ class SelectelSettings extends React.Component {
           tabIndex={1}
         />
         <TextInput
+          id="public-container-input"
           name={public_container}
           className="backup_text-input"
           scale={true}
@@ -81,6 +83,7 @@ class SelectelSettings extends React.Component {
 
         {isNeedFilePath && (
           <TextInput
+            id="file-path-input"
             name={filePath}
             className="backup_text-input"
             scale

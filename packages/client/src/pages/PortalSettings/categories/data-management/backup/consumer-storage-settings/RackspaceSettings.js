@@ -61,6 +61,7 @@ class RackspaceSettings extends React.Component {
     return (
       <>
         <TextInput
+          id="private-container-input"
           name={private_container}
           className="backup_text-input"
           scale
@@ -72,6 +73,7 @@ class RackspaceSettings extends React.Component {
           tabIndex={1}
         />
         <TextInput
+          id="public-container-input"
           name={public_container}
           className="backup_text-input"
           scale
@@ -83,6 +85,7 @@ class RackspaceSettings extends React.Component {
           tabIndex={2}
         />
         <TextInput
+          id="region-input"
           name={region}
           className="backup_text-input"
           scale
@@ -95,6 +98,7 @@ class RackspaceSettings extends React.Component {
         />
         {isNeedFilePath && (
           <TextInput
+            id="file-path-input"
             name={filePath}
             className="backup_text-input"
             scale
