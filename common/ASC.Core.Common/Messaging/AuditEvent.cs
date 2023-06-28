@@ -31,6 +31,8 @@ public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
     public string Initiator { get; set; }
     public string Target { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<MessageEvent, AuditEvent>();
@@ -43,6 +45,8 @@ public static class AuditEventExtension
 {
     public static ModelBuilderWrapper AddAuditEvent(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<AuditEvent>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddAuditEvent, Provider.MySql)
             .Add(PgSqlAddAuditEvent, Provider.PostgreSql);

@@ -99,40 +99,40 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
 
-        foreach (var f in feeds)
-        {
-            if (0 >= f.Users.Count)
+            foreach (var f in feeds)
             {
-                continue;
-            }
-
-            var feedAggregate = _mapper.Map<FeedRow, FeedAggregate>(f);
-            feedAggregate.AggregateDate = aggregatedDate;
-
-            if (f.ClearRightsBeforeInsert)
-            {
-                var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
-                if (fu != null)
+                if (0 >= f.Users.Count)
                 {
-                    feedDbContext.FeedUsers.Remove(fu);
+                    continue;
                 }
-            }
+
+                var feedAggregate = _mapper.Map<FeedRow, FeedAggregate>(f);
+                feedAggregate.AggregateDate = aggregatedDate;
+
+                if (f.ClearRightsBeforeInsert)
+                {
+                var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
+                    if (fu != null)
+                    {
+                        feedDbContext.FeedUsers.Remove(fu);
+                    }
+                }
 
             await feedDbContext.AddOrUpdateAsync(q => q.FeedAggregates, feedAggregate);
 
-            foreach (var u in f.Users)
-            {
-                var feedUser = new FeedUsers
+                foreach (var u in f.Users)
                 {
-                    FeedId = f.Id,
-                    UserId = u
-                };
+                    var feedUser = new FeedUsers
+                    {
+                        FeedId = f.Id,
+                        UserId = u
+                    };
 
                 await feedDbContext.AddOrUpdateAsync(q => q.FeedUsers, feedUser);
+                }
             }
-        }
 
-        await feedDbContext.SaveChangesAsync();
+            await feedDbContext.SaveChangesAsync();
     }
 
     public async Task RemoveFeedAggregateAsync(DateTime fromTime)
@@ -140,10 +140,8 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
 
         var aggregates = feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
-        var users = feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
 
         feedDbContext.FeedAggregates.RemoveRange(aggregates);
-        feedDbContext.FeedUsers.RemoveRange(users);
 
         await feedDbContext.SaveChangesAsync();
     }
@@ -186,7 +184,7 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var tenant = await _tenantManager.GetCurrentTenantAsync();
         var q = feedDbContext.FeedAggregates.AsNoTracking()
-            .Where(r => r.Tenant == tenant.Id);
+            .Where(r => r.TenantId == tenant.Id);
 
         var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);
 
@@ -285,7 +283,7 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var tenant = await _tenantManager.GetCurrentTenantAsync();
         var query = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == tenant.Id)
+            .Where(r => r.TenantId == tenant.Id)
             .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
             .Where(r => r.user.UserId == _authContext.CurrentAccount.ID);
@@ -303,7 +301,7 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         return await feedDbContext.FeedAggregates
             .Where(r => r.AggregateDate >= interval.From && r.AggregateDate <= interval.To)
-            .GroupBy(r => r.Tenant)
+            .GroupBy(r => r.TenantId)
             .Select(r => r.Key)
             .ToListAsync();
     }
@@ -322,10 +320,8 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var aggregates = feedDbContext.FeedAggregates.Where(r => r.Id == id);
-        var users = feedDbContext.FeedUsers.Where(r => r.FeedId == id);
 
         feedDbContext.FeedAggregates.RemoveRange(aggregates);
-        feedDbContext.FeedUsers.RemoveRange(users);
         await feedDbContext.SaveChangesAsync();
     }
 

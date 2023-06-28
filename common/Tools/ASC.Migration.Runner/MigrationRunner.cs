@@ -37,38 +37,13 @@ public class MigrationRunner
 
     public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
     {
-        var counter = 0;
 
-        foreach (var assembly in GetAssemblies(path))
-        {
-            var ctxTypesFinder = new AssemblyContextFinder(assembly);
-
-            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
-            {
-                DbContext context = null;
-                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, teamlabsiteProvider);
-                }
-                else
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, dbProvider);
-                }
-                context.Database.Migrate();
-                counter++;
-            }
-        }
-
-        Console.WriteLine($"Applied {counter} migrations");
-    }
-
-    private static IEnumerable<Assembly> GetAssemblies(string path)
-    {
-        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
-
-        foreach (var assembly in assemblyPaths)
-        {
-            yield return Assembly.LoadFrom(assembly);
-        }
+        var migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider);
+        migrationContext.Database.Migrate();
+        
+        var teamlabContext = _dbContextActivator.CreateInstance(typeof(TeamlabSiteContext), teamlabsiteProvider);
+        teamlabContext.Database.Migrate();
+        
+        Console.WriteLine("Applied migrations");
     }
 }

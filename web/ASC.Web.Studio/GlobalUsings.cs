@@ -42,11 +42,14 @@ global using ASC.EventBus.Log;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Web.Core.HttpHandlers;
+global using ASC.Web.Core.RemovePortal;
 global using ASC.Web.Studio;
+global using ASC.Web.Studio.IntegrationEvents;
 global using ASC.Web.Studio.IntegrationEvents.EventHandling;
 global using ASC.Webhooks;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.IntegrationEvents.Events;
+global using ASC.Webhooks.Extension;
 global using ASC.Webhooks.Service.Log;
 global using ASC.Webhooks.Service.Services;
 
@@ -54,7 +57,6 @@ global using Autofac;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.HttpOverrides;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;

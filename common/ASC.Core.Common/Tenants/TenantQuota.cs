@@ -39,7 +39,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         CountRoom = int.MaxValue
     };
 
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
     public string PriceCurrencySymbol { get; set; }
@@ -271,12 +271,12 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public TenantQuota(int tenant) : this()
     {
-        Tenant = tenant;
+        TenantId = tenant;
     }
 
     public TenantQuota(TenantQuota quota) : this()
     {
-        Tenant = quota.Tenant;
+        TenantId = quota.TenantId;
         Name = quota.Name;
         Price = quota.Price;
         ProductId = quota.ProductId;
@@ -287,12 +287,12 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public override int GetHashCode()
     {
-        return Tenant.GetHashCode();
+        return TenantId.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        return obj is TenantQuota q && q.Tenant == Tenant;
+        return obj is TenantQuota q && q.TenantId == TenantId;
     }
 
     public async Task CheckAsync(IServiceProvider serviceProvider)

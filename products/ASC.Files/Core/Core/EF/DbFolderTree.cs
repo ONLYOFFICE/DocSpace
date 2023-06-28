@@ -33,6 +33,8 @@ public class DbFolderTree : BaseEntity
     public int ParentId { get; set; }
     public int Level { get; set; }
 
+    public DbFolder Folder { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { ParentId, FolderId };
@@ -43,6 +45,8 @@ public static class DbFolderTreeExtension
 {
     public static ModelBuilderWrapper AddDbFolderTree(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFolderTree>().Navigation(e => e.Folder).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFolderTree, Provider.MySql)
             .Add(PgSqlAddDbFolderTree, Provider.PostgreSql);
