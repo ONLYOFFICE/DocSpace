@@ -1954,8 +1954,9 @@ public class EntryManager
 
     public static async Task ReassignItemsAsync<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
     {
-        var files = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, default, true).ToListAsync();
-        var fileIds = files.Where(file => file.CreateBy == fromUserId).Select(file => file.Id);
+        var fileIds = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, default, true)
+                                .Where(file => file.CreateBy == fromUserId).Select(file => file.Id)
+                                .ToListAsync();
 
         await fileDao.ReassignFilesAsync(fileIds.ToArray(), toUserId);
 
