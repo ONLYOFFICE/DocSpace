@@ -127,7 +127,7 @@ public class IPSecurity
     public static bool MatchIPs(string requestIp, string restrictionIp)
     {
         var dividerIdx = restrictionIp.IndexOf('-');
-        if (dividerIdx > -1)
+        if (dividerIdx > 0)
         {
             var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
             var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
@@ -137,7 +137,7 @@ public class IPSecurity
             return range.IsInRange(IPAddress.Parse(requestIp));
         }
 
-        if (restrictionIp.IndexOf('/') > -1)
+        if (restrictionIp.IndexOf('/') > 0)
         {
             return IPAddressRange.IsInRange(requestIp, restrictionIp);
         }
