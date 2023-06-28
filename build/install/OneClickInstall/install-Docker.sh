@@ -220,7 +220,7 @@ while [ "$1" != "" ]; do
 
 		-dsh | --docspacehost )
 			if [ "$2" != "" ]; then
-				APP_CORE_BASE_DOMAIN=$2
+				APP_URL_PORTAL=$2
 				shift
 			fi
 		;;
@@ -935,10 +935,12 @@ set_mysql_params () {
 }
 
 set_docspace_params() {
-	ENV_EXTENSION=$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION");
-	DOCUMENT_SERVER_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST");
-	ELK_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST");
-	APP_CORE_BASE_DOMAIN=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN");
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
+	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
 
@@ -1027,6 +1029,7 @@ install_product () {
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
+	reconfigure APP_URL_PORTAL "http://$(hostname -f):${EXTERNAL_PORT}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
@@ -1071,7 +1074,9 @@ start_installation () {
 
 	domain_check
 
-	set_docspace_params
+	if [ "$UPDATE" = "true" ]; then
+		set_docspace_params
+	fi
 
 	set_jwt_secret
 	set_jwt_header
