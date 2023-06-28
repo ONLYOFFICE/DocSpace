@@ -734,7 +734,6 @@ public class TariffService : ITariffService
                 }
 
                 efTariff = await dbContext.AddOrUpdateAsync(q => q.Tariffs, efTariff);
-                await dbContext.SaveChangesAsync();
 
                 foreach (var q in tariffInfo.Quotas)
                 {
@@ -978,8 +977,8 @@ static file class Queries
         EF.CompileAsyncQuery(
             (CoreDbContext ctx, int? tenantId, int? id) =>
                 ctx.Tariffs
-                    .Where(r => tenantId.HasValue && r.TenantId == tenantId)
-                    .Where(r => id.HasValue && r.Id == id.Value)
+                    .Where(r => !tenantId.HasValue || r.TenantId == tenantId)
+                    .Where(r => !id.HasValue || r.Id == id.Value)
                     .OrderByDescending(r => r.Id)
                     .FirstOrDefault());
 
