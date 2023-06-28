@@ -182,8 +182,8 @@ static file class Queries
             (AccountLinkContext ctx, string id, string provider, string hashId) =>
                 ctx.AccountLinks
                     .Where(r => r.Id == id)
-                    .Where(r => !string.IsNullOrEmpty(provider) && r.Provider == provider)
-                    .Where(r => !string.IsNullOrEmpty(hashId) && r.UId == hashId)
+                    .Where(r => string.IsNullOrEmpty(provider) || r.Provider == provider)
+                    .Where(r => string.IsNullOrEmpty(hashId) || r.UId == hashId)
                     .FirstOrDefault());
 
     public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedProfilesFromDbAsync =
