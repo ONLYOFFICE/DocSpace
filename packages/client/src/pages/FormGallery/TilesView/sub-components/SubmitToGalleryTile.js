@@ -10,7 +10,6 @@ import { withTranslation } from "react-i18next";
 export const StyledSubmitToGalleryTile = styled.div`
   position: relative;
 
-  /* width: 220px; */
   width: 100%;
   height: 220px;
 

@@ -31,10 +31,12 @@ const initArticleAlertsData = () => {
     current: articleAlertsArray[0],
     available: articleAlertsArray,
   };
+
   localStorage.setItem(
     "articleAlertsData",
     JSON.stringify(defaultArticleAlertsData)
   );
+
   return defaultArticleAlertsData;
 };
 
@@ -856,8 +858,10 @@ class SettingsStore {
 
   removeAlertFromArticleAlertsData = (alertToRemove) => {
     const { available } = this.articleAlertsData;
-    const newAvailable = available.filter((alert) => alert !== alertToRemove);
-    this.updateArticleAlertsData({ available: newAvailable });
+    const filteredAvailable = available.filter(
+      (alert) => alert !== alertToRemove
+    );
+    this.updateArticleAlertsData({ available: filteredAvailable });
   };
 }
 

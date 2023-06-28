@@ -35,6 +35,7 @@ class AccessRightsStore {
 
   canSubmitToFormGallery = () => {
     const { isVisitor } = this.authStore.userStore.user;
+
     return !isVisitor;
   };
 
