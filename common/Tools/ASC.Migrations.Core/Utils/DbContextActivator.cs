@@ -24,26 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration;
+using Microsoft.Extensions.Configuration;
 
-public class ProjectInfoContextFinder : ContextFinder
+namespace ASC.Migrations.Core.Utils;
+
+public class DbContextActivator
 {
-    private readonly ProjectInfo _projectInfo;
-    public ProjectInfoContextFinder(ProjectInfo projectInfo)
+    private readonly IServiceProvider _serviceProvider;
+
+    public DbContextActivator(IServiceProvider serviceProvider)
     {
-        _projectInfo = projectInfo;
+        _serviceProvider = serviceProvider;
     }
 
-    protected override Type[] GetAssemblyTypes()
+    public DbContext CreateInstance(Type contextType, ProviderInfo provider)
     {
-        try
-        {
-            var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
-            return coreContextAssembly.GetTypes();
-        }
-        catch (Exception)
-        {
-            return Array.Empty<Type>();
-        }
+        var scope = _serviceProvider.CreateScope();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
+        configuration["ConnectionStrings:default:name"] = "default";
+        configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
+        configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;
+        return (DbContext)scope.ServiceProvider.GetRequiredService(contextType);
     }
 }

@@ -259,13 +259,13 @@ public class GlobalStore
 
     public async Task<IDataStore> GetStoreAsync(bool currentTenant = true)
     {
-        return await _storageFactory.GetStorageAsync(currentTenant ? await _tenantManager.GetCurrentTenantIdAsync() : null, FileConstant.StorageModule);
+        return await _storageFactory.GetStorageAsync(currentTenant ? await _tenantManager.GetCurrentTenantIdAsync() : -1, FileConstant.StorageModule);
     }
 
 
     public async Task<IDataStore> GetStoreTemplateAsync()
     {
-        return await _storageFactory.GetStorageAsync(null, FileConstant.StorageTemplate);
+        return await _storageFactory.GetStorageAsync(-1, FileConstant.StorageTemplate);
     }
 }
 
