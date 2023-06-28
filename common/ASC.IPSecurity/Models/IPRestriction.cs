@@ -31,7 +31,7 @@ public class IPRestriction : IpRestrictionBase, IMapFrom<TenantIpRestrictions>
 {
     public int Id { get; set; }
 
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
 }
 
 public class IpRestrictionBase
