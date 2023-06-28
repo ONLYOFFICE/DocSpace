@@ -187,10 +187,8 @@ const DirectThirdPartyConnection = (props) => {
   const onConnect = () => {
     clearLocalStorage();
 
-    const {
-      provider_key,
-      provider_link: directConnection,
-    } = selectedThirdPartyAccount;
+    const { provider_key, provider_link: directConnection } =
+      selectedThirdPartyAccount;
 
     if (directConnection) {
       let authModal = window.open(
@@ -364,6 +362,7 @@ const DirectThirdPartyConnection = (props) => {
 
       {!connectedThirdPartyAccount?.id || !isTheSameThirdPartyAccount ? (
         <Button
+          id="connect"
           primary
           label={t("Common:Connect")}
           onClick={onConnect}
