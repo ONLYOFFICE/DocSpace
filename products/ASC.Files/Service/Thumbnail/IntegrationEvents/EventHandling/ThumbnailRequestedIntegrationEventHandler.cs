@@ -55,14 +55,21 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var updatedRows = await Queries.UpdateDbFilesAsync(filesDbContext);
+        var files = await Queries.DbFilesAsync(filesDbContext).ToListAsync();
 
-        if (updatedRows == 0)
+        if (files.Count == 0)
         {
             return new List<FileData<int>>();
         }
-       
-        return await Queries.DbFilesAsync(filesDbContext).SelectAwait(async r =>
+
+        foreach (var f in files)
+        {
+            f.ThumbnailStatus = Files.Core.Thumbnail.Waiting;
+        }
+
+        await filesDbContext.SaveChangesAsync();
+
+        return await files.ToAsyncEnumerable().SelectAwait(async r =>
         {
             var tariff = await _tariffService.GetTariffAsync(r.TenantId);
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
@@ -87,7 +94,7 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
             if (await _channelWriter.WaitToWriteAsync())
             {
-                foreach(var item in data)
+                foreach (var item in data)
                 {
                     await _channelWriter.WriteAsync(item);
                 }
@@ -105,12 +112,4 @@ static file class Queries
                 ctx.Files
                     .Where(r => r.CurrentVersion && r.ThumbnailStatus == Files.Core.Thumbnail.Creating &&
                                 EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5));
-
-    public static readonly Func<FilesDbContext, Task<int>> UpdateDbFilesAsync =
-        EF.CompileAsyncQuery(
-            (FilesDbContext ctx) =>
-                ctx.Files
-                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Files.Core.Thumbnail.Creating &&
-                                EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5)
-                    .ExecuteUpdate(s => s.SetProperty(b => b.ThumbnailStatus, b => Files.Core.Thumbnail.Waiting)));
 }
