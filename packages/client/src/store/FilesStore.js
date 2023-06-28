@@ -26,8 +26,9 @@ import {
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
-import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
+
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
 
@@ -54,6 +55,8 @@ class FilesStore {
   clientLoadingStore;
 
   accessRightsStore;
+
+  pluginStore;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -136,7 +139,8 @@ class FilesStore {
     filesSettingsStore,
     thirdPartyStore,
     accessRightsStore,
-    clientLoadingStore
+    clientLoadingStore,
+    pluginStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -150,6 +154,7 @@ class FilesStore {
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
+    this.pluginStore = pluginStore;
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
@@ -1628,7 +1633,8 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
-      enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
+      enablePlugins &&
+      this.pluginStore.getContextMenuKeysByType(PluginContextMenuItemType.All);
 
     const canRenameItem = item.security?.Rename;
 
@@ -1830,7 +1836,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
       if (enablePlugins && !isRecycleBinFolder) {
-        const pluginFilesKeys = getContextMenuKeysByType(
+        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
           PluginContextMenuItemType.Files
         );
 
@@ -1976,7 +1982,7 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 
         if (enablePlugins) {
-          const pluginRoomsKeys = getContextMenuKeysByType(
+          const pluginRoomsKeys = this.pluginStore.getContextMenuKeysByType(
             PluginContextMenuItemType.Rooms
           );
 
@@ -2065,7 +2071,7 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["restore"]);
 
         if (enablePlugins) {
-          const pluginFoldersKeys = getContextMenuKeysByType(
+          const pluginFoldersKeys = this.pluginStore.getContextMenuKeysByType(
             PluginContextMenuItemType.Folders
           );
 

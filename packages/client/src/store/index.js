@@ -38,6 +38,10 @@ import CreateEditRoomStore from "./CreateEditRoomStore";
 import WebhooksStore from "./WebhooksStore";
 import ClientLoadingStore from "./ClientLoadingStore";
 
+import PluginStore from "./PluginStore";
+
+const pluginStore = new PluginStore();
+
 const oformsStore = new OformsStore(authStore);
 
 const clientLoadingStore = new ClientLoadingStore();
@@ -67,7 +71,8 @@ const filesStore = new FilesStore(
   settingsStore,
   thirdPartyStore,
   accessRightsStore,
-  clientLoadingStore
+  clientLoadingStore,
+  pluginStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -127,7 +132,8 @@ const contextOptionsStore = new ContextOptionsStore(
   uploadDataStore,
   versionHistoryStore,
   settingsStore,
-  selectedFolderStore
+  selectedFolderStore,
+  pluginStore
 );
 
 const hotkeyStore = new HotkeyStore(
@@ -144,7 +150,8 @@ const profileActionsStore = new ProfileActionsStore(
   filesStore,
   peopleStore,
   treeFoldersStore,
-  selectedFolderStore
+  selectedFolderStore,
+  pluginStore
 );
 
 peopleStore.profileActionsStore = profileActionsStore;
@@ -210,6 +217,8 @@ const store = {
 
   webhooksStore,
   clientLoadingStore,
+
+  pluginStore,
 };
 
 export default store;

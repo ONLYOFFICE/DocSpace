@@ -11,8 +11,6 @@ import Text from "@docspace/components/text";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
-import { activatePlugin, deletePlugin } from "SRC_DIR/helpers/plugins";
-
 const StyledHeader = styled.div`
   display: ${isMobile ? "none" : "flex"};
   border-bottom: ${(props) => props.theme.connectedClouds.borderBottom};
@@ -60,66 +58,57 @@ const StyledRow = styled(Row)`
 
 const PluginList = ({
   t,
+
   plugins,
   onActivate,
   onDelete,
+
   withDelete,
   theme,
 }) => {
-  const onActivateAction = React.useCallback(
-    (e) => {
-      const { dataset } = (e.originalEvent || e).currentTarget;
+  const onActivateAction = (e) => {
+    const { dataset } = (e.originalEvent || e).currentTarget;
 
-      activatePlugin(dataset.id, dataset.status);
-      onActivate(dataset.id, dataset.status);
-    },
-    [onActivate]
-  );
+    onActivate && onActivate(dataset.id, dataset.status);
+  };
 
-  const onDeleteAction = React.useCallback(
-    (e) => {
-      const { dataset } = (e.originalEvent || e).currentTarget;
+  const onDeleteAction = (e) => {
+    const { dataset } = (e.originalEvent || e).currentTarget;
 
-      deletePlugin(dataset.id);
-      onDelete(dataset.id);
-    },
-    [onDelete]
-  );
+    onDelete && onDelete(dataset.id);
+  };
 
-  const getContextOptions = React.useCallback(
-    (plugin, index) => {
-      const options = [];
-      const activateItem = plugin.isActive
-        ? {
-            key: `${index}_disable`,
-            "data-id": plugin.id,
-            "data-status": !plugin.isActive,
-            label: t("PeopleTranslations:DisableUserButton"),
-            onClick: onActivateAction,
-          }
-        : {
-            key: `${index}_activate`,
-            "data-id": plugin.id,
-            "data-status": !plugin.isActive,
-            label: t("Common:Activate"),
-            onClick: onActivateAction,
-          };
+  const getContextOptions = (plugin, index) => {
+    const options = [];
+    const activateItem = plugin.isActive
+      ? {
+          key: `${index}_disable`,
+          "data-id": plugin.id,
+          "data-status": !plugin.isActive,
+          label: t("PeopleTranslations:DisableUserButton"),
+          onClick: onActivateAction,
+        }
+      : {
+          key: `${index}_activate`,
+          "data-id": plugin.id,
+          "data-status": !plugin.isActive,
+          label: t("Common:Activate"),
+          onClick: onActivateAction,
+        };
 
-      const deleteItem = {
-        key: "delete",
-        "data-id": plugin.id,
-        label: t("Common:Delete"),
-        onClick: onDeleteAction,
-      };
+    const deleteItem = {
+      key: "delete",
+      "data-id": plugin.id,
+      label: t("Common:Delete"),
+      onClick: onDeleteAction,
+    };
 
-      options.push(activateItem);
+    options.push(activateItem);
 
-      withDelete && options.push(deleteItem);
+    withDelete && options.push(deleteItem);
 
-      return options;
-    },
-    [onActivateAction, onDeleteAction, withDelete]
-  );
+    return options;
+  };
 
   return (
     <>
@@ -219,4 +208,4 @@ const PluginList = ({
   );
 };
 
-export default React.memo(PluginList);
+export default PluginList;

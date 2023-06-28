@@ -49,7 +49,7 @@ import { Consumer } from "@docspace/components/utils/context";
 import toastr from "@docspace/components/toast/toastr";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
-import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
+
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import withLoader from "../../../../HOCs/withLoader";
 import {
@@ -117,6 +117,7 @@ const SectionHeaderContent = (props) => {
     isPrivacyFolder,
     isRoomsFolder,
     enablePlugins,
+    mainButtonItemsList,
     security,
     setIsFolderActions,
     setBufferSelection,
@@ -403,17 +404,13 @@ const SectionHeaderContent = (props) => {
           },
         ];
 
-    if (enablePlugins) {
-      const pluginOptions = getMainButtonItems();
-
-      if (pluginOptions) {
-        pluginOptions.forEach((option) => {
-          options.splice(option.value.position, 0, {
-            key: option.key,
-            ...option.value,
-          });
+    if (mainButtonItemsList && enablePlugins) {
+      mainButtonItemsList.forEach((option) => {
+        options.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
         });
-      }
+      });
     }
 
     return options;
@@ -937,6 +934,7 @@ export default inject(
     settingsStore,
     clientLoadingStore,
     contextOptionsStore,
+    pluginStore,
   }) => {
     const { isOwner, isAdmin } = auth.userStore.user;
 
@@ -972,6 +970,8 @@ export default inject(
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);
     };
+
+    const { mainButtonItemsList } = pluginStore;
 
     const {
       setSharingPanelVisible,
@@ -1115,6 +1115,7 @@ export default inject(
       isRoomsFolder,
 
       enablePlugins,
+      mainButtonItemsList,
 
       setRestoreAllPanelVisible,
 

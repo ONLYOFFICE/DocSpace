@@ -370,6 +370,7 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     whiteLabelLogoUrls,
   } = settingsStore;
+
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
 
@@ -418,7 +419,10 @@ const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
     currentColorScheme = settingsStore.currentColorScheme || false;
   }
 
-  return { theme: settingsStore.theme, currentColorScheme };
+  return {
+    theme: settingsStore.theme,
+    currentColorScheme,
+  };
 })(observer(ThemeProvider));
 
 export default () => (

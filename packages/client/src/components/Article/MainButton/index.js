@@ -25,8 +25,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import MobileView from "./MobileView";
 
 import { Events, EmployeeType } from "@docspace/common/constants";
-import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
-
 import toastr from "@docspace/components/toast/toastr";
 import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
@@ -106,6 +104,7 @@ const ArticleMainButtonContent = (props) => {
     isArchiveFolder,
 
     enablePlugins,
+    mainButtonItemsList,
 
     currentColorScheme,
 
@@ -413,17 +412,13 @@ const ArticleMainButtonContent = (props) => {
     menuModel.push(...uploadActions);
     setUploadActions(uploadActions);
 
-    if (enablePlugins) {
-      const pluginOptions = getMainButtonItems();
-
-      if (pluginOptions) {
-        pluginOptions.forEach((option) => {
-          menuModel.splice(option.value.position, 0, {
-            key: option.key,
-            ...option.value,
-          });
+    if (mainButtonItemsList && enablePlugins) {
+      mainButtonItemsList.forEach((option) => {
+        menuModel.splice(option.value.position, 0, {
+          key: option.key,
+          ...option.value,
         });
-      }
+      });
     }
 
     setModel(menuModel);
@@ -435,6 +430,7 @@ const ArticleMainButtonContent = (props) => {
     isAccountsPage,
     isSettingsPage,
     enablePlugins,
+    mainButtonItemsList,
     isRoomsFolder,
     isOwner,
     isAdmin,
@@ -540,6 +536,7 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
     clientLoadingStore,
+    pluginStore,
   }) => {
     const { showArticleLoader } = clientLoadingStore;
     const { mainButtonMobileVisible } = filesStore;
@@ -568,6 +565,8 @@ export default inject(
     const { isAdmin, isOwner } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
+    const { mainButtonItemsList } = pluginStore;
+
     return {
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
@@ -592,6 +591,8 @@ export default inject(
       currentFolderId,
 
       enablePlugins,
+      mainButtonItemsList,
+
       currentColorScheme,
 
       isAdmin,

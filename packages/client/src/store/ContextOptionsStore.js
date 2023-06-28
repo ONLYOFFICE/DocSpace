@@ -44,7 +44,7 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/common/constants";
-import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
+
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
 
@@ -59,6 +59,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   selectedFolderStore;
+  pluginStore;
 
   constructor(
     authStore,
@@ -70,7 +71,8 @@ class ContextOptionsStore {
     uploadDataStore,
     versionHistoryStore,
     settingsStore,
-    selectedFolderStore
+    selectedFolderStore,
+    pluginStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -83,6 +85,7 @@ class ContextOptionsStore {
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.pluginStore = pluginStore;
   }
 
   onOpenFolder = (item) => {
@@ -1117,7 +1120,7 @@ class ContextOptionsStore {
     const options = this.filterModel(optionsModel, contextOptions);
 
     if (enablePlugins) {
-      const pluginOptions = getContextMenuItems();
+      const pluginOptions = this.pluginStore.contextMenuItemsList;
 
       if (pluginOptions) {
         pluginOptions.forEach((option) => {

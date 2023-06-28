@@ -155,7 +155,7 @@ const ClientContent = (props) => {
 };
 
 const Client = inject(
-  ({ auth, clientLoadingStore, filesStore, peopleStore }) => {
+  ({ auth, clientLoadingStore, filesStore, peopleStore, pluginStore }) => {
     const {
       frameConfig,
       isFrame,
@@ -163,6 +163,7 @@ const Client = inject(
       encryptionKeys,
       setEncryptionKeys,
       isEncryptionSupport,
+      enablePlugins,
     } = auth.settingsStore;
 
     if (!auth.userStore.user) return;
@@ -173,6 +174,8 @@ const Client = inject(
       clientLoadingStore;
 
     const withMainButton = !isVisitor;
+
+    const { isInit: isInitPlugins, initPlugins } = pluginStore;
 
     return {
       isDesktop: isDesktopClient,
@@ -193,6 +196,8 @@ const Client = inject(
         const actions = [];
         actions.push(filesStore.initFiles());
         actions.push(peopleStore.init());
+
+        if (enablePlugins && !isInitPlugins) actions.push(initPlugins());
         await Promise.all(actions);
       },
     };

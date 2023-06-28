@@ -8,15 +8,23 @@ import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
 import Button from "@docspace/components/button";
 
-import { initPlugin } from "SRC_DIR/helpers/plugins";
-
 import PluginList from "./sub-components/plugin-list";
 import EmptyContainer from "./sub-components/empty-container";
 
 import { StyledContainer } from "./StyledWebPlugins";
 
-const WebPlugins = ({ setDocumentTitle, theme, withDelete, withUpload }) => {
-  const [plugins, setPlugins] = React.useState(null);
+const WebPlugins = ({
+  setDocumentTitle,
+  theme,
+  withDelete,
+  withUpload,
+
+  plugins,
+  initPlugin,
+  changePluginStatus,
+  uninstallPlugin,
+}) => {
+  const [pluginList, setPluginList] = React.useState(null);
 
   const inputPluginElement = React.useRef(null);
 
@@ -29,98 +37,84 @@ const WebPlugins = ({ setDocumentTitle, theme, withDelete, withUpload }) => {
     "FilesSettings",
   ]);
 
-  setDocumentTitle(t("PortalIntegration"));
+  setDocumentTitle("Web plugins");
 
-  const uploadPlugin = React.useCallback(
-    async (files) => {
-      if (!files) return;
-
-      let formData = new FormData();
-
-      for (let index in Object.keys(files)) {
-        formData.append(files[index].name, files[index]);
-      }
-
-      try {
-        const plugin = await api.plugins.uploadPlugin(formData);
-
-        if (plugin.error) return toastr.error(plugin.error);
-
-        if (plugin) {
-          initPlugin(plugin, addPlugin);
-        }
-
-        // addPlugin(plugin);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    [addPlugin]
-  );
-
-  const onInput = React.useCallback(
-    (e) => {
-      uploadPlugin(e.target.files);
-      e.target.value = null;
-    },
-    [uploadPlugin]
-  );
-
-  const onUploadPluginClick = React.useCallback(() => {
-    withUpload && inputPluginElement.current.click();
-  }, [inputPluginElement.current, withUpload]);
-
-  const onActivate = React.useCallback(
-    (id, status) => {
-      setPlugins((val) => {
-        const newPlugins = val;
-
-        const idx = newPlugins.findIndex((plugin) => +plugin.id === +id);
-
-        if (idx > -1) {
-          newPlugins[idx].isActive = status === "true";
-        }
-
-        return [...newPlugins];
-      });
-    },
-    [plugins]
-  );
-
-  const onDelete = React.useCallback(
-    (id) => {
-      setPlugins((val) => {
-        const newPlugins = val.filter((plugin) => +plugin.id !== +id);
-
-        if (newPlugins.length === 0) return [];
-
-        return [...newPlugins];
-      });
-    },
-    [plugins]
-  );
-
-  const addPlugin = React.useCallback((plugin) => {
-    setPlugins((value) => {
+  const addPlugin = (plugin) => {
+    setPluginList((value) => {
       if (value) return [...value, plugin];
 
       return [plugin];
     });
-  }, []);
+  };
+
+  const uploadPlugin = async (files) => {
+    if (!files) return;
+
+    let formData = new FormData();
+
+    for (let index in Object.keys(files)) {
+      formData.append(files[index].name, files[index]);
+    }
+
+    try {
+      const plugin = await api.plugins.uploadPlugin(formData);
+
+      if (plugin.error) return toastr.error(plugin.error);
+
+      if (plugin) {
+        initPlugin(plugin, addPlugin);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onInput = (e) => {
+    uploadPlugin(e.target.files);
+    e.target.value = null;
+  };
+
+  const onUploadPluginClick = () => {
+    withUpload && inputPluginElement.current.click();
+  };
+
+  const onActivate = (id, status) => {
+    changePluginStatus && changePluginStatus(id, status);
+    setPluginList((val) => {
+      const newPlugins = val;
+
+      const idx = newPlugins.findIndex((plugin) => +plugin.id === +id);
+
+      if (idx > -1) {
+        newPlugins[idx].isActive = status === "true";
+      }
+
+      return [...newPlugins];
+    });
+  };
+
+  const onDelete = (id) => {
+    uninstallPlugin && uninstallPlugin(id);
+    setPluginList((val) => {
+      const newPlugins = val.filter((plugin) => +plugin.id !== +id);
+
+      if (newPlugins.length === 0) return [];
+
+      return [...newPlugins];
+    });
+  };
 
   React.useEffect(() => {
     const newPlugins = [];
 
-    Array.from(window.PluginStore.plugins, ([key, value]) =>
-      newPlugins.push(value)
-    );
+    Array.from(plugins, ([key, value]) => newPlugins.push(value));
 
-    setPlugins(newPlugins);
-  }, [window.PluginStore]);
+    setPluginList(newPlugins);
+  }, [plugins]);
 
   return (
     <StyledContainer>
-      {withUpload && !!plugins?.length && (
+      {withUpload && !!pluginList?.length && (
         <Button
           className={"plugins__upload-button"}
           size={"small"}
@@ -129,14 +123,16 @@ const WebPlugins = ({ setDocumentTitle, theme, withDelete, withUpload }) => {
           onClick={onUploadPluginClick}
         />
       )}
-      {!!plugins?.length ? (
+      {!!pluginList?.length ? (
         <PluginList
-          plugins={plugins}
+          plugins={pluginList}
           onActivate={onActivate}
           onDelete={onDelete}
           theme={theme}
           t={t}
           withDelete={withDelete}
+          changePluginStatus={changePluginStatus}
+          uninstallPlugin={uninstallPlugin}
         />
       ) : (
         <EmptyContainer
@@ -157,17 +153,25 @@ const WebPlugins = ({ setDocumentTitle, theme, withDelete, withUpload }) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, pluginStore }) => {
   const { settingsStore, setDocumentTitle } = auth;
   const { theme, pluginOptions } = settingsStore;
 
   const withUpload = pluginOptions.includes("upload");
   const withDelete = pluginOptions.includes("delete");
 
+  const { plugins, initPlugin, changePluginStatus, uninstallPlugin } =
+    pluginStore;
+
   return {
     theme,
     setDocumentTitle,
     withUpload,
     withDelete,
+
+    plugins,
+    initPlugin,
+    changePluginStatus,
+    uninstallPlugin,
   };
 })(observer(WebPlugins));
