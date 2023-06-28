@@ -73,7 +73,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
         var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
-        var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
+        var (tenantManager, coreBaseSettings, messageService, fileStorageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
         await tenantManager.SetCurrentTenantAsync(_tenantId);
 
@@ -88,7 +88,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             logger.LogInformation("reassignment of data from documents");
 
-
+            await fileStorageService.ReassignStorageAsync<object>(FromUser, ToUser);
             //_docService.ReassignStorage(_fromUserId, _toUserId);
             Percentage = 33;
             PublishChanges();
@@ -200,6 +200,7 @@ public class ReassignProgressItemScope
     private readonly TenantManager _tenantManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly MessageService _messageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
@@ -211,6 +212,7 @@ public class ReassignProgressItemScope
     public ReassignProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         MessageService messageService,
+        FileStorageService fileStorageService,
         StudioNotifyService studioNotifyService,
         SecurityContext securityContext,
         UserManager userManager,
@@ -222,6 +224,7 @@ public class ReassignProgressItemScope
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
         _messageService = messageService;
+        _fileStorageService = fileStorageService;
         _studioNotifyService = studioNotifyService;
         _securityContext = securityContext;
         _userManager = userManager;
@@ -234,6 +237,7 @@ public class ReassignProgressItemScope
     public void Deconstruct(out TenantManager tenantManager,
         out CoreBaseSettings coreBaseSettings,
         out MessageService messageService,
+        out FileStorageService fileStorageService,
         out StudioNotifyService studioNotifyService,
         out SecurityContext securityContext,
         out UserManager userManager,
@@ -245,6 +249,7 @@ public class ReassignProgressItemScope
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;
         messageService = _messageService;
+        fileStorageService = _fileStorageService;
         studioNotifyService = _studioNotifyService;
         securityContext = _securityContext;
         userManager = _userManager;
