@@ -835,7 +835,6 @@ class ContextOptionsStore {
       t
     );
 
-    console.log(item.security);
     const optionsModel = [
       {
         id: "option_select",
