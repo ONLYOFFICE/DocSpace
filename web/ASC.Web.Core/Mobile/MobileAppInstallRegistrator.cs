@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Web.Core.Mobile;
 
 [Scope]
@@ -67,6 +65,6 @@ static file class Queries
             (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
                 ctx.MobileAppInstall
                     .Where(r => r.UserEmail == userEmail)
-                    .Where(r => appType.HasValue && r.AppType == (int)appType.Value)
+                    .Where(r => !appType.HasValue || r.AppType == (int)appType.Value)
                     .Any());
 }
