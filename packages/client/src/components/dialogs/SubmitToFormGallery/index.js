@@ -68,6 +68,7 @@ const SubmitToFormGallery = ({
   formItem,
   setFormItem,
   currentColorScheme,
+  canSubmitToFormGallery,
 }) => {
   const [isSelectingForm, setIsSelectingForm] = useState(false);
   const onOpenFormSelector = () => setIsSelectingForm(true);
@@ -88,6 +89,8 @@ const SubmitToFormGallery = ({
     setIsSelectingForm(false);
     formItem && setFormItem(null);
   };
+
+  if (!canSubmitToFormGallery()) return null;
 
   if (isSelectingForm)
     return (
@@ -114,6 +117,7 @@ const SubmitToFormGallery = ({
       <ModalDialog.Body>
         <div>{t("FormGallery:SubmitToGalleryDialogMainInfo")}</div>
         <div>
+          {/* TODO-mushka add correct link to guide */}
           <Trans
             t={t}
             i18nKey="SubmitToGalleryDialogGuideInfo"
@@ -185,10 +189,11 @@ const SubmitToFormGallery = ({
   );
 };
 
-export default inject(({ auth, dialogsStore }) => ({
+export default inject(({ auth, accessRightsStore, dialogsStore }) => ({
   visible: dialogsStore.submitToGalleryDialogVisible,
   setVisible: dialogsStore.setSubmitToGalleryDialogVisible,
   formItem: dialogsStore.formItem,
   setFormItem: dialogsStore.setFormItem,
   currentColorScheme: auth.settingsStore.currentColorScheme,
+  canSubmitToFormGallery: accessRightsStore.canSubmitToFormGallery,
 }))(withTranslation("Common", "FormGallery")(observer(SubmitToFormGallery)));
