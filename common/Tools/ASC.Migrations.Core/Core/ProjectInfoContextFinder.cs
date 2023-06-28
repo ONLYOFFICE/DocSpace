@@ -24,49 +24,26 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration;
+namespace ASC.Migrations;
 
-public class ModelDifferenceChecker
+public class ProjectInfoContextFinder : ContextFinder
 {
-    private readonly DbContext _dbContext;
-    public ModelDifferenceChecker(DbContext context)
+    private readonly ProjectInfo _projectInfo;
+    public ProjectInfoContextFinder(ProjectInfo projectInfo)
     {
-        _dbContext = context;
+        _projectInfo = projectInfo;
     }
 
-    public bool IsDifferent()
+    protected override Type[] GetAssemblyTypes()
     {
-        var scaffolderDependecies = EFCoreDesignTimeServices.GetServiceProvider(_dbContext)
-            .GetService<MigrationsScaffolderDependencies>();
-
-        var modelSnapshot = scaffolderDependecies.MigrationsAssembly.ModelSnapshot;
-
-        if (modelSnapshot == null)
+        try
         {
-            return true;
+            var coreContextAssembly = Assembly.Load(_projectInfo.AssemblyName);
+            return coreContextAssembly.GetTypes();
         }
-
-        var lastModel = scaffolderDependecies.SnapshotModelProcessor.Process(modelSnapshot.Model)
-            .GetRelationalModel();
-
-        if (lastModel == null)
+        catch (Exception)
         {
-            return true;
+            return Array.Empty<Type>();
         }
-
-        var upMethodOperations = scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
-            lastModel, scaffolderDependecies.Model.GetRelationalModel());
-
-        var downMethodOperations = upMethodOperations.Count != 0 ?
-            scaffolderDependecies.MigrationsModelDiffer.GetDifferences(
-                scaffolderDependecies.Model.GetRelationalModel(), lastModel)
-            : new List<MigrationOperation>();
-
-        if (upMethodOperations.Count > 0 || downMethodOperations.Count > 0)
-        {
-            return true;
-        }
-
-        return false;
     }
 }

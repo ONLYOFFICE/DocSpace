@@ -24,26 +24,39 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Runner;
-
-public class MigrationRunner
+namespace ASC.Migrations;
+public abstract class ContextFinder
 {
-    private readonly DbContextActivator _dbContextActivator;
+    private readonly Type _baseType = typeof(DbContext);
 
-    public MigrationRunner(IServiceProvider serviceProvider)
+    public IEnumerable<Type> GetDependetContextsTypes()
     {
-        _dbContextActivator = new DbContextActivator(serviceProvider);
+        var assemblyTypes = GetAssemblyTypes();
+
+        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
+
+        foreach (var contextType in independetProviderTypes)
+        {
+            yield return contextType;
+        }
     }
 
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
+    public IEnumerable<Type> GetIndependentContextsTypes()
     {
+        var assemblyTypes = GetAssemblyTypes();
 
-        var migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider);
-        migrationContext.Database.Migrate();
-        
-        var teamlabContext = _dbContextActivator.CreateInstance(typeof(TeamlabSiteContext), teamlabsiteProvider);
-        teamlabContext.Database.Migrate();
-        
-        Console.WriteLine("Applied migrations");
+        var independetProviderTypes = GetProviderIndependentContextTypes(assemblyTypes);
+
+        foreach (var contextType in independetProviderTypes)
+        {
+            yield return contextType;
+        }
+    }
+
+    protected abstract Type[] GetAssemblyTypes();
+
+    private IEnumerable<Type> GetProviderIndependentContextTypes(IEnumerable<Type> assemblyTypes)
+    {
+        return assemblyTypes.Where(b => b.BaseType == _baseType);
     }
 }

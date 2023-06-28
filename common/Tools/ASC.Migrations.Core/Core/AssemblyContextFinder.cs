@@ -24,10 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace Migration.Core.Models;
+namespace ASC.Migrations;
 
-public class ProjectInfo
+public class AssemblyContextFinder : ContextFinder
 {
-    public string AssemblyName { get; set; }
-    public string Path { get; set; }
+    private readonly Assembly _assembly;
+    public AssemblyContextFinder(Assembly assembly)
+    {
+        _assembly = assembly;
+    }
+
+    protected override Type[] GetAssemblyTypes()
+    {
+        return _assembly.GetTypes();
+    }
 }
