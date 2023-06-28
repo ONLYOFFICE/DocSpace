@@ -254,11 +254,11 @@ class AmazonSettings extends React.Component {
     } = this.props;
     const { region } = this.state;
 
-    const renderTooltip = (helpInfo, id) => {
+    const renderTooltip = (helpInfo, className) => {
       return (
         <>
           <HelpButton
-            id={id}
+            className={className}
             offsetRight={0}
             iconName={HelpReactSvgUrl}
             tooltipContent={
@@ -493,6 +493,7 @@ class AmazonSettings extends React.Component {
 
         {isNeedFilePath && (
           <TextInput
+            id="file-path-input"
             name="filePath"
             className="backup_text-input"
             scale
