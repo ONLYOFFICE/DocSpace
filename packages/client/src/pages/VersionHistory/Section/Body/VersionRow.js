@@ -69,7 +69,9 @@ const VersionRow = (props) => {
   const onChange = (e) => {
     const value = e.target.value;
 
-    if (value.length > MAX_FILE_COMMENT_LENGTH) return;
+    if (value.length > MAX_FILE_COMMENT_LENGTH) {
+      return setCommentValue(value.slice(0, MAX_FILE_COMMENT_LENGTH));
+    }
 
     setCommentValue(value);
   };
