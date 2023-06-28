@@ -95,9 +95,9 @@ public class AbstractDao
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var folders = Queries.FoldersAsync(filesDbContext, TenantID, folderId);
+        var folders = await Queries.FoldersAsync(filesDbContext, TenantID, folderId).ToListAsync();
 
-        await foreach (var f in folders)
+        foreach (var f in folders)
         {
             f.FilesCount = await Queries.FilesCountAsync(filesDbContext, f.TenantId, f.Id);
         }
