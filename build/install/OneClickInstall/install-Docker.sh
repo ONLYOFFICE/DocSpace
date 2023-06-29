@@ -735,9 +735,9 @@ domain_check () {
 				echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
 				if read_continue_installation; then
 					if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
-						sed -i '/{/a\    "dns": ["8.8.8.8"],' "$DOCKER_DAEMON_FILE"
+						sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
 					else
-						echo "{\"dns\": [\"8.8.8.8\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
+						echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
 					fi
 					systemctl restart docker
 				fi
