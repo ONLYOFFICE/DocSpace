@@ -313,36 +313,6 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
-  get someDialogIsOpen() {
-    return (
-      this.sharingPanelVisible ||
-      this.ownerPanelVisible ||
-      this.moveToPanelVisible ||
-      this.copyPanelVisible ||
-      this.deleteThirdPartyDialogVisible ||
-      this.connectDialogVisible ||
-      this.thirdPartyMoveDialogVisible ||
-      this.deleteDialogVisible ||
-      this.downloadDialogVisible ||
-      this.emptyTrashDialogVisible ||
-      this.newFilesPanelVisible ||
-      this.conflictResolveDialogVisible ||
-      this.convertDialogVisible ||
-      this.selectFileDialogVisible ||
-      this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible ||
-      this.eventDialogVisible ||
-      this.invitePanelOptions.visible ||
-      this.archiveDialogVisible ||
-      this.restoreRoomDialogVisible ||
-      this.restoreAllPanelVisible ||
-      this.inviteUsersWarningDialogVisible ||
-      this.createRoomDialogVisible ||
-      this.createRoomConfirmDialogVisible ||
-      this.changeUserTypeDialogVisible
-    );
-  }
-
   deselectActiveFiles = () => {
     this.filesStore.setSelected("none");
   };

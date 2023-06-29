@@ -64,8 +64,12 @@ class HotkeyStore {
       infiniteLoaderComponent.tabIndex = -1;
     }
 
+    const someDialogIsOpen = document.getElementsByClassName(
+      "modal-backdrop-active"
+    )[0];
+
     if (
-      this.dialogsStore.someDialogIsOpen ||
+      someDialogIsOpen ||
       (e.target?.tagName === "INPUT" && e.target.type !== "checkbox") ||
       e.target?.tagName === "TEXTAREA"
     )
@@ -160,8 +164,12 @@ class HotkeyStore {
   };
 
   selectFile = () => {
-    const { selection, setSelection, hotkeyCaret, setHotkeyCaretStart } =
-      this.filesStore;
+    const {
+      selection,
+      setSelection,
+      hotkeyCaret,
+      setHotkeyCaretStart,
+    } = this.filesStore;
 
     const index = selection.findIndex(
       (f) => f.id === hotkeyCaret?.id && f.isFolder === hotkeyCaret?.isFolder
@@ -202,8 +210,13 @@ class HotkeyStore {
   };
 
   selectLeft = () => {
-    const { hotkeyCaret, filesList, setHotkeyCaretStart, selection, viewAs } =
-      this.filesStore;
+    const {
+      hotkeyCaret,
+      filesList,
+      setHotkeyCaretStart,
+      selection,
+      viewAs,
+    } = this.filesStore;
     if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
@@ -216,8 +229,13 @@ class HotkeyStore {
   };
 
   selectRight = () => {
-    const { hotkeyCaret, filesList, setHotkeyCaretStart, selection, viewAs } =
-      this.filesStore;
+    const {
+      hotkeyCaret,
+      filesList,
+      setHotkeyCaretStart,
+      selection,
+      viewAs,
+    } = this.filesStore;
     if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
@@ -468,13 +486,16 @@ class HotkeyStore {
   openItem = () => {
     const { selection } = this.filesStore;
     selection.length === 1 &&
-      !this.dialogsStore.someDialogIsOpen &&
       this.filesActionsStore.openFileAction(selection[0]);
   };
 
   selectAll = () => {
-    const { filesList, hotkeyCaret, setHotkeyCaretStart, setSelected } =
-      this.filesStore;
+    const {
+      filesList,
+      hotkeyCaret,
+      setHotkeyCaretStart,
+      setSelected,
+    } = this.filesStore;
 
     setSelected("all");
     if (!hotkeyCaret) {

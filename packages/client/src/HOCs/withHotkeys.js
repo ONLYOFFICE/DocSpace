@@ -40,7 +40,6 @@ const withHotkeys = (Component) => {
       backToParentFolder,
 
       uploadFile,
-      someDialogIsOpen,
       enabledHotkeys,
       mediaViewerIsVisible,
 
@@ -70,11 +69,7 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled:
-        !someDialogIsOpen &&
-        enabledHotkeys &&
-        !mediaViewerIsVisible &&
-        !filesIsLoading,
+      enabled: enabledHotkeys && !mediaViewerIsVisible && !filesIsLoading,
       // keyup: true,
       // keydown: false,
     };
@@ -131,7 +126,11 @@ const withHotkeys = (Component) => {
     useHotkeys(
       "*",
       (e) => {
-        if (e.shiftKey || e.ctrlKey) return;
+        const someDialogIsOpen = document.getElementsByClassName(
+          "modal-backdrop-active"
+        )[0];
+
+        if (e.shiftKey || e.ctrlKey || someDialogIsOpen) return;
 
         switch (e.key) {
           case "ArrowDown":
@@ -400,7 +399,6 @@ const withHotkeys = (Component) => {
       const {
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
-        someDialogIsOpen,
         setInviteUsersWarningDialogVisible,
       } = dialogsStore;
       const {
@@ -458,7 +456,6 @@ const withHotkeys = (Component) => {
         backToParentFolder,
 
         uploadFile,
-        someDialogIsOpen,
         enabledHotkeys,
         mediaViewerIsVisible,
 
