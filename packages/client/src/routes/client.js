@@ -251,6 +251,14 @@ const ClientRoutes = [
     ),
   },
   {
+    path: "/plugins-settings",
+    element: (
+      <PrivateRoute>
+        <ErrorBoundary>1234</ErrorBoundary>
+      </PrivateRoute>
+    ),
+  },
+  {
     path: "/portal-unavailable",
     element: (
       <PrivateRoute>
