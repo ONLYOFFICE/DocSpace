@@ -85,7 +85,9 @@ public class PaymentController : ControllerBase
 
         var currency = _regionHelper.GetCurrencyFromRequest();
 
-        return await _tariffService.GetShoppingUri(Tenant.Id, currency,
+        return await _tariffService.GetShoppingUri(Tenant.Id,
+            Tenant.AffiliateId,
+            currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
             inDto.Quantity,

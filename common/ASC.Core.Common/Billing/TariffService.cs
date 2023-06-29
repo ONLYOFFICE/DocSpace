@@ -474,7 +474,7 @@ public class TariffService : ITariffService
         return payments;
     }
 
-    public async Task<Uri> GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
+    public async Task<Uri> GetShoppingUri(int tenant, string affiliateId, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
     {
         List<TenantQuota> newQuotas = new();
 
@@ -498,7 +498,7 @@ public class TariffService : ITariffService
         }
 
         var hasQuantity = quantity != null && quantity.Any();
-        var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all");
+        var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all") + (!string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
         var url = _cache.Get<string>(key);
         if (url == null)
         {
@@ -513,7 +513,7 @@ public class TariffService : ITariffService
                         _billingClient.GetPaymentUrl(
                             "__Tenant__",
                             productIds.ToArray(),
-                            null,
+                            affiliateId,
                             null,
                             !string.IsNullOrEmpty(currency) ? "__Currency__" : null,
                             !string.IsNullOrEmpty(language) ? "__Language__" : null,
