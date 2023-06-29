@@ -974,12 +974,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     #region Only for TMFolderDao
 
-    public async Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
+    public async Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await Query(filesDbContext.Folders)
-            .Where(r => folderIds.Contains(r.Id))
+            .Where(r => r.CreateBy == oldOwnerId)
             .ExecuteUpdateAsync(f => f.SetProperty(p => p.CreateBy, newOwnerId));
     }
 

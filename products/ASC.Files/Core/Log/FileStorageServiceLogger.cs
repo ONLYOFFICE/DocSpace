@@ -28,17 +28,23 @@ namespace ASC.Files.Core.Log;
 internal static partial class FileStorageServiceLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "DocEditor")]
-    public static partial void ErrorDocEditor(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorDocEditor(this ILogger logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "CreateThumbnails")]
-    public static partial void ErrorCreateThumbnails(this ILogger logger, Exception exception);  
-    
+    public static partial void ErrorCreateThumbnails(this ILogger logger, Exception exception);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "FileStorageService")]
     public static partial void ErrorFileStorageService(this ILogger logger, Exception exception);
-    
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Reassign provider {providerId} from {fromUser} to {toUser}")]
-    public static partial void InformationReassignProvider(this ILogger logger, int providerId, Guid fromUser, Guid toUser); 
-    
+    public static partial void InformationReassignProvider(this ILogger logger, int providerId, Guid fromUser, Guid toUser);
+
     [LoggerMessage(Level = LogLevel.Information, Message = "Delete provider {providerId} for {userId}")]
     public static partial void InformationDeleteProvider(this ILogger logger, int providerId, Guid userId);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Reassign data from {fromUser} to {toUser}")]
+    public static partial void InformationReassignData(this ILogger logger, Guid fromUser, Guid toUser);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Delete personal data for {userId}")]
+    public static partial void InformationDeletePersonalData(this ILogger logger, Guid userId);
 }

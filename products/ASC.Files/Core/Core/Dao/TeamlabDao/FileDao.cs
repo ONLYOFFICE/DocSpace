@@ -1169,15 +1169,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     #region Only in TMFileDao
 
-    public async Task ReassignFilesAsync(int[] fileIds, Guid newOwnerId)
+    public async Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await Query(filesDbContext.Files)
-            .Where(r => r.CurrentVersion)
-            .Where(r => fileIds.Contains(r.Id))
+            .Where(r => r.CreateBy == oldOwnerId)
             .ExecuteUpdateAsync(p => p.SetProperty(f => f.CreateBy, newOwnerId));
-        }
+    }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {

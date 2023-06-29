@@ -2236,8 +2236,8 @@ public class FileStorageService //: IFileStorageService
         var providerDao = GetProviderDao<T>();
         if (providerDao != null)
         {
-            //move common thirdparty storage userFrom
-            await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id).Where(provider => provider.RootFolderType == FolderType.COMMON))
+            //move thirdparty storage userFrom
+            await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id))
             {
                 _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFrom.Id, userTo.Id);
                 await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userTo.Id);
@@ -2249,27 +2249,23 @@ public class FileStorageService //: IFileStorageService
 
         if (!await _userManager.IsUserAsync(userFrom))
         {
-            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
+            _logger.InformationDeletePersonalData(userFrom.Id);
 
+            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
             if (!Equals(folderIdFromMy, 0))
             {
-                //create folder with name userFrom in folder userTo
-                var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.Id);
-                var newFolder = _serviceProvider.GetService<Folder<T>>();
-                newFolder.Title = string.Format(_customNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, _displayUserSettingsHelper));
-                newFolder.ParentId = folderIdToMy;
+                await folderDao.DeleteFolderAsync(folderIdFromMy);
+            }
 
-                var newFolderTo = await folderDao.SaveFolderAsync(newFolder);
-                await _socketManager.CreateFolderAsync(newFolder);
-
-                //move items from userFrom to userTo
-                await _entryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
-
-                await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.Id, userTo.Id, folderDao, fileDao);
+            var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userFrom.Id);
+            if (!Equals(folderIdFromTrash, 0))
+            {
+                await folderDao.DeleteFolderAsync(folderIdFromTrash);
             }
         }
 
-        await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userFrom.Id, userTo.Id, folderDao, fileDao);
+        _logger.InformationReassignData(userFrom.Id, userTo.Id);
+        await EntryManager.ReassignItemsAsync(userFrom.Id, userTo.Id, folderDao, fileDao);
     }
 
     #region Favorites Manager
