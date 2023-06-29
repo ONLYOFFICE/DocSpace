@@ -5,8 +5,6 @@ import { isMobile } from "@docspace/components/utils/device";
 import CustomScrollbars from "./customScrollbar";
 
 const Scrollbar = React.forwardRef((props, ref) => {
-  console.log("props: ", props);
-  console.log("ref: ", ref);
   const scrollbarType = {
     smallWhite: {
       thumbV: {
@@ -73,7 +71,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       thumbv={thumbV}
       view={view}
       {...props}
-      ref={props.ref}
+      ref={ref}
     />
   );
 });

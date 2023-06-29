@@ -2,14 +2,18 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledScrollbar = styled.div`
-  .container {
-    width: ${(props) => props?.style?.width && props.style.width + "px"};
-    height: ${(props) => props?.style?.height && props.style.height + "px"};
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 
-    padding-left: ${(props) => props.view?.paddingRight};
-    padding-right: ${(props) => props.view?.paddingRight};
+  .container {
+    position: absolute;
+    inset: 0;
+    width: ${(props) => props.width && props.width + "px"};
+    height: ${(props) => props.height && props.height + "px"};
+
     overflow: scroll;
-    position: relative;
     box-sizing: border-box;
     scrollbar-face-color: ${(props) =>
       props.theme.scrollbar.hoverBackgroundColorVertical};

@@ -8,7 +8,7 @@ const CustomScrollbars = ({ children, className, ...props }) => {
   return (
     <StyledScrollbar {...props}>
       <div
-        className={`container section-scroll scroll-body ${className}`}
+        className={`container  scroll-body ${props.scrollclass} ${className}`}
         {...props}
         ref={props.ref}
         style={{ overflow: "scroll", direction: theme.interfaceDirection }}
