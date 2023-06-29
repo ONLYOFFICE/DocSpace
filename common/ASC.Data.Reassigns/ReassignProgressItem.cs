@@ -84,46 +84,26 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
-            logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
-
-            logger.LogInformation("reassignment of data from documents");
-
-            await fileStorageService.ReassignStorageAsync<object>(FromUser, ToUser);
-            //_docService.ReassignStorage(_fromUserId, _toUserId);
             Percentage = 33;
             PublishChanges();
 
-            logger.LogInformation("reassignment of data from projects");
+            await fileStorageService.ReassignStorageAsync<int>(FromUser, ToUser);
 
-            //_projectsReassign.Reassign(_fromUserId, _toUserId);
             Percentage = 66;
             PublishChanges();
 
-            if (!coreBaseSettings.CustomMode)
-            {
-                logger.LogInformation("reassignment of data from crm");
-
-                //using (var scope = DIHelper.Resolve(_tenantId))
-                //{
-                //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
-                //    crmDaoFactory.ContactDao.ReassignContactsResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.DealDao.ReassignDealsResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.TaskDao.ReassignTasksResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.CasesDao.ReassignCasesResponsible(_fromUserId, _toUserId);
-                //}
-                Percentage = 99;
-                PublishChanges();
-            }
-
             await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
-            Percentage = 100;
-            Status = DistributedTaskStatus.Completed;
+            Percentage = 99;
+            PublishChanges();
 
             if (_deleteProfile)
             {
                 await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper, queueWorkerRemove);
             }
+
+            Percentage = 100;
+            Status = DistributedTaskStatus.Completed;
         }
         catch (Exception ex)
         {
