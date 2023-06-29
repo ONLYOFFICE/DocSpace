@@ -59,6 +59,8 @@ class DialogsStore {
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
+  leaveRoomDialogVisible = false;
+  changeRoomOwnerIsVisible = false;
 
   constructor(
     authStore,
@@ -311,6 +313,14 @@ class DialogsStore {
 
   setChangeUserTypeDialogVisible = (changeUserTypeDialogVisible) => {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
+  };
+
+  setLeaveRoomDialogVisible = (visible) => {
+    this.leaveRoomDialogVisible = visible;
+  };
+
+  setChangeRoomOwnerIsVisible = (visible) => {
+    this.changeRoomOwnerIsVisible = visible;
   };
 
   deselectActiveFiles = () => {

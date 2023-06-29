@@ -117,5 +117,9 @@
   "MarkAsVersion": "Mark as version",
   "MarkAsRevision": "Mark as revision",
   "TableSettingsTitle": "Manage displayed columns",
-  "DocumentEdited": "Cannot perform the action because the document is being edited."
+  "DocumentEdited": "Cannot perform the action because the document is being edited.",
+  "LeaveTheRoom": "Leave the room",
+  "LeaveRoomDescription": "You are about to leave the room in which you are the owner. You must first transfer the owner's rights to another user.",
+  "ChangeOfRoomOwner": "Change of room Owner",
+  "AssignAnOwner": "Assign an Owner"
 }

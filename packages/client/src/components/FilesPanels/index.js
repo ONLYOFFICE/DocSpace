@@ -29,6 +29,8 @@ import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
 import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
+import LeaveRoomDialog from "../dialogs/LeaveRoomDialog";
+import ChangeRoomOwnerPanel from "../panels/ChangeRoomOwnerPanel";
 
 const Panels = (props) => {
   const {
@@ -62,6 +64,8 @@ const Panels = (props) => {
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
     restoreRoomDialogVisible,
+    leaveRoomDialogVisible,
+    changeRoomOwnerIsVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -138,6 +142,10 @@ const Panels = (props) => {
     preparationPortalDialogVisible && (
       <PreparationPortalDialog key="preparation-portal-dialog" />
     ),
+    leaveRoomDialogVisible && <LeaveRoomDialog key="leave-room-dialog" />,
+    changeRoomOwnerIsVisible && (
+      <ChangeRoomOwnerPanel key="change-room-owner" />
+    ),
   ];
 };
 
@@ -178,6 +186,8 @@ export default inject(
       invitePanelOptions,
       inviteUsersWarningDialogVisible,
       changeUserTypeDialogVisible,
+      leaveRoomDialogVisible,
+      changeRoomOwnerIsVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -218,6 +228,8 @@ export default inject(
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
       restoreRoomDialogVisible,
+      leaveRoomDialogVisible,
+      changeRoomOwnerIsVisible,
     };
   }
 )(observer(Panels));
