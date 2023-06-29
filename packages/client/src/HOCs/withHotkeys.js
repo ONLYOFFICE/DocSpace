@@ -127,7 +127,7 @@ const withHotkeys = (Component) => {
       "*",
       (e) => {
         const someDialogIsOpen = document.getElementsByClassName(
-          "modal-backdrop-active"
+          "backdrop-active"
         )[0];
 
         if (e.shiftKey || e.ctrlKey || someDialogIsOpen) return;
