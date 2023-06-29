@@ -34,7 +34,7 @@ const StyledItem = styled.div<{
     width: 100%;
     max-width: 100%;
 
-    line-height: 16px;
+    line-height: 18px;
 
     margin-left: 8px;
   }
