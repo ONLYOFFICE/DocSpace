@@ -10,4 +10,3 @@ ONLYOFFICE docspace-plugin is a npm package based on typescript engines which pr
 - Interfaces for embedding in context menu.
 - Interfaces for embedding in profile menu.
 - Interfaces for embedding in main button.
-- Available to add event listeners.
