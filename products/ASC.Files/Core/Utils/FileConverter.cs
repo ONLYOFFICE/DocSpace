@@ -198,9 +198,10 @@ public class FileConverterQueue<T>
     {
         var listTasks = queueTasks.ToList();
 
-        listTasks.RemoveAll(IsOrphanCacheItem);
-
-        SaveToCache(listTasks);
+        if (listTasks.RemoveAll(IsOrphanCacheItem) > 0)
+        {
+            SaveToCache(listTasks);
+        }
 
         return listTasks;
     }

@@ -107,13 +107,18 @@ public class Worker
 
                 var trashId = await folderDao.GetFolderIDTrashAsync(false, tenantUser.UserId);
 
-                foldersList.AddRange((await folderDao.GetFoldersAsync(trashId).ToListAsync())
+                foldersList.AddRange((await folderDao.GetFoldersAsync(trashId).ToListAsync(cancellationToken: cancellationToken))
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
                     .Select(f => f.Id));
 
-                filesList.AddRange((await fileDao.GetFilesAsync(trashId, null, default(FilterType), false, Guid.Empty, string.Empty, false).ToListAsync())
+                filesList.AddRange((await fileDao.GetFilesAsync(trashId, null, default(FilterType), false, Guid.Empty, string.Empty, false).ToListAsync(cancellationToken: cancellationToken))
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
                     .Select(y => y.Id));
+
+                if (foldersList.Count == 0 && filesList.Count == 0)
+                {
+                    return;
+                }
 
                 _logger.InfoCleanUp(tenantUser.TenantId, trashId);
 
@@ -130,7 +135,7 @@ public class Worker
                         break;
                     }
 
-                    await Task.Delay(100);
+                    await Task.Delay(100, cancellationToken);
                 }
 
                 _logger.InfoCleanUpFinish(tenantUser.TenantId, trashId);

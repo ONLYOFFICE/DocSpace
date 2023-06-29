@@ -824,7 +824,7 @@ class FilesActionStore {
       addActiveItems(null, items);
 
       this.setGroupMenuBlocked(true);
-      return removeFiles(items, [], true, true)
+      return removeFiles(items, [], false, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
