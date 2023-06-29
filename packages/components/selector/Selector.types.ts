@@ -75,4 +75,7 @@ export type SelectorProps = {
   disableAcceptButton?: boolean;
 
   descriptionText?: string;
+
+  acceptButtonId?: string;
+  cancelButtonId?: string;
 };

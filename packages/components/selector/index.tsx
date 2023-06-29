@@ -78,6 +78,8 @@ const Selector = ({
   disableAcceptButton,
 
   descriptionText,
+  acceptButtonId,
+  cancelButtonId,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -368,6 +370,8 @@ const Selector = ({
               ? disableAcceptButton
               : disableAcceptButton && !newFooterInputValue.trim()
           }
+          acceptButtonId={acceptButtonId}
+          cancelButtonId={cancelButtonId}
         />
       )}
     </StyledSelector>

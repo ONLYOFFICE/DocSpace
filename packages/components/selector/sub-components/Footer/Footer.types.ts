@@ -22,4 +22,7 @@ export type FooterProps = {
   setNewFooterInputValue?: (value: string) => void;
   isFooterCheckboxChecked?: boolean;
   setIsFooterCheckboxChecked?: any;
+
+  acceptButtonId?: string;
+  cancelButtonId?: string;
 };

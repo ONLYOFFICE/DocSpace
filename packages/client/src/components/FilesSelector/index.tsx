@@ -470,6 +470,8 @@ const FilesSelector = ({
           descriptionText={
             !filterParam ? "" : descriptionText ?? t("Common:SelectDOCXFormat")
           }
+          acceptButtonId={isMove || isCopy ? "select-file-modal-submit" : ""}
+          cancelButtonId={isMove || isCopy ? "select-file-modal-cancel" : ""}
         />
       </Aside>
     </>

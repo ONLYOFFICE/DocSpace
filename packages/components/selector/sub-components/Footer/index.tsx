@@ -36,6 +36,8 @@ const Footer = React.memo(
     setNewFooterInputValue,
     isFooterCheckboxChecked,
     setIsFooterCheckboxChecked,
+    acceptButtonId,
+    cancelButtonId,
   }: FooterProps) => {
     const label =
       selectedItemsCount && isMultiSelect
@@ -84,6 +86,7 @@ const Footer = React.memo(
 
         <StyledButtonContainer>
           <Button
+            id={acceptButtonId}
             className={"button accept-button"}
             label={label}
             primary
@@ -109,6 +112,7 @@ const Footer = React.memo(
 
           {withCancelButton && (
             <Button
+              id={cancelButtonId}
               className={"button cancel-button"}
               label={cancelButtonLabel}
               scale
