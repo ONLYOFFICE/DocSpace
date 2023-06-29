@@ -429,11 +429,6 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
         DaoSelector = regexDaoSelectorBase;
     }
 
-    public IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
-    {
-        return set.Where(r => r.TenantId == _tenantId);
-    }
-
     public async Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
     {
         if (id == null)
@@ -619,12 +614,12 @@ static file class Queries
                 ctx.TagLink
                     .Join(ctx.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
                     .Where(r => r.tag.Type == TagType.Custom).Any(t => t.EntryId == entryId));
-    
+
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTagLink>>
         AllTagLinksAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.TagLink.AsQueryable());
-    
+
     public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>>
         AllTagsAsync = EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
