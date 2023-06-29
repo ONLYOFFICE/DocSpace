@@ -139,6 +139,7 @@ const ConflictResolveDialog = (props) => {
 
     onClosePanels();
     try {
+      sessionStorage.setItem("filesSelectorPath", `${destFolderId}`);
       await itemOperationToFolder(data);
     } catch (error) {
       toastr.error(error.message ? error.message : error);

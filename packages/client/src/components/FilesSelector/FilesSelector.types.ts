@@ -98,6 +98,7 @@ export type FilesSelectorProps = {
   filterParam?: string;
 
   currentFolderId?: number;
+  fromFolderId?: number;
   parentId?: number;
   rootFolderType?: number;
 

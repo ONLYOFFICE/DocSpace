@@ -46,6 +46,7 @@ const FilesSelector = ({
   isRestoreAll,
 
   currentFolderId,
+  fromFolderId,
   parentId,
   rootFolderType,
 
@@ -338,6 +339,7 @@ const FilesSelector = ({
               onCloseAction();
               const move = !isCopy;
               if (move) setMovingInProgress(move);
+              sessionStorage.setItem("filesSelectorPath", `${selectedItemId}`);
               await itemOperationToFolder(operationData);
             }
           })
@@ -378,7 +380,7 @@ const FilesSelector = ({
 
   const isDisabled = getIsDisabled(
     isFirstLoad,
-    currentFolderId === selectedItemId,
+    fromFolderId === selectedItemId,
     selectedItemType === "rooms",
     isRoot,
     isCopy,
@@ -492,7 +494,9 @@ export default inject(
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
-    const currentFolderId = id
+    const sessionPath = window.sessionStorage.getItem("filesSelectorPath");
+
+    const fromFolderId = id
       ? id
       : passedFoldersTree?.length > 0
       ? passedFoldersTree[0].id
@@ -500,6 +504,11 @@ export default inject(
         rootFolderType === FolderType.TRASH
       ? undefined
       : selectedId;
+
+    const currentFolderId =
+      sessionPath && (isMove || isCopy || isRestoreAll)
+        ? +sessionPath
+        : fromFolderId;
 
     const { treeFolders } = treeFoldersStore;
 
@@ -545,6 +554,7 @@ export default inject(
 
     return {
       currentFolderId,
+      fromFolderId,
       parentId,
       rootFolderType,
       treeFolders,
