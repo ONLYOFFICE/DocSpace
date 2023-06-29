@@ -802,10 +802,7 @@ static file class Queries
                 (FilesDbContext ctx, int tenantId, string idStart) =>
                     ctx.ThirdpartyIdMapping
                         .Where(r => r.TenantId == tenantId)
-                        .Where(r => ctx.ThirdpartyIdMapping
-                            .Where(t => t.TenantId == tenantId)
-                            .Where(t => t.Id.StartsWith(idStart))
-                            .Select(t => t.HashId).Any(h => h == r.HashId)));
+                        .Where(t => t.Id.StartsWith(idStart)));
 
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
@@ -823,7 +820,8 @@ static file class Queries
                 from ft in ctx.Tag
                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
                 {
-                    TenantId = ftl.TenantId, Id = ftl.TagId
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
                 }
                 where ftl == null
                 select ft);

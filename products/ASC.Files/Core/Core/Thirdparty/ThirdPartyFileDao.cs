@@ -26,10 +26,10 @@
 
 namespace ASC.Files.Core.Core.Thirdparty;
 [Scope]
-internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
+internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem> : IFileDao<string>
     where TFile : class, TItem
     where TFolder : class, TItem
-    where TItem: class
+    where TItem : class
 {
     internal IDaoBase<TFile, TFolder, TItem> Dao { get; }
     internal IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; private set; }
@@ -564,7 +564,7 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<strin
         var storage = await ProviderInfo.StorageAsync;
         return await storage.GetThumbnailAsync(thirdFileId, width, height);
     }
-    
+
     internal File<string> RestoreIds(File<string> file)
     {
         if (file == null)
@@ -659,7 +659,7 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<strin
     {
         return null;
     }
-    
+
     public string GetUniqFilePath(File<string> file, string fileTitle)
     {
         throw new NotImplementedException();
@@ -689,7 +689,8 @@ static file class Queries
                 from ft in ctx.Tag
                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
                 {
-                    TenantId = ftl.TenantId, Id = ftl.TagId
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
                 }
                 where ftl == null
                 select ft);
@@ -720,8 +721,5 @@ static file class Queries
                 (FilesDbContext ctx, int tenantId, string idStart) =>
                     ctx.ThirdpartyIdMapping
                         .Where(r => r.TenantId == tenantId)
-                        .Where(r => ctx.ThirdpartyIdMapping
-                            .Where(t => t.TenantId == tenantId)
-                            .Where(t => t.Id.StartsWith(idStart))
-                            .Select(t => t.HashId).Any(h => h == r.HashId)));
+                        .Where(t => t.Id.StartsWith(idStart)));
 }
