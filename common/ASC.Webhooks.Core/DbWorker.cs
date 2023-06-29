@@ -67,7 +67,7 @@ public class DbWorker
     {
         await using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var objForCreate = await Queries.WebhooksConfigByUriAsync(webhooksDbContext, Tenant, uri);
+        var objForCreate = await Queries.WebhooksConfigByUriAsync(webhooksDbContext, Tenant, uri, name);
 
         if (objForCreate != null)
         {
@@ -233,11 +233,11 @@ public class DbWorker
     {
         await using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var dbWebhooks = Queries.DbWebhooksAsync(webhooksDbContext);
+        var dbWebhooks = await Queries.DbWebhooksAsync(webhooksDbContext).ToListAsync();
 
         foreach (var webhook in webhooks)
         {
-            if (!await dbWebhooks.AnyAsync(r => r.Route == webhook.Route && r.Method == webhook.Method))
+            if (!dbWebhooks.Any(r => r.Route == webhook.Route && r.Method == webhook.Method))
             {
                 try
                 {
@@ -363,11 +363,11 @@ public enum WebhookGroupStatus
 
 static file class Queries
 {
-    public static readonly Func<WebhooksDbContext, int, string, Task<WebhooksConfig>> WebhooksConfigByUriAsync =
+    public static readonly Func<WebhooksDbContext, int, string, string, Task<WebhooksConfig>> WebhooksConfigByUriAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (WebhooksDbContext ctx, int tenantId, string uri) =>
+            (WebhooksDbContext ctx, int tenantId, string uri, string name) =>
                 ctx.WebhooksConfigs
-                    .FirstOrDefault(r => r.TenantId == tenantId && r.Uri == uri));
+                    .FirstOrDefault(r => r.TenantId == tenantId && r.Uri == uri && r.Name == name));
 
     public static readonly Func<WebhooksDbContext, int, IAsyncEnumerable<WebhooksConfigWithStatus>> WebhooksConfigWithStatusAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
