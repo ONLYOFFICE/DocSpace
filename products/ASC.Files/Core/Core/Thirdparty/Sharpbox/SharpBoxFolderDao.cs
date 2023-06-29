@@ -260,7 +260,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                 filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
-                
+
                 var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
@@ -524,7 +524,8 @@ static file class Queries
                 from ft in ctx.Tag
                 join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
                 {
-                    TenantId = ftl.TenantId, Id = ftl.TagId
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
                 }
                 where ftl == null
                 select ft);
@@ -545,8 +546,5 @@ static file class Queries
                 (FilesDbContext ctx, int tenantId, string idStart) =>
                     ctx.ThirdpartyIdMapping
                         .Where(r => r.TenantId == tenantId)
-                        .Where(r => ctx.ThirdpartyIdMapping
-                            .Where(m => m.TenantId == tenantId)
-                            .Where(m => m.Id.StartsWith(idStart))
-                            .Select(m => m.HashId).Any(h => h == r.HashId)));
+                        .Where(m => m.Id.StartsWith(idStart)));
 }
