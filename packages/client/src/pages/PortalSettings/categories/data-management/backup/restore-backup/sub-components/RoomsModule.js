@@ -1,10 +1,11 @@
 import React from "react";
 
 import SelectFileInputWrapper from "client/SelectFileInput";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 class RoomsModule extends React.Component {
   render() {
     const { t } = this.props;
-    // TODO: need update enum for filter
+
     return (
       <SelectFileInputWrapper
         {...this.props}
