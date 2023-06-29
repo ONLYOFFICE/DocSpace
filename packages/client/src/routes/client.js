@@ -209,6 +209,10 @@ const ClientRoutes = [
               </PrivateRoute>
             ),
           },
+          {
+            path: "/plugins-settings",
+            element: <PrivateRoute>1234</PrivateRoute>,
+          },
         ],
       },
 
@@ -247,14 +251,6 @@ const ClientRoutes = [
         <ErrorBoundary>
           <About />
         </ErrorBoundary>
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/plugins-settings",
-    element: (
-      <PrivateRoute>
-        <ErrorBoundary>1234</ErrorBoundary>
       </PrivateRoute>
     ),
   },

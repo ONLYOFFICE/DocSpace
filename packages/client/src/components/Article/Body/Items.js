@@ -23,6 +23,7 @@ import DragAndDrop from "@docspace/components/drag-and-drop";
 import { isMobile } from "react-device-detect";
 import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
+import PluginsSettingsItem from "./PluginsSettingsItem";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
@@ -370,6 +371,14 @@ const Items = ({
 
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
+
+      items.push(
+        <PluginsSettingsItem
+          key={"plugins-settings-items"}
+          onClick={onClick}
+          isActive={activeItemId === "plugins-settings"}
+        />
+      );
 
       return items;
     },
