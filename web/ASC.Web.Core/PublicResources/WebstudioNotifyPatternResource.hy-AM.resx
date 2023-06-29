@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ԸՆԴՈՒՆԵԼ</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ստեղծել է նոր փաստաթուղթ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; խմբագրել է փաստաթուղթը՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ավելացրել է նոր մեկնաբանություն փաստաթղթի տարբերակում՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; վերբեռնել է նոր փաստաթուղթ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; տեղափոխեց սենյակը՝ &lt;a href={1}&gt;{2}&lt;/a&gt; արխիվացնելու համար - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ստեղծել է նոր սենյակ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; սենյակը՝ &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; վերանվանեց սենյակը՝ &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; նշանակվել է &lt;b&gt;{1}&lt;/b&gt; սենյակում՝ &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ավելացվել է սենյակ՝ &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>DocSpace-ի նոր օգտատեր է ավելացվել՝ &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; հեռացվել է սենյակից՝ &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; փոխել է օգտատերերի մուտքի մակարդակը &lt;b&gt;{1}&lt;/b&gt; դեպի &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace օգտվողը թարմացվել է՝ &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Ընդունել</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Մուտքի կառավարման վահանակ</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Մուտք գործեք ձեր պորտալը</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Մուտք գործեք ձեր Web-Office</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Սեղմեք այստեղ՝ ձեր էլփոստի հասցեն ակտիվացնելու համար</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Փոխել էլ. փոստի հասցեն</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Փոխել գաղտնաբառը</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Փոխել բջջային հեռախոսահամարը</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Փոխել բջջային հեռախոսահամարը</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Համագործակցեք DocSpace-ում</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Կարգավորել հենց հիմա</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Հաստատել</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Հաստատեք DocSpace Հրավերը</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ՀԱՍՏԱՏԵԼ</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Հաստատեք պորտալի հասցեի փոփոխությունը</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Հաստատեք պորտալի սեփականատիրոջ թարմացում</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Հաստատեք սենյակի հրավերը</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Հաստատեք հաշվի դադարեցումը</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Ապաակտիվացնել պորտալը</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Ջնջել պորտալը</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Հրավիրեք հենց հիմա</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Կտտացրեք այստեղ՝ պորտալին միանալու համար</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Թողնել կարծիք</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Հեռացնել պրոֆիլը</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Թարմացրեք հիմա</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Պահանջել զանգ</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Ընտրեք գնագոյացման պլանները հենց հիմա</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Սկսեք անվճար փորձաշրջան</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Օգտագործեք զեղչ</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Այցելեք վճարումների բաժինը</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}: Խնդրում ենք ակտիվացնել ձեր էլ. հասցեն</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}: Ստեղծվել է ${__VirtualRootPath} պորտալի կրկնօրինակում</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Հաստատեք ձեր էլ.փոստի փոփոխությունը</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Հաստատեք ձեր գաղտնաբառը փոխելը</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}: Բջջային հեռախոսի փոփոխության հարցում</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}: Անվտանգության ծանուցում</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի սեփականատիրոջ փոփոխություն</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի հասցեի փոփոխություն</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>Օգտատիրոջ հաղորդագրություն ադմինիստրատորներին</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Վաճառքի բաժնի հարցում</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալին միանալու հրավեր</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}: Փոստարկղի ստեղծում</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}: Փոստարկղի գաղտնաբառի փոփոխություն</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիայի սխալ</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիա սկսվեց</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիա հաջողությամբ ավարտվեց</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE անձնական օգտագործման համար:</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Մուտք գործեք ձեր ONLYOFFICE անձնական հաշիվ</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Անձնական. Խնդրում ենք ակտիվացնել ձեր էլփոստի հասցեն</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Անձնական հաշվի դադարեցում</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի ապաակտիվացում</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի ջնջում</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace-ն ապաակտիվացված է</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի հասցեի փոփոխություն</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>Ձեր պրոֆիլի ջնջում ${__VirtualRootPath} պորտալից</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Օգտատերը ջնջել է իր պրոֆիլը</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>Ձեր պրոֆիլը ${__VirtualRootPath}-ում փոխվել է</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների վերաբաշխումն ավարտված է</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների վերահանձնումը ձախողվեց</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների հեռացումն ավարտված է</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների հեռացումը ձախողվեց</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Ձեռնարկության լիցենզիայի հարցում</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>SaaS գնագոյացման պլանի հարցում</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Վերականգնումն ավարտված է</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}: Վերականգնումը սկսվեց</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Կարգավորեք ձեր ONLYOFFICE DocSpace-ը</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ը կջնջվի</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath-ին}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի համար արտոնյալ ժամանակահատվածն ակտիվացված է</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace բաժանորդագրության ժամկետը շուտով կլրանա</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի արտոնյալ ժամկետը սպառվել է</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի արտոնյալ ժամկետը լրանում է վաղը</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի պրոֆիլի փոփոխության ծանուցում</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Ինչ նորություններ կան ձեր պորտալում $Date-ի համար</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>SMTP թեստային հաղորդագրություն</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}: Ապակոդավորման գործընթացը ձախողվեց</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}: Սկսվել է վերծանման գործընթացը</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}: Ապակոդավորման գործընթացն ավարտված է</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացը ձախողվեց</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացը սկսվել է</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացն ավարտված է</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>որ օգտվող է ավելացվել ${LetterLogoText} պորտալում</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Դուք հրավիրված եք միանալու ${__VirtualRootPath}-ին</value>
+  </data>
+</root>
