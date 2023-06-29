@@ -65,7 +65,7 @@ class HotkeyStore {
     }
 
     const someDialogIsOpen = document.getElementsByClassName(
-      "modal-backdrop-active"
+      "backdrop-active"
     )[0];
 
     if (
