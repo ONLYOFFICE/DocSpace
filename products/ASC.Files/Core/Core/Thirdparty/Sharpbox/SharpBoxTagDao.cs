@@ -22,23 +22,24 @@
 //
 // All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
-// International. See the
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Scope]
 internal class SharpBoxTagDao : SharpBoxDaoBase, IThirdPartyTagDao
 {
-    public SharpBoxTagDao(IServiceProvider serviceProvider, 
+    public SharpBoxTagDao(IServiceProvider serviceProvider,
         UserManager userManager,
-        TenantManager tenantManager, 
+        TenantManager tenantManager,
         TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager, 
-        SetupInfo setupInfo, 
+        IDbContextFactory<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
         ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
-        TempPath tempPath, 
-        AuthContext authContext, 
-        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase) 
+        TempPath tempPath,
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
@@ -113,10 +114,10 @@ static file class Queries
             EF.CompileAsyncQuery(
                 (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIds, Guid owner) =>
                     (from r in ctx.Tag
-                        from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                        where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
-                              entryIds.Contains(l.EntryId)
-                        select new TagLinkTagPair { Tag = r, TagLink = l })
-                    .Where(r => owner != Guid.Empty && r.Tag.Owner == owner)
+                     from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                     where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
+                           entryIds.Contains(l.EntryId)
+                     select new TagLinkTagPair { Tag = r, TagLink = l })
+                    .Where(r => owner == Guid.Empty || r.Tag.Owner == owner)
                     .Distinct());
 }
