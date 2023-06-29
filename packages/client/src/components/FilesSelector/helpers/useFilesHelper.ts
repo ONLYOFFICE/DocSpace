@@ -22,7 +22,8 @@ import {
   FolderType,
 } from "@docspace/common/constants";
 
-const getIconUrl = (extension: string) => {
+const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
+  // if (extension !== iconPath) return iconSize32.get(iconPath);
   let path = "";
 
   switch (extension) {
@@ -164,6 +165,9 @@ const getIconUrl = (extension: string) => {
       break;
   }
 
+  if (isMedia) path = "sound.svg";
+  if (isImage) path = "image.svg";
+
   return iconSize32.get(path);
 };
 
@@ -215,7 +219,12 @@ const convertFilesToItems = (files: any, filterParam?: string) => {
   const items = files.map((file: any) => {
     const { id, title, security, parentId, rootFolderType, fileExst } = file;
 
-    const icon = getIconUrl(fileExst);
+    const isImage = file.viewAccessability.ImageView;
+    const isMedia = file.viewAccessability.MediaView;
+
+    let icon = getIconUrl(fileExst, isImage, isMedia);
+
+    // if(filterParam)
 
     return {
       id,

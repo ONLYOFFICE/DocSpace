@@ -55,7 +55,7 @@ export const getIsDisabled = (
   isRestoreAll?: boolean,
   isRequestRunning?: boolean,
   security?: Security,
-  filterParam?: number,
+  filterParam?: string,
   isFileSelected?: boolean
 ) => {
   if (isFirstLoad) return true;
