@@ -113,7 +113,6 @@ internal class LinkDao : AbstractDao, ILinkDao
 
         fileId = (await MappingIDAsync(fileId)).ToString();
 
-        await filesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ExecuteDeleteAsync();
         await Queries.DeleteFileLinks(filesDbContext, TenantID, fileId);
     }
 }
