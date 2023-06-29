@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 import StyledComponent from "./StyledSelectFolderInput";
 import { getFolder, getFolderPath } from "@docspace/common/api/files";
 import toastr from "@docspace/components/toast/toastr";
-import SelectFolderDialog from "../SelectFolderDialog";
+
 import SimpleFileInput from "../../SimpleFileInput";
 import { withTranslation } from "react-i18next";
 import { FolderType } from "@docspace/common/constants";
+import FilesSelector from "SRC_DIR/components/FilesSelector";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -162,8 +163,8 @@ class SelectFolderInput extends React.PureComponent {
           placeholder={placeholder}
           isDisabled={isFolderTreeLoading || isDisabled || isLoading}
         />
-        {isReady && (
-          <SelectFolderDialog
+        {isReady && isPanelVisible && (
+          <FilesSelector
             {...rest}
             selectFolderInputExist
             isPanelVisible={isPanelVisible}

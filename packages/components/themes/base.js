@@ -1119,8 +1119,8 @@ const Base = {
     },
 
     icon: {
-      background: lightHover,
-      color: grayMain,
+      background: "#ECEEF1",
+      color: "#A3A9AE",
     },
 
     width: {
@@ -2284,6 +2284,13 @@ const Base = {
 
   selector: {
     border: `1px solid ${grayLightMid}`,
+
+    breadCrumbs: {
+      prevItemColor: "#A3A9AE",
+      arrowRightColor: "#A3A9AE",
+    },
+
+    bodyDescriptionText: "#A3A9AE",
 
     item: {
       hoverBackground: grayLight,
