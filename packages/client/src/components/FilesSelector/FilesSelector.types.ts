@@ -136,7 +136,11 @@ export type FilesSelectorProps = {
     fileTitle: string,
     openNewTab: boolean
   ) => void;
-  onSelectFile?: (fileInfo: { id: string | number; title: string }) => void;
+  onSelectFile?: (fileInfo: {
+    id: string | number;
+    title: string;
+    path?: string[];
+  }) => void;
 
   withFooterInput?: boolean;
   withFooterCheckbox?: boolean;

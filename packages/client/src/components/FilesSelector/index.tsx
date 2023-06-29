@@ -100,6 +100,7 @@ const FilesSelector = ({
   const [selectedFileInfo, setSelectedFileInfo] = React.useState<{
     id: number | string;
     title: string;
+    path?: string[];
   } | null>(null);
 
   const [total, setTotal] = React.useState<number>(0);
@@ -357,7 +358,22 @@ const FilesSelector = ({
         selectedItemId &&
         onSave(null, selectedItemId, fileName, isChecked);
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
-      onSelectFile && selectedFileInfo && onSelectFile(selectedFileInfo);
+
+      const info: {
+        id: string | number;
+        title: string;
+        path?: string[];
+      } = {
+        id: selectedFileInfo?.id || "",
+        title: selectedFileInfo?.title || "",
+        path: [],
+      };
+
+      breadCrumbs.forEach((item, index) => {
+        if (index !== 0 && info.path) info.path.push(item.label);
+      });
+
+      onSelectFile && selectedFileInfo && onSelectFile(info);
       !withoutImmediatelyClose && onCloseAction();
     }
   };

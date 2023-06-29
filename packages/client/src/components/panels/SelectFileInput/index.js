@@ -72,10 +72,13 @@ SelectFileInput.defaultProps = {
 };
 
 export default inject(
-  ({ clientLoadingStore, treeFoldersStore, selectFileDialogStore }) => {
+  (
+    { clientLoadingStore, treeFoldersStore, selectFileDialogStore },
+    { fileName: fileNameProps }
+  ) => {
     const { setFirstLoad } = clientLoadingStore;
     const { folderId, setFolderId, setFile, fileInfo } = selectFileDialogStore;
-    const fileName = fileInfo?.title;
+    const fileName = fileInfo?.title || fileNameProps;
     const { setExpandedPanelKeys } = treeFoldersStore;
     return {
       setFirstLoad,
