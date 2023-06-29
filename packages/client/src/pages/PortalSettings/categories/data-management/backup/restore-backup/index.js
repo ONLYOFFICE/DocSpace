@@ -150,7 +150,7 @@ const RestoreBackup = (props) => {
         onClick={onChangeRadioButton}
         selected={radioButtonState}
         spacing="16px"
-        // isDisabled={!isEnableRestore}
+        isDisabled={!isEnableRestore}
       />
     </>
   );
@@ -161,15 +161,17 @@ const RestoreBackup = (props) => {
 
       {radioButtonState === BACKUP_ROOM && (
         <RoomsModule
-          // isDisabled={!isEnableRestore}
+          isDisabled={!isEnableRestore}
           t={t}
           fileName={path}
           isPanelVisible={isVisibleSelectFileDialog}
           onClose={onModalClose}
           onClickInput={onClickInput}
           onSelectFile={(file) => {
-            const newPath = file.path.join("/");
-            setPath(`${newPath}/${file.title}`);
+            if (file && file.path) {
+              const newPath = file.path.join("/");
+              setPath(`${newPath}/${file.title}`);
+            }
             setRestoreResource(file.id);
           }}
         />
