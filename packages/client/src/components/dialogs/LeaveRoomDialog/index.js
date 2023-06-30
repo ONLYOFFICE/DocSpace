@@ -12,6 +12,7 @@ const LeaveRoomDialog = (props) => {
     visible,
     setIsVisible,
     setChangeRoomOwnerIsVisible,
+    isOwner,
   } = props;
 
   useEffect(() => {
@@ -29,7 +30,11 @@ const LeaveRoomDialog = (props) => {
 
   const onLeaveRoom = () => {
     onClose();
-    setChangeRoomOwnerIsVisible(true);
+    if (isOwner) {
+      setChangeRoomOwnerIsVisible(true);
+    } else {
+      console.log("onLeaveRoom");
+    }
   };
 
   const onClose = () => setIsVisible(false);
@@ -39,13 +44,17 @@ const LeaveRoomDialog = (props) => {
       <ModalDialog.Header>{t("Files:LeaveTheRoom")}</ModalDialog.Header>
       <ModalDialog.Body>
         <div className="modal-dialog-content-body">
-          <Text noSelect>{t("Files:LeaveRoomDescription")}</Text>
+          <Text noSelect>
+            {isOwner
+              ? t("Files:LeaveRoomDescription")
+              : t("Files:WantLeaveRoom")}
+          </Text>
         </div>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={t("Common:OKButton")}
+          label={isOwner ? t("Common:Yes") : t("Common:OKButton")}
           size="normal"
           primary
           scale
@@ -63,7 +72,7 @@ const LeaveRoomDialog = (props) => {
   );
 };
 
-export default inject(({ dialogsStore }) => {
+export default inject(({ auth, dialogsStore }) => {
   const {
     leaveRoomDialogVisible: visible,
     setLeaveRoomDialogVisible: setIsVisible,
@@ -74,5 +83,6 @@ export default inject(({ dialogsStore }) => {
     visible,
     setIsVisible,
     setChangeRoomOwnerIsVisible,
+    isOwner: auth.userStore.user.isOwner,
   };
 })(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));

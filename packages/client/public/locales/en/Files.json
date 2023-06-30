@@ -121,5 +121,7 @@
   "LeaveTheRoom": "Leave the room",
   "LeaveRoomDescription": "You are about to leave the room in which you are the owner. You must first transfer the owner's rights to another user.",
   "ChangeOfRoomOwner": "Change of room Owner",
-  "AssignAnOwner": "Assign an Owner"
+  "AssignAnOwner": "Assign an Owner",
+  "WantLeaveRoom": "Do you really want to leave this room?",
+  "RoomOwner": "Room owner"
 }

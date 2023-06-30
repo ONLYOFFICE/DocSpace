@@ -611,9 +611,7 @@ class ContextOptionsStore {
   };
 
   onLeaveRoom = () => {
-    if (this.authStore.userStore.user.isOwner) {
-      this.dialogsStore.setLeaveRoomDialogVisible(true);
-    }
+    this.dialogsStore.setLeaveRoomDialogVisible(true);
   };
 
   onSelect = (item) => {
