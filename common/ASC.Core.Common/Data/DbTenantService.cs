@@ -532,8 +532,8 @@ static file class Queries
         EF.CompileAsyncQuery(
             (TenantDbContext ctx, int tenantId, string domain) =>
                 ctx.Tenants
-                    .Any(r => r.Alias == domain ||
-                              r.MappedDomain == domain && (r.Status == TenantStatus.RemovePending ||
-                                                           r.Status == TenantStatus.Restoring)
+                    .Any(r => (r.Alias == domain ||
+                              r.MappedDomain == domain && !(r.Status == TenantStatus.RemovePending ||
+                                                           r.Status == TenantStatus.Restoring))
                                                        && r.Id != tenantId));
 }
