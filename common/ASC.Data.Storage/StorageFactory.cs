@@ -135,10 +135,10 @@ public class StorageFactory
         _coreBaseSettings = coreBaseSettings;
     }
 
-    public async Task<IDataStore> GetStorageAsync(int? tenant, string module, string region = "current")
+    public async Task<IDataStore> GetStorageAsync(int tenant, string module, string region = "current")
     {
         var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
-        tenantQuotaController.Init(tenant.GetValueOrDefault());
+        tenantQuotaController.Init(tenant);
 
         return await GetStorageAsync(tenant, module, tenantQuotaController, region);
     }

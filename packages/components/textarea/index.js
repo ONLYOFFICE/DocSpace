@@ -82,6 +82,10 @@ const Textarea = ({
   }
 
   useEffect(() => {
+    hasError !== isError && setIsError(hasError);
+  }, [hasError]);
+
+  useEffect(() => {
     setIsError(isJSONField && (!value || !isJSON(value)));
   }, [isJSONField, value]);
 

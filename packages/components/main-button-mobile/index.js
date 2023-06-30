@@ -397,6 +397,7 @@ const MainButtonMobile = (props) => {
           heightProp={height}
           sectionWidth={sectionWidth}
           isDefaultMode={false}
+          className="mainBtnDropdown"
         >
           {isMobile ? (
             <Scrollbar

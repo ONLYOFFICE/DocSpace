@@ -18,6 +18,7 @@ import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
 import { withTranslation } from "react-i18next";
 import { getOAuthToken } from "@docspace/common/utils";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 
 let accounts = [],
   capabilities;
@@ -280,8 +281,8 @@ const DirectThirdPartyConnection = (props) => {
       onSelectFile={onSelectFile}
       onClickInput={onClickInput}
       isPanelVisible={isPanelVisible}
-      searchParam=".gz"
-      filesListTitle={t("Settings:SelectFileInGZFormat")}
+      filterParam={FilesSelectorFilterTypes.GZ}
+      descriptionText={t("Settings:SelectFileInGZFormat")}
       withoutResetFolderTree
       isArchiveOnly
       isDisabled={
@@ -297,6 +298,7 @@ const DirectThirdPartyConnection = (props) => {
       id={id}
       onSelectFolder={onSelectFolder}
       name={"thirdParty"}
+      isThirdParty={true}
       onClose={onClose}
       onClickInput={onClickInput}
       onSetLoadingData={onSetLoadingData}

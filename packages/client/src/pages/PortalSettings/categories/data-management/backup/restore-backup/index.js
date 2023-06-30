@@ -59,6 +59,7 @@ const RestoreBackup = (props) => {
     useState(false);
   const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] =
     useState(false);
+  const [path, setPath] = useState("");
 
   const startRestoreBackup = useCallback(async () => {
     try {
@@ -170,10 +171,17 @@ const RestoreBackup = (props) => {
         <RoomsModule
           isDisabled={!isEnableRestore}
           t={t}
+          fileName={path}
           isPanelVisible={isVisibleSelectFileDialog}
           onClose={onModalClose}
           onClickInput={onClickInput}
-          onSelectFile={(file) => setRestoreResource(file.id)}
+          onSelectFile={(file) => {
+            if (file && file.path) {
+              const newPath = file.path.join("/");
+              setPath(`${newPath}/${file.title}`);
+            }
+            setRestoreResource(file.id);
+          }}
         />
       )}
       {radioButtonState === DISK_SPACE && (

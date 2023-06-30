@@ -286,7 +286,8 @@ public class FileStorageService //: IFileStorageService
         IEnumerable<string> tagNames = null,
         bool excludeSubject = false,
         ProviderFilter provider = ProviderFilter.None,
-        SubjectFilter subjectFilter = SubjectFilter.Owner)
+        SubjectFilter subjectFilter = SubjectFilter.Owner,
+        ApplyFilterOption applyFilterOption = ApplyFilterOption.All)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -336,7 +337,7 @@ public class FileStorageService //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, roomId, searchArea,
-                withoutTags, tagNames, excludeSubject, provider, subjectFilter);
+                withoutTags, tagNames, excludeSubject, provider, subjectFilter, applyFilterOption);
         }
         catch (Exception e)
         {

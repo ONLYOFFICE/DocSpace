@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Core.Common", "common\A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migration.Creator", "common\Tools\ASC.Migration.Creator\ASC.Migration.Creator.csproj", "{4BECDA03-E5E7-4273-B2D5-65AD3B1D0AF6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migration.Core", "common\Tools\ASC.Migration.Core\ASC.Migration.Core.csproj", "{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migrations.Core", "common\Tools\ASC.Migrations.Core\ASC.Migrations.Core.csproj", "{4E971C04-8D1F-4C07-8D6F-C062C114CF7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Migration.Runner", "common\Tools\ASC.Migration.Runner\ASC.Migration.Runner.csproj", "{249DC522-AC3B-475C-B77E-52CE0322E686}"
 EndProject
