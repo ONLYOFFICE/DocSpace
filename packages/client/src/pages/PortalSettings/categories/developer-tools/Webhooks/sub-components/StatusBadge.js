@@ -36,6 +36,7 @@ const StatusBadge = (props) => {
 
   return (
     <Badge
+      id="webhook-status"
       backgroundColor={badgeColorScheme.backgroundColor}
       color={badgeColorScheme.color}
       label={status === 0 ? t("NotSent") : status.toString()}
