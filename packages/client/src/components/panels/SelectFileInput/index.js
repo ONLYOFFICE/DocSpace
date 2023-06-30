@@ -1,9 +1,10 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import SelectFileDialog from "../SelectFileDialog";
+
 import StyledComponent from "./StyledSelectFileInput";
 import SimpleFileInput from "../../SimpleFileInput";
+import FilesSelector from "SRC_DIR/components/FilesSelector";
 
 class SelectFileInput extends React.PureComponent {
   componentDidMount() {
@@ -46,7 +47,7 @@ class SelectFileInput extends React.PureComponent {
         />
 
         {isPanelVisible && (
-          <SelectFileDialog
+          <FilesSelector
             {...rest}
             id={folderId}
             isPanelVisible={isPanelVisible}
@@ -71,10 +72,13 @@ SelectFileInput.defaultProps = {
 };
 
 export default inject(
-  ({ clientLoadingStore, treeFoldersStore, selectFileDialogStore }) => {
+  (
+    { clientLoadingStore, treeFoldersStore, selectFileDialogStore },
+    { fileName: fileNameProps }
+  ) => {
     const { setFirstLoad } = clientLoadingStore;
     const { folderId, setFolderId, setFile, fileInfo } = selectFileDialogStore;
-    const fileName = fileInfo?.title;
+    const fileName = fileInfo?.title || fileNameProps;
     const { setExpandedPanelKeys } = treeFoldersStore;
     return {
       setFirstLoad,

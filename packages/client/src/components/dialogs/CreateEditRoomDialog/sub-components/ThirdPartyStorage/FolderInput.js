@@ -4,8 +4,8 @@ import styled from "styled-components";
 
 import { IconButton } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
-import SelectFolderDialog from "@docspace/client/src/components/panels/SelectFolderDialog";
-import FilesFilter from "@docspace/common/api/files/filter";
+
+import FilesSelector from "SRC_DIR/components/FilesSelector";
 
 const StyledFolderInput = styled.div`
   box-sizing: border-box;
@@ -146,21 +146,13 @@ const FolderInput = ({
         </div>
       </StyledFolderInput>
 
-      <SelectFolderDialog
-        t={t}
+      <FilesSelector
         isPanelVisible={isDialogOpen}
         onClose={onClose}
-        treeNode={treeNode}
+        isThirdParty={true}
         onSelectTreeNode={setTreeNode}
-        filter={FilesFilter.getDefault()}
-        selectedId={thirdpartyAccount.id}
-        selectFolderInputExist={true}
         passedFoldersTree={[thirdpartyAccount]}
-        filteredType={""}
-        displayType={"modal"}
-        withoutProvider={false}
-        withoutImmediatelyClose={false}
-        isDisableTree={false}
+        id={thirdpartyAccount.id}
       />
     </>
   );

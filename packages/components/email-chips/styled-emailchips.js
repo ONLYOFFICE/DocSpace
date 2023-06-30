@@ -11,6 +11,7 @@ const StyledChipWithInput = styled.div`
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
+  cursor: auto;
   width: ${(props) => props.length === 0 && "100%"};
 `;
 
@@ -67,11 +68,15 @@ const StyledChip = styled.div`
 
   height: 32px;
   margin: 2px 4px;
-  padding: ${(props) => (props.isSelected ? "5px 7px" : "6px 8px")};
+  padding: 5px 7px;
 
   border-radius: 3px 0 0 3px;
-  border: ${(props) => props.isSelected && "1px dashed #000"};
-  background: ${(props) => (props.isValid ? "#ECEEF1" : "#F7CDBE")};
+  background: ${(props) =>
+    props.isValid ? props.theme.selectedItem.background : "#F7CDBE"};
+  border: ${(props) =>
+    props.isSelected
+      ? props.theme.emailChips.dashedBorder
+      : props.theme.selectedItem.border};
 
   user-select: none;
 
@@ -85,12 +90,13 @@ const StyledChip = styled.div`
     }
   }
 `;
+StyledChip.defaultProps = { theme: Base };
 
 const StyledChipValue = styled.div`
   ${(props) =>
     props.theme.interfaceDirection === "rtl"
-      ? `margin-left: 4px;`
-      : `margin-right: 4px;`}
+      ? `margin-left: 8px;`
+      : `margin-right: 8px;`}
 
   min-width: 0px;
   max-width: 395px;
@@ -101,7 +107,8 @@ const StyledChipValue = styled.div`
   font-weight: normal;
   font-size: 13px;
 
-  color: #333333;
+  color: ${(props) =>
+    props.isValid ? props.theme.selectedItem.text.color : "#333"};
 
   :hover {
     cursor: pointer;
@@ -110,6 +117,8 @@ const StyledChipValue = styled.div`
 
 const StyledContainer = styled.div`
   position: relative;
+  height: 32px;
+  margin: 3px 4px;
 `;
 
 const StyledChipInput = styled(TextInput)`

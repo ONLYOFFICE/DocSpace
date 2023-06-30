@@ -169,7 +169,7 @@ const Chip = (props) => {
         </div>
       )}
       {/*dir="auto" for correct truncate email view (asd@gmai..., ...خالد@الدوح)*/}
-      <StyledChipValue dir="auto">
+      <StyledChipValue dir="auto" isValid={isValid}>
         {value?.name || value?.email}
       </StyledChipValue>
       <IconButton iconName={DeleteIconSvgUrl} size={12} onClick={onIconClick} />
