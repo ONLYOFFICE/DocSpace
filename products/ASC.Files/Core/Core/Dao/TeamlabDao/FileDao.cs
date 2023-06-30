@@ -142,7 +142,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var dbFile = await Queries.DbFileQueryByFileVersionAsync(filesDbContext, TenantID, fileId, fileVersion);
+        var dbFile = await Queries.DbFileQueryFileStableAsync(filesDbContext, TenantID, fileId, fileVersion);
 
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
@@ -328,7 +328,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 }
                 break;
         }
-        
+
         await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
@@ -519,7 +519,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
         else
         {
-            if(uploadSession != null)
+            if (uploadSession != null)
             {
                 await _chunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
             }
@@ -789,7 +789,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 var trashId = await trashIdTask;
                 var oldParentId = (await q.FirstOrDefaultAsync())?.ParentId;
-                
+
                 if (trashId.Equals(toFolderId))
                 {
                     await q.ExecuteUpdateAsync(f => f
@@ -891,7 +891,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     await (await _globalStore.GetStoreAsync()).CopyAsync(String.Empty,
                                          GetUniqThumbnailPath(file, size.Width, size.Height),
                                          String.Empty,
-                                         GetUniqThumbnailPath(copy, size.Width, size.Height));                 
+                                         GetUniqThumbnailPath(copy, size.Width, size.Height));
                 }
 
                 await SetThumbnailStatusAsync(copy, Thumbnail.Created);
@@ -940,11 +940,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         comment ??= string.Empty;
         comment = comment.Substring(0, Math.Min(comment.Length, 255));
-
-        await Query(filesDbContext.Files)
-            .Where(r => r.Id == fileId)
-            .Where(r => r.Version == fileVersion)
-            .ExecuteUpdateAsync(f => f.SetProperty(p => p.Comment, comment));
 
         await Queries.UpdateDbFilesCommentAsync(filesDbContext, TenantID, fileId, fileVersion, comment);
 
@@ -1187,7 +1182,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     bunch
                         ? f.RootFolderType == FolderType.BUNCH
                         : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON);
-            await foreach(var file in files)
+            await foreach (var file in files)
             {
                 yield return file;
             }
@@ -1368,73 +1363,73 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         return s =>
         {
-           var result = !searchInContent || filterType == FilterType.ByExtension
-               ? s.Match(r => r.Title, searchText)
-               : s.MatchAll(searchText);
+            var result = !searchInContent || filterType == FilterType.ByExtension
+                ? s.Match(r => r.Title, searchText)
+                : s.MatchAll(searchText);
 
-           if (parentId != null)
-           {
-               if (withSubfolders)
-               {
-                   result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
-               }
-               else
-               {
-                   result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
-               }
-           }
+            if (parentId != null)
+            {
+                if (withSubfolders)
+                {
+                    result.In(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                }
+                else
+                {
+                    result.InAll(a => a.Folders.Select(r => r.ParentId), new[] { parentId });
+                }
+            }
 
-           if (orderBy != null)
-           {
-               switch (orderBy.SortedBy)
-               {
-                   case SortedByType.Author:
-                       result.Sort(r => r.CreateBy, orderBy.IsAsc);
-                       break;
-                   case SortedByType.Size:
-                       result.Sort(r => r.ContentLength, orderBy.IsAsc);
-                       break;
-                   //case SortedByType.AZ:
-                   //    result.Sort(r => r.Title, orderBy.IsAsc);
-                   //    break;
-                   case SortedByType.DateAndTime:
-                       result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
-                       break;
-                   case SortedByType.DateAndTimeCreation:
-                       result.Sort(r => r.CreateOn, orderBy.IsAsc);
-                       break;
-               }
-           }
+            if (orderBy != null)
+            {
+                switch (orderBy.SortedBy)
+                {
+                    case SortedByType.Author:
+                        result.Sort(r => r.CreateBy, orderBy.IsAsc);
+                        break;
+                    case SortedByType.Size:
+                        result.Sort(r => r.ContentLength, orderBy.IsAsc);
+                        break;
+                    //case SortedByType.AZ:
+                    //    result.Sort(r => r.Title, orderBy.IsAsc);
+                    //    break;
+                    case SortedByType.DateAndTime:
+                        result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
+                        break;
+                    case SortedByType.DateAndTimeCreation:
+                        result.Sort(r => r.CreateOn, orderBy.IsAsc);
+                        break;
+                }
+            }
 
-           if (subjectID != Guid.Empty)
-           {
-               if (subjectGroup)
-               {
-                   var users = _userManager.GetUsersByGroupAsync(subjectID).Result.Select(u => u.Id).ToArray();
-                   result.In(r => r.CreateBy, users);
-               }
-               else
-               {
-                   result.Where(r => r.CreateBy, subjectID);
-               }
-           }
+            if (subjectID != Guid.Empty)
+            {
+                if (subjectGroup)
+                {
+                    var users = _userManager.GetUsersByGroupAsync(subjectID).Result.Select(u => u.Id).ToArray();
+                    result.In(r => r.CreateBy, users);
+                }
+                else
+                {
+                    result.Where(r => r.CreateBy, subjectID);
+                }
+            }
 
-           switch (filterType)
-           {
-               case FilterType.OFormOnly:
-               case FilterType.OFormTemplateOnly:
-               case FilterType.DocumentsOnly:
-               case FilterType.ImagesOnly:
-               case FilterType.PresentationsOnly:
-               case FilterType.SpreadsheetsOnly:
-               case FilterType.ArchiveOnly:
-               case FilterType.MediaOnly:
-                   result.Where(r => r.Category, (int)filterType);
-                   break;
-           }
+            switch (filterType)
+            {
+                case FilterType.OFormOnly:
+                case FilterType.OFormTemplateOnly:
+                case FilterType.DocumentsOnly:
+                case FilterType.ImagesOnly:
+                case FilterType.PresentationsOnly:
+                case FilterType.SpreadsheetsOnly:
+                case FilterType.ArchiveOnly:
+                case FilterType.MediaOnly:
+                    result.Where(r => r.Category, (int)filterType);
+                    break;
+            }
 
-           return result;
-       };
+            return result;
+        };
     }
 
     protected IQueryable<DbFileQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
@@ -1564,9 +1559,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1587,15 +1582,40 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
                             ).FirstOrDefault()
                     })
                     .SingleOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, int, Task<DbFileQuery>> DbFileQueryFileStableAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int fileId, int fileVersion) =>
+                ctx.Files
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == fileId && r.Forcesave == ForcesaveType.None)
+                    .Where(r => fileVersion < 0 || r.Version <= fileVersion)
+                    .OrderByDescending(r => r.Version)
+                    .AsNoTracking()
+                    .Select(r => new DbFileQuery
+                    {
+                        File = r,
+                        Root = (from f in ctx.Folders
+                                where f.Id ==
+                                      (from t in ctx.Tree
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
+                                      ).FirstOrDefault()
+                                where f.TenantId == r.TenantId
+                                select f
+                            ).FirstOrDefault()
+                    })
+                    .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, int, string, int, Task<DbFileQuery>> DbFileQueryByTitleAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
@@ -1611,9 +1631,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1636,9 +1656,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1660,9 +1680,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1682,9 +1702,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1879,9 +1899,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1904,7 +1924,7 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId)
                     .Where(r => r.Forcesave == ForcesaveType.None)
-                    .Where(r => version > 0 && r.Version == version)
+                    .Where(r => version <= 0 || r.Version == version)
                     .OrderBy(r => r.Version)
                     .AsQueryable());
 
@@ -1930,9 +1950,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
@@ -1952,9 +1972,9 @@ static file class Queries
                         Root = (from f in ctx.Folders
                                 where f.Id ==
                                       (from t in ctx.Tree
-                                          where t.FolderId == r.ParentId
-                                          orderby t.Level descending
-                                          select t.ParentId
+                                       where t.FolderId == r.ParentId
+                                       orderby t.Level descending
+                                       select t.ParentId
                                       ).FirstOrDefault()
                                 where f.TenantId == r.TenantId
                                 select f
