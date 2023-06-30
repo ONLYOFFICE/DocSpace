@@ -3,6 +3,7 @@ import { Base, Dark } from "../themes/index";
 import "../../common/opensansoffline.scss";
 import ThemeWrapper from "./globals/theme-wrapper";
 import { DocsContainer } from "./DocsContainer";
+import globalTypes from "./globals";
 import { useDarkMode } from "storybook-dark-mode";
 import "../index";
 
@@ -13,6 +14,7 @@ import lightLogo from "./lightsmall.svg?url";
 import darkLogo from "./darksmall.svg?url";
 
 const preview = {
+  globalTypes,
   parameters: {
     backgrounds: { disable: true },
     actions: { argTypesRegex: "^on[A-Z].*" },
@@ -36,11 +38,11 @@ const preview = {
   },
   decorators: [
     (Story, context) => {
-      const theme = useDarkMode() ? Dark : Base
+      const theme = useDarkMode() ? Dark : Base;
       const interfaceDirection = context.globals.direction;
 
       return (
-        <ThemeWrapper theme={{...theme, interfaceDirection}}>
+        <ThemeWrapper theme={{ ...theme, interfaceDirection }}>
           <Story />
         </ThemeWrapper>
       );
