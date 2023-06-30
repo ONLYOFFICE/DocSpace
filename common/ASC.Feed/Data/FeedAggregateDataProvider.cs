@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Feed.Context;
-
 namespace ASC.Feed.Data;
 
 [Scope]
@@ -370,7 +368,7 @@ static file class Queries
                     .Where(r => r.ModifiedBy != id)
                     .Join(ctx.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
                     .Where(r => r.user.UserId == id)
-                    .Where(r => 1 < lastReadedTime.Year && r.agg.AggregateDate >= lastReadedTime)
+                    .Where(r => lastReadedTime.Year <= 1 || r.agg.AggregateDate >= lastReadedTime)
                     .Take(1001)
                     .Select(r => r.agg.Id)
                     .Count());
