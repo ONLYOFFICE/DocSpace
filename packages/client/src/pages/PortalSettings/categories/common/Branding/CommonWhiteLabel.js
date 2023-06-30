@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react";
 
 import { useTranslation } from "react-i18next";
 
@@ -287,4 +288,4 @@ const CommonWhiteLabel = ({
   );
 };
 
-export default CommonWhiteLabel;
+export default observer(CommonWhiteLabel);
