@@ -1731,6 +1731,7 @@ const Base = {
     arrowColor: "#555f65",
     disabledArrow: "#A3A9AE",
     weekdayColor: "#A3A9AE",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -3112,6 +3113,11 @@ const Base = {
 
   portalUnavailable: {
     textDescriptionColor: "#A3A9AE",
+  },
+
+  emailChips: {
+    borderColor: "#A3A9AE",
+    dashedBorder: "1px dashed #5299E0",
   },
 };
 
