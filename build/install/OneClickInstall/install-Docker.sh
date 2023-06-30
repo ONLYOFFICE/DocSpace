@@ -727,7 +727,7 @@ domain_check () {
 			fi
 		done <<< "$DOMAINS"
 
-		if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]]; then
+		if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
 			DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
 			if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
 				echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
