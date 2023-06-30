@@ -116,7 +116,7 @@ public class TariffController : ControllerBase
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue.AddSeconds(-1),
         };
 
@@ -163,7 +163,7 @@ public class TariffController : ControllerBase
         var tariffs = (await HostedSolution.GetTenantQuotasAsync())
             .Where(q => !q.Trial && !q.Free)
             .OrderBy(q => q.CountRoomAdmin)
-            .ThenByDescending(q => q.Tenant)
+            .ThenByDescending(q => q.TenantId)
             .Select(q => ToTariffWrapper(null, q));
 
         return Ok(new

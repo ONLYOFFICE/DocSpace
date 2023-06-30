@@ -1110,8 +1110,8 @@ const Dark = {
     },
 
     icon: {
-      background: grayMain,
-      color: globalColors.lightHover,
+      background: "#242424",
+      color: "#ADADAD",
     },
 
     width: {
@@ -1670,7 +1670,7 @@ const Dark = {
       defaultColor: white,
       disabledColor: "#858585",
       color: white,
-      selectedColor: white,
+      // selectedColor: white,
     },
   },
 
@@ -1728,6 +1728,7 @@ const Dark = {
     arrowColor: "#F6F9FC",
     disabledArrow: "#474747",
     weekdayColor: "#858585",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -2288,6 +2289,13 @@ const Dark = {
 
   selector: {
     border: `1px solid #474747`,
+
+    breadCrumbs: {
+      prevItemColor: "#858585",
+      arrowRightColor: "#858585",
+    },
+
+    bodyDescriptionText: "#858585",
 
     item: {
       hoverBackground: "#3d3d3d",
@@ -3109,6 +3117,11 @@ const Dark = {
 
   portalUnavailable: {
     textDescriptionColor: "#858585",
+  },
+
+  emailChips: {
+    borderColor: "#858585",
+    dashedBorder: "1px dashed #fff",
   },
 };
 

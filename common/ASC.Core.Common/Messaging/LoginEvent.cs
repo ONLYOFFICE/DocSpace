@@ -32,6 +32,8 @@ public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
     public string Login { get; set; }
     public bool Active { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<MessageEvent, LoginEvent>();
@@ -44,6 +46,8 @@ public static class LoginEventsExtension
 {
     public static ModelBuilderWrapper AddLoginEvents(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<LoginEvent>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddLoginEvents, Provider.MySql)
             .Add(PgSqlAddLoginEvents, Provider.PostgreSql);

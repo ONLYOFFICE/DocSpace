@@ -26,6 +26,27 @@ export const DateItem = styled.button`
   ${(props) =>
     props.isCurrent &&
     css`
+      background: ${(props) => props.theme.calendar.accent};
+      :hover {
+        background-color: ${(props) => props.theme.calendar.accent};
+      }
+
+      :focus {
+        background-color: ${(props) => props.theme.calendar.accent};
+      }
+    `}
+  color: ${(props) =>
+    props.disabled
+      ? props.theme.calendar.disabledColor
+      : props.focused
+      ? props.theme.calendar.accent
+      : props.theme.calendar.color};
+  border-color: ${(props) =>
+    props.focused ? props.theme.calendar.accent : "transparent"};
+
+  ${(props) =>
+    props.isCurrent &&
+    css`
       color: white !important;
 
       :hover {

@@ -40,6 +40,8 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
     public DateTime TimeStamp { get; set; }
     public string FileShareOptions { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, EntryId, EntryType, Subject };
@@ -60,6 +62,8 @@ public static class DbFilesSecurityExtension
 {
     public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesSecurity>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesSecurity, Provider.MySql)
             .Add(PgSqlAddDbFilesSecurity, Provider.PostgreSql);

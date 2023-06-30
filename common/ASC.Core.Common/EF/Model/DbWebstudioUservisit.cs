@@ -35,12 +35,16 @@ public class DbWebstudioUserVisit
     public int VisitCount { get; set; }
     public DateTime? FirstVisitTime { get; set; }
     public DateTime? LastVisitTime { get; set; }
+
+    public DbTenant Tenant { get; set; }
 }
 
 public static class WebstudioUserVisitExtension
 {
     public static ModelBuilderWrapper AddWebstudioUserVisit(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbWebstudioUserVisit>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddWebstudioUserVisit, Provider.MySql)
             .Add(PgSqlAddWebstudioUserVisit, Provider.PostgreSql);

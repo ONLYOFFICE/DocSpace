@@ -93,7 +93,7 @@ public class UserServiceCache
 
     private void UpdateUserGroupRefCache(UserGroupRef r)
     {
-        var key = GetRefCacheKey(r.Tenant);
+        var key = GetRefCacheKey(r.TenantId);
         var refs = Cache.Get<UserGroupRefStore>(key);
         if (refs != null)
         {
@@ -408,7 +408,7 @@ public class CachedUserService : IUserService, ICachedService
     {
         await Service.RemoveUserGroupRefAsync(tenant, userId, groupId, refType);
 
-        var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant, Removed = true };
+        var r = new UserGroupRef(userId, groupId, refType) { TenantId = tenant, Removed = true };
         CacheUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
     }
 

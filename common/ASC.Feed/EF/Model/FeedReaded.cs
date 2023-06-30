@@ -31,11 +31,13 @@ public class FeedReaded : BaseEntity
     public Guid UserId { get; set; }
     public DateTime TimeStamp { get; set; }
     public string Module { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
+
+    public DbTenant Tenant { get; set; }
 
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, UserId, Module };
+        return new object[] { TenantId, UserId, Module };
     }
 }
 
@@ -43,6 +45,8 @@ public static class FeedReadedExtension
 {
     public static ModelBuilderWrapper AddFeedReaded(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<FeedReaded>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddFeedReaded, Provider.MySql)
             .Add(PgSqlAddFeedReaded, Provider.PostgreSql);
@@ -52,13 +56,13 @@ public static class FeedReadedExtension
     {
         modelBuilder.Entity<FeedReaded>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.UserId, e.Module })
+            entity.HasKey(e => new { e.TenantId, e.UserId, e.Module })
                 .HasName("PRIMARY");
 
             entity.ToTable("feed_readed")
                 .HasCharSet("utf8");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id")
@@ -81,7 +85,7 @@ public static class FeedReadedExtension
     {
         modelBuilder.Entity<FeedReaded>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.Tenant, e.Module })
+            entity.HasKey(e => new { e.UserId, e.TenantId, e.Module })
                 .HasName("feed_readed_pkey");
 
             entity.ToTable("feed_readed", "onlyoffice");
@@ -90,7 +94,7 @@ public static class FeedReadedExtension
                 .HasColumnName("user_id")
                 .HasMaxLength(38);
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
             entity.Property(e => e.Module)
                 .HasColumnName("module")
