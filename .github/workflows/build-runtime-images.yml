@@ -100,9 +100,7 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     needs:
-      - build-dotnetrun
-      - build-noderun
-      - build-proxy
+      - build
     steps:
       -
         name: Download digests
