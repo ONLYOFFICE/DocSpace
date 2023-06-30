@@ -16,6 +16,7 @@ import {
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
 import { EmailSettings, parseAddresses } from "../utils/email";
+import { Scrollbar } from "../index";
 
 const calcMaxLengthInput = (exceededLimit) =>
   exceededLimit * MAX_EMAIL_LENGTH_WITH_DOTS;
@@ -292,7 +293,7 @@ const EmailChips = ({
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
-          <CustomScrollbarsVirtualList>
+          <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
             <ChipsRender
               chips={chips}
               checkSelected={checkSelected}
@@ -305,7 +306,7 @@ const EmailChips = ({
               onDoubleClick={onDoubleClick}
               onSaveNewChip={onSaveNewChip}
             />
-          </CustomScrollbarsVirtualList>
+          </Scrollbar>
 
           <InputGroup
             placeholder={placeholder}
