@@ -39,6 +39,11 @@ const StyledDropdownItem = styled.div`
   display: ${(props) => (props.textOverflow ? "block" : "flex")};
   width: ${(props) => props.theme.dropDownItem.width};
   max-width: ${(props) => props.theme.dropDownItem.maxWidth};
+  ${(props) =>
+    props.minWidth &&
+    css`
+      min-width: ${props.minWidth};
+    `};
   border: ${(props) => props.theme.dropDownItem.border};
   cursor: pointer;
   margin: ${(props) => props.theme.dropDownItem.margin};

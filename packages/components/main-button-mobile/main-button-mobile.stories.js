@@ -1,4 +1,5 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import MainButtonMobile from ".";
 import { useEffect, useReducer, useState } from "react";
 import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
@@ -66,6 +67,29 @@ const buttonOptions = [
     onClick: () => setIsOpenButton(false),
   },
 ];
+
+const StyledWrapper = styled.div`
+  width: 500px;
+  height: 600px;
+
+  ${(props) =>
+    props.isAutoDocs &&
+    css`
+      width: calc(100% + 40px);
+      height: 500px;
+      position: relative;
+      margin: 0 0 -20px -20px;
+    `}
+
+  ${(props) =>
+    props.isMobile &&
+    css`
+      .mainBtnDropdown {
+        right: 5px !important;
+        bottom: 5px !important;
+      }
+    `}
+`;
 
 const Template = ({ ...args }) => {
   const maxUploads = 10;
@@ -158,8 +182,25 @@ const Template = ({ ...args }) => {
     },
   ];
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1245);
+
+  useEffect(() => {
+    const handleResize = () => {
+      isMobile !== window.innerWidth && setIsMobile(window.innerWidth < 1025);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isAutoDocs =
+    typeof window !== "undefined" && window?.location?.href.includes("docs");
+
   return (
-    <div style={{ width: "600px", height: "500px" }}>
+    <StyledWrapper isAutoDocs={isAutoDocs} isMobile={isMobile}>
       <MainButtonMobile
         {...args}
         style={{ position: "absolute", bottom: "26px", right: "44px" }}
@@ -175,7 +216,7 @@ const Template = ({ ...args }) => {
         percent={uploadPercent}
         opened={opened}
       />
-    </div>
+    </StyledWrapper>
   );
 };
 
