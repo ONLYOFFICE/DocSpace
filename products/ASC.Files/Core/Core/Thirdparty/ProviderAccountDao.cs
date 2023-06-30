@@ -123,16 +123,6 @@ internal class ProviderAccountDao : IProviderDao
         }
     }
 
-    static readonly Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>> _getProvidersInfoQuery =
-        EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
-        ctx.ThirdpartyAccount
-        .AsNoTracking()
-        .Where(r => r.TenantId == tenantId)
-        .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)
-        .Where(r => linkId == -1 || r.Id == linkId)
-        .Where(r => folderType == FolderType.DEFAULT && !(r.FolderType == FolderType.ThirdpartyBackup && linkId == -1) || r.FolderType == folderType)
-        .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
-
     private IAsyncEnumerable<IProviderInfo> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
     {
         try
@@ -305,6 +295,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         var toUpdate = Queries.ThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId);
+        var toUpdateCount = 0;
 
         await foreach (var t in toUpdate)
         {
@@ -330,11 +321,13 @@ internal class ProviderAccountDao : IProviderDao
                 t.Token = EncryptPassword(authData.Token ?? "");
                 t.Url = authData.Url ?? "";
             }
+
+            toUpdateCount++;
         }
 
         await filesDbContext.SaveChangesAsync();
 
-        return await toUpdate.CountAsync() == 1 ? linkId : default;
+        return toUpdateCount == 1 ? linkId : default;
     }
 
     public virtual async Task<int> UpdateBackupProviderInfoAsync(string providerKey, string customerTitle, AuthData newAuthData)
