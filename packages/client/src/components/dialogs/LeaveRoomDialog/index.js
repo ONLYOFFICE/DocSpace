@@ -72,17 +72,20 @@ const LeaveRoomDialog = (props) => {
   );
 };
 
-export default inject(({ auth, dialogsStore }) => {
+export default inject(({ auth, dialogsStore, selectedFolderStore }) => {
   const {
     leaveRoomDialogVisible: visible,
     setLeaveRoomDialogVisible: setIsVisible,
     setChangeRoomOwnerIsVisible,
   } = dialogsStore;
+  const { user } = auth.userStore;
+
+  const isRoomOwner = selectedFolderStore.createdBy.id === user.id;
 
   return {
     visible,
     setIsVisible,
     setChangeRoomOwnerIsVisible,
-    isOwner: auth.userStore.user.isOwner,
+    isOwner: isRoomOwner,
   };
 })(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));

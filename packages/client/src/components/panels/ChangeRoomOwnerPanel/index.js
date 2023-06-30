@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
+import styled, { css } from "styled-components";
 import Aside from "@docspace/components/aside";
 import Backdrop from "@docspace/components/backdrop";
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
@@ -8,8 +9,20 @@ import Filter from "@docspace/common/api/people/filter";
 import { EmployeeType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
+const StyledChangeRoomOwner = styled.div`
+  display: contents;
+
+  ${({ showBackButton }) =>
+    !showBackButton &&
+    css`
+      .arrow-button {
+        display: none;
+      }
+    `}
+`;
+
 const ChangeRoomOwner = (props) => {
-  const { t, visible, setIsVisible, setLeaveRoomDialogVisible } = props;
+  const { t, visible, setIsVisible, showBackButton } = props;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,18 +52,19 @@ const ChangeRoomOwner = (props) => {
 
   const onBackClick = () => {
     onClose();
-    setLeaveRoomDialogVisible(true);
   };
 
   const filter = new Filter();
   filter.role = EmployeeType.Admin; // 1(EmployeeType.User) - RoomAdmin | 3(EmployeeType.Admin) - DocSpaceAdmin
 
+  const backClickProp = showBackButton ? { onBackClick } : {};
+
   return (
-    <>
+    <StyledChangeRoomOwner showBackButton={showBackButton}>
       <Backdrop
         onClick={onClose}
         visible={visible}
-        zIndex={310}
+        zIndex={320}
         isAside={true}
       />
       <Aside
@@ -61,7 +75,7 @@ const ChangeRoomOwner = (props) => {
       >
         <PeopleSelector
           withCancelButton
-          onBackClick={onBackClick}
+          {...backClickProp}
           onAccept={onChangeRoomOwner}
           onCancel={onClose}
           acceptButtonLabel={t("Files:AssignAnOwner")}
@@ -70,7 +84,7 @@ const ChangeRoomOwner = (props) => {
           isLoading={isLoading}
         />
       </Aside>
-    </>
+    </StyledChangeRoomOwner>
   );
 };
 
@@ -78,12 +92,12 @@ export default inject(({ dialogsStore }) => {
   const {
     changeRoomOwnerIsVisible,
     setChangeRoomOwnerIsVisible,
-    setLeaveRoomDialogVisible,
+    showChangeRoomOwnerBackButton,
   } = dialogsStore;
 
   return {
     visible: changeRoomOwnerIsVisible,
     setIsVisible: setChangeRoomOwnerIsVisible,
-    setLeaveRoomDialogVisible,
+    showBackButton: showChangeRoomOwnerBackButton,
   };
 })(observer(withTranslation(["Files"])(ChangeRoomOwner)));

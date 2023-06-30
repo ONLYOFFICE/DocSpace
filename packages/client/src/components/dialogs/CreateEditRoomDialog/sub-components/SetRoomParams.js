@@ -100,7 +100,7 @@ const SetRoomParams = ({
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
   const onOwnerChange = () => {
-    setChangeRoomOwnerIsVisible(true);
+    setChangeRoomOwnerIsVisible(true, true);
   };
 
   const isMe = userId === roomParams.roomOwner.id;
