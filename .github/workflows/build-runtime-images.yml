@@ -17,7 +17,7 @@ env:
   DOTNET_RUNTIME_IMAGE: "4testing-docspace-dotnet-runtime"
   NODEJS_RUNTIME_IMAGE: "4testing-docspace-nodejs-runtime"
   PROXY_RUNTIME_IMAGE: "4testing-docspace-proxy-runtime"
-  DOCKERFILE_BUILD: "/build/install/docker/Dockerfile.runtime"
+  DOCKERFILE_BUILD: "build/install/docker/Dockerfile.runtime"
 
 jobs:
   build:
