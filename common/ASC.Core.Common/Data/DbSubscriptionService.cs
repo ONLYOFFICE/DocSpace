@@ -122,7 +122,7 @@ public class DbSubscriptionService : ISubscriptionService
         };
 
         await using var userDbContext = _dbContextFactory.CreateDbContext();
-        await userDbContext.AddOrUpdateAsync(q=> q.Subscriptions, subs);
+        await userDbContext.AddOrUpdateAsync(q => q.Subscriptions, subs);
         await userDbContext.SaveChangesAsync();
     }
 
@@ -138,7 +138,7 @@ public class DbSubscriptionService : ISubscriptionService
 
         await using var userDbContext = _dbContextFactory.CreateDbContext();
 
-        var sub =  await Queries.SubscriptionsByObjectAsync(userDbContext, tenant, sourceId, actionId, objectId ?? string.Empty);
+        var sub = await Queries.SubscriptionsByObjectAsync(userDbContext, tenant, sourceId, actionId, objectId ?? string.Empty);
 
         if (sub != null)
         {
@@ -202,7 +202,7 @@ public class DbSubscriptionService : ISubscriptionService
                 Action = m.Action,
                 Recipient = m.Recipient,
                 Source = m.Source,
-                    TenantId = m.Tenant,
+                TenantId = m.Tenant,
                 Sender = string.Join("|", m.Methods)
             };
             await userDbContext.AddOrUpdateAsync(q => q.SubscriptionMethods, sm);
@@ -285,7 +285,7 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Recipient == recipientId)
                     .Where(r => r.Unsubscribed)
-                    .Where(r => r.Object == objectId)
+                    .Where(r => (!string.IsNullOrEmpty(objectId) && (r.Object == objectId || r.Object == string.Empty)) || (string.IsNullOrEmpty(objectId) && r.Object == string.Empty))
                     .Any());
 
     public static readonly Func<UserDbContext, int, string, string, string, bool, IAsyncEnumerable<string>>
@@ -297,7 +297,7 @@ static file class Queries
                     .Where(r => r.Action == actionId)
                     .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Recipient == recipientId)
-                    .Where(r => checkSubscribe && !r.Unsubscribed)
+                    .Where(r => !checkSubscribe || !r.Unsubscribed)
                     .Distinct()
                     .OrderBy(r => r.TenantId)
                     .Select(r => r.Object));
@@ -309,7 +309,7 @@ static file class Queries
                     .Where(r => r.Source == sourceId)
                     .Where(r => r.Action == actionId)
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.Object == objectId)
+                    .Where(r => objectId.Length == 0 || r.Object == objectId)
                     .FirstOrDefault());
 
     public static readonly Func<UserDbContext, int, string, string, string, string, IAsyncEnumerable<Subscription>>
@@ -330,7 +330,7 @@ static file class Queries
                 ctx.SubscriptionMethods
                     .Where(r => r.TenantId == -1 || r.TenantId == tenantId)
                     .Where(r => r.Source == sourceId)
-                    .Where(r => recipientId != null && r.Recipient == recipientId)
+                    .Where(r => recipientId == null || r.Recipient == recipientId)
                     .OrderBy(r => r.TenantId)
                     .Distinct()
                     .AsQueryable());
