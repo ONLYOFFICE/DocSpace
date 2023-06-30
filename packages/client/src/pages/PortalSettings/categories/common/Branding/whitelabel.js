@@ -10,7 +10,7 @@ import {
   generateLogo,
   getLogoOptions,
   uploadLogo,
-} from "../../../utils/whiteLabelHelper";
+} from "@docspace/common/utils/whiteLabelHelper";
 import CommonWhiteLabel from "./CommonWhiteLabel";
 
 import isEqual from "lodash/isEqual";
