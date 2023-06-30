@@ -54,7 +54,8 @@ const FilterButton = styled.div`
   z-index: ${(props) => (props.isGroupMenuVisible ? 199 : 201)};
 
   border: 1px solid;
-  border-color: ${(props) => (props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)")};
+  border-color: ${(props) =>
+    props.theme.isBase ? "#d0d5da" : "rgb(71, 71, 71)"};
   border-radius: 3px;
   cursor: pointer;
 
@@ -107,7 +108,11 @@ const HistoryFilterHeader = (props) => {
           {t("Webhook")} {id}
         </ListHeading>
 
-        <FilterButton onClick={openFiltersModal} isGroupMenuVisible={isGroupMenuVisible}>
+        <FilterButton
+          id="filter-button"
+          onClick={openFiltersModal}
+          isGroupMenuVisible={isGroupMenuVisible}
+        >
           <IconButton iconName={FilterReactSvrUrl} size={16} />
           <span hidden={historyFilters === null}></span>
         </FilterButton>

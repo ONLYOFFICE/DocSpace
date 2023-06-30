@@ -47,7 +47,10 @@ Separator.defaultProps = { theme: Base };
 
 const constructUrl = (baseUrl, filters) => {
   const url = new URL(baseUrl, "http://127.0.0.1:8092/");
-  url.searchParams.append("deliveryDate", filters.deliveryDate?.format("YYYY-MM-DD") || null);
+  url.searchParams.append(
+    "deliveryDate",
+    filters.deliveryDate?.format("YYYY-MM-DD") || null
+  );
   url.searchParams.append("deliveryFrom", filters.deliveryFrom.format("HH:mm"));
   url.searchParams.append("deliveryTo", filters.deliveryTo.format("HH:mm"));
   url.searchParams.append("status", JSON.stringify(filters.status));
@@ -56,12 +59,21 @@ const constructUrl = (baseUrl, filters) => {
 };
 
 function areArraysEqual(array1, array2) {
-  return array1.length === array2.length && array1.every((val, index) => val === array2[index]);
+  return (
+    array1.length === array2.length &&
+    array1.every((val, index) => val === array2[index])
+  );
 }
 
 const FilterDialog = (props) => {
-  const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters, historyFilters } =
-    props;
+  const {
+    visible,
+    closeModal,
+    applyFilters,
+    formatFilters,
+    setHistoryFilters,
+    historyFilters,
+  } = props;
   const { t } = useTranslation(["Webhooks", "Files", "Common"]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -105,7 +117,12 @@ const FilterDialog = (props) => {
       setFilters(historyFilters);
       setIsTimeOpen(false);
       setIsApplied(true);
-      navigate(constructUrl(`/portal-settings/developer-tools/webhooks/${id}`, historyFilters));
+      navigate(
+        constructUrl(
+          `/portal-settings/developer-tools/webhooks/${id}`,
+          historyFilters
+        )
+      );
     }
     setIsLoaded(true);
   }, [historyFilters, visible]);
@@ -119,7 +136,12 @@ const FilterDialog = (props) => {
       : filters.deliveryDate === null && filters.status.length === 0;
 
   return (
-    <ModalDialog withFooterBorder visible={visible} onClose={closeModal} displayType="aside">
+    <ModalDialog
+      withFooterBorder
+      visible={visible}
+      onClose={closeModal}
+      displayType="aside"
+    >
       <ModalDialog.Header>{t("Files:Filter")}</ModalDialog.Header>
       <ModalDialog.Body>
         <DialogBodyWrapper>
@@ -133,7 +155,11 @@ const FilterDialog = (props) => {
             setIsTimeOpen={setIsTimeOpen}
           />
           <Separator />
-          <StatusPicker Selectors={Selectors} filters={filters} setFilters={setFilters} />
+          <StatusPicker
+            Selectors={Selectors}
+            filters={filters}
+            setFilters={setFilters}
+          />
           <Separator />
         </DialogBodyWrapper>
       </ModalDialog.Body>
@@ -141,12 +167,18 @@ const FilterDialog = (props) => {
         <ModalDialog.Footer>
           <Footer>
             <Button
+              className="apply-button"
               label={t("Common:ApplyButton")}
               size="normal"
               primary={true}
               onClick={handleApplyFilters}
             />
-            <Button label={t("Common:CancelButton")} size="normal" onClick={closeModal} />
+            <Button
+              className="cancel-button"
+              label={t("Common:CancelButton")}
+              size="normal"
+              onClick={closeModal}
+            />
           </Footer>
         </ModalDialog.Footer>
       )}
