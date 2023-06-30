@@ -10,7 +10,7 @@ import {
 } from "./styled-selected-item";
 
 const SelectedItem = (props) => {
-  const { isDisabled, text, onClose } = props;
+  const { isDisabled, text, onClose, classNameCloseButton } = props;
 
   const onCloseClick = (e) => {
     !isDisabled && onClose && onClose(e);
@@ -24,7 +24,11 @@ const SelectedItem = (props) => {
           {text}
         </StyledText>
       </StyledSelectedTextBox>
-      <StyledCloseButton onClick={onCloseClick} isDisabled={isDisabled}>
+      <StyledCloseButton
+        className={classNameCloseButton}
+        onClick={onCloseClick}
+        isDisabled={isDisabled}
+      >
         <IconButton
           size={10}
           iconName={CrossIconReactSvgUrl}

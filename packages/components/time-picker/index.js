@@ -46,6 +46,7 @@ const TimePicker = ({
   className,
   hasError,
   tabIndex,
+  classNameInput,
 }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
@@ -155,6 +156,7 @@ const TimePicker = ({
       isFocused={isInputFocused}
     >
       <TextInput
+        className={`${classNameInput}` + `-hours-input`}
         withBorder={false}
         forwardedRef={hoursInputRef}
         value={hours}
@@ -165,6 +167,7 @@ const TimePicker = ({
       />
       :
       <TextInput
+        className={`${classNameInput}` + `-minutes-input`}
         withBorder={false}
         forwardedRef={minutesInputRef}
         value={minutes}

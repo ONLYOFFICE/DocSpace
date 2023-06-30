@@ -63,7 +63,8 @@ const DeliveryDatePicker = ({
     setFilters((prevFilters) => ({ ...prevFilters, deliveryTo: date }));
   };
 
-  const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
+  const toggleCalendar = () =>
+    setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
   const closeCalendar = () => {
     setIsApplied(false);
     setIsCalendarOpen(false);
@@ -91,7 +92,8 @@ const DeliveryDatePicker = ({
 
   useEffect(() => {
     document.addEventListener("click", handleClick, { capture: true });
-    return () => document.removeEventListener("click", handleClick, { capture: true });
+    return () =>
+      document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
   const CalendarElement = () => (
@@ -106,7 +108,12 @@ const DeliveryDatePicker = ({
 
   const DateSelector = () => (
     <div>
-      <SelectorAddButton title={t("Add")} onClick={toggleCalendar} style={{ marginRight: "8px" }} />
+      <SelectorAddButton
+        className="add-delivery-date-button"
+        title={t("Add")}
+        onClick={toggleCalendar}
+        style={{ marginRight: "8px" }}
+      />
       <Text isInline fontWeight={600} color="#A3A9AE">
         {t("SelectDate")}
       </Text>
@@ -116,6 +123,7 @@ const DeliveryDatePicker = ({
 
   const SelectedDate = () => (
     <SelectedItem
+      classNameCloseButton="delete-delivery-date-button"
       onClose={deleteSelectedDate}
       text={moment(filters.deliveryDate).format("DD MMM YYYY")}
     />
@@ -151,7 +159,12 @@ const DeliveryDatePicker = ({
 
   const TimeSelectorAdder = () => (
     <TimePickerCell>
-      <SelectorAddButton title={t("Add")} onClick={showTimePicker} style={{ marginRight: "8px" }} />
+      <SelectorAddButton
+        className="add-delivery-time-button"
+        title={t("Add")}
+        onClick={showTimePicker}
+        style={{ marginRight: "8px" }}
+      />
       <Text isInline fontWeight={600} color="#A3A9AE">
         {t("SelectDeliveryTime")}
       </Text>
@@ -163,7 +176,10 @@ const DeliveryDatePicker = ({
   };
 
   const isTimeEqual =
-    isEqualDates(filters.deliveryFrom, filters.deliveryFrom.clone().startOf("day")) &&
+    isEqualDates(
+      filters.deliveryFrom,
+      filters.deliveryFrom.clone().startOf("day")
+    ) &&
     isEqualDates(filters.deliveryTo, filters.deliveryTo.clone().endOf("day"));
 
   const isTimeValid = filters.deliveryTo > filters.deliveryFrom;
@@ -190,20 +206,32 @@ const DeliveryDatePicker = ({
           (isTimeOpen ? (
             <TimePickerCell>
               <span className="timePickerItem">
-                <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+                <Text
+                  isInline
+                  fontWeight={600}
+                  color="#A3A9AE"
+                  style={{ marginRight: "8px" }}
+                >
                   {t("From")}
                 </Text>
                 <TimePicker
+                  classNameInput="from-time"
                   date={filters.deliveryFrom}
                   setDate={setDeliveryFrom}
                   hasError={!isTimeValid}
                   tabIndex={1}
                 />
               </span>
-              <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+              <Text
+                isInline
+                fontWeight={600}
+                color="#A3A9AE"
+                style={{ marginRight: "8px" }}
+              >
                 {t("Before")}
               </Text>
               <TimePicker
+                classNameInput="before-time"
                 date={filters.deliveryTo}
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
