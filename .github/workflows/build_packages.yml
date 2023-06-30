@@ -6,10 +6,12 @@ on:
     - release/*
     - develop
     - hotfix/*
+    - feature/*
     paths:
     - build/install/deb**
     - build/install/rpm**
     - build/install/common**
+    - .github/workflows/build_packages.yml
   workflow_dispatch:
   
 env:
