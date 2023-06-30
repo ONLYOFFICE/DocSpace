@@ -32,6 +32,7 @@ const RequestButtonContainer = ({ isDisabled, isLoading }) => {
         />
       )}
       <Button
+        className="send-request-button"
         label={t("Common:SendRequest")}
         size={"medium"}
         primary
