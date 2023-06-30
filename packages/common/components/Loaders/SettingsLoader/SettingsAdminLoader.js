@@ -39,7 +39,7 @@ const Setting = ({ width = "280px" }) => (
   </Box>
 );
 
-const SectionTitle = ({ height = 16, width = 141 }) => (
+const SectionTitle = ({ height = "16px", width = "141px" }) => (
   <RectangleLoader
     height={height}
     width={width}
@@ -68,7 +68,7 @@ const SettingsTabs = () => (
     }}
   >
     <RectangleLoader
-      height={32}
+      height={"32"}
       backgroundColor={LoaderStyle.backgroundColor}
       foregroundColor={LoaderStyle.foregroundColor}
       backgroundOpacity={LoaderStyle.backgroundOpacity}
@@ -77,7 +77,7 @@ const SettingsTabs = () => (
       animate={true}
     />
     <RectangleLoader
-      height={32}
+      height={"32"}
       backgroundColor={LoaderStyle.backgroundColor}
       foregroundColor={LoaderStyle.foregroundColor}
       backgroundOpacity={LoaderStyle.backgroundOpacity}
