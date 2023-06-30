@@ -321,7 +321,7 @@ public class EFUserService : IUserService
         await using var userDbContext = _dbContextFactory.CreateDbContext();
         var ids = await CollectGroupChildsAsync(userDbContext, tenant, id);
         var stringIds = ids.Select(r => r.ToString()).ToList();
-        
+
         userDbContext.Acl.RemoveRange(await Queries.AclsByIdsAsync(userDbContext, tenant, ids).ToListAsync());
         userDbContext.Subscriptions.RemoveRange(await Queries.SubscriptionsByIdsAsync(userDbContext, tenant, stringIds).ToListAsync());
         userDbContext.SubscriptionMethods.RemoveRange(await Queries.DbSubscriptionMethodsByIdsAsync(userDbContext, tenant, stringIds).ToListAsync());
@@ -871,21 +871,21 @@ static file class Queries
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string userName, Guid id) =>
                 ctx.Users
-                    .Where(r => r.TenantId != Tenant.DefaultTenant && r.TenantId == tenantId)
+                    .Where(r => tenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .Any(r => r.UserName == userName && r.Id != id && !r.Removed));
 
     public static readonly Func<UserDbContext, int, string, Guid, Task<bool>> AnyUsersByEmailAsync =
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, string email, Guid id) =>
                 ctx.Users
-                    .Where(r => r.TenantId != Tenant.DefaultTenant && r.TenantId == tenantId)
+                    .Where(r => tenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .Any(r => r.Email == email && r.Id != id && !r.Removed));
 
     public static readonly Func<UserDbContext, int, Guid, Task<User>> FirstOrDefaultUserAsync =
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId, Guid id) =>
                 ctx.Users
-                    .Where(r => r.TenantId != Tenant.DefaultTenant && r.TenantId == tenantId)
+                    .Where(r => tenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .FirstOrDefault(a => a.Id == id));
 
     public static readonly Func<UserDbContext, int, Guid, Task<UserPhoto>> UserPhotoAsync =
@@ -899,11 +899,12 @@ static file class Queries
         EF.CompileAsyncQuery(
             (UserDbContext ctx, int tenantId) =>
                 (from usersDav in ctx.UsersDav
-                    join users in ctx.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new
-                    {
-                        tenant = users.TenantId, userId = users.Id
-                    }
-                    where usersDav.TenantId == tenantId
-                    select users.Email)
+                 join users in ctx.Users on new { tenant = usersDav.TenantId, userId = usersDav.UserId } equals new
+                 {
+                     tenant = users.TenantId,
+                     userId = users.Id
+                 }
+                 where usersDav.TenantId == tenantId
+                 select users.Email)
                 .Distinct());
 }
