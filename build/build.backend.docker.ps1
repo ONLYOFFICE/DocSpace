@@ -7,7 +7,7 @@ if ($PSversionMajor -lt 7 -or $PSversionMinor -lt 2) {
 }
 
 $RootDir = Split-Path -Parent $PSScriptRoot
-$DockerDir = ($RootDir + "\build\install\docker")
+$DockerDir = "$RootDir\build\install\docker"
 $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where-Object { $_.DHCPEnabled -ne $null -and $_.DefaultIPGateway -ne $null }).IPAddress | Select-Object -First 1
 
 $Doceditor = ($LocalIp + ":5013")
@@ -21,10 +21,12 @@ $Client = ($LocalIp + ":5001")
 $Env:COMPOSE_IGNORE_ORPHANS = "True"
 
 Write-Host "Run MySQL" -ForegroundColor Green
-docker compose -f  ($DockerDir + "\db.yml") up -d
+docker compose -f "$DockerDir\db.yml" up -d
 
-Write-Host "Build backend services (to `publish/` folder)"
+Write-Host "Build backend services (to `publish/` folder)" -ForegroundColor Green
 & "$PSScriptRoot\install\common\build-services.ps1"
+
+Set-Location -Path $DockerDir
 
 Write-Host "Run migration" -ForegroundColor Green
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
