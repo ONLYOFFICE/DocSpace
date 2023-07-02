@@ -230,7 +230,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQuery(filesDbContext, query).AsAsyncEnumerable())
+        await foreach (var e in Queries.FromQuery(filesDbContext, query).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -329,7 +329,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in Queries.FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1162,7 +1162,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 break;
         }
 
-        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in Queries.FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
         }
@@ -1432,25 +1432,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
         };
     }
 
-    protected IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
-    {
-        return dbFiles
-            .Select(r => new DbFileQuery
-            {
-                File = r,
-                Root = (from f in filesDbContext.Folders
-                        where f.Id ==
-                        (from t in filesDbContext.Tree
-                         where t.FolderId == r.ParentId
-                         orderby t.Level descending
-                         select t.ParentId
-                         ).FirstOrDefault()
-                        where f.TenantId == r.TenantId
-                        select f
-                          ).FirstOrDefault()
-            });
-    }
-
     protected internal async Task<DbFile> InitDocumentAsync(DbFile dbFile)
     {
         if (!await _factoryIndexer.CanIndexByContentAsync(dbFile))
@@ -1520,170 +1501,91 @@ public class DbFileQueryWithSecurity
 
 static file class Queries
 {
+    public static IQueryable<DbFileQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFile> dbFiles)
+    {
+        return dbFiles
+            .Select(r => new DbFileQuery
+            {
+                File = r,
+                Root = (from f in filesDbContext.Folders
+                        where f.Id ==
+                        (from t in filesDbContext.Tree
+                         where t.FolderId == r.ParentId
+                         orderby t.Level descending
+                         select t.ParentId
+                         ).FirstOrDefault()
+                        where f.TenantId == r.TenantId
+                        select f
+                          ).FirstOrDefault()
+            });
+    }
+
     public static readonly Func<FilesDbContext, int, int, Task<DbFileQuery>> DbFileQueryAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId && r.CurrentVersion)
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .AsNoTracking())
                     .SingleOrDefault());
 
     public static readonly Func<FilesDbContext, int, int, int, Task<DbFileQuery>> DbFileQueryByFileVersionAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId, int fileVersion) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId && r.Version == fileVersion)
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .AsNoTracking())
                     .SingleOrDefault());
 
     public static readonly Func<FilesDbContext, int, int, int, Task<DbFileQuery>> DbFileQueryFileStableAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId, int fileVersion) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId && r.Forcesave == ForcesaveType.None)
                     .Where(r => fileVersion < 0 || r.Version <= fileVersion)
                     .OrderByDescending(r => r.Version)
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .AsNoTracking())
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, int, string, int, Task<DbFileQuery>> DbFileQueryByTitleAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string title, int parentId) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Title == title && r.CurrentVersion && r.ParentId == parentId)
                     .AsNoTracking()
-                    .OrderBy(r => r.CreateOn)
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .OrderBy(r => r.CreateOn))
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, int, int, int, Task<DbFileQuery>> DbFileQueryByVersionAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId, int fileVersion) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId && r.Forcesave == ForcesaveType.None)
                     .Where(r => fileVersion >= 0 && r.Version <= fileVersion)
                     .AsNoTracking()
-                    .OrderByDescending(r => r.Version)
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .OrderByDescending(r => r.Version))
                     .FirstOrDefault());
 
     public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFileQuery>> DbFileQueriesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, int fileId) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == fileId)
                     .OrderByDescending(r => r.Version)
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    }));
+                    .AsNoTracking()));
 
     public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFileQuery>>
         DbFileQueriesByFileIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, IEnumerable<int> fileIds) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => fileIds.Contains(r.Id) && r.CurrentVersion)
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    }));
+                    .AsNoTracking()));
 
     public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<int>> FileIdsAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
@@ -1862,25 +1764,11 @@ static file class Queries
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFileQuery>> DbFileQueriesByTextAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string text) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.CurrentVersion)
                     .Where(r => r.Title.ToLower().Contains(text))
-                    .AsNoTracking()
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    }));
+                    .AsNoTracking()));
 
     public static readonly Func<FilesDbContext, int, int, int, string, Task<int>> UpdateChangesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
@@ -1914,46 +1802,18 @@ static file class Queries
     public static readonly Func<FilesDbContext, int, DateTime, DateTime, IAsyncEnumerable<DbFileQueryWithSecurity>>
         DbFileQueryWithSecurityByPeriodAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, DateTime from, DateTime to) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.CurrentVersion)
-                    .Where(r => r.ModifiedOn >= from && r.ModifiedOn <= to)
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .Where(r => r.ModifiedOn >= from && r.ModifiedOn <= to))
                     .Select(r => new DbFileQueryWithSecurity() { DbFileQuery = r, Security = null }));
 
     public static readonly Func<FilesDbContext, int, IAsyncEnumerable<DbFileQueryWithSecurity>>
         DbFileQueryWithSecurityAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId) =>
-                ctx.Files
+                FromQuery(ctx, ctx.Files
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.CurrentVersion)
-                    .Select(r => new DbFileQuery
-                    {
-                        File = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                      (from t in ctx.Tree
-                                       where t.FolderId == r.ParentId
-                                       orderby t.Level descending
-                                       select t.ParentId
-                                      ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    })
+                    .Where(r => r.CurrentVersion))
                     .Join(ctx.Security.DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId,
                         (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
                     .Where(r => r.Security.TenantId == tenantId)
