@@ -168,7 +168,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             q = succ ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -199,7 +199,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             q = succ ? q.Where(r => searchIds.Contains(r.Id)) : BuildSearch(q, searchText, SearhTypeEnum.Any);
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -260,7 +260,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -314,7 +314,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        await foreach (var e in (checkShare ? FromQueryWithShared(filesDbContext, q) : FromQuery(filesDbContext, q)).AsAsyncEnumerable().Distinct())
+        await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable().Distinct())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -1187,31 +1187,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return q;
     }
 
-    protected IQueryable<DbFolderQuery> FromQueryWithShared(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFiles)
-    {
-        var e = from r in dbFiles
-                select new DbFolderQuery
-                {
-                    Folder = r,
-                    Root = (from f in filesDbContext.Folders
-                            where f.Id ==
-                             (from t in filesDbContext.Tree
-                              where t.FolderId == r.ParentId
-                              orderby t.Level descending
-                              select t.ParentId
-                             ).FirstOrDefault()
-                            where f.TenantId == r.TenantId
-                            select f
-                           ).FirstOrDefault()
-                };
-
-        return e;
-    }
-
     protected IQueryable<DbFolderQuery> FromQuery(FilesDbContext filesDbContext, IQueryable<DbFolder> dbFiles)
     {
-        var FilesDbContext = filesDbContext;
-
         return dbFiles
             .Select(r => new DbFolderQuery
             {
@@ -1344,7 +1321,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (rootFolderType != FolderType.VirtualRooms && rootFolderType != FolderType.Archive)
         {
-            return (-1,"");
+            return (-1, "");
         }
 
         var rootFolderId = Convert.ToInt32(fileEntry.RootId);
@@ -1640,9 +1617,9 @@ static file class Queries
                             Root = (from f in ctx.Folders
                                     where f.Id ==
                                           (from t in ctx.Tree
-                                              where t.FolderId == r.ParentId
-                                              orderby t.Level descending
-                                              select t.ParentId
+                                           where t.FolderId == r.ParentId
+                                           orderby t.Level descending
+                                           select t.ParentId
                                           ).FirstOrDefault()
                                     where f.TenantId == r.TenantId
                                     select f
@@ -1664,9 +1641,9 @@ static file class Queries
                             Root = (from f in ctx.Folders
                                     where f.Id ==
                                           (from t in ctx.Tree
-                                              where t.FolderId == r.ParentId
-                                              orderby t.Level descending
-                                              select t.ParentId
+                                           where t.FolderId == r.ParentId
+                                           orderby t.Level descending
+                                           select t.ParentId
                                           ).FirstOrDefault()
                                     where f.TenantId == r.TenantId
                                     select f
@@ -1690,9 +1667,9 @@ static file class Queries
                             Root = (from f in ctx.Folders
                                     where f.Id ==
                                           (from t in ctx.Tree
-                                              where t.FolderId == r.folder.ParentId
-                                              orderby t.Level descending
-                                              select t.ParentId
+                                           where t.FolderId == r.folder.ParentId
+                                           orderby t.Level descending
+                                           select t.ParentId
                                           ).FirstOrDefault()
                                     where f.TenantId == r.folder.TenantId
                                     select f
@@ -1866,7 +1843,7 @@ static file class Queries
                     .Where(r => r.FolderId == toFolderId)
                     .OrderBy(r => r.Level)
                     .AsQueryable());
-    
+
     public static readonly Func<FilesDbContext, int, int, Task<bool>> AnyTreeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
         (FilesDbContext ctx, int parentId, int folderId) =>
             ctx.Tree
@@ -1977,9 +1954,9 @@ static file class Queries
                             Root = (from f in ctx.Folders
                                     where f.Id ==
                                           (from t in ctx.Tree
-                                              where t.FolderId == r.ParentId
-                                              orderby t.Level descending
-                                              select t.ParentId
+                                           where t.FolderId == r.ParentId
+                                           orderby t.Level descending
+                                           select t.ParentId
                                           ).FirstOrDefault()
                                     where f.TenantId == r.TenantId
                                     select f
@@ -2000,9 +1977,9 @@ static file class Queries
                             Root = (from f in ctx.Folders
                                     where f.Id ==
                                           (from t in ctx.Tree
-                                              where t.FolderId == r.ParentId
-                                              orderby t.Level descending
-                                              select t.ParentId
+                                           where t.FolderId == r.ParentId
+                                           orderby t.Level descending
+                                           select t.ParentId
                                           ).FirstOrDefault()
                                     where f.TenantId == r.TenantId
                                     select f
