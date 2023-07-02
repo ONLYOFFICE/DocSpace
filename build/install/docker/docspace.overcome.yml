@@ -1,3 +1,4 @@
+version: "3.8"
 x-profiles-local: &x-profiles-local
   profiles: ["backend-local"]
   environment:
