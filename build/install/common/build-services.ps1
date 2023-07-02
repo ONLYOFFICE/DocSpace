@@ -47,10 +47,6 @@ foreach ($SERVICE in $BACKEND_NODEJS_SERVICES)
 Write-Host "== Publish ASC.Web.slnf ==" -ForegroundColor Green
 dotnet publish "$SRC_PATH\ASC.Web.slnf" -p "PublishProfile=FolderProfileWindows"
 
-Write-Host "== Publish ASC.Web.Api ==" -ForegroundColor Green
-Set-Location -Path "$SRC_PATH\web\ASC.Web.Api"
-dotnet publish -c $PUBLISH_CNF --self-contained $SELF_CONTAINED -o "$BUILD_PATH\services\ASC.Web.Api\service\"
-
 Set-Location -Path $PSScriptRoot
 
 foreach ($SERVICE in $BACKEND_DOTNETCORE_SERVICES)
