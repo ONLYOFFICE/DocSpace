@@ -128,6 +128,7 @@ function build_dotnetcore_backend {
     echo "== Build ASC.Web.slnf ${BUILD_DOTNET_CORE_ARGS} =="
     dotnet build ASC.Web.slnf ${BUILD_DOTNET_CORE_ARGS}
   fi
+  
   if [[ $# -gt 0 ]]
   then
     local migration_check=$(echo $1 | tr '[:upper:]' '[:lower:]' | tr -d ' ')
@@ -149,33 +150,20 @@ function backend-dotnet-publish {
   # List of names for nodejs backend projects
   get_services_name "${BACKEND_DOTNETCORE_SERVICES}"
   
+  echo "== Publish ASC.Web.slnf =="
+
   if [[ ${PUBLISH_BACKEND_ARGS} == "false" ]]
   then
-    for i in ${!ARRAY_NAME_SERVICES[@]}; do
-      echo "== Publish ${ARRAY_NAME_SERVICES[$i]}.csproj project =="
-      SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${ARRAY_NAME_SERVICES[$i]}".csproj)")"
-      cd ${SERVICE_DIR}
-      dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} -o ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
-      if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
-      then
-       echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
-       cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
-      fi
-  done
+    dotnet publish $SRC_PATH/ASC.Web.slnf -p "PublishProfile=FolderProfileUnix" 2>/dev/null
   else
-    for i in ${!ARRAY_NAME_SERVICES[@]}; do
-      echo "== Publish ${ARRAY_NAME_SERVICES[$i]}.csproj project =="
-      SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${ARRAY_NAME_SERVICES[$i]}".csproj)")"
-      cd ${SERVICE_DIR}
-      dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} ${PUBLISH_BACKEND_ARGS} -o ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
-      if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
-      then
-       echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
-       cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
-      fi
-    done
+    dotnet publish $SRC_PATH/ASC.Web.slnf ${PUBLISH_BACKEND_ARGS} -p "PublishProfile=FolderProfileUnix" 2>/dev/null
   fi
-  
+
+  for i in ${!ARRAY_NAME_SERVICES[@]}; do
+    echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
+    cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+  done
+
   ARRAY_NAME_SERVICES=()
 }
 
