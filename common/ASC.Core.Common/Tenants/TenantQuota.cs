@@ -360,7 +360,14 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else
                 {
-                    length.Value += newValue;
+                    try
+                    {
+                        length.Value = checked(length.Value + newValue);
+                    }
+                    catch (OverflowException)
+                    {
+                        length.Value = long.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureFlag flag)
@@ -393,12 +400,12 @@ public class TenantQuota : IMapFrom<DbQuota>
         return _featuresList.FirstOrDefault(f => string.Equals(f.Split(':')[0], $"{name}", StringComparison.OrdinalIgnoreCase));
     }
 
-    internal void ReplaceFeature<T>(string name, T value)
+    internal void ReplaceFeature<T>(string name, T value, T defaultValue)
     {
         var featureValue = GetFeature(name);
         _featuresList.Remove(featureValue);
 
-        if (!EqualityComparer<T>.Default.Equals(value, default))
+        if (!EqualityComparer<T>.Default.Equals(value, default) && !EqualityComparer<T>.Default.Equals(value, defaultValue))
         {
             if (value is bool)
             {

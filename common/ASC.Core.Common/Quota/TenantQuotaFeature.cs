@@ -64,7 +64,7 @@ public class TenantQuotaFeature<T> : TenantQuotaFeature
         }
         set
         {
-            _tenantQuota.ReplaceFeature(Name, value);
+            _tenantQuota.ReplaceFeature(Name, value, Default);
         }
     }
 
@@ -119,9 +119,13 @@ public class TenantQuotaFeatureSize : TenantQuotaFeature<long>
 
     protected internal override void Multiply(int quantity)
     {
-        if (Value != long.MaxValue)
+        try
         {
-            Value *= quantity;
+            Value = checked(Value * quantity);
+        }
+        catch (OverflowException)
+        {
+            Value = long.MaxValue;
         }
     }
 
