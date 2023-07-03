@@ -49,6 +49,7 @@
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
     <ROW Property="JWT_ENABLED" Value="true"/>
     <ROW Property="JWT_HEADER" Value="Authorization"/>
+    <ROW Property="LICENSE_PATH" Value="[APPDIR]Data\license.lic" MultiBuildValue="DefaultBuild:#ExeBuild:"/>
     <ROW Property="Login_Port" Value="5011"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3#ExeBuild:3"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
@@ -410,11 +411,13 @@
     <ROW JsonProperty="enabled" Parent="migration" Name="enabled" Condition="1" Order="0" Flags="57" Value="[DATABASE_MIGRATION]"/>
     <ROW JsonProperty="environment" Parent="app" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
     <ROW JsonProperty="environment_1" Parent="app_1" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
+    <ROW JsonProperty="file" Parent="license" Name="file" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="files" Parent="Root_1" Name="files" Condition="1" Order="3" Flags="60"/>
     <ROW JsonProperty="folder" Parent="products" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
     <ROW JsonProperty="folder_1" Parent="products_1" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
     <ROW JsonProperty="header" Parent="secret" Name="header" Condition="1" Order="1" Flags="57" Value="[DOCUMENT_SERVER_JWT_HEADER]"/>
     <ROW JsonProperty="internal" Parent="url" Name="internal" Condition="1" Order="1" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
+    <ROW JsonProperty="license" Parent="Root_5" Name="license" Condition="1" Order="2" Flags="60"/>
     <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
     <ROW JsonProperty="machinekey" Parent="core_2" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
@@ -422,6 +425,7 @@
     <ROW JsonProperty="machinekey_3" Parent="core_3" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="options" Parent="Root_11" Name="options" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="path" Parent="file" Name="path" Condition="1" Order="0" Flags="57" Value="[LICENSE_PATH]"/>
     <ROW JsonProperty="port" Parent="app" Name="port" Condition="1" Order="0" Flags="57" Value="[Socket.IO_Port]"/>
     <ROW JsonProperty="port_1" Parent="app_1" Name="port" Condition="1" Order="0" Flags="57" Value="[SsoAuth_Port]"/>
     <ROW JsonProperty="portal" Parent="url" Name="portal" Condition="1" Order="2" Flags="57" Value="http://localhost:80"/>
