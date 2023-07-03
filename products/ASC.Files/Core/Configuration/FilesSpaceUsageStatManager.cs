@@ -70,7 +70,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
     public override async ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var myFiles = filesDbContext.Files
             .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
@@ -125,10 +125,8 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         var my = await _globalFolder.GetFolderMyAsync(_fileMarker, _daoFactory);
         var trash = await _globalFolder.GetFolderTrashAsync(_daoFactory);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        return await filesDbContext.Files
-            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
-            .SumAsync(r => r.ContentLength);
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.SumContentLengthAsync(filesDbContext, tenantId, userId, my, trash);
     }
 
     public async Task RecalculateUserQuota(int TenantId, Guid userId)
@@ -148,4 +146,15 @@ public static class FilesSpaceUsageStatExtension
     {
         services.ServiceCollection.AddBaseDbContextPool<FilesDbContext>();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>
+                ctx.Files
+                    .Where(r => r.TenantId == tenantId && r.CreateBy == userId &&
+                                (r.ParentId == my || r.ParentId == trash))
+                    .Sum(r => r.ContentLength));
 }

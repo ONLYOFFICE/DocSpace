@@ -202,7 +202,7 @@ public class SecurityController : ControllerBase
         var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
         var events = await _loginEventsRepository.GetByFilterAsync(fromDate: from, to: to);
 
-        using var stream = _auditReportCreator.CreateCsvReport(events);
+        await using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
         await _messageService.SendAsync(MessageAction.LoginHistoryReportDownloaded);
@@ -227,7 +227,7 @@ public class SecurityController : ControllerBase
 
         var events = await _auditEventsRepository.GetByFilterAsync(from: from, to: to);
 
-        using var stream = _auditReportCreator.CreateCsvReport(events);
+        await using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
         await _messageService.SendAsync(MessageAction.AuditTrailReportDownloaded);

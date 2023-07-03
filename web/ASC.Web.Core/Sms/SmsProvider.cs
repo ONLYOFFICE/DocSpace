@@ -157,7 +157,7 @@ public abstract class SmsProvider : Consumer
             httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
             using var response = await httpClient.SendAsync(request);
-            using var stream = await response.Content.ReadAsStreamAsync();
+            await using var stream = await response.Content.ReadAsStreamAsync();
             if (stream != null)
             {
                 using var reader = new StreamReader(stream);
@@ -255,7 +255,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
                 httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
                 using var response = await httpClient.SendAsync(request);
-                using var stream = await response.Content.ReadAsStreamAsync();
+                await using var stream = await response.Content.ReadAsStreamAsync();
                 if (stream != null)
                 {
                     using var reader = new StreamReader(stream);

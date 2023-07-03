@@ -79,8 +79,8 @@ public class ClearEventsService : IHostedService, IDisposable
     {
         try
         {
-            await GetOldEventsAsync(r => r.LoginEvents, "LoginHistoryLifeTime");
-            await GetOldEventsAsync(r => r.AuditEvents, "AuditTrailLifeTime");
+            await RemoveOldEventsAsync(r => r.LoginEvents, "LoginHistoryLifeTime");
+            await RemoveOldEventsAsync(r => r.AuditEvents, "AuditTrailLifeTime");
         }
         catch (Exception ex)
         {
@@ -88,14 +88,14 @@ public class ClearEventsService : IHostedService, IDisposable
         }
     }
 
-    private async Task GetOldEventsAsync<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
+    private async Task RemoveOldEventsAsync<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
         List<T> ids;
         var compile = func.Compile();
         do
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+            await using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
             var table = compile.Invoke(ef);
 
             var ae = table
@@ -109,9 +109,9 @@ public class ClearEventsService : IHostedService, IDisposable
                 })
                 .Where(r => r.Date < DateTime.UtcNow.AddDays(-Convert.ToDouble(
                     ef.WebstudioSettings
-                    .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                    .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
-                    .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
+                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
+                        .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
+                        .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
                 .Take(1000);
 
             ids = await ae.Select(r => r.ef).ToListAsync();

@@ -50,7 +50,6 @@ internal interface IDaoBase<TFile, TFolder, TItem>
     Task<IEnumerable<string>> GetChildrenAsync(string folderId);
     Task<List<TItem>> GetItemsAsync(string parentId, bool? folder = null);
     Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist);
-    IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile;
     bool CheckInvalidFilter(FilterType filterType);
     Task<string> MappingIDAsync(string id, bool saveIfNotExist = false);
 }

@@ -283,7 +283,7 @@ public abstract class PortalTaskBase
         using var reader = new StreamReader(stream, Encoding.UTF8);
         string commandText;
 
-        using var connection = DbFactory.OpenConnection(connectionString: db);
+        await using var connection = DbFactory.OpenConnection(connectionString: db);
         var command = connection.CreateCommand();
         command.CommandText = "SET FOREIGN_KEY_CHECKS=0;";
         await command.ExecuteNonQueryAsync();

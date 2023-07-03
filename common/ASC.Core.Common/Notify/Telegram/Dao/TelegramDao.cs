@@ -46,43 +46,60 @@ public class TelegramDao
             TelegramUserId = telegramId
         };
 
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
         await dbContext.AddOrUpdateAsync(q => q.Users, user);
         await dbContext.SaveChangesAsync();
     }
 
     public async Task<TelegramUser> GetUserAsync(Guid userId, int tenantId)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
         return await dbContext.Users.FindAsync(tenantId, userId);
     }
 
     public async Task<List<TelegramUser>> GetUsersAsync(long telegramId)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
 
-        return await dbContext.Users
-            .AsNoTracking()
-            .Where(r => r.TelegramUserId == telegramId)
-            .ToListAsync();
+        return await Queries.TelegramUsersAsync(dbContext, telegramId).ToListAsync();
     }
 
     public async Task DeleteAsync(Guid userId, int tenantId)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
 
-        await dbContext.Users
-            .Where(r => r.PortalUserId == userId)
-            .Where(r => r.TenantId == tenantId)
-            .ExecuteDeleteAsync();
+        await Queries.DeleteTelegramUsersAsync(dbContext, tenantId, userId);
     }
 
     public async Task DeleteAsync(long telegramId)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
 
-        await dbContext.Users
-            .Where(r => r.TelegramUserId == telegramId)
-            .ExecuteDeleteAsync();
+        await Queries.DeleteTelegramUsersByTelegramIdAsync(dbContext, telegramId);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<TelegramDbContext, long, IAsyncEnumerable<TelegramUser>> TelegramUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, long telegramId) =>
+                ctx.Users
+                    .AsNoTracking()
+                    .Where(r => r.TelegramUserId == telegramId));
+
+    public static readonly Func<TelegramDbContext, int, Guid, Task<int>> DeleteTelegramUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, int tenantId, Guid userId) =>
+                ctx.Users
+                    .Where(r => r.PortalUserId == userId)
+                    .Where(r => r.TenantId == tenantId)
+                    .ExecuteDelete());
+
+    public static readonly Func<TelegramDbContext, long, Task<int>> DeleteTelegramUsersByTelegramIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, long telegramId) =>
+                ctx.Users
+                    .Where(r => r.TelegramUserId == telegramId)
+                    .ExecuteDelete());
 }
