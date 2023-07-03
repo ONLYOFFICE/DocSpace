@@ -95,7 +95,7 @@ const SessionLifetime = (props) => {
       "defaultSessionLifetimeSettings"
     );
     const newSettings = {
-      lifetime: sessionLifetime,
+      lifetime: sessionLifetime.toString(),
       type: type,
     };
 
@@ -123,9 +123,7 @@ const SessionLifetime = (props) => {
   };
 
   const onBlurInput = () => {
-    const numberSessionLifetime = Number(sessionLifetime);
-
-    const hasErrorInput = Math.sign(numberSessionLifetime) !== 1;
+    const hasErrorInput = Math.sign(sessionLifetime) !== 1;
 
     hasErrorInput ? setError(true) : setError(false);
   };
@@ -135,13 +133,24 @@ const SessionLifetime = (props) => {
   };
 
   const onSaveClick = async () => {
-    if (error) return;
+    if (error && type) return;
+    let sessionValue = sessionLifetime.trim();
+
     try {
-      setSessionLifetimeSettings(sessionLifetime, type);
+      if (!type) {
+        sessionValue = lifetime;
+
+        saveToSessionStorage("currentSessionLifetimeSettings", {
+          lifetime: sessionValue.toString(),
+          type: type,
+        });
+      }
+
+      setSessionLifetimeSettings(sessionValue, type);
 
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       saveToSessionStorage("defaultSessionLifetimeSettings", {
-        lifetime: sessionLifetime,
+        lifetime: sessionValue.toString(),
         type: type,
       });
       setShowReminder(false);
