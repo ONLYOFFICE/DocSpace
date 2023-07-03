@@ -400,4 +400,7 @@
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Editor</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Kamerbeheerder</value>
+  </data>
 </root>
