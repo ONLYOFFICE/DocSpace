@@ -48,7 +48,7 @@ class DbQuotaService : IQuotaService
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
 
-        return _mapper.Map<DbQuota, TenantQuota>(await coreDbContext.Quotas.SingleOrDefaultAsync(r => r.Tenant == id));
+        return _mapper.Map<DbQuota, TenantQuota>(await coreDbContext.Quotas.SingleOrDefaultAsync(r => r.TenantId == id));
     }
 
     public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
@@ -66,14 +66,14 @@ class DbQuotaService : IQuotaService
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
         var d = await coreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
+                 .Where(r => r.TenantId == id)
                  .SingleOrDefaultAsync();
 
         if (d != null)
         {
             coreDbContext.Quotas.Remove(d);
             await coreDbContext.SaveChangesAsync();
-        }
+    }
     }
 
 
@@ -85,7 +85,7 @@ class DbQuotaService : IQuotaService
         var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
         dbTenantQuotaRow.UserId = row.UserId;
 
-        var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
+        var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.TenantId, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
 
         if (exist == null)
         {
@@ -97,7 +97,7 @@ class DbQuotaService : IQuotaService
             if (exchange)
             {
                 await coreDbContext.QuotaRows
-                    .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                    .Where(r => r.Path == row.Path && r.TenantId == row.TenantId && r.UserId == row.UserId)
                     .ExecuteUpdateAsync(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
             }
             else
@@ -120,7 +120,7 @@ class DbQuotaService : IQuotaService
 
         if (tenantId != Tenant.DefaultTenant)
         {
-            q = q.Where(r => r.Tenant == tenantId);
+            q = q.Where(r => r.TenantId == tenantId);
         }
 
         return await q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToListAsync();

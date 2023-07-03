@@ -33,6 +33,8 @@ public class DbFilesLink : BaseEntity, IDbFile
     public string LinkedId { get; set; }
     public Guid LinkedFor { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, SourceId, LinkedId };
@@ -43,6 +45,8 @@ public static class DbFilesLinkExtension
 {
     public static ModelBuilderWrapper AddDbFilesLink(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesLink>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesLink, Provider.MySql)
             .Add(PgSqlAddDbFilesLink, Provider.PostgreSql);

@@ -71,6 +71,7 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<FacebookLoginProvider>();
         DIHelper.TryAdd<LinkedInLoginProvider>();
         DIHelper.TryAdd<SsoHandlerService>();
+        DIHelper.TryAdd<RemovePortalIntegrationEventHandler>();
 
         services.AddHttpClient();
 

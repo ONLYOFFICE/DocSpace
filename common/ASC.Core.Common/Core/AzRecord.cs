@@ -33,7 +33,7 @@ public class AzRecord : IMapFrom<Acl>
     public Guid Action { get; set; }
     public string Object { get; set; }
     public AceType AceType { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
 
     public AzRecord() { }
 
@@ -59,7 +59,7 @@ public class AzRecord : IMapFrom<Acl>
     {
         var result = new AzRecord()
         {
-            Tenant = cache.Tenant
+            TenantId = cache.Tenant
         };
 
 
@@ -91,14 +91,14 @@ public class AzRecord : IMapFrom<Acl>
             ActionId = cache.Action.ToString(),
             ObjectId = cache.Object,
             Reaction = cache.AceType.ToString(),
-            Tenant = cache.Tenant
+            Tenant = cache.TenantId
         };
     }
 
     public override bool Equals(object obj)
     {
         return obj is AzRecord r &&
-            r.Tenant == Tenant &&
+            r.TenantId == TenantId &&
             r.Subject == Subject &&
             r.Action == Action &&
             r.Object == Object &&
@@ -107,7 +107,7 @@ public class AzRecord : IMapFrom<Acl>
 
     public override int GetHashCode()
     {
-        return Tenant.GetHashCode() ^
+        return TenantId.GetHashCode() ^
             Subject.GetHashCode() ^
             Action.GetHashCode() ^
             (Object ?? string.Empty).GetHashCode() ^
