@@ -9,29 +9,11 @@ echo "Root directory:" $dir
 
 cd $dir
 
-branch=$(git branch --show-current)
-
-echo "GIT_BRANCH:" $branch
-
-branch_exist_remote=$(git ls-remote --heads origin $branch)
-
-if [ -z "$branch_exist_remote" ]; then
-    echo "The current branch does not exist in the remote repository. Please push changes."
-    exit 1
-fi
-
 cd $dir/build/install/docker/
 
 docker_dir="$( pwd )"
 
 echo "Docker directory:" $docker_dir
-
-docker_file=Dockerfile.dev
-core_base_domain="localhost"
-build_date=$(date +%Y-%m-%d)
-env_extension="dev"
-
-echo "BUILD DATE: $build_date"
 
 local_ip=$(ipconfig getifaddr en0)
 
@@ -47,12 +29,6 @@ echo "SERVICE_CLIENT: $client"
 
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
-
-echo "Remove all backend containers"
-docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
-
-echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
-docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Run MySQL"
 
@@ -70,33 +46,33 @@ else
     exit 1
 fi
 
-echo "Run environments (redis, rabbitmq)"
-DOCKERFILE=$docker_file \
-docker compose -f redis.yml -f rabbitmq.yml up -d
+echo "Build backend services (to "publish/" folder)"
+bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
 
-if [ "$1" = "--no_ds" ]; then
-    echo "SKIP Document server"
-else 
-    echo "Run Document server"
-    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-    ROOT_DIR=$dir \
-    docker compose -f ds.dev.yml up -d
-fi
+cd $dir/build/install/docker/
 
-echo "Build all backend services"
-DOCKERFILE=$docker_file \
-RELEASE_DATE=$build_date \
-GIT_BRANCH=$branch \
+echo "Run migration"
+Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
+Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+SERVICE_CLIENT=$client \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
+ROOT_DIR=$dir \
+DATA_DIR="$dir/Data" \
+docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner up -d
+
+echo "Run backend services"
+Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
+Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
-APP_CORE_BASE_DOMAIN=$core_base_domain \
-ENV_EXTENSION=$env_extension \
-docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
-
-echo "Run DB migration"
-DOCKERFILE=$docker_file \
-docker compose -f migration-runner.yml up -d
-
-# Start all backend services"
-$dir/build/start/start.backend.docker.sh
+ROOT_DIR=$dir \
+DATA_DIR="$dir/Data" \
+ENV_EXTENSION="dev" \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local up -d
