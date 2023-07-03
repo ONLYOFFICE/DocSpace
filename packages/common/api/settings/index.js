@@ -101,11 +101,11 @@ export function setMessageSettings(turnOn) {
   });
 }
 
-export function setCookieSettings(lifeTime) {
+export function setCookieSettings(lifeTime, enabled) {
   return request({
     method: "put",
     url: "/settings/cookiesettings",
-    data: { lifeTime },
+    data: { lifeTime, enabled },
   });
 }
 

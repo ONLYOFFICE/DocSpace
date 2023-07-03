@@ -33,12 +33,13 @@ const SessionLifetime = (props) => {
     t,
     history,
     lifetime,
+    enabled,
     setSessionLifetimeSettings,
     initSettings,
     isInit,
   } = props;
   const [type, setType] = useState(false);
-  const [sessionLifetime, setSessionLifetime] = useState("0");
+  const [sessionLifetime, setSessionLifetime] = useState("1440");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -47,9 +48,10 @@ const SessionLifetime = (props) => {
     const currentSettings = getFromSessionStorage(
       "currentSessionLifetimeSettings"
     );
+
     const defaultData = {
       lifetime: lifetime.toString(),
-      type: lifetime > 0 ? true : false,
+      type: enabled,
     };
     saveToSessionStorage("defaultSessionLifetimeSettings", defaultData);
 
@@ -58,14 +60,14 @@ const SessionLifetime = (props) => {
       setType(currentSettings.type);
     } else {
       setSessionLifetime(lifetime.toString());
-      setType(lifetime > 0 ? true : false);
+      setType(enabled);
     }
 
     if (currentSettings) {
       setType(currentSettings.type);
       setSessionLifetime(currentSettings.lifetime);
     } else {
-      setType(lifetime > 0 ? true : false);
+      setType(enabled);
       setSessionLifetime(lifetime.toString());
     }
     setIsLoading(true);
@@ -93,7 +95,7 @@ const SessionLifetime = (props) => {
       "defaultSessionLifetimeSettings"
     );
     const newSettings = {
-      lifetime: type === false ? "0" : sessionLifetime,
+      lifetime: sessionLifetime,
       type: type,
     };
 
@@ -121,7 +123,9 @@ const SessionLifetime = (props) => {
   };
 
   const onBlurInput = () => {
-    !sessionLifetime ? setError(true) : setError(false);
+    !sessionLifetime || sessionLifetime === "0"
+      ? setError(true)
+      : setError(false);
   };
 
   const onFocusInput = () => {
@@ -131,11 +135,11 @@ const SessionLifetime = (props) => {
   const onSaveClick = async () => {
     if (error) return;
     try {
-      const lft = type === false ? "0" : sessionLifetime;
-      setSessionLifetimeSettings(lft);
+      setSessionLifetimeSettings(sessionLifetime, type);
+
       toastr.success(t("SuccessfullySaveSettingsMessage"));
       saveToSessionStorage("defaultSessionLifetimeSettings", {
-        lifetime: lft,
+        lifetime: sessionLifetime,
         type: type,
       });
       setShowReminder(false);
@@ -216,10 +220,15 @@ const SessionLifetime = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { sessionLifetime, setSessionLifetimeSettings } = auth.settingsStore;
+  const {
+    sessionLifetime,
+    enabledSessionLifetime,
+    setSessionLifetimeSettings,
+  } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
+    enabled: enabledSessionLifetime,
     lifetime: sessionLifetime,
     setSessionLifetimeSettings,
     initSettings,

@@ -52,6 +52,7 @@ class SettingsStore {
   ipRestrictionEnable = false;
   ipRestrictions = [];
   sessionLifetime = "1440";
+  enabledSessionLifetime = false;
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -767,11 +768,15 @@ class SettingsStore {
 
   getSessionLifetime = async () => {
     const res = await api.settings.getCookieSettings();
-    this.sessionLifetime = res;
+
+    this.enabledSessionLifetime = res.enabled;
+    this.sessionLifetime = res.lifeTime;
   };
 
-  setSessionLifetimeSettings = async (lifeTime) => {
-    const res = await api.settings.setCookieSettings(lifeTime);
+  setSessionLifetimeSettings = async (lifeTime, enabled) => {
+    await api.settings.setCookieSettings(lifeTime, enabled);
+
+    this.enabledSessionLifetime = enabled;
     this.sessionLifetime = lifeTime;
   };
 
