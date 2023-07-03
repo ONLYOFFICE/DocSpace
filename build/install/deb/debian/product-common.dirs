@@ -1,2 +1,3 @@
 /var/log/onlyoffice/{{product}}
 /etc/onlyoffice/{{product}}/.private
+/var/www/onlyoffice/Data
