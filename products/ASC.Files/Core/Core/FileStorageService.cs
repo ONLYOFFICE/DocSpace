@@ -286,7 +286,8 @@ public class FileStorageService //: IFileStorageService
         IEnumerable<string> tagNames = null,
         bool excludeSubject = false,
         ProviderFilter provider = ProviderFilter.None,
-        SubjectFilter subjectFilter = SubjectFilter.Owner)
+        SubjectFilter subjectFilter = SubjectFilter.Owner,
+        ApplyFilterOption applyFilterOption = ApplyFilterOption.All)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -336,7 +337,7 @@ public class FileStorageService //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, roomId, searchArea,
-                withoutTags, tagNames, excludeSubject, provider, subjectFilter);
+                withoutTags, tagNames, excludeSubject, provider, subjectFilter, applyFilterOption);
         }
         catch (Exception e)
         {
@@ -852,7 +853,7 @@ public class FileStorageService //: IFileStorageService
 
         if (fileWrapper.FormId != 0)
         {
-            using (var stream = await _oFormRequestManager.Get(fileWrapper.FormId))
+            await using (var stream = await _oFormRequestManager.Get(fileWrapper.FormId))
             {
                 file.ContentLength = stream.Length;
                 file = await fileDao.SaveFileAsync(file, stream);
@@ -877,7 +878,7 @@ public class FileStorageService //: IFileStorageService
                 if (!enableExternalExt)
                 {
                     var pathNew = path + "new" + fileExt;
-                    using (var stream = await storeTemplate.GetReadStreamAsync("", pathNew, 0))
+                    await using (var stream = await storeTemplate.GetReadStreamAsync("", pathNew, 0))
                     {
                         file.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync(pathNew);
                         file = await fileDao.SaveFileAsync(file, stream);
@@ -899,7 +900,7 @@ public class FileStorageService //: IFileStorageService
                         break;
                     }
 
-                    using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
+                    await using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
                     {
                         await (await _globalStore.GetStoreAsync()).SaveAsync(fileDao.GetUniqThumbnailPath(file, size.Width, size.Height), streamThumb);
                     }
@@ -938,7 +939,7 @@ public class FileStorageService //: IFileStorageService
 
             try
             {
-                using (var stream = await fileTemlateDao.GetFileStreamAsync(template))
+                await using (var stream = await fileTemlateDao.GetFileStreamAsync(template))
                 {
                     file.ContentLength = template.ContentLength;
                     file = await fileDao.SaveFileAsync(file, stream);
@@ -2985,7 +2986,7 @@ public class FileStorageService //: IFileStorageService
                 newFile.Encrypted = file.Encrypted;
                 newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
-                using (var stream = await fileDao.GetFileStreamAsync(file))
+                await using (var stream = await fileDao.GetFileStreamAsync(file))
                 {
                     newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
                     newFile = await fileDao.SaveFileAsync(newFile, stream);

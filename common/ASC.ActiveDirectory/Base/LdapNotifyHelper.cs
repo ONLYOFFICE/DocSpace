@@ -52,7 +52,7 @@ public class LdapNotifyService : BackgroundService
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
         var dbHelper = scope.ServiceProvider.GetRequiredService<DbHelper>();
 
-        var tenants = await tenantManager.GetTenantsAsync(dbHelper.GetTenants());
+        var tenants = await tenantManager.GetTenantsAsync(await dbHelper.TenantsAsync());
         foreach (var t in tenants)
         {
             var tId = t.Id;

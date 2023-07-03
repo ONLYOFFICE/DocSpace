@@ -67,7 +67,7 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
 
     public async Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId)
     {
-        using var stream = File.OpenRead(localPath);
+        await using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
         await _store.SaveAsync(Domain, storagePath, stream, ACL.Private);
         return storagePath;
@@ -75,8 +75,8 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
 
     public async Task DownloadAsync(string storagePath, string targetLocalPath)
     {
-        using var source = await _store.GetReadStreamAsync(Domain, storagePath);
-        using var destination = File.OpenWrite(targetLocalPath);
+        await using var source = await _store.GetReadStreamAsync(Domain, storagePath);
+        await using var destination = File.OpenWrite(targetLocalPath);
         await source.CopyToAsync(destination);
     }
 

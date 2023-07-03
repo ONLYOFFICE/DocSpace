@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import styled, { css } from "styled-components";
 
-import { TextInput } from "@docspace/components";
+import TextInput from "@docspace/components/text-input";
+import Base from "../themes/base";
 
 const TimeInput = styled.div`
   width: 57px;
@@ -19,6 +20,8 @@ const TimeInput = styled.div`
   display: flex;
 
   border-color: ${(props) => (props.hasError ? "#f21c0e" : "#d0d5da")};
+
+  background-color: ${(props) => props.theme.input.backgroundColor};
 
   ${(props) =>
     props.isFocused &&
@@ -38,6 +41,8 @@ const TimeInput = styled.div`
     text-align: end;
   }
 `;
+
+TimeInput.defaultProps = { theme: Base };
 
 const TimePicker = ({
   date,

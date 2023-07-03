@@ -56,7 +56,7 @@ public class ZipWriteOperator : IDataWriteOperator
 
     public async Task WriteEntryAsync(string key, Stream stream)
     {
-        using (var buffered = _tempStream.GetBuffered(stream))
+        await using (var buffered = _tempStream.GetBuffered(stream))
         {
             var entry = TarEntry.CreateTarEntry(key);
             entry.Size = buffered.Length;
