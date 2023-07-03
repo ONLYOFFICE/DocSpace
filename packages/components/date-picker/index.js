@@ -12,9 +12,14 @@ import { isMobileOnly } from "react-device-detect";
 
 import { useTranslation } from "react-i18next";
 
+import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg?url";
+
 const DateSelector = styled.div`
   width: fit-content;
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
 
   .mr-8 {
     margin-right: 8px;
@@ -96,7 +101,7 @@ const DatePicker = (props) => {
             <SelectorAddButton
               title={t("Select")}
               className="mr-8"
-              iconName={"images/calendar.react.svg"}
+              iconName={CalendarIcon}
             />
             <Text isInline fontWeight={600} color="#A3A9AE">
               {selectDateText}
