@@ -46,6 +46,8 @@ else
     exit 1
 fi
 
+rm -rf $dir/publish
+
 echo "Build backend services (to "publish/" folder)"
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
 
