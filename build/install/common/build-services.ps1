@@ -45,7 +45,7 @@ foreach ($SERVICE in $BACKEND_NODEJS_SERVICES)
 }
 
 Write-Host "== Publish ASC.Web.slnf ==" -ForegroundColor Green
-dotnet publish "$SRC_PATH\ASC.Web.slnf" -p "PublishProfile=FolderProfileWindows"
+dotnet publish "$SRC_PATH\ASC.Web.slnf" -p "PublishProfile=FolderProfile"
 
 Set-Location -Path $PSScriptRoot
 

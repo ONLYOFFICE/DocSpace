@@ -154,9 +154,9 @@ function backend-dotnet-publish {
 
   if [[ ${PUBLISH_BACKEND_ARGS} == "false" ]]
   then
-    dotnet publish $SRC_PATH/ASC.Web.slnf -p "PublishProfile=FolderProfileUnix" 2>/dev/null
+    dotnet publish $SRC_PATH/ASC.Web.slnf -p "PublishProfile=FolderProfile"
   else
-    dotnet publish $SRC_PATH/ASC.Web.slnf ${PUBLISH_BACKEND_ARGS} -p "PublishProfile=FolderProfileUnix" 2>/dev/null
+    dotnet publish $SRC_PATH/ASC.Web.slnf ${PUBLISH_BACKEND_ARGS} -p "PublishProfile=FolderProfile"
   fi
 
   for i in ${!ARRAY_NAME_SERVICES[@]}; do
