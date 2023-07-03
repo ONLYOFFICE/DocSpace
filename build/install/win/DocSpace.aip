@@ -398,8 +398,8 @@
     <ROW JsonProperty="appsettings_1" Parent="app_1" Name="appsettings" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
     <ROW JsonProperty="appsettings_3" Parent="app_3" Name="appsettings" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
     <ROW JsonProperty="appsettings_4" Parent="app_4" Name="appsettings" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
-    <ROW JsonProperty="connectionString" Parent="default" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
-    <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
+    <ROW JsonProperty="connectionString" Parent="default" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"/>
+    <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"/>
     <ROW JsonProperty="core" Parent="Root_4" Name="core" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="core_1" Parent="Root_5" Name="core" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="core_2" Parent="Root_1" Name="core" Condition="1" Order="2" Flags="60"/>
