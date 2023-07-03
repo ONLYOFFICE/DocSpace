@@ -839,4 +839,10 @@ $GreenButton
   <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Καλώς ήλθατε στο ONLYOFFICE DocSpace!</value>
   </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ΑΠΟΔΟΧΉ</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ΕΠΙΒΕΒΑΊΩΣΗ</value>
+  </data>
 </root>

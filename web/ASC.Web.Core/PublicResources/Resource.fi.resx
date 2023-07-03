@@ -502,4 +502,10 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Aloitus</value>
   </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
 </root>
