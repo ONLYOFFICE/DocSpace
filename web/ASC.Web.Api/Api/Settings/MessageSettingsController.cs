@@ -170,13 +170,6 @@ public class MessageSettingsController : BaseSettingsController
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             }
 
-            var settings = await _settingsManager.LoadAsync<IPRestrictionsSettings>();
-
-            if (settings.Enable && !await _ipSecurity.VerifyAsync())
-            {
-                throw new Exception(Resource.ErrorAccessRestricted);
-            }
-
             var trustedDomainSettings = await _settingsManager.LoadAsync<StudioTrustedDomainSettings>();
             var emplType = trustedDomainSettings.InviteAsUsers ? EmployeeType.User : EmployeeType.RoomAdmin;
             if (!_coreBaseSettings.Personal)
