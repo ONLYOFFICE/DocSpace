@@ -3,8 +3,8 @@ name: 4testing multiarch-build
 on:
   push:
     branches: 
-      - 'hotfix/v**'
-      - 'release/v**'
+      - 'feature/docker-extra-tag'
+      
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
@@ -33,10 +33,21 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
-          export DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/\|hotfix.*\///')
-
+          TAG=$(date "+%Y%m%d%H")
+          export DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///')
+          
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
-          --push
+          --load
+
+          DOCKER_IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$REPO" | tr '\n' ' ')
+          IFS=" " read -a IMAGES <<< "$DOCKER_IMAGES"
+          for IMAGE in ${IMAGES[@]}; do
+            NEW_IMAGE="$IMAGE"-"$TAG"
+            docker push "$IMAGE"
+            docker tag "$IMAGE" "$NEW_IMAGE"
+            docker push "$NEW_IMAGE"
+          done
+
         shell: bash
