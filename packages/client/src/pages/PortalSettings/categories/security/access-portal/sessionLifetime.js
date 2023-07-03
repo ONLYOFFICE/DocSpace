@@ -123,9 +123,11 @@ const SessionLifetime = (props) => {
   };
 
   const onBlurInput = () => {
-    !sessionLifetime || sessionLifetime === "0"
-      ? setError(true)
-      : setError(false);
+    const numberSessionLifetime = Number(sessionLifetime);
+
+    const hasErrorInput = Math.sign(numberSessionLifetime) !== 1;
+
+    hasErrorInput ? setError(true) : setError(false);
   };
 
   const onFocusInput = () => {
