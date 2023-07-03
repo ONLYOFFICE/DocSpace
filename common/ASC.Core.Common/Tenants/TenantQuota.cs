@@ -333,7 +333,10 @@ public class TenantQuota : IMapFrom<DbQuota>
         {
             if (f is MaxFileSizeFeature fileSize)
             {
-                fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                if (quota.MaxFileSize != long.MaxValue)
+                {
+                    fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                }
             }
             else if (f is TenantQuotaFeatureCount count)
             {
@@ -346,7 +349,17 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else if (currentValue != count.Default && newValue != count.Default)
                 {
-                    count.Value += newValue;
+                    try
+                    {
+                        if (newValue != int.MaxValue)
+                        {
+                            count.Value = checked(count.Value + newValue);
+                        }
+                    }
+                    catch (OverflowException)
+                    {
+                        count.Value = int.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureSize length)
@@ -362,7 +375,10 @@ public class TenantQuota : IMapFrom<DbQuota>
                 {
                     try
                     {
-                        length.Value = checked(length.Value + newValue);
+                        if (newValue != long.MaxValue)
+                        {
+                            length.Value = checked(length.Value + newValue);
+                        }
                     }
                     catch (OverflowException)
                     {

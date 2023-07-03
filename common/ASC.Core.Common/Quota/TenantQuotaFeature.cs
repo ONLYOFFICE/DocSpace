@@ -97,9 +97,16 @@ public class TenantQuotaFeatureCount : TenantQuotaFeature<int>
 
     protected internal override void Multiply(int quantity)
     {
-        if (Value != int.MaxValue)
+        try
         {
-            Value *= quantity;
+            if (Value != int.MaxValue)
+            {
+                Value = checked(Value * quantity);
+            }
+        }
+        catch (OverflowException)
+        {
+            Value = int.MaxValue;
         }
     }
 }
@@ -121,7 +128,10 @@ public class TenantQuotaFeatureSize : TenantQuotaFeature<long>
     {
         try
         {
-            Value = checked(Value * quantity);
+            if (Value != long.MaxValue)
+            {
+                Value = checked(Value * quantity);
+            }
         }
         catch (OverflowException)
         {
