@@ -119,6 +119,8 @@ const SessionLifetime = (props) => {
   };
 
   const onChangeInput = (e) => {
+    if (Math.sign(e.target.value) !== 1 && e.target.value !== "") return;
+
     setSessionLifetime(e.target.value);
   };
 
@@ -205,6 +207,7 @@ const SessionLifetime = (props) => {
             {t("Lifetime")}
           </Text>
           <TextInput
+            maxLength={4}
             isAutoFocussed={false}
             value={sessionLifetime}
             onChange={onChangeInput}
