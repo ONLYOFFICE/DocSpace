@@ -119,9 +119,15 @@ const SessionLifetime = (props) => {
   };
 
   const onChangeInput = (e) => {
-    if (Math.sign(e.target.value) !== 1 && e.target.value !== "") return;
+    const inputValue = e.target.value;
 
-    setSessionLifetime(e.target.value);
+    if (
+      (Math.sign(inputValue) !== 1 && inputValue !== "") ||
+      inputValue.indexOf(".") !== -1
+    )
+      return;
+
+    setSessionLifetime(inputValue);
   };
 
   const onBlurInput = () => {
@@ -138,27 +144,25 @@ const SessionLifetime = (props) => {
     if (error && type) return;
     let sessionValue = sessionLifetime.trim();
 
-    try {
-      if (!type) {
-        sessionValue = lifetime;
+    if (!type) {
+      sessionValue = lifetime;
 
-        saveToSessionStorage("currentSessionLifetimeSettings", {
-          lifetime: sessionValue.toString(),
-          type: type,
-        });
-      }
-
-      setSessionLifetimeSettings(sessionValue, type);
-
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-      saveToSessionStorage("defaultSessionLifetimeSettings", {
+      saveToSessionStorage("currentSessionLifetimeSettings", {
         lifetime: sessionValue.toString(),
         type: type,
       });
-      setShowReminder(false);
-    } catch (error) {
-      toastr.error(error);
     }
+
+    setSessionLifetimeSettings(sessionValue, type)
+      .then(() => {
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
+        saveToSessionStorage("defaultSessionLifetimeSettings", {
+          lifetime: sessionValue.toString(),
+          type: type,
+        });
+        setShowReminder(false);
+      })
+      .catch((error) => toastr.error(error));
   };
 
   const onCancelClick = () => {

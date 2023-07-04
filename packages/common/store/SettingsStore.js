@@ -774,10 +774,12 @@ class SettingsStore {
   };
 
   setSessionLifetimeSettings = async (lifeTime, enabled) => {
-    await api.settings.setCookieSettings(lifeTime, enabled);
+    const res = await api.settings.setCookieSettings(lifeTime, enabled);
 
     this.enabledSessionLifetime = enabled;
     this.sessionLifetime = lifeTime;
+
+    return res;
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {
