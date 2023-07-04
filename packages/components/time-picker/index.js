@@ -62,7 +62,7 @@ const TimePicker = ({
 
   const [minutes, setMinutes] = useState(moment(date, "HH:mm").format("mm"));
 
-  const handleHoursChange = (time) => {
+  const changeHours = (time) => {
     setHours(time);
     setDate(
       moment(
@@ -72,7 +72,7 @@ const TimePicker = ({
     );
     onChange(time);
   };
-  const handleMinutesChange = (time) => {
+  const changeMinutes = (time) => {
     setMinutes(time);
     setDate(
       moment(
@@ -87,33 +87,33 @@ const TimePicker = ({
     const hours = e.target.value;
 
     if (hours === "") {
-      handleHoursChange("00");
+      changeHours("00");
       return;
     }
     if (!/^\d+$/.test(hours)) return;
 
     if (hours > 23) {
       focusMinutesInput();
-      hours.length === 2 && handleHoursChange("0" + hours[0]);
+      hours.length === 2 && changeHours("0" + hours[0]);
       return;
     }
 
     if (hours.length === 1 && hours > 2) {
-      handleHoursChange("0" + hours);
+      changeHours("0" + hours);
       focusMinutesInput();
       return;
     }
 
     hours.length === 2 && focusMinutesInput();
 
-    handleHoursChange(hours);
+    changeHours(hours);
   };
 
   const handleChangeMinutes = (e) => {
     const minutes = e.target.value;
 
     if (minutes === "") {
-      handleMinutesChange("00");
+      changeMinutes("00");
       return;
     }
     if (!/^\d+$/.test(minutes)) return;
@@ -121,13 +121,13 @@ const TimePicker = ({
     if (minutes > 59) return;
 
     if (minutes.length === 1 && minutes > 5) {
-      handleMinutesChange("0" + minutes);
+      changeMinutes("0" + minutes);
       blurMinutesInput();
       return;
     }
     minutes.length === 2 && blurMinutesInput();
 
-    handleMinutesChange(minutes);
+    changeMinutes(minutes);
   };
 
   const focusHoursInput = (e) => {
@@ -143,13 +143,15 @@ const TimePicker = ({
   };
 
   const onHoursBlur = (e) => {
-    e.target.value.length === 1 && handleHoursChange("0" + e.target.value);
+    e.target.value.length === 1 && changeHours("0" + e.target.value);
     setIsInputFocused(false);
   };
   const onMinutesBlur = (e) => {
-    e.target.value.length === 1 && handleMinutesChange("0" + e.target.value);
+    e.target.value.length === 1 && changeMinutes("0" + e.target.value);
     setIsInputFocused(false);
   };
+
+  const focusInput = () => setIsInputFocused(true);
 
   return (
     <TimeInput
@@ -166,7 +168,7 @@ const TimePicker = ({
         onChange={handleChangeHours}
         onBlur={onHoursBlur}
         tabIndex={tabIndex}
-        onFocus={() => setIsInputFocused(true)}
+        onFocus={focusInput}
       />
       :
       <TextInput
@@ -176,7 +178,7 @@ const TimePicker = ({
         onChange={handleChangeMinutes}
         onClick={focusMinutesInput}
         onBlur={onMinutesBlur}
-        onFocus={() => setIsInputFocused(true)}
+        onFocus={focusInput}
       />
     </TimeInput>
   );
