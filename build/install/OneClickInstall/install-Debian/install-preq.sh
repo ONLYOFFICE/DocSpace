@@ -118,7 +118,6 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				expect \
 				nano \
 				nodejs \
-				npm \
 				gcc \
 				make \
 				dotnet-sdk-7.0 \
@@ -130,7 +129,11 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				nginx-extras \
 				ffmpeg 
 
-if [ ! -e /usr/bin/json ]; then
+if ! command_exists npm; then
+	apt-get -y install npm
+fi
+
+if ! command_exists json; then
 	npm i json -g >/dev/null 2>&1
 fi
 

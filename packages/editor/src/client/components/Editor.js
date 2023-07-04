@@ -164,7 +164,8 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        fileInfo?.viewAccessability?.Convert
+        fileInfo?.viewAccessability?.Convert &&
+        fileInfo?.security?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -246,7 +247,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (fileInfo?.viewAccessability?.Convert) {
+      if (fileInfo?.viewAccessability?.Convert && fileInfo?.security?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -447,6 +448,8 @@ function Editor({
   const onDocumentReady = () => {
     console.log("onDocumentReady", arguments, { docEditor });
     documentIsReady = true;
+
+    config?.errorMessage && docEditor?.showMessage(config.errorMessage);
 
     // if (isSharingAccess) {
     //   loadUsersRightsList(docEditor);

@@ -625,6 +625,10 @@ public class FileConverter
             {
                 await _socketManager.UpdateFileAsync(newFile);
             }
+            else
+            {
+                await _socketManager.CreateFileAsync(newFile);
+            }
         }
         catch (HttpRequestException e)
         {

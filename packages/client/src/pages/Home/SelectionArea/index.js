@@ -61,6 +61,7 @@ const SelectionArea = (props) => {
       scrollClass="section-scroll"
       itemsContainerClass="ReactVirtualized__Grid__innerScrollContainer"
       selectableClass={selectableClass}
+      itemClass="files-item"
       onMove={onMove}
       viewAs={viewAs}
       itemHeight={itemHeight}
