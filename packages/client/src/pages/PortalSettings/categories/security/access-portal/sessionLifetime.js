@@ -119,7 +119,7 @@ const SessionLifetime = (props) => {
   };
 
   const onChangeInput = (e) => {
-    const inputValue = e.target.value;
+    const inputValue = e.target.value.trim();
 
     if (
       (Math.sign(inputValue) !== 1 && inputValue !== "") ||
@@ -142,7 +142,7 @@ const SessionLifetime = (props) => {
 
   const onSaveClick = async () => {
     if (error && type) return;
-    let sessionValue = sessionLifetime.trim();
+    let sessionValue = sessionLifetime;
 
     if (!type) {
       sessionValue = lifetime;
