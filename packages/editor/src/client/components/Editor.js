@@ -448,6 +448,8 @@ function Editor({
     console.log("onDocumentReady", arguments, { docEditor });
     documentIsReady = true;
 
+    config?.errorMessage && docEditor?.showMessage(config.errorMessage);
+
     // if (isSharingAccess) {
     //   loadUsersRightsList(docEditor);
     // }
