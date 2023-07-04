@@ -333,7 +333,10 @@ public class TenantQuota : IMapFrom<DbQuota>
         {
             if (f is MaxFileSizeFeature fileSize)
             {
-                fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                if (quota.MaxFileSize != long.MaxValue)
+                {
+                    fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                }
             }
             else if (f is TenantQuotaFeatureCount count)
             {
@@ -346,7 +349,17 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else if (currentValue != count.Default && newValue != count.Default)
                 {
-                    count.Value += newValue;
+                    try
+                    {
+                        if (newValue != int.MaxValue)
+                        {
+                            count.Value = checked(count.Value + newValue);
+                        }
+                    }
+                    catch (OverflowException)
+                    {
+                        count.Value = int.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureSize length)
@@ -360,7 +373,17 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else
                 {
-                    length.Value += newValue;
+                    try
+                    {
+                        if (newValue != long.MaxValue)
+                        {
+                            length.Value = checked(length.Value + newValue);
+                        }
+                    }
+                    catch (OverflowException)
+                    {
+                        length.Value = long.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureFlag flag)
@@ -393,12 +416,12 @@ public class TenantQuota : IMapFrom<DbQuota>
         return _featuresList.FirstOrDefault(f => string.Equals(f.Split(':')[0], $"{name}", StringComparison.OrdinalIgnoreCase));
     }
 
-    internal void ReplaceFeature<T>(string name, T value)
+    internal void ReplaceFeature<T>(string name, T value, T defaultValue)
     {
         var featureValue = GetFeature(name);
         _featuresList.Remove(featureValue);
 
-        if (!EqualityComparer<T>.Default.Equals(value, default))
+        if (!EqualityComparer<T>.Default.Equals(value, default) && !EqualityComparer<T>.Default.Equals(value, defaultValue))
         {
             if (value is bool)
             {

@@ -121,6 +121,6 @@
     <value>Aloita muokkaaminen</value>
   </data>
   <data name="POST|api/2.0/files/file/{fileId}/startedit_Description" xml:space="preserve">
-    <value>Aloita kuvauksen muokkaaminen </value>
+    <value>Aloita kuvauksen muokkaaminen</value>
   </data>
 </root>

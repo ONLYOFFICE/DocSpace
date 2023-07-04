@@ -598,13 +598,6 @@ Potvrďte prosím svůj e-mail (odkaz je platný 7 dní):
 
 $GreenButton
 
-Aktuálně využíváte tarifní plán STARTUP. Je zcela zdarma a zahrnuje:
-
-* 1 správce, 2 zkušení uživatelé
-* Až 12 místností
-* Neomezený počet uživatelů v každé místnosti
-* 2 GB místa na disku
-
 Užijte si nový způsob spolupráce na dokumentech!
 
 S přátelským pozdravem,
@@ -620,13 +613,6 @@ Potvrďte prosím svůj e-mail (odkaz je platný 7 dní):
 
 $GreenButton
 
-Aktuálně využíváte tarifní plán STARTUP. Je zcela zdarma a zahrnuje:
-
-* 1 správce, 2 zkušení uživatelé
-* Až 12 místností
-* Neomezený počet uživatelů v každé místnosti
-* 2 GB místa na disku
-
 Užijte si nový způsob spolupráce na dokumentech!
 
 S přátelským pozdravem,
@@ -641,13 +627,6 @@ Právě jste vytvořili ONLYOFFICE DocSpace, centrum dokumentů, kde můžete po
 Potvrďte prosím svůj e-mail (odkaz je platný 7 dní):
 
 $GreenButton
-
-Aktuálně využíváte tarifní plán STARTUP. Je zcela zdarma a zahrnuje:
-
-* 1 správce, 2 zkušení uživatelé
-* Až 12 místností
-* Neomezený počet uživatelů v každé místnosti
-* 2 GB místa na disku
 
 Užijte si nový způsob spolupráce na dokumentech!
 
@@ -1770,5 +1749,56 @@ Odkaz je platný pouze 7 dní.</value>
   </data>
   <data name="subject_storage_encryption_success" xml:space="preserve">
     <value>${LetterLogoText}. Proces šifrování dokončen</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS Tarifní požadavek pro "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Křestní jméno
+$UserName
+
+h3.Příjmení
+$UserLastName
+
+h3. Pozice
+$Position
+
+h3.Email
+"$UserEmail": "mailto:$UserEmail"
+
+h3.Phone
+$Phone
+
+h3.Webové stránky společnosti
+$Webové stránky
+
+h3. Název společnosti
+$CompanyTitle
+
+h3. Velikost společnosti
+$CompanySize
+
+h3. Požadovaný obsah
+$Body</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Bezpečnostní oznámení</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Vytvoření poštovní schránky</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Změna hesla poštovní schránky</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE pro osobní použití!</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Změna přiřazení uživatelských údajů se nezdařila</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranění uživatelských dat bylo dokončeno</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranění uživatelských dat se nezdařilo</value>
   </data>
 </root>
