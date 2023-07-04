@@ -23,6 +23,11 @@ const MainContainer = styled.div`
     margin-bottom: 8px;
   }
 
+  .lifetime-input {
+    width: 100%;
+    max-width: 350px;
+  }
+
   .save-cancel-buttons {
     margin-top: 24px;
   }
@@ -211,6 +216,7 @@ const SessionLifetime = (props) => {
             {t("Lifetime")}
           </Text>
           <TextInput
+            className="lifetime-input"
             maxLength={4}
             isAutoFocussed={false}
             value={sessionLifetime}
