@@ -28,30 +28,19 @@ Write-Host "Build backend services (to `publish/` folder)" -ForegroundColor Gree
 
 Set-Location -Path $DockerDir
 
-Write-Host "Run migration" -ForegroundColor Green
+Write-Host "Run migration and services" -ForegroundColor Green
+$Env:ENV_EXTENSION="dev"
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
 $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
 $Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
-$Env:SERVICE_CLIENT=$Client
-$Env:BUILD_PATH="/var/www"
-$Env:SRC_PATH="$RootDir\publish\services"
-$Env:ROOT_DIR=$RootDir
-$Env:DATA_DIR="$RootDir\Data"
-docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner up -d
-
-Write-Host "Run backend services" -ForegroundColor Green
-$Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
-$Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
-$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
-$Env:BUILD_PATH="/var/www"
-$Env:SRC_PATH="$RootDir\publish\services"
+$Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login
 $Env:SERVICE_CLIENT=$Client
 $Env:ROOT_DIR=$RootDir
+$Env:BUILD_PATH="/var/www"
+$Env:SRC_PATH="$RootDir\publish\services"
 $Env:DATA_DIR="$RootDir\Data"
-$Env:ENV_EXTENSION="dev"
-$Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
-docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local up -d
+docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner --profile backend-local up -d
 
 Set-Location -Path $PSScriptRoot
