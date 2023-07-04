@@ -125,7 +125,7 @@ const SessionLifetime = (props) => {
   const onBlurInput = () => {
     const hasErrorInput = Math.sign(sessionLifetime) !== 1;
 
-    hasErrorInput ? setError(true) : setError(false);
+    setError(hasErrorInput);
   };
 
   const onFocusInput = () => {
