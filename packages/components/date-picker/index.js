@@ -12,7 +12,25 @@ import { isMobileOnly } from "react-device-detect";
 
 import { useTranslation } from "react-i18next";
 
-import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg?url";
+import CalendarIconUrl from "PUBLIC_DIR/images/calendar.react.svg?url";
+import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg";
+
+const Wrapper = styled.div`
+  .selectedItem {
+    .calendarIcon {
+      width: 12px;
+      height: 12px;
+      padding: 0 10px 0 2px;
+    }
+    :hover {
+      .calendarIcon {
+        path {
+          fill: #657077;
+        }
+      }
+    }
+  }
+`;
 
 const DateSelector = styled.div`
   width: fit-content;
@@ -24,6 +42,11 @@ const DateSelector = styled.div`
   .mr-8 {
     margin-right: 8px;
   }
+`;
+
+const SelectedLabel = styled.span`
+  display: flex;
+  align-items: center;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -47,6 +70,7 @@ const DatePicker = (props) => {
     minDate,
     maxDate,
     locale,
+    showCalendarIcon,
   } = props;
   const { t } = useTranslation(["Webhooks"]);
 
@@ -94,14 +118,14 @@ const DatePicker = (props) => {
   }, []);
 
   return (
-    <div className={className} id={id}>
+    <Wrapper className={className} id={id}>
       {date === null ? (
         <>
           <DateSelector onClick={toggleCalendar} ref={selectorRef}>
             <SelectorAddButton
               title={t("Select")}
               className="mr-8"
-              iconName={CalendarIcon}
+              iconName={CalendarIconUrl}
             />
             <Text isInline fontWeight={600} color="#A3A9AE">
               {selectDateText}
@@ -113,10 +137,19 @@ const DatePicker = (props) => {
         <SelectedItem
           className="selectedItem"
           onClose={deleteSelectedDate}
-          label={date.format("DD MMM YYYY")}
+          label={
+            showCalendarIcon ? (
+              <SelectedLabel>
+                <CalendarIcon className="calendarIcon" />
+                {date.format("DD MMM YYYY")}
+              </SelectedLabel>
+            ) : (
+              date.format("DD MMM YYYY")
+            )
+          }
         />
       )}
-    </div>
+    </Wrapper>
   );
 };
 
@@ -137,10 +170,13 @@ DatePicker.propTypes = {
   maxDate: PropTypes.object,
   /** Specifies calendar locale */
   locale: PropTypes.string,
+  /** Shows calendar icon in selected item */
+  showCalendarIcon: PropTypes.bool,
 };
 
 DatePicker.defaultProps = {
   selectDateText: "Select date",
+  showCalendarIcon: true,
 };
 
 export default DatePicker;
