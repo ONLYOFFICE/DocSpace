@@ -600,9 +600,6 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
   <data name="ButtonCollaborateDocSpace" xml:space="preserve">
     <value>Współpracuj w DocSpace</value>
   </data>
-  <data name="ButtonConfirm" xml:space="preserve">
-    <value>Potwierdź zaproszenie DocSpace</value>
-  </data>
   <data name="ButtonConfirmRoomInvite" xml:space="preserve">
     <value>Potwierdź zaproszenie do pokoju</value>
   </data>
@@ -1246,5 +1243,11 @@ Zespół ONLYOFFICE
   </data>
   <data name="subject_saas_docspace_invite" xml:space="preserve">
     <value>Dołącz do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potwierdź zaproszenie DocSpace</value>
   </data>
 </root>
