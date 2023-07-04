@@ -657,7 +657,7 @@ if command -v yum >/dev/null 2>&1; then
 	REDIS_PACKAGE="redis"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
-	PACKAGE_MANAGER="dpkg -l"
+	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
 fi
