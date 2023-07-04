@@ -893,7 +893,7 @@ public class FileStorageService<T> //: IFileStorageService
                     file = await fileDao.SaveFileAsync(file, null);
                 }
 
-                int counter = 0;
+                var counter = 0;
 
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
@@ -2163,7 +2163,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanConvert(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (fileInfo.StartConvert && _fileConverter.MustConvert(file))
             {
