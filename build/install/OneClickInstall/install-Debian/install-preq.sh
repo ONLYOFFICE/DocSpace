@@ -118,6 +118,7 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				expect \
 				nano \
 				nodejs \
+				npm \
 				gcc \
 				make \
 				dotnet-sdk-7.0 \

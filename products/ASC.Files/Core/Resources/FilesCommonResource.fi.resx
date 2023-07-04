@@ -352,4 +352,13 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Et voi kiinnittää huonetta</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Yhteistyökumppani</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Muokkaaja</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Huoneen ylläpitäjä</value>
+  </data>
 </root>
