@@ -862,6 +862,15 @@ public class UserController : PeopleControllerBase
     [HttpPost("password")]
     public object SendUserPassword(MemberRequestDto inDto)
     {
+        if (_authContext.IsAuthenticated)
+        {
+            var currentUser = _userManager.GetUserByEmail(inDto.Email);
+            if (currentUser.Id != _authContext.CurrentAccount.ID && !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+        }
+
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
