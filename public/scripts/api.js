@@ -23,6 +23,8 @@
       page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
+      search: "",
+      withSubfolders: true,
     },
     keysForReload: [
       "src",
