@@ -130,11 +130,12 @@ const PeopleRowContainer = ({
       filesLength={peopleList.length}
       itemHeight={58}
     >
-      {peopleList.map((item) => (
+      {peopleList.map((item, index) => (
         <SimpleUserRow
           theme={theme}
           key={item.id}
           item={item}
+          itemIndex={index}
           sectionWidth={sectionWidth}
         />
       ))}

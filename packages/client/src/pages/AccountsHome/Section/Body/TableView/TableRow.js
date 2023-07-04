@@ -130,6 +130,7 @@ const PeopleTableRow = (props) => {
     isActive,
     isSeveralSelection,
     canChangeUserType,
+    value,
   } = props;
 
   const {
@@ -323,6 +324,7 @@ const PeopleTableRow = (props) => {
       className={`user-item ${
         isChecked || isActive ? "table-row-selected" : ""
       }`}
+      value={value}
     >
       <StyledPeopleRow
         key={item.id}
