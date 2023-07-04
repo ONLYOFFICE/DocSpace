@@ -73,14 +73,22 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
     setIsCalendarOpen(false);
   };
 
-  const setDate = (date) => {
-    setFilters((prevfilters) => ({ ...prevfilters, deliveryDate: date }));
-  };
   const setDeliveryFrom = (date) => {
     setFilters((prevfilters) => ({ ...prevfilters, deliveryFrom: date }));
   };
   const setDeliveryTo = (date) => {
     setFilters((prevfilters) => ({ ...prevfilters, deliveryTo: date }));
+  };
+  const onDateSet = (date) => {
+    setIsApplied(false);
+    setIsTimeOpen(false);
+    setIsCalendarOpen(false);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      deliveryDate: date,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+    }));
   };
 
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
@@ -93,17 +101,10 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
 
   const showTimePicker = () => setIsTimeOpen(true);
 
-  const onDateSet = (date) => {
-    setIsApplied(false);
-    setIsTimeOpen(false);
-    setIsCalendarOpen(false);
-    setDate(date);
-  };
-
   const CalendarElement = () => (
     <StyledCalendar
       selectedDate={filters.deliveryDate}
-      setSelectedDate={setDate}
+      setSelectedDate={onDateSet}
       onChange={closeCalendar}
       isMobile={isMobileOnly}
       forwardedRef={calendarRef}
@@ -162,6 +163,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
             date={filters.deliveryDate}
             onChange={onDateSet}
             selectedDateText={t("SelectDate")}
+            showCalendarIcon={false}
           />
         )}
         {filters.deliveryDate !== null &&
