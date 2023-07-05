@@ -117,7 +117,12 @@ public class WebPluginsController : BaseSettingsController
 
         var storage = await _storageFactory.GetStorageAsync(Tenant.Id, StorageModuleName);
 
-        var uri = await storage.SaveAsync(pluginName, file.OpenReadStream());
+        var exist = await storage.IsFileAsync(string.Empty, pluginName);
+
+        if (exist)
+        {
+            throw new ArgumentException("Plugin already exist");
+        }
 
         var webPlugin = new DbWebPlugin() {
             TenantId = Tenant.Id,
@@ -125,7 +130,11 @@ public class WebPluginsController : BaseSettingsController
             Enabled = true
         };
 
-        var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(await _webPluginService.SaveAsync(webPlugin));
+        var plugin = await _webPluginService.SaveAsync(webPlugin);
+
+        var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
+
+        var uri = await storage.SaveAsync(pluginName, file.OpenReadStream());
 
         outDto.Url = uri.ToString();
 
@@ -139,7 +148,14 @@ public class WebPluginsController : BaseSettingsController
 
         //await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var outDto = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(await _webPluginService.GetAsync(Tenant.Id, enabled));
+        var plugins = await _webPluginService.GetAsync(Tenant.Id, enabled);
+
+        var outDto = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(plugins);
+
+        if (outDto == null || !outDto.Any())
+        {
+            return outDto;
+        }
 
         var storage = await _storageFactory.GetStorageAsync(Tenant.Id, StorageModuleName);
 
@@ -147,26 +163,28 @@ public class WebPluginsController : BaseSettingsController
         {
             var uri = await storage.GetUriAsync(dto.Name);
 
-            dto.Url = uri.ToString();
+            dto.Url = uri?.ToString();
         }
 
         return outDto;
     }
 
-    [HttpPut("webplugins/{id}")]
+    [HttpGet("webplugins/{id}")]
     public async Task<WebPluginDto> GetWebPluginByIdAsync(int id)
     {
         DemandWebPlugins();
 
         //await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(await _webPluginService.GetByIdAsync(id));
+        var plugin = await _webPluginService.GetByIdAsync(id) ?? throw new ItemNotFoundException("Plugin not found");
+
+        var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
         var storage = await _storageFactory.GetStorageAsync(Tenant.Id, StorageModuleName);
 
         var uri = await storage.GetUriAsync(outDto.Name);
 
-        outDto.Url = uri.ToString();
+        outDto.Url = uri?.ToString();
 
         return outDto;
     }
@@ -178,7 +196,9 @@ public class WebPluginsController : BaseSettingsController
 
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        await _webPluginService.UpdateAsync(id, inDto.Enabled);
+        var plugin = await _webPluginService.GetByIdAsync(id) ?? throw new ItemNotFoundException("Plugin not found");
+
+        await _webPluginService.UpdateAsync(plugin.Id, inDto.Enabled);
     }
 
     [HttpDelete("webplugins/{id}")]
@@ -188,6 +208,12 @@ public class WebPluginsController : BaseSettingsController
 
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        await _webPluginService.DeleteAsync(id);
+        var plugin = await _webPluginService.GetByIdAsync(id) ?? throw new ItemNotFoundException("Plugin not found");
+
+        await _webPluginService.DeleteAsync(plugin.Id);
+
+        var storage = await _storageFactory.GetStorageAsync(Tenant.Id, StorageModuleName);
+
+        await storage.DeleteAsync(string.Empty, plugin.Name);
     }
 }
