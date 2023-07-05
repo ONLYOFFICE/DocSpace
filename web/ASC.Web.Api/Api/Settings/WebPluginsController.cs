@@ -96,7 +96,7 @@ public class WebPluginsController : BaseSettingsController
 
         var file = HttpContext.Request.Form.Files[0] ?? throw new ArgumentException("Input file is null");
 
-        var fileName = Path.GetFileName(file.FileName);
+        var fileName = Path.GetFileName(file.FileName)?.ToLowerInvariant(); //TODO: think about special characters
 
         if (string.IsNullOrEmpty(fileName))
         {
@@ -113,11 +113,9 @@ public class WebPluginsController : BaseSettingsController
             throw new ArgumentException("File size exceeds limit");
         }
 
-        var pluginName = Path.GetFileNameWithoutExtension(fileName).ToLowerInvariant(); //TODO: think about special characters
-
         var storage = await _storageFactory.GetStorageAsync(Tenant.Id, StorageModuleName);
 
-        var exist = await storage.IsFileAsync(string.Empty, pluginName);
+        var exist = await storage.IsFileAsync(string.Empty, fileName);
 
         if (exist)
         {
@@ -126,7 +124,7 @@ public class WebPluginsController : BaseSettingsController
 
         var webPlugin = new DbWebPlugin() {
             TenantId = Tenant.Id,
-            Name = pluginName,
+            Name = fileName,
             Enabled = true
         };
 
@@ -134,7 +132,7 @@ public class WebPluginsController : BaseSettingsController
 
         var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
-        var uri = await storage.SaveAsync(pluginName, file.OpenReadStream());
+        var uri = await storage.SaveAsync(fileName, file.OpenReadStream());
 
         outDto.Url = uri.ToString();
 

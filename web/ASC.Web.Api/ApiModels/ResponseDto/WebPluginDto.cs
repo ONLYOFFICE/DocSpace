@@ -24,9 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF.Model;
+
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class WebPluginDto
+public class WebPluginDto: IMapFrom<DbWebPlugin>
 {
     public int Id { get; set; }
     public string Name { get; set; }
