@@ -64,8 +64,8 @@ const commonInputStyle = css`
         text-align: right;
       }
 
-      &[type="password"] {
-        direction: rtl;
+      &[type="tel"]:placeholder-shown {
+        direction: ltr;
       }
     `}
 `;
