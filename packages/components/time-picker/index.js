@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import styled, { css } from "styled-components";
@@ -51,16 +51,28 @@ const TimePicker = ({
   className,
   hasError,
   tabIndex,
+  onBlur,
+  focusOnRender,
 }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
-  const timeInputRef = useRef(null);
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 
   const [hours, setHours] = useState(moment(date, "HH:mm").format("HH"));
 
   const [minutes, setMinutes] = useState(moment(date, "HH:mm").format("mm"));
+
+  const mountRef = useRef(false);
+
+  useEffect(() => {
+    onBlur && mountRef.current && !isInputFocused && onBlur();
+  }, [isInputFocused]);
+
+  useEffect(() => {
+    focusOnRender && hoursInputRef.current.select();
+    mountRef.current = true;
+  }, []);
 
   const changeHours = (time) => {
     setHours(time);
@@ -155,7 +167,6 @@ const TimePicker = ({
 
   return (
     <TimeInput
-      ref={timeInputRef}
       onClick={focusHoursInput}
       className={className}
       hasError={hasError}
@@ -183,7 +194,6 @@ const TimePicker = ({
     </TimeInput>
   );
 };
-
 TimePicker.propTypes = {
   /** Inital date */
   date: PropTypes.object,
@@ -197,12 +207,17 @@ TimePicker.propTypes = {
   hasError: PropTypes.bool,
   /** Tab index allows to make element focusable */
   hasError: PropTypes.bool,
+  /** Triggers function on blur */
+  onBlur: PropTypes.func,
+  /** Focus input on render */
+  focusOnRender: PropTypes.bool,
 };
 
 TimePicker.defaultProps = {
   onChange: () => {},
   className: "",
   hasError: false,
+  focusOnRender: false,
 };
 
 export default TimePicker;
