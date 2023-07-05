@@ -361,4 +361,16 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Jūs nevarat piespraust telpu</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Telpas administrators</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Līdzstrādnieks</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redaktors</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Komentēt</value>
+  </data>
 </root>

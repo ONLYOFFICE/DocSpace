@@ -101,6 +101,7 @@ const SimpleUserRow = (props) => {
     //setBufferSelection,
     isActive,
     //isSeveralSelection,
+    value,
   } = props;
 
   const isChecked = checkedProps.checked;
@@ -115,7 +116,10 @@ const SimpleUserRow = (props) => {
 
   return (
     <StyledWrapper
-      className={`row-wrapper ${isChecked || isActive ? "row-selected" : ""}`}
+      className={`user-item row-wrapper ${
+        isChecked || isActive ? "row-selected" : ""
+      }`}
+      value={value}
     >
       <div className="user-item">
         <StyledSimpleUserRow

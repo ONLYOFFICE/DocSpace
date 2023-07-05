@@ -431,7 +431,7 @@ setup_nginx(){
 	echo -n "Configuring nginx... "
 	
 	# Remove default nginx website
-	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
+	rm -f $NGINX_CONF/default.conf $NGINX_DIR/sites-enabled/default 
     sed -i "s_\(listen\).*;_\1 $APP_PORT;_" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
 	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
@@ -657,7 +657,7 @@ if command -v yum >/dev/null 2>&1; then
 	REDIS_PACKAGE="redis"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
-	PACKAGE_MANAGER="dpkg -l"
+	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
 fi

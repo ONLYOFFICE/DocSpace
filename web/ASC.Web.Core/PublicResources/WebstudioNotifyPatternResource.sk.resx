@@ -1234,4 +1234,25 @@ tím ONLYOFFICE
   <data name="ButtonVisitPaymentsSection" xml:space="preserve">
     <value>Navštívte sekciu Platby</value>
   </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
 </root>

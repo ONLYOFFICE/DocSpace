@@ -31,6 +31,7 @@ public class TenantCookieSettings : ISettings<TenantCookieSettings>
 {
     public int Index { get; set; }
     public int LifeTime { get; set; }
+    public bool Enabled { get; set; }
 
     public TenantCookieSettings GetDefault()
     {
@@ -41,12 +42,15 @@ public class TenantCookieSettings : ISettings<TenantCookieSettings>
     {
         var defaultSettings = GetInstance();
 
-        return LifeTime == defaultSettings.LifeTime;
+        return LifeTime == defaultSettings.LifeTime && Enabled == defaultSettings.Enabled;
     }
 
     public static TenantCookieSettings GetInstance()
     {
-        return new TenantCookieSettings();
+        return new TenantCookieSettings()
+        {
+            LifeTime = 1440
+        };
     }
 
     [JsonIgnore]
@@ -113,7 +117,9 @@ public class TenantCookieSettingsHelper
     public DateTime GetExpiresTime(int tenantId)
     {
         var settingsTenant = GetForTenant(tenantId);
-        var expires = settingsTenant.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(settingsTenant.LifeTime);
+        var expires = settingsTenant.IsDefault() || !settingsTenant.Enabled ?
+            DateTime.UtcNow.AddYears(1) :
+            DateTime.UtcNow.AddMinutes(settingsTenant.LifeTime);
 
         return expires;
     }

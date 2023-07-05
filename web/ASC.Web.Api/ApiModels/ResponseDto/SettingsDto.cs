@@ -59,6 +59,7 @@ public class SettingsDto
     public string BookTrainingEmail { get; set; }
     public string DocumentationEmail { get; set; }
     public string LegalTerms { get; set; }
+    public bool CookieSettingsEnabled { get; set; }
 
     public PluginsDto Plugins { get; set; }
 

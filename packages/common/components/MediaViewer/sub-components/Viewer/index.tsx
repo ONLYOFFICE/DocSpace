@@ -185,6 +185,8 @@ function Viewer(props: ViewerProps) {
               generateContextMenu={props.generateContextMenu}
               setIsOpenContextMenu={setIsOpenContextMenu}
               resetToolbarVisibleTimer={resetToolbarVisibleTimer}
+              contextModel={props.contextModel}
+              errorTitle={props.errorTitle}
             />,
             containerRef.current
           )

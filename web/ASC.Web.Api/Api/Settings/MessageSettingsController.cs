@@ -90,9 +90,15 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [HttpGet("cookiesettings")]
-    public int GetCookieSettings()
+    public CookieSettingsDto GetCookieSettings()
     {
-        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+        var result = _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+
+        return new CookieSettingsDto
+        {
+            Enabled = result.Enabled,
+            LifeTime = result.LifeTime
+        };
     }
 
     [HttpPut("cookiesettings")]
@@ -105,7 +111,7 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTime(model.LifeTime, model.Enabled);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 

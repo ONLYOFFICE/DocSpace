@@ -4,16 +4,10 @@ rd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Run script directory:" $dir
 
 dir=$(builtin cd $rd/../; pwd)
+dockerDir="$dir/build/install/docker"
 
 echo "Root directory:" $dir
-
-cd $dir
-
-cd $dir/build/install/docker/
-
-docker_dir="$( pwd )"
-
-echo "Docker directory:" $docker_dir
+echo "Docker files root directory:" $dockerDir
 
 local_ip=$(ipconfig getifaddr en0)
 
@@ -36,45 +30,33 @@ arch_name="$(uname -m)"
 
 if [ "${arch_name}" = "x86_64" ]; then
     echo "CPU Type: x86_64 -> run db.yml"
-    docker compose -f db.yml up -d
+    docker compose -f $dockerDir/db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
     echo "CPU Type: arm64 -> run db.yml with arm64v8 image"
     MYSQL_IMAGE=arm64v8/mysql:8.0.32-oracle \
-    docker compose -f db.yml up -d
+    docker compose -f $dockerDir/db.yml up -d
 else
     echo "Error: Unknown CPU Type: ${arch_name}."
     exit 1
 fi
 
+echo "Clear publish folder"
 rm -rf $dir/publish
 
 echo "Build backend services (to "publish/" folder)"
-bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dir/build/install/docker/docker-entrypoint.py"
+bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dockerDir/docker-entrypoint.py"
 
-cd $dir/build/install/docker/
-
-echo "Run migration"
+echo "Run migration and services"
+ENV_EXTENSION="dev" \
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
 Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
-SERVICE_CLIENT=$client \
-BUILD_PATH="/var/www" \
-SRC_PATH="$dir/publish/services" \
-ROOT_DIR=$dir \
-DATA_DIR="$dir/Data" \
-docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner up -d
-
-echo "Run backend services"
-Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
-Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
-Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
-BUILD_PATH="/var/www" \
-SRC_PATH="$dir/publish/services" \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
 ROOT_DIR=$dir \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
 DATA_DIR="$dir/Data" \
-ENV_EXTENSION="dev" \
-DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local up -d
+docker-compose -f $dockerDir/docspace.profiles.yml -f $dockerDir/docspace.overcome.yml --profile migration-runner --profile backend-local up -d
