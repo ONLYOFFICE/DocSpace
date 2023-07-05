@@ -110,7 +110,7 @@ const SalesDepartmentRequestDialog = ({
           errorMessage={t("Common:RequiredField")}
         >
           <TextInput
-            id="name"
+            id="your-name"
             hasError={!isValidName}
             name="name"
             type="text"
@@ -136,7 +136,7 @@ const SalesDepartmentRequestDialog = ({
           <TextInput
             hasError={!isValidEmail}
             id="e-mail"
-            name="e-mail"
+            name="registration-email"
             type="text"
             size="base"
             scale
