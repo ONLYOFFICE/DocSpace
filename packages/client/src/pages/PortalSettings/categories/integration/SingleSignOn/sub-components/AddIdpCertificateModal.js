@@ -36,7 +36,7 @@ const AddIdpCertificateModal = (props) => {
 
         <TextArea
           className="text-area"
-          id="idpCertificate"
+          id="idp-certificate"
           name="idpCertificate"
           onChange={setInput}
           value={idpCertificate}

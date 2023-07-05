@@ -51,7 +51,7 @@ const AddSpCertificateModal = (props) => {
         </Text>
 
         <TextArea
-          id="spCertificate"
+          id="sp-certificate"
           className="text-area"
           name="spCertificate"
           onChange={setInput}
@@ -65,7 +65,7 @@ const AddSpCertificateModal = (props) => {
         </Text>
 
         <TextArea
-          id="spPrivateKey"
+          id="sp-privateKey"
           className="text-area"
           name="spPrivateKey"
           onChange={setInput}
