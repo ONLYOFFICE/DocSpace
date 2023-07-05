@@ -39,11 +39,13 @@ override_dh_auto_build:
 
 	rm -rf ${SRC_PATH}/ASC.Migration.Runner/service/runtimes/linux-arm*
 	rm -f ${SRC_PATH}/config/nginx/onlyoffice-login.conf
-	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
-	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
+
+	if ! grep -q 'var/www/${PRODUCT}' ${SRC_PATH}/config/nginx/*.conf; then find ${SRC_PATH}/config/nginx/ -name "*.conf" -exec sed -i "s@\(var/www/\)@\1${PRODUCT}/@" {} +; fi
 
 	json -I -f ${SRC_PATH}/config/appsettings.services.json -e "this.logPath=\"/var/log/onlyoffice/${PRODUCT}\"" -e "this.socket={ 'path': '../ASC.Socket.IO/' }" \
 	-e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.core={ 'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }"
+
+	find ${SRC_PATH}/config/ -type f -regex '.*\.\(test\|dev\).*' -delete
 
 	for i in ${PRODUCT} $$(ls ${CURRENT_PATH}/debian/*.install | grep -oP 'debian/\K.*' | grep -o '^[^.]*'); do \
 		cp ${CURRENT_PATH}/debian/source/lintian-overrides ${CURRENT_PATH}/debian/$$i.lintian-overrides; \
