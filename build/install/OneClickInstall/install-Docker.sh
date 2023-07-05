@@ -728,22 +728,22 @@ domain_check () {
 				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
 			fi
 		done <<< "$DOMAINS"
-
-		if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
-			DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
-            APP_URL_PORTAL=${APP_URL_PORTAL:-${LOCAL_RESOLVED_DOMAINS[0]}}
-			if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
-				echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
-				echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
-				echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
-				if read_continue_installation; then
-					if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
-						sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
-					else
-						echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
-					fi
-					systemctl restart docker
+	fi
+	
+	if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
+		DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
+		APP_URL_PORTAL=${APP_URL_PORTAL:-${LOCAL_RESOLVED_DOMAINS[0]}}
+		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
+			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
+			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			if read_continue_installation; then
+				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
+					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
+				else
+					echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
 				fi
+				systemctl restart docker
 			fi
 		fi
 	fi
