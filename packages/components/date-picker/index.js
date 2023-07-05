@@ -21,12 +21,8 @@ const Wrapper = styled.div`
       width: 12px;
       height: 12px;
       padding: 0 10px 0 2px;
-    }
-    :hover {
-      .calendarIcon {
-        path {
-          fill: #657077;
-        }
+      path {
+        fill: #657077;
       }
     }
   }
@@ -157,9 +153,9 @@ DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
   /** Date object */
-  date: PropTypes.object,
+  date: PropTypes.oneOfType([PropTypes.object.isRequired, null]),
   /** Allow you to handle changing events of component */
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   /** Allows to set classname */
   className: PropTypes.string,
   /** Allows to set id */
