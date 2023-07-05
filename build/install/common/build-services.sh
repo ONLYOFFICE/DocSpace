@@ -159,10 +159,13 @@ function backend-dotnet-publish {
     dotnet publish $SRC_PATH/ASC.Web.slnf ${PUBLISH_BACKEND_ARGS} -p "PublishProfile=FolderProfile"
   fi
 
-  for i in ${!ARRAY_NAME_SERVICES[@]}; do
-    echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
-    cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
-  done
+  if [[ ${DOCKER_ENTRYPOINT} != "false" ]]
+  then
+    for i in ${!ARRAY_NAME_SERVICES[@]}; do
+      echo "== ADD ${DOCKER_ENTRYPOINT} to ${ARRAY_NAME_SERVICES[$i]} =="
+      cp ${DOCKER_ENTRYPOINT} ${BUILD_PATH}/services/${ARRAY_NAME_SERVICES[$i]}/service/
+    done
+  fi  
 
   ARRAY_NAME_SERVICES=()
 }
