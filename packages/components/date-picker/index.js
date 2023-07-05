@@ -153,7 +153,7 @@ DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
   /** Date object */
-  date: PropTypes.oneOfType([PropTypes.object.isRequired, null]),
+  date: PropTypes.object,
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func.isRequired,
   /** Allows to set classname */
