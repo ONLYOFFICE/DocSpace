@@ -135,8 +135,8 @@ const SalesDepartmentRequestDialog = ({
         >
           <TextInput
             hasError={!isValidEmail}
-            id="e-mail"
-            name="registration-email"
+            id="registration-email"
+            name="e-mail"
             type="text"
             size="base"
             scale
