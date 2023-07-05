@@ -192,7 +192,7 @@
   "TrustedMail": "Configurações de domínio de email confiável",
   "TrustedMailDescription": "<strong>Configurações de domínio de email confiável</strong> é uma maneira de especificar os servidores de email que podem ser usados para registo automático de utilizadores no ONLYOFFICE™. Pode também alterar a opção <strong>Domínios personalizados</strong> e confirmar  o servidor de e-mail no campo abaixo. Neste caso qualquer membro da sua organização que possua uma conta no servidor de email indicado poderá registar-se clicando no link <strong>Aderir</strong> na página <strong>Assinar</strong> ao digitar um email desse domínio. Para desactivar esta opção verifique e mude a opção activa do botão de escolha existentente para o efeito. Para confirmar as alterações use o botão <strong>Guardar</strong> no fim da secção.",
   "TwoFactorAuth": "Autenticação de dois fatores",
-  "TwoFactorAuthDescription": "Esta opção permite habilitar ou desabilitar a autenticação 'two-factor' que exige o método de senha e SMS para todos os utilizadores para aceder ao portal",
+  "TwoFactorAuthDescription": "Esta opção permite habilitar ou desabilitar a autenticação 'two-factor' que exige o método de senha e SMS para todos os utilizadores para aceder ao portal Nota: As mensagens (SMS) só podem ser enviadas se tiver um saldo positivo. Pode sempre consultar o seu saldo atual na conta do seu fornecedor de SMS. Não se esqueça de recarregar o seu saldo a tempo.",
   "TwoFactorAuthHelper": "Nota: As mensagens (SMS) só podem ser enviadas se tiver um saldo positivo. Pode sempre consultar o seu saldo atual na conta do seu fornecedor de SMS. Não se esqueça de recarregar o seu saldo a tempo.",
   "UseAsLogoButton": "Utilizar como logótipo",
   "UseDigits": "Usar algarismos",

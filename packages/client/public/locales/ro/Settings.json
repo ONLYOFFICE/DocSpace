@@ -193,7 +193,7 @@
   "TrustedMailDescription": "Setările domeniului de e-mail de încredere este modul de a indica servere de e-mail pe care le utilizați pentru autoînregistrarea utilizatorilor.",
   "TrustedMailHelper": "Puteți activa opțiunea Domenii particularizate și introduce domeniul de e-mail de încredere în câmpul de mai jos astfel încât o persoană care are un asemenea cont va putea să se înregistreze făcând clic pe Devino membru pe Pagina de autentificare sau puteți dezactiva opțiunea.",
   "TwoFactorAuth": "Autentificarea cu doi factori",
-  "TwoFactorAuthDescription": "Autentificarea cu doi factori vă oferă o securitate suplimentară la intrarea în cont. După introducerea informațiilor de identificare, utilizatorul trebuie să introducă codul de verificare din SMS-ul sau aplicația de autentificare.",
+  "TwoFactorAuthDescription": "Autentificarea cu doi factori vă oferă o securitate suplimentară la intrarea în cont. După introducerea informațiilor de identificare, utilizatorul trebuie să introducă codul de verificare din SMS-ul sau aplicația de autentificare. Mențiune: Mesajele SMS pot fi trimise numai dacă aveți suficient credit. Puteți verifica soldul dvs. de pe contul furnizorului servicii de SMS. Nu uitați să vă reîncărcați soldul contului dvs. în prealabil.",
   "TwoFactorAuthHelper": "Mențiune: Mesajele SMS pot fi trimise numai dacă aveți suficient credit. Puteți verifica soldul dvs. de pe contul furnizorului servicii de SMS. Nu uitați să vă reîncărcați soldul contului dvs. în prealabil.",
   "UseAsLogoButton": "Utilizează ca logo-ul",
   "UseDigits": "Utilizare cifre",
