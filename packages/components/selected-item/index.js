@@ -62,7 +62,7 @@ const SelectedItem = (props) => {
 
 SelectedItem.propTypes = {
   /** Selected item text */
-  label: PropTypes.string,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   /** Sets the 'width: fit-content' property */
   isInline: PropTypes.bool,
   /** Sets a callback function that is triggered when the cross icon is clicked */
