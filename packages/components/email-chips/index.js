@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 
 import { useClickOutside } from "../utils/useClickOutside.js";
 
@@ -69,7 +68,7 @@ const EmailChips = ({
   useEffect(() => {
     const isChipAdd = chips.length > chipsCount.current;
     if (scrollbarRef.current && isChipAdd) {
-      scrollbarRef.current.scrollToBottom();
+      scrollbarRef.current?.scrollTo(0, scrollbarRef.current?.scrollHeight);
     }
     chipsCount.current = chips.length;
   }, [chips.length]);
@@ -289,6 +288,7 @@ const EmailChips = ({
     setChips([...chips, ...filteredChips]);
   };
 
+  console.log(scrollbarRef.current, "scrollbarRef.current");
   return (
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
