@@ -42,7 +42,7 @@
     <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp"/>
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE"/>
-    <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpaceEnterprise_Win-install.v[|ProductVersion]"/>
+    <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpace_Enterprise_Win-install.v[|ProductVersion]"/>
     <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
     <ROW Property="PS_DB_NAME" Value="onlyoffice"/>

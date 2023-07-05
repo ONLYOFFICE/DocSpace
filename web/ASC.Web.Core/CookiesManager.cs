@@ -162,7 +162,7 @@ public class CookiesManager
         return expires;
     }
 
-    public async Task SetLifeTime(int lifeTime)
+    public async Task SetLifeTime(int lifeTime, bool enabled)
     {
         var tenant = _tenantManager.GetCurrentTenant();
         if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
@@ -171,6 +171,7 @@ public class CookiesManager
         }
 
         var settings = _tenantCookieSettingsHelper.GetForTenant(tenant.Id);
+        settings.Enabled = enabled;
 
         if (lifeTime > 0)
         {
@@ -184,7 +185,7 @@ public class CookiesManager
 
         _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
-        if (lifeTime > 0)
+        if (enabled && lifeTime > 0)
         {
             await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
         }
@@ -192,9 +193,9 @@ public class CookiesManager
         AuthenticateMeAndSetCookies(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
     }
 
-    public int GetLifeTime(int tenantId)
+    public TenantCookieSettings GetLifeTime(int tenantId)
     {
-        return _tenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
+        return _tenantCookieSettingsHelper.GetForTenant(tenantId);
     }
 
     public async Task ResetUserCookie(Guid? userId = null)

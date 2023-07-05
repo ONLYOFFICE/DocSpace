@@ -286,4 +286,7 @@
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Filter po meri</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Skrbnik sobe</value>
+  </data>
 </root>

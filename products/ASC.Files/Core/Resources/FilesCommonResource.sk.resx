@@ -373,4 +373,7 @@
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Vlastný filter</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor miestnosti</value>
+  </data>
 </root>
