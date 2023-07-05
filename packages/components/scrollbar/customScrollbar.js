@@ -2,10 +2,10 @@ import React from "react";
 import StyledScrollbar from "./styled-customScrollbar";
 import { useTheme } from "styled-components";
 
-const CustomScrollbars = React.forwardRef((props, ref) => {
+const CustomScrollbars = React.forwardRef(({ className, ...props }, ref) => {
   const theme = useTheme();
   return (
-    <StyledScrollbar className={props.className} {...props}>
+    <StyledScrollbar className={className} {...props}>
       <div
         className={`container  scroll-body ${props.scrollclass}`}
         {...props}
