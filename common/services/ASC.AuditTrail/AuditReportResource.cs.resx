@@ -676,4 +676,16 @@
   <data name="DocumentsStoreForcesave" xml:space="preserve">
     <value>Nastavení Store forcesave Aktualizováno</value>
   </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Uživatelské údaje pro {0} byly odstraněny</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Aplikace Authenticator odpojena: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Byly vytvořeny nové záložní kódy</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-mail aktualizován</value>
+  </data>
 </root>

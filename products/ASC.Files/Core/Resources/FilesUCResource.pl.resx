@@ -82,4 +82,10 @@
   <data name="Personal" xml:space="preserve">
     <value>Osobiste</value>
   </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Najnowsze</value>
+  </data>
 </root>

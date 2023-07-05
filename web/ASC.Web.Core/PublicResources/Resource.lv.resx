@@ -592,4 +592,28 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Jūs esat nosūtījušī pārāk daudz īsziņu. Lūdzu, mēģiniet vēlāk vēlreiz.</value>
+  </data>
 </root>

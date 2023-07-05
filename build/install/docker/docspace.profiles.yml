@@ -237,21 +237,6 @@ services:
       - "8092"
     ports:
       - 8092:8092
-    depends_on:
-      - onlyoffice-backup-background-tasks
-      - onlyoffice-backup
-      - onlyoffice-clear-events
-      - onlyoffice-files
-      - onlyoffice-files-services
-      - onlyoffice-people-server
-      - onlyoffice-socket
-      - onlyoffice-studio-notify
-      - onlyoffice-api
-      - onlyoffice-api-system
-      - onlyoffice-studio
-      - onlyoffice-ssoauth
-      - onlyoffice-doceditor
-      - onlyoffice-login
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}

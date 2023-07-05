@@ -80,6 +80,7 @@ const StyledPeopleRow = styled(TableRow)`
   .type-combobox,
   .room-combobox {
     padding-left: 8px;
+    overflow: hidden;
     .combo-button {
       padding-left: 8px;
       margin-left: -8px;
@@ -130,6 +131,7 @@ const PeopleTableRow = (props) => {
     isActive,
     isSeveralSelection,
     canChangeUserType,
+    value,
   } = props;
 
   const {
@@ -323,6 +325,7 @@ const PeopleTableRow = (props) => {
       className={`user-item ${
         isChecked || isActive ? "table-row-selected" : ""
       }`}
+      value={value}
     >
       <StyledPeopleRow
         key={item.id}

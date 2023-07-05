@@ -117,10 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="POST|api/2.0/files/file/{fileId}/startedit" xml:space="preserve">
-    <value>Aloita muokkaaminen</value>
+  <data name="ClearingTemporaryData" xml:space="preserve">
+    <value>一時データをクリア</value>
   </data>
-  <data name="POST|api/2.0/files/file/{fileId}/startedit_Description" xml:space="preserve">
-    <value>Aloita kuvauksen muokkaaminen</value>
+  <data name="DataProcessing" xml:space="preserve">
+    <value>データ処理中...</value>
+  </data>
+  <data name="DataProcessingCompleted" xml:space="preserve">
+    <value>データ処理完了</value>
+  </data>
+  <data name="DumpParse" xml:space="preserve">
+    <value>データベースの解析</value>
+  </data>
+  <data name="GoogleModuleNameContacts" xml:space="preserve">
+    <value>メールからの連絡先</value>
+  </data>
+  <data name="GoogleModuleNameDocuments" xml:space="preserve">
+    <value>Googleドライブのファイル</value>
+  </data>
+  <data name="GroupMigration" xml:space="preserve">
+    <value>グループ移行 {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserContacts" xml:space="preserve">
+    <value>ユーザー連絡先の移行 {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserFiles" xml:space="preserve">
+    <value>ユーザーファイルの移行 {0} ({1}/{2})</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>移行がキャンセルされました</value>
+  </data>
+  <data name="MigrationCompleted" xml:space="preserve">
+    <value>移行完了</value>
+  </data>
+  <data name="ModuleNameCalendar" xml:space="preserve">
+    <value>カレンダー</value>
+  </data>
+  <data name="OnlyofficeModuleNameCalendar" xml:space="preserve">
+    <value>カレンダー</value>
+  </data>
+  <data name="ModuleNameGroups" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="ModuleNameMail" xml:space="preserve">
+    <value>メール</value>
+  </data>
+  <data name="OnlyofficeModuleNameMail" xml:space="preserve">
+    <value>メール</value>
+  </data>
+  <data name="ModuleNameUsers" xml:space="preserve">
+    <value>ユーザー</value>
+  </data>
+  <data name="NextcloudModuleNameContacts" xml:space="preserve">
+    <value>連絡先</value>
+  </data>
+  <data name="NextcloudModuleNameDocuments" xml:space="preserve">
+    <value>ユーザーのファイル</value>
+  </data>
+  <data name="OnlyofficeModuleNameDocuments" xml:space="preserve">
+    <value>ドキュメント</value>
+  </data>
+  <data name="OnlyofficeModuleNamePeople" xml:space="preserve">
+    <value>人</value>
+  </data>
+  <data name="PreparingForMigration" xml:space="preserve">
+    <value>移行準備</value>
+  </data>
+  <data name="StartOfDataProcessing" xml:space="preserve">
+    <value>データ処理開始...</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>解凍中...</value>
+  </data>
+  <data name="UnzippingFinished" xml:space="preserve">
+    <value>解凍完了...</value>
+  </data>
+  <data name="UserCalendarMigration" xml:space="preserve">
+    <value>ユーザーカレンダー移行{0} ({1}/{2})</value>
+  </data>
+  <data name="UserMigration" xml:space="preserve">
+    <value>ユーザー移行 {0} ({1}/{2})</value>
+  </data>
+  <data name="UserSkipped" xml:space="preserve">
+    <value>ユーザーのインポートに失敗しました： {0} ({1}/{2})</value>
   </data>
 </root>

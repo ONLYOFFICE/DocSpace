@@ -359,4 +359,7 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Δεν μπορείτε να καρφιτσώσετε ένα δωμάτιο</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Διαχειριστής Δωματίου</value>
+  </data>
 </root>

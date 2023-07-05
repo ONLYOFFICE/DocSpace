@@ -619,4 +619,7 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
 </root>

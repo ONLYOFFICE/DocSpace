@@ -1186,4 +1186,28 @@ Jūsu
 ONLYOFFICE komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
 </root>

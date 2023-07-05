@@ -225,6 +225,7 @@ public class AuthenticationController : ControllerBase
         var wrapper = await GetUser(inDto);
         var viaEmail = wrapper.ViaEmail;
         var user = wrapper.UserInfo;
+        var session = inDto.Session;
 
         if (user == null || Equals(user, Constants.LostUser))
         {
@@ -275,16 +276,22 @@ public class AuthenticationController : ControllerBase
         try
         {
             var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action);
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, action, session);
 
-            var tenant = _tenantManager.GetCurrentTenant().Id;
-            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
-
-            return new AuthenticationTokenDto
+            var outDto = new AuthenticationTokenDto
             {
-                Token = token,
-                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
+                Token = token
             };
+
+            if (!session)
+            {
+                var tenant = _tenantManager.GetCurrentTenant().Id;
+                var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+
+                outDto.Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires);
+            }
+
+            return outDto;
         }
         catch (Exception ex)
         {

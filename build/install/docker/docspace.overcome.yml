@@ -24,6 +24,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-backup:
     <<: *x-profiles-local
@@ -36,6 +39,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-files:
     <<: *x-profiles-local
@@ -47,6 +53,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-files-services:
     <<: *x-profiles-local
@@ -64,6 +73,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-people-server:
     <<: *x-profiles-local
@@ -75,6 +87,9 @@ services:
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-socket:
     <<: *x-profiles-local
@@ -83,6 +98,9 @@ services:
     command: ["server.js", "ASC.Socket.IO"]
     volumes:
       - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-studio-notify:
     <<: *x-profiles-local
@@ -95,6 +113,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-api:
     <<: *x-profiles-local
@@ -107,6 +128,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-studio:
     <<: *x-profiles-local
@@ -119,6 +143,9 @@ services:
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
       - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-ssoauth:
     <<: *x-profiles-local
@@ -127,6 +154,9 @@ services:
     command: ["app.js", "ASC.SsoAuth"]
     volumes:
       - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
 
   onlyoffice-migration-runner:
     image: ${Baseimage_Dotnet_Run}
