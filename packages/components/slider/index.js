@@ -14,7 +14,6 @@ const Slider = (props) => {
     value,
     withPouring,
     style,
-    isReadOnly = false,
     isDisabled = false,
     thumbBorderWidth,
     thumbHeight,
@@ -33,6 +32,7 @@ const Slider = (props) => {
       themeId={ThemeType.Slider}
       type={type}
       isDisabled={isDisabled}
+      disabled={isDisabled}
       style={style}
       id={id}
       className={className}
@@ -43,7 +43,6 @@ const Slider = (props) => {
       size={value && withPouring ? size : "0%"}
       withPouring={withPouring}
       onChange={onChange}
-      isReadOnly={isReadOnly}
       thumbBorderWidth={thumbBorderWidth}
       thumbHeight={thumbHeight}
       thumbWidth={thumbWidth}
@@ -69,18 +68,16 @@ Slider.propTypes = {
   runnableTrackHeight: PropTypes.string,
   /** The change event is triggered when the elelment's value is modified */
   onChange: PropTypes.func,
-  /** Default input value */
+  /** Determines min range value */
   min: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  /** Default input value */
+  /** Determines max range value */
   max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  /** Default input value */
+  /** Specifies the increment/decrement step size */
   step: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Default input value */
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Sets the background color of the runnableTrack */
   withPouring: PropTypes.bool,
-  /** Default input value */
-  isReadOnly: PropTypes.bool,
   /** Disables the input  */
   isDisabled: PropTypes.bool,
   /** Accepts css */

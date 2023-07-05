@@ -59,7 +59,7 @@ public class BackupFileUploadHandler
                 File.Delete(filePath);
             }
 
-            using (var fileStream = File.Create(filePath))
+            await using (var fileStream = File.Create(filePath))
             {
                 await file.CopyToAsync(fileStream);
             }

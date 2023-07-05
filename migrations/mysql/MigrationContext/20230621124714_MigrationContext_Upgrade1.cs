@@ -2,14 +2,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.Migration
+namespace ASC.Migrations.MySql.Migrations.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationContextUpgrade1 : Microsoft.EntityFrameworkCore.Migrations.Migration
+    public partial class MigrationContextUpgrade1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("UPDATE tenants_quotarow SET tenant = -1 WHERE tenant = 0;");
+            
             migrationBuilder.AddForeignKey(
                 name: "FK_audit_events_tenants_tenants_tenant_id",
                 table: "audit_events",

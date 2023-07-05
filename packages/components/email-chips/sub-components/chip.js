@@ -168,7 +168,9 @@ const Chip = (props) => {
           />
         </div>
       )}
-      <StyledChipValue>{value?.name || value?.email}</StyledChipValue>
+      <StyledChipValue isValid={isValid}>
+        {value?.name || value?.email}
+      </StyledChipValue>
       <IconButton iconName={DeleteIconSvgUrl} size={12} onClick={onIconClick} />
     </StyledChip>
   );
