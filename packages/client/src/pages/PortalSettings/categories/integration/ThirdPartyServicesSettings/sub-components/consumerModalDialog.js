@@ -240,7 +240,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             primary
             size="normal"
-            id="enable"
+            id="enable-button"
             label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             isLoading={isLoading}
             isDisabled={isLoading}
@@ -250,7 +250,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             size="normal"
             scale
-            id="cancel"
+            id="cancel-button"
             label={t("Common:CancelButton")}
             isLoading={isLoading}
             isDisabled={isLoading}
