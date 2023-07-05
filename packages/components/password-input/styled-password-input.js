@@ -26,6 +26,8 @@ const StyledInput = styled(SimpleInput)`
   input {
     flex: inherit;
     width: calc(100% - 40px);
+    text-align: ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? "right" : "left"};
   }
 
   .input-relative {
