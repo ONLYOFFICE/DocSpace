@@ -278,6 +278,14 @@ export const settingsTree = [
         tKey: "Plugins",
         isCategory: true,
       },
+      {
+        id: "portal-settings_catalog-document-service-location",
+        key: "4-3",
+        icon: "",
+        link: "document-service-location",
+        tKey: "SingleSignOn",
+        isCategory: true,
+      },
     ],
   },
   {

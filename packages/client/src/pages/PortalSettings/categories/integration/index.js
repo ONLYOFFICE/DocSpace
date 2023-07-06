@@ -13,6 +13,7 @@ import PortalPlugins from "./PortalPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
+import DocumentService from "./DocumentService";
 
 const IntegrationWrapper = (props) => {
   const { t, tReady, loadBaseInfo, enablePlugins, toDefault } = props;
@@ -42,6 +43,11 @@ const IntegrationWrapper = (props) => {
       id: "single-sign-on",
       name: t("SingleSignOn"),
       content: <SSO />,
+    },
+    {
+      id: "document-service-location",
+      name: t("DocumentService"),
+      content: <DocumentService />,
     },
   ];
 
