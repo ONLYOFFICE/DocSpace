@@ -28,3 +28,4 @@ import TimePicker from "@docspace/components/time-picker";
 | `hasError`      |  `bool`  |    -     |   -    |  false  | Indicates error                                  |
 | `onBlur`        |  `func`  |    -     |   -    |    -    | Triggers function on blur                        |
 | `focusOnRender` |  `bool`  |    -     |   -    |  false  | Focus input on render                            |
+| `forwardedRef`  | `object` |    -     |   -    |  false  | Passes ref to child component                    |

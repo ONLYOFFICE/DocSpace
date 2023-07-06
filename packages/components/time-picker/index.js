@@ -53,6 +53,7 @@ const TimePicker = ({
   tabIndex,
   onBlur,
   focusOnRender,
+  forwardedRef,
 }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
@@ -64,10 +65,6 @@ const TimePicker = ({
   const [minutes, setMinutes] = useState(moment(date, "HH:mm").format("mm"));
 
   const mountRef = useRef(false);
-
-  useEffect(() => {
-    onBlur && mountRef.current && !isInputFocused && onBlur();
-  }, [isInputFocused]);
 
   useEffect(() => {
     focusOnRender && hoursInputRef.current.select();
@@ -82,7 +79,12 @@ const TimePicker = ({
         "YYYY-MM-DD HH:mm"
       )
     );
-    onChange(time);
+    onChange(
+      moment(
+        date.format("YYYY-MM-DD") + " " + time + ":" + minutes,
+        "YYYY-MM-DD HH:mm"
+      )
+    );
   };
   const changeMinutes = (time) => {
     setMinutes(time);
@@ -92,11 +94,21 @@ const TimePicker = ({
         "YYYY-MM-DD HH:mm"
       )
     );
-    onChange(time);
+    onChange(
+      moment(
+        date.format("YYYY-MM-DD") + " " + hours + ":" + time,
+        "YYYY-MM-DD HH:mm"
+      )
+    );
   };
 
   const handleChangeHours = (e) => {
     const hours = e.target.value;
+
+    if (hours.length > 2) {
+      focusMinutesInput();
+      return;
+    }
 
     if (hours === "") {
       changeHours("00");
@@ -124,20 +136,30 @@ const TimePicker = ({
   const handleChangeMinutes = (e) => {
     const minutes = e.target.value;
 
+    if (minutes.length > 2) {
+      blurMinutesInput();
+      return;
+    }
+
     if (minutes === "") {
       changeMinutes("00");
       return;
     }
     if (!/^\d+$/.test(minutes)) return;
 
-    if (minutes > 59) return;
+    if (minutes > 59) {
+      onBlur && onBlur();
+      return;
+    }
 
     if (minutes.length === 1 && minutes > 5) {
       changeMinutes("0" + minutes);
       blurMinutesInput();
       return;
     }
-    minutes.length === 2 && blurMinutesInput();
+    if (minutes.length === 2) {
+      blurMinutesInput();
+    }
 
     changeMinutes(minutes);
   };
@@ -151,6 +173,7 @@ const TimePicker = ({
     minutesInputRef.current.select();
   };
   const blurMinutesInput = () => {
+    onBlur && onBlur();
     minutesInputRef.current.blur();
   };
 
@@ -171,6 +194,7 @@ const TimePicker = ({
       className={className}
       hasError={hasError}
       isFocused={isInputFocused}
+      ref={forwardedRef}
     >
       <TextInput
         withBorder={false}
@@ -211,6 +235,8 @@ TimePicker.propTypes = {
   onBlur: PropTypes.func,
   /** Focus input on render */
   focusOnRender: PropTypes.bool,
+  /** Passes ref to child component */
+  forwardedRef: PropTypes.object,
 };
 
 TimePicker.defaultProps = {
