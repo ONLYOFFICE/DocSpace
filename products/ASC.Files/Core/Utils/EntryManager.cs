@@ -1128,7 +1128,7 @@ public class EntryManager
             linkedFile.Comment = FilesCommonResource.CommentCreateFillFormDraft;
             linkedFile.Encrypted = sourceFile.Encrypted;
 
-            using (var stream = await sourceFileDao.GetFileStreamAsync(sourceFile))
+            await using (var stream = await sourceFileDao.GetFileStreamAsync(sourceFile))
             {
                 linkedFile.ContentLength = stream.CanSeek ? stream.Length : sourceFile.ContentLength;
                 linkedFile = await fileDao.SaveFileAsync(linkedFile, stream);
@@ -1307,7 +1307,7 @@ public class EntryManager
                 Encrypted = draft.Encrypted,
             };
 
-            using (var stream = await fileDraftDao.GetFileStreamAsync(draft))
+            await using (var stream = await fileDraftDao.GetFileStreamAsync(draft))
             {
                 submitFile.ContentLength = stream.CanSeek ? stream.Length : draft.ContentLength;
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
@@ -1482,7 +1482,7 @@ public class EntryManager
 
                 var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
-                using var editedFileStream = new ResponseStream(response);
+                await using var editedFileStream = new ResponseStream(response);
                 await editedFileStream.CopyToAsync(tmpStream);
             }
             tmpStream.Position = 0;
@@ -1660,7 +1660,7 @@ public class EntryManager
             newFile.Encrypted = fromFile.Encrypted;
             newFile.ThumbnailStatus = fromFile.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
-            using (var stream = await fileDao.GetFileStreamAsync(fromFile))
+            await using (var stream = await fileDao.GetFileStreamAsync(fromFile))
             {
                 newFile.ContentLength = stream.CanSeek ? stream.Length : fromFile.ContentLength;
                 newFile = await fileDao.SaveFileAsync(newFile, stream);
@@ -1955,17 +1955,10 @@ public class EntryManager
         }
     }
 
-    public static async Task ReassignItemsAsync<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
+    public static async Task ReassignItemsAsync<T>(Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
     {
-        var files = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, default, true).ToListAsync();
-        var fileIds = files.Where(file => file.CreateBy == fromUserId).Select(file => file.Id);
+        await fileDao.ReassignFilesAsync(fromUserId, toUserId);
 
-        await fileDao.ReassignFilesAsync(fileIds.ToArray(), toUserId);
-
-        var folderIds = await folderDao.GetFoldersAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, default, true)
-                                 .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.Id)
-                                 .ToListAsync();
-
-        await folderDao.ReassignFoldersAsync(folderIds.ToArray(), toUserId);
+        await folderDao.ReassignFoldersAsync(fromUserId, toUserId);
     }
 }

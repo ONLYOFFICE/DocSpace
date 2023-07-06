@@ -240,7 +240,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         }
 
         var tempBuffer = _tempStream.Create();
-        using (var str = await response.Content.ReadAsStreamAsync())
+        await using (var str = await response.Content.ReadAsStreamAsync())
         {
             if (str != null)
             {
@@ -477,7 +477,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         {
             googleDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             if (responseStream == null)
             {
                 return;

@@ -39,7 +39,8 @@ internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, 
         IFileDao<int> fileDao,
         IDaoBase<FileMetadata, FolderMetadata, Metadata> dao,
         TempPath tempPath,
-        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
+        SetupInfo setupInfo,
+        TenantManager tenantManager) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, tenantManager)
     {
         _tempPath = tempPath;
         _setupInfo = setupInfo;
@@ -94,7 +95,7 @@ internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, 
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-            using var fs = new FileStream(tempPath, FileMode.Append);
+            await using var fs = new FileStream(tempPath, FileMode.Append);
             await stream.CopyToAsync(fs);
         }
 
@@ -139,7 +140,7 @@ internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, 
             return Dao.ToFile(dropboxFile.AsFile);
         }
 
-        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
+        await using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                        FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
         return await SaveFileAsync(uploadSession.File, fs);

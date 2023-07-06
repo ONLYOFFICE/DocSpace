@@ -245,9 +245,9 @@ public interface IFileDao<T>
     /// <summary>
     /// Set created by
     /// </summary>
-    /// <param name="fileIds"></param>
+    /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFilesAsync(T[] fileIds, Guid newOwnerId);
+    Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId);
 
     /// <summary>
     /// Search files in SharedWithMe & Projects

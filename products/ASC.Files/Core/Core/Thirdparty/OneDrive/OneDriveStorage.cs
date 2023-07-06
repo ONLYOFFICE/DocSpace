@@ -261,7 +261,7 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
 
         var httpClient = _clientFactory.CreateClient();
         using (var response = await httpClient.SendAsync(request))
-        using (var responseStream = await response.Content.ReadAsStreamAsync())
+        await using (var responseStream = await response.Content.ReadAsStreamAsync())
         {
             if (responseStream != null)
             {
@@ -309,7 +309,7 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
         {
             oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             if (responseStream == null)
             {
                 return;
