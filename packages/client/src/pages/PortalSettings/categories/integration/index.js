@@ -45,7 +45,7 @@ const IntegrationWrapper = (props) => {
       content: <SSO />,
     },
     {
-      id: "document-service-location",
+      id: "document-service",
       name: t("DocumentService"),
       content: <DocumentService />,
     },
