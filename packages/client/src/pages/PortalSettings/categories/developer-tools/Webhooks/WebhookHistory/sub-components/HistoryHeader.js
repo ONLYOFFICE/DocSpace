@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
@@ -8,7 +8,7 @@ import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
-import { Hint } from "../../styled-components";
+// import { Hint } from "../../styled-components";
 
 import { tablet } from "@docspace/components/utils/device";
 
@@ -20,7 +20,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import FloatingButton from "@docspace/components/floating-button";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -78,6 +78,14 @@ const HeaderContainer = styled.div`
     width: calc(100% + 40px);
     height: 69px;
 
+    .combo-button_selected-icon {
+      svg {
+        path {
+          fill: ${(props) => (props.isDisabled ? "#d0d5da" : "#333")};
+        }
+      }
+    }
+
     ${() =>
       isMobile &&
       css`
@@ -109,6 +117,9 @@ const HistoryHeader = (props) => {
     theme,
     historyFilters,
     formatFilters,
+    isRetryPending,
+    setRetryPendingFalse,
+    setRetryPendingTrue,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
@@ -117,17 +128,23 @@ const HistoryHeader = (props) => {
   const { t } = useTranslation(["Webhooks", "Common", "InfoPanel"]);
   const { id } = useParams();
 
+  const [isPendingVisible, setIsPendingVisible] = useState(false);
+
   const handleGroupSelection = (isChecked) => {
     isChecked ? checkAllIds() : emptyCheckedIds();
   };
 
   const handleRetryAll = async () => {
     try {
+      setRetryPendingTrue();
+      const timeout = setTimeout(() => {
+        setIsPendingVisible(true);
+      }, 300);
+      await retryWebhookEvents(checkedEventIds);
       await emptyCheckedIds();
-      const tempIds = checkedEventIds;
-      showLoader();
-      await retryWebhookEvents(tempIds);
-      hideLoader();
+      clearTimeout(timeout);
+      setRetryPendingFalse();
+      setIsPendingVisible(false);
       await fetchHistoryItems({
         ...(historyFilters ? formatFilters(historyFilters) : {}),
         configId: id,
@@ -139,6 +156,9 @@ const HistoryHeader = (props) => {
     } catch (error) {
       console.log(error);
       toastr.error(error);
+    } finally {
+      setRetryPendingFalse();
+      setIsPendingVisible(false);
     }
   };
 
@@ -203,6 +223,7 @@ const HistoryHeader = (props) => {
       isChecked={areAllIdsChecked}
       isIndeterminate={isIndeterminate}
       withoutInfoPanelToggler
+      isBlocked={isRetryPending}
     />
   );
 
@@ -211,7 +232,7 @@ const HistoryHeader = (props) => {
   }, []);
 
   return (
-    <HeaderContainer>
+    <HeaderContainer isDisabled={isRetryPending}>
       {isMobileOnly ? (
         <>
           {isGroupMenuVisible && <GroupMenu />}
@@ -222,6 +243,8 @@ const HistoryHeader = (props) => {
       ) : (
         <NavigationHeader />
       )}
+
+      {isPendingVisible && <FloatingButton icon="refresh" />}
     </HeaderContainer>
   );
 };
@@ -238,6 +261,9 @@ export default inject(({ webhooksStore, auth }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
+    setRetryPendingFalse,
+    setRetryPendingTrue,
   } = webhooksStore;
 
   const { settingsStore } = auth;
@@ -256,5 +282,8 @@ export default inject(({ webhooksStore, auth }) => {
     theme,
     historyFilters,
     formatFilters,
+    isRetryPending,
+    setRetryPendingFalse,
+    setRetryPendingTrue,
   };
 })(observer(HistoryHeader));

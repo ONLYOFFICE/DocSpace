@@ -21,10 +21,19 @@ class WebhooksStore {
   currentWebhook = {};
   eventDetails = {};
   FETCH_COUNT = 100;
+  isRetryPending = false;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setRetryPendingFalse = () => {
+    this.isRetryPending = false;
+  };
+
+  setRetryPendingTrue = () => {
+    this.isRetryPending = true;
+  };
 
   setCurrentWebhook = (webhook) => {
     this.currentWebhook = webhook;

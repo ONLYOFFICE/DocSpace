@@ -23,6 +23,7 @@ const HistoryRow = (props) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ const HistoryRow = (props) => {
       label: t("Retry"),
       icon: RetryIcon,
       onClick: handleRetryEvent,
+      disabled: isRetryPending,
     },
   ];
 
@@ -90,6 +92,7 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = webhooksStore;
 
   return {
@@ -99,5 +102,6 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   };
 })(observer(HistoryRow));
