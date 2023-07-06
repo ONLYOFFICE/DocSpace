@@ -1,3 +1,4 @@
+%_binaries_in_noarch_packages_terminate_build   0
 %define         _build_id_links none
 
 %global         product docspace
