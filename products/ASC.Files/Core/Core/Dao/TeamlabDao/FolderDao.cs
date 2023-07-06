@@ -847,10 +847,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     #region Only for TMFolderDao
 
-    public async Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
+    public async Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await Queries.ReassignFoldersAsync(filesDbContext, TenantID, folderIds, newOwnerId);
+        await Queries.ReassignFoldersAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
     }
 
     public async IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
@@ -1933,12 +1933,12 @@ static file class Queries
                         q.SetProperty(r => r.FoldersCount, r => ctx.Tree.Count(t => t.ParentId == r.Id) - 1)
                     ));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, Guid, Task<int>> ReassignFoldersAsync =
+    public static readonly Func<FilesDbContext, int, Guid, Guid, Task<int>> ReassignFoldersAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, int tenantId, IEnumerable<int> folderIds, Guid newOwnerId) =>
+            (FilesDbContext ctx, int tenantId, Guid oldOwnerId, Guid newOwnerId) =>
                 ctx.Folders
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => folderIds.Contains(r.Id))
+                    .Where(r => r.CreateBy == oldOwnerId)
                     .ExecuteUpdate(f => f.SetProperty(p => p.CreateBy, newOwnerId)));
 
     public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolderQuery>>
