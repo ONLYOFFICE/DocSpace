@@ -15,7 +15,7 @@ const Template = ({ onClose, ...args }) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  text: "Selected item",
+  label: "Selected item",
   isInline: true,
   isDisabled: false,
 };
@@ -45,12 +45,12 @@ const AllTemplate = ({ onClose, ...args }) => {
     <>
       <StyledContainerInline>
         <SelectedItem
-          text="Selected item"
+          label="Selected item"
           isInline={true}
           onClose={onCloseHandler}
         />
         <SelectedItem
-          text="Selected item"
+          label="Selected item"
           isInline={true}
           isDisabled
           onClose={onCloseHandler}
@@ -59,7 +59,7 @@ const AllTemplate = ({ onClose, ...args }) => {
 
       <StyledContainer>
         <SelectedItem
-          text="Selected item"
+          label="Selected item"
           isInline={false}
           onClose={onCloseHandler}
         />

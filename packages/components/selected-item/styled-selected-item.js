@@ -1,78 +1,43 @@
-import styled from "styled-components";
-
-import Text from "../text";
-import Base from "../themes/base";
+import React from "react";
+import { Base } from "@docspace/components/themes";
+import styled, { css } from "styled-components";
 
 const StyledSelectedItem = styled.div`
-  position: relative;
-  display: ${(props) => (props.isInline ? "inline-grid" : "grid")};
-  grid-template-columns: 1fr auto;
+  width: ${(props) => (props.isInline ? "fit-content" : "100%")};
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+
   box-sizing: border-box;
-  background: ${(props) => props.theme.selectedItem.background};
-  border: ${(props) => props.theme.selectedItem.border};
-  border-radius: ${(props) => props.theme.selectedItem.borderRadius};
-`;
-StyledSelectedItem.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
 
-const StyledSelectedTextBox = styled.div`
-  display: grid;
-  padding: ${(props) => props.theme.selectedItem.textBox.padding};
-  height: ${(props) => props.theme.selectedItem.textBox.height};
-  align-items: ${(props) => props.theme.selectedItem.textBox.alignItems};
+  border-radius: 3px;
 
-  ${({ theme }) =>
-    theme.interfaceDirection === "rtl"
-      ? `border-left: ${theme.selectedItem.textBox.borderRight};`
-      : `border-right: ${theme.selectedItem.textBox.borderRight};`}
-  cursor: default;
-`;
-StyledSelectedTextBox.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+  padding: 6px 8px;
 
-const StyledCloseButton = styled.div`
-  display: flex;
-  align-items: ${(props) => props.theme.selectedItem.closeButton.alignItems};
-  padding: ${(props) => props.theme.selectedItem.closeButton.padding};
-  cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
+  margin-right: 4px;
+  margin-bottom: 4px;
 
-  path {
-    ${(props) =>
-      !props.isDisabled &&
-      `fill: ${props.theme.selectedItem.closeButton.color};`}
-  }
+  background: ${(props) => props.theme.filterInput.selectedItems.background};
 
-  &:hover {
-    path {
-      ${(props) =>
-        !props.isDisabled &&
-        `fill: ${props.theme.selectedItem.closeButton.colorHover};`}
-    }
-  }
+  ${(props) =>
+    !props.isDisabled &&
+    css`
+      :hover {
+        background: ${(props) =>
+          props.theme.filterInput.selectedItems.hoverBackground};
+      }
+    `}
 
-  &:active {
-    ${(props) =>
-      !props.isDisabled &&
-      `background-color: ${props.theme.selectedItem.closeButton.backgroundColor};`}
+  .selected-item_label {
+    line-height: 20px;
+    margin-right: 10px;
+    max-width: 23ch;
+    color: ${(props) => props.isDisabled && props.theme.text.disableColor};
   }
 `;
-StyledCloseButton.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
 
-const StyledText = styled(Text)`
-  color: ${(props) =>
-    props.isDisabled
-      ? props.theme.selectedItem.text.disabledColor
-      : props.theme.selectedItem.text.color};
-`;
-StyledText.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledSelectedItem.defaultProps = { theme: Base };
 
-export {
-  StyledCloseButton,
-  StyledSelectedTextBox,
-  StyledSelectedItem,
-  StyledText,
-};
+export { StyledSelectedItem };
