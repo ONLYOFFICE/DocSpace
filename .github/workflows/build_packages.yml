@@ -144,18 +144,18 @@ jobs:
           EOF
           gpg --export --armor --output onlyoffice-gpgkey.pub
           rpm --import onlyoffice-gpgkey.pub
-          rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
           
       - name: Upload
         run: |
-          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm; do
+          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm; do
             curl --verbose --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
             --upload-file "$file" ${{ secrets.REPO_URL_4TESTING_RPM }}
           done
 
       - name: Rpmlint  
         run: |  
-          for package in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          for package in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
             do rpmlint --ignore-unused-rpmlintrc --rpmlintrc \
             /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/SOURCES/${{ env.PRODUCT_LOW }}.rpmlintrc $package \
             | tee -a file2
