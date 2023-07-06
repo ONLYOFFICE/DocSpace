@@ -59,9 +59,9 @@ case "$1" in
 
 		args+=(-ess "$ELK_SHEME" -esh "$ELK_HOST" -esp "$ELK_PORT" );
 
-		db_get onlyoffice/db-host || true
+		db_get {{product}}/ds-host || true
 		DOCUMENT_SERVER_HOST="$RET"
-		db_get onlyoffice/ds-port || true
+		db_get {{product}}/ds-port || true
 		DOCUMENT_SERVER_PORT="$RET"
 
 		args+=(-dsh "$DOCUMENT_SERVER_HOST" -dsp "$DOCUMENT_SERVER_PORT" );
