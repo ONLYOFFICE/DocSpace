@@ -119,7 +119,7 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Reminder message that notifies of the unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
-  /** Sets the button to present a disabled state */
+  /** Sets save and cancel buttons block to 'position: static' instead of absolute */
   displaySettings: PropTypes.bool,
   /** Displays the scrollbar */
   hasScroll: PropTypes.bool,

@@ -117,10 +117,12 @@ class ProfileActionsStore {
   };
 
   onSettingsClick = (settingsUrl) => {
+    this.selectedFolderStore.setSelectedFolder(null);
     window.DocSpace.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
+    this.selectedFolderStore.setSelectedFolder(null);
     window.DocSpace.navigate(PAYMENTS_URL);
   };
 

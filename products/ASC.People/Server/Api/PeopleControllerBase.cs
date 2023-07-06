@@ -109,7 +109,7 @@ public abstract class PeopleControllerBase : ApiControllerBase
 
         var httpClient = _httpClientFactory.CreateClient();
         using var response = httpClient.Send(request);
-        using var inputStream = response.Content.ReadAsStream();
+        await using var inputStream = response.Content.ReadAsStream();
         using var br = new BinaryReader(inputStream);
         var imageByteArray = br.ReadBytes((int)inputStream.Length);
 

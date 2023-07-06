@@ -221,9 +221,9 @@ public interface IFolderDao<T>
     /// <summary>
     /// Set created by
     /// </summary>
-    /// <param name="folderIds"></param>
+    /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFoldersAsync(T[] folderIds, Guid newOwnerId);
+    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId);
 
 
     /// <summary>
