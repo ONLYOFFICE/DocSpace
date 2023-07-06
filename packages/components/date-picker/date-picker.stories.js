@@ -62,7 +62,7 @@ const Template = ({ ...args }) => {
 
   return (
     <Wrapper>
-      <DatePicker {...args} date={date} onChange={setDate} />
+      <DatePicker {...args} date={date} setDate={setDate} />
     </Wrapper>
   );
 };

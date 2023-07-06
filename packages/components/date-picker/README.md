@@ -33,3 +33,4 @@ import DatePicker from "@docspace/components/date-picker";
 | `minDate`          | `date`   |    -     | -      | -                         | Minimum date that the user can select.     |
 | `onChange`         | `func`   |    -     | -      | -                         | Function called when the user select a day |
 | `showCalendarIcon` | `bool`   |    -     | -      | -                         | Shows calendar icon in selected item       |
+| `setDate`          | `func`   |    -     | -      | -                         | Sets date                                  |

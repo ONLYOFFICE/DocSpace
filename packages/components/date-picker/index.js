@@ -59,6 +59,7 @@ const StyledCalendar = styled(Calendar)`
 const DatePicker = (props) => {
   const {
     date,
+    setDate,
     onChange,
     selectDateText,
     className,
@@ -75,6 +76,11 @@ const DatePicker = (props) => {
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
+  const handleChange = (date) => {
+    onChange && onChange(date);
+    setDate(date);
+  };
+
   const toggleCalendar = () =>
     setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
 
@@ -84,14 +90,14 @@ const DatePicker = (props) => {
 
   const deleteSelectedDate = (propKey, label, group, e) => {
     e.stopPropagation();
-    onChange(null);
+    handleChange(null);
     setIsCalendarOpen(false);
   };
 
   const CalendarElement = () => (
     <StyledCalendar
       selectedDate={date}
-      setSelectedDate={onChange}
+      setSelectedDate={handleChange}
       onChange={closeCalendar}
       isMobile={isMobileOnly}
       forwardedRef={calendarRef}
@@ -168,6 +174,8 @@ DatePicker.propTypes = {
   locale: PropTypes.string,
   /** Shows calendar icon in selected item */
   showCalendarIcon: PropTypes.bool,
+  /** Sets date */
+  setDate: PropTypes.func,
 };
 
 DatePicker.defaultProps = {
