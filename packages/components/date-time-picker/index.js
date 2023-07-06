@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
@@ -50,18 +50,43 @@ const TimeSelector = styled.span`
 `;
 
 const DateTimePicker = (props) => {
-  const { date, selectDateText, onChange, className, id } = props;
+  const { date, selectDateText, onChange, setDate, className, id } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);
 
   const showTimePicker = () => setIsTimeFocused(true);
   const hideTimePicker = () => setIsTimeFocused(false);
 
+  const handleChange = (date) => {
+    setDate(date);
+    onChange(date);
+  };
+
+  const timePickerRef = useRef(null);
+
+  const handleClick = (e) => {
+    !timePickerRef?.current?.contains(e.target) && setIsTimeFocused(false);
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === "Tab") {
+      setIsTimeFocused(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick, { capture: true });
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => {
+      document.removeEventListener("click", handleClick, { capture: true });
+      document.removeEventListener("keydown", handleKeyDown, { capture: true });
+    };
+  }, []);
+
   return (
     <Selectors className={className} id={id}>
       <DatePicker
         date={date}
-        onChange={onChange}
+        onChange={handleChange}
         selectDateText={selectDateText}
       />
       <TimeSelector>
@@ -69,10 +94,11 @@ const DateTimePicker = (props) => {
           (isTimeFocused ? (
             <TimePicker
               date={date}
-              setDate={onChange}
+              setDate={handleChange}
               tabIndex={1}
               onBlur={hideTimePicker}
               focusOnRender
+              forwardedRef={timePickerRef}
             />
           ) : (
             <TimeCell onClick={showTimePicker}>
@@ -96,6 +122,8 @@ DateTimePicker.propTypes = {
   id: PropTypes.string,
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
+  /** Sets date */
+  setDate: PropTypes.func,
 };
 
 export default DateTimePicker;

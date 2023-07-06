@@ -27,3 +27,4 @@ import DateTimePicker from "@docspace/components/date-time-picker";
 | `onChange`       |  `func`  |    -     |   -    |       -       | Allow you to handle changing events of component |
 | `date`           |  `obj`   |    -     |   -    |       -       | Date object                                      |
 | `selectDateText` | `string` |    -     |   -    | "Select date" | Select date text                                 |
+| `setDate`        |  `func`  |    -     |   -    |       -       | Sets date                                        |
