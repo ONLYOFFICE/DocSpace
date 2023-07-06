@@ -73,7 +73,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
         var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
-        var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
+        var (tenantManager, coreBaseSettings, messageService, fileStorageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
         await tenantManager.SetCurrentTenantAsync(_tenantId);
 
@@ -84,46 +84,26 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
-            logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
-
-            logger.LogInformation("reassignment of data from documents");
-
-
-            //_docService.ReassignStorage(_fromUserId, _toUserId);
             Percentage = 33;
             PublishChanges();
 
-            logger.LogInformation("reassignment of data from projects");
+            await fileStorageService.ReassignStorageAsync<int>(FromUser, ToUser);
 
-            //_projectsReassign.Reassign(_fromUserId, _toUserId);
             Percentage = 66;
             PublishChanges();
 
-            if (!coreBaseSettings.CustomMode)
-            {
-                logger.LogInformation("reassignment of data from crm");
-
-                //using (var scope = DIHelper.Resolve(_tenantId))
-                //{
-                //    var crmDaoFactory = scope.Resolve<CrmDaoFactory>();
-                //    crmDaoFactory.ContactDao.ReassignContactsResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.DealDao.ReassignDealsResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.TaskDao.ReassignTasksResponsible(_fromUserId, _toUserId);
-                //    crmDaoFactory.CasesDao.ReassignCasesResponsible(_fromUserId, _toUserId);
-                //}
-                Percentage = 99;
-                PublishChanges();
-            }
-
             await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
-            Percentage = 100;
-            Status = DistributedTaskStatus.Completed;
+            Percentage = 99;
+            PublishChanges();
 
             if (_deleteProfile)
             {
                 await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper, queueWorkerRemove);
             }
+
+            Percentage = 100;
+            Status = DistributedTaskStatus.Completed;
         }
         catch (Exception ex)
         {
@@ -200,6 +180,7 @@ public class ReassignProgressItemScope
     private readonly TenantManager _tenantManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly MessageService _messageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
@@ -211,6 +192,7 @@ public class ReassignProgressItemScope
     public ReassignProgressItemScope(TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         MessageService messageService,
+        FileStorageService fileStorageService,
         StudioNotifyService studioNotifyService,
         SecurityContext securityContext,
         UserManager userManager,
@@ -222,6 +204,7 @@ public class ReassignProgressItemScope
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
         _messageService = messageService;
+        _fileStorageService = fileStorageService;
         _studioNotifyService = studioNotifyService;
         _securityContext = securityContext;
         _userManager = userManager;
@@ -234,6 +217,7 @@ public class ReassignProgressItemScope
     public void Deconstruct(out TenantManager tenantManager,
         out CoreBaseSettings coreBaseSettings,
         out MessageService messageService,
+        out FileStorageService fileStorageService,
         out StudioNotifyService studioNotifyService,
         out SecurityContext securityContext,
         out UserManager userManager,
@@ -245,6 +229,7 @@ public class ReassignProgressItemScope
         tenantManager = _tenantManager;
         coreBaseSettings = _coreBaseSettings;
         messageService = _messageService;
+        fileStorageService = _fileStorageService;
         studioNotifyService = _studioNotifyService;
         securityContext = _securityContext;
         userManager = _userManager;

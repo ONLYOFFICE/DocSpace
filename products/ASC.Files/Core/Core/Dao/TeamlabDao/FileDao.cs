@@ -1087,11 +1087,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     #region Only in TMFileDao
 
-    public async Task ReassignFilesAsync(int[] fileIds, Guid newOwnerId)
+    public async Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-
-        await Queries.UpdateCreateByAsync(filesDbContext, TenantID, fileIds, newOwnerId);
+        await Queries.UpdateCreateByAsync(filesDbContext, TenantID, oldOwnerId, newOwnerId);
     }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -1850,13 +1849,12 @@ static file class Queries
                     .Where(r => r.VersionGroup > versionGroup)
                     .ExecuteUpdate(f => f.SetProperty(p => p.VersionGroup, p => p.VersionGroup - 1)));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, Guid, Task<int>> UpdateCreateByAsync =
+    public static readonly Func<FilesDbContext, int, Guid, Guid, Task<int>> UpdateCreateByAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, int tenantId, IEnumerable<int> fileIds, Guid newOwnerId) =>
+            (FilesDbContext ctx, int tenantId, Guid oldOwnerId, Guid newOwnerId) =>
                 ctx.Files
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.CurrentVersion)
-                    .Where(r => fileIds.Contains(r.Id))
+                    .Where(r => r.CreateBy == oldOwnerId)
                     .ExecuteUpdate(p => p.SetProperty(f => f.CreateBy, newOwnerId)));
 
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFileQuery>> DbFileQueriesByTextAsync =

@@ -593,7 +593,7 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem> : IFileDao<stri
 
     public abstract Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession);
 
-    public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
+    public Task ReassignFilesAsync(Guid oldOwner, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }
