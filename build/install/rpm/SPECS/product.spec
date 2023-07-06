@@ -13,6 +13,7 @@ Release:        %{release}
 
 AutoReqProv:    no
 
+BuildArch:      noarch
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
 Packager:       %{packager}
