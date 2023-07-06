@@ -889,4 +889,10 @@
   <data name="ConsumersEasyBibInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para criar bibliografias em editores ONLYOFFICE. {0}Vá para a página de inscrição no EasyBib e preencha o formulário para adicionar a integração ONLYOFFICE. Depois de obter uma chave do aplicativo, cole-a abaixo:</value>
   </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
 </root>

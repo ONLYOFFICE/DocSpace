@@ -1867,4 +1867,14 @@ $GreenButton
 ONLYOFFICE թիմ
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Օգտատերը "$FromUserName":"$FromUserLink" ջնջել է իր պրոֆիլը, և այս պրոֆիլն այժմ արգելափակված է: Օգտատիրոջ բոլոր ֆայլերը դեռ վերագրված են նրան և զբաղեցնում են սկավառակի տարածք:
+
+Դուք կարող եք փոխանակել  օգտատիրոջ փաստաթղթերը, որոնք համօգտագործվում են ուրիշների հետ, մեկ այլ ակտիվ օգտատիրոջը վերագրել կամ հեռացնել դրանք՝ պորտալի սկավառակի տարածքն ազատելու համար:
+
+Խնդրում ենք գնալ օգտվողի պրոֆիլ՝ օգտագործելով "այս հղումը":"$FromUserLink"՝ փաստաթղթերը մեկ այլ օգտատիրոջ վերահանձնելու կամ տվյալները հեռացնելու համար.</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} գաղտնաբառի օգնություն</value>
+  </data>
 </root>

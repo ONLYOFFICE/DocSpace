@@ -1715,4 +1715,28 @@ Atenciosamente,
 Equipe ONLYOFFICE
 "www.onlyoffice.com/pt":"http://www.onlyoffice.com/pt"</value>
   </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFIRMAR</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
 </root>
