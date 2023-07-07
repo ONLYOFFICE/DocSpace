@@ -41,7 +41,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
     {
         _serviceProvider = serviceProvider;
         _queue = queueFactory.CreateQueue(queueName);
-        _httpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
+        _httpHeaders = httpContextAccessor.HttpContext?.Request?.Headers;
     }
 
     public static string GetProgressItemId(int tenantId, Guid userId)

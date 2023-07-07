@@ -72,7 +72,6 @@ public class ReassignProgressItem : DistributedTaskProgress
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
-        var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, fileStorageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
         await tenantManager.SetCurrentTenantAsync(_tenantId);
@@ -99,7 +98,7 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             if (_deleteProfile)
             {
-                await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper, queueWorkerRemove);
+                await DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
             }
 
             Percentage = 100;
@@ -154,14 +153,13 @@ public class ReassignProgressItem : DistributedTaskProgress
         await studioNotifyService.SendMsgReassignsFailedAsync(_currentUserId, fromUser, toUser, errorMessage);
     }
 
-    private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper, QueueWorkerRemove queueWorkerRemove)
+    private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
         var user = await userManager.GetUsersAsync(FromUser);
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
         await userPhotoManager.RemovePhotoAsync(user.Id);
         await userManager.DeleteUserAsync(user.Id);
-        queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
         if (_httpHeaders != null)
         {

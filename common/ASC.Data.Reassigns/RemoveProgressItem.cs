@@ -119,7 +119,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             PublishChanges();
 
             logger.LogInformation("deleting of data from talk");
-            await DeleteTalkStorage(storageFactory);
+            //await DeleteTalkStorage(storageFactory);
             Percentage = 99;
             PublishChanges();
 
