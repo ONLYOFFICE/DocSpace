@@ -9,7 +9,6 @@ import Label from "@docspace/components/label";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import ComboBox from "@docspace/components/combobox";
-import Heading from "@docspace/components/heading";
 import TabContainer from "@docspace/components/tabs-container";
 import SelectFolderInput from "client/SelectFolderInput";
 import { tablet } from "@docspace/components/utils/device";
@@ -19,6 +18,7 @@ import { isMobileOnly } from "react-device-detect";
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 import Loaders from "@docspace/common/components/Loaders";
 import HelpButton from "@docspace/components/help-button";
+import Link from "@docspace/components/link";
 
 const Controls = styled(Box)`
   min-width: 350px;
@@ -32,11 +32,22 @@ const Controls = styled(Box)`
   }
 `;
 
-const CategoryHeader = styled(Heading)`
-  margin-block-start: 0px;
-  margin-block-end: 0px;
+const CategoryHeader = styled.div`
+  margin-top: 40px;
+  margin-bottom: 24px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 22px;
+`;
 
-  margin-top: 24px;
+const CategorySubHeader = styled.div`
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px;
 `;
 
 const CategoryDescription = styled(Box)`
@@ -98,14 +109,12 @@ const ColumnContainer = styled(Box)`
 
 const Preview = styled(Box)`
   margin-top: 24px;
-
   min-width: 660px;
-
   flex-direction: row;
 `;
 
 const PortalIntegration = (props) => {
-  const { t, setDocumentTitle } = props;
+  const { t, setDocumentTitle, currentColorScheme, sdkLink } = props;
 
   setDocumentTitle(t("JavascriptSdk"));
 
@@ -309,9 +318,7 @@ const PortalIntegration = (props) => {
 
   const code = (
     <>
-      <Heading level={1} size="xsmall">
-        {t("CopyWindowCode")}
-      </Heading>
+      <CategorySubHeader>{t("CopyWindowCode")}</CategorySubHeader>
       <Textarea value={codeBlock} />
     </>
   );
@@ -335,15 +342,24 @@ const PortalIntegration = (props) => {
         <BreakpointWarning sectionName={t("JavascriptSdk")} />
       ) : (
         <>
-          <CategoryDescription>{t("SDKDescription")}</CategoryDescription>
+          <CategoryDescription>
+            {t("SDKDescription")}
+            <Link
+              color={currentColorScheme?.main?.accent}
+              fontSize="12px"
+              fontWeight="400"
+              onClick={() => window.open(sdkLink, "_blank")}
+            >
+              {t("APILink")}.
+            </Link>
+          </CategoryDescription>
+          <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
           <Container>
             <Preview>
               <TabContainer onSelect={onChangeTab} elements={dataTabs} />
             </Preview>
             <Controls>
-              <CategoryHeader size="small">
-                {t("CustomizingDisplay")}
-              </CategoryHeader>
+              <CategorySubHeader>{t("CustomizingDisplay")}</CategorySubHeader>
               <ControlsGroup>
                 <Label className="label" text={t("EmbeddingPanel:Width")} />
                 <RowContainer combo>
@@ -393,9 +409,7 @@ const PortalIntegration = (props) => {
                   value={config.frameId}
                 />
               </ControlsGroup>
-              <CategoryHeader size="xsmall">
-                {t("InterfaceElements")}
-              </CategoryHeader>
+              <CategorySubHeader>{t("InterfaceElements")}</CategorySubHeader>
               <Checkbox
                 label={t("Menu")}
                 onChange={onChangeShowMenu}
@@ -419,7 +433,7 @@ const PortalIntegration = (props) => {
                 />
                 <Text color="gray">{`(${t("MobileOnly")})`}</Text>
               </RowContainer>
-              <CategoryHeader size="small">{t("DataDisplay")}</CategoryHeader>
+              <CategorySubHeader>{t("DataDisplay")}</CategorySubHeader>
               <ControlsGroup>
                 <Box
                   style={{
@@ -443,9 +457,7 @@ const PortalIntegration = (props) => {
                   filteredType="exceptSortedByTags"
                 />
               </ControlsGroup>
-              <CategoryHeader size="small">
-                {t("AdvancedDisplay")}
-              </CategoryHeader>
+              <CategorySubHeader>{t("AdvancedDisplay")}</CategorySubHeader>
               <ControlsGroup>
                 <Label className="label" text={t("SearchTerm")} />
                 <ColumnContainer>
@@ -526,11 +538,13 @@ const PortalIntegration = (props) => {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
-  const { theme } = settingsStore;
+  const { theme, currentColorScheme, sdkLink } = settingsStore;
 
   return {
     theme,
     setDocumentTitle,
+    currentColorScheme,
+    sdkLink,
   };
 })(
   withTranslation(["JavascriptSdk", "Files", "EmbeddingPanel", "Common"])(

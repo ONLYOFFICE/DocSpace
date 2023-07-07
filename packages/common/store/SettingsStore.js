@@ -130,6 +130,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  apiDocsLink = null;
   bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
@@ -286,6 +287,10 @@ class SettingsStore {
 
   get automaticBackupUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#AutoBackup`;
+  }
+
+  get sdkLink() {
+    return `${this.apiDocsLink}/docspace/jssdk`;
   }
 
   get wizardCompleted() {

@@ -183,6 +183,7 @@ public class SettingsController : BaseSettingsController
             };
 
             settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.ApiDocsLink = _configuration["web:api-docs"];
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))
