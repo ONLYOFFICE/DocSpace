@@ -46,6 +46,7 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY,
       manualY: props.manualY,
+      isDropdownReady: false, // need to avoid scrollbar appearing during dropdown position calculation
     };
 
     this.dropDownRef = React.createRef();
@@ -118,7 +119,10 @@ class DropDown extends React.PureComponent {
   }
 
   checkPosition = () => {
-    if (!this.dropDownRef.current || this.props.fixedDirection) return;
+    if (!this.dropDownRef.current || this.props.fixedDirection) {
+      this.setState({ isDropdownReady: true });
+      return;
+    }
     const { smallSectionWidth, forwardedRef } = this.props;
     const { manualY } = this.state;
 
@@ -178,12 +182,16 @@ class DropDown extends React.PureComponent {
       directionY: y,
       manualY: mY,
       width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      isDropdownReady: true,
     });
   };
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
-    if (!parent?.current || this.props.fixedDirection) return;
+    if (!parent?.current || this.props.fixedDirection) {
+      this.setState({ isDropdownReady: true });
+      return;
+    }
     const dropDown = this.dropDownRef.current;
 
     const parentRects = parent.current.getBoundingClientRect();
@@ -248,6 +256,7 @@ class DropDown extends React.PureComponent {
       directionX: this.props.directionX,
       directionY: this.props.directionY,
       width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      isDropdownReady: true,
     });
   };
 
@@ -335,6 +344,7 @@ class DropDown extends React.PureComponent {
         itemCount={itemCount}
         {...dropDownMaxHeightProp}
         directionXStylesDisabled={directionXStylesDisabled}
+        isDropdownReady={this.state.isDropdownReady}
       >
         <VirtualList
           Row={Row}
