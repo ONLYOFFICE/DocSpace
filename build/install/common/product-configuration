@@ -677,7 +677,7 @@ if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAG
 	fi
 fi
 
-if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
+if $PACKAGE_MANAGER nginx >/dev/null 2>&1 || $PACKAGE_MANAGER nginx-extras >/dev/null 2>&1; then
     setup_nginx
 fi
 

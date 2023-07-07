@@ -13,10 +13,9 @@
   "FrameId": "Kehyksen tunnus",
   "Header": "Ylätunniste",
   "ItemsCount": "Kohteiden määrä",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Menu",
   "Page": "Sivu",
   "SearchTerm": "Hakusana",
-  "SortOrder": "Lajittelujärjestys",
-  "WindowParameters": "Ikkunan parametrit"
+  "SortOrder": "Lajittelujärjestys"
 }

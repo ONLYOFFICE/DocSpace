@@ -147,4 +147,111 @@ Liên kết có hiệu lực trong 7 ngày.
 
 Bạn không muốn thay đổi mật khẩu? Xin hãy bỏ qua tin nhắn này.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Chào mừng bạn đến với ONLYOFFICE Cá nhân
+
+Bạn vừa tạo văn phòng cá nhân của mình trên đám mây.
+
+h3.Đó là một không gian làm việc ảo, nơi bạn có thể chỉnh sửa và lưu trữ tài liệu, làm việc với chúng từ bất cứ nơi nào cung cấp quyền truy cập cho bạn bè hoặc đồng nghiệp của bạn.
+
+h3.Để bắt đầu nhanh, đây là những gì bạn có thể làm trong ONLYOFFICE:
+
+- Tạo, xem và chỉnh sửa tài liệu văn bản, bảng tính, bản trình chiếu.
+
+- Làm việc với tất cả các định dạng phổ biến. Khả năng tương thích cao nhất với các tập tin MS Office.
+
+- Tạo và đồng chỉnh sửa "biểu mẫu sẵn sàng để điền":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Chia sẻ và cộng tác trên các tài liệu trực tuyến.
+
+- Sử dụng các plugin khác nhau để áp dụng các tính năng bổ sung.
+
+- Dễ dàng truy cập đám mây Cá nhân của bạn thông qua "Tiện ích mở rộng của Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Bạn cũng có thể chỉnh sửa tài liệu ngoại tuyến với "trình chỉnh sửa cho máy tính để bàn":"https://www.onlyoffice.com/download-desktop.aspx" miễn phí của chúng tôi hoặc nhận bộ chỉnh sửa cho thiết bị "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" hoặc "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" của bạn.
+
+Trân trọng,
+Nhóm ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Bạn muốn thay đổi email cho tài khoản văn phòng đám mây của mình? 
+
+Hãy nhấp vào nút bên dưới và đăng nhập* vào đám mây của bạn.
+
+$GreenButton
+
+Liên kết có hiệu lực trong 7 ngày.
+
+*Nếu bạn không đăng nhập vào văn phòng đám mây của bạn trong trình duyệt này, bạn sẽ cần phải sử dụng email cũ của bạn để xác nhận.
+
+Bạn không muốn thay đổi email của mình? Xin hãy bỏ qua tin nhắn này.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Xin chào,
+
+Bạn vừa đăng ký một tài khoản tại giải pháp ONLYOFFICE để sử dụng cá nhân. Hãy nhấp vào "đây":"$InviteLink" để xác nhận đăng ký và tạo mật khẩu.
+
+Nếu bạn không thể mở liên kết, vui lòng sao chép "$InviteLink":"$InviteLink" sau và dán nó vào thanh địa chỉ trình duyệt của bạn.
+
+Trân trọng,
+Nhóm ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Bạn đã yêu cầu chấm dứt tài khoản của mình tại personal.onlyoffice.com. Hãy làm theo liên kết để hoàn thành yêu cầu (liên kết hiệu lực trong 7 ngày): 
+
+Xác nhận chấm dứt tài khoản
+
+*Lưu ý*: Sau khi xóa, tài khoản của bạn và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn theo "Chính sách quyền riêng tư":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" của chúng tôi.
+
+"Đọc thêm về việc chấm dứt tài khoản":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Hãy bỏ qua email này nếu bạn không muốn tiếp tục. 
+
+Nếu bạn có bất kỳ câu hỏi nào, xin vui lòng liên hệ với chúng tôi tại "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Trân trọng,
+Nhóm ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Kính gửi $UserName,
+
+Quá trình xóa dữ liệu của người dùng "$FromUserName":"$FromUserLink" đã được hoàn thành.
+
+Việc xóa dữ liệu cá nhân được phép cho các tính năng miễn phí:
+
+# Documents - $DocsSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Cổng thông tin mới đã được đăng ký
+
+# Portal url: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Tên: $UserName
+# Họ: $UserLastName
+# Email: $UserEmail
+# Số điện thoại: $Phone
+# Ngày tạo: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Làm tương tự như người dùng|Liên kết Dropbox, Box và các tài khoản khác trong phần 'Chung' |Thiết lập quyền truy cập vào các tài liệu và thư mục trong phần 'Chung'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Tạo và chỉnh sửa tài liệu riêng cũng như các tài liệu được chia sẻ với quyền truy cập thích hợp |Cho phép đọc/chỉnh sửa quyền truy cập cho người dùng khác vào tài liệu và thư mục|Liên kết Dropbox, Box và các tài khoản khác trong phần 'Tài liệu của tôi'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Chào mừng bạn đến với ONLYOFFICE Cá nhân</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Cá nhân. Vui lòng kích hoạt địa chỉ email của bạn</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Chấm dứt tài khoản ONLYOFFICE Cá nhân</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Đã xóa dữ liệu người dùng</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Cổng thông tin mới đã được đăng ký</value>
+  </data>
 </root>

@@ -253,4 +253,7 @@
   <data name="UnknownLastName" xml:space="preserve">
     <value>Último nome</value>
   </data>
+  <data name="AceStatusEnum_Restrict" xml:space="preserve">
+    <value>Negar acesso</value>
+  </data>
 </root>

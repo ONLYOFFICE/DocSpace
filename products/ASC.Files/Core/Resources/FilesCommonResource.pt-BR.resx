@@ -311,7 +311,8 @@
     <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real. 100% de compatibilidade garantida com os formatos do MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real. 100% de compatibilidade garantida com os formatos do MS Office.</value>
+    <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real.
+100% de compatibilidade garantida com os formatos do MS Office.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Ver e transferir documentos partilhados. Enviar os ficheiros para as pastas partilhadas. 100% compatibilidade com docx, xlsx, pptx garantida.</value>
@@ -363,5 +364,8 @@
   </data>
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Editor</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador da sala</value>
   </data>
 </root>
