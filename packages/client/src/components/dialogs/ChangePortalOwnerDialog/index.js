@@ -133,7 +133,7 @@ const ChangePortalOwnerDialog = ({
             <Text className="display-name" noSelect title={displayName}>
               {displayName}
             </Text>
-            <Text className="owner" noSelect title={t("Common:Owner")}>
+            <Text className="status" noSelect title={t("Common:Owner")}>
               {t("Common:Owner")}
             </Text>
           </div>

@@ -3123,6 +3123,10 @@ const Dark = {
     borderColor: "#858585",
     dashedBorder: "1px dashed #fff",
   },
+
+  dialogs: {
+    disableText: "#858585",
+  },
 };
 
 export default Dark;

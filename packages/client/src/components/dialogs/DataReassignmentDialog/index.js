@@ -36,6 +36,10 @@ const StyledModalDialog = styled(ModalDialog)`
   .delete-profile-checkbox {
     margin-bottom: 16px;
   }
+
+  .list-container {
+    gap: 6px;
+  }
 `;
 
 StyledModalDialog.defaultProps = { theme: Base };
@@ -88,9 +92,9 @@ const DataReassignmentDialog = ({
   const onReassign = () => {
     setIsLoading(true);
 
-    dataReassignment(id, selectedUser.id, true)
-      .then((res) => {
-        toastr.success("sucess");
+    dataReassignment(id, selectedUser.id, isDeleteProfile)
+      .then(() => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
         onClose();
       })
       .catch((error) => {
@@ -112,6 +116,7 @@ const DataReassignmentDialog = ({
         <ModalDialog.Container>
           <PeopleSelector
             acceptButtonLabel={t("Common:SelectAction")}
+            excludeItems={[id]}
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
@@ -169,7 +174,7 @@ const DataReassignmentDialog = ({
               fontWeight={600}
               onClick={onTogglePeopleSelector}
             >
-              {t("ChangeUser")}
+              {t("ChangePortalOwner:ChangeUser")}
             </Link>
           </StyledSelectedOwnerContainer>
         ) : (
@@ -188,7 +193,7 @@ const DataReassignmentDialog = ({
           </StyledPeopleSelector>
         )}
 
-        <StyledAvailableList>
+        <StyledAvailableList className="list-container">
           <Text className="list-item" noSelect>
             We will transfer rooms created by user and documents stored in
             user’s rooms.
@@ -196,9 +201,15 @@ const DataReassignmentDialog = ({
           <Text className="list-item" noSelect>
             Note: this action cannot be undone.
           </Text>
-          <Text className="list-item" noSelect>
+
+          <Link
+            type={"action"}
+            isHovered
+            fontWeight={600}
+            style={{ textDecoration: "underline" }}
+          >
             More about data transfer
-          </Text>
+          </Link>
         </StyledAvailableList>
       </ModalDialog.Body>
       <ModalDialog.Footer>
@@ -253,4 +264,10 @@ export default inject(({ auth, peopleStore, setup }) => {
     currentColorScheme,
     dataReassignment,
   };
-})(observer(withTranslation(["Common,Translations"])(DataReassignmentDialog)));
+})(
+  observer(
+    withTranslation(["Common,Translations,ChangePortalOwner"])(
+      DataReassignmentDialog
+    )
+  )
+);
