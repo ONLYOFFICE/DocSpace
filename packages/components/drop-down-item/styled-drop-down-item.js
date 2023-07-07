@@ -51,11 +51,6 @@ const StyledDropdownItem = styled.div`
     props.isModern ? "0 8px" : props.theme.dropDownItem.padding};
   line-height: ${(props) => props.theme.dropDownItem.lineHeight};
   text-align: left;
-  ${(props) =>
-    props.theme.interfaceDirection === "rtl" &&
-    css`
-      text-align: right;
-    `}
   box-sizing: border-box;
   background: none;
   text-decoration: none;
