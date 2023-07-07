@@ -1,9 +1,7 @@
 import React from "react";
 import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
-import { StyledSelectedItem } from "./styled-selected-item";
+import { StyledSelectedItem, StyledLabel } from "./styled-selected-item";
 import PropTypes from "prop-types";
-
-import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
 const SelectedItem = (props) => {
@@ -39,15 +37,14 @@ const SelectedItem = (props) => {
       isDisabled={isDisabled}
       id={id}
     >
-      <Text
+      <StyledLabel
         className={"selected-item_label"}
-        title={label}
         truncate={true}
         noSelect
         isDisabled={isDisabled}
       >
         {label}
-      </Text>
+      </StyledLabel>
       <IconButton
         className="selected-tag-removed"
         iconName={CrossReactSvgUrl}
