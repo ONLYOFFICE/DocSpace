@@ -169,10 +169,7 @@ class ContextMenu extends Component {
         }
         this.menuRef.current.style.minWidth = "210px";
       }
-
-      if (this.props.theme.interfaceDirection === "rtl")
-        this.menuRef.current.style.left = left + "px";
-      else this.menuRef.current.style.left = left + "px";
+      this.menuRef.current.style.left = left + "px";
       this.menuRef.current.style.top = top + "px";
     }
   };
