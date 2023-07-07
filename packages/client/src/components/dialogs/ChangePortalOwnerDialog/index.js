@@ -7,8 +7,6 @@ import { withTranslation } from "react-i18next";
 import PeopleSelector from "SRC_DIR/components/PeopleSelector";
 
 import Filter from "@docspace/common/api/people/filter";
-import styled from "styled-components";
-import { Base } from "@docspace/components/themes";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
