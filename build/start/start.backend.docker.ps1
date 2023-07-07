@@ -14,21 +14,19 @@ $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
 
-$DockerFile = "Dockerfile.dev"
-$EnvExtension = "dev"
-$CoreBaseDomain = "localhost"
+Set-Location -Path $DockerDir
 
-Write-Host "Start all backend services (containers)" -ForegroundColor Green
+Write-Host "Start all services (containers)" -ForegroundColor Green
+$Env:ENV_EXTENSION="dev"
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
 $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
 $Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
-$Env:BUILD_PATH="/var/www"
-$Env:SRC_PATH="$RootDir\publish\services"
+$Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login
 $Env:SERVICE_CLIENT=$Client
 $Env:ROOT_DIR=$RootDir
+$Env:BUILD_PATH="/var/www"
+$Env:SRC_PATH="$RootDir\publish\services"
 $Env:DATA_DIR="$RootDir\Data"
-$Env:ENV_EXTENSION="dev"
-$Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
-docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local up -d
+docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner --profile backend-local start
