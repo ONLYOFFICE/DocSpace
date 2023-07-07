@@ -948,7 +948,7 @@ class ContextOptionsStore {
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
         onClick: () => this.onClickCopyExternalLink(item, t),
-        disabled: false,
+        disabled: this.treeFoldersStore.isArchiveFolder,
       },
       {
         id: "option_room-info",

@@ -9,6 +9,7 @@ const StyledPublicRoomBar = styled.div`
   font-size: 12px;
   padding: 12px 16px;
   border-radius: 6px;
+  margin-bottom: 10px;
 
   .text-container {
     width: 100%;
@@ -59,7 +60,7 @@ const StyledCrossIcon = styled(CrossReactSvg)`
 const LinksBlock = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 20px 0px 12px 0px;
+  padding: 8px 0px 12px 0px;
 
   .link-to-viewing-icon {
     svg {

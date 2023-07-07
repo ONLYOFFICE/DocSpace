@@ -42,8 +42,6 @@ const Members = ({
   changeUserType,
   isGracePeriod,
   isPublicRoomType,
-  setEditLinkPanelIsVisible,
-  setLinkParams,
 
   setExternalLinks,
 }) => {
@@ -177,14 +175,9 @@ const Members = ({
     (member) => member.id === selfId
   );
 
-  const onCopyLink = () => {
-    setLinkParams({ isEdit: false });
-    setEditLinkPanelIsVisible(true);
-  };
-
   return (
     <>
-      {isPublicRoomType && <PublicRoomBlock t={t} onCopyLink={onCopyLink} />}
+      {isPublicRoomType && <PublicRoomBlock t={t} />}
 
       <StyledUserTypeHeader>
         <Text className="title">
@@ -288,12 +281,8 @@ export default inject(
       filesStore;
     const { id: selfId } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
-    const {
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
-      setEditLinkPanelIsVisible,
-      setLinkParams,
-    } = dialogsStore;
+    const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
+      dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
     const { setExternalLinks } = publicRoomStore;
@@ -327,8 +316,6 @@ export default inject(
       changeUserType,
       isGracePeriod,
       isPublicRoomType,
-      setEditLinkPanelIsVisible,
-      setLinkParams,
       setExternalLinks,
     };
   }

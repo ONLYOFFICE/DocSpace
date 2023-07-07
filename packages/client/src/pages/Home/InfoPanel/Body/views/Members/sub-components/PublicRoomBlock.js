@@ -7,17 +7,22 @@ import LinksToViewingIconUrl from "PUBLIC_DIR/images/links-to-viewing.react.svg?
 import PublicRoomBar from "./PublicRoomBar";
 import { LinksBlock } from "./StyledPublicRoom";
 import LinkRow from "./LinkRow";
-import { LinkType } from "../../../../../../../helpers/constants";
 
-const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
-  const [barIsVisible, setBarVisible] = useState(true);
+const PublicRoomBlock = (props) => {
+  const {
+    t,
+    externalLinks,
+    isArchiveFolder,
+    setLinkParams,
+    setEditLinkPanelIsVisible,
+  } = props;
 
-  const onClose = () => {
-    setBarVisible(!barIsVisible);
-    // toastr.success("onCloseBar");
+  const [barIsVisible, setBarVisible] = useState(!isArchiveFolder);
+
+  const onAddNewLink = () => {
+    setLinkParams({ isEdit: false });
+    setEditLinkPanelIsVisible(true);
   };
-
-  // const defaultLink = { id: 0, label: t("SharingPanel:ExternalLink") };
 
   return (
     <>
@@ -25,21 +30,28 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
         <PublicRoomBar
           headerText={t("Files:PublicRoom")}
           bodyText={t("CreateEditRoomDialog:PublicRoomBarDescription")}
-          onClose={onClose}
         />
       )}
       <LinksBlock>
-        <Text fontSize="14px" fontWeight={600} color="#a3a9ae">
-          {externalLinks.length
-            ? t("LinksToViewingIcon")
-            : t("NoExternalLinks")}
-        </Text>
-        <IconButton
-          className="link-to-viewing-icon"
-          iconName={LinksToViewingIconUrl}
-          onClick={onCopyLink}
-          size={16}
-        />
+        {isArchiveFolder ? (
+          <Text fontSize="14px" fontWeight={600} color="#a3a9ae">
+            {t("Files:Links")}: {externalLinks.length}
+          </Text>
+        ) : (
+          <>
+            <Text fontSize="14px" fontWeight={600} color="#a3a9ae">
+              {externalLinks.length
+                ? t("LinksToViewingIcon")
+                : t("NoExternalLinks")}
+            </Text>
+            <IconButton
+              className="link-to-viewing-icon"
+              iconName={LinksToViewingIconUrl}
+              onClick={onAddNewLink}
+              size={16}
+            />
+          </>
+        )}
       </LinksBlock>
 
       {externalLinks.length ? (
@@ -47,16 +59,21 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
           <LinkRow link={link} key={link?.sharedTo?.id} />
         ))
       ) : (
-        <>{/* <LinkRow link={defaultLink} /> */}</>
+        <></>
       )}
     </>
   );
 };
 
-export default inject(({ publicRoomStore }) => {
+export default inject(({ publicRoomStore, treeFoldersStore, dialogsStore }) => {
   const { roomLinks } = publicRoomStore;
+  const { isArchiveFolder } = treeFoldersStore;
+  const { setLinkParams, setEditLinkPanelIsVisible } = dialogsStore;
 
   return {
     externalLinks: roomLinks,
+    isArchiveFolder,
+    setLinkParams,
+    setEditLinkPanelIsVisible,
   };
 })(observer(PublicRoomBlock));

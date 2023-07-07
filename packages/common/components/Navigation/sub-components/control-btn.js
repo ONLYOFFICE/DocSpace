@@ -142,7 +142,7 @@ const ControlButtons = ({
 
           <ContextButton
             id="header_optional-button"
-            className="add-button"
+            className="option-button"
             getData={getContextOptionsFolder}
             withMenu={withMenu}
             //onPlusClick={onPlusClick}

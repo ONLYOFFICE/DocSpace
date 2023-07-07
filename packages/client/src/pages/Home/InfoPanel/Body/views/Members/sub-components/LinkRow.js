@@ -32,6 +32,7 @@ const LinkRow = (props) => {
     setEditLinkPanelIsVisible,
     setDeleteLinkDialogVisible,
     setEmbeddingPanelIsVisible,
+    isArchiveFolder,
     ...rest
   } = props;
 
@@ -175,7 +176,7 @@ const LinkRow = (props) => {
       )}
 
       <div className="external-row-icons">
-        {!disabled && (
+        {!disabled && !isArchiveFolder && (
           <>
             {isLocked && (
               <IconButton
@@ -194,29 +195,35 @@ const LinkRow = (props) => {
           </>
         )}
 
-        <ContextMenuButton getData={getData} isDisabled={false} />
+        {!isArchiveFolder && (
+          <ContextMenuButton getData={getData} isDisabled={false} />
+        )}
       </div>
     </StyledLinkRow>
   );
 };
 
-export default inject(({ auth, dialogsStore, publicRoomStore }) => {
-  const { selectionParentRoom } = auth.infoPanelStore;
-  const {
-    setEditLinkPanelIsVisible,
-    setDeleteLinkDialogVisible,
-    setEmbeddingPanelIsVisible,
-    setLinkParams,
-  } = dialogsStore;
-  const { editExternalLink, setExternalLink } = publicRoomStore;
+export default inject(
+  ({ auth, dialogsStore, publicRoomStore, treeFoldersStore }) => {
+    const { selectionParentRoom } = auth.infoPanelStore;
+    const {
+      setEditLinkPanelIsVisible,
+      setDeleteLinkDialogVisible,
+      setEmbeddingPanelIsVisible,
+      setLinkParams,
+    } = dialogsStore;
+    const { editExternalLink, setExternalLink } = publicRoomStore;
+    const { isArchiveFolder } = treeFoldersStore;
 
-  return {
-    setLinkParams,
-    editExternalLink,
-    roomId: selectionParentRoom.id,
-    setExternalLink,
-    setEditLinkPanelIsVisible,
-    setDeleteLinkDialogVisible,
-    setEmbeddingPanelIsVisible,
-  };
-})(withTranslation(["SharingPanel", "Files", "Settings"])(observer(LinkRow)));
+    return {
+      setLinkParams,
+      editExternalLink,
+      roomId: selectionParentRoom.id,
+      setExternalLink,
+      setEditLinkPanelIsVisible,
+      setDeleteLinkDialogVisible,
+      setEmbeddingPanelIsVisible,
+      isArchiveFolder,
+    };
+  }
+)(withTranslation(["SharingPanel", "Files", "Settings"])(observer(LinkRow)));
