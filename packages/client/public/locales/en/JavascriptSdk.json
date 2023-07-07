@@ -19,14 +19,16 @@
   "InterfaceElements": "Interface elements",
   "ItemsCount": "Items count on one page",
   "ItemsCountDescription": "You can specify the number of files / folders displayed on one page, as well as specify which page to start displaying",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Left menu",
   "MobileOnly": "only mobile devices",
   "Page": "Display page (number)",
   "RoomOrFolder": "Room or Folder",
   "RoomOrFolderDescription": "You can select the section, room or folder you want to display",
-  "SDKDescription": "You can integrate ONLYOFFICE DocSpace interface as an embedded window into a web page or application. In setting below, configure the window parameters and select elements to display in the integrated interface, then copy the ready embed code.",
+  "SDKDescription": "Using JavaScript SDK, you can embed a room or a folder from ONLYOFFICE DocSpace into your web interface as an iframe. Here, you can find settings for creating a sample iframe and configuring CSP. To use the complete SDK, please refer to the ",
+  "APILink": "API library",
   "SearchTerm": "Search term",
   "SortOrder": "Sort order",
-  "Title": "Navigate and Title"
+  "Title": "Navigate and Title",
+  "CreateSampleHeader": "Create sample DocSpace embed"
 }
