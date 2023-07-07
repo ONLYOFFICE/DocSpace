@@ -7,7 +7,7 @@ import { StyledInterfaceDirection } from "./StyledInterfaceDirection";
 
 const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
   const directionTitleText = "Interface direction";
-  const directionCheckboxLabelText = "directionTitleText";
+  const directionCheckboxLabelText = "Enable right-to-left mode";
   const onChangeDirection = (e) => {
     const isChecked = e.currentTarget.checked;
     const newDirection = isChecked ? "rtl" : "ltr";
