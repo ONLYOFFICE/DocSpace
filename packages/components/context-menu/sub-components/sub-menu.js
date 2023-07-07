@@ -65,18 +65,25 @@ const SubMenu = (props) => {
       ? subMenuRef.current.offsetWidth
       : DomHelpers.getHiddenElementOuterWidth(subMenuRef.current);
     const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
-    const itemWidthPx = itemOuterWidth + "px";
+    const isRtl = theme.interfaceDirection === "rtl";
+    const listWidthPx = subListWidth + "px";
+    const outerWidthPx = itemOuterWidth + "px";
     subMenuRef.current.style.top = "0px";
-
-    if (
-      parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
-      viewport.width - DomHelpers.calculateScrollbarWidth()
-    ) {
-      subMenuRef.current.style.left = -1 * subListWidth + "px";
+    if (isRtl) {
+      if (subListWidth < parseInt(containerOffset.left, 10)) {
+        subMenuRef.current.style.left = -1 * listWidthPx;
+      } else {
+        subMenuRef.current.style.left = outerWidthPx;
+      }
     } else {
-      theme.interfaceDirection === "rtl"
-        ? (subMenuRef.current.style.right = itemWidthPx)
-        : (subMenuRef.current.style.left = itemWidthPx);
+      if (
+        parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
+        viewport.width - DomHelpers.calculateScrollbarWidth()
+      ) {
+        subMenuRef.current.style.left = -1 * listWidthPx;
+      } else {
+        subMenuRef.current.style.left = outerWidthPx;
+      }
     }
   };
 
