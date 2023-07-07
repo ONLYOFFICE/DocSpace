@@ -15,6 +15,7 @@ import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
+import ReassignDataReactSvgUrl from "PUBLIC_DIR/images/reassign.data.svg?url";
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
 
@@ -113,6 +114,14 @@ class AccountsContextOptionsStore {
             icon: RemoveReactSvgUrl,
             label: t("PeopleTranslations:DisableUserButton"),
             onClick: () => this.onDisableClick(t, item),
+          };
+        case "reassign-data":
+          return {
+            id: "option_reassign-data",
+            key: option,
+            icon: ReassignDataReactSvgUrl,
+            label: t("DataReassignmentDialog:ReassignData"),
+            onClick: () => this.toggleDataReassignmentDialog(item),
           };
         case "delete-personal-data":
           return {
@@ -374,6 +383,24 @@ class AccountsContextOptionsStore {
     });
 
     setDeleteProfileDialogVisible(true);
+  };
+
+  toggleDataReassignmentDialog = (item) => {
+    const { setDialogData, setDataReassignmentDialogVisible, closeDialogs } =
+      this.peopleStore.dialogStore;
+    const { id, displayName, userName, avatar, statusType } = item;
+
+    closeDialogs();
+
+    setDialogData({
+      id,
+      avatar,
+      displayName,
+      statusType,
+      userName,
+    });
+
+    setDataReassignmentDialogVisible(true);
   };
 
   onDetailsClick = (item) => {
