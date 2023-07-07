@@ -9,7 +9,7 @@ const EmptyIcon = styled(CameraReactSvg)`
   ${commonIconsStyles}
   border-radius: ${(props) => props.theme.avatar.image.borderRadius};
 `;
-EmptyIcon.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+EmptyIcon.defaultProps = { theme: Base };
 
 const EditContainer = styled.div`
   position: absolute;
@@ -61,7 +61,7 @@ const AvatarWrapper = styled.div`
     }
   }
 `;
-AvatarWrapper.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+AvatarWrapper.defaultProps = { theme: Base };
 
 const rightStyle = (props) =>
   props.theme.avatar.roleWrapperContainer.right[props.size];
@@ -115,7 +115,7 @@ const NamedAvatar = styled.div`
 
   ${NoUserSelect}
 `;
-NamedAvatar.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+NamedAvatar.defaultProps = { theme: Base };
 
 const StyledImage = styled.img`
   width: ${(props) => props.theme.avatar.image.width};
@@ -124,7 +124,7 @@ const StyledImage = styled.img`
   content: ${(props) => props.isDefault && props.theme.avatar.defaultImage};
   ${NoUserSelect};
 `;
-StyledImage.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledImage.defaultProps = { theme: Base };
 
 const StyledIconWrapper = styled.div`
   width: 100%;
@@ -143,7 +143,7 @@ const StyledIconWrapper = styled.div`
   }
 `;
 StyledIconWrapper.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
+  theme: Base,
 };
 
 const widthStyle = (props) => props.theme.avatar.width[props.size];
@@ -195,7 +195,7 @@ const StyledAvatar = styled.div`
     }
   }
 `;
-StyledAvatar.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledAvatar.defaultProps = { theme: Base };
 
 export {
   EmptyIcon,

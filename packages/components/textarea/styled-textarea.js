@@ -122,6 +122,13 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
     font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" &&
+    `
+      &:placeholder-shown {
+        text-align: right;
+      }`}}
 `;
 
 StyledTextarea.defaultProps = {
