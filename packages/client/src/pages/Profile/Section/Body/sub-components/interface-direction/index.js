@@ -6,6 +6,8 @@ import Text from "@docspace/components/text";
 import { StyledInterfaceDirection } from "./StyledInterfaceDirection";
 
 const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
+  const directionTitleText = "Interface direction";
+  const directionCheckboxLabelText = "directionTitleText";
   const onChangeDirection = (e) => {
     const isChecked = e.currentTarget.checked;
     const newDirection = isChecked ? "rtl" : "ltr";
@@ -16,13 +18,13 @@ const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
   return (
     <StyledInterfaceDirection>
       <Text className="title" fontSize="16px" fontWeight={700}>
-        Interface direction
+        {directionTitleText}
       </Text>
       <Checkbox
         value={interfaceDirection}
         isChecked={interfaceDirection === "rtl"}
         onChange={onChangeDirection}
-        label={"Enable right-to-left mode"}
+        label={directionCheckboxLabelText}
       />
     </StyledInterfaceDirection>
   );
