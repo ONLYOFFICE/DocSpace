@@ -115,6 +115,13 @@ const InputPhone = ({
         <Text className="country-name">{country.name}</Text>
       </>
     );
+    const LtrRowComponent = () => (
+      <>
+        <Text className="country-name">{country.name}</Text>
+        <Text className="country-prefix">{prefix}</Text>
+        <Text className="country-dialcode">{country.dialCode}</Text>
+      </>
+    );
 
     return (
       <DropDownItem
@@ -126,15 +133,7 @@ const InputPhone = ({
         data-option={index}
         onClick={onCountryClick}
       >
-        {isRtl ? (
-          <RtlRowComponent />
-        ) : (
-          <>
-            <Text className="country-name">{country.name}</Text>
-            <Text className="country-prefix">{prefix}</Text>
-            <Text className="country-dialcode">{country.dialCode}</Text>
-          </>
-        )}
+        {isRtl ? <RtlRowComponent /> : <LtrRowComponent />}
       </DropDownItem>
     );
   };
