@@ -25,7 +25,7 @@ const StyledFloatingButtonWrapper = styled.div`
     z-index: 300;
 
     ${({ theme }) =>
-      theme.interfaceDirection === "rtl" ? `left: 0;` : `right: 0;`}
+      theme.interfaceDirection === "rtl" ? ` right: 0;` : `left: 0;`}
     bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
 
     ${!isMobile &&
