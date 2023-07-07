@@ -288,7 +288,6 @@ const EmailChips = ({
     setChips([...chips, ...filteredChips]);
   };
 
-  console.log(scrollbarRef.current, "scrollbarRef.current");
   return (
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
