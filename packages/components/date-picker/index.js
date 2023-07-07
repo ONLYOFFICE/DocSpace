@@ -126,7 +126,7 @@ const DatePicker = (props) => {
           <DateSelector onClick={toggleCalendar} ref={selectorRef}>
             <SelectorAddButton
               title={t("Select")}
-              className="mr-8"
+              className="mr-8 add-delivery-date-button"
               iconName={CalendarIconUrl}
             />
             <Text isInline fontWeight={600} color="#A3A9AE">
