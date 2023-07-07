@@ -28,6 +28,7 @@ export const StyledBox = styled(Box)`
 
   .input-phone {
     height: ${(props) => props.theme.inputPhone.height};
+    direction: ltr;
     padding-left: 20px;
     margin-left: -8px;
     border-left: 1px solid
