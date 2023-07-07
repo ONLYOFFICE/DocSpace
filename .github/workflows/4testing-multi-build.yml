@@ -1,10 +1,6 @@
 name: 4testing multiarch-build
 
-on:
-  push:
-    branches: 
-      - 'hotfix/v**'
-      - 'release/v**'
+on: workflow_dispatch
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
