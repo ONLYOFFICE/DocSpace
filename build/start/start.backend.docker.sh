@@ -37,4 +37,4 @@ ROOT_DIR=$dir \
 DATA_DIR="$dir/Data" \
 ENV_EXTENSION="dev" \
 DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local up -d
+docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local start
