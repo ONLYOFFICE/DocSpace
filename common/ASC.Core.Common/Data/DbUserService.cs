@@ -234,7 +234,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, AccountLoginType? accountLoginType, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
         totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text);
         total = totalQuery.Count();
