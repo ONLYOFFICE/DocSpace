@@ -333,6 +333,9 @@ public class EditorController : ApiControllerBase
         {
             version = dsVersion,
             docServiceUrlApi = url,
+            _filesLinkUtility.DocServiceUrl,
+            _filesLinkUtility.DocServiceUrlInternal,
+            _filesLinkUtility.DocServicePortalUrl
         };
     }
 }
