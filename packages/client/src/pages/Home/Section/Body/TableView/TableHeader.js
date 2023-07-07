@@ -226,7 +226,7 @@ class FilesTableHeader extends React.Component {
     const resetColumnsSize =
       (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
 
-    const tableColumns = columns.map((c) => c.enable && c.key);
+    const tableColumns = columns.map(c => c.enable && c.key);
     this.setTableColumns(tableColumns);
     if (fromUpdate) {
       this.setState({
@@ -245,12 +245,11 @@ class FilesTableHeader extends React.Component {
     }
   };
 
-  setTableColumns = (tableColumns) => {
+  setTableColumns = tableColumns => {
     localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
   componentDidMount() {
-    console.log(document.getElementsByClassName("section-scroll"));
     this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
     this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
   }
@@ -298,7 +297,7 @@ class FilesTableHeader extends React.Component {
 
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
-      const columnIndex = columns.findIndex((c) => c.key === "Share");
+      const columnIndex = columns.findIndex(c => c.key === "Share");
       if (columnIndex === -1) return;
 
       columns[columnIndex].enable = this.props.withContent;
@@ -318,10 +317,10 @@ class FilesTableHeader extends React.Component {
     this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
   }
 
-  onColumnChange = (key) => {
+  onColumnChange = key => {
     const { columns } = this.state;
 
-    const columnIndex = columns.findIndex((c) => c.key === key);
+    const columnIndex = columns.findIndex(c => c.key === key);
     if (columnIndex === -1) return;
 
     this.props.setColumnEnable(key);
@@ -329,7 +328,7 @@ class FilesTableHeader extends React.Component {
     columns[columnIndex].enable = !columns[columnIndex].enable;
     this.setState({ columns });
 
-    const tableColumns = columns.map((c) => c.enable && c.key);
+    const tableColumns = columns.map(c => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
     const event = new Event(Events.CHANGE_COLUMN);
@@ -337,7 +336,7 @@ class FilesTableHeader extends React.Component {
     window.dispatchEvent(event);
   };
 
-  onFilter = (sortBy) => {
+  onFilter = sortBy => {
     const { filter, setIsLoading } = this.props;
     const newFilter = filter.clone();
 
@@ -355,7 +354,7 @@ class FilesTableHeader extends React.Component {
     );
   };
 
-  onRoomsFilter = (sortBy) => {
+  onRoomsFilter = sortBy => {
     const { roomsFilter, setIsLoading, navigate, location } = this.props;
 
     const newFilter = roomsFilter.clone();
