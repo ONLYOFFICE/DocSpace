@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
-
+import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
 import Avatar from "@docspace/components/avatar";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -27,9 +27,14 @@ import {
 } from "../ChangePortalOwnerDialog/StyledDialog";
 
 const StyledModalDialog = styled(ModalDialog)`
-  .avatar-name {
+  .avatar-name,
+  .delete-profile-container {
     display: flex;
     align-items: center;
+  }
+
+  .delete-profile-checkbox {
+    margin-bottom: 16px;
   }
 `;
 
@@ -52,11 +57,17 @@ const DataReassignmentDialog = ({
   currentColorScheme,
   t,
 }) => {
-  const { id, avatar, displayName, statusType } = user;
+  const { id, avatar, displayName, statusType, deleteProfile } = user;
 
   const [selectorVisible, setSelectorVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteProfile, setIsDeleteProfile] = useState(deleteProfile);
+
+  const onToggleDeleteProfile = () => {
+    setIsDeleteProfile((remove) => !remove);
+  };
+
   const onTogglePeopleSelector = () => {
     setSelectorVisible((show) => !show);
   };
@@ -192,9 +203,17 @@ const DataReassignmentDialog = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <StyledFooterWrapper>
-          <Text className="info" noSelect>
-            Delete profile when reassignment is finished
-          </Text>
+          <div className="delete-profile-container">
+            <Checkbox
+              className="delete-profile-checkbox"
+              isChecked={isDeleteProfile}
+              onClick={onToggleDeleteProfile}
+            />
+            <Text className="info" noSelect>
+              Delete profile when reassignment is finished
+            </Text>
+          </div>
+
           <div className="button-wrapper">
             <Button
               tabIndex={5}

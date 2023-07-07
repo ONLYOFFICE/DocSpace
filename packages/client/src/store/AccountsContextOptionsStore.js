@@ -380,6 +380,7 @@ class AccountsContextOptionsStore {
       displayName,
       statusType,
       userName,
+      deleteProfile: true,
     });
 
     setDeleteProfileDialogVisible(true);
@@ -398,6 +399,7 @@ class AccountsContextOptionsStore {
       displayName,
       statusType,
       userName,
+      deleteProfile: false,
     });
 
     setDataReassignmentDialogVisible(true);
