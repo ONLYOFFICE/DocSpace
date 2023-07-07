@@ -12,7 +12,7 @@ import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-
+import toastr from "@docspace/components/toast/toastr";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import { Base } from "@docspace/components/themes";
 
@@ -48,14 +48,15 @@ const DataReassignmentDialog = ({
   visible,
   user,
   setDataReassignmentDialogVisible,
+  dataReassignment,
   currentColorScheme,
   t,
 }) => {
+  const { id, avatar, displayName, statusType } = user;
+
   const [selectorVisible, setSelectorVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-
-  const { avatar, displayName, statusType } = user;
-
+  const [isLoading, setIsLoading] = useState(false);
   const onTogglePeopleSelector = () => {
     setSelectorVisible((show) => !show);
   };
@@ -66,8 +67,25 @@ const DataReassignmentDialog = ({
 
   const onAccept = (item) => {
     setSelectorVisible(false);
-
     setSelectedUser({ ...item[0] });
+  };
+
+  const firstLetterToUppercase = (str) => {
+    return str[0].toUpperCase() + str.slice(1);
+  };
+
+  const onReassign = () => {
+    setIsLoading(true);
+
+    dataReassignment(id, selectedUser.id, true)
+      .then((res) => {
+        toastr.success("sucess");
+        onClose();
+      })
+      .catch((error) => {
+        toastr.error(error?.response?.data?.error?.message);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -114,7 +132,7 @@ const DataReassignmentDialog = ({
             </div>
 
             <Text className="status" noSelect>
-              {statusType}
+              {firstLetterToUppercase(statusType)}
             </Text>
           </div>
         </StyledOwnerInfo>
@@ -185,16 +203,16 @@ const DataReassignmentDialog = ({
               primary
               scale
               isDisabled={!selectedUser}
-              // onClick={onChangeAction}
-              // isLoading={isLoading}
+              onClick={onReassign}
+              isLoading={isLoading}
             />
             <Button
               tabIndex={5}
               label={t("Common:CancelButton")}
               size="normal"
               scale
-              // onClick={onCloseAction}
-              // isDisabled={isLoading}
+              onClick={onClose}
+              isDisabled={isLoading}
             />
           </div>
         </StyledFooterWrapper>
@@ -203,14 +221,17 @@ const DataReassignmentDialog = ({
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, setup }) => {
   const { dataReassignmentDialogVisible, setDataReassignmentDialogVisible } =
     peopleStore.dialogStore;
   const { currentColorScheme } = auth.settingsStore;
+  const { dataReassignment } = setup;
+
   return {
     dataReassignmentDialogVisible,
     setDataReassignmentDialogVisible,
     theme: auth.settingsStore.theme,
     currentColorScheme,
+    dataReassignment,
   };
 })(observer(withTranslation(["Common,Translations"])(DataReassignmentDialog)));

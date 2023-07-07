@@ -345,6 +345,10 @@ class SettingsSetupStore {
     return api.settings.sendOwnerChange(id);
   };
 
+  dataReassignment = (fromUserId, toUserId, deleteProfile) => {
+    return api.settings.dataReassignment(fromUserId, toUserId, deleteProfile);
+  };
+
   getCommonThirdPartyList = async () => {
     const res = await api.settings.getCommonThirdPartyList();
 
