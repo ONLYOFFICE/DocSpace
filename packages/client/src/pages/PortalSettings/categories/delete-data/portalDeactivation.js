@@ -63,7 +63,7 @@ const PortalDeactivation = (props) => {
       <Text className="helper">{t("PortalDeactivationHelper")}</Text>
       <ButtonWrapper>
         <Button
-          className="button"
+          className="deactivate-button button"
           label={t("Deactivate")}
           primary
           size={isDesktopView ? "small" : "normal"}

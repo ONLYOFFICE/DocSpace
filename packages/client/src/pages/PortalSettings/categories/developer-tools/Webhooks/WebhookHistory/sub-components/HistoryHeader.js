@@ -134,7 +134,7 @@ const HistoryHeader = (props) => {
       });
       toastr.success(
         `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
-        <b>{t("Common:Done")}</b>,
+        <b>{t("Common:Done")}</b>
       );
     } catch (error) {
       console.log(error);
@@ -151,7 +151,8 @@ const HistoryHeader = (props) => {
     },
   ];
 
-  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && emptyCheckedIds();
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && emptyCheckedIds();
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
@@ -161,12 +162,14 @@ const HistoryHeader = (props) => {
   const menuItems = (
     <>
       <DropDownItem
+        id="select-all"
         key="select-all-event-ids"
         label={t("Common:SelectAll")}
         data-index={0}
         onClick={checkAllIds}
       />
       <DropDownItem
+        id="unselect-all"
         key="unselect-all-event-ids"
         label={t("UnselectAll")}
         data-index={1}

@@ -17,6 +17,7 @@ const SelectedItem = (props) => {
     id,
     propKey,
     group,
+    classNameCloseButton,
   } = props;
   if (!label) return <></>;
 
@@ -40,7 +41,7 @@ const SelectedItem = (props) => {
       id={id}
     >
       <Text
-        className={"selected-item_label"}
+        className="selected-item_label"
         title={label}
         truncate={true}
         noSelect
@@ -49,7 +50,7 @@ const SelectedItem = (props) => {
         {label}
       </Text>
       <IconButton
-        className="selected-tag-removed"
+        className={"selected-tag-removed " + classNameCloseButton}
         iconName={CrossReactSvgUrl}
         size={12}
         onClick={onCloseClick}

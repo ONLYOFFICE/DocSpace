@@ -191,7 +191,7 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
       return "/accounts/filter";
 
     case CategoryType.Settings:
-      return "/settings/common";
+      return "/settings/personal";
 
     default:
       throw new Error("Unknown category type");

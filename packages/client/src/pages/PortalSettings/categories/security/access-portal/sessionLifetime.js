@@ -175,10 +175,12 @@ const SessionLifetime = (props) => {
         spacing="8px"
         options={[
           {
+            id: "session-lifetime-disabled",
             label: t("Disabled"),
             value: "disabled",
           },
           {
+            id: "session-lifetime-enable",
             label: t("Common:Enable"),
             value: "enable",
           },
@@ -193,6 +195,7 @@ const SessionLifetime = (props) => {
             {t("Lifetime")}
           </Text>
           <TextInput
+            className="lifetime-input"
             isAutoFocussed={false}
             value={sessionLifetime}
             onChange={onChangeInput}
@@ -213,6 +216,8 @@ const SessionLifetime = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        additionalClassSaveButton="session-lifetime-save"
+        additionalClassCancelButton="session-lifetime-cancel"
       />
     </MainContainer>
   );

@@ -66,6 +66,7 @@ const PayerInformationContainer = ({
 
   const renderTooltip = (
     <HelpButton
+      className="payer-tooltip"
       iconName={HelpReactSvgUrl}
       tooltipContent={
         <>
@@ -207,12 +208,8 @@ export default inject(({ auth, payments }) => {
   const { userStore, settingsStore, currentTariffStatusStore } = auth;
   const { accountLink, isStripePortalAvailable } = payments;
   const { theme } = settingsStore;
-  const {
-    customerId,
-    isGracePeriod,
-    isNotPaidPeriod,
-    payerInfo,
-  } = currentTariffStatusStore;
+  const { customerId, isGracePeriod, isNotPaidPeriod, payerInfo } =
+    currentTariffStatusStore;
   const { user } = userStore;
 
   return {
