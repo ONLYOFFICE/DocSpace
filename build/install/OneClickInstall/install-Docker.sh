@@ -1032,7 +1032,7 @@ install_product () {
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://$(hostname -f):${EXTERNAL_PORT}"}"
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:${EXTERNAL_PORT}"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
