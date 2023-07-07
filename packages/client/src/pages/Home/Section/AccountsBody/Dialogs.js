@@ -13,6 +13,7 @@ import {
   DeleteUsersDialog,
   ChangeNameDialog,
   ResetApplicationDialog,
+  DataReassignmentDialog,
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
@@ -35,6 +36,7 @@ const Dialogs = ({
   setChangeNameVisible,
   profile,
   resetTfaApp,
+  dataReassignmentDialogVisible,
 }) => {
   return (
     <>
@@ -114,6 +116,13 @@ const Dialogs = ({
           id={data}
         />
       )}
+
+      {dataReassignmentDialogVisible && (
+        <DataReassignmentDialog
+          visible={dataReassignmentDialogVisible}
+          user={data}
+        />
+      )}
     </>
   );
 };
@@ -135,6 +144,7 @@ export default inject(({ auth, peopleStore }) => {
     sendInviteDialogVisible,
     deleteDialogVisible,
     resetAuthDialogVisible,
+    dataReassignmentDialogVisible,
   } = peopleStore.dialogStore;
 
   const { user: profile } = auth.userStore;
@@ -168,5 +178,6 @@ export default inject(({ auth, peopleStore }) => {
     profile,
 
     resetTfaApp,
+    dataReassignmentDialogVisible,
   };
 })(observer(Dialogs));

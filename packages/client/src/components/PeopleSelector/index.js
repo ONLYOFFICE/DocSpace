@@ -52,6 +52,7 @@ const PeopleSelector = ({
   currentUserId,
   theme,
   withOutCurrentAuthorizedUser,
+  withAbilityCreateRoomUsers,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -159,7 +160,11 @@ const PeopleSelector = ({
 
         const items = response.items
           .filter((item) => {
-            if (excludeItems.includes(item.id)) {
+            //TODO: Add isRoomAdmin
+            const excludeUser =
+              withAbilityCreateRoomUsers && !item.isAdmin && !item.isOwner;
+
+            if (excludeItems.includes(item.id) || excludeUser) {
               totalDifferent++;
               return false;
             } else {
