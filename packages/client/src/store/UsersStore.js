@@ -259,6 +259,10 @@ class UsersStore {
           options.push("details");
         }
 
+        if (isOwner || isAdmin || userRole === "manager") {
+          options.push("reassign-data");
+        }
+
         break;
 
       case "pending":

@@ -20,11 +20,11 @@ const StyledOwnerInfo = styled.div`
       line-height: 22px;
     }
 
-    .owner {
+    .status {
       font-weight: 600;
       font-size: 13px;
       line-height: 20px;
-      color: ${(props) => props.theme.text.disableColor};
+      color: ${(props) => props.theme.dialogs.disableText};
     }
   }
 `;
@@ -46,7 +46,7 @@ const StyledPeopleSelectorInfo = styled.div`
     font-size: 13px;
     line-height: 20px;
 
-    color: ${(props) => props.theme.text.disableColor};
+    color: ${(props) => props.theme.dialogs.disableText};
   }
 `;
 
@@ -63,7 +63,7 @@ const StyledPeopleSelector = styled.div`
     font-size: 13px;
     line-height: 20px;
 
-    color: ${(props) => props.theme.text.disableColor};
+    color: ${(props) => props.theme.dialogs.disableText};
 
     margin-left: 8px;
   }

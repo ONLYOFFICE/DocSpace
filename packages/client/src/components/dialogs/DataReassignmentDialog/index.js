@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
-
+import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
 import Avatar from "@docspace/components/avatar";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -27,9 +27,18 @@ import {
 } from "../ChangePortalOwnerDialog/StyledDialog";
 
 const StyledModalDialog = styled(ModalDialog)`
-  .avatar-name {
+  .avatar-name,
+  .delete-profile-container {
     display: flex;
     align-items: center;
+  }
+
+  .delete-profile-checkbox {
+    margin-bottom: 16px;
+  }
+
+  .list-container {
+    gap: 6px;
   }
 `;
 
@@ -52,11 +61,17 @@ const DataReassignmentDialog = ({
   currentColorScheme,
   t,
 }) => {
-  const { id, avatar, displayName, statusType } = user;
+  const { id, avatar, displayName, statusType, deleteProfile } = user;
 
   const [selectorVisible, setSelectorVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleteProfile, setIsDeleteProfile] = useState(deleteProfile);
+
+  const onToggleDeleteProfile = () => {
+    setIsDeleteProfile((remove) => !remove);
+  };
+
   const onTogglePeopleSelector = () => {
     setSelectorVisible((show) => !show);
   };
@@ -77,9 +92,9 @@ const DataReassignmentDialog = ({
   const onReassign = () => {
     setIsLoading(true);
 
-    dataReassignment(id, selectedUser.id, true)
-      .then((res) => {
-        toastr.success("sucess");
+    dataReassignment(id, selectedUser.id, isDeleteProfile)
+      .then(() => {
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
         onClose();
       })
       .catch((error) => {
@@ -101,6 +116,7 @@ const DataReassignmentDialog = ({
         <ModalDialog.Container>
           <PeopleSelector
             acceptButtonLabel={t("Common:SelectAction")}
+            excludeItems={[id]}
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
@@ -158,7 +174,7 @@ const DataReassignmentDialog = ({
               fontWeight={600}
               onClick={onTogglePeopleSelector}
             >
-              {t("ChangeUser")}
+              {t("ChangePortalOwner:ChangeUser")}
             </Link>
           </StyledSelectedOwnerContainer>
         ) : (
@@ -177,7 +193,7 @@ const DataReassignmentDialog = ({
           </StyledPeopleSelector>
         )}
 
-        <StyledAvailableList>
+        <StyledAvailableList className="list-container">
           <Text className="list-item" noSelect>
             We will transfer rooms created by user and documents stored in
             user’s rooms.
@@ -185,16 +201,30 @@ const DataReassignmentDialog = ({
           <Text className="list-item" noSelect>
             Note: this action cannot be undone.
           </Text>
-          <Text className="list-item" noSelect>
+
+          <Link
+            type={"action"}
+            isHovered
+            fontWeight={600}
+            style={{ textDecoration: "underline" }}
+          >
             More about data transfer
-          </Text>
+          </Link>
         </StyledAvailableList>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <StyledFooterWrapper>
-          <Text className="info" noSelect>
-            Delete profile when reassignment is finished
-          </Text>
+          <div className="delete-profile-container">
+            <Checkbox
+              className="delete-profile-checkbox"
+              isChecked={isDeleteProfile}
+              onClick={onToggleDeleteProfile}
+            />
+            <Text className="info" noSelect>
+              Delete profile when reassignment is finished
+            </Text>
+          </div>
+
           <div className="button-wrapper">
             <Button
               tabIndex={5}
@@ -234,4 +264,10 @@ export default inject(({ auth, peopleStore, setup }) => {
     currentColorScheme,
     dataReassignment,
   };
-})(observer(withTranslation(["Common,Translations"])(DataReassignmentDialog)));
+})(
+  observer(
+    withTranslation(["Common,Translations,ChangePortalOwner"])(
+      DataReassignmentDialog
+    )
+  )
+);
