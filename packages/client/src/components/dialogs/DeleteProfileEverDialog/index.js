@@ -18,7 +18,17 @@ const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
 
 const DeleteProfileEverDialogComponent = (props) => {
-  const { user, t, homepage, setFilter, onClose, tReady, visible } = props;
+  const {
+    user,
+    t,
+    homepage,
+    setFilter,
+    onClose,
+    tReady,
+    visible,
+    setDataReassignmentDialogVisible,
+    setDeleteProfileDialogVisible,
+  } = props;
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const navigate = useNavigate();
@@ -41,6 +51,10 @@ const DeleteProfileEverDialogComponent = (props) => {
       .finally(() => onClose());
   };
 
+  const onClickDataReassignmentDialogVisible = () => {
+    setDataReassignmentDialogVisible(true);
+    setDeleteProfileDialogVisible(false);
+  };
   return (
     <ModalDialogContainer
       isLoading={!tReady}
@@ -57,6 +71,7 @@ const DeleteProfileEverDialogComponent = (props) => {
             others will be deleted.
           </Trans>
         </Text>
+        <div onClick={onClickDataReassignmentDialogVisible}>Reassign data</div>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -94,4 +109,8 @@ DeleteProfileEverDialog.propTypes = {
 export default inject(({ peopleStore }) => ({
   homepage: config.homepage,
   setFilter: peopleStore.filterStore.setFilterParams,
+  setDataReassignmentDialogVisible:
+    peopleStore.dialogStore.setDataReassignmentDialogVisible,
+  setDeleteProfileDialogVisible:
+    peopleStore.dialogStore.setDeleteProfileDialogVisible,
 }))(observer(DeleteProfileEverDialog));
