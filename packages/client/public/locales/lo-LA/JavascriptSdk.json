@@ -13,10 +13,9 @@
   "FrameId": "ID ກອບ",
   "Header": "ຫົວຂໍ້ເອກະສານ",
   "ItemsCount": "ຈໍານວນລາຍການ",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "ເມນູ",
   "Page": "ໜ້າ",
   "SearchTerm": "ຄຳສັບຊອກຫາ",
-  "SortOrder": "ຮຽງລຳດັບ",
-  "WindowParameters": "ຕົວກໍານົດການປ່ອງຢ້ຽມ"
+  "SortOrder": "ຮຽງລຳດັບ"
 }

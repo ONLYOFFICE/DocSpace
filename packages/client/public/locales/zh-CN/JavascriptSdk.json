@@ -13,10 +13,9 @@
   "FrameId": "帧 ID",
   "Header": "页眉",
   "ItemsCount": " 项目计数",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "菜单",
   "Page": "页面",
   "SearchTerm": "搜索词",
-  "SortOrder": "排序顺序",
-  "WindowParameters": "窗口参数"
+  "SortOrder": "排序顺序"
 }

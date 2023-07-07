@@ -13,10 +13,9 @@
   "FrameId": "Շրջանակի id",
   "Header": "Էջագլուխ",
   "ItemsCount": "Միավորների քանակ",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Ցանկ",
   "Page": "Էջ",
   "SearchTerm": "Որոնման տերմին",
-  "SortOrder": "Տեսակավորման կարգ",
-  "WindowParameters": "Պատուհանի հարաչափեր"
+  "SortOrder": "Տեսակավորման կարգ"
 }

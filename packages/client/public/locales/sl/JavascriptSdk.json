@@ -13,10 +13,9 @@
   "FrameId": "ID okvirja",
   "Header": "Glava",
   "ItemsCount": "Število elementov",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Meni",
   "Page": "Stran",
   "SearchTerm": "Išči izraz",
-  "SortOrder": "Vrstni red",
-  "WindowParameters": "Parametri oken"
+  "SortOrder": "Vrstni red"
 }
