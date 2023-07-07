@@ -137,7 +137,7 @@ const Textarea = ({
           paddingLeftProp={paddingLeftProp}
           isJSONField={isJSONField}
           enableCopy={enableCopy}
-          placeholder={placeholder || " "}
+          placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}
           maxLength={maxLength}
           name={name}
@@ -212,7 +212,7 @@ Textarea.defaultProps = {
   isReadOnly: false,
   hasError: false,
   heightScale: false,
-  placeholder: "",
+  placeholder: " ",
   tabIndex: -1,
   value: "",
   fontSize: 13,
