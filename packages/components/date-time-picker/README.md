@@ -25,6 +25,5 @@ import DateTimePicker from "@docspace/components/date-time-picker";
 | `className`      | `string` |    -     |   -    |      ''       | Allows to set classname                          |
 | `id`             | `string` |    -     |   -    |       -       | Allows to set id                                 |
 | `onChange`       |  `func`  |    -     |   -    |       -       | Allow you to handle changing events of component |
-| `date`           |  `obj`   |    -     |   -    |       -       | Date object                                      |
+| `initialDate`    |  `obj`   |    -     |   -    |       -       | Default date                                     |
 | `selectDateText` | `string` |    -     |   -    | "Select date" | Select date text                                 |
-| `setDate`        |  `func`  |    -     |   -    |       -       | Sets date                                        |

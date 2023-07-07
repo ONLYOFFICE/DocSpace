@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "./";
 import styled from "styled-components";
 
@@ -48,7 +48,8 @@ export default {
     },
     design: {
       type: "figma",
-      url: "https://www.figma.com/file/9AtdOHnhjhZCIRDrj4Unta/Public-room?type=design&node-id=1846-218508&mode=design&t=xSsXehQdoxpp5o7F-4",
+      url:
+        "https://www.figma.com/file/9AtdOHnhjhZCIRDrj4Unta/Public-room?type=design&node-id=1846-218508&mode=design&t=xSsXehQdoxpp5o7F-4",
     },
   },
 };
@@ -58,11 +59,9 @@ const Wrapper = styled.div`
 `;
 
 const Template = ({ ...args }) => {
-  const [date, setDate] = useState(null);
-
   return (
     <Wrapper>
-      <DatePicker {...args} date={date} setDate={setDate} />
+      <DatePicker {...args} />
     </Wrapper>
   );
 };

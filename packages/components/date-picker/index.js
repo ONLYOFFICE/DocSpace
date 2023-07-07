@@ -10,8 +10,6 @@ import Calendar from "@docspace/components/calendar";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { useTranslation } from "react-i18next";
-
 import CalendarIconUrl from "PUBLIC_DIR/images/calendar.react.svg?url";
 import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg";
 
@@ -58,8 +56,7 @@ const StyledCalendar = styled(Calendar)`
 
 const DatePicker = (props) => {
   const {
-    date,
-    setDate,
+    initialDate,
     onChange,
     selectDateText,
     className,
@@ -69,10 +66,11 @@ const DatePicker = (props) => {
     locale,
     showCalendarIcon,
   } = props;
-  const { t } = useTranslation(["Webhooks"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
+
+  const [date, setDate] = useState(initialDate ? moment(initialDate) : null);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
@@ -121,11 +119,11 @@ const DatePicker = (props) => {
 
   return (
     <Wrapper className={className} id={id}>
-      {date === null ? (
+      {!date ? (
         <>
           <DateSelector onClick={toggleCalendar} ref={selectorRef}>
             <SelectorAddButton
-              title={t("Select")}
+              title={selectDateText}
               className="mr-8"
               iconName={CalendarIconUrl}
             />
@@ -158,8 +156,8 @@ const DatePicker = (props) => {
 DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
-  /** Date object */
-  date: PropTypes.object,
+  /** Default date */
+  initialDate: PropTypes.object,
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func.isRequired,
   /** Allows to set classname */
@@ -174,8 +172,6 @@ DatePicker.propTypes = {
   locale: PropTypes.string,
   /** Shows calendar icon in selected item */
   showCalendarIcon: PropTypes.bool,
-  /** Sets date */
-  setDate: PropTypes.func,
 };
 
 DatePicker.defaultProps = {

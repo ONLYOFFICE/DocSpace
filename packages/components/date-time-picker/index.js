@@ -6,6 +6,7 @@ import TimePicker from "@docspace/components/time-picker";
 import DatePicker from "@docspace/components/date-picker";
 
 import ClockIcon from "PUBLIC_DIR/images/clock.react.svg";
+import moment from "moment";
 
 const Selectors = styled.div`
   position: relative;
@@ -50,16 +51,18 @@ const TimeSelector = styled.span`
 `;
 
 const DateTimePicker = (props) => {
-  const { date, selectDateText, onChange, setDate, className, id } = props;
+  const { initialDate, selectDateText, onChange, className, id } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);
+
+  const [date, setDate] = useState(initialDate ? moment(initialDate) : null);
 
   const showTimePicker = () => setIsTimeFocused(true);
   const hideTimePicker = () => setIsTimeFocused(false);
 
   const handleChange = (date) => {
+    onChange && onChange(date);
     setDate(date);
-    onChange(date);
   };
 
   const timePickerRef = useRef(null);
@@ -93,8 +96,8 @@ const DateTimePicker = (props) => {
         {date !== null &&
           (isTimeFocused ? (
             <TimePicker
-              date={date}
-              setDate={handleChange}
+              initialDate={initialDate}
+              onChange={handleChange}
               tabIndex={1}
               onBlur={hideTimePicker}
               focusOnRender

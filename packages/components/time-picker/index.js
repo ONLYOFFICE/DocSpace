@@ -45,8 +45,7 @@ const TimeInput = styled.div`
 TimeInput.defaultProps = { theme: Base };
 
 const TimePicker = ({
-  date,
-  setDate,
+  initialTime,
   onChange,
   className,
   hasError,
@@ -57,6 +56,10 @@ const TimePicker = ({
 }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
+
+  const [date, setDate] = useState(
+    initialTime ? moment(initialTime) : moment().startOf("day")
+  );
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 

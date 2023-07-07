@@ -26,11 +26,10 @@ import DatePicker from "@docspace/components/date-picker";
 | ------------------ | -------- | :------: | ------ | ------------------------- | ------------------------------------------ |
 | `selectDateText`   | `string` |    -     | -      | -                         | Select date text                           |
 | `className`        | `string` |    -     | -      | -                         | Accepts class                              |
-| `date`             | `date`   |    -     | -      | -                         | Calendar date                              |
+| `initialDate`      | `date`   |    -     | -      | -                         | Default date                               |
 | `id`               | `string` |    -     | -      | -                         | Accepts id                                 |
 | `locale`           | `string` |    -     | -      | `User's browser settings` | Browser locale                             |
 | `maxDate`          | `date`   |    -     | -      | -                         | Maximum date that the user can select.     |
 | `minDate`          | `date`   |    -     | -      | -                         | Minimum date that the user can select.     |
 | `onChange`         | `func`   |    -     | -      | -                         | Function called when the user select a day |
 | `showCalendarIcon` | `bool`   |    -     | -      | -                         | Shows calendar icon in selected item       |
-| `setDate`          | `func`   |    -     | -      | -                         | Sets date                                  |

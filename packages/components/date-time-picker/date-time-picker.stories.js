@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import DateTimePicker from "./";
 import styled from "styled-components";
-import moment from "moment";
 
 export default {
   title: "Components/DateTimePicker",
@@ -23,11 +22,9 @@ const Wrapper = styled.div`
 `;
 
 const Template = ({ ...args }) => {
-  const [date, setDate] = useState(null);
-
   return (
     <Wrapper>
-      <DateTimePicker {...args} date={date} setDate={setDate} />
+      <DateTimePicker {...args} />
     </Wrapper>
   );
 };
