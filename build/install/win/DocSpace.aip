@@ -342,10 +342,9 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="apisystem.json" FileName="APISYS~1.JSO|apisystem.json" DirProperty="config_Dir" Component="config" RootProperty="Root_12" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="apisystem.json" FileName="APISYS~1.JSO|apisystem.PRODUCT.ENVIRONMENT.SUB.json" DirProperty="config_Dir" Component="config" RootProperty="Root_12" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.env.json" FileName="APPSET~1.JSO|appsettings.PRODUCT.ENVIRONMENT.SUB.json" DirProperty="config_Dir" Component="config" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.json_ASC.Migration.Runner" FileName="APPSET~2.JSO|appsettings.runner.json" DirProperty="service_6_Dir" Component="ASC.Migration.Runner.exe" RootProperty="Root_11" Flags="6" IndentUnits="2"/>
-    <ROW JsonFile="appsettings.json_config" FileName="APPSET~3.JSO|appsettings.json" DirProperty="config_Dir" Component="config" RootProperty="Root_5" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="appsettings.services.json" FileName="APPSET~2.JSO|appsettings.services.json" DirProperty="config_Dir" Component="config" RootProperty="Root_4" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="config.json_config_editor" FileName="CONFIG~1.JSO|config.json" DirProperty="editor_Dir" Component="editor" RootProperty="Root_10" Flags="6" IndentUnits="2"/>
     <ROW JsonFile="config.json_config_login" FileName="CONFIG~1.JSO|config.json" DirProperty="login_Dir" Component="login" RootProperty="Root_9" Flags="6" IndentUnits="2"/>
@@ -380,7 +379,6 @@
     <ROW JsonProperty="Root_2" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_3" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_4" Name="Root" Condition="1" Order="0" Flags="60"/>
-    <ROW JsonProperty="Root_5" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_6" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_7" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_9" Name="Root" Condition="1" Order="0" Flags="60"/>
@@ -400,8 +398,7 @@
     <ROW JsonProperty="connectionString" Parent="default" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"/>
     <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[DB_HOST];Port=[DB_PORT];Database=[DB_NAME];User ID=[DB_USER];Password=[DB_PWD];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"/>
     <ROW JsonProperty="core" Parent="Root_4" Name="core" Condition="1" Order="0" Flags="60"/>
-    <ROW JsonProperty="core_1" Parent="Root_5" Name="core" Condition="1" Order="0" Flags="60"/>
-    <ROW JsonProperty="core_2" Parent="Root_1" Name="core" Condition="1" Order="2" Flags="60"/>
+    <ROW JsonProperty="core_1" Parent="Root_1" Name="core" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="core_3" Parent="Root_12" Name="core" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="default" Parent="ConnectionStrings" Name="default" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="default_1" Parent="ConnectionStrings_1" Name="default" Condition="1" Order="0" Flags="60"/>
@@ -416,19 +413,18 @@
     <ROW JsonProperty="header" Parent="secret" Name="header" Condition="1" Order="1" Flags="57" Value="[DOCUMENT_SERVER_JWT_HEADER]"/>
     <ROW JsonProperty="internal" Parent="url" Name="internal" Condition="1" Order="1" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
     <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
-    <ROW JsonProperty="machinekey" Parent="core_2" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
+    <ROW JsonProperty="machinekey" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
-    <ROW JsonProperty="machinekey_2" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_3" Parent="core_3" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
-    <ROW JsonProperty="notify" Parent="Root_5" Name="notify" Condition="1" Order="1" Flags="60"/>
+    <ROW JsonProperty="notify" Parent="Root_1" Name="notify" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="options" Parent="Root_11" Name="options" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="port" Parent="app" Name="port" Condition="1" Order="0" Flags="57" Value="[Socket.IO_Port]"/>
     <ROW JsonProperty="port_1" Parent="app_1" Name="port" Condition="1" Order="0" Flags="57" Value="[SsoAuth_Port]"/>
     <ROW JsonProperty="portal" Parent="url" Name="portal" Condition="1" Order="2" Flags="57" Value="http://localhost:80"/>
     <ROW JsonProperty="postman" Parent="notify" Name="postman" Condition="1" Order="0" Flags="57" Value="services"/>
     <ROW JsonProperty="products" Parent="core" Name="products" Condition="1" Order="0" Flags="60"/>
-    <ROW JsonProperty="products_1" Parent="core_2" Name="products" Condition="1" Order="1" Flags="60"/>
+    <ROW JsonProperty="products_1" Parent="core_1" Name="products" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="public" Parent="url" Name="public" Condition="1" Order="0" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
     <ROW JsonProperty="secret" Parent="docservice" Name="secret" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="url" Parent="docservice" Name="url" Condition="1" Order="1" Flags="60"/>
