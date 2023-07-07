@@ -88,6 +88,7 @@ const DateTimePicker = (props) => {
   return (
     <Selectors className={className} id={id}>
       <DatePicker
+        initialDate={initialDate}
         date={date}
         onChange={handleChange}
         selectDateText={selectDateText}
@@ -116,7 +117,7 @@ const DateTimePicker = (props) => {
 
 DateTimePicker.propTypes = {
   /** Date object */
-  date: PropTypes.object,
+  initialDate: PropTypes.object,
   /** Select date text */
   selectDateText: PropTypes.string,
   /** Allows to set classname */

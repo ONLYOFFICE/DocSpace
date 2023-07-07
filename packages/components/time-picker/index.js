@@ -222,10 +222,8 @@ const TimePicker = ({
   );
 };
 TimePicker.propTypes = {
-  /** Inital date */
-  date: PropTypes.object,
-  /** State setter function */
-  setDate: PropTypes.func,
+  /** Default time */
+  initialTime: PropTypes.object,
   /** Allows to set classname */
   className: PropTypes.string,
   /** Allow you to handle changing events of component */
