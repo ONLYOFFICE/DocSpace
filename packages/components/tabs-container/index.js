@@ -128,8 +128,7 @@ class TabContainer extends Component {
       rightTabs--;
     }
     rightFullWidth -= marginRight;
-    const staticScroll = this.scrollRef.current?.getScrollWidth(); //get static scroll width
-    this.scrollRef.current?.scrollLeft(staticScroll - rightFullWidth);
+    this.scrollRef.current?.scrollTo(this.scrollRef.current.scrollHeight, 0);
   };
 
   onMouseEnter = () => {
