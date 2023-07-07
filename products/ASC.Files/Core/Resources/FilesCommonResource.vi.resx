@@ -374,4 +374,46 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Quản trị viên phòng</value>
   </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Nhận xét</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Điền biểu mẫu</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Tự động lưu</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Đã tạo để điền vào biểu mẫu</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Đã chỉnh sửa bằng mã hóa</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Đã mã hóa</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Đã lưu</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Bạn không có đủ quyền để di chuyển tập tin</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Bạn không có đủ quyền để di chuyển thư mục</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Tìm trong nội dung tài liệu</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Tài liệu OFORM có thể điền thông tin đã sẵn sàng. Nó được lưu trong {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Bản sao OFORM được tạo trong thư mục {0}. Vui lòng điền vào biểu mẫu và tải xuống kết quả dưới dạng tập tin PDF hoặc DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Tập tin không còn là bản nháp để điền vào biểu mẫu.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Xem và tải tài liệu được chia sẻ xuống. Tải tập tin lên để chia sẻ thư mục. Khả năng tương thích cao nhất với docx, xlsx, pptx được đảm bảo.</value>
+  </data>
 </root>

@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ButtonSetPassword" xml:space="preserve">
-    <value>Wachtwoord instellen</value>
-  </data>
   <data name="BackupNotFound" xml:space="preserve">
-    <value>Het back-up bestand is ongeldig. Gebruik een bestand dat is gemaakt in ONLYOFFICE v11.5 of later.</value>
+    <value>Tệp sao lưu không hợp lệ. Xin vui lòng sử dụng tệp được tạo trong ONLYOFFICE v11.5 trở lên.</value>
+  </data>
+  <data name="ButtonSetPassword" xml:space="preserve">
+    <value>Đặt mật khẩu</value>
   </data>
 </root>

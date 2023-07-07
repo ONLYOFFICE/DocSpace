@@ -959,7 +959,7 @@
     <value>Hesabınız LDAP dizinine bağlı değildir ve LDAP şifreniz artık etkin değildir. Lütfen profil ayarları sayfasında hesabınızın şifresini değiştirin veya oluşturun.</value>
   </data>
   <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
-    <value>{0} kullanıcısı,{1} yönetici olarak atanıyor</value>
+    <value>{0} kullanıcısını,{1} yönetici olarak atama</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
     <value>Daha önce LDAP ile yüklenmiş eski erişim hakları kaldırılıyor</value>
