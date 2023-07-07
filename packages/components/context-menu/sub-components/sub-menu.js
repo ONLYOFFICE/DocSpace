@@ -65,7 +65,7 @@ const SubMenu = (props) => {
       ? subMenuRef.current.offsetWidth
       : DomHelpers.getHiddenElementOuterWidth(subMenuRef.current);
     const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
-
+    const itemWidthPx = itemOuterWidth + "px";
     subMenuRef.current.style.top = "0px";
 
     if (
@@ -75,8 +75,8 @@ const SubMenu = (props) => {
       subMenuRef.current.style.left = -1 * subListWidth + "px";
     } else {
       theme.interfaceDirection === "rtl"
-        ? (subMenuRef.current.style.right = itemOuterWidth + "px")
-        : (subMenuRef.current.style.left = itemOuterWidth + "px");
+        ? (subMenuRef.current.style.right = itemWidthPx)
+        : (subMenuRef.current.style.left = itemWidthPx);
     }
   };
 
