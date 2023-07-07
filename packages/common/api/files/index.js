@@ -990,3 +990,15 @@ export function sendEditorNotify(fileId, actionLink, emails, message) {
     },
   });
 }
+
+export function changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl) {
+  return request({
+    method: "put",
+    url: `files/docservice`,
+    data: {
+      DocServiceUrl: apiUrl,
+      DocServiceUrlInternal: internalUrl,
+      DocServiceUrlPortal: portalUrl,
+    },
+  });
+}
