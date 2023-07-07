@@ -11,6 +11,10 @@ export default {
     docs: {
       page: TooltipDocs,
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?node-id=649%3A4458&mode=dev",
+    },
   },
 };
 

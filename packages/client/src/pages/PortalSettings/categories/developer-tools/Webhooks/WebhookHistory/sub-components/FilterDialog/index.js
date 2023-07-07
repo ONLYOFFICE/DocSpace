@@ -31,12 +31,6 @@ const Footer = styled.div`
   }
 `;
 
-const Selectors = styled.div`
-  position: relative;
-  margin-top: 8px;
-  margin-bottom: 16px;
-`;
-
 const Separator = styled.hr`
   border-top: 1px solid;
   border-color: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")};
@@ -74,7 +68,6 @@ const FilterDialog = (props) => {
   });
 
   const [isApplied, setIsApplied] = useState(false);
-  const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -103,7 +96,6 @@ const FilterDialog = (props) => {
       isLoaded && navigate(`/portal-settings/developer-tools/webhooks/${id}`);
     } else {
       setFilters(historyFilters);
-      setIsTimeOpen(false);
       setIsApplied(true);
       navigate(constructUrl(`/portal-settings/developer-tools/webhooks/${id}`, historyFilters));
     }
@@ -124,16 +116,13 @@ const FilterDialog = (props) => {
       <ModalDialog.Body>
         <DialogBodyWrapper>
           <DeliveryDatePicker
-            Selectors={Selectors}
             isApplied={isApplied}
             setIsApplied={setIsApplied}
             filters={filters}
             setFilters={setFilters}
-            isTimeOpen={isTimeOpen}
-            setIsTimeOpen={setIsTimeOpen}
           />
           <Separator />
-          <StatusPicker Selectors={Selectors} filters={filters} setFilters={setFilters} />
+          <StatusPicker filters={filters} setFilters={setFilters} />
           <Separator />
         </DialogBodyWrapper>
       </ModalDialog.Body>
