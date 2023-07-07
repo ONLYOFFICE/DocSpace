@@ -379,53 +379,36 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
         var id = MakeId(file);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToListAsync()
-                    ;
+                var links = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                var link = await Query(filesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToListAsync()
-                    ;
-
-                filesDbContext.TagLink.RemoveRange(link);
+                filesDbContext.TagLink.RemoveRange(links);
                 await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in filesDbContext.Tag
-                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
+                var tagsToRemove = await Queries.TagsAsync(filesDbContext).ToListAsync();
 
-                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var securityToDelete = Query(filesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await filesDbContext.SaveChangesAsync();
 
                 await tx.CommitAsync();
             }
         });
-
-
-
 
         if (file is not ErrorEntry)
         {
@@ -659,7 +642,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-            using var fs = new FileStream(tempPath, FileMode.Append);
+            await using var fs = new FileStream(tempPath, FileMode.Append);
             await stream.CopyToAsync(fs);
         }
 
@@ -687,7 +670,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             return ToFile(GetFileById(sharpboxSession.FileId));
         }
 
-        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+        await using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
         return await SaveFileAsync(uploadSession.File, fs);
     }
@@ -733,4 +716,46 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return file;
     }
     #endregion
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>>
+        TagLinksAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> TagsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                from ft in ctx.Tag
+                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                {
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
+                }
+                where ftl == null
+                select ft);
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(m => m.Id.StartsWith(idStart)));
 }

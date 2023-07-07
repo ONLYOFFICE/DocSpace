@@ -771,7 +771,7 @@ public class UserPhotoManager
 
     public async Task<byte[]> GetTempPhotoData(string fileName)
     {
-        using var s = await (await GetDataStoreAsync()).GetReadStreamAsync(_tempDomainName, fileName);
+        await using var s = await (await GetDataStoreAsync()).GetReadStreamAsync(_tempDomainName, fileName);
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
 
@@ -794,7 +794,7 @@ public class UserPhotoManager
         var store = await GetDataStoreAsync();
         if (await store.IsFileAsync(_tempDomainName, fileName))
         {
-            using var s = await store.GetReadStreamAsync(_tempDomainName, fileName);
+            await using var s = await store.GetReadStreamAsync(_tempDomainName, fileName);
             using var img = Image.Load(s);
 
             var imgFormat = img.Metadata.DecodedImageFormat;
@@ -887,7 +887,7 @@ public class UserPhotoManager
                 return null;
             }
 
-            using var s = await (await GetDataStoreAsync()).GetReadStreamAsync("", fileName);
+            await using var s = await (await GetDataStoreAsync()).GetReadStreamAsync("", fileName);
             var data = new MemoryStream();
             var buffer = new byte[1024 * 10];
             while (true)

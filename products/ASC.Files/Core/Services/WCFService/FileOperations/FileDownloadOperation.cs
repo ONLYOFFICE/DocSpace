@@ -392,14 +392,14 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                             if (await fileConverter.EnableConvertAsync(file, convertToExt))
                             {
                                 //Take from converter
-                                using (var readStream = await fileConverter.ExecAsync(file, convertToExt))
+                                await using (var readStream = await fileConverter.ExecAsync(file, convertToExt))
                                 {
                                     await compressTo.PutStream(readStream);
                                 }
                             }
                             else
                             {
-                                using (var readStream = await FileDao.GetFileStreamAsync(file))
+                                await using (var readStream = await FileDao.GetFileStreamAsync(file))
                                 {
                                     await compressTo.PutStream(readStream);
                                 }

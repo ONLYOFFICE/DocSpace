@@ -99,12 +99,9 @@ public class BaseIndexer<T> where T : class, ISearchItem
         Func<DateTime, List<int>> getIds,
         Func<long, long, DateTime, List<T>> getData)
     {
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         var now = DateTime.UtcNow;
-        var lastIndexed = await webstudioDbContext.WebstudioIndex
-            .Where(r => r.IndexName == Wrapper.IndexName)
-            .Select(r => r.LastModified)
-            .FirstOrDefaultAsync();
+        var lastIndexed = await Queries.LastIndexedAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (lastIndexed.Equals(DateTime.MinValue))
         {
@@ -436,8 +433,8 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     private async Task ClearAsync()
     {
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var index = await webstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefaultAsync();
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        var index = await Queries.IndexAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (index != null)
         {
@@ -673,4 +670,22 @@ static class CamelCaseExtension
     {
         return str.ToLowerInvariant()[0] + str.Substring(1);
     }
+}
+
+
+static file class Queries
+{
+    public static readonly Func<WebstudioDbContext, string, Task<DateTime>> LastIndexedAsync =
+        EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, string indexName) =>
+                ctx.WebstudioIndex
+                    .Where(r => r.IndexName == indexName)
+                    .Select(r => r.LastModified)
+                    .FirstOrDefault());
+
+    public static readonly Func<WebstudioDbContext, string, Task<DbWebstudioIndex>> IndexAsync =
+        EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, string indexName) =>
+                ctx.WebstudioIndex
+                    .FirstOrDefault(r => r.IndexName == indexName));
 }

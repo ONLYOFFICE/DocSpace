@@ -73,8 +73,16 @@ internal class IPAddressRange
     {
         var parts = CIDRmask.Split('/');
 
-        var IP_addr = BitConverter.ToInt32(IPAddress.Parse(ipAddress).GetAddressBytes(), 0);
-        var CIDR_addr = BitConverter.ToInt32(IPAddress.Parse(parts[0]).GetAddressBytes(), 0);
+        var requestIP = IPAddress.Parse(ipAddress);
+        var restrictionIP = IPAddress.Parse(parts[0]);
+
+        if (requestIP.AddressFamily != restrictionIP.AddressFamily)
+        {
+            return false;
+        }
+
+        var IP_addr = BitConverter.ToInt32(requestIP.GetAddressBytes(), 0);
+        var CIDR_addr = BitConverter.ToInt32(restrictionIP.GetAddressBytes(), 0);
         var CIDR_mask = IPAddress.HostToNetworkOrder(-1 << (32 - int.Parse(parts[1])));
 
         return (IP_addr & CIDR_mask) == (CIDR_addr & CIDR_mask);
