@@ -24,47 +24,8 @@ import {
   StyledAvailableList,
   StyledFooterWrapper,
   StyledSelectedOwnerContainer,
+  StyledSelectedOwner,
 } from "./StyledDialog";
-
-const StyledSelectedOwner = styled.div`
-  width: fit-content;
-  height: 28px;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 4px 15px;
-  gap: 8px;
-
-  box-sizing: border-box;
-
-  background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-
-  border-radius: 16px;
-
-  .text {
-    color: ${({ currentColorScheme }) => currentColorScheme.text.accent};
-
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 20px;
-  }
-
-  .cross-icon {
-    display: flex;
-    align-items: center;
-
-    svg {
-      cursor: pointer;
-
-      path {
-        fill: ${({ currentColorScheme }) => currentColorScheme.text.accent};
-      }
-    }
-  }
-`;
-
-StyledSelectedOwner.defaultProps = { theme: Base };
 
 const filter = new Filter();
 
