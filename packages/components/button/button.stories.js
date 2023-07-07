@@ -12,6 +12,10 @@ export default {
         component: "Button is used for a action on a page.",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=62-3582&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
   },
 };
 

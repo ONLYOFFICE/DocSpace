@@ -158,7 +158,7 @@ public class StorageHandler
         context.Response.Headers["Connection"] = "Keep-Alive";
         context.Response.Headers["Content-Length"] = length.ToString(CultureInfo.InvariantCulture);
 
-        using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
+        await using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
         {
             var responseBufferingFeature = context.Features.Get<IHttpResponseBodyFeature>();
             responseBufferingFeature?.DisableBuffering();

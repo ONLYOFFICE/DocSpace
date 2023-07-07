@@ -19,10 +19,13 @@ import TimePicker from "@docspace/components/time-picker";
 
 #### Properties
 
-| Props          |      Type      | Required |    Values     |          Default          | Description                                                  |
-| -------------- | :------------: | :------: | :-----------: | :-----------------------: | ------------------------------------------------------------ |
-| `className`    |    `string`    |    -     |       -       |             ''            | Allows to set classname                                      |
-| `date`         |    `object`    |    -     |       -       |             -             | Inital date                                                  |
-| `setDate`      |     `func`     |    -     |       -       |             -             | State setter function                                        |
-| `onChange`     |     `func`     |    -     |       -       |             -             | Allow you to handle changing events of component             |
-| `hasError`     |     `bool`     |    -     |       -       |           false           | Indicates error                                              |
+| Props           |   Type   | Required | Values | Default | Description                                      |
+| --------------- | :------: | :------: | :----: | :-----: | ------------------------------------------------ |
+| `className`     | `string` |    -     |   -    |   ''    | Allows to set classname                          |
+| `date`          | `object` |    -     |   -    |    -    | Inital date                                      |
+| `setDate`       |  `func`  |    -     |   -    |    -    | State setter function                            |
+| `onChange`      |  `func`  |    -     |   -    |    -    | Allow you to handle changing events of component |
+| `hasError`      |  `bool`  |    -     |   -    |  false  | Indicates error                                  |
+| `onBlur`        |  `func`  |    -     |   -    |    -    | Triggers function on blur                        |
+| `focusOnRender` |  `bool`  |    -     |   -    |  false  | Focus input on render                            |
+| `forwardedRef`  | `object` |    -     |   -    |  false  | Passes ref to child component                    |

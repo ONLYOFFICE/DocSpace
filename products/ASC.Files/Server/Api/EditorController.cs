@@ -157,7 +157,7 @@ public abstract class EditorController<T> : ApiControllerBase
     [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        using var stream = _httpContextAccessor.HttpContext.Request.Body;
+        await using var stream = _httpContextAccessor.HttpContext.Request.Body;
 
         return await _fileDtoHelper.GetAsync(await _fileStorageService.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave));
     }

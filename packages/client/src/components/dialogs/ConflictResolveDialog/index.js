@@ -144,6 +144,7 @@ const ConflictResolveDialog = (props) => {
 
     onClosePanels();
     try {
+      sessionStorage.setItem("filesSelectorPath", `${destFolderId}`);
       await itemOperationToFolder(data);
     } catch (error) {
       toastr.error(error.message ? error.message : error);
@@ -194,6 +195,8 @@ const ConflictResolveDialog = (props) => {
   const singleFile = filesCount === 1;
   const file = items[0].title;
 
+  const obj = { file, folder: folderTitle };
+
   return (
     <StyledModalDialog
       isLoading={!tReady}
@@ -210,17 +213,15 @@ const ConflictResolveDialog = (props) => {
               t={t}
               i18nKey="ConflictResolveDescription"
               ns="ConflictResolveDialog"
-            >
-              {{ file, folder: folderTitle }}
-            </Trans>
+              values={obj}
+            ></Trans>
           ) : (
             <Trans
               t={t}
               i18nKey="ConflictResolveDescriptionFiles"
               ns="ConflictResolveDialog"
-            >
-              {{ filesCount, folder: folderTitle }}
-            </Trans>
+              values={{ filesCount, folder: folderTitle }}
+            ></Trans>
           )}
         </Text>
         <Text className="select-action">

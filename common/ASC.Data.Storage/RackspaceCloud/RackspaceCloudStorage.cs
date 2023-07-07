@@ -244,8 +244,7 @@ public class RackspaceCloudStorage : BaseStorage
         {
             try
             {
-
-                using (var emptyStream = _tempStream.Create())
+                await using (var emptyStream = _tempStream.Create())
                 {
 
                     var headers = new Dictionary<string, string>
@@ -625,7 +624,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 
-        using (var fs = new FileStream(filePath, mode))
+        await using (var fs = new FileStream(filePath, mode))
         {
             var buffer = new byte[BufferSize];
             int readed;
