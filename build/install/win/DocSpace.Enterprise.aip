@@ -125,7 +125,7 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="appsettings.json" FileName="APPSET~1.JSO|appsettings.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="appsettings.json" FileName="APPSET~1.JSO|appsettings.production.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
     <ROW JsonProperty="Root" Name="Root" Condition="1" Order="0" Flags="60"/>
