@@ -60,11 +60,13 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpGet("remove/progress")]
-    public async Task<RemoveProgressItem> GetRemoveProgressAsync(Guid userId)
+    public async Task<TaskProgressResponseDto> GetRemoveProgressAsync(Guid userId)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
+        var progressItem = _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
+
+        return new TaskProgressResponseDto(progressItem);
     }
 
     [HttpPut("self/delete")]
@@ -84,7 +86,7 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [HttpPost("remove/start")]
-    public async Task<RemoveProgressItem> StartRemoveAsync(TerminateRequestDto inDto)
+    public async Task<TaskProgressResponseDto> StartRemoveAsync(TerminateRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
@@ -100,7 +102,9 @@ public class RemoveUserDataController : ApiControllerBase
             throw new ArgumentException("Can not delete user with id = " + inDto.UserId);
         }
 
-        return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
+        var progressItem = _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
+
+        return new TaskProgressResponseDto(progressItem);
     }
 
     [HttpPut("remove/terminate")]

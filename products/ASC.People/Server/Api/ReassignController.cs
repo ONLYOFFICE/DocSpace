@@ -54,15 +54,17 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpGet("reassign/progress")]
-    public async Task<ReassignProgressItem> GetReassignProgressAsync(Guid userId)
+    public async Task<TaskProgressResponseDto> GetReassignProgressAsync(Guid userId)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
+        var progressItem = _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
+
+        return new TaskProgressResponseDto(progressItem);
     }
 
     [HttpPost("reassign/start")]
-    public async Task<ReassignProgressItem> StartReassignAsync(StartReassignRequestDto inDto)
+    public async Task<TaskProgressResponseDto> StartReassignAsync(StartReassignRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
@@ -90,7 +92,9 @@ public class ReassignController : ApiControllerBase
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }
 
-        return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
+        var progressItem = _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
+
+        return new TaskProgressResponseDto(progressItem);
     }
 
     [HttpPut("reassign/terminate")]
