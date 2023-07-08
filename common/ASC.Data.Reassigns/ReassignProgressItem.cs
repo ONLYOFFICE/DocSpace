@@ -33,34 +33,29 @@ public class ReassignProgressItem : DistributedTaskProgress
     public Guid ToUser { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IDictionary<string, StringValues> _httpHeaders;
-    private readonly int _tenantId;
-    private readonly Guid _currentUserId;
-    private readonly bool _deleteProfile;
-
     //private readonly IFileStorageService _docService;
     //private readonly ProjectsReassign _projectsReassign;
 
-    public ReassignProgressItem(
-        IServiceScopeFactory serviceScopeFactory,
-            IDictionary<string, StringValues> httpHeaders,
-            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    private IDictionary<string, StringValues> _httpHeaders;
+    private int _tenantId;
+    private Guid _currentUserId;
+    private bool _deleteProfile;
+
+    public ReassignProgressItem(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _httpHeaders = httpHeaders;
-
         //_docService = Web.Files.Classes.Global.FileStorageService;
         //_projectsReassign = new ProjectsReassign();
+    }
 
+    public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    {
+        _httpHeaders = httpHeaders;
         _tenantId = tenantId;
         FromUser = fromUserId;
         ToUser = toUserId;
         _currentUserId = currentUserId;
         _deleteProfile = deleteProfile;
-
-        //_docService = Web.Files.Classes.Global.FileStorageService;
-        //_projectsReassign = new ProjectsReassign();
-
         Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
         Status = DistributedTaskStatus.Created;
         Exception = null;

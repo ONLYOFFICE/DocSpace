@@ -32,32 +32,30 @@ public class RemoveProgressItem : DistributedTaskProgress
     public Guid FromUser { get; private set; }
     public UserInfo User { get; private set; }
 
-    private readonly IDictionary<string, StringValues> _httpHeaders;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly int _tenantId;
-    private readonly Guid _currentUserId;
-    private readonly bool _notify;
     //private readonly IFileStorageService _docService;
     //private readonly MailGarbageEngine _mailEraser;
 
-    public RemoveProgressItem(
-        IServiceScopeFactory serviceScopeFactory,
-            IDictionary<string, StringValues> httpHeaders,
-            int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    private IDictionary<string, StringValues> _httpHeaders;
+    private int _tenantId;
+    private Guid _currentUserId;
+    private bool _notify;
+
+    public RemoveProgressItem(IServiceScopeFactory serviceScopeFactory)
     {
-        _httpHeaders = httpHeaders;
         _serviceScopeFactory = serviceScopeFactory;
-
-
         //_docService = Web.Files.Classes.Global.FileStorageService;
         //_mailEraser = new MailGarbageEngine();
+    }
 
+    public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    {
+        _httpHeaders = httpHeaders;
         _tenantId = tenantId;
         User = user;
         FromUser = user.Id;
         _currentUserId = currentUserId;
         _notify = notify;
-
         Id = QueueWorkerRemove.GetProgressItemId(tenantId, FromUser);
         Status = DistributedTaskStatus.Created;
         Exception = null;
