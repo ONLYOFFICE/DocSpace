@@ -417,7 +417,7 @@
     <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
     <ROW JsonProperty="machinekey" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
-    <ROW JsonProperty="machinekey_3" Parent="core_3" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
+    <ROW JsonProperty="machinekey_3" Parent="core_3" Name="machinekey" Condition="1" Order="1" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="notify" Parent="Root_1" Name="notify" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="options" Parent="Root_11" Name="options" Condition="1" Order="0" Flags="60"/>
