@@ -1,4 +1,5 @@
 import axios from "axios";
+import isEqual from "lodash/isEqual";
 
 export const generateLogo = (
   width,
@@ -77,3 +78,30 @@ const getUploadedFileDimensions = (file) =>
       return reject(exception);
     }
   });
+
+export const getNewLogoArr = (
+  logoUrlsWhiteLabel,
+  defaultWhiteLabelLogoUrls
+) => {
+  let logosArr = [];
+
+  for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
+    const currentLogo = logoUrlsWhiteLabel[i];
+    const defaultLogo = defaultWhiteLabelLogoUrls[i];
+
+    if (!isEqual(currentLogo, defaultLogo)) {
+      let value = {};
+
+      if (!isEqual(currentLogo.path.light, defaultLogo.path.light))
+        value.light = currentLogo.path.light;
+      if (!isEqual(currentLogo.path.dark, defaultLogo.path.dark))
+        value.dark = currentLogo.path.dark;
+
+      logosArr.push({
+        key: String(i + 1),
+        value: value,
+      });
+    }
+  }
+  return logosArr;
+};
