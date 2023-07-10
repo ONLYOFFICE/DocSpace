@@ -10,6 +10,7 @@ import {
   generateLogo,
   getLogoOptions,
   uploadLogo,
+  getNewLogoArr,
 } from "@docspace/common/utils/whiteLabelHelper";
 import CommonWhiteLabel from "./CommonWhiteLabel";
 
@@ -146,29 +147,14 @@ const WhiteLabel = ({
   };
 
   const onSave = async () => {
-    let logosArr = [];
+    const newLogos = getNewLogoArr(
+      logoUrlsWhiteLabel,
+      defaultWhiteLabelLogoUrls
+    );
 
-    for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      const currentLogo = logoUrlsWhiteLabel[i];
-      const defaultLogo = defaultWhiteLabelLogoUrls[i];
-
-      if (!isEqual(currentLogo, defaultLogo)) {
-        let value = {};
-
-        if (!isEqual(currentLogo.path.light, defaultLogo.path.light))
-          value.light = currentLogo.path.light;
-        if (!isEqual(currentLogo.path.dark, defaultLogo.path.dark))
-          value.dark = currentLogo.path.dark;
-
-        logosArr.push({
-          key: String(i + 1),
-          value: value,
-        });
-      }
-    }
     const data = {
       logoText: logoTextWhiteLabel,
-      logo: logosArr,
+      logo: newLogos,
     };
 
     try {
