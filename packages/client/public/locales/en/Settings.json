@@ -161,7 +161,7 @@
   "ServerSideEncryptionMethod": "Server Side Encryption Method",
   "ServiceUrl": "Service Url",
   "SessionLifetime": "Session Lifetime",
-  "SessionLifetimeDescription": "<1>Session Lifetime</1> allows to set time (in minutes) before the space users will need to enter the space credentials again in order to access the portal. After save all the users will be logged out from space.",
+  "SessionLifetimeDescription": "<1>Session Lifetime</1> allows to set time (in minutes) before the space users will need to enter the space credentials again in order to access the space. After save all the users will be logged out from space.",
   "SessionLifetimeHelper": "After saving, all the users will be logged out from the space.",
   "SettingPasswordStrength": "Setting password strength",
   "SettingPasswordStrengthDescription": "<1>Password Strength Settings</1> is a way to determine the effectiveness of a password in resisting guessing and brute-force attacks. <br> Use the <2>Minimum Password Length</2> bar to determine how long the password should be. Check the appropriate boxes below to determine the character set that must be used in the password. <br> To make the parameters you set take effect click the <3>Save</3> button at the bottom of the section.",
