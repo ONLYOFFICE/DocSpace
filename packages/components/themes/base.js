@@ -698,8 +698,7 @@ const Base = {
       background: white,
 
       border: "1px solid",
-      borderRadiusLtr: "0 3px 3px 0",
-      borderRadiusRtl: "3px 0 0 3px",
+      borderRadius: "0 3px 3px 0",
 
       width: {
         base: "30px",

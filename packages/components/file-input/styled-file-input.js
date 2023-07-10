@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import { getCorrectBorderRadius } from "../utils/rtlUtils";
 
 const paddingRightStyle = (props) =>
   props.theme.fileInput.paddingRight[props.size];
@@ -81,11 +82,16 @@ const StyledFileInput = styled.div`
       props.theme.input.borderColor};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
 
+    border-radius: ${({ theme }) =>
+      getCorrectBorderRadius(
+        theme.fileInput.icon.borderRadius,
+        theme.interfaceDirection
+      )};
+
     ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 0;
-            border-radius: ${props.theme.fileInput.icon.borderRadiusRtl};
 
             & svg {
               transform: scaleX(-1);
@@ -93,7 +99,6 @@ const StyledFileInput = styled.div`
           `
         : css`
             right: 0;
-            border-radius: ${props.theme.fileInput.icon.borderRadiusLtr};
           `}
   }
 
