@@ -145,10 +145,12 @@ const Sdk = ({
           isPanelVisible={true}
           onSelectFile={onSelectFile}
           onClose={onClose}
-          filteredType="exceptPrivacyTrashArchiveFolders"
+          filteredType="roomsOnly"
           withSubfolders={false}
           displayType="aside"
           embedded={true}
+          searchParam={frameConfig?.filter.search}
+          ByExtension
         />
       );
       break;
