@@ -84,7 +84,7 @@ const MainProfile = (props) => {
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text fontSize="13px">
+    <Text fontSize="12px">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
@@ -98,8 +98,10 @@ const MainProfile = (props) => {
         to take part in the translation and get up to 1 year free of charge."
       </Trans>{" "}
       <Link
-        color={theme.profileInfo.tooltipLinkColor}
-        isHovered={true}
+        isHovered
+        isBold
+        color="#333333"
+        fontSize="13px"
         href={`${helpLink}/guides/become-translator.aspx`}
         target="_blank"
       >

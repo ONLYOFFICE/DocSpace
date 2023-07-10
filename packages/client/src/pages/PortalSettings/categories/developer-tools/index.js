@@ -446,7 +446,11 @@ const PortalIntegration = (props) => {
                   <HelpButton
                     offsetRight={0}
                     size={12}
-                    tooltipContent={t("RoomOrFolderDescription")}
+                    tooltipContent={
+                      <Text fontSize="12px">
+                        {t("RoomOrFolderDescription")}
+                      </Text>
+                    }
                   />
                 </Box>
                 <SelectFolderInput
@@ -508,7 +512,9 @@ const PortalIntegration = (props) => {
                   <HelpButton
                     offsetRight={0}
                     size={12}
-                    tooltipContent={t("ItemsCountDescription")}
+                    tooltipContent={
+                      <Text fontSize="12px">{t("ItemsCountDescription")}</Text>
+                    }
                   />
                 </Box>
                 <TextInput

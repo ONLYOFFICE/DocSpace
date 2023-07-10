@@ -68,9 +68,11 @@ const Certificates = (props) => {
         <HelpButton
           offsetRight={0}
           tooltipContent={
-            prefix === "idp"
-              ? t("idpCertificatesTooltip")
-              : t("spCertificatesTooltip")
+            prefix === "idp" ? (
+              <Text fontSize="12px">{t("idpCertificatesTooltip")}</Text>
+            ) : (
+              <Text fontSize="12px">{t("spCertificatesTooltip")}</Text>
+            )
           }
         />
       </Box>
