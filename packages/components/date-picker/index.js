@@ -37,6 +37,12 @@ const DateSelector = styled.div`
 
   .mr-8 {
     margin-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 0px;
+        margin-left: 8px;
+      `}
   }
 `;
 
