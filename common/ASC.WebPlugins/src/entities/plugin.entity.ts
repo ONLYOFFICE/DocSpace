@@ -9,7 +9,37 @@ export class Plugin {
   name: string;
 
   @Column()
-  filename: string;
+  version: string;
+
+  @Column()
+  author: string;
+
+  @Column()
+  uploader: string;
+
+  @Column()
+  description: string;
+
+  @Column()
+  image: string;
+
+  @Column()
+  plugin: string;
+
+  @Column()
+  apiScope: boolean;
+
+  @Column()
+  settingsScope: boolean;
+
+  @Column()
+  contextMenuScope: boolean;
+
+  @Column()
+  mainButtonScope: boolean;
+
+  @Column()
+  profileMenuScope: boolean;
 
   @Column({ default: true })
   isActive: boolean;

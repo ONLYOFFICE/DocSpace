@@ -8,7 +8,6 @@ import {
   UseInterceptors,
   Put,
   Delete,
-  UseGuards,
 } from "@nestjs/common";
 
 import { AnyFilesInterceptor } from "@nestjs/platform-express";
@@ -17,17 +16,9 @@ import { storage } from "src/utils";
 
 import { Plugin } from "src/entities/plugin.entity";
 
-import {
-  PluginGuard,
-  PluginUploadGuard,
-  PluginDeleteGuard,
-} from "src/guards/plugin.guard";
-
 import { PluginsService } from "./plugins.service";
-import fileFilter from "src/utils/file-filter";
 
 @Controller("/api/2.0/plugins")
-// @UseGuards(PluginGuard)
 export class PluginsController {
   constructor(private pluginsService: PluginsService) {}
 
@@ -43,40 +34,52 @@ export class PluginsController {
     return { response: plugin };
   }
 
-  @Post("upload")
-  // @UseGuards(PluginUploadGuard)
+  @Post("add")
+  async add(@Body() dto: Plugin): Promise<{ response: Plugin }> {
+    const plugin: Plugin = await this.pluginsService.add(dto);
+
+    return { response: plugin };
+  }
+
+  @Put("upload/image/:id")
   @UseInterceptors(
     AnyFilesInterceptor({
       storage: storage,
-      fileFilter: fileFilter,
     })
   )
-  async upload(
-    @UploadedFiles() files: Express.Multer.File[]
-  ): Promise<{ response: Plugin | { error: string } }> {
+  async uploadImage(
+    @UploadedFiles() file: Express.Multer.File,
+    @Param("id") id: number
+  ) {
     try {
-      if (files[0]) {
-        const plugin = await this.pluginsService.upload(
-          files[0].originalname,
-          files[0].filename
-        );
-
-        return { response: plugin };
-      } else {
-        return {
-          response: { error: "Invalid file format or file already exists" },
-        };
+      if (file[0]) {
+        await this.pluginsService.uploadImg(id, file[0].filename);
       }
     } catch (e) {
       console.log(e);
-      return {
-        response: { error: "Invalid file format or file already exists" },
-      };
+    }
+  }
+
+  @Put("upload/plugin/:id")
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: storage,
+    })
+  )
+  async upload(
+    @UploadedFiles() file: Express.Multer.File,
+    @Param("id") id: number
+  ) {
+    try {
+      if (file[0]) {
+        await this.pluginsService.upload(id, file[0].filename);
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
   @Delete("delete/:id")
-  // @UseGuards(PluginDeleteGuard)
   async delete(@Param("id") id: number) {
     await this.pluginsService.delete(id);
   }

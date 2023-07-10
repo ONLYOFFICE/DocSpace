@@ -25,6 +25,10 @@ export class PluginsService {
     return this.pluginsRepository.findOneBy({ id });
   }
 
+  async add(dto: Plugin): Promise<Plugin> {
+    return this.pluginsRepository.save(dto);
+  }
+
   async remove(id: string): Promise<void> {
     await this.pluginsRepository.delete(id);
   }
@@ -39,61 +43,38 @@ export class PluginsService {
     return plugin;
   }
 
-  async upload(
-    originalname: string,
-    filename: string
-  ): Promise<Plugin | { error: string }> {
-    const plugin: Plugin = new Plugin();
+  async uploadImg(id: number, filename: string) {
+    const plugin = await this.pluginsRepository.findOneBy({ id });
 
-    const dir = path.join(__dirname, pathToPlugins, `${filename}`);
-
-    const name = originalname.split(".")[0];
-
-    const contents = fs.readFileSync(dir, "utf8");
-
-    let isPlugin = true;
-
-    isPlugin = contents.includes(`"dependencies":{"docspace-plugin"`);
-
-    const splitName = name.split("");
-
-    splitName[0].toUpperCase();
-
-    isPlugin = contents.includes(`window.Plugins.${splitName.join("")}`);
-
-    isPlugin = contents.includes(".prototype.getPluginName=function()");
-
-    isPlugin = contents.includes(".prototype.getPluginVersion=function()");
-
-    isPlugin = contents.includes(".prototype.activate=function()");
-
-    isPlugin = contents.includes(".prototype.deactivate=function()");
-
-    plugin.name = name;
-    plugin.filename = filename;
-
-    plugin.isActive = true;
-
-    if (!isPlugin) {
-      fs.unlink(dir, (err) => {
-        err && console.log(err);
-      });
-      return { error: "It is not a plugin" };
-    }
+    plugin.image = filename;
 
     await this.pluginsRepository.save(plugin);
+  }
 
-    return plugin;
+  async upload(id: number, filename: string) {
+    const plugin = await this.pluginsRepository.findOneBy({ id });
+
+    plugin.plugin = filename;
+
+    await this.pluginsRepository.save(plugin);
   }
 
   async delete(id: number) {
     const plugin: Plugin = await this.pluginsRepository.findOneBy({ id });
 
-    const fileName = plugin.filename;
+    const fileName = plugin.plugin;
 
     const dir = path.join(__dirname, pathToPlugins, `${fileName}`);
 
+    const imageName = plugin.image;
+
+    const imageDir = path.join(__dirname, pathToPlugins, `${fileName}`);
+
     fs.unlink(dir, (err) => {
+      err && console.log(err);
+    });
+
+    fs.unlink(imageDir, (err) => {
       err && console.log(err);
     });
 
