@@ -132,6 +132,21 @@ services:
       onlyoffice-migration-runner:
         condition: service_completed_successfully
 
+  onlyoffice-api-system:
+    <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.ApiSystem/service/
+    command: ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+    volumes:
+      - ${SRC_PATH}/ASC.ApiSystem/service:${BUILD_PATH}/services/ASC.ApiSystem/service/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
+
   onlyoffice-studio:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
