@@ -33,18 +33,27 @@ export const SSLVerification = ({ onChange, value }) => {
   const { t } = useTranslation(["Webhooks"]);
 
   const handleOnChange = (e) => {
-    onChange({ target: { name: e.target.name, value: e.target.value === "true" } });
+    onChange({
+      target: { name: e.target.name, value: e.target.value === "true" },
+    });
   };
 
-  const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
+  const toggleHint = () =>
+    setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
   return (
     <Label
       text={
         <Header>
           {t("SSLVerification")}{" "}
-          <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+          <StyledInfoIcon
+            className="ssl-verification-tooltip"
+            src={InfoIcon}
+            alt="infoIcon"
+            onClick={toggleHint}
+          />
         </Header>
-      }>
+      }
+    >
       <Hint isTooltip hidden={!isHintVisible} onClick={toggleHint}>
         {t("SSLHint")}
       </Hint>
@@ -55,10 +64,12 @@ export const SSLVerification = ({ onChange, value }) => {
         onClick={handleOnChange}
         options={[
           {
+            id: "enable-ssl",
             label: t("EnableSSL"),
             value: "true",
           },
           {
+            id: "disable-ssl",
             label: t("DisableSSL"),
             value: "false",
           },

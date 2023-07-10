@@ -36,20 +36,20 @@ const SectionBodyContent = ({
 
   const navigate = useNavigate();
 
-  const setting = window.location.pathname.endsWith("/settings/common")
-    ? "common"
+  const setting = window.location.pathname.endsWith("/settings/personal")
+    ? "personal"
     : window.location.pathname.endsWith("/settings/plugins")
     ? "plugins"
-    : "admin";
+    : "general";
 
   const commonSettings = {
-    id: "common",
+    id: "personal",
     name: t("Common:SettingsPersonal"),
     content: <PersonalSettings t={t} />,
   };
 
   const adminSettings = {
-    id: "admin",
+    id: "general",
     name: t("Common:SettingsGeneral"),
     content: <GeneralSettings t={t} />,
   };
@@ -103,7 +103,7 @@ const SectionBodyContent = ({
         <Submenu
           data={data}
           startSelect={
-            setting === "common"
+            setting === "personal"
               ? commonSettings
               : setting === "plugins"
               ? pluginsSettings

@@ -586,9 +586,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 }
                 await Queries.UpdateFoldersAsync(filesDbContext, TenantID, folderId, toFolderId, _authContext.CurrentAccount.ID);
 
-                var subfolders = await Queries.SubfolderDictionaryAsync(filesDbContext, folderId);
+                var subfolders = await Queries.SubfolderAsync(filesDbContext, folderId).ToDictionaryAsync(r => r.FolderId, r => r.Level);
 
-                await Queries.DeleteTreesBySubfoldersDictionaryAsync(filesDbContext, subfolders);
+                await Queries.DeleteTreesBySubfoldersDictionaryAsync(filesDbContext, subfolders.Select(r=> r.Key));
 
                 var toInsert = Queries.TreesOrderByLevel(filesDbContext, toFolderId);
 
@@ -906,7 +906,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var folderIdsDictionary = await Queries.NodeDictionaryAsync(filesDbContext, TenantID, keys);
+        var folderIdsDictionary = await Queries.NodeAsync(filesDbContext, TenantID, keys).ToDictionaryAsync(r => r.RightNode, r => r.LeftNode);
 
         foreach (var key in keys)
         {
@@ -1217,7 +1217,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return await Queries.NodeDictionaryByFolderIdsAsync(filesDbContext, TenantID, folderSIds);
+        return await Queries.NodeByFolderIdsAsync(filesDbContext, TenantID, folderSIds)
+                    .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
     public async IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
@@ -1822,18 +1823,17 @@ static file class Queries
                         .SetProperty(p => p.ModifiedBy, modifiedBy)
                     ));
 
-    public static readonly Func<FilesDbContext, int, Task<Dictionary<int, int>>> SubfolderDictionaryAsync =
+    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<DbFolderTree>> SubfolderAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int folderId) =>
                 ctx.Tree
-                    .Where(r => r.ParentId == folderId)
-                    .ToDictionary(r => r.FolderId, r => r.Level));
+                    .Where(r => r.ParentId == folderId));
 
-    public static readonly Func<FilesDbContext, Dictionary<int, int>, Task<int>>
+    public static readonly Func<FilesDbContext, IEnumerable<int>, Task<int>>
         DeleteTreesBySubfoldersDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, Dictionary<int, int> subfolders) =>
+            (FilesDbContext ctx, IEnumerable<int> subfolders) =>
                 ctx.Tree
-                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                    .Where(r => subfolders.Contains(r.FolderId) && !subfolders.Contains(r.ParentId))
                     .ExecuteDelete());
 
     public static readonly Func<FilesDbContext, int, IAsyncEnumerable<DbFolderTree>> TreesOrderByLevel =
@@ -1987,14 +1987,13 @@ static file class Queries
                         }
                     ));
 
-    public static readonly Func<FilesDbContext, int, string[], Task<Dictionary<string, string>>>
-        NodeDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    public static readonly Func<FilesDbContext, int, string[], IAsyncEnumerable<DbFilesBunchObjects>>
+        NodeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string[] keys) =>
                 ctx.BunchObjects
                     .AsNoTracking()
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0])
-                    .ToDictionary(r => r.RightNode, r => r.LeftNode));
+                    .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0]));
 
     public static readonly Func<FilesDbContext, int, string, Task<string>> LeftNodeAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
@@ -2040,13 +2039,12 @@ static file class Queries
                             .ToHashSet()
                     }));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<Dictionary<string, string>>>
-        NodeDictionaryByFolderIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesBunchObjects>>
+        NodeByFolderIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, IEnumerable<string> folderIds) =>
                 ctx.BunchObjects
                     .Where(r => r.TenantId == tenantId)
-                    .Where(r => folderIds.Any(a => a == r.LeftNode))
-                    .ToDictionary(r => r.LeftNode, r => r.RightNode));
+                    .Where(r => folderIds.Any(a => a == r.LeftNode)));
 
     public static readonly Func<FilesDbContext, int, IAsyncEnumerable<ParentIdTitlePair>> ParentIdTitlePairAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

@@ -60,7 +60,8 @@ const SecretKeyInput = (props) => {
 
   const secretKeyInputRef = useRef(null);
 
-  const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
+  const toggleHint = () =>
+    setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
 
   const handleInputValidation = (isValid) => {
     setIsPasswordValid(isValid);
@@ -85,7 +86,9 @@ const SecretKeyInput = (props) => {
 
   useEffect(() => {
     if (!isResetVisible) {
-      onChange({ target: { name, value: secretKeyInputRef.current.state.inputValue } });
+      onChange({
+        target: { name, value: secretKeyInputRef.current.state.inputValue },
+      });
     }
   }, [isResetVisible]);
 
@@ -94,20 +97,29 @@ const SecretKeyInput = (props) => {
       <Label
         text={
           <Header>
-            {t("SecretKey")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+            {t("SecretKey")}
+            <StyledInfoIcon
+              className="secret-key-tooltip"
+              src={InfoIcon}
+              alt="infoIcon"
+              onClick={toggleHint}
+            />
           </Header>
         }
-        fontWeight={600}>
+        fontWeight={600}
+      >
         <Hint isTooltip hidden={!isHintVisible} onClick={handleHintDisapear}>
           {t("SecretKeyHint")} <br />
           <Link
+            id="read-more-link"
             type="page"
             isHovered
             fontWeight={600}
             href={webhooksGuideUrl}
             target="_blank"
             className="link"
-            color="#333333">
+            color="#333333"
+          >
             {t("ReadMore")}
           </Link>
         </Hint>
@@ -115,18 +127,21 @@ const SecretKeyInput = (props) => {
           <Hint>
             {t("SecretKeyWarning")} <br />
             <Link
+              id="reset-key-link"
               type="action"
               fontWeight={600}
               isHovered={true}
               onClick={hideReset}
               className="link"
-              color="#333333">
+              color="#333333"
+            >
               {t("ResetKey")}
             </Link>
           </Hint>
         )}
         <div hidden={isResetVisible}>
           <PasswordInput
+            id="secret-key-input"
             onChange={handleOnChange}
             inputValue={value}
             inputName={name}
@@ -141,11 +156,13 @@ const SecretKeyInput = (props) => {
             key={passwordInputKey}
           />
           <Link
+            id="generate-link"
             type="action"
             fontWeight={600}
             isHovered={true}
             onClick={generatePassword}
-            className="link dotted">
+            className="link dotted"
+          >
             {t("Generate")}
           </Link>
         </div>

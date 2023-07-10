@@ -15,6 +15,7 @@ const AccessSelector = ({
   withRemove = false,
   filteredAccesses,
   setIsOpenItemAccess,
+  className,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
@@ -53,6 +54,7 @@ const AccessSelector = ({
     <StyledAccessSelector className="invite-panel_access-selector">
       {!(isMobileOnly && !isMobileHorizontalOrientation) && (
         <AccessRightSelect
+          className={className}
           selectedOption={selectedOption}
           onSelect={onSelectAccess}
           accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
@@ -70,6 +72,7 @@ const AccessSelector = ({
 
       {isMobileOnly && !isMobileHorizontalOrientation && (
         <AccessRightSelect
+          className={className}
           selectedOption={selectedOption}
           onSelect={onSelectAccess}
           accessOptions={filteredAccesses ? filteredAccesses : accessOptions}

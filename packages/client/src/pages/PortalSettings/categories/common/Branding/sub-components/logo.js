@@ -12,6 +12,7 @@ const Logo = (props) => {
     isSettingPaid,
     onChangeText,
     inputId,
+    linkId,
     imageClass,
     isEditor,
   } = props;
@@ -58,6 +59,7 @@ const Logo = (props) => {
           disabled={!isSettingPaid}
         />
         <Link
+          id={linkId}
           fontWeight="600"
           isHovered
           type="action"
