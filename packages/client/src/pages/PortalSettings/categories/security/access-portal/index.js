@@ -52,6 +52,11 @@ const AccessPortal = (props) => {
             i18nKey="SettingPasswordStrengthDescription"
             ns="Settings"
             t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
           />
         }
         tooltipUrl={passwordStrengthSettingsUrl}
@@ -63,7 +68,16 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TwoFactorAuth")}
         tooltipTitle={
-          <Trans i18nKey="TwoFactorAuthDescription" ns="Settings" t={t} />
+          <Trans
+            i18nKey="TwoFactorAuthDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
         }
         tooltipUrl={tfaSettingsUrl}
         currentColorScheme={currentColorScheme}
@@ -74,7 +88,17 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TrustedMail")}
         tooltipTitle={
-          <Trans i18nKey="TrustedMailDescription" ns="Settings" t={t} />
+          <Trans
+            i18nKey="TrustedMailDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+              4: <strong></strong>,
+            }}
+          />
         }
         tooltipUrl={trustedMailDomainSettingsUrl}
         currentColorScheme={currentColorScheme}
@@ -85,7 +109,14 @@ const AccessPortal = (props) => {
         t={t}
         title={t("IPSecurity")}
         tooltipTitle={
-          <Trans i18nKey="IPSecurityDescription" ns="Settings" t={t} />
+          <Trans
+            i18nKey="IPSecurityDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
         }
         tooltipContent={t("IPSecurityDescription")}
       />
@@ -95,7 +126,16 @@ const AccessPortal = (props) => {
         t={t}
         title={t("AdminsMessage")}
         tooltipTitle={
-          <Trans i18nKey="AdminsMessageDescription" ns="Settings" t={t} />
+          <Trans
+            i18nKey="AdminsMessageDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
         }
         tooltipUrl={administratorMessageSettingsUrl}
         currentColorScheme={currentColorScheme}
@@ -107,7 +147,14 @@ const AccessPortal = (props) => {
         t={t}
         title={t("SessionLifetime")}
         tooltipTitle={
-          <Trans i18nKey="SessionLifetimeDescription" ns="Settings" t={t} />
+          <Trans
+            i18nKey="SessionLifetimeDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
         }
       />
       <SessionLifetimeSection />
