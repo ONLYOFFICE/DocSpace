@@ -29,6 +29,7 @@ import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 import PortalRenamingDialog from "./PortalRenamingDialog";
+import SettingsPluginDialog from "./SettingsPluginDialog";
 
 export {
   EmptyTrashDialog,
@@ -62,4 +63,5 @@ export {
   InviteUsersWarningDialog,
   LogoutAllConnectionDialog,
   PortalRenamingDialog,
+  SettingsPluginDialog,
 };

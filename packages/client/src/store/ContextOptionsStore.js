@@ -1136,10 +1136,20 @@ class ContextOptionsStore {
               const onClick = async () => {
                 const message = await value.onClick(item.id);
 
-                messageActions(message);
+                messageActions(
+                  message,
+                  null,
+                  null,
+                  option.value.pluginId,
+                  this.pluginStore.setSettingsPluginDialogVisible,
+                  this.pluginStore.setCurrentSettingsDialogPlugin
+                );
               };
 
-              if (value.fileExt.includes(item.fileExst)) {
+              if (
+                value.fileExt.includes(item.fileExst) ||
+                value.fileExt === "all"
+              ) {
                 options.splice(value.position, 0, {
                   key: option.key,
                   label: value.label,

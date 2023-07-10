@@ -29,7 +29,13 @@ const StyledPluginHeader = styled.div`
   }
 `;
 
-const PluginHeader = ({ id, name, isActive, changePluginStatus }) => {
+const PluginHeader = ({
+  id,
+  name,
+  isActive,
+  changePluginStatus,
+  withDelete,
+}) => {
   const badgeLabel = isActive ? "active" : "disabled";
 
   const changePluginStatusAction = () => {
@@ -39,14 +45,21 @@ const PluginHeader = ({ id, name, isActive, changePluginStatus }) => {
   const getOptions = () => {
     const activateOptLabel = !isActive ? "Activate" : "Disable";
 
-    return [
-      {
-        key: "activate-plugin",
-        label: activateOptLabel,
-        onClick: changePluginStatusAction,
-      },
-      { key: "delete-plugin", label: "Delete" },
-    ];
+    const activateOpt = {
+      key: "activate-plugin",
+      label: activateOptLabel,
+      onClick: changePluginStatusAction,
+    };
+
+    const deleteOpt = { key: "delete-plugin", label: "Delete" };
+
+    const opts = [];
+
+    opts.push(activateOpt);
+
+    if (withDelete) opts.push(deleteOpt);
+
+    return opts;
   };
 
   return (

@@ -29,6 +29,7 @@ export const PluginActions = Object.freeze({
   updateLoading: "update-loading",
   updateStatus: "update-status",
   showToast: "show-toast",
+  showSettingsModal: "show-settings-modal",
   closeModal: "close-modal",
 });
 

@@ -1,0 +1,142 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
+
+import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader/RectangleLoader";
+
+import ModalDialog from "@docspace/components/modal-dialog";
+import Button from "@docspace/components/button";
+
+import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
+import ControlGroup from "SRC_DIR/helpers/plugins/ControlGroup";
+import { messageActions } from "SRC_DIR/helpers/plugins/utils";
+
+const SettingsPluginDialog = ({
+  plugin,
+
+  groups,
+  isLoading,
+  onLoad,
+  withAcceptButton,
+  acceptButtonProps,
+  cancelButtonProps,
+
+  settingsPluginDialogVisible,
+  currentSettingsDialogPlugin,
+
+  onClose,
+
+  ...rest
+}) => {
+  const [groupsProps, setGroupsProps] = React.useState(groups);
+  const [acceptButton, setAcceptButton] = React.useState({});
+  const [isLoadingState, setILoadingState] = React.useState(isLoading);
+
+  const onLoadAction = React.useCallback(async () => {
+    const res = await onLoad();
+
+    const settings = plugin.getPluginSettings();
+    setGroupsProps(settings.groups);
+    setILoadingState(res);
+  }, [plugin, onLoad]);
+
+  React.useEffect(() => {
+    onLoadAction();
+  }, [onLoadAction]);
+
+  React.useEffect(() => {
+    if (withAcceptButton) setAcceptButton({ ...acceptButtonProps });
+  }, [withAcceptButton, acceptButtonProps]);
+
+  const onCloseAction = () => {
+    if (cancelButtonProps) {
+      cancelButtonProps.onClick();
+    }
+
+    onClose();
+  };
+
+  const getAcceptButtonElement = () => {
+    if (isLoadingState)
+      return <RectangleLoader width={"160px"} height={"40px"} />;
+    const onClick = async () => {
+      if (!acceptButton.onClick) return;
+
+      const message = await acceptButton.onClick();
+
+      console.log("call 134");
+
+      messageActions(message, setAcceptButton);
+
+      onCloseAction();
+    };
+
+    return <Button {...acceptButton} onClick={onClick} size={"normal"} />;
+  };
+
+  const element = getAcceptButtonElement();
+
+  return (
+    <ModalDialog
+      visible={settingsPluginDialogVisible}
+      displayType="modal"
+      onClose={onCloseAction}
+      autoMaxHeight
+      isLarge
+    >
+      <ModalDialog.Header>{plugin?.name}</ModalDialog.Header>
+      <ModalDialog.Body>
+        {groupsProps?.map((group) => (
+          <ControlGroup
+            key={group.header}
+            group={group}
+            setAcceptButtonProps={setAcceptButton}
+            isLoading={isLoadingState}
+          />
+        ))}
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        {element}
+
+        {isLoadingState ? (
+          <RectangleLoader width={"160px"} height={"40px"} />
+        ) : (
+          <Button
+            {...cancelButtonProps}
+            onClick={onCloseAction}
+            size={"normal"}
+          />
+        )}
+      </ModalDialog.Footer>
+    </ModalDialog>
+  );
+};
+
+export default inject(({ pluginStore }) => {
+  const {
+    pluginList,
+    settingsPluginDialogVisible,
+    setSettingsPluginDialogVisible,
+    currentSettingsDialogPlugin,
+    setCurrentSettingsDialogPlugin,
+  } = pluginStore;
+
+  const plugin = pluginList.find((p) => p.id === currentSettingsDialogPlugin);
+  const pluginSettings = plugin.getPluginSettings();
+
+  const onClose = () => {
+    setSettingsPluginDialogVisible(false);
+    setCurrentSettingsDialogPlugin(null);
+  };
+
+  if (pluginSettings.type === PluginSettingsType.settingsPage) {
+    onClose();
+  }
+
+  return {
+    plugin,
+    ...pluginSettings,
+    settingsPluginDialogVisible,
+    currentSettingsDialogPlugin,
+    onClose,
+  };
+})(observer(SettingsPluginDialog));

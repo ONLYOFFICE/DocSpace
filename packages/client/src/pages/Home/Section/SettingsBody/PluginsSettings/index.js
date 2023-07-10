@@ -14,7 +14,7 @@ const PluginsSettingsBodyContent = ({
   enablePlugins,
   withUpload,
   withDelete,
-  plugins,
+  pluginList,
   changePluginStatus,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
@@ -22,13 +22,14 @@ const PluginsSettingsBodyContent = ({
 
   return (
     <StyledPluginsSettings>
-      {plugins.length > 0 ? (
+      {pluginList.length > 0 ? (
         <StyledPluginList>
-          {plugins.map((plugin) => (
+          {pluginList.map((plugin) => (
             <Plugin
               key={`plugin-${plugin.name}-${plugin.version}`}
               {...plugin}
               changePluginStatus={changePluginStatus}
+              withDelete={withDelete}
             />
           ))}
         </StyledPluginList>
@@ -45,7 +46,13 @@ export default inject(({ auth, pluginStore }) => {
   const withUpload = pluginOptions.includes("upload");
   const withDelete = pluginOptions.includes("delete");
 
-  const { plugins, changePluginStatus } = pluginStore;
+  const { pluginList, changePluginStatus } = pluginStore;
 
-  return { enablePlugins, withUpload, withDelete, plugins, changePluginStatus };
+  return {
+    enablePlugins,
+    withUpload,
+    withDelete,
+    pluginList,
+    changePluginStatus,
+  };
 })(observer(PluginsSettingsBodyContent));

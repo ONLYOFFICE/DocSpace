@@ -30,6 +30,9 @@ class PluginStore {
 
   isInit = false;
 
+  settingsPluginDialogVisible = false;
+  currentSettingsDialogPlugin = null;
+
   constructor() {
     this.plugins = [];
 
@@ -40,6 +43,14 @@ class PluginStore {
     makeAutoObservable(this);
   }
 
+  setCurrentSettingsDialogPlugin = (value) => {
+    this.currentSettingsDialogPlugin = value;
+  };
+
+  setSettingsPluginDialogVisible = (value) => {
+    this.settingsPluginDialogVisible = value;
+  };
+
   setPluginFrame = (frame) => {
     this.pluginFrame = frame;
 
@@ -48,6 +59,14 @@ class PluginStore {
 
   setIsInit = (isInit) => {
     this.isInit = isInit;
+  };
+
+  updatePlugins = async () => {
+    this.plugins = [];
+
+    const plugins = await api.plugins.getPlugins();
+
+    plugins.forEach((plugin) => this.initPlugin(plugin));
   };
 
   initPlugins = async () => {
@@ -64,9 +83,7 @@ class PluginStore {
 
     this.setPluginFrame(frame);
 
-    const plugins = await api.plugins.getPlugins();
-
-    plugins.forEach((plugin) => this.initPlugin(plugin));
+    this.updatePlugins();
   };
 
   initPlugin = (plugin, callback) => {
@@ -81,8 +98,6 @@ class PluginStore {
       }
 
       this.installPlugin(newPlugin);
-
-      console.log(newPlugin);
 
       newPlugin.onLoadCallback();
 
@@ -211,12 +226,16 @@ class PluginStore {
     return keys;
   };
 
+  get pluginList() {
+    return this.plugins;
+  }
+
   get contextMenuItemsList() {
     const items = [];
 
     this.plugins.forEach((plugin) => {
       Array.from(plugin.getContextMenuItems(), ([key, value]) =>
-        items.push({ key, value })
+        items.push({ key, value: { ...value, pluginId: plugin.id } })
       );
     });
 

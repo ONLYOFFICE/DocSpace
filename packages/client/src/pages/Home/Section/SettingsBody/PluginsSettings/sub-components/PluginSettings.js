@@ -20,13 +20,13 @@ const PluginSettings = ({
   isLoading,
   onLoad,
   withAcceptButton,
-  acceptButton,
+  acceptButtonProps,
 
   getPluginSettings,
   ...rest
 }) => {
   const [groupsProps, setGroupsProps] = React.useState(groups);
-  const [acceptButtonProps, setAcceptButtonProps] = React.useState({});
+  const [acceptButton, setAcceptButton] = React.useState({});
   const [isLoadingState, setILoadingState] = React.useState(isLoading);
 
   const onLoadAction = React.useCallback(async () => {
@@ -42,21 +42,21 @@ const PluginSettings = ({
   }, [onLoadAction]);
 
   React.useEffect(() => {
-    if (withAcceptButton) setAcceptButtonProps({ ...acceptButton });
-  }, [withAcceptButton, acceptButton]);
+    if (withAcceptButton) setAcceptButton({ ...acceptButtonProps });
+  }, [withAcceptButton, acceptButtonProps]);
 
   const getAcceptButtonElement = () => {
     if (isLoadingState)
       return <RectangleLoader width={"160px"} height={"28px"} />;
-    const onClick = () => {
-      if (!acceptButtonProps.onClick) return;
+    const onClick = async () => {
+      if (!acceptButton.onClick) return;
 
-      const message = acceptButtonProps.onClick();
+      const message = await acceptButton.onClick();
 
-      messageActions(message, setAcceptButtonProps);
+      messageActions(message, setAcceptButton);
     };
 
-    return <Button {...acceptButtonProps} onClick={onClick} />;
+    return <Button {...acceptButton} onClick={onClick} />;
   };
 
   const element = getAcceptButtonElement();
@@ -67,7 +67,7 @@ const PluginSettings = ({
         <ControlGroup
           key={group.header}
           group={group}
-          setAcceptButtonProps={setAcceptButtonProps}
+          setAcceptButtonProps={setAcceptButton}
           isLoading={isLoadingState}
         />
       ))}

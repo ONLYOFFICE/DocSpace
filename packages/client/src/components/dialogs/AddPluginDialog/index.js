@@ -10,7 +10,7 @@ import Block from "./sub-components/Block";
 import GeneralBlock from "./sub-components/GeneralBlock";
 import ScopesBlock from "./sub-components/ScopesBlock";
 
-const AddPluginDialog = ({ visible, displayName, onClose }) => {
+const AddPluginDialog = ({ visible, displayName, onClose, updatePlugins }) => {
   const { t } = useTranslation(["PluginsSettings", "Common"]);
 
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
@@ -165,6 +165,8 @@ const AddPluginDialog = ({ visible, displayName, onClose }) => {
 
     await Promise.all(actions);
 
+    await updatePlugins();
+
     setIsRequestRunning(false);
     onClose();
   };
@@ -228,8 +230,9 @@ const AddPluginDialog = ({ visible, displayName, onClose }) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, pluginStore }) => {
   const { displayName } = auth.userStore.user;
+  const { updatePlugins } = pluginStore;
 
-  return { displayName };
+  return { displayName, updatePlugins };
 })(observer(AddPluginDialog));

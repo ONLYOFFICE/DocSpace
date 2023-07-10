@@ -41,29 +41,29 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
     switch (group.element) {
       case "input":
         if (isLoading) return <RectangleLoader />;
-        const onChange = (e) => {
+        const onChange = async (e) => {
           if (!elementProps.onChange) return;
           const value = e.target.value;
 
-          const message = elementProps.onChange(value);
+          const message = await elementProps.onChange(value);
 
           messageActions(message, setElementProps, setAcceptButtonProps);
         };
 
-        const onBlur = (e) => {
+        const onBlur = async (e) => {
           if (!elementProps.onBlur) return;
           const value = e.target.value;
 
-          const message = elementProps.onBlur(value);
+          const message = await elementProps.onBlur(value);
 
           messageActions(message, setElementProps, setAcceptButtonProps);
         };
 
-        const onFocus = (e) => {
+        const onFocus = async (e) => {
           if (!elementProps.onFocus) return;
           const value = e.target.value;
 
-          const message = elementProps.onFocus(value);
+          const message = await elementProps.onFocus(value);
 
           messageActions(message, setElementProps, setAcceptButtonProps);
         };
@@ -80,10 +80,10 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
         const cbElements = [];
 
         group.elementProps.forEach((value, index) => {
-          const onChange = () => {
+          const onChange = async () => {
             if (!value.onChange) return;
 
-            const message = elementProps[index].onChange();
+            const message = await elementProps[index].onChange();
 
             messageActions(message, setElementProps, setAcceptButtonProps);
           };
@@ -111,10 +111,10 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
       case "toggle-button":
         const tbElements = [];
         group.elementProps.forEach((value, index) => {
-          const onChange = () => {
+          const onChange = async () => {
             if (!value.onChange) return;
 
-            const message = elementProps[index].onChange();
+            const message = await elementProps[index].onChange();
 
             messageActions(message, setElementProps, setAcceptButtonProps);
           };

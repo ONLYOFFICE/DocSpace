@@ -22,6 +22,7 @@ import {
   InviteUsersWarningDialog,
   CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
+  SettingsPluginDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -62,6 +63,7 @@ const Panels = (props) => {
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
     restoreRoomDialogVisible,
+    settingsPluginDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -71,6 +73,12 @@ const Panels = (props) => {
   };
 
   return [
+    settingsPluginDialogVisible && (
+      <SettingsPluginDialog
+        isVisible={settingsPluginDialogVisible}
+        key={"settings-plugin-dialog"}
+      />
+    ),
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
     sharingPanelVisible && (
       <SharingPanel
@@ -144,6 +152,7 @@ export default inject(
     versionHistoryStore,
     backup,
     createEditRoomStore,
+    pluginStore,
   }) => {
     const {
       sharingPanelVisible,
@@ -182,6 +191,8 @@ export default inject(
     const { hotkeyPanelVisible } = auth.settingsStore;
     const { confirmDialogIsLoading } = createEditRoomStore;
 
+    const { settingsPluginDialogVisible } = pluginStore;
+
     return {
       preparationPortalDialogVisible,
       sharingPanelVisible,
@@ -213,6 +224,7 @@ export default inject(
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
       restoreRoomDialogVisible,
+      settingsPluginDialogVisible,
     };
   }
 )(observer(Panels));

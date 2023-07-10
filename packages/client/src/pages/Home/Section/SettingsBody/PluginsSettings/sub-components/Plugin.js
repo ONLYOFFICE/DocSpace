@@ -33,6 +33,8 @@ const Plugin = ({
 
   changePluginStatus,
 
+  withDelete,
+
   ...rest
 }) => {
   const showPluginSettings =
@@ -48,6 +50,7 @@ const Plugin = ({
         name={name}
         isActive={isActive}
         changePluginStatus={changePluginStatus}
+        withDelete={withDelete}
       />
       <PluginInfo
         image={image}
