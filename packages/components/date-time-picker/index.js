@@ -6,6 +6,7 @@ import TimePicker from "@docspace/components/time-picker";
 import DatePicker from "@docspace/components/date-picker";
 
 import ClockIcon from "PUBLIC_DIR/images/clock.react.svg";
+import { getCorrectFourValuesStyle } from "../utils/rtlUtils";
 
 const Selectors = styled.div`
   position: relative;
@@ -39,12 +40,16 @@ const TimeCell = styled.span`
   .clockIcon {
     width: 12px;
     height: 12px;
-    padding: 0 10px 0 2px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 10px 0 2px", theme.interfaceDirection)};
   }
 `;
 
 const TimeSelector = styled.span`
-  margin-left: 4px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: 4px;`
+      : `margin-left: 4px;`}
   display: inline-flex;
   align-items: center;
 `;
