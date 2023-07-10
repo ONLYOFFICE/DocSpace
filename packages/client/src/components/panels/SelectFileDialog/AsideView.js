@@ -74,6 +74,7 @@ const SelectFileDialogAsideView = ({
                 isFolderTreeLoading={!!!resultingFolderTree}
                 withFileSelectDialog
                 maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
+                embedded={embedded}
               />
 
               <Text color="#A3A9AE" className="selection-panel_aside-title">

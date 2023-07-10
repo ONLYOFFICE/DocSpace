@@ -14,6 +14,7 @@ import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashArchiveFolders,
+  roomsOnly,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
@@ -198,6 +199,8 @@ class SelectionPanel extends React.Component {
             treeFolders,
             exceptPrivacyTrashArchiveFolders
           );
+        case "roomsOnly":
+          return filterFoldersTree(treeFolders, roomsOnly);
       }
     };
 
@@ -206,14 +209,19 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0].id;
-
     if (
       filteredType === "exceptSortedByTags" ||
-      filteredType === "exceptPrivacyTrashArchiveFolders"
+      filteredType === "exceptPrivacyTrashArchiveFolders" ||
+      filteredType === "roomsOnly"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
+
+    const passedId = id
+      ? id
+      : filteredTreeFolders
+      ? filteredTreeFolders[0].id
+      : foldersTree[0].id;
 
     return [filteredTreeFolders || foldersTree, passedId];
   };
