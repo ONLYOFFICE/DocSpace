@@ -64,7 +64,7 @@ const Sdk = ({
             {
               const requests = await Promise.all([
                 setFrameConfig(data),
-                updateProfileCulture(user?.id, data.locale),
+                user && updateProfileCulture(user.id, data.locale),
               ]);
               res = requests[0];
             }
