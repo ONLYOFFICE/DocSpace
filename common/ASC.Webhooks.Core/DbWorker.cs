@@ -90,18 +90,28 @@ public class DbWorker
         return toAdd;
     }
 
-    public IAsyncEnumerable<WebhooksConfigWithStatus> GetTenantWebhooksWithStatus()
+    public async IAsyncEnumerable<WebhooksConfigWithStatus> GetTenantWebhooksWithStatus()
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return Queries.WebhooksConfigWithStatusAsync(webhooksDbContext, Tenant);
+        var q = Queries.WebhooksConfigWithStatusAsync(webhooksDbContext, Tenant);
+
+        await foreach (var webhook in q)
+        {
+            yield return webhook;
+        }
     }
 
-    public IAsyncEnumerable<WebhooksConfig> GetWebhookConfigs()
+    public async IAsyncEnumerable<WebhooksConfig> GetWebhookConfigs()
     {
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return Queries.WebhooksConfigsAsync(webhooksDbContext, Tenant);
+        var q = Queries.WebhooksConfigsAsync(webhooksDbContext, Tenant);
+
+        await foreach (var webhook in q)
+        {
+            yield return webhook;
+        }
     }
 
     public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled, bool? ssl)
