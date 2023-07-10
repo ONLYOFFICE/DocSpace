@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { observer, Provider as MobxProvider } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
 import ThemeProvider from "@docspace/components/theme-provider";
+import { Portal } from "@docspace/components";
+import Toast from "@docspace/components/toast";
+
 import "@docspace/common/custom.scss";
 
 import { RootStoreContext, RootStore, useStore } from "./store";
@@ -28,8 +32,17 @@ const App = observer(() => {
     if (userTheme) setTheme(userTheme);
   }, [userTheme]);
 
+  const rootElement = document.getElementById("root");
+
+  const toast = isMobileOnly ? (
+    <Portal element={<Toast />} appendTo={rootElement} visible={true} />
+  ) : (
+    <Toast />
+  );
+
   return (
     <ThemeProvider theme={theme}>
+      {toast}
       <Client />
     </ThemeProvider>
   );
