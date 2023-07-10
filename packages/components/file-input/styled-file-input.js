@@ -92,10 +92,6 @@ const StyledFileInput = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? css`
             left: 0;
-
-            & svg {
-              transform: scaleX(-1);
-            }
           `
         : css`
             right: 0;
