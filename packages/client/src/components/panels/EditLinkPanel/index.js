@@ -3,7 +3,6 @@ import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import copy from "copy-to-clipboard";
 import isEqual from "lodash/isEqual";
-// import { createPasswordHash } from "@docspace/common/utils";
 
 import Heading from "@docspace/components/heading";
 import Backdrop from "@docspace/components/backdrop";
@@ -37,11 +36,10 @@ const EditLinkPanel = (props) => {
     shareLink,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
-    // hashSettings,
     isLocked,
-    disabled,
     isDenyDownload,
     link,
+    date,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +47,7 @@ const EditLinkPanel = (props) => {
   const linkTitle = link.sharedTo.title ?? "";
   const [linkNameValue, setLinkNameValue] = useState(linkTitle);
   const [passwordValue, setPasswordValue] = useState(password);
-  const [expirationDate, setExpirationDate] = useState("");
+  const [expirationDate, setExpirationDate] = useState(date);
 
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
@@ -58,14 +56,11 @@ const EditLinkPanel = (props) => {
 
   const [passwordAccessIsChecked, setPasswordAccessIsChecked] =
     useState(isLocked);
-  const [limitByTimeIsChecked, setLimitByTimeIsChecked] = useState(false);
+
   const [denyDownload, setDenyDownload] = useState(isDenyDownload);
 
   const onPasswordAccessChange = () =>
     setPasswordAccessIsChecked(!passwordAccessIsChecked);
-
-  const onLimitByTimeChange = () =>
-    setLimitByTimeIsChecked(!limitByTimeIsChecked);
 
   const onDenyDownloadChange = () => setDenyDownload(!denyDownload);
 
@@ -83,16 +78,12 @@ const EditLinkPanel = (props) => {
       return;
     }
 
-    // const passwordHash = passwordAccessIsChecked
-    //   ? createPasswordHash(passwordValue, hashSettings)
-    //   : null;
-
     const newLink = JSON.parse(JSON.stringify(link));
 
     newLink.sharedTo.title = linkNameValue;
     newLink.sharedTo.password = passwordAccessIsChecked ? passwordValue : null;
     newLink.sharedTo.denyDownload = denyDownload;
-    // link.sharedTo.expirationDate=expirationDate;
+    newLink.sharedTo.expirationDate = expirationDate;
 
     setIsLoading(true);
     editExternalLink(roomId, newLink)
@@ -119,19 +110,17 @@ const EditLinkPanel = (props) => {
 
   const initState = {
     passwordValue: password,
-    //expirationDate
+    expirationDate: date,
     passwordAccessIsChecked: isLocked,
-    //limitByTimeIsChecked,
-    //denyDownload
+    denyDownload: isDenyDownload,
   };
 
   useEffect(() => {
     const data = {
       passwordValue,
-      //expirationDate,
+      expirationDate,
       passwordAccessIsChecked,
-      //limitByTimeIsChecked,
-      //denyDownload,
+      denyDownload,
     };
 
     if (!isEqual(data, initState)) {
@@ -194,19 +183,19 @@ const EditLinkPanel = (props) => {
               setIsPasswordValid={setIsPasswordValid}
               onChange={onPasswordAccessChange}
             />
-            <LimitTimeBlock
-              isLoading={isLoading}
-              headerText={t("Files:LimitByTimePeriod")}
-              bodyText={t("Files:ChooseExpirationDate")}
-              isChecked={limitByTimeIsChecked}
-              onChange={onLimitByTimeChange}
-            />
             <ToggleBlock
               isLoading={isLoading}
               headerText={t("Files:DenyDownload")}
               bodyText={t("Files:PreventDownloadFilesAndFolders")}
               isChecked={denyDownload}
               onChange={onDenyDownloadChange}
+            />
+            <LimitTimeBlock
+              isLoading={isLoading}
+              headerText={t("Files:LimitByTimePeriod")}
+              bodyText={t("Files:ChooseExpirationDate")}
+              expirationDate={expirationDate}
+              setExpirationDate={setExpirationDate}
             />
           </div>
         </StyledScrollbar>
@@ -235,7 +224,6 @@ const EditLinkPanel = (props) => {
 
 export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const { selectionParentRoom } = auth.infoPanelStore;
-  // const { hashSettings } = auth.settingsStore;
   const {
     editLinkPanelIsVisible,
     setEditLinkPanelIsVisible,
@@ -259,19 +247,17 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     setIsVisible: setEditLinkPanelIsVisible,
     isEdit,
     linkId: link?.sharedTo?.id ?? template?.sharedTo?.id,
-
-    disabled: link?.sharedTo?.disabled,
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLinks,
     isLocked: !!link?.sharedTo?.password,
     password: link?.sharedTo?.password ?? "",
+    date: link?.sharedTo?.expirationDate,
     isDenyDownload: link?.sharedTo?.denyDownload ?? false,
     shareLink,
     externalLinks,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
-    // hashSettings,
     link: link ?? template,
   };
 })(

@@ -9,6 +9,7 @@ const ToggleBlock = ({
   isChecked,
   onChange,
   children,
+  withToggle = true,
 }) => {
   return (
     <div className="edit-link-toggle-block">
@@ -16,12 +17,14 @@ const ToggleBlock = ({
         <Text fontSize="16px" fontWeight={700}>
           {headerText}
         </Text>
-        <ToggleButton
-          isDisabled={isLoading}
-          isChecked={isChecked}
-          onChange={onChange}
-          className="edit-link-toggle"
-        />
+        {withToggle && (
+          <ToggleButton
+            isDisabled={isLoading}
+            isChecked={isChecked}
+            onChange={onChange}
+            className="edit-link-toggle"
+          />
+        )}
       </div>
       <Text
         className="edit-link-toggle-description"

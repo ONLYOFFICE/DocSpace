@@ -87,6 +87,10 @@ const StyledEditLinkPanel = styled.div`
       font-size: 18px;
     }
   }
+
+  .public-room_date-picker {
+    padding-top: 8px;
+  }
 `;
 
 const StyledScrollbar = styled(Scrollbar)`

@@ -18,6 +18,7 @@ import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import LoadedReactSvgUrl from "PUBLIC_DIR/images/loaded.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import ClockReactSvg from "PUBLIC_DIR/images/clock.react.svg";
+import moment from "moment";
 
 import { StyledLinkRow } from "./StyledPublicRoom";
 
@@ -38,20 +39,14 @@ const LinkRow = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    title,
-    /* isLocked, */ shareLink,
-    id,
-    password,
-    disabled,
-    expirationDate,
-  } = link.sharedTo;
+  const { title, shareLink, id, password, disabled, expirationDate } =
+    link.sharedTo;
 
   const isLocked = !!password;
   const expiryDate = !!expirationDate;
+  const date = moment(expirationDate).format("LLL");
 
-  const date = "October 5, 2023 11:00 AM.";
-  const tooltipContent = `This link is valid until ${date} Once it expires, it will be impossible to access the room via this link.`;
+  const tooltipContent = t("Translations:PublicRoomLinkValidTime", { date });
 
   const onEditLink = () => {
     setEditLinkPanelIsVisible(true);
@@ -226,4 +221,8 @@ export default inject(
       isArchiveFolder,
     };
   }
-)(withTranslation(["SharingPanel", "Files", "Settings"])(observer(LinkRow)));
+)(
+  withTranslation(["SharingPanel", "Files", "Settings", "Translations"])(
+    observer(LinkRow)
+  )
+);
