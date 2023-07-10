@@ -105,3 +105,33 @@ export const getNewLogoArr = (
   }
   return logosArr;
 };
+
+export const getLogosAsText = (logoUrlsWhiteLabel, logoTextWhiteLabel) => {
+  let newLogos = logoUrlsWhiteLabel;
+  for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
+    const width = logoUrlsWhiteLabel[i].size.width / 2;
+    const height = logoUrlsWhiteLabel[i].size.height / 2;
+    const options = getLogoOptions(i, logoTextWhiteLabel);
+    const isDocsEditorName = logoUrlsWhiteLabel[i].name === "DocsEditor";
+
+    const logoLight = generateLogo(
+      width,
+      height,
+      options.text,
+      options.fontSize,
+      isDocsEditorName ? "#fff" : "#000",
+      options.isEditorLogo
+    );
+    const logoDark = generateLogo(
+      width,
+      height,
+      options.text,
+      options.fontSize,
+      "#fff",
+      options.isEditorLogo
+    );
+    newLogos[i].path.light = logoLight;
+    newLogos[i].path.dark = logoDark;
+  }
+  return newLogos;
+};
