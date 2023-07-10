@@ -117,10 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ButtonSetPassword" xml:space="preserve">
-    <value>Definir senha</value>
+  <data name="ClearingTemporaryData" xml:space="preserve">
+    <value>Limpando dados temporários</value>
   </data>
-  <data name="BackupNotFound" xml:space="preserve">
-    <value>O arquivo de backup é inválido. Por favor, use um arquivo criado no ONLYOFFICE v11.5 ou posterior.</value>
+  <data name="DataProcessing" xml:space="preserve">
+    <value>Processamento de dados...</value>
+  </data>
+  <data name="DataProcessingCompleted" xml:space="preserve">
+    <value>Processamento de dados concluído</value>
+  </data>
+  <data name="DumpParse" xml:space="preserve">
+    <value>Análise de banco de dados</value>
+  </data>
+  <data name="GoogleModuleNameContacts" xml:space="preserve">
+    <value>Contatos de eMail</value>
+  </data>
+  <data name="GoogleModuleNameDocuments" xml:space="preserve">
+    <value>Arquivos do Google Drive</value>
+  </data>
+  <data name="GroupMigration" xml:space="preserve">
+    <value>Migração de grupo {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserContacts" xml:space="preserve">
+    <value>Migrando contatos do usuário {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserFiles" xml:space="preserve">
+    <value>Migrando arquivos de usuário {0} ({1}/{2})</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>Migração cancelada</value>
+  </data>
+  <data name="MigrationCompleted" xml:space="preserve">
+    <value>Migração concluída</value>
+  </data>
+  <data name="ModuleNameCalendar" xml:space="preserve">
+    <value>Calendário</value>
+  </data>
+  <data name="OnlyofficeModuleNameCalendar" xml:space="preserve">
+    <value>Calendário</value>
+  </data>
+  <data name="ModuleNameGroups" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="ModuleNameMail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ModuleNameUsers" xml:space="preserve">
+    <value>Usuários</value>
+  </data>
+  <data name="NextcloudModuleNameContacts" xml:space="preserve">
+    <value>Contatos</value>
+  </data>
+  <data name="NextcloudModuleNameDocuments" xml:space="preserve">
+    <value>Arquivos do usuário</value>
+  </data>
+  <data name="OnlyofficeModuleNameDocuments" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="OnlyofficeModuleNameMail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="OnlyofficeModuleNamePeople" xml:space="preserve">
+    <value>Pessoas</value>
+  </data>
+  <data name="PreparingForMigration" xml:space="preserve">
+    <value>Preparando para a migração</value>
+  </data>
+  <data name="StartOfDataProcessing" xml:space="preserve">
+    <value>Iniciando processamento de dados...</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>Descompactando...</value>
+  </data>
+  <data name="UnzippingFinished" xml:space="preserve">
+    <value>Descompactação concluída...</value>
+  </data>
+  <data name="UserCalendarMigration" xml:space="preserve">
+    <value>Migração da agenda do usuário {0} ({1}/{2})</value>
+  </data>
+  <data name="UserMigration" xml:space="preserve">
+    <value>Migração de usuário {0} ({1}/{2})</value>
+  </data>
+  <data name="UserSkipped" xml:space="preserve">
+    <value>Falha ao importar usuário: {0} ({1}/{2})</value>
   </data>
 </root>
