@@ -104,21 +104,21 @@ const PersonalSettings = ({
         />
         {!isVisitor && (
           <ToggleButton
-            className="toggle-btn"
+            className="ask-again toggle-btn"
             label={t("Common:DontAskAgain")}
             onChange={onChangeKeepNewFileName}
             isChecked={keepNewFileName}
           />
         )}
         <ToggleButton
-          className="toggle-btn"
+          className="save-copy-original toggle-btn"
           label={t("OriginalCopy")}
           onChange={onChangeOriginalCopy}
           isChecked={storeOriginalFiles}
         />
         {!isVisitor && (
           <ToggleButton
-            className="toggle-btn"
+            className="display-notification toggle-btn"
             label={t("DisplayNotification")}
             onChange={onChangeDeleteConfirm}
             isChecked={confirmDelete}
@@ -161,7 +161,7 @@ const PersonalSettings = ({
           </Heading>
           {!isVisitor && (
             <ToggleButton
-              className="toggle-btn"
+              className="update-or-create toggle-btn"
               label={t("UpdateOrCreate")}
               onChange={onChangeUpdateIfExist}
               isChecked={updateIfExist}
@@ -169,7 +169,7 @@ const PersonalSettings = ({
           )}
           {!isVisitor && (
             <ToggleButton
-              className="toggle-btn"
+              className="keep-intermediate-version toggle-btn"
               label={t("KeepIntermediateVersion")}
               onChange={onChangeForceSave}
               isChecked={forceSave}

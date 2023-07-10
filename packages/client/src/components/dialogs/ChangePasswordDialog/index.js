@@ -57,14 +57,8 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     // console.log("ChangePasswordDialog render");
-    const {
-      t,
-      tReady,
-      visible,
-      email,
-      onClose,
-      currentColorScheme,
-    } = this.props;
+    const { t, tReady, visible, email, onClose, currentColorScheme } =
+      this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -84,6 +78,7 @@ class ChangePasswordDialogComponent extends React.Component {
             >
               Send the password change instructions to the
               <Link
+                className="email-link"
                 type="page"
                 href={`mailto:${email}`}
                 noHover
@@ -98,6 +93,7 @@ class ChangePasswordDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            className="send"
             key="ChangePasswordSendBtn"
             label={t("Common:SendButton")}
             size="normal"
@@ -107,6 +103,7 @@ class ChangePasswordDialogComponent extends React.Component {
             isLoading={isRequestRunning}
           />
           <Button
+            className="cancel-button"
             key="CloseBtn"
             label={t("Common:CancelButton")}
             size="normal"

@@ -32,6 +32,7 @@ const ButtonContainer = ({
     <StyledBody>
       {isNotPaidPeriod || isGracePeriod || isFreeAfterPaidPeriod ? (
         <Button
+          className="pay-button"
           label={t("Pay")}
           size={"medium"}
           primary

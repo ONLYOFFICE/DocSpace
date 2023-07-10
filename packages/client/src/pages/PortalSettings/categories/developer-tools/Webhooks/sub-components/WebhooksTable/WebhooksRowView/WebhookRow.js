@@ -58,12 +58,14 @@ export const WebhookRow = (props) => {
 
   const contextOptions = [
     {
+      id: "settings",
       key: "Settings dropdownItem",
       label: t("Common:Settings"),
       icon: SettingsIcon,
       onClick: onSettingsOpen,
     },
     {
+      id: "webhook-history",
       key: "Webhook history dropdownItem",
       label: t("WebhookHistory"),
       icon: HistoryIcon,
@@ -74,6 +76,7 @@ export const WebhookRow = (props) => {
       isSeparator: true,
     },
     {
+      id: "delete-webhook",
       key: "Delete webhook dropdownItem",
       label: t("DeleteWebhook"),
       icon: DeleteIcon,
@@ -88,7 +91,8 @@ export const WebhookRow = (props) => {
         key={webhook.id}
         data={webhook}
         contextOptions={contextOptions}
-        onClick={handleRowClick}>
+        onClick={handleRowClick}
+      >
         <WebhookRowContent
           sectionWidth={sectionWidth}
           webhook={webhook}

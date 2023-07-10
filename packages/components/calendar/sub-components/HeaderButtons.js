@@ -14,6 +14,7 @@ export const HeaderButtons = ({
   return (
     <ButtonsContainer>
       <ColorTheme
+        className="arrow-previous"
         themeId={ThemeType.RoundButton}
         style={isRtl ? { marginLeft: "12px" } : { marginRight: "12px" }}
         onClick={onLeftClick}
@@ -23,6 +24,7 @@ export const HeaderButtons = ({
       </ColorTheme>
 
       <ColorTheme
+        className="arrow-next"
         themeId={ThemeType.RoundButton}
         onClick={onRightClick}
         disabled={isRightDisabled}

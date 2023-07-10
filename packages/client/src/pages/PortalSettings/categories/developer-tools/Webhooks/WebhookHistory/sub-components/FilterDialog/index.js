@@ -54,8 +54,14 @@ function areArraysEqual(array1, array2) {
 }
 
 const FilterDialog = (props) => {
-  const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters, historyFilters } =
-    props;
+  const {
+    visible,
+    closeModal,
+    applyFilters,
+    formatFilters,
+    setHistoryFilters,
+    historyFilters,
+  } = props;
   const { t } = useTranslation(["Webhooks", "Files", "Common"]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -130,12 +136,18 @@ const FilterDialog = (props) => {
         <ModalDialog.Footer>
           <Footer>
             <Button
+              className="apply-button"
               label={t("Common:ApplyButton")}
               size="normal"
               primary={true}
               onClick={handleApplyFilters}
             />
-            <Button label={t("Common:CancelButton")} size="normal" onClick={closeModal} />
+            <Button
+              className="cancel-button"
+              label={t("Common:CancelButton")}
+              size="normal"
+              onClick={closeModal}
+            />
           </Footer>
         </ModalDialog.Footer>
       )}

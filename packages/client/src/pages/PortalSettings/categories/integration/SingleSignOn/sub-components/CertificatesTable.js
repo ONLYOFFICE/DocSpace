@@ -39,12 +39,14 @@ const CertificatesTable = (props) => {
 
     const contextOptions = [
       {
+        id: "edit",
         key: "edit",
         label: t("Common:EditButton"),
         icon: AccessEditReactSvgUrl,
         onClick: onEdit,
       },
       {
+        id: "delete",
         key: "delete",
         label: t("Common:Delete"),
         icon: CatalogTrashReactSvgUrl,
