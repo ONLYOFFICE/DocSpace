@@ -17,7 +17,6 @@ const Backup = ({
   t,
   history,
   isNotPaidPeriod,
-  currentColorScheme,
 }) => {
   const renderTooltip = (helpInfo) => {
     return (
@@ -32,10 +31,10 @@ const Backup = ({
               </Trans>
               <div>
                 <Link
-                  as="a"
                   href={automaticBackupUrl}
                   target="_blank"
-                  color={currentColorScheme.main.accent}
+                  fontSize="13px"
+                  color="#333333"
                   isBold
                   isHovered
                 >
