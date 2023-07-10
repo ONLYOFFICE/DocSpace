@@ -1,25 +1,42 @@
-import { PluginType } from "./constants";
+import toastr from "@docspace/components/toast/toastr";
 
-export const wrapPluginItem = (pluginName, key, item, pluginType, frame) => {
-  if (item?.onClick) {
-    const plugin = frame.contentWindow.Plugins[pluginName];
+import { PluginActions } from "./constants";
+import { PluginToastType } from "./constants";
 
-    const onClick = (value) => {
-      switch (pluginType) {
-        case PluginType.CONTEXT_MENU:
-          plugin.contextMenuItems.get(key).onClick(value);
-          break;
-        case PluginType.ACTION_BUTTON:
-          plugin.mainButtonItems.get(key).onClick(value);
-          break;
-        case PluginType.PROFILE_MENU:
-          plugin.profileMenuItems.get(key).onClick(value);
-          break;
-      }
-    };
-
-    return { ...item, onClick };
-  }
-
-  return item;
+export const messageActions = (
+  message,
+  setElementProps,
+  setAcceptButtonProps
+) => {
+  if (!message) return;
+  message.actions.forEach((action) => {
+    switch (action) {
+      case PluginActions.updateProps:
+        setElementProps({ ...message.newProps });
+        break;
+      case PluginActions.updateStatus:
+        break;
+      case PluginActions.closeModal:
+        break;
+      case PluginActions.showToast:
+        switch (message?.toastProps?.type) {
+          case PluginToastType.success:
+            toastr.success(message?.toastProps?.title);
+            break;
+          case PluginToastType.info:
+            toastr.info(message?.toastProps?.title);
+            break;
+          case PluginToastType.error:
+            toastr.error(message?.toastProps?.title);
+            break;
+          case PluginToastType.warning:
+            toastr.warning(message?.toastProps?.title);
+            break;
+        }
+        break;
+      case PluginActions.updateAcceptButtonProps:
+        setAcceptButtonProps({ ...message.acceptButtonProps });
+        break;
+    }
+  });
 };

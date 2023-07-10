@@ -211,8 +211,9 @@ const SectionHeaderContent = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isAccountsPage = location.pathname.includes("accounts");
-  const isSettingsPage = location.pathname.includes("settings");
+  const isAccountsPage = location.pathname.includes("/accounts");
+
+  const isSettingsPage = location.pathname.includes("/settings");
 
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
@@ -1167,5 +1168,6 @@ export default inject(
     "People",
     "PeopleTranslations",
     "ChangeUserTypeDialog",
+    "PluginsSettings",
   ])(observer(SectionHeaderContent))
 );

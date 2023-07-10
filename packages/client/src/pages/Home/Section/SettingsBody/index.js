@@ -11,6 +11,7 @@ import PersonalSettings from "./CommonSettings";
 import GeneralSettings from "./AdminSettings";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
+import PluginsSettings from "./PluginsSettings";
 
 const StyledContainer = styled.div`
   margin-top: -22px;
@@ -25,13 +26,20 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({ isErrorSettings, user }) => {
-  const { t } = useTranslation(["FilesSettings", "Common"]);
+const SectionBodyContent = ({
+  isErrorSettings,
+  user,
+  enablePlugins,
+  plugins,
+}) => {
+  const { t } = useTranslation(["FilesSettings", "Common", "PluginsSettings"]);
 
   const navigate = useNavigate();
 
   const setting = window.location.pathname.endsWith("/settings/common")
     ? "common"
+    : window.location.pathname.endsWith("/settings/plugins")
+    ? "plugins"
     : "admin";
 
   const commonSettings = {
@@ -46,7 +54,23 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
     content: <GeneralSettings t={t} />,
   };
 
-  const data = [adminSettings, commonSettings];
+  const pluginsSettings = {
+    id: "plugins",
+    name: t("PluginsSettings:Plugins"),
+    content: <PluginsSettings />,
+  };
+
+  const data = [commonSettings];
+
+  if (enablePlugins && (plugins.length > 0 || user.isAdmin || user.isOwner)) {
+    data.push(pluginsSettings);
+  }
+
+  const showAdminSettings = user.isAdmin || user.isOwner;
+
+  if (showAdminSettings) {
+    data.unshift(adminSettings);
+  }
 
   const onSelect = useCallback(
     (e) => {
@@ -65,13 +89,11 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
     [setting, navigate]
   );
 
-  const showAdminSettings = user.isAdmin || user.isOwner;
-
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {!showAdminSettings ? (
+      {!showAdminSettings && !enablePlugins ? (
         <PersonalSettings
           t={t}
           showTitle={true}
@@ -80,7 +102,13 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
       ) : (
         <Submenu
           data={data}
-          startSelect={setting === "common" ? commonSettings : adminSettings}
+          startSelect={
+            setting === "common"
+              ? commonSettings
+              : setting === "plugins"
+              ? pluginsSettings
+              : adminSettings
+          }
           onSelect={onSelect}
         />
       )}
@@ -88,11 +116,16 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
   );
 };
 
-export default inject(({ auth, settingsStore }) => {
+export default inject(({ auth, settingsStore, pluginStore }) => {
   const { settingsIsLoaded } = settingsStore;
+  const { plugins } = pluginStore;
+
+  const { enablePlugins } = auth.settingsStore;
 
   return {
     settingsIsLoaded,
     user: auth.userStore.user,
+    enablePlugins,
+    plugins,
   };
 })(observer(SectionBodyContent));

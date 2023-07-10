@@ -1837,7 +1837,8 @@ class FilesStore {
 
       if (enablePlugins && !isRecycleBinFolder) {
         const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
-          PluginContextMenuItemType.Files
+          PluginContextMenuItemType.Files,
+          item.fileExst
         );
 
         pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));

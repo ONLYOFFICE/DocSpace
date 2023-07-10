@@ -210,8 +210,12 @@ const ClientRoutes = [
             ),
           },
           {
-            path: "/plugins-settings",
-            element: <PrivateRoute>1234</PrivateRoute>,
+            path: "settings/plugins",
+            element: (
+              <PrivateRoute>
+                <SettingsView />
+              </PrivateRoute>
+            ),
           },
         ],
       },

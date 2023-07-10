@@ -124,7 +124,10 @@ const ArticleMainButtonContent = (props) => {
   const location = useLocation();
 
   const isAccountsPage = location.pathname.includes("/accounts/filter");
-  const isSettingsPage = location.pathname.includes("settings");
+
+  const isPluginsSettingsPage = location.pathname.includes("/settings/plugins");
+  const isSettingsPage =
+    location.pathname.includes("/settings") && !isPluginsSettingsPage;
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -245,7 +248,7 @@ const ArticleMainButtonContent = (props) => {
   ]);
 
   React.useEffect(() => {
-    if (isRoomsFolder || isSettingsPage) return;
+    if (isRoomsFolder || isSettingsPage || isPluginsSettingsPage) return;
 
     const formActions = [
       {
@@ -443,11 +446,18 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
+  const onAddPlugin = () => {
+    const event = new Event(Events.ADD_PLUGIN);
+    window.dispatchEvent(event);
+  };
+
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled = isSettingsPage
+  const isDisabled = isPluginsSettingsPage
+    ? !isAdmin && !isOwner
+    : isSettingsPage
     ? isSettingsPage
     : isAccountsPage
     ? !isAccountsPage
@@ -468,24 +478,28 @@ const ArticleMainButtonContent = (props) => {
               titleProp={t("Upload")}
               actionOptions={actions}
               buttonOptions={uploadActions}
-              isRooms={isRoomsFolder}
+              isRooms={isRoomsFolder || isPluginsSettingsPage}
               mainButtonMobileVisible={mainButtonMobileVisible}
-              onMainButtonClick={onCreateRoom}
+              onMainButtonClick={isRoomsFolder ? onCreateRoom : onAddPlugin}
             />
           )}
         </>
-      ) : isRoomsFolder ? (
+      ) : isRoomsFolder || isPluginsSettingsPage ? (
         <StyledButton
           className="create-room-button"
           id="rooms-shared_create-room-button"
-          label={t("Files:NewRoom")}
-          onClick={onCreateRoom}
+          label={
+            isRoomsFolder ? t("Files:NewRoom") : t("PluginsSettings:AddPlugin")
+          }
+          onClick={isRoomsFolder ? onCreateRoom : onAddPlugin}
           $currentColorScheme={currentColorScheme}
           isDisabled={isDisabled}
           size="small"
           primary
           scale
-          title={t("Files:NewRoom")}
+          title={
+            isRoomsFolder ? t("Files:NewRoom") : t("PluginsSettings:AddPlugin")
+          }
         />
       ) : (
         <MainButton
@@ -610,5 +624,6 @@ export default inject(
     "Files",
     "People",
     "PeopleTranslations",
+    "PluginsSettings",
   ])(observer(ArticleMainButtonContent))
 );

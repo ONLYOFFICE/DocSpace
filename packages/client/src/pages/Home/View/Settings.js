@@ -19,6 +19,7 @@ const SettingsView = ({
   const setting = location.pathname.includes("/settings/common")
     ? "common"
     : "admin";
+
   return (
     <>
       {inLoad ? (

@@ -47,6 +47,7 @@ import { Events } from "@docspace/common/constants";
 
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
+import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 class ContextOptionsStore {
   authStore;
@@ -1132,12 +1133,20 @@ class ContextOptionsStore {
                 ...value,
               });
             } else {
-              options.splice(value.position, 0, {
-                key: option.key,
-                label: value.label,
-                icon: value.icon,
-                onClick: () => value.onClick(item),
-              });
+              const onClick = async () => {
+                const message = await value.onClick(item.id);
+
+                messageActions(message);
+              };
+
+              if (value.fileExt.includes(item.fileExst)) {
+                options.splice(value.position, 0, {
+                  key: option.key,
+                  label: value.label,
+                  icon: value.icon,
+                  onClick: onClick,
+                });
+              }
             }
           }
         });

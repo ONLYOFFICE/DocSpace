@@ -193,9 +193,6 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
     case CategoryType.Settings:
       return "/settings/common";
 
-    case CategoryType.PluginsSettings:
-      return "/plugins-settings";
-
     default:
       throw new Error("Unknown category type");
   }

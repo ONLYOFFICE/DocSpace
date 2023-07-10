@@ -131,16 +131,6 @@ const ArticleBodyContent = (props) => {
             toggleArticleOpen();
           }
           return;
-        case "plugins-settings":
-          clearFiles();
-
-          path = getCategoryUrl(CategoryType.PluginsSettings);
-          navigate(path);
-
-          if (isMobileOnly || isMobile()) {
-            toggleArticleOpen();
-          }
-          return;
         case roomsFolderId:
         default:
           const roomsFilter = RoomsFilter.getDefault();
@@ -215,12 +205,6 @@ const ArticleBodyContent = (props) => {
       activeItemId !== "accounts"
     )
       return setActiveItemId("accounts");
-
-    if (
-      location.pathname.includes("/plugins-settings") &&
-      activeItemId !== "plugins-settings"
-    )
-      return setActiveItemId("plugins-settings");
 
     if (location.pathname.includes("/settings") && activeItemId !== "settings")
       return setActiveItemId("settings");
