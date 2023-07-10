@@ -233,12 +233,13 @@ class DropDown extends React.PureComponent {
       if (this.props.right) {
         dropDown.style.left = this.props.right;
       } else if (this.props.directionX === "right") {
-        dropDown.style.left = parentRects.left + "px";
+        dropDown.style.left = parentRects.left - scrollBarWidth + "px";
       } else if (parentRects.right - dropDownRects.width < 0) {
         if (parentRects.left + dropDownRects.width > viewport.width) {
-          dropDown.style.left = viewport.width - dropDown.clientWidth + "px";
+          dropDown.style.left =
+            viewport.width - dropDown.clientWidth - scrollBarWidth + "px";
         } else {
-          dropDown.style.left = parentRects.left + "px";
+          dropDown.style.left = parentRects.left - scrollBarWidth + "px";
         }
       } else {
         dropDown.style.left =
