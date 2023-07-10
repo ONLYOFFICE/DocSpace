@@ -64,7 +64,7 @@ const Sdk = ({
             {
               const requests = await Promise.all([
                 setFrameConfig(data),
-                updateProfileCulture(user?.id, data.locale),
+                user && updateProfileCulture(user.id, data.locale),
               ]);
               res = requests[0];
             }
@@ -145,10 +145,12 @@ const Sdk = ({
           isPanelVisible={true}
           onSelectFile={onSelectFile}
           onClose={onClose}
-          filteredType="exceptPrivacyTrashArchiveFolders"
+          filteredType="roomsOnly"
           withSubfolders={false}
           displayType="aside"
           embedded={true}
+          searchParam={frameConfig?.filter.search}
+          ByExtension
         />
       );
       break;
