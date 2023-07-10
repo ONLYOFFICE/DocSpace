@@ -30,8 +30,7 @@ const StyledSubmenu = styled(Submenu)`
 `;
 
 const DeveloperToolsWrapper = (props) => {
-  const { loadBaseInfo, developerToolsTab, setTab } = props;
-  const [currentTab, setCurrentTab] = useState(developerToolsTab);
+  const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
   const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
@@ -50,6 +49,10 @@ const DeveloperToolsWrapper = (props) => {
     },
   ];
 
+  const [currentTab, setCurrentTab] = useState(
+    data.findIndex((item) => location.pathname.includes(item.id)),
+  );
+
   const load = async () => {
     await loadBaseInfo();
   };
@@ -59,7 +62,6 @@ const DeveloperToolsWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) {
       setCurrentTab(currentTab);
-      setTab(currentTab);
     }
   }, []);
 
@@ -86,15 +88,12 @@ const DeveloperToolsWrapper = (props) => {
   );
 };
 
-export default inject(({ setup, webhooksStore }) => {
+export default inject(({ setup }) => {
   const { initSettings } = setup;
-  const { developerToolsTab, setTab } = webhooksStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    developerToolsTab,
-    setTab,
   };
 })(observer(DeveloperToolsWrapper));

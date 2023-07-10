@@ -17,7 +17,6 @@ class WebhooksStore {
   historyItems = [];
   startIndex = 0;
   totalItems = 0;
-  developerToolsTab = 0;
   currentWebhook = {};
   eventDetails = {};
   FETCH_COUNT = 100;
@@ -37,10 +36,6 @@ class WebhooksStore {
 
   setCurrentWebhook = (webhook) => {
     this.currentWebhook = webhook;
-  };
-
-  setTab = (tabIndex) => {
-    this.developerToolsTab = tabIndex;
   };
 
   loadWebhooks = async () => {
