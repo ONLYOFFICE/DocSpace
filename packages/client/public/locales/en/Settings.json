@@ -174,6 +174,7 @@
   "SMTPSettingsDescription": "The SMTP settings are needed to set up an email account which will be used to send notifications from the portal using your own SMTP server instead of the one {{organizationName}} uses. Please fill in all the fields and click the 'Save' button. You can use the 'Send Test Mail' button to check if all the settings you entered are correct and work as supposed.",
   "StoragePeriod": "Storage period",
   "StudioTimeLanguageSettings": "Language and Time Zone Settings",
+  "Submit": "Submit",
   "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
   "SuccessfullySavePortalNameMessage": "Space has been renamed successfully",
   "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
@@ -206,5 +207,6 @@
   "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
-  "YourCurrentDomain": "Your current domain"
+  "YourCurrentDomain": "Your current domain",
+  "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that."
 }
