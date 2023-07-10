@@ -125,7 +125,7 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="appsettings.json" FileName="APPSET~1.JSO|appsettings.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="appsettings.json" FileName="APPSET~1.JSO|appsettings.production.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
     <ROW JsonProperty="Root" Name="Root" Condition="1" Order="0" Flags="60"/>
@@ -607,7 +607,7 @@
     <ROW Action="Set_DS_JWT_ENABLED" Type="51" Source="DOCUMENT_SERVER_JWT_ENABLED" Target="[JWT_ENABLED]"/>
     <ROW Action="Set_DS_JWT_HEADER" Type="51" Source="DOCUMENT_SERVER_JWT_HEADER" Target="[JWT_HEADER]"/>
     <ROW Action="Set_DS_JWT_SECRET" Type="51" Source="DOCUMENT_SERVER_JWT_SECRET" Target="[JWT_SECRET]"/>
-    <ROW Action="Set_LICENSE_PATH" Type="51" Source="LICENSE_PATH" Target="[APPDIR]Data\license.lic"/>
+    <ROW Action="Set_LICENSE_PATH" Type="51" Source="LICENSE_PATH" Target="[APPDIR]\Data\license.lic"/>
     <ROW Action="StartWebApi" Type="3585" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
     <ROW Action="StopWebApi" Type="3585" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_9"/>
     <ROW Action="TestElasticsearchConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_1"/>
