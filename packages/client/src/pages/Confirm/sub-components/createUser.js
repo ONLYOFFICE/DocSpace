@@ -111,10 +111,12 @@ const CreateUserForm = (props) => {
     }
 
     const fetchData = async () => {
-      const uid = linkData.uid;
-      const confirmKey = linkData.confirmHeader;
-      const user = await getUserFromConfirm(uid, confirmKey);
-      setUser(user);
+      if (linkData.type === "LinkInvite") {
+        const uid = linkData.uid;
+        const confirmKey = linkData.confirmHeader;
+        const user = await getUserFromConfirm(uid, confirmKey);
+        setUser(user);
+      }
 
       window.authCallback = authCallback;
 
@@ -204,6 +206,7 @@ const CreateUserForm = (props) => {
         }
 
         console.error("confirm error", errorMessage);
+        setIsEmailErrorShow(true);
         setEmailErrorText(errorMessage);
         setEmailValid(false);
         setIsLoading(false);
@@ -229,9 +232,10 @@ const CreateUserForm = (props) => {
 
   const createConfirmUser = async (registerData, loginData, key) => {
     const { login } = props;
+    const fromInviteLink = linkData.type === "LinkInvite" ? true : false;
 
     const data = Object.assign(
-      { fromInviteLink: true },
+      { fromInviteLink: fromInviteLink },
       registerData,
       loginData
     );
@@ -395,7 +399,7 @@ const CreateUserForm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhoto;
+  const userAvatar = user && user.hasAvatar ? user.avatar : DefaultUserPhoto;
 
   return (
     <StyledPage>
@@ -414,17 +418,23 @@ const CreateUserForm = (props) => {
 
             {showGreeting && (
               <>
-                <div className="greeting-block">
-                  <Avatar className="avatar" role="user" source={userAvatar} />
-                  <div className="user-info">
-                    <Text fontSize="15px" fontWeight={600}>
-                      {user.firstName} {user.lastName}
-                    </Text>
-                    <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
-                      {user.department}
-                    </Text>
+                {user && (
+                  <div className="greeting-block">
+                    <Avatar
+                      className="avatar"
+                      role="user"
+                      source={userAvatar}
+                    />
+                    <div className="user-info">
+                      <Text fontSize="15px" fontWeight={600}>
+                        {user.firstName} {user.lastName}
+                      </Text>
+                      <Text fontSize="12px" fontWeight={600} color="#A3A9AE">
+                        {user.department}
+                      </Text>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="tooltip">
                   <span className="tooltiptext">{t("WelcomeUser")}</span>

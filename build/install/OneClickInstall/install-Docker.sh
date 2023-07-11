@@ -220,7 +220,7 @@ while [ "$1" != "" ]; do
 
 		-dsh | --docspacehost )
 			if [ "$2" != "" ]; then
-				APP_CORE_BASE_DOMAIN=$2
+				APP_URL_PORTAL=$2
 				shift
 			fi
 		;;
@@ -698,6 +698,57 @@ docker_login () {
 	fi
 }
 
+read_continue_installation () {
+	read -p "Continue installation [Y/N]? " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y )
+			return 0
+		;;
+
+		n|N )
+			exit 0;
+		;;
+
+		* )
+			echo "Please, enter Y or N";
+			read_continue_installation
+		;;
+	esac
+}
+
+domain_check () {
+	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
+
+	if [[ -n "$DOMAINS" ]]; then
+		while IFS= read -r DOMAIN; do
+			IP_ADDRESS=$(dig +short "$DOMAIN")
+			if [[ -n "$IP_ADDRESS" || "$IP_ADDRESS" =~ ^127\. ]]; then
+				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
+			elif [[ -n "$IP_ADDRESS" ]]; then
+				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+			fi
+		done <<< "$DOMAINS"
+	fi
+	
+	if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
+		DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
+		APP_URL_PORTAL=${APP_URL_PORTAL:-${LOCAL_RESOLVED_DOMAINS[0]}}
+		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
+			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
+			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			if read_continue_installation; then
+				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
+					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
+				else
+					echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
+				fi
+				systemctl restart docker
+			fi
+		fi
+	fi
+}
+
 get_container_env_parameter () {
 	local CONTAINER_NAME=$1;
 	local PARAMETER_NAME=$2;
@@ -887,10 +938,12 @@ set_mysql_params () {
 }
 
 set_docspace_params() {
-	ENV_EXTENSION=$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION");
-	DOCUMENT_SERVER_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST");
-	ELK_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST");
-	APP_CORE_BASE_DOMAIN=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN");
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
+	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
 
@@ -979,11 +1032,12 @@ install_product () {
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:${EXTERNAL_PORT}"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
 	
-	if [ ${TOTAL_MEMORY} -gt 12228 ]; then #RAM ~12Gb
+	if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
 		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
 	else
 		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
@@ -1021,7 +1075,11 @@ start_installation () {
 
 	docker_login
 
-	set_docspace_params
+	domain_check
+
+	if [ "$UPDATE" = "true" ]; then
+		set_docspace_params
+	fi
 
 	set_jwt_secret
 	set_jwt_header

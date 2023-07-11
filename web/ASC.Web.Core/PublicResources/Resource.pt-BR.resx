@@ -889,4 +889,106 @@
   <data name="ConsumersEasyBibInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para criar bibliografias em editores ONLYOFFICE. {0}Vá para a página de inscrição no EasyBib e preencha o formulário para adicionar a integração ONLYOFFICE. Depois de obter uma chave do aplicativo, cole-a abaixo:</value>
   </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Chave de acesso S3</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários façam login no ONLYOFFICE usando o Facebook e vinculem as contas do Facebook de seus clientes ao módulo CRM. {0}Vá para o Portal de desenvolvedores do Facebook e crie uma nova integração de aplicativo ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Armazenamento em nuvem do Google</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Ative este aplicativo para permitir que seus usuários façam login no ONLYOFFICE usando suas contas do LinkedIn. {0}Acesse o site LinkedIn Developers e crie uma nova integração do aplicativo ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Ao adicionar o aplicativo Mail.ru, você pode ativar o login no portal usando a conta Mail.ru em sua página de perfil.</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Armazenamento em Nuvem Rackspace</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selecione armazenamento em nuvem</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Segredo do cliente</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Segredo do cliente</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Centro de SMS</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Nome de utilizador do bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token de bot</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID do cliente</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>Chave API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>Segredo da chave API</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Nome de utilizador da Rackspace</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID do aplicativo</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Chave de segurança</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Ao adicionar o aplicativo VK, você pode habilitar a entrada no portal usando a conta VK em sua página de perfil.</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Chave do WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>Segredo do Wordpress</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID do cliente</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Segredo do cliente</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Ativar a aplicação para importar utilizadores do serviço Yahoo.</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Quando adiciona a aplicação Yandex, pode ativar o início de sessão no portal utilizando a conta Yandex na sua página de perfil.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Espaço na nuvem para os documentos do seu escritório</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrações de terceiros</value>
+  </data>
 </root>

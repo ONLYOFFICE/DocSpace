@@ -49,9 +49,13 @@ curl -sL https://deb.nodesource.com/setup_16.x | bash -
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
 	curl https://packages.microsoft.com/config/$DIST/10/packages-microsoft-prod.deb -O
+elif [ "$DISTRIB_CODENAME" = "bookworm" ]; then
+	#Temporary fix for missing dotnet repository for debian bookworm
+	curl https://packages.microsoft.com/config/$DIST/11/packages-microsoft-prod.deb -O
 else
 	curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
 fi
+echo -e "Package: *\nPin: origin \"packages.microsoft.com\"\nPin-Priority: 1002" | tee /etc/apt/preferences.d/99microsoft-prod.pref
 dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 
 MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP 'mysql-apt-config_\K.*' | grep -o '^[^_]*' | sort --version-sort --field-separator=. | tail -n1)"
@@ -70,6 +74,9 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	echo "mysql-apt-config mysql-apt-config/select-server  select  mysql-8.0" | debconf-set-selections
 	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
 	rm -f ${MYSQL_PACKAGE_NAME}
+
+	#Temporary fix for missing mysql repository for debian bookworm
+	[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/jammy/g" /etc/apt/sources.list.d/mysql.list
 
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
@@ -100,6 +107,8 @@ fi
 curl -s http://nginx.org/keys/nginx_signing.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nginx.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/$DIST/ $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
 chmod 644 /usr/share/keyrings/nginx.gpg
+#Temporary fix for missing nginx repository for debian bookworm
+[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/buster/g" /etc/apt/sources.list.d/nginx.list
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
@@ -120,7 +129,11 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				nginx-extras \
 				ffmpeg 
 
-if [ ! -e /usr/bin/json ]; then
+if ! command_exists npm; then
+	apt-get -y install npm
+fi
+
+if ! command_exists json; then
 	npm i json -g >/dev/null 2>&1
 fi
 

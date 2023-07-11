@@ -740,7 +740,8 @@ class FilesActionStore {
     if (
       this.settingsStore.confirmDelete ||
       this.treeFoldersStore.isPrivacyFolder ||
-      isThirdParty
+      isThirdParty ||
+      isRoom
     ) {
       this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
@@ -824,7 +825,7 @@ class FilesActionStore {
       addActiveItems(null, items);
 
       this.setGroupMenuBlocked(true);
-      return removeFiles(items, [], true, true)
+      return removeFiles(items, [], false, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -1318,9 +1319,12 @@ class FilesActionStore {
   };
 
   openLocationAction = async (locationId) => {
-    this.filesStore.setBufferSelection(null);
+    const { setBufferSelection, setIsLoading, fetchFiles } = this.filesStore;
 
-    const files = await this.filesStore.fetchFiles(locationId, null);
+    setBufferSelection(null);
+    setIsLoading(true);
+    const files = await fetchFiles(locationId, null);
+    setIsLoading(false);
     return files;
   };
 
@@ -2028,7 +2032,8 @@ class FilesActionStore {
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
     const canWebEdit = item.viewAccessability?.WebEdit;
     const canViewedDocs = item.viewAccessability?.WebView;
 

@@ -128,10 +128,10 @@
     <value>Üstüne yazılmış</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Revize edilmeden onceki hali yuklenmistir</value>
+    <value>{0} revizyonundan geri yüklendi</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Dokuman degisimden oncesine geri yuklenmistir</value>
+    <value>{0} belge değişikliğinden geri yüklendi</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Yüklendi</value>
@@ -164,10 +164,10 @@
     <value>Dökümanlar Servisinde Hata oluştu</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>Dosya degistirilmek uzere acik durumda, ortak calisma icin bu dosya formati desteklenmiyor.</value>
+    <value>Dosya {0} tarafından düzenlenmek üzere açıldı. Birlikte düzenleme özelliği şu anda bu dosya biçimi için desteklenmiyor.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>Dosya mobil bir uygulama taraindan degistirilmek icin acik durumda</value>
+    <value>Dosya, {0} tarafından bir mobil uygulamada düzenlenmek üzere açıldı</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>Boş dosya</value>
@@ -179,13 +179,13 @@
     <value>{0}'dan büyük dosya çevrilmeyecektir</value>
   </data>
   <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
-    <value>Dosya buyuk oldugu icin kopyalanamadi</value>
+    <value>{0} boyutundan büyük dosya kopyalanmayacak</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>Dosya buyuk oldugu icin degistirilemedi</value>
+    <value>{0} boyutundan büyük dosya düzenlenmeyecek</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>Dosya buyuk oldugundan dolayi yeri degistirilemedi</value>
+    <value>{0} boyutundan büyük dosya taşınmayacak</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Klasörü kopyalayamazsınız</value>
@@ -200,7 +200,7 @@
     <value>Dosya başka bir kullanıcı tarafından kilitlenmiş</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>Mail Mesaji Gonderilemedi. Hata nedeni icin, lutfen Mail Modulune Gidip, kontrol ediniz.</value>
+    <value>En az {0} posta mesajı gönderilemedi. Hatanın sebebinin ne olabileceğini öğrenmek için lütfen E-Posta modülünü ziyaret edin.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>Çok fazla indirme.</value>

@@ -24,6 +24,7 @@
   "DaysRemaining": "Kalan gün sayısı: {{daysRemaining}}",
   "DisableNotifications": "Bildirimleri devre dışı bırak",
   "Document": "Belge",
+  "DocumentEdited": "Belge düzenlenmekte olduğu için eylem gerçekleştirilemiyor.",
   "EditRoom": "Oda düzenle",
   "EmptyFile": "Boş dosya",
   "EmptyFilterDescriptionText": "Bu filtreyle eşleşen dosya veya klasör yok. Farklı bir filtre deneyin veya tüm dosyaları görüntülemek için filtreyi temizleyin.",

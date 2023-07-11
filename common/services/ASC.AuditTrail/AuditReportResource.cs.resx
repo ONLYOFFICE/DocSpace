@@ -676,4 +676,46 @@
   <data name="DocumentsStoreForcesave" xml:space="preserve">
     <value>Nastavení Store forcesave Aktualizováno</value>
   </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Uživatelské údaje pro {0} byly odstraněny</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Aplikace Authenticator odpojena: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Byly vytvořeny nové záložní kódy</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-mail aktualizován</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Úspěšné přihlášení prostřednictvím sociální aplikace</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Úspěšné přihlášení přes API a autentizační aplikaci</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Úspěšné přihlášení prostřednictvím aplikace autentizátoru</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Soukromá místnost je zakázána</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Soukromá místnost je povolena</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Spustit dešifrování úložiště</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Spustit šifrování úložiště</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Nastavení dvoufázového ověřování aktualizováno: Dvoufaktorové ověřování bylo zakázáno</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Nastavení dvoufázového ověřování aktualizováno: Bylo povoleno potvrzování pomocí SMS</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Nastavení dvoufázového ověřování aktualizováno: Ověřovací aplikace byla povolena</value>
+  </data>
 </root>

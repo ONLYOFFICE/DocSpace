@@ -13,10 +13,9 @@
   "FrameId": "ID do quadro",
   "Header": "Cabeçalho",
   "ItemsCount": "Contagem de itens",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Menu",
   "Page": "Página",
   "SearchTerm": "Termo de pesquisa",
-  "SortOrder": "Ordem de classificação",
-  "WindowParameters": "Parâmetros da janela"
+  "SortOrder": "Ordem de classificação"
 }

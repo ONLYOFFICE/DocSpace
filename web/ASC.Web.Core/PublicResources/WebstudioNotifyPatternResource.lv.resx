@@ -641,13 +641,6 @@ Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
 
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
-
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
 Jūsu
@@ -663,13 +656,6 @@ Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
 
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
-
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
 Jūsu
@@ -684,13 +670,6 @@ Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlab
 Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
-
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
 
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
@@ -1206,5 +1185,29 @@ Pēc tam, kad noklikšķiniet uz uzaicinājuma saites, iestatiet jaunu paroli sa
 Jūsu
 ONLYOFFICE komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
   </data>
 </root>

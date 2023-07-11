@@ -13,10 +13,9 @@
   "FrameId": "Id del marco",
   "Header": "Encabezado",
   "ItemsCount": "Recuento de elementos",
-  "JavascriptSdk": "Sdk de Javascript",
+  "JavascriptSdk": "SDK de Javascript",
   "Menu": "Menú",
   "Page": "Página",
   "SearchTerm": "Término de búsqueda",
-  "SortOrder": "Criterio de ordenación",
-  "WindowParameters": "Parámetros de la ventana"
+  "SortOrder": "Criterio de ordenación"
 }

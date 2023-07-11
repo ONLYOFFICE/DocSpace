@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>Wachtwoord instellen</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Het back-up bestand is ongeldig. Gebruik een bestand dat is gemaakt in ONLYOFFICE v11.5 of later.</value>
+  </data>
 </root>

@@ -136,6 +136,7 @@ public class SettingsController : BaseSettingsController
     public SettingsDto GetSettings(bool? withpassword)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+        var tenantCookieSettings = _settingsManager.Load<TenantCookieSettings>();
 
         var settings = new SettingsDto
         {
@@ -149,7 +150,8 @@ public class SettingsController : BaseSettingsController
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
             EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid(),
-            LegalTerms = _setupInfo.LegalTerms
+            LegalTerms = _setupInfo.LegalTerms,
+            CookieSettingsEnabled = tenantCookieSettings.Enabled
         };
 
         if (_authContext.IsAuthenticated)
@@ -181,6 +183,7 @@ public class SettingsController : BaseSettingsController
             };
 
             settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.ApiDocsLink = _configuration["web:api-docs"];
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))

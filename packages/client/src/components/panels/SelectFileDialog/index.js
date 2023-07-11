@@ -308,6 +308,7 @@ SelectFileDialog.propTypes = {
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
     "exceptPrivacyTrashArchiveFolders",
+    "roomsOnly",
   ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,

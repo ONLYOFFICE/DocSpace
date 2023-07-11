@@ -600,9 +600,6 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
   <data name="ButtonCollaborateDocSpace" xml:space="preserve">
     <value>Współpracuj w DocSpace</value>
   </data>
-  <data name="ButtonConfirm" xml:space="preserve">
-    <value>Potwierdź zaproszenie DocSpace</value>
-  </data>
   <data name="ButtonConfirmRoomInvite" xml:space="preserve">
     <value>Potwierdź zaproszenie do pokoju</value>
   </data>
@@ -627,13 +624,6 @@ Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
 
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
-
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
 Pozdrawiamy,
@@ -649,13 +639,6 @@ Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
 
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
-
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
 Pozdrawiamy,
@@ -670,13 +653,6 @@ Właśnie udało Ci się utworzyć konto DocSpace w ONLYOFFICE. Jest to centrum 
 Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
-
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
 
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
@@ -1267,5 +1243,11 @@ Zespół ONLYOFFICE
   </data>
   <data name="subject_saas_docspace_invite" xml:space="preserve">
     <value>Dołącz do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potwierdź zaproszenie DocSpace</value>
   </data>
 </root>

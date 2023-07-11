@@ -28,10 +28,6 @@ const CustomizationSettings = lazy(() =>
   import("./categories/common/index.js")
 );
 
-const DeveloperTools = lazy(() =>
-  import("./categories/developer-tools/index.js")
-);
-
 const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/Customization/language-and-time-zone")
 );
@@ -65,13 +61,23 @@ const RestoreBackup = lazy(() =>
 );
 
 const Bonus = lazy(() => import("../Bonus"));
+
 const DeleteDataPage = lazy(() => import("./categories/delete-data"));
 
 const WhiteLabel = lazy(() =>
   import("./categories/common/Branding/whitelabel")
 );
 
+const DeveloperTools = lazy(() => import("./categories/developer-tools"));
+
+const JavascriptSDK = lazy(() =>
+  import("./categories/developer-tools/JavascriptSDK")
+);
+
+const Api = lazy(() => import("./categories/developer-tools/Api"));
+
 const Branding = lazy(() => import("./categories/common/branding"));
+
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
   "/portal-settings"
@@ -87,9 +93,14 @@ const CUSTOMIZATION_URLS = [
 
 const DEVELOPER_URLS = [
   PROXY_BASE_URL,
-  combineUrl(PROXY_BASE_URL, "/developer"),
-  combineUrl(PROXY_BASE_URL, "/developer/tools"),
+  combineUrl(PROXY_BASE_URL, "/developer-tools"),
+  combineUrl(PROXY_BASE_URL, "/developer-tools/api"),
+  combineUrl(PROXY_BASE_URL, "/developer-tools/javascript-sdk"),
 ];
+
+const API_URLS = combineUrl(PROXY_BASE_URL, "/developer-tools/api");
+
+const SDK_URLS = combineUrl(PROXY_BASE_URL, "/developer-tools/javascript-sdk");
 
 const BACKUP_URLS = [
   PROXY_BASE_URL,
@@ -123,6 +134,7 @@ const TEAM_TEMPLATE_URL = combineUrl(
   "/customization/general/team-template"
 );
 const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
+
 const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-rights"),
   combineUrl(PROXY_BASE_URL, "/security/access-portal"),
@@ -233,6 +245,8 @@ const Settings = () => {
           <Route exact path={SSO_URL} component={SingleSignOn} />
           <Route exact path={SMTP_Settings} component={SMTPSettings} />
           <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
+          <Route exact path={SDK_URLS} component={JavascriptSDK} />
+          <Route exact path={API_URLS} component={Api} />
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />

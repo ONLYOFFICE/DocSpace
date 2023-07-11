@@ -64,14 +64,21 @@ public class SmtpSettingsController : ControllerBase
     {
         CheckSmtpPermissions();
 
-        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(_coreConfiguration.SmtpSettings);
+        var current = _coreConfiguration.SmtpSettings;
+
+        if (current.IsDefaultSettings && !_coreBaseSettings.Standalone)
+        {
+            current = SmtpSettings.Empty;
+        }
+
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";
 
         return settings;
     }
 
     [HttpPost("smtp")]
-    public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
+    public SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 

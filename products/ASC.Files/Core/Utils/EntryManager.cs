@@ -1677,7 +1677,7 @@ public class EntryManager
 
             newFile.Id = fromFile.Id;
             newFile.Version = currFile.Version + 1;
-            newFile.VersionGroup = currFile.VersionGroup;
+            newFile.VersionGroup = currFile.VersionGroup + 1;
             newFile.Title = FileUtility.ReplaceFileExtension(currFile.Title, FileUtility.GetFileExtension(fromFile.Title));
             newFile.FileStatus = currFile.FileStatus;
             newFile.ParentId = currFile.ParentId;

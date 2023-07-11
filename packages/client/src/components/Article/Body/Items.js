@@ -1,6 +1,7 @@
 ﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 import CatalogArchiveReactSvgUrl from "PUBLIC_DIR/images/catalog.archive.react.svg?url";
 import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
 import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";
@@ -234,7 +235,7 @@ const Items = ({
         iconUrl = CatalogUserReactSvgUrl;
         break;
       case FolderType.Rooms:
-        iconUrl = CatalogFolderReactSvgUrl;
+        iconUrl = CatalogRoomsReactSvgUrl;
         break;
       case FolderType.Archive:
         iconUrl = CatalogArchiveReactSvgUrl;

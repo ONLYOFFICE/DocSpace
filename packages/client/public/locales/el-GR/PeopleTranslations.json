@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Τύπος σύνδεσης λογαριασμού",
   "DeleteSelfProfile": "Διαγραφή προφίλ",
   "DisabledEmployeeStatus": "Απενεργοποιημένο",
   "DisableUserButton": "Απενεργοποίηση",
@@ -12,6 +13,7 @@
   "RemoveData": "Διαγραφή προσωπικών δεδομένων",
   "ResetAuth": "Επαναφορά ελέγχου ταυτότητας",
   "SendInviteAgain": "Αποστολή πρόσκλησης ακόμα μια φορά",
+  "StandardLogin": "Τυπική σύνδεση",
   "SuccessChangeUserStatus": "Η κατάσταση του χρήστη άλλαξε επιτυχώς",
   "SuccessDeletePersonalData": "Τα προσωπικά δεδομένα έχουν διαγραφεί επιτυχώς",
   "SuccessSentInvitation": "Η πρόσκληση στάλθηκε με επιτυχία",

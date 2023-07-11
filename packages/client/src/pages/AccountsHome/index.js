@@ -24,6 +24,8 @@ import {
   InfoPanelBodyContent,
 } from "../Home/InfoPanel";
 
+import SelectionArea from "./SelectionArea";
+
 const PureHome = ({
   isLoading,
   history,
@@ -130,6 +132,7 @@ const PureHome = ({
       </Section>
 
       <Dialogs />
+      <SelectionArea />
     </>
   );
 };

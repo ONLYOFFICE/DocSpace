@@ -23,6 +23,8 @@
       page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
+      search: "",
+      withSubfolders: true,
     },
     keysForReload: [
       "src",
@@ -345,6 +347,10 @@
       return this.#getMethodPromise("getList");
     }
 
+    getRooms(filter) {
+      return this.#getMethodPromise("getRooms", filter);
+    }
+
     getUserInfo() {
       return this.#getMethodPromise("getUserInfo");
     }
@@ -386,10 +392,10 @@
       });
     }
 
-    createRoom(title, type) {
+    createRoom(title, roomType) {
       return this.#getMethodPromise("createRoom", {
         title,
-        type,
+        roomType,
       });
     }
 

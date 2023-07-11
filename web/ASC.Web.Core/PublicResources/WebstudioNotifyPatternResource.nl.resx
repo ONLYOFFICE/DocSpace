@@ -536,7 +536,7 @@ ONLYOFFICE Team</value>
     <value>SMTP testbericht</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
-    <value>Nieuwe gebruiker toegevoegd aan het ${LetterLogoText} portaal</value>
+    <value>Nieuwe gebruiker toegevoegd aan ${LetterLogoText} portaal</value>
   </data>
   <data name="ActionFileCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; heeft een nieuw document gemaakt: &lt;a href={1}&gt;{2}&lt;/a&gt; in de kamer: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
@@ -598,13 +598,6 @@ Bevestig uw e-mail (de link is 7 dagen geldig):
 
 $GreenButton
 
-Uw huidige tariefplan is STARTUP. Het is helemaal gratis en bestaat uit:
-
-* 1 beheerder, 2 power users
-* Tot 12 kamers
-* Onbeperkt aantal gebruikers in elke kamer
-* 2 GB schijfruimte
-
 Beleef een nieuwe manier van samenwerken aan documenten!
 
 Hoogachtend,
@@ -619,13 +612,6 @@ U hebt zojuist ONLYOFFICE DocSpace gecreëerd, een document hub waar u de samenw
 Bevestig uw e-mail (de link is 7 dagen geldig):
 
 $GreenButton
-
-Uw huidige tariefplan is STARTUP. Het is helemaal gratis en bestaat uit:
-
-* 1 beheerder, 2 power users
-* Tot 12 kamers
-* Onbeperkt aantal gebruikers in elke kamer
-* 2 GB schijfruimte
 
 Beleef een nieuwe manier van samenwerken aan documenten!
 
@@ -663,13 +649,6 @@ U hebt zojuist ONLYOFFICE DocSpace gecreëerd, een document hub waar u de samenw
 Bevestig uw e-mail (de link is 7 dagen geldig):
 
 $GreenButton
-
-Uw huidige tariefplan is STARTUP. Het is helemaal gratis en bestaat uit:
-
-* 1 beheerder, 2 power users
-* Tot 12 kamers
-* Onbeperkt aantal gebruikers in elke kamer
-* 2 GB schijfruimte
 
 Beleef een nieuwe manier van samenwerken aan documenten!
 
@@ -1270,10 +1249,10 @@ ONLYOFFICE team
     <value>Welkom bij ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
-    <value>Uw ONLYOFFICE DocSpace abonnement is bijna verlopen.</value>
+    <value>Uw ONLYOFFICE DocSpace abonnement is bijna verlopen</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
-    <value>Uw ONLYOFFICE DocSpace wordt verwijderd.</value>
+    <value>Uw ONLYOFFICE DocSpace wordt verwijderd</value>
   </data>
   <data name="AcceptDocSpace" xml:space="preserve">
     <value>ACCEPTEREN</value>
@@ -1295,5 +1274,539 @@ ONLYOFFICE team
   </data>
   <data name="ButtonConfirm" xml:space="preserve">
     <value>Bevestigen</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Klik hier om uw e-mailadres te activeren</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Wijzig e-mailadres</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Wijzig wachtwoord</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Wijzig mobiel telefoonnummer</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Configureer de authenticator app</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Bevestig wijziging portaaladres</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Bevestig update portaaleigenaar</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Accountbeëindiging bevestigen</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Portaal deactiveren</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Portaal verwijderen</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Klik hier om deel te nemen aan het portaal</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Laat feedback achter</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Verwijder profiel</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Verleng nu</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Start gratis proefperiode</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Gebruik korting</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portaalback-up gemaakt
+
+Beste $OwnerName,
+
+Er is een back-up bestand gemaakt met gegevens van uw [${__VirtualRootPath}](${__VirtualRootPath}) portaal.
+
+Raadpleeg voor meer informatie over de back-up procedure onze gebruikershandleiding [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+Als u vragen hebt of hulp nodig hebt, kunt u contact met ons opnemen via [support.onlyoffice.com](http://support.onlyoffice.com).
+
+Met vriendelijke groet,
+ONLYOFFICE™ Ondersteuningsteam
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Wilt u het e-mailadres op uw ${LetterLogoText} account wijzigen?
+
+Klik op de onderstaande knop en log in* op uw cloud.
+
+$GreenButton
+
+De link is 7 dagen geldig.
+
+*Als u niet bent aangemeld bij ${LetterLogoText} in deze browser, moet u uw oude e-mail gebruiken ter bevestiging. Als u het niet meer weet, neem dan contact op met uw portaalbeheerder.
+
+Wilt u uw e-mail niet wijzigen? Negeer dit bericht dan gewoon.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Beveiligingsmelding
+
+De configuratie van de authenticator app die u gebruikt om de ${LetterLogoText} portaal te openen is opnieuw ingesteld.
+
+Klik op de knop hieronder om naar de aanmeldingspagina van het portaal te gaan en de authenticator app te configureren:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+U wordt uitgenodigd om lid te worden van "${__VirtualRootPath}":"${__VirtualRootPath}" als gastgebruiker. Accepteer de uitnodiging door op de link te klikken:
+
+$GreenButton
+
+De link is slechts 7 dagen geldig.
+
+U krijgt meer tips voor het gebruik van uw web-office. U kunt de abonnementen op uw Profielpagina op elk moment opzeggen en weer inschakelen.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+$__AuthorName heeft u als gastgebruiker uitgenodigd op "${__VirtualRootPath}":"${__VirtualRootPath}". Accepteer de uitnodiging door op de link te klikken:
+
+$GreenButton
+
+De link is slechts 7 dagen geldig.
+
+U krijgt meer tips voor het gebruik van uw web-office. U kunt de abonnementen op uw Profielpagina op elk moment opzeggen en weer inschakelen.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Bericht van het [${__VirtualRootPath}](${__VirtualRootPath}) portaal
+
+E-mail: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Beste $UserName,
+
+      Beheerder heeft een nieuwe &lt;b&gt;$Address&lt;/b&gt; mailbox voor u aangemaakt op het "${__VirtualRootPath}":"${__VirtualRootPath}" portaal.
+
+      Gebruik de volgende instellingen voor andere e-mailclients:
+      Inloggen: &lt;b&gt;$Login&lt;/b&gt;
+      Wachtwoord: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
+
+      Inkomende E-mail (IMAP): 
+      Server: &lt;b&gt;$Server&lt;/b&gt;
+      Poort: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Uitgaande E-mail (SMTP): 
+      Server: &lt;b&gt;$Server&lt;/b&gt;
+      Poort: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Verificatie vereist: &lt;b&gt;Ja&lt;/b&gt;
+
+      Als u deze e-mail per ongeluk hebt ontvangen, dan kunt u deze negeren of contact opnemen met uw portaalbeheerder voor meer informative.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Beste $UserName,
+
+      Het wachtwoord voor de &lt;b&gt;$Address&lt;/b&gt; mailbox is gewijzigd.
+
+      Als u deze e-mail per ongeluk hebt ontvangen, dan kunt u deze negeren of contact opnemen met uw portaalbeheerder voor meer informatie.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Beste $UserName,
+
+      Beheerder heeft een nieuwe &lt;b&gt;$Address&lt;/b&gt; mailbox voor u aangemaakt op het "${__VirtualRootPath}":"${__VirtualRootPath}" portaal.
+
+      Als u deze e-mail per ongeluk hebt ontvangen, dan kunt u deze negeren of contact opnemen met uw portaalbeheerder voor meer informatie.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Portaal migratie
+h1."$PortalUrl":"$PortalUrl"
+
+Uw portaal is gemigreerd naar een nieuw domein. Herstel de toegang tot het portaal door het wachtwoord op te geven waarmee u zich kunt aanmelden.
+
+Volg de onderstaande link om uw wachtwoord voor de account in te stellen:
+$GreenButton
+
+*Let op*: deze link is slechts 7 dagen geldig. Voltooi het proces voor het herstellen van de toegang binnen die periode.
+
+Als u deze e-mail per ongeluk hebt ontvangen, negeer deze dan of neem contact op met uw "$PortalUrl":"$PortalUrl" portaalbeheerder voor meer informatie.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Hallo!
+
+U wordt uitgenodigd om lid te worden van "${__VirtualRootPath}":"${__VirtualRootPath}" als gastgebruiker. Accepteer de uitnodiging door op de link te klikken:
+
+"$ActivateUrl":"$ActivateUrl"
+
+De link is slechts 7 dagen geldig.
+
+U krijgt meer tips voor het gebruik van uw web-office. U kunt de abonnementen op uw Profielpagina op elk moment opzeggen en weer inschakelen.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Hallo, $UserName
+U bent geregistreerd bij ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Sluit uw favoriete cloudopslag aan: Dropbox, Google Drive, OneDrive of Box om één werkruimte te creëren voor uw documenten die overal toegankelijk zijn.
+
+Meer informatie over ONLYOFFICE Personal in "ons blog":"$TagBlogLink".
+
+We zijn blij dat u er bent. Blijf op de hoogte!
+
+Hoogachtend,
+ONLYOFFICE team</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Welkom bij ONLYOFFICE Personal
+
+U hebt zojuist uw persoonlijke kantoor in de cloud aangemaakt
+
+h3.Het is een virtuele werkruimte waar u documenten kunt bewerken en opslaan, er vanaf elke locatie mee kunt werken en uw vrienden of collega's er toegang toe hebben.
+
+h3.Voor een snelle start, dit is wat u kunt doen in ONLYOFFICE:
+
+- Tekstdocumenten, spreadsheets en presentaties maken, bekijken en bewerken.
+
+- Met alle populaire formaten werken. Het meest geschikt voor MS Office bestanden
+
+- Maak en bewerk samen "invulklare formulieren":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Deel en werk online samen aan documenten.
+
+- Gebruik verschillende plugins om extra functionaliteiten toe te passen.
+
+- Gemakkelijk toegang tot uw Persoonlijke cloud via "Chrome-extensie":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+U kunt documenten ook offline bewerken met onze gratis "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" of een mobiel editing suite aanschaffen voor uw "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" of "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
+
+Hoogachtend,
+ONLYOFFICE team</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Wilt u het e-mailadres van uw ONLYOFFICE account wijzigen?
+
+Klik op de onderstaande knop en log in* op uw cloud.
+
+$GreenButton
+
+De link is 7 dagen geldig.
+
+*Als u niet bent aangemeld bij ONLYOFFICE in deze browser, moet u uw oude e-mail gebruiken ter bevestiging.
+
+Wilt u uw e-mail niet wijzigen? Negeer dit bericht dan gewoon.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Hallo,
+
+u heeft zojuist een account geregistreerd bij de ONLYOFFICE oplossing voor persoonlijk gebruik. Klik "hier":"$InviteLink" om de registratie te bevestigen en een wachtwoord aan te maken.
+
+Als u de link niet kunt openen, kopieer dan het volgende "$InviteLink":"$InviteLink" en plak deze in de adresbalk van uw browser.
+
+Hoogachtend,
+ONLYOFFICE team</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>U heeft verzocht om beëindiging van uw account op personal.onlyoffice.com. Volg de link om de aanvraag te voltooien (de link is 7 dagen actief): 
+
+$GreenButton
+
+*Let op*: Na de verwijdering worden uw account en alle bijbehorende gegevens definitief gewist in overeenstemming met onze "Privacyverklaring":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Lees meer over accountbeëindiging":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Negeer deze e-mail als u niet wilt doorgaan. 
+
+Als u vragen heeft, neem dan contact met ons op via "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Hoogachtend,
+ONLYOFFICE team</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Deactivatie van het [${__VirtualRootPath}](${__VirtualRootPath}) portaal
+
+Beste $OwnerName,
+
+U hebt verzocht om een tijdelijke deactivatie van uw [${__VirtualRootPath}](${__VirtualRootPath}) portaal. Volg de onderstaande link om de handeling te bevestigen:
+
+$GreenButton
+
+_Let op_: deze link is slechts 7 dagen geldig. Voltooi het deactiveringsproces van het portaal binnen die periode.
+
+U kunt uw portaal te allen tijde opnieuw activeren door op de volgende link te klikken:
+[Portaal Opnieuw Activeren]($ActivateUrl) (deze link heeft geen tijdslimiet)
+
+Als u vragen heeft of hulp nodig heeft, neem dan gerust contact met ons op via [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Met vriendelijke groet,
+ONLYOFFICE™ Ondersteuningsteam
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Verwijdering van het [${__VirtualRootPath}](${__VirtualRootPath}) portaal
+
+Beste $OwnerName,
+
+U hebt verzocht om uw [${__VirtualRootPath}](${__VirtualRootPath}) portaal definitief te verwijderen.
+
+_Belangrijk Alle in uw portaal opgeslagen gegevens en uw registratiegegevens gaan verloren en kunnen niet worden hersteld.
+
+#if($AutoRenew == "True")
+Voordat u de portaal verwijdert, moet u ervoor zorgen dat automatische facturatie is uitgeschakeld. U kunt de automatische facturatie status controleren in uw [Avangate account](https://secure.avangate.com/myaccount/").
+#end
+
+Als u toch uw [${__VirtualRootPath}](${__VirtualRootPath}) portaal wilt verwijderen, volg dan de onderstaande link om de handeling te bevestigen:
+
+$GreenButton
+
+_Let op_: deze link is slechts 7 dagen geldig. Voltooi het verwijderingsproces van het portaal binnen die periode.
+
+Als u vragen heeft of hulp nodig heeft, neem dan gerust contact met ons op via [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Met vriendelijke groet,
+ONLYOFFICE™ Ondersteuningsteam
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Gebruiker $FromUserName":"$FromUserLink" heeft zijn/haar profiel verwijderd, en dit profiel is nu geblokkeerd. Alle bestanden van de gebruiker zijn nog steeds aan hem/haar toegewezen en nemen schijfruimte in beslag. 
+
+U kunt de met anderen gedeelde documenten van de gebruiker opnieuw toewijzen aan een andere actieve gebruiker of ze verwijderen om de schijfruimte van het portaal beschikbaar te maken.
+
+Ga naar het gebruikersprofiel met "deze link":"$FromUserLink" om documenten aan een andere gebruiker toe te wijzen of de gegevens te verwijderen.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Uw profiel op [${__VirtualRootPath}](${__VirtualRootPath}) is gewijzigd.
+
+Beste $UserName,
+
+Uw gebruikersprofielgegevens op [${__VirtualRootPath}](${__VirtualRootPath}) zijn gewijzigd door [$__AuthorName]($__AuthorUrl).
+
+Volg de onderstaande link om uw profiel te bekijken:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Beste $UserName,
+
+Het proces van gegevensoverdracht van gebruiker "$FromUserName":"$FromUserLink" naar gebruiker "$ToUserName":"$ToUserLink" is succesvol afgerond.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Beste $UserName,
+
+Het proces van gegevensoverdracht van gebruiker "$FromUserName":"$FromUserLink" naar gebruiker "$ToUserName":"$ToUserLink" is mislukt.
+
+Uitzonderingsbericht: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Beste $UserName,
+
+Het proces van gegevensverwijdering van gebruiker "$FromUserName":"$FromUserLink" is succesvol afgerond.
+
+De verwijdering van persoonsgegevens maakte dit leeg:
+
+# Documenten - $DocsSpace
+# CRM - $CrmSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Beste $UserName,
+
+Het proces van gegevensverwijdering voor gebruiker "$FromUserName":"$FromUserLink" is mislukt.
+
+Uitzonderingsbericht: $Message</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS Tariff Request for "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3. Voornaam
+$UserName
+
+h3.Achternaam
+$UserLastName
+
+h3.Functie
+$Position
+
+h3.E-mail
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefoonnummer
+$Phone
+
+h3.Bedrijfswebsite
+$Website
+
+h3.Bedrijfsnaam
+$CompanyTitle
+
+h3.Bedrijfsgrootte
+$CompanySize
+
+h3.Vraag informatie aan
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Portaal herstel
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Uw portaal is hersteld. Om toegang te krijgen, moet u een nieuw wachtwoord instellen:
+
+$GreenButton
+
+*Let op*: deze link is slechts 7 dagen geldig.
+
+Als u deze e-mail per ongeluk hebt ontvangen, negeer deze dan of neem contact op met uw "${__VirtualRootPath}":"${__VirtualRootPath}" portaalbeheerder voor meer informatie.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Hallo!
+
+U wordt uitgenodigd om lid te worden van "${__VirtualRootPath}":"${__VirtualRootPath}" als gastgebruiker. Accepteer de uitnodiging door op de link te klikken:
+
+$GreenButton
+
+Wij sturen u ook af en toe nuttige tips en het laatste ONLYOFFICE nieuws. U kunt de abonnementen op uw Profielpagina op elk moment opzeggen en weer inschakelen.
+
+Hoogachtend,
+ONLYOFFICE team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portaal profiel wijziging melding
+
+[$__AuthorName]($__AuthorUrl) heeft zijn/haar profielgegevens gewijzigd op het [${__VirtualRootPath}](${__VirtualRootPath}) portaal.</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het decryptieproces van het bestand op uw portaal "${PortalUrl}":"${PortalUrl}" is mislukt.
+
+Enkele bestanden konden niet worden ontsleuteld. Meer details vindt u in het "Configuratiescherm":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het bestandsdecryptieproces is gestart op uw portaal "${PortalUrl}":"${PortalUrl}".
+
+De decryptie kan enige tijd duren, dus het portaal is tijdelijk niet beschikbaar. Zodra de decryptie voorbij is, kunt u weer met uw gegevens werken.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het decryptieproces van het bestand op uw portaal "${PortalUrl}":"${PortalUrl}" is succesvol afgerond.
+
+Uw portaal is weer beschikbaar.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het encryptieproces van het bestand op uw portaal "${PortalUrl}":"${PortalUrl}" is mislukt.
+
+Bepaalde bestanden konden niet worden ontsleuteld. Meer details vindt u in het "Configuratiescherm":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het bestandsencryptieproces is gestart op uw portaal "${PortalUrl}":"${PortalUrl}".
+
+De encryptie kan enige tijd duren, dus het portaal is tijdelijk niet beschikbaar. Zodra de encryptie voorbij is, kunt u weer met uw gegevens werken.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Hallo $UserName!
+
+Het encryptieproces van het bestand op uw portaal "${PortalUrl}":"${PortalUrl}" is succesvol afgerond.
+
+Uw portaal is weer beschikbaar.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Nieuwe gebruiker toegevoegd aan [${__VirtualRootPath}](${__VirtualRootPath}) portaal
+[$__AuthorName]($__AuthorUrl) heeft zich aangemeld bij uw portaal op [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Beste $UserName,
+
+U bent uitgenodigd om deel te nemen aan het veilige en beveiligde weboffice van uw bedrijf om uw samenwerking te verbeteren. Het adres is "${__VirtualRootPath}":"${__VirtualRootPath}". Deze link toevoegen aan uw bladwijzers is verstandig, u zult deze waarschijnlijk veel gebruiken.
+
+Accepteer de uitnodiging door onderstaande link te volgen en gebruik uw login en wachtwoord van de bedrijfsaccount om u aan te melden. 
+
+$GreenButton
+
+De link is slechts 7 dagen geldig.</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Bevestig de wijziging van uw e-mailadres</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Beveiligingsmelding</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Aanmelden bij ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Aanmelden bij ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Aanmelden bij ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Mailbox aanmaken</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Wachtwoord van mailbox wijzigen</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE voor persoonlijk gebruik!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Activeer uw e-mailadres</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal account beëindiging</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Gebruiker heeft zijn/haar profiel verwijderd</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Het opnieuw toewijzen van gebruikersgegevens is voltooid</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Het opnieuw toewijzen van gebruikersgegevens is mislukt</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Verwijdering gebruikersgegevens voltooid</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Verwijdering gebruikersgegevens mislukt</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Aanmelden bij ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Decryptieproces is mislukt</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Decryptieproces is begonnen</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Decryptieproces is afgerond</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Encryptieproces is mislukt</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Encryptieproces is begonnen</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Encryptieproces is afgerond</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>U bent uitgenodigd om lid te worden van ${__VirtualRootPath}</value>
   </data>
 </root>

@@ -322,9 +322,6 @@
   <data name="AceStatusEnum_Collaborator" xml:space="preserve">
     <value>Współpracownik</value>
   </data>
-  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
-    <value>Edytujący</value>
-  </data>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrator pokoju</value>
   </data>
@@ -375,5 +372,14 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Nie możesz przypiąć pokoju</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Edytujący</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Niestandardowy filtr</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Komentarz</value>
   </data>
 </root>

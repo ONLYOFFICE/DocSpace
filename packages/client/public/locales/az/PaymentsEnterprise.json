@@ -1,4 +1,5 @@
 {
+  "ActivateLicense": "Lisenziyanı aktivləşdirin",
   "ActivateLicenseActivated": "Lisenziya aktiv edildi",
   "ActivatePurchaseBuyLicense": "Lisenziyanı almaq üçün aşağıdakı düyməyə klikləyin.",
   "ActivatePurchaseBuyNow": "İndi al",
@@ -11,6 +12,7 @@
   "ActivateTariffEnterpriseTrialExpiration": "Sınaq müddətiniz {{date}} tarixində bitir.",
   "ActivateToProBannerHeaderTrial": "Aşağıdakıları əldə etmək üçün tam Müəssisə versiyasını alın:",
   "ActivateUploadDescr": "Lisenziyanızı aktivləşdirmək üçün onu aşağıda yükləyib aktivləşdirmə düyməsinə klikləyin.",
+  "FreeDaysLeft": "{{count}} pulsuz gün qalıb",
   "UpgradeToProBannerHeader": "Təkmil funksiyalara 30 günlük pulsuz giriş əldə edin",
   "UpgradeToProBannerInformationAboutShort": "Rəsmi vebsaytda <1> Enterprise Edition </1> haqqında ətraflı məlumat əldə edin",
   "UpgradeToProBannerInformationDemo": "Demonu <1>buradan</1> tələb edin",
@@ -30,5 +32,6 @@
   "UpgradeToProBannerItemScalabilityDescr": "Komandanızın ölçüsündən asılı olmayaraq sənədlərinizi rahat şəkildə redaktə edin və birlikdə işləyin.",
   "UpgradeToProBannerItemScalabilityHeader": "Ölçüləbilənlik və klasterləşmə",
   "UpgradeToProBannerItemSupportDescr": "Qarşılaşdığınız hər hansı bir çətinlik üçün sürətli peşəkar yardımdan yararlanın.",
-  "UpgradeToProBannerItemSupportHeader": "Texniki dəstək."
+  "UpgradeToProBannerItemSupportHeader": "Texniki dəstək.",
+  "UploadLicenseFile": "Lisenziya faylını yükləyin"
 }

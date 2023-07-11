@@ -41,7 +41,6 @@ const StyledContactComponent = styled.div`
 
 const StyledEnterpriseComponent = styled.div`
   margin-bottom: 35px;
-  margin-top: 12px;
 
   .payments_renew-subscription {
     max-width: 660px;
