@@ -147,7 +147,6 @@ class ContextMenu extends Component {
 
       //flip
       if (left + width - document.body.scrollLeft > viewport.width) {
-        console.log("flip");
         left -= width;
       }
 
