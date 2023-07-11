@@ -60,7 +60,7 @@ public class ReassignController : ApiControllerBase
 
         var progressItem = _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
 
-        return new TaskProgressResponseDto(progressItem);
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     [HttpPost("reassign/start")]
@@ -94,7 +94,7 @@ public class ReassignController : ApiControllerBase
 
         var progressItem = _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
 
-        return new TaskProgressResponseDto(progressItem);
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     [HttpPut("reassign/terminate")]

@@ -33,11 +33,16 @@ public class TaskProgressResponseDto
     public int Percentage { get; set; }
     public bool IsCompleted { get; set; }
 
-    public TaskProgressResponseDto(DistributedTaskProgress progressItem)
+    public static TaskProgressResponseDto Get(DistributedTaskProgress progressItem)
     {
-        Id = progressItem.Id;
-        Error = progressItem.Exception?.Message;
-        Percentage = (int)progressItem.Percentage;
-        IsCompleted = progressItem.IsCompleted;
+        return progressItem == null
+            ? null
+            : new TaskProgressResponseDto
+                {
+                    Id = progressItem.Id,
+                    Error = progressItem.Exception?.Message,
+                    Percentage = (int)progressItem.Percentage,
+                    IsCompleted = progressItem.IsCompleted
+                };
     }
 }

@@ -66,7 +66,7 @@ public class RemoveUserDataController : ApiControllerBase
 
         var progressItem = _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
 
-        return new TaskProgressResponseDto(progressItem);
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     [HttpPut("self/delete")]
@@ -104,7 +104,7 @@ public class RemoveUserDataController : ApiControllerBase
 
         var progressItem = _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
 
-        return new TaskProgressResponseDto(progressItem);
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     [HttpPut("remove/terminate")]
