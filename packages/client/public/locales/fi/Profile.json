@@ -24,6 +24,5 @@
   "SuccessLogout": "Aktiivisesta yhteydestä kirjauduttiin ulos:{{platform}}, {{browser}}",
   "SystemTheme": "Käytä järjestelmän teemaa",
   "SystemThemeDescription": "Vaihda automaattisesti vaalean ja tumman teeman välillä, kun systeemisi tekee niin.",
-  "TfaLoginSettings": "Kirjautumisasetukset",
   "TwoFactorDescription": "Järjestelmänvalvoja otti käyttöön kaksivaiheisen todennuksen koodia luovan sovelluksen kautta kaikille käyttäjille."
 }

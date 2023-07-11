@@ -24,6 +24,5 @@
   "SuccessLogout": "Conexiunea activă a fost deconectată: {{platform}}, {{browser}}",
   "SystemTheme": "Utilizare temă de sistem",
   "SystemThemeDescription": "Comutați automat între tema luminoasă şi întunecată în funcţie de setări sistem.",
-  "TfaLoginSettings": "Setări de conexiune",
   "TwoFactorDescription": "Autentificarea cu doi factori prin aplicația de generare coduri a fost activată pentru toți utilizatorii de către administratorul."
 }

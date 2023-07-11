@@ -24,6 +24,5 @@
   "SuccessLogout": "Aktiv bağlantıdan çıxış edildi: {{platform}}, {{browser}}",
   "SystemTheme": "Sistem temasından istifadə edin",
   "SystemThemeDescription": "Sisteminiz bunu etdikdə açıq və qaranlıq temalar arasında avtomatik keçid edin.",
-  "TfaLoginSettings": "Daxilolma sazlamaları",
   "TwoFactorDescription": "Bütün istifadəçilər üçün ikili autentifikasiya (kod generasiyası ilə) inzibatçı tərəfindən yandırıldı."
 }

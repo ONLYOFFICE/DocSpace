@@ -24,6 +24,5 @@
   "SuccessLogout": "Die aktive Verbindung wurde abgemeldet: {{platform}}, {{browser}}",
   "SystemTheme": "Wie im System",
   "SystemThemeDescription": "Wechseln Sie automatisch zwischen hellen und dunklen Themen, wenn Ihr System dies tut.",
-  "TfaLoginSettings": "Login-Einstellungen",
   "TwoFactorDescription": "Zwei-Faktor-Authentifizierung über eine App für Generierung von Codes wurde für alle aktiviert."
 }

@@ -24,6 +24,5 @@
   "SuccessLogout": "활성 연결이 로그아웃되었습니다: {{platform}}, {{browser}}",
   "SystemTheme": "시스템 테마 사용",
   "SystemThemeDescription": "시스템이 전환할 때 라이트 테마와 다크 테마 간이 자동으로 전환됩니다.",
-  "TfaLoginSettings": "로그인 설정",
   "TwoFactorDescription": "관리자에 의해 코드 생성 앱을 통한 이중 인증이 모든 사용자에 대해 활성화됩니다."
 }

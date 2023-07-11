@@ -24,6 +24,5 @@
   "SuccessLogout": "Aktywne połączenie zostało wylogowane: {{platform}}, {{browser}}",
   "SystemTheme": "Użyj motywu systemowego",
   "SystemThemeDescription": "Automatycznie przełączaj się między jasnym i ciemnym motywem, kiedy robi to Twój system.",
-  "TfaLoginSettings": "Ustawienia logowania",
   "TwoFactorDescription": "Weryfikacja dwuetapowa za pośrednictwem aplikacji generującej kody została włączona przez administratora dla wszystkich użytkowników."
 }

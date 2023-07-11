@@ -24,6 +24,5 @@
   "SuccessLogout": "Aktivna povezava je bila odjavljena: {{platform}}, {{browser}}",
   "SystemTheme": "Uporabi sistemsko temo",
   "SystemThemeDescription": "Samodejno preklapljajte med svetlimi in temnimi temami, ko to počne vaš sistem.",
-  "TfaLoginSettings": "Nastavitve za prijavo",
   "TwoFactorDescription": "Administrator je za vse uporabnike omogočil dvofaktorsko avtentikacijo preko aplikacije za ustvarjanje kode."
 }

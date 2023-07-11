@@ -24,6 +24,5 @@
   "SuccessLogout": "De actieve verbinding werd afgemeld: {{platform}}, {{browser}}",
   "SystemTheme": "Gebruik systeemthema",
   "SystemThemeDescription": "Schakelt automatisch tussen lichte en donkere thema's wanneer uw systeem dat doet.",
-  "TfaLoginSettings": "Inlog instellingen",
   "TwoFactorDescription": "Twee-factor authenticatie via een code-genererende app was ingeschakeld voor alle gebruikers door de beheerder."
 }

@@ -24,6 +24,5 @@
   "SuccessLogout": "A sessão da conexão ativa terminou: {{platform}}, {{browser}}",
   "SystemTheme": "Utilizar o tema do sistema",
   "SystemThemeDescription": "Alterne entre o tema claro e escuro quando o seu sistema o fizer.",
-  "TfaLoginSettings": "Definições de acesso",
   "TwoFactorDescription": "A autenticação de dois fatores através de uma aplicação geradora de códigos foi ativada para todos os utilizadores pelo administrador."
 }

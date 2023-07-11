@@ -24,6 +24,5 @@
   "SuccessLogout": "Kết nối hoạt động đã được đăng xuất: {{platform}}, {{browser}}",
   "SystemTheme": "Sử dụng chủ đề hệ thống",
   "SystemThemeDescription": "Tự động chuyển đổi giữa các chế độ sáng và tối khi hệ thống của bạn hoạt động.",
-  "TfaLoginSettings": "Thiết lập đăng nhập ",
   "TwoFactorDescription": " Xác thực hai yếu tố qua ứng dụng tạo mã đã được quản trị viên bật cho tất cả người dùng."
 }

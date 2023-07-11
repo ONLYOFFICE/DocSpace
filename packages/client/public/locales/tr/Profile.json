@@ -24,6 +24,5 @@
   "SuccessLogout": "Etkin bağlantının oturumu kapatıldı: {{platform}}, {{browser}}",
   "SystemTheme": "Sistem temasını kullan",
   "SystemThemeDescription": "Sisteminiz geçiş yaptığında açık ve koyu temalar arasında otomatik olarak geçiş yapın.",
-  "TfaLoginSettings": "Giriş ayarları",
   "TwoFactorDescription": "Tüm kullanıcılar için kod üreten bir uygulama aracılığıyla iki faktörlü kimlik doğrulama yönetici tarafından etkinleştirildi."
 }

@@ -24,6 +24,5 @@
   "SuccessLogout": "La connessione attiva è stata disconnessa: {{platform}}, {{browser}}",
   "SystemTheme": "Usare tema di sistema",
   "SystemThemeDescription": "Passare automaticamente dal tema chiaro a quello scuro quando lo fa il tuo sistema.",
-  "TfaLoginSettings": "Impostazioni di accesso",
   "TwoFactorDescription": "L'autenticazione a due fattori tramite un'app che genera codice è stata attivata per tutti gli utenti dall'amministratore."
 }

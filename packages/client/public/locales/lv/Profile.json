@@ -24,6 +24,5 @@
   "SuccessLogout": "Tika izrakstīts no aktīvā savienojuma: {{platform}}, {{browser}}",
   "SystemTheme": "Izmantot sistēmas dizainu",
   "SystemThemeDescription": "Automātiski pārslēdzieties starp gaišiem un tumšiem dizainiem, kad to dara sistēma.",
-  "TfaLoginSettings": "Pieteikšanās iestatījumi",
   "TwoFactorDescription": "Administrators visiem lietotājiem ir iespējojis divu faktoru autentifikāciju, izmantojot kodu ģenerējošu lietotni."
 }

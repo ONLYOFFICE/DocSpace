@@ -24,6 +24,5 @@
   "SuccessLogout": "活动连接已登出：{{platform}}，{{browser}}",
   "SystemTheme": "使用系统主题",
   "SystemThemeDescription": "根据系统状态切换浅色和深色主题。",
-  "TfaLoginSettings": "登录设置",
   "TwoFactorDescription": "管理员为所有用户启用了通过代码生成应用进行的双因素身份认证功能。"
 }

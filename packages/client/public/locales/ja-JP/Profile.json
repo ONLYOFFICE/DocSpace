@@ -24,6 +24,5 @@
   "SuccessLogout": "アクティブな接続はログアウトされました：{{platform}}, {{browser}}",
   "SystemTheme": "システムテーマのように",
   "SystemThemeDescription": "システムの動作に合わせて、ライトテーマとダークテーマを自動で切り替えます。",
-  "TfaLoginSettings": "ログイン設定",
   "TwoFactorDescription": "管理者がすべてのユーザーに対して、コード生成アプリによる二要素認証を有効にしました。"
 }
