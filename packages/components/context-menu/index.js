@@ -128,7 +128,11 @@ class ContextMenu extends Component {
         ? this.menuRef.current.offsetHeight
         : DomHelpers.getHiddenElementOuterHeight(this.menuRef.current);
       let viewport = DomHelpers.getViewport();
-      if (this.props.theme.interfaceDirection === "rtl" && !rects) {
+      if (
+        this.props.theme.interfaceDirection === "rtl" &&
+        !rects &&
+        left > width
+      ) {
         left = event.pageX - width + 1;
       }
       if ((isMobile || isTabletUtils()) && height > 483) {
@@ -143,6 +147,7 @@ class ContextMenu extends Component {
 
       //flip
       if (left + width - document.body.scrollLeft > viewport.width) {
+        console.log("flip");
         left -= width;
       }
 
