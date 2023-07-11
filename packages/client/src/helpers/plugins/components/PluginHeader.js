@@ -37,6 +37,8 @@ const PluginHeader = ({
   withDelete,
   showModalPluginSettings,
   openSettingsDialog,
+  isUserSettings,
+  uninstallPlugin,
 }) => {
   const badgeLabel = isActive ? "active" : "disabled";
 
@@ -53,12 +55,16 @@ const PluginHeader = ({
       onClick: changePluginStatusAction,
     };
 
-    const deleteOpt = { key: "delete-plugin", label: "Delete" };
+    const deleteOpt = {
+      key: "delete-plugin",
+      label: "Delete",
+      onClick: () => uninstallPlugin && uninstallPlugin(id),
+    };
 
     const settingsOpt = {
       key: "plugin-settings",
       label: "Settings",
-      onClick: () => openSettingsDialog(id),
+      onClick: () => openSettingsDialog && openSettingsDialog(id),
     };
 
     const opts = [];
@@ -67,7 +73,7 @@ const PluginHeader = ({
 
     if (showModalPluginSettings) opts.push(settingsOpt);
 
-    if (withDelete) opts.push(deleteOpt);
+    if (withDelete && !isUserSettings) opts.push(deleteOpt);
 
     return opts;
   };

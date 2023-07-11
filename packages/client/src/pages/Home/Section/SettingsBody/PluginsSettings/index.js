@@ -22,13 +22,14 @@ const PluginsSettingsBodyContent = ({
     <StyledPluginsSettings>
       {pluginList.length > 0 ? (
         <StyledPluginList>
-          {pluginList.map((plugin) => (
+          {pluginList.map((plugin, index) => (
             <Plugin
               key={`plugin-${plugin.name}-${plugin.version}`}
               {...plugin}
               changePluginStatus={changePluginStatus}
               withDelete={withDelete}
               isUserSettings={true}
+              isLast={index === pluginList.length - 1}
             />
           ))}
         </StyledPluginList>

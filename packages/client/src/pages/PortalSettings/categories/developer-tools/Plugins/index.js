@@ -30,6 +30,7 @@ const PluginPage = ({
   pluginList,
   changePluginStatus,
   openSettingsDialog,
+  uninstallPlugin,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
@@ -40,28 +41,31 @@ const PluginPage = ({
 
   return (
     <StyledPluginsSettings>
-      <Button
-        className={"add-button"}
-        label={t("AddPlugin")}
-        primary
-        size={"normal"}
-        onClick={onAddAction}
-      />
       {pluginList.length > 0 ? (
-        <StyledPluginList>
-          {pluginList.map((plugin, index) => (
-            <Plugin
-              key={`plugin-${plugin.name}-${plugin.version}`}
-              {...plugin}
-              changePluginStatus={changePluginStatus}
-              withDelete={withDelete}
-              openSettingsDialog={openSettingsDialog}
-              isLast={index === pluginList.length - 1}
-            />
-          ))}
-        </StyledPluginList>
+        <>
+          <Button
+            className={"add-button"}
+            label={t("AddPlugin")}
+            primary
+            size={"normal"}
+            onClick={onAddAction}
+          />
+          <StyledPluginList>
+            {pluginList.map((plugin, index) => (
+              <Plugin
+                key={`plugin-${plugin.name}-${plugin.version}`}
+                {...plugin}
+                changePluginStatus={changePluginStatus}
+                withDelete={withDelete}
+                openSettingsDialog={openSettingsDialog}
+                isLast={index === pluginList.length - 1}
+                uninstallPlugin={uninstallPlugin}
+              />
+            ))}
+          </StyledPluginList>
+        </>
       ) : (
-        <EmptyScreen t={t} withUpload={false} />
+        <EmptyScreen t={t} withUpload={true} />
       )}
     </StyledPluginsSettings>
   );
@@ -79,6 +83,7 @@ export default inject(({ auth, pluginStore }) => {
     setCurrentSettingsDialogPlugin,
     setSettingsPluginDialogVisible,
     setIsAdminSettingsDialog,
+    uninstallPlugin,
   } = pluginStore;
 
   const openSettingsDialog = (pluginId) => {
@@ -94,5 +99,6 @@ export default inject(({ auth, pluginStore }) => {
     pluginList,
     changePluginStatus,
     openSettingsDialog,
+    uninstallPlugin,
   };
 })(observer(PluginPage));

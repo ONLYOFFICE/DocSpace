@@ -13,6 +13,13 @@ const StyledPlugin = styled.div`
   flex-direction: column;
 
   max-width: 700px;
+
+  .plugin-separator {
+    height: 1px;
+    width: 100%;
+
+    background-color: #858585;
+  }
 `;
 
 const Plugin = ({
@@ -42,6 +49,10 @@ const Plugin = ({
 
   openSettingsDialog,
 
+  uninstallPlugin,
+
+  isLast,
+
   ...rest
 }) => {
   const pluginSettings = isUserSettings
@@ -67,9 +78,11 @@ const Plugin = ({
         name={name}
         isActive={isActive}
         changePluginStatus={changePluginStatus}
+        isUserSettings={isUserSettings}
         withDelete={withDelete}
         showModalPluginSettings={showModalPluginSettings}
         openSettingsDialog={openSettingsDialog}
+        uninstallPlugin={uninstallPlugin}
       />
       <PluginInfo
         image={image}
@@ -85,6 +98,7 @@ const Plugin = ({
           getPluginSettings={getPluginSettings}
         />
       )}
+      {!isLast && <div className="plugin-separator"></div>}
     </StyledPlugin>
   );
 };
