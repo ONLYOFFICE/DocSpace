@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import JavascriptSDK from "./JavascriptSDK";
 import Webhooks from "./Webhooks";
+import PluginPage from "./Plugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
@@ -35,7 +36,11 @@ const DeveloperToolsWrapper = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
+  const { t, ready } = useTranslation([
+    "JavascriptSdk",
+    "Webhooks",
+    "PluginsSettings",
+  ]);
 
   const data = [
     {
@@ -47,6 +52,11 @@ const DeveloperToolsWrapper = (props) => {
       id: "webhooks",
       name: t("Webhooks:Webhooks"),
       content: <Webhooks />,
+    },
+    {
+      id: "plugins",
+      name: t("PluginsSettings:Plugins"),
+      content: <PluginPage />,
     },
   ];
 

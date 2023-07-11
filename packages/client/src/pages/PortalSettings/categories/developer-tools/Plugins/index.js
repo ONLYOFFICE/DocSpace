@@ -1,20 +1,29 @@
 import React from "react";
-
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Plugin from "SRC_DIR/helpers/plugins/components/Plugin";
 import EmptyScreen from "SRC_DIR/helpers/plugins/components/EmptyScreen";
 
-import {
-  StyledPluginsSettings,
-  StyledPluginList,
-} from "./StyledPluginsSettings";
+const StyledPluginsSettings = styled.div`
+  width: 100%;
+`;
 
-const PluginsSettingsBodyContent = ({
+const StyledPluginList = styled.div`
+  display: flex;
+
+  flex-direction: column;
+  gap: 32px;
+`;
+
+export { StyledPluginsSettings, StyledPluginList };
+
+const PluginPage = ({
   withDelete,
   pluginList,
   changePluginStatus,
+  openSettingsDialog,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
@@ -28,7 +37,7 @@ const PluginsSettingsBodyContent = ({
               {...plugin}
               changePluginStatus={changePluginStatus}
               withDelete={withDelete}
-              isUserSettings={true}
+              openSettingsDialog={openSettingsDialog}
             />
           ))}
         </StyledPluginList>
@@ -45,7 +54,19 @@ export default inject(({ auth, pluginStore }) => {
   const withUpload = pluginOptions.includes("upload");
   const withDelete = pluginOptions.includes("delete");
 
-  const { pluginList, changePluginStatus } = pluginStore;
+  const {
+    pluginList,
+    changePluginStatus,
+    setCurrentSettingsDialogPlugin,
+    setSettingsPluginDialogVisible,
+    setIsAdminSettingsDialog,
+  } = pluginStore;
+
+  const openSettingsDialog = (pluginId) => {
+    setSettingsPluginDialogVisible(true);
+    setCurrentSettingsDialogPlugin(pluginId);
+    setIsAdminSettingsDialog(true);
+  };
 
   return {
     enablePlugins,
@@ -53,5 +74,6 @@ export default inject(({ auth, pluginStore }) => {
     withDelete,
     pluginList,
     changePluginStatus,
+    openSettingsDialog,
   };
-})(observer(PluginsSettingsBodyContent));
+})(observer(PluginPage));

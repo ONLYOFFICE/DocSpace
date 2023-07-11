@@ -32,6 +32,7 @@ class PluginStore {
 
   settingsPluginDialogVisible = false;
   currentSettingsDialogPlugin = null;
+  isAdminSettingsDialog = false;
 
   constructor() {
     this.plugins = [];
@@ -49,6 +50,10 @@ class PluginStore {
 
   setSettingsPluginDialogVisible = (value) => {
     this.settingsPluginDialogVisible = value;
+  };
+
+  setIsAdminSettingsDialog = (value) => {
+    this.isAdminSettingsDialog = value;
   };
 
   setPluginFrame = (frame) => {
@@ -135,7 +140,6 @@ class PluginStore {
     this.deactivatePlugin(id);
     const pluginIdx = this.plugins.findIndex((p) => p.id === id);
     if (pluginIdx > 0) {
-      console.log(pluginIdx);
     }
     await api.plugins.deletePlugin(id);
   };

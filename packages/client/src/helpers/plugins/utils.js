@@ -13,8 +13,6 @@ export const messageActions = (
 ) => {
   if (!message) return;
 
-  console.log(message);
-
   message.actions.forEach((action) => {
     switch (action) {
       case PluginActions.updateProps:
@@ -25,7 +23,6 @@ export const messageActions = (
       case PluginActions.closeModal:
         break;
       case PluginActions.showToast:
-        console.log(message);
         message?.toastProps.forEach((toast) => {
           switch (toast.type) {
             case PluginToastType.success:

@@ -231,6 +231,10 @@ const PortalSettingsRoutes = {
       element: <WebhookDetails />,
     },
     {
+      path: "developer-tools/plugins",
+      element: <DeveloperTools />,
+    },
+    {
       path: "backup",
       element: <Navigate to="backup/data-backup" />,
     },

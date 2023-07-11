@@ -5,7 +5,7 @@ import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader
 
 import Button from "@docspace/components/button";
 
-import ControlGroup from "SRC_DIR/helpers/plugins/ControlGroup";
+import ControlGroup from "SRC_DIR/helpers/plugins/components/ControlGroup";
 import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 const StyledPluginSettings = styled.div`
@@ -23,6 +23,7 @@ const PluginSettings = ({
   acceptButtonProps,
 
   getPluginSettings,
+
   ...rest
 }) => {
   const [groupsProps, setGroupsProps] = React.useState(groups);

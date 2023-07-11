@@ -296,6 +296,14 @@ export const settingsTree = [
         tKey: "DeveloperTools",
         isCategory: true,
       },
+      {
+        id: "portal-settings_catalog-plugins",
+        key: "5-1",
+        icon: "",
+        link: "plugins",
+        tKey: "Plugins",
+        isCategory: true,
+      },
     ],
   },
   {

@@ -8,7 +8,7 @@ import TextInput from "@docspace/components/text-input";
 import Checkbox from "@docspace/components/checkbox";
 import ToggleButton from "@docspace/components/toggle-button";
 
-import { messageActions } from "./utils";
+import { messageActions } from "../utils";
 
 const StyledControlGroup = styled.div`
   display: flex;

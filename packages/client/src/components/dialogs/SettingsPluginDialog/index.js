@@ -7,7 +7,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 
 import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
-import ControlGroup from "SRC_DIR/helpers/plugins/ControlGroup";
+import ControlGroup from "SRC_DIR/helpers/plugins/components/ControlGroup";
 import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 const SettingsPluginDialog = ({
@@ -25,6 +25,8 @@ const SettingsPluginDialog = ({
 
   onClose,
 
+  isUserDialog,
+
   ...rest
 }) => {
   const [groupsProps, setGroupsProps] = React.useState(groups);
@@ -34,10 +36,12 @@ const SettingsPluginDialog = ({
   const onLoadAction = React.useCallback(async () => {
     const res = await onLoad();
 
-    const settings = plugin.getPluginSettings();
+    const settings = isUserDialog
+      ? plugin.getUserPluginSettings()
+      : plugin.getAdminPluginSettings();
     setGroupsProps(settings.groups);
     setILoadingState(res);
-  }, [plugin, onLoad]);
+  }, [plugin, onLoad, isUserDialog]);
 
   React.useEffect(() => {
     onLoadAction();
@@ -62,8 +66,6 @@ const SettingsPluginDialog = ({
       if (!acceptButton.onClick) return;
 
       const message = await acceptButton.onClick();
-
-      console.log("call 134");
 
       messageActions(message, setAcceptButton);
 
@@ -118,14 +120,22 @@ export default inject(({ pluginStore }) => {
     setSettingsPluginDialogVisible,
     currentSettingsDialogPlugin,
     setCurrentSettingsDialogPlugin,
+    setIsAdminSettingsDialog,
+    isAdminSettingsDialog,
   } = pluginStore;
 
+  const isUserDialog = !isAdminSettingsDialog;
+
   const plugin = pluginList.find((p) => p.id === currentSettingsDialogPlugin);
-  const pluginSettings = plugin.getPluginSettings();
+
+  const pluginSettings = isUserDialog
+    ? plugin?.getUserPluginSettings()
+    : plugin?.getAdminPluginSettings();
 
   const onClose = () => {
     setSettingsPluginDialogVisible(false);
     setCurrentSettingsDialogPlugin(null);
+    setIsAdminSettingsDialog(false);
   };
 
   if (pluginSettings.type === PluginSettingsType.settingsPage) {

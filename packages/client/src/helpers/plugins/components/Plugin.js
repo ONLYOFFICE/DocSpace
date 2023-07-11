@@ -26,8 +26,11 @@ const Plugin = ({
   status,
   description,
 
-  pluginSettings,
-  getPluginSettings,
+  userPluginSettings,
+  getUserPluginSettings,
+
+  adminPluginSettings,
+  getAdminPluginSettings,
 
   settingsScope,
 
@@ -35,13 +38,27 @@ const Plugin = ({
 
   withDelete,
 
+  isUserSettings,
+
+  openSettingsDialog,
+
   ...rest
 }) => {
+  const pluginSettings = isUserSettings
+    ? userPluginSettings
+    : adminPluginSettings;
+  const getPluginSettings = isUserSettings
+    ? getUserPluginSettings
+    : getAdminPluginSettings;
+
   const showPluginSettings =
     settingsScope &&
     pluginSettings &&
     (pluginSettings.type === PluginSettingsType.both ||
       pluginSettings.type === PluginSettingsType.settingsPage);
+
+  const showModalPluginSettings =
+    settingsScope && pluginSettings && !showPluginSettings;
 
   return (
     <StyledPlugin>
@@ -51,6 +68,8 @@ const Plugin = ({
         isActive={isActive}
         changePluginStatus={changePluginStatus}
         withDelete={withDelete}
+        showModalPluginSettings={showModalPluginSettings}
+        openSettingsDialog={openSettingsDialog}
       />
       <PluginInfo
         image={image}
