@@ -53,7 +53,7 @@ const CommonWhiteLabel = ({
       <div className="wl-helper">
         <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
         <HelpButton
-          tooltipContent={t("WhiteLabelTooltip")}
+          tooltipContent={<Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>}
           place="right"
           offsetRight={0}
           className="settings_unavailable"
