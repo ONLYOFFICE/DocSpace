@@ -55,6 +55,7 @@ const Dark = {
   backgroundColor: black,
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "13px",
+  interfaceDirection: "ltr",
 
   text: {
     color: grayMaxLight,
