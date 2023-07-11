@@ -20,7 +20,11 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
     <div className="metadata-field">
       <Text className="label" fontSize="13px" as="div" fontWeight={600}>
         {labelText}
-        <HelpButton tooltipContent={tooltipContent} />
+        <HelpButton
+          tooltipContent={tooltipContent}
+          place="right"
+          offsetRight={0}
+        />
       </Text>
       <InputBlock
         className="input"
