@@ -5,9 +5,15 @@ import { useTranslation } from "react-i18next";
 
 import Plugin from "SRC_DIR/helpers/plugins/components/Plugin";
 import EmptyScreen from "SRC_DIR/helpers/plugins/components/EmptyScreen";
+import Button from "@docspace/components/button";
+import { Events } from "@docspace/common/constants";
 
 const StyledPluginsSettings = styled.div`
   width: 100%;
+
+  .add-button {
+    margin-bottom: 32px;
+  }
 `;
 
 const StyledPluginList = styled.div`
@@ -27,17 +33,30 @@ const PluginPage = ({
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
+  const onAddAction = () => {
+    const event = new Event(Events.ADD_PLUGIN);
+    window.dispatchEvent(event);
+  };
+
   return (
     <StyledPluginsSettings>
+      <Button
+        className={"add-button"}
+        label={t("AddPlugin")}
+        primary
+        size={"normal"}
+        onClick={onAddAction}
+      />
       {pluginList.length > 0 ? (
         <StyledPluginList>
-          {pluginList.map((plugin) => (
+          {pluginList.map((plugin, index) => (
             <Plugin
               key={`plugin-${plugin.name}-${plugin.version}`}
               {...plugin}
               changePluginStatus={changePluginStatus}
               withDelete={withDelete}
               openSettingsDialog={openSettingsDialog}
+              isLast={index === pluginList.length - 1}
             />
           ))}
         </StyledPluginList>

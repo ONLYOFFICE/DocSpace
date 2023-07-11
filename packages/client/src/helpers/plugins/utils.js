@@ -13,6 +13,8 @@ export const messageActions = (
 ) => {
   if (!message) return;
 
+  console.log(message);
+
   message.actions.forEach((action) => {
     switch (action) {
       case PluginActions.updateProps:

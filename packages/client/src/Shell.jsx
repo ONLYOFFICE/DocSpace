@@ -28,6 +28,7 @@ import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
+import GlobalEvents from "./components/GlobalEvents";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -339,6 +340,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       {toast}
       <ReactSmartBanner t={t} ready={ready} />
+      <GlobalEvents />
       {isEditor ? <></> : <NavMenu />}
       {isMobileOnly && <MainBar />}
       <IndicatorLoader />

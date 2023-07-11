@@ -148,5 +148,6 @@ export default inject(({ pluginStore }) => {
     settingsPluginDialogVisible,
     currentSettingsDialogPlugin,
     onClose,
+    isUserDialog,
   };
 })(observer(SettingsPluginDialog));
