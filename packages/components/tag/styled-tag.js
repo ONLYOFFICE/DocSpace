@@ -72,7 +72,7 @@ const StyledTag = styled.div`
     `}
 `;
 
-StyledTag.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledTag.defaultProps = { theme: Base };
 
 const StyledDropdownIcon = styled(ReactSVG)`
   display: flex;

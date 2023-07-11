@@ -131,9 +131,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
       }`}}
 `;
 
-StyledTextarea.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledTextarea.defaultProps = { theme: Base };
 
 const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
   <CopyIcon {...props} />
@@ -148,9 +146,7 @@ const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
   }
 `;
 
-StyledCopyIcon.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledCopyIcon.defaultProps = { theme: Base };
 
 const CopyIconWrapper = styled.div`
   position: absolute;
@@ -170,9 +166,7 @@ const CopyIconWrapper = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-CopyIconWrapper.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+CopyIconWrapper.defaultProps = { theme: Base };
 
 const Wrapper = styled.div`
   position: relative;
@@ -200,9 +194,7 @@ const Numeration = styled.pre`
   user-select: none; /* Standard */
 `;
 
-Numeration.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+Numeration.defaultProps = { theme: Base };
 
 export {
   StyledTextarea,

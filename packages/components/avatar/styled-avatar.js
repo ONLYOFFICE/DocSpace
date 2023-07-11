@@ -37,7 +37,7 @@ const EditContainer = styled.div`
     }
   }
 `;
-EditContainer.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+EditContainer.defaultProps = { theme: Base };
 
 const AvatarWrapper = styled.div`
   border-radius: ${(props) => props.theme.avatar.imageContainer.borderRadius};
@@ -99,7 +99,7 @@ const RoleWrapper = styled.div`
       props.theme.avatar.roleWrapperContainer.width.medium) ||
     "16px"};
 `;
-RoleWrapper.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+RoleWrapper.defaultProps = { theme: Base };
 
 const fontSizeStyle = (props) =>
   props.theme.avatar.initialsContainer.fontSize[props.size];
@@ -142,9 +142,7 @@ const StyledIconWrapper = styled.div`
     }
   }
 `;
-StyledIconWrapper.defaultProps = {
-  theme: Base,
-};
+StyledIconWrapper.defaultProps = { theme: Base };
 
 const widthStyle = (props) => props.theme.avatar.width[props.size];
 const heightStyle = (props) => props.theme.avatar.height[props.size];

@@ -191,8 +191,6 @@ const StyledCrossIcon = styled(CrossReactSvg)`
   }
 `;
 
-StyledCrossIcon.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledCrossIcon.defaultProps = { theme: Base };
 
 export { StyledAside, StyledControlContainer, StyledCrossIcon };

@@ -84,9 +84,7 @@ const ToggleButtonContainer = styled.label`
   }
 `;
 
-ToggleButtonContainer.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+ToggleButtonContainer.defaultProps = { theme: Base };
 
 const HiddenInput = styled.input`
   opacity: 0.0001;

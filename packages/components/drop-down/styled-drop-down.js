@@ -110,5 +110,5 @@ const StyledDropdown = styled.div`
   }
 `;
 
-StyledDropdown.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledDropdown.defaultProps = { theme: Base };
 export default StyledDropdown;

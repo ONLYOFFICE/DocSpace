@@ -64,9 +64,7 @@ const StyledCloseButtonWrapper = styled.div`
   }
 `;
 
-StyledCloseButtonWrapper.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
 const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
   return (

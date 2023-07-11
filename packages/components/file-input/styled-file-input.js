@@ -103,8 +103,6 @@ const StyledFileInput = styled.div`
     width: ${(props) => widthIconButtonStyle(props)};
   }
 `;
-StyledFileInput.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledFileInput.defaultProps = { theme: Base };
 
 export default StyledFileInput;

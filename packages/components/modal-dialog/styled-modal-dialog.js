@@ -178,8 +178,8 @@ const StyledFooter = styled.div`
     `}
 `;
 
-Dialog.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
-StyledHeader.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
-Content.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+Dialog.defaultProps = { theme: Base };
+StyledHeader.defaultProps = { theme: Base };
+Content.defaultProps = { theme: Base };
 
 export { StyledModal, StyledHeader, Content, Dialog, StyledBody, StyledFooter };

@@ -168,7 +168,5 @@ const StyledSaveCancelButtons = styled.div`
     `}
   }
 `;
-StyledSaveCancelButtons.defaultProps = {
-  theme: { Base, interfaceDirection: "ltr" },
-};
+StyledSaveCancelButtons.defaultProps = { theme: Base };
 export default StyledSaveCancelButtons;

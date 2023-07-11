@@ -15,7 +15,7 @@ const StyledPaging = styled.div`
     max-width: ${(props) => props.theme.paging.button.maxWidth};
   }
 `;
-StyledPaging.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledPaging.defaultProps = { theme: Base };
 
 const StyledOnPage = styled.div`
   ${({ theme }) =>
@@ -39,7 +39,7 @@ const StyledOnPage = styled.div`
     display: none;
   }
 `;
-StyledOnPage.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledOnPage.defaultProps = { theme: Base };
 
 const StyledPage = styled.div`
   ${({ theme }) =>
@@ -53,6 +53,6 @@ const StyledPage = styled.div`
     }
   }
 `;
-StyledPage.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledPage.defaultProps = { theme: Base };
 
 export { StyledPage, StyledOnPage, StyledPaging };

@@ -67,7 +67,7 @@ const StyledRow = styled.div`
       }
     `}
 `;
-StyledRow.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledRow.defaultProps = { theme: Base };
 
 const StyledContent = styled.div`
   display: flex;
@@ -82,7 +82,7 @@ const StyledContent = styled.div`
     height: ${(props) => props.theme.rowContent.height};
   }
 `;
-StyledContent.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledContent.defaultProps = { theme: Base };
 
 const StyledCheckbox = styled.div`
   display: flex;
@@ -133,7 +133,7 @@ const StyledElement = styled.div`
     margin: 4px 0 0 28px;
   } */
 `;
-StyledElement.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
+StyledElement.defaultProps = { theme: Base };
 
 const StyledContentElement = styled.div`
   margin-top: 6px;
@@ -176,9 +176,7 @@ const StyledOptionButton = styled.div`
     margin-top: unset;
   }
 `;
-StyledOptionButton.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledOptionButton.defaultProps = { theme: Base };
 
 export {
   StyledOptionButton,

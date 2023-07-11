@@ -208,9 +208,7 @@ const StyledTableGroupMenu = styled.div`
   }
 `;
 
-StyledTableGroupMenu.defaultProps = {
-  theme: { ...Base, interfaceDirection: "ltr" },
-};
+StyledTableGroupMenu.defaultProps = { theme: Base };
 
 const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   display: flex;
