@@ -8,7 +8,6 @@ import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
-import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import ComboBox from "@docspace/components/combobox";
 import IconButton from "@docspace/components/icon-button";
@@ -97,19 +96,17 @@ const MainProfile = (props) => {
           {{ supportEmail: documentationEmail }}
         </Link>
         to take part in the translation and get up to 1 year free of charge."
-      </Trans>
-      <Box displayProp="block" marginProp="10px 0 0">
-        <Link
-          isHovered
-          isBold
-          color="#333333"
-          fontSize="13px"
-          href={`${helpLink}/guides/become-translator.aspx`}
-          target="_blank"
-        >
-          {t("Common:LearnMore")}
-        </Link>
-      </Box>
+      </Trans>{" "}
+      <Link
+        isHovered
+        isBold
+        color="#333333"
+        fontSize="13px"
+        href={`${helpLink}/guides/become-translator.aspx`}
+        target="_blank"
+      >
+        {t("Common:LearnMore")}
+      </Link>
     </Text>
   );
 

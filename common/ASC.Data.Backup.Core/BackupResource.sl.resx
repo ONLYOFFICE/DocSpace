@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>Nastavi geslo</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Varnostna datoteka ni veljavna. Prosimo, uporabite datoteko, ustvarjeno z ONLYOFFICE v11.5 ali novejšo.</value>
+  </data>
 </root>

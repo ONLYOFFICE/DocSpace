@@ -14,11 +14,10 @@ import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 import { inject, observer } from "mobx-react";
 import {
   mobile,
-  smallTablet,
-  isSmallTablet,
+  hugeMobile,
+  isHugeMobile,
 } from "@docspace/components/utils/device";
 import IntegrationSvgUrl from "PUBLIC_DIR/images/integration.svg?url";
-import IntegrationDarkSvgUrl from "PUBLIC_DIR/images/integration.dark.svg?url";
 
 const RootContainer = styled(Box)`
   max-width: 700px;
@@ -58,7 +57,7 @@ const RootContainer = styled(Box)`
     gap: 24px;
     align-items: center;
 
-    @media ${smallTablet} {
+    @media ${hugeMobile} {
       flex-direction: column;
       align-items: baseline;
     }
@@ -167,7 +166,7 @@ class ThirdPartyServices extends React.Component {
         consumer.title !== "DocuSign"
     );
 
-    const imgSrc = theme.isBase ? IntegrationSvgUrl : IntegrationDarkSvgUrl;
+    const imgSrc = theme.isBase ? IntegrationSvgUrl : IntegrationSvgUrl;
 
     const submitRequest = () =>
       (window.location = `mailto:${this.props.supportEmail}`);
@@ -209,7 +208,7 @@ class ThirdPartyServices extends React.Component {
               size="normal"
               minwidth="138px"
               onClick={submitRequest}
-              scale={isSmallTablet()}
+              scale={isHugeMobile()}
             />
           </Box>
           <div className="consumers-list-container">
