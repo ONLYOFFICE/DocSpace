@@ -829,8 +829,8 @@ get_available_version () {
 		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.results[].name')
 	fi
 
-	VERSION_REGEX_1="[0-9]+\.[0-9]+\.[0-9]+"
-	VERSION_REGEX_2="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"
+	VERSION_REGEX_1="[0-9]+\.[0-9]+\.[0-9]+$"
+	VERSION_REGEX_2="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$"
 	TAG_LIST=""
 
 	for item in $TAGS_RESP
