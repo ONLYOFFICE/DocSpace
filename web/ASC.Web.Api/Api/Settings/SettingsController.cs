@@ -325,9 +325,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsRequestsDto model)
+    public async Task<object> SaveDnsSettings(DnsSettingsRequestsDto model)
     {
-        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        return await _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
     [HttpGet("recalculatequota")]

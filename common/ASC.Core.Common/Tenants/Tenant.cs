@@ -118,17 +118,7 @@ public class Tenant : IMapFrom<DbTenant>
             baseHost = HostedRegion;
         }
 
-        string result;
-        if (baseHost == "localhost" || Alias == "localhost")
-        {
-            //single tenant on local host
-            Alias = "localhost";
-            result = HostName;
-        }
-        else
-        {
-            result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
-        }
+        var result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
 
         if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
         {

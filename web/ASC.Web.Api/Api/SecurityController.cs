@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Joonasw.AspNetCore.SecurityHeaders.Csp.Builder;
-
-using Microsoft.Extensions.Caching.Distributed;
-
-using ProtoBuf;
-
 using AuditEventDto = ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto;
 using LoginEventDto = ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto;
 
@@ -50,9 +44,8 @@ public class SecurityController : ControllerBase
     private readonly SettingsManager _settingsManager;
     private readonly AuditActionMapper _auditActionMapper;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CoreSettings _coreSettings;
     private readonly ApiContext _apiContext;
-    private readonly IDistributedCache _distributedCache;
+    private readonly CspSettingsHelper _cspSettingsHelper;
 
     public SecurityController(
         PermissionContext permissionContext,
@@ -66,8 +59,7 @@ public class SecurityController : ControllerBase
         AuditActionMapper auditActionMapper,
         CoreBaseSettings coreBaseSettings,
         ApiContext apiContext,
-        IDistributedCache distributedCache,
-        CoreSettings coreSettings)
+        CspSettingsHelper cspSettingsHelper)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;
@@ -80,8 +72,7 @@ public class SecurityController : ControllerBase
         _auditActionMapper = auditActionMapper;
         _coreBaseSettings = coreBaseSettings;
         _apiContext = apiContext;
-        _distributedCache = distributedCache;
-        _coreSettings = coreSettings;
+        _cspSettingsHelper = cspSettingsHelper;
     }
 
     [HttpGet("audit/login/last")]
@@ -280,41 +271,17 @@ public class SecurityController : ControllerBase
     }
 
     [HttpPost("csp")]
-    public object Csp(CspRequestsDto request)
+    public async Task<object> Csp(CspRequestsDto request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        ArgumentNullException.ThrowIfNull(request.Domain, nameof(request.Domain));
 
-        var domain = request.Domain;
-        var csp = new CspBuilder();
+        return await _cspSettingsHelper.Save(request.Domains);
+    }
 
-        csp.ByDefaultAllow
-            .FromSelf();
-
-        csp.AllowScripts
-            .FromSelf()
-            .From(domain);
-
-        csp.AllowStyles
-            .FromSelf()
-            .From(domain);
-
-        csp.AllowImages
-            .FromSelf()
-            .From(domain);
-
-        csp.AllowFraming
-            .From(domain);
-
-        var (_, headerValue) = csp.BuildCspOptions().ToString(null);
-
-        using var ms = new MemoryStream();
-
-        Serializer.Serialize(ms, headerValue);
-
-        _distributedCache.Set($"csp:{_tenantManager.GetCurrentTenant().GetTenantDomain(_coreSettings)}", Encoding.UTF8.GetBytes(headerValue));
-
-        return headerValue;
+    [HttpGet("csp")]
+    public CspSettings Csp()
+    {
+        return _cspSettingsHelper.Load();
     }
 
     private void DemandAuditPermission()
