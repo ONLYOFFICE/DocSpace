@@ -73,24 +73,24 @@
     <ROW Property="REDIS_PWD" Value=" " Options="1" ValueLocId="-"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
-    <ROW Property="ServiceName_ApiSystemService" Value="ASC.ApiSystemService"/>
-    <ROW Property="ServiceName_BackgroundTasks" Value="ASC.Data.Backup.BackgroundTasks"/>
-    <ROW Property="ServiceName_BackupService" Value="ASC.BackupService"/>
-    <ROW Property="ServiceName_ClearEvents" Value="ASC.ClearEvents"/>
-    <ROW Property="ServiceName_DocEditor" Value="ASC.DocEditor"/>
-    <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
-    <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
-    <ROW Property="ServiceName_WebHealthChecksUI" Value="ASC.Web.HealthChecks.UI"/>
-    <ROW Property="ServiceName_Login" Value="ASC.Login"/>
-    <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
-    <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
-    <ROW Property="ServiceName_PeopleServer" Value="ASC.PeopleServer"/>
-    <ROW Property="ServiceName_Proxy" Value="ASC.Proxy"/>
-    <ROW Property="ServiceName_Socket.IO" Value="ASC.Socket.IO"/>
-    <ROW Property="ServiceName_SsoAuth" Value="ASC.SsoAuth.Svc"/>
-    <ROW Property="ServiceName_StudioNotifyService" Value="ASC.StudioNotifyService"/>
-    <ROW Property="ServiceName_WebApi" Value="ASC.WebApi"/>
-    <ROW Property="ServiceName_WebStudio" Value="ASC.WebStudio"/>
+    <ROW Property="ServiceName_ApiSystemService" Value="[|ProductName] ApiSystemService"/>
+    <ROW Property="ServiceName_BackgroundTasks" Value="[|ProductName] Data.Backup.BackgroundTasks"/>
+    <ROW Property="ServiceName_BackupService" Value="[|ProductName] BackupService"/>
+    <ROW Property="ServiceName_ClearEvents" Value="[|ProductName] ClearEvents"/>
+    <ROW Property="ServiceName_DocEditor" Value="[|ProductName] DocEditor"/>
+    <ROW Property="ServiceName_FileServer" Value="[|ProductName] FileServer"/>
+    <ROW Property="ServiceName_FileService" Value="[|ProductName] FileService"/>
+    <ROW Property="ServiceName_WebHealthChecksUI" Value="[|ProductName] Web.HealthChecks.UI"/>
+    <ROW Property="ServiceName_Login" Value="[|ProductName] Login"/>
+    <ROW Property="ServiceName_MigrationRunner" Value="[|ProductName] MigrationRunner"/>
+    <ROW Property="ServiceName_NotifyService" Value="[|ProductName] NotifyService"/>
+    <ROW Property="ServiceName_PeopleServer" Value="[|ProductName] PeopleServer"/>
+    <ROW Property="ServiceName_Proxy" Value="[|ProductName] Proxy"/>
+    <ROW Property="ServiceName_Socket.IO" Value="[|ProductName] Socket.IO"/>
+    <ROW Property="ServiceName_SsoAuth" Value="[|ProductName] SsoAuth.Svc"/>
+    <ROW Property="ServiceName_StudioNotifyService" Value="[|ProductName] StudioNotifyService"/>
+    <ROW Property="ServiceName_WebApi" Value="[|ProductName] WebApi"/>
+    <ROW Property="ServiceName_WebStudio" Value="[|ProductName] WebStudio"/>
     <ROW Property="Socket.IO_Port" Value="9899"/>
     <ROW Property="SsoAuth_Port" Value="9834"/>
     <ROW Property="UpgradeCode" Value="{FFA9CD16-E087-45F3-8D34-3BBA1EF8A897}"/>
