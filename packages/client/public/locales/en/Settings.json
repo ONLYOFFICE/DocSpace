@@ -208,5 +208,8 @@
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
   "YourCurrentDomain": "Your current domain",
-  "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that."
+  "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that.",
+  "ApiPageHeader": "Build your own collaboration platform",
+  "ApiPageDescription": "Create your own productivity platform based on ONLYOFFICE DocSpace and collaborate on documents with teams, clients, and partners.",
+  "Api": "Api"
 }
