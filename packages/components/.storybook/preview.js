@@ -9,9 +9,7 @@ import "../index";
 
 import lightTheme from "./lightTheme";
 import darkTheme from "./darkTheme";
-
-import lightLogo from "./lightsmall.svg?url";
-import darkLogo from "./darksmall.svg?url";
+import StorybookGlobalStyles from "./styles/StorybookGlobalStyles";
 
 const preview = {
   globalTypes,
@@ -43,6 +41,7 @@ const preview = {
 
       return (
         <ThemeWrapper theme={{ ...theme, interfaceDirection }}>
+          <StorybookGlobalStyles />
           <Story />
         </ThemeWrapper>
       );
