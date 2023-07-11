@@ -57,6 +57,8 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
   const allInputsValid =
     apiUrlIsValid && internalUrlIsValid && portalUrlIsValid;
 
+  const anyInputFilled = apiUrl || internalUrl || portalUrl;
+
   // useEffect(() => {
   //   const fetchDocumentServiceLocation = async () => {
   //     const result = await changeDocumentServiceLocation();
@@ -145,6 +147,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             className="button"
             size={"small"}
             label={t("Common:ResetButton")}
+            isDisabled={anyInputFilled}
           />
         </div>
       </Styled.LocationForm>
