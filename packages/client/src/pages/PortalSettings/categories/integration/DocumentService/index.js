@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import * as Styled from "./index.styled";
@@ -52,6 +52,18 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
     setInternalUrlIsValid(true);
     setPortalUrlIsValid(true);
   };
+
+  const isFormEmpty = !apiUrl && !internalUrl && !portalUrl;
+  const allInputsValid =
+    apiUrlIsValid && internalUrlIsValid && portalUrlIsValid;
+
+  // useEffect(() => {
+  //   const fetchDocumentServiceLocation = async () => {
+  //     const result = await changeDocumentServiceLocation();
+  //     console.log(result);
+  //   };
+  //   fetchDocumentServiceLocation();
+  // }, []);
 
   return (
     <Styled.Location>
@@ -126,6 +138,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             primary
             size={"small"}
             label={t("Common:SaveButton")}
+            isDisabled={isFormEmpty || !allInputsValid}
           />
           <Button
             onClick={onReset}
