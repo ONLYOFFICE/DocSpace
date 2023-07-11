@@ -24,5 +24,6 @@
   "SuccessLogout": "The active connection was logged out: {{platform}}, {{browser}}",
   "SystemTheme": "Use system theme",
   "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
+  "TwoFactorTitle": "Brute-force protection",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }
