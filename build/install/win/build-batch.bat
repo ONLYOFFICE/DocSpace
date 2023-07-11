@@ -41,6 +41,10 @@ REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
 del /f /q build\install\win\Files\config\*.dev.json
 
+REM echo ######## Remove AWSTarget from nlog.config ########
+%sed% -i "/<target type=\"AWSTarget\" name=\"aws\"/,/<\/target>/d; /<target type=\"AWSTarget\" name=\"aws_sql\"/,/<\/target>/d" build\install\win\Files\config\nlog.config
+del /q build\install\win\Files\config\sed*
+
 ::edit environment
 %sed% -i "s/\(\W\)PRODUCT.ENVIRONMENT.SUB\(\W\)/\1%environment%\2/g" build\install\win\DocSpace.aip
 
