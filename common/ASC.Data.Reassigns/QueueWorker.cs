@@ -126,11 +126,11 @@ public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
     }
 
-    public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify, bool deleteProfile)
     {
         var result = _serviceProvider.GetService<RemoveProgressItem>();
 
-        result.Init(_httpHeaders, tenantId, user, currentUserId, notify);
+        result.Init(_httpHeaders, tenantId, user, currentUserId, notify, deleteProfile);
 
         return Start(tenantId, user.Id, result);
     }
