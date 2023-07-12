@@ -47,6 +47,7 @@ public class EmployeeFullDto : EmployeeDto
     public string AvatarMedium { get; set; }
     public string Avatar { get; set; }
     public bool IsAdmin { get; set; }
+    public bool IsRoomAdmin { get; set; }
     public bool IsLDAP { get; set; }
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
@@ -182,6 +183,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
     public async Task<EmployeeFullDto> GetFullAsync(UserInfo userInfo)
     {
+        var currentType = await _userManager.GetUserTypeAsync(userInfo.Id);
+
         var result = new EmployeeFullDto
         {
             UserName = userInfo.UserName,
@@ -194,9 +197,10 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
             IsVisitor = await _userManager.IsUserAsync(userInfo),
-            IsAdmin = await _userManager.IsDocSpaceAdminAsync(userInfo),
+            IsAdmin = currentType is EmployeeType.DocSpaceAdmin,
+            IsRoomAdmin = currentType is EmployeeType.RoomAdmin,
             IsOwner = userInfo.IsOwner(_context.Tenant),
-            IsCollaborator = await _userManager.IsCollaboratorAsync(userInfo),
+            IsCollaborator = currentType is EmployeeType.Collaborator,
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
         };
