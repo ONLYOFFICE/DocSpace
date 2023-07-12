@@ -323,6 +323,8 @@ const StyledArrowIcon = styled.div`
     ${(props) =>
       props.theme.interfaceDirection === "rtl" &&
       css`
+        margin-left: 0;
+
         margin-right: auto;
       `}
   `}
