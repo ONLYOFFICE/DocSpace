@@ -34,7 +34,15 @@ export const toUrlParams = (obj, skipNull) => {
       str += "&";
     }
 
-    if (typeof obj[key] === "object") {
+    // added for double employeetype
+    if (Array.isArray(obj[key]) && key === "employeetype") {
+      for (let i = 0; i < obj[key].length; i++) {
+        str += key + "=" + encodeURIComponent(obj[key][i]);
+        if (i !== obj[key].length - 1) {
+          str += "&";
+        }
+      }
+    } else if (typeof obj[key] === "object") {
       str += key + "=" + encodeURIComponent(JSON.stringify(obj[key]));
     } else {
       str += key + "=" + encodeURIComponent(obj[key]);

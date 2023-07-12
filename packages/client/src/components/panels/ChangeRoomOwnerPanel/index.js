@@ -55,7 +55,7 @@ const ChangeRoomOwner = (props) => {
   };
 
   const filter = new Filter();
-  filter.role = EmployeeType.Admin; // 1(EmployeeType.User) - RoomAdmin | 3(EmployeeType.Admin) - DocSpaceAdmin
+  filter.role = [EmployeeType.Admin, EmployeeType.User]; // 1(EmployeeType.User) - RoomAdmin | 3(EmployeeType.Admin) - DocSpaceAdmin
 
   const backClickProp = showBackButton ? { onBackClick } : {};
 
