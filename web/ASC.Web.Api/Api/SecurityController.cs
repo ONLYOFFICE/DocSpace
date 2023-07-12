@@ -285,6 +285,7 @@ public class SecurityController : ControllerBase
     [HttpGet("csp")]
     public CspDto Csp()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var settings = _cspSettingsHelper.Load();
         return new CspDto { Domains = settings.Domains, Header = _cspSettingsHelper.CreateHeader(settings.Domains) };
     }
