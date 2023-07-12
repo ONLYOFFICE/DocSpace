@@ -323,8 +323,8 @@ const StyledArrowIcon = styled.div`
     ${(props) =>
       props.theme.interfaceDirection === "rtl" &&
       css`
-        margin-left: 0;
-
+        margin-left: ${(props) =>
+          props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
         margin-right: auto;
       `}
   `}
