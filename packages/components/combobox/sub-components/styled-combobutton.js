@@ -320,6 +320,11 @@ const StyledArrowIcon = styled.div`
   ${isMobileOnly &&
   css`
     margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: auto;
+      `}
   `}
 `;
 
