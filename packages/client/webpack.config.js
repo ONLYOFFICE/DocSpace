@@ -309,6 +309,8 @@ module.exports = (env, argv) => {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
+        "./CommonWhiteLabel":
+          "./src/pages/PortalSettings/categories/common/Branding/CommonWhiteLabel.js",
       },
       shared: {
         ...deps,
