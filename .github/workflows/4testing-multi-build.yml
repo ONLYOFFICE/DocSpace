@@ -46,7 +46,7 @@ jobs:
           DOCKER_IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$REPO" | tr '\n' ' ')
           IFS=" " read -a IMAGES <<< "$DOCKER_IMAGES"
           for IMAGE in ${IMAGES[@]}; do
-            NEW_IMAGE="$IMAGE"-"$TAG"
+            NEW_IMAGE="$IMAGE"."$TAG"
             docker push "$IMAGE"
             docker tag "$IMAGE" "$NEW_IMAGE"
             docker push "$NEW_IMAGE"
