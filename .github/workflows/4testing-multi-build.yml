@@ -33,10 +33,23 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
+          TAG=${{github.run_number}}
           export DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/\|hotfix.*\///')
 
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
-          --push
+          --set *.cache-to=type=gha \
+          --set *.cache-from=type=gha \
+          --load
+
+          DOCKER_IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$REPO" | tr '\n' ' ')
+          IFS=" " read -a IMAGES <<< "$DOCKER_IMAGES"
+          for IMAGE in ${IMAGES[@]}; do
+            NEW_IMAGE="$IMAGE"."$TAG"
+            docker push "$IMAGE"
+            docker tag "$IMAGE" "$NEW_IMAGE"
+            docker push "$NEW_IMAGE"
+          done
+
         shell: bash

@@ -125,8 +125,4 @@ postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
-if [ ! -e /usr/bin/json ]; then
-	npm i json -g >/dev/null 2>&1
-fi
-
 package_services="rabbitmq-server postgresql redis nginx mysqld"

@@ -129,14 +129,6 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				nginx-extras \
 				ffmpeg 
 
-if ! command_exists npm; then
-	apt-get -y install npm
-fi
-
-if ! command_exists json; then
-	npm i json -g >/dev/null 2>&1
-fi
-
 if ! dpkg -l | grep -q "elasticsearch"; then
 	apt-get install -yq elasticsearch=${ELASTIC_VERSION}
 fi
