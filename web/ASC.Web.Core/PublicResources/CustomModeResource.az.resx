@@ -138,11 +138,7 @@ ONLYOFFICE komandası</value>
 
 "$FromUserName":"$FromUserLink" istifadəçisindən məlumatın silinməsi prosesi uğurla tamamlandı.
 
-Şəxsi məlumatların ödənişsiz silinməsinə icazə verilir:
-
-# Sənədlər - $DocsSpace
-# Poçt - $MailSpace
-# Danışıq - $TalkSpace</value>
+Şəxsi məlumatların ödənişsiz silinməsinə icazə verilir $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Yeni portal qeydiyyatdan keçdi

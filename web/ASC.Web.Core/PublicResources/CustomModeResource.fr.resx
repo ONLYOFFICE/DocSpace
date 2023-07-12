@@ -128,11 +128,7 @@ L'équipe ONLYOFFICE</value>
 
 La suppression de données de l'utilisateur "$FromUserName":"$FromUserLink" a été effectuée avec succès.
 
-L'effacement des données personnelles permet de libérer :
-
-# Documents - $DocsSpace
-# Mail - $MailSpace
-# Chat - $TalkSpace</value>
+L'effacement des données personnelles permet de libérer $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Nouveau portail a été enregistré

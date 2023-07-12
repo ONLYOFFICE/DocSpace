@@ -617,12 +617,7 @@ Mensaje de excepción: $Mensaje</value>
 
 El proceso de eliminación de datos del usuario "$FromUserName":"$FromUserLink" se completó con éxito.
 
-Eliminación de datos personales permite liberar:
-
-# Documentos - $DocsSpace
-# CRM - $CrmSpace
-# Correo - $MailSpace
-# Chat - $TalkSpace</value>
+Eliminación de datos personales permite liberar $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Estimado $Usuario,

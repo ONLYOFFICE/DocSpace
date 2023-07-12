@@ -678,12 +678,7 @@ Ausnahmemeldung: $Message</value>
 
 Der Vorgang der Datenentfernung "$FromUserName":"$FromUserLink" wurde erfolgreich abgeschlossen.
 
-Die Löschung personenbezogener Daten befreit:
-
-# Dokumente - $DocsSpace
-# CRM - $CrmSpace
-# E-Mail - $MailSpace
-# Chat- $TalkSpace</value>
+Die Löschung personenbezogener Daten befreit $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Sehr geehrte/r Frau/Herr $UserName,

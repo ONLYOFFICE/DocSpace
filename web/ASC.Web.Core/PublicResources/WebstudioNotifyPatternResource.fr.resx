@@ -612,12 +612,7 @@ Message d'exception: $Message</value>
 
 Le processus de suppression des données pour l'utilisateur "$FromUserName": "$FromUserLink" a été effectué avec succès.
 
-La suppression des données personnelles a permis de  libérer:
-
-# Documents - $DocsSpace
-# CRM - $CrmSpace
-# Mail - $MailSpace
-# Chat- $TalkSpace</value>
+La suppression des données personnelles a permis de  libérer $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Cher $UserName,

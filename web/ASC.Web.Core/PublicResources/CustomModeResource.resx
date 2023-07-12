@@ -217,11 +217,7 @@ ONLYOFFICE team</value>
 
 The process of removing data from user "$FromUserName":"$FromUserLink" has been successfully completed.
 
-The deletion of personal data allowed to free:
-
-# Documents - $DocsSpace
-# Mail - $MailSpace
-# Talk - $TalkSpace</value>
+The deletion of personal data allowed to free $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.New portal has been registered

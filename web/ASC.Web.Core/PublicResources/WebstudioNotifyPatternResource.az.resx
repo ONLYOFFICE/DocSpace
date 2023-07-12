@@ -704,12 +704,7 @@ Məlumatın "$FromUserName":"$FromUserLink" istifadəçisindən "$ToUserName":"$
 
 "$FromUserName":"$FromUserLink" adlı istifadəçi üçün məlumatların silinməsi prosesi uğurla tamamlandı.
 
-Şəxsi məlumatların silinməsinə icazə verildi:
-
-# Sənədlər - $DocsSpace
-# CRM - $CrmSpace
-# Poçt - $MailSpace
-# Söhbət - $TalkSpace</value>
+Şəxsi məlumatların silinməsinə icazə verildi $DocsSpace</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Hörmətli $UserName,

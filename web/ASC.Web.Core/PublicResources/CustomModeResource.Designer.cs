@@ -168,11 +168,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///The process of removing data from user &quot;$FromUserName&quot;:&quot;$FromUserLink&quot; has been successfully completed.
         ///
-        ///The deletion of personal data allowed to free:
-        ///
-        ///# Documents - $DocsSpace
-        ///# Mail - $MailSpace
-        ///# Talk - $TalkSpace.
+        ///The deletion of personal data allowed to free $DocsSpace.
         /// </summary>
         public static string pattern_remove_user_data_completed_custom_mode {
             get {

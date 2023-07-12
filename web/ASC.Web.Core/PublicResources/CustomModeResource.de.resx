@@ -126,11 +126,7 @@ ONLYOFFICE Team</value>
 
 Das Entfernen von Benutzerdaten "$FromUserName":"$FromUserLink" wurde erfolgreich abgeschlossen.
 
-Beim Entfernen persönlicher Daten es wurde freigegeben:
-
-# Dokumente - $DocsSpace
-# E-Mail - $MailSpace
-# Chat - $TalkSpace</value>
+Beim Entfernen persönlicher Daten es wurde freigegeben $DocsSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Neues Portal wurde registriert
