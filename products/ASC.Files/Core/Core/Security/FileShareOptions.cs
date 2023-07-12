@@ -34,9 +34,7 @@ public class FileShareOptions
     public string Password { get; set; }
     public bool DenyDownload { get; set; }
     public bool Disabled { get; set; }
-
-    public bool IsExpired()
-    {
-        return ExpirationDate != DateTime.MinValue && ExpirationDate < DateTime.UtcNow;
-    }
+    
+    [JsonIgnore]
+    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate<DateTime.UtcNow;
 }

@@ -76,7 +76,7 @@ public class ExternalShare
             return Status.Ok;
         }
         
-        if (record.Options.IsExpired())
+        if (record.Options.IsExpired)
         {
             return Status.Expired;
         }
