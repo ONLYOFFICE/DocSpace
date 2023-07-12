@@ -73,9 +73,9 @@ class TabContainer extends Component {
 
   setTabPosition = (index, currentRef) => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
-    const scrollLeft = this.scrollRef.current?.getScrollLeft(); // get scroll position relative to left side
-    const staticScroll = this.scrollRef.current?.getScrollWidth(); //get static scroll width
-    const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
+    const scrollLeft = this.scrollRef.current.scrollLeft; // get scroll position relative to left side
+    const staticScroll = this.scrollRef.current.scrollWidth; //get static scroll width
+    const containerWidth = this.scrollRef.current.scrollWidth; //get main container width
     const currentTabWidth = currentRef.current.offsetWidth;
     const marginRight = 8;
 
@@ -114,7 +114,7 @@ class TabContainer extends Component {
     }
     //Out of range of left side
     else if (rightFullWidth > staticScroll - scrollLeft) {
-      this.scrollRef.current?.scrollLeft(staticScroll - rightFullWidth);
+      this.scrollRef.current?.scrollTo(this.scrollRef.current.scrollHeight, 0);
     }
   };
 
