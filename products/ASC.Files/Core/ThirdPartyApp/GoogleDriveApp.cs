@@ -308,7 +308,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         {
             httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             string result = null;
             if (responseStream != null)
             {
@@ -376,7 +376,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
+            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.TenantId, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {
@@ -513,7 +513,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var stream = new ResponseStream(response);
+            await using var stream = new ResponseStream(response);
             await stream.CopyToAsync(context.Response.Body);
         }
         catch (Exception ex)
@@ -577,7 +577,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         fileName = FileUtility.ReplaceFileExtension(fileName, ext);
 
         string driveFile;
-        using (var content = await storeTemplate.GetReadStreamAsync("", path))
+        await using (var content = await storeTemplate.GetReadStreamAsync("", path))
         {
             driveFile = await CreateFileAsync(content, fileName, folderId, token);
         }
@@ -733,7 +733,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using var content = new ResponseStream(response);
+        await using var content = new ResponseStream(response);
 
         return await CreateFileAsync(content, fileName, folderId, token);
     }
@@ -773,7 +773,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             string result = null;
             if (responseStream != null)
             {
@@ -856,7 +856,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             try
             {
                 using var response = await httpClient.SendAsync(request);
-                using var fileStream = new ResponseStream(response);
+                await using var fileStream = new ResponseStream(response);
                 driveFile = await CreateFileAsync(fileStream, fileName, folderId, token);
             }
             catch (HttpRequestException e)

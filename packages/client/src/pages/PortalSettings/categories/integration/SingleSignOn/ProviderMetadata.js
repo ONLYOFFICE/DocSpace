@@ -20,6 +20,7 @@ const ProviderMetadata = (props) => {
         name="spEntityId"
         placeholder={`${url}/sso/metadata`}
         tooltipContent={t("SPEntityIdTooltip")}
+        tooltipClass="sp-entity-id-tooltip icon-button"
       />
 
       <MetadataUrlField
@@ -27,6 +28,7 @@ const ProviderMetadata = (props) => {
         name="spAssertionConsumerUrl"
         placeholder={`${url}/sso/acs`}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
+        tooltipClass="sp-assertion-consumer-url-tooltip icon-button"
       />
 
       <MetadataUrlField
@@ -34,10 +36,12 @@ const ProviderMetadata = (props) => {
         name="spSingleLogoutUrl"
         placeholder={`${url}/sso/slo/callback`}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
+        tooltipClass="sp-single-logout-url-tooltip icon-button"
       />
 
       <Box marginProp="24px 0">
         <Button
+          id="download-metadata-xml"
           label={t("DownloadMetadataXML")}
           primary
           size="small"

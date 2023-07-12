@@ -44,18 +44,21 @@ const VersionHistory = withTranslation("VersionHistory")(PureVersionHistory);
 
 VersionHistory.propTypes = {};
 
-export default inject(({ auth, filesStore, versionHistoryStore }) => {
-  const { filter, isLoading } = filesStore;
-  const { setIsVerHistoryPanel, versions, showProgressBar } =
-    versionHistoryStore;
+export default inject(
+  ({ auth, filesStore, clientLoadingStore, versionHistoryStore }) => {
+    const { filter } = filesStore;
+    const { isLoading } = clientLoadingStore;
+    const { setIsVerHistoryPanel, versions, showProgressBar } =
+      versionHistoryStore;
 
-  return {
-    isTabletView: auth.settingsStore.isTabletView,
-    isLoading,
-    filter,
-    versions,
-    showProgressBar,
+    return {
+      isTabletView: auth.settingsStore.isTabletView,
+      isLoading,
+      filter,
+      versions,
+      showProgressBar,
 
-    setIsVerHistoryPanel,
-  };
-})(observer(VersionHistory));
+      setIsVerHistoryPanel,
+    };
+  }
+)(observer(VersionHistory));

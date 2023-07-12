@@ -153,15 +153,18 @@ const TwoFactorAuth = (props) => {
         spacing="8px"
         options={[
           {
+            id: "tfa-disabled",
             label: t("Disabled"),
             value: "none",
           },
           {
+            id: "by-sms",
             label: t("BySms"),
             value: "sms",
             disabled: !smsDisabled,
           },
           {
+            id: "by-app",
             label: t("ByApp"),
             value: "app",
             disabled: !appDisabled,
@@ -182,6 +185,8 @@ const TwoFactorAuth = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="two-factor-auth-save"
+        additionalClassCancelButton="two-factor-auth-cancel"
       />
     </MainContainer>
   );

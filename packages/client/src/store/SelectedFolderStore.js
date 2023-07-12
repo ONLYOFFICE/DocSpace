@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 class SelectedFolderStore {
   folders = null;
@@ -134,6 +135,8 @@ class SelectedFolderStore {
       const selectedFolderItems = Object.keys(selectedFolder);
 
       if (!selectedFolderItems.includes("roomType")) this.roomType = null;
+
+      setDocumentTitle(selectedFolder.title);
 
       for (let key of selectedFolderItems) {
         if (key in this) {

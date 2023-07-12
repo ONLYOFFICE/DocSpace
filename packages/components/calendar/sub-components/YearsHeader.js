@@ -1,5 +1,6 @@
+import React from "react";
 import moment from "moment";
-import { HeaderContainer, Title } from "../styled-components";
+import { HeaderActionIcon, HeaderContainer, Title } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
 
 export const YearsHeader = ({
@@ -29,8 +30,9 @@ export const YearsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title disabled>
+      <Title disabled className="years-header">
         {firstYear}-{firstYear + 9}
+        <HeaderActionIcon />
       </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}

@@ -45,13 +45,30 @@ export const nameIdOptions = Object.keys(nameIdFormats).map((key) => ({
   label: nameIdFormats[key],
 }));
 
-export const bindingOptions = [
+export const ssoBindingOptions = [
   {
+    id: "sso-post",
     value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
     label: "POST",
     disabled: false,
   },
   {
+    id: "sso-redirect",
+    value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
+    label: "Redirect",
+    disabled: false,
+  },
+];
+
+export const sloBindingOptions = [
+  {
+    id: "slo-post",
+    value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+    label: "POST",
+    disabled: false,
+  },
+  {
+    id: "slo-redirect",
     value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
     label: "Redirect",
     disabled: false,

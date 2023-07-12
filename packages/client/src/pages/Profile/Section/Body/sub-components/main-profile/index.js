@@ -47,7 +47,7 @@ const MainProfile = (props) => {
     culture,
     helpLink,
     cultureNames,
-    setIsLoading,
+
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -130,13 +130,10 @@ const MainProfile = (props) => {
   const onLanguageSelect = (language) => {
     if (profile.cultureName === language.key) return;
 
-    setIsLoading(true);
     updateProfileCulture(profile.id, language.key)
-      .then(() => setIsLoading(false))
       .then(() => location.reload())
       .catch((error) => {
         toastr.error(error && error.message ? error.message : error);
-        setIsLoading(false);
       });
   };
 
@@ -276,7 +273,7 @@ const MainProfile = (props) => {
             <div className="profile-block-field profile-block-password">
               <Text fontWeight={600}>********</Text>
               <IconButton
-                className="edit-button"
+                className="edit-button password-edit-button"
                 iconName={PencilOutlineReactSvgUrl}
                 size="12"
                 onClick={() => setChangePasswordVisible(true)}
@@ -470,14 +467,8 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const {
-    theme,
-    helpLink,
-    culture,
-    currentColorScheme,
-    documentationEmail,
-  } = auth.settingsStore;
-  const { setIsLoading } = peopleStore.loadingStore;
+  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
+    auth.settingsStore;
 
   const {
     targetUser: profile,
@@ -497,7 +488,7 @@ export default inject(({ auth, peopleStore }) => {
     profile,
     culture,
     helpLink,
-    setIsLoading,
+
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,

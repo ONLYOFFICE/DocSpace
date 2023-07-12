@@ -314,7 +314,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             string result = null;
             if (responseStream != null)
             {
@@ -372,7 +372,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
+            await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.TenantId, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {
@@ -440,7 +440,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var stream = new ResponseStream(response);
+            await using var stream = new ResponseStream(response);
             await stream.CopyToAsync(context.Response.Body);
         }
         catch (Exception ex)

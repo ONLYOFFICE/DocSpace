@@ -16,13 +16,13 @@ const SettingsView = ({
 
   const inLoad = (!isLoadedSettingsTree && isLoading) || isLoading;
 
-  const setting = location.pathname.includes("/settings/common")
-    ? "common"
-    : "admin";
+  const setting = location.pathname.includes("/settings/general")
+    ? "general"
+    : "personal";
   return (
     <>
       {inLoad ? (
-        setting === "common" ? (
+        setting === "personal" ? (
           <Loaders.SettingsCommon isAdmin={isAdmin} />
         ) : (
           <Loaders.SettingsAdmin />
@@ -34,8 +34,8 @@ const SettingsView = ({
   );
 };
 
-export default inject(({ auth, filesStore, settingsStore }) => {
-  const { isLoading } = filesStore;
+export default inject(({ auth, clientLoadingStore, settingsStore }) => {
+  const { isLoading } = clientLoadingStore;
 
   const { isLoadedSettingsTree } = settingsStore;
 

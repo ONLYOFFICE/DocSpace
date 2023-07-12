@@ -54,6 +54,7 @@ const FieldMapping = (props) => {
         </Text>
 
         <HelpButton
+          className="attribute-matching-tooltip icon-button"
           offsetRight={0}
           tooltipContent={t("AttributeMatchingTooltip")}
         />
@@ -120,8 +121,10 @@ const FieldMapping = (props) => {
         labelText={t("AdvancedSettings")}
         place="top"
         tooltipContent={t("AdvancedSettingsTooltip")}
+        tooltipClass="advanced-settings-tooltip icon-button"
       >
         <Checkbox
+          id="hide-auth-page"
           className="checkbox-input"
           label={t("HideAuthPage")}
           name="hideAuthPage"

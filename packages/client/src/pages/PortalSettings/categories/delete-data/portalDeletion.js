@@ -75,7 +75,7 @@ const PortalDeletion = (props) => {
       <Text className="helper">{t("PortalDeletionHelper")}</Text>
       <ButtonWrapper>
         <Button
-          className="button"
+          className="delete-button button"
           label={t("Common:Delete")}
           primary
           size={isDesktopView ? "small" : "normal"}

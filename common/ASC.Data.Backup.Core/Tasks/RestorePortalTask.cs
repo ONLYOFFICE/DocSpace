@@ -92,7 +92,7 @@ public class RestorePortalTask : PortalTaskBase
 
         using (var dataReader = new ZipReadOperator(BackupFilePath))
         {
-            using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
+            await using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
             {
                 Dump = entry != null && _coreBaseSettings.Standalone;
             }
@@ -215,7 +215,7 @@ public class RestorePortalTask : PortalTaskBase
         }
         try
         {
-            using (var connection = DbFactory.OpenConnection())
+            await using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 command.CommandText = "select id, connection_string from mail_server_server";
@@ -259,7 +259,7 @@ public class RestorePortalTask : PortalTaskBase
     private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName1, string fileName2 = null, string db = null)
     {
         _options.DebugRestoreFrom(fileName1);
-        using (var stream = dataReader.GetEntry(fileName1))
+        await using (var stream = dataReader.GetEntry(fileName1))
         {
             await RunMysqlFile(stream, db);
         }
@@ -268,7 +268,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugRestoreFrom(fileName2);
         if (fileName2 != null)
         {
-            using (var stream = dataReader.GetEntry(fileName2))
+            await using (var stream = dataReader.GetEntry(fileName2))
             {
                 await RunMysqlFile(stream, db);
             }
@@ -374,7 +374,8 @@ public class RestorePortalTask : PortalTaskBase
                         {
                             key = CrossPlatform.PathCombine(KeyHelper.GetStorage(), key);
                         }
-                        using var stream = dataReader.GetEntry(key);
+
+                        await using var stream = dataReader.GetEntry(key);
                         try
                         {
                             await storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);

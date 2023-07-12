@@ -56,6 +56,14 @@ class HotkeyStore {
   };
 
   activateHotkeys = (e) => {
+    const infiniteLoaderComponent = document.getElementsByClassName(
+      "ReactVirtualized__List"
+    )[0];
+
+    if (infiniteLoaderComponent) {
+      infiniteLoaderComponent.tabIndex = -1;
+    }
+
     if (
       this.dialogsStore.someDialogIsOpen ||
       (e.target?.tagName === "INPUT" && e.target.type !== "checkbox") ||

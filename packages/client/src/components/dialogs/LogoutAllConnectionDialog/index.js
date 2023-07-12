@@ -36,12 +36,17 @@ const LogoutAllConnectionDialog = ({
           {t("Profile:DescriptionForSecurity")}
         </Text>
         <Box displayProp="flex" alignItems="center">
-          <Checkbox isChecked={isChecked} onChange={onChangeCheckbox} />
+          <Checkbox
+            className="change-password"
+            isChecked={isChecked}
+            onChange={onChangeCheckbox}
+          />
           {t("Profile:ChangePasswordAfterLoggingOut")}
         </Box>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="logout"
           key="LogoutBtn"
           label={t("Profile:LogoutBtn")}
           size="normal"
@@ -53,6 +58,7 @@ const LogoutAllConnectionDialog = ({
           isLoading={loading}
         />
         <Button
+          className="cancel-button"
           key="CloseBtn"
           label={t("Common:CancelButton")}
           size="normal"

@@ -1,3 +1,4 @@
+import React from "react";
 import { MonthsBody } from "./MonthsBody";
 import { MonthsHeader } from "./MonthsHeader";
 
@@ -8,6 +9,7 @@ export const Months = ({
   setSelectedScene,
   minDate,
   maxDate,
+  isMobile
 }) => {
   return (
     <>
@@ -25,6 +27,7 @@ export const Months = ({
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
     </>
   );

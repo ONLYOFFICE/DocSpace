@@ -1119,8 +1119,8 @@ const Base = {
     },
 
     icon: {
-      background: lightHover,
-      color: grayMain,
+      background: "#ECEEF1",
+      color: "#A3A9AE",
     },
 
     width: {
@@ -1731,6 +1731,7 @@ const Base = {
     arrowColor: "#555f65",
     disabledArrow: "#A3A9AE",
     weekdayColor: "#A3A9AE",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -1956,6 +1957,7 @@ const Base = {
   navigation: {
     expanderColor: black,
     background: white,
+    rootFolderTitleColor: "#A3A9AE",
 
     icon: {
       fill: "#316DAA",
@@ -2283,6 +2285,13 @@ const Base = {
 
   selector: {
     border: `1px solid ${grayLightMid}`,
+
+    breadCrumbs: {
+      prevItemColor: "#A3A9AE",
+      arrowRightColor: "#A3A9AE",
+    },
+
+    bodyDescriptionText: "#A3A9AE",
 
     item: {
       hoverBackground: grayLight,
@@ -3104,6 +3113,11 @@ const Base = {
 
   portalUnavailable: {
     textDescriptionColor: "#A3A9AE",
+  },
+
+  emailChips: {
+    borderColor: "#A3A9AE",
+    dashedBorder: "1px dashed #5299E0",
   },
 };
 

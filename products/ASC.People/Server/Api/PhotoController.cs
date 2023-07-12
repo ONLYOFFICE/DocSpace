@@ -192,7 +192,7 @@ public class PhotoController : PeopleControllerBase
                 }
 
                 var data = new byte[userPhoto.Length];
-                using var inputStream = userPhoto.OpenReadStream();
+                await using var inputStream = userPhoto.OpenReadStream();
 
                 var br = new BinaryReader(inputStream);
                 br.Read(data, 0, (int)userPhoto.Length);

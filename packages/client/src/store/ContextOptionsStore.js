@@ -86,9 +86,7 @@ class ContextOptionsStore {
   }
 
   onOpenFolder = (item) => {
-    const { id, folderId, fileExst } = item;
-    const locationId = !fileExst ? id : folderId;
-    this.filesActionsStore.openLocationAction(locationId);
+    this.filesActionsStore.openLocationAction(item);
   };
 
   onClickLinkFillForm = (item) => {
@@ -188,9 +186,7 @@ class ContextOptionsStore {
   };
 
   onOpenLocation = (item) => {
-    const { parentId, folderId, fileExst } = item;
-    const locationId = !fileExst ? parentId : folderId;
-    this.filesActionsStore.openLocationAction(locationId);
+    this.filesActionsStore.openLocationAction(item);
   };
 
   onOwnerChange = () => {

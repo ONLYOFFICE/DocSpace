@@ -114,7 +114,7 @@ public class LicenseReader
                 temp = false;
             }
 
-            using (var licenseStream = GetLicenseStream(temp))
+            await using (var licenseStream = GetLicenseStream(temp))
             using (var reader = new StreamReader(licenseStream))
             {
                 var licenseJsonString = reader.ReadToEnd();
@@ -211,7 +211,7 @@ public class LicenseReader
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = license.DueDate,
         };
 

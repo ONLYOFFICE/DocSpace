@@ -32,6 +32,8 @@ public class DbFilesThirdpartyIdMapping : BaseEntity, IDbFile
     public string HashId { get; set; }
     public string Id { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { HashId };
@@ -42,6 +44,8 @@ public static class DbFilesThirdpartyIdMappingExtension
 {
     public static ModelBuilderWrapper AddDbFilesThirdpartyIdMapping(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesThirdpartyIdMapping>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFilesThirdpartyIdMapping, Provider.MySql)
             .Add(PgSqlAddDbFilesThirdpartyIdMapping, Provider.PostgreSql);

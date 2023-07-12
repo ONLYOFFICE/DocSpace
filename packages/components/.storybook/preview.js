@@ -1,13 +1,18 @@
 import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { Base, Dark } from "../themes/index";
 import "../../common/opensansoffline.scss";
-import globalTypes from "./globals";
 import ThemeWrapper from "./globals/theme-wrapper";
 import { DocsContainer } from "./DocsContainer";
+import { useDarkMode } from "storybook-dark-mode";
 import "../index";
 
+import lightTheme from "./lightTheme";
+import darkTheme from "./darkTheme";
+
+import lightLogo from "./lightsmall.svg?url";
+import darkLogo from "./darksmall.svg?url";
+
 const preview = {
-  globalTypes,
   parameters: {
     backgrounds: { disable: true },
     actions: { argTypesRegex: "^on[A-Z].*" },
@@ -23,12 +28,16 @@ const preview = {
         hidden: true,
       },
     },
+    darkMode: {
+      current: "light",
+      light: lightTheme,
+      dark: darkTheme,
+    },
   },
   decorators: [
-    (Story, context) => {
-      const theme = context.globals.theme;
+    (Story) => {
       return (
-        <ThemeWrapper theme={theme === "Dark" ? Dark : Base}>
+        <ThemeWrapper theme={useDarkMode() ? Dark : Base}>
           <Story />
         </ThemeWrapper>
       );

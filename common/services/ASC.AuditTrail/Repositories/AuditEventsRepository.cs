@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF;
+
 namespace ASC.AuditTrail.Repositories;
 
 [Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
@@ -46,35 +48,6 @@ public class AuditEventsRepository
         _mapper = mapper;
     }
 
-    private async Task<IEnumerable<AuditEventDto>> GetAsync(int tenant, DateTime? fromDate, DateTime? to, int? limit)
-    {
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
-        var query =
-           (from q in auditTrailContext.AuditEvents
-            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
-            where q.TenantId == tenant
-            orderby q.Date descending
-            select new AuditEventQuery
-            {
-                Event = q,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                UserName = p.UserName
-            });
-
-        if (fromDate.HasValue && to.HasValue)
-        {
-            query = query.Where(q => q.Event.Date >= fromDate & q.Event.Date <= to);
-        }
-
-        if (limit.HasValue)
-        {
-            query = query.Take((int)limit);
-        }
-
-        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(await query.ToListAsync());
-    }
-
     public async Task<IEnumerable<AuditEventDto>> GetByFilterAsync(
         Guid? userId = null,
         ProductType? productType = null,
@@ -86,20 +59,20 @@ public class AuditEventsRepository
         DateTime? from = null,
         DateTime? to = null,
         int startIndex = 0,
-        int limit = 0, 
+        int limit = 0,
         Guid? withoutUserId = null)
     {
         return await GetByFilterWithActionsAsync(
             userId,
-            productType, 
+            productType,
             moduleType,
             actionType,
             new List<MessageAction?> { action },
             entry,
-            target, 
-            from, 
+            target,
+            from,
             to,
-            startIndex, 
+            startIndex,
             limit,
             withoutUserId);
     }
@@ -119,7 +92,8 @@ public class AuditEventsRepository
         Guid? withoutUserId = null)
     {
         var tenant = await _tenantManager.GetCurrentTenantIdAsync();
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        await using var auditTrailContext = _dbContextFactory.CreateDbContext();
+
         var query =
            from q in auditTrailContext.AuditEvents
            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -136,7 +110,7 @@ public class AuditEventsRepository
         if (userId.HasValue && userId.Value != Guid.Empty)
         {
             query = query.Where(r => r.Event.UserId == userId.Value);
-        } 
+        }
         else if (withoutUserId.HasValue && withoutUserId.Value != Guid.Empty)
         {
             query = query.Where(r => r.Event.UserId != withoutUserId.Value);
@@ -248,57 +222,11 @@ public class AuditEventsRepository
         q = q.Where(a);
     }
 
-    public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
-    {
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
-
-        var query = auditTrailContext.AuditEvents
-            .Where(a => a.TenantId == tenant);
-
-        if (from.HasValue && to.HasValue)
-        {
-            query = query.Where(a => a.Date >= from & a.Date <= to);
-        }
-
-        return await query.CountAsync();
-    }
-
     public async Task<IEnumerable<int>> GetTenantsAsync(DateTime? from = null, DateTime? to = null)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await feedDbContext.AuditEvents
-            .Where(r => r.Date >= from && r.Date <= to)
-            .GroupBy(r => r.TenantId)
-            .Select(r => r.Key)
-            .ToListAsync();
-    }
-}
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
 
-internal static class PredicateBuilder
-{
-    internal static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
-    {
-        var p = a.Parameters[0];
-
-        var visitor = new SubstExpressionVisitor();
-        visitor.Subst[b.Parameters[0]] = p;
-
-        Expression body = Expression.OrElse(a.Body, visitor.Visit(b.Body));
-        return Expression.Lambda<Func<T, bool>>(body, p);
-    }
-}
-
-internal class SubstExpressionVisitor : ExpressionVisitor
-{
-    internal Dictionary<Expression, Expression> Subst = new Dictionary<Expression, Expression>();
-
-    protected override Expression VisitParameter(ParameterExpression node)
-    {
-        if (Subst.TryGetValue(node, out var newValue))
-        {
-            return newValue;
-        }
-        return node;
+        return await Queries.TenantsAsync(feedDbContext, from, to).ToListAsync();
     }
 }
 
@@ -308,4 +236,15 @@ public static class AuditEventsRepositoryExtensions
     {
         services.TryAdd<EventTypeConverter>();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<MessagesContext, DateTime?, DateTime?, IAsyncEnumerable<int>> TenantsAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, DateTime? from, DateTime? to) =>
+                ctx.AuditEvents
+                    .Where(r => r.Date >= from && r.Date <= to)
+                    .Select(r => r.TenantId)
+                    .Distinct());
 }

@@ -93,7 +93,7 @@ public class UserServiceCache
 
     private void UpdateUserGroupRefCache(UserGroupRef r)
     {
-        var key = GetRefCacheKey(r.Tenant);
+        var key = GetRefCacheKey(r.TenantId);
         var refs = Cache.Get<UserGroupRefStore>(key);
         if (refs != null)
         {
@@ -187,6 +187,7 @@ public class CachedUserService : IUserService, ICachedService
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
         EmployeeActivationStatus? activationStatus,
         AccountLoginType? accountLoginType,
         string text,
@@ -197,7 +198,7 @@ public class CachedUserService : IUserService, ICachedService
         out int total,
         out int count)
     {
-        return Service.GetUsers(tenant, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return Service.GetUsers(tenant, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public async Task<UserInfo> GetUserAsync(int tenant, Guid id)
@@ -408,7 +409,7 @@ public class CachedUserService : IUserService, ICachedService
     {
         await Service.RemoveUserGroupRefAsync(tenant, userId, groupId, refType);
 
-        var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant, Removed = true };
+        var r = new UserGroupRef(userId, groupId, refType) { TenantId = tenant, Removed = true };
         CacheUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
     }
 

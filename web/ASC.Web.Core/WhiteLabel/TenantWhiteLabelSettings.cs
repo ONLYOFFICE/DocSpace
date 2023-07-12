@@ -651,7 +651,7 @@ public class TenantWhiteLabelSettingsHelper
             return null;
         }
 
-        var partnerStorage = await _storageFactory.GetStorageAsync(null, "static_partnerdata");
+        var partnerStorage = await _storageFactory.GetStorageAsync(-1, "static_partnerdata");
 
         if (partnerStorage == null)
         {
@@ -659,7 +659,7 @@ public class TenantWhiteLabelSettingsHelper
         }
 
         var logoPath = BuildLogoFileName(type, partnerSettings.GetExt(type), dark);
-
+ 
         return (await partnerStorage.IsFileAsync(logoPath)) ? (await partnerStorage.GetUriAsync(logoPath)).ToString() : null;
     }
 
@@ -703,7 +703,7 @@ public class TenantWhiteLabelSettingsHelper
             return null;
         }
 
-        var partnerStorage = await _storageFactory.GetStorageAsync(null, "static_partnerdata");
+        var partnerStorage = await _storageFactory.GetStorageAsync(-1, "static_partnerdata");
 
         if (partnerStorage == null)
         {

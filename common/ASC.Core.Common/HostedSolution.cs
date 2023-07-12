@@ -78,7 +78,7 @@ public class HostedSolution
     public async Task<List<Tenant>> FindTenantsAsync(string login, string passwordHash = null)
     {
         if (!string.IsNullOrEmpty(passwordHash) && await UserService.GetUserByPasswordHashAsync(Tenant.DefaultTenant, login, passwordHash) == null)
-        {
+    {
             throw new SecurityException("Invalid login or password.");
         }
 
@@ -229,7 +229,7 @@ public class HostedSolution
         var quota = (await QuotaService.GetTenantQuotasAsync()).FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            await TariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
+            await TariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.TenantId, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 

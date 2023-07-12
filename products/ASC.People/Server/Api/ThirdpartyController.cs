@@ -211,7 +211,7 @@ public class ThirdpartyController : ApiControllerBase
 
         var user = await _userManager.GetUsersAsync(userID);
 
-        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
+        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id, MessageAction.LoginSuccess);
 
         await _studioNotifyService.UserHasJoinAsync();
 
@@ -269,7 +269,7 @@ public class ThirdpartyController : ApiControllerBase
 
             var httpClient = _httpClientFactory.CreateClient();
             using (var response = httpClient.Send(request))
-            using (var stream = response.Content.ReadAsStream())
+            await using (var stream = response.Content.ReadAsStream())
             {
                 var buffer = new byte[512];
                 int bytesRead;

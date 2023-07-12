@@ -1,11 +1,8 @@
+import React from "react";
 import moment from "moment";
 
 import { getCalendarDays } from "./getCalendarDays";
-import {
-  CurrentDateItem,
-  DateItem,
-  SecondaryDateItem,
-} from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const onDateClick = (handleDateChange, newDate) => {
   handleDateChange(moment(newDate));
@@ -25,7 +22,10 @@ export const getDayElements = (
   const calendarDays = getCalendarDays(observedDate);
   const monthDays = {
     prevMonthDays: calendarDays.prevMonthDays.map((day) => (
-      <SecondaryDateItem
+      <ColorTheme
+        className="day"
+        themeId={ThemeType.DateItem}
+        isSecondary
         key={day.key}
         onClick={() => onClick(moment(day.key, dateFormat))}
         disabled={
@@ -34,10 +34,12 @@ export const getDayElements = (
         }
       >
         {day.value}
-      </SecondaryDateItem>
+      </ColorTheme>
     )),
     currentMonthDays: calendarDays.currentMonthDays.map((day) => (
-      <DateItem
+      <ColorTheme
+        className="day"
+        themeId={ThemeType.DateItem}
         key={day.key}
         onClick={() => onClick(moment(day.key, dateFormat))}
         disabled={
@@ -46,10 +48,13 @@ export const getDayElements = (
         }
       >
         {day.value}
-      </DateItem>
+      </ColorTheme>
     )),
     nextMonthDays: calendarDays.nextMonthDays.map((day) => (
-      <SecondaryDateItem
+      <ColorTheme
+        className="day"
+        themeId={ThemeType.DateItem}
+        isSecondary
         key={day.key}
         onClick={() => onClick(moment(day.key, dateFormat))}
         disabled={
@@ -58,7 +63,7 @@ export const getDayElements = (
         }
       >
         {day.value}
-      </SecondaryDateItem>
+      </ColorTheme>
     )),
   };
 
@@ -70,7 +75,10 @@ export const getDayElements = (
     calendarDays[key].forEach((day, index) => {
       if (day.key === currentDate) {
         monthDays[key][index] = (
-          <CurrentDateItem
+          <ColorTheme
+            className="day"
+            themeId={ThemeType.DateItem}
+            isCurrent
             key={day.key}
             onClick={() => onClick(moment(day.key, dateFormat))}
             disabled={
@@ -79,11 +87,13 @@ export const getDayElements = (
             }
           >
             {day.value}
-          </CurrentDateItem>
+          </ColorTheme>
         );
       } else if (day.key === selectedDateFormated) {
         monthDays[key][index] = (
-          <DateItem
+          <ColorTheme
+            className="day"
+            themeId={ThemeType.DateItem}
             key={day.key}
             focused
             onClick={() => onClick(moment(day.key, dateFormat))}
@@ -93,7 +103,7 @@ export const getDayElements = (
             }
           >
             {day.value}
-          </DateItem>
+          </ColorTheme>
         );
       }
     });

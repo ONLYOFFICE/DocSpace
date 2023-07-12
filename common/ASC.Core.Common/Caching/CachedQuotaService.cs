@@ -107,7 +107,7 @@ class CachedQuotaService : IQuotaService
 
     public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        return (await GetTenantQuotasAsync()).SingleOrDefault(q => q.Tenant == tenant);
+        return (await GetTenantQuotasAsync()).SingleOrDefault(q => q.TenantId == tenant);
     }
 
     public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
@@ -126,11 +126,11 @@ class CachedQuotaService : IQuotaService
     public async Task SetTenantQuotaRowAsync(TenantQuotaRow row, bool exchange)
     {
         await Service.SetTenantQuotaRowAsync(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.Any);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.TenantId) }, CacheNotifyAction.Any);
 
         if (row.UserId != Guid.Empty)
         {
-            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.TenantId, row.UserId) }, CacheNotifyAction.Any);
         }
     }
 

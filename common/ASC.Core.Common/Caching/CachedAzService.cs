@@ -43,7 +43,7 @@ class AzServiceCache
 
     private void UpdateCache(AzRecord r, bool remove)
     {
-        var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
+        var aces = Cache.Get<AzRecordStore>(GetKey(r.TenantId));
         if (aces != null)
         {
             lock (aces)

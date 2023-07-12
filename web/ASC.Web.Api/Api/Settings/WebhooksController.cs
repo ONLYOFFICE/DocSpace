@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
@@ -58,13 +57,13 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhook")]
-    public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
+    public async IAsyncEnumerable<WebhooksConfigWithStatusDto> GetTenantWebhooks()
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        await foreach (var w in _webhookDbWorker.GetTenantWebhooks())
+        await foreach (var webhook in _webhookDbWorker.GetTenantWebhooksWithStatus())
         {
-            yield return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(w);
+            yield return _mapper.Map<WebhooksConfigWithStatusDto>(webhook);
         }
     }
 
@@ -75,8 +74,9 @@ public class WebhooksController : BaseSettingsController
 
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.Name, model.SecretKey, model.Enabled, model.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -87,9 +87,9 @@ public class WebhooksController : BaseSettingsController
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled, model.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -105,15 +105,19 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? webhookId, int? configId, int? eventId, WebhookGroupStatus? groupStatus)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+        _context.SetTotalCount(await _webhookDbWorker.GetTotalByQuery(deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus));
+
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.WebhookId))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus))
         {
-            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+            j.Log.Config = j.Config;
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j.Log);
         }
     }
 
@@ -134,11 +138,6 @@ public class WebhooksController : BaseSettingsController
             throw new ItemNotFoundException();
         }
 
-        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
-        {
-            throw new HttpException(HttpStatusCode.Forbidden);
-        }
-
         var result = await _webhookPublisher.PublishAsync(item.Id, item.RequestPayload, item.ConfigId);
 
         return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
@@ -153,7 +152,7 @@ public class WebhooksController : BaseSettingsController
         {
             var item = await _webhookDbWorker.ReadJournal(id);
 
-            if (item == null || item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+            if (item == null)
             {
                 continue;
             }
@@ -162,28 +161,6 @@ public class WebhooksController : BaseSettingsController
 
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
         }
-    }
-
-    [HttpGet("webhook/ssl")]
-    public async Task<WebhooksSslSettingsDto> GetSslSettingsAsync()
-    {
-        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
-
-        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
-
-        return _mapper.Map<WebhooksSslSettingsDto>(settings);
-    }
-
-    [HttpPost("webhook/ssl/{isEnabled}")]
-    public async Task<WebhooksSslSettingsDto> SetSslSettingsAsync(bool isEnabled)
-    {
-        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
-
-        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
-        settings.EnableSSLVerification = isEnabled;
-        await _settingsManager.SaveAsync(settings);
-
-        return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
 
     [HttpGet("webhooks")]

@@ -863,7 +863,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
                 }
 
                 var data = new byte[roomLogo.Length];
-                using var inputStream = roomLogo.OpenReadStream();
+                await using var inputStream = roomLogo.OpenReadStream();
 
                 var br = new BinaryReader(inputStream);
 

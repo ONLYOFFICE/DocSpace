@@ -416,6 +416,7 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       isDisabled,
+      isFullWidth,
     } = this.props;
 
     return (
@@ -423,6 +424,7 @@ class PasswordInput extends React.Component {
         onValidateInput={onValidateInput}
         className={className}
         style={style}
+        $isFullWidth={isFullWidth}
       >
         {simpleView ? (
           <>
@@ -523,10 +525,14 @@ PasswordInput.propTypes = {
   onCopyToClipboard: PropTypes.func,
   /** Sets the tooltip offset to the left */
   tooltipOffsetLeft: PropTypes.number,
+  /** Sets the tooltip offset to the top */
+  tooltipOffsetTop: PropTypes.number,
   /** Sets the password input view to simple (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
   /** Sets a title of the password generation button */
   generatePasswordTitle: PropTypes.string,
+  /** Setting display block to set element to full width*/
+  isfullwidth: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -546,8 +552,6 @@ PasswordInput.defaultProps = {
 
   generatorSpecial: "!@#$%^&*",
   className: "",
-  tooltipOffsetLeft: 0,
-  tooltipOffsetTop: -5,
   simpleView: false,
   passwordSettings: {
     minLength: 8,
@@ -555,6 +559,7 @@ PasswordInput.defaultProps = {
     digits: false,
     specSymbols: false,
   },
+  isfullwidth: false,
 };
 
 export default PasswordInput;

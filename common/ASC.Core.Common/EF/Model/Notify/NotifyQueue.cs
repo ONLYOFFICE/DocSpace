@@ -40,11 +40,15 @@ public class NotifyQueue
     public DateTime CreationDate { get; set; }
     public string Attachments { get; set; }
     public string AutoSubmitted { get; set; }
+
+    public DbTenant Tenant { get; set; }
 }
 public static class NotifyQueueExtension
 {
     public static ModelBuilderWrapper AddNotifyQueue(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<NotifyQueue>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddNotifyQueue, Provider.MySql)
             .Add(PgSqlAddNotifyQueue, Provider.PostgreSql);

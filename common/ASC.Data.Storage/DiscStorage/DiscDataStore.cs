@@ -184,7 +184,7 @@ public class DiscDataStore : BaseStorage
         }
         else
         {
-            using var fs = File.Open(target, FileMode.Create);
+            await using var fs = File.Open(target, FileMode.Create);
             await buffered.CopyToAsync(fs);
             fslen = fs.Length;
         }
@@ -214,7 +214,7 @@ public class DiscDataStore : BaseStorage
         var target = GetTarget(domain, path);
         var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 
-        using (var fs = new FileStream(target, mode))
+        await using (var fs = new FileStream(target, mode))
         {
             await stream.CopyToAsync(fs);
         }
