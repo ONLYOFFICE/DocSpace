@@ -39,6 +39,8 @@ jobs:
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
+          --set *.cache-to=type=gha \
+          --set *.cache-from=type=gha \
           --load
 
           DOCKER_IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$REPO" | tr '\n' ' ')
