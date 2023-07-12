@@ -1,27 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import toastr from "@docspace/components/toast/toastr";
-import { uploadLogo } from "@docspace/common/utils/whiteLabelHelper";
+import {
+  uploadLogo,
+  getNewLogoArr,
+  getLogosAsText,
+} from "@docspace/common/utils/whiteLabelHelper";
 
 import CommonWhiteLabel from "client/CommonWhiteLabel";
 
 import { useStore } from "SRC_DIR/store";
 
 const Branding = () => {
+  const { t } = useTranslation(["Settings"]);
+
   const { brandingStore } = useStore();
   const {
     initStore,
     whiteLabelLogos,
+    defaultWhiteLabelLogos,
+    getWhiteLabelLogoUrls,
     setWhiteLabelLogos,
     whiteLabelLogoText,
+    getWhiteLabelLogoText,
     setWhiteLabelLogoText,
     isEqualLogo,
     isEqualText,
+    saveWhiteLabelSettings,
     restoreDefault,
   } = brandingStore;
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,8 +76,33 @@ const Branding = () => {
     }
   };
 
+  const onUseTextAsLogo = () => {
+    const newLogos = getLogosAsText(whiteLabelLogos, whiteLabelLogoText);
+    setWhiteLabelLogos(newLogos);
+  };
+
+  const onSave = async () => {
+    setIsSaving(true);
+    const arr = getNewLogoArr(whiteLabelLogos, defaultWhiteLabelLogos);
+    const data = {
+      logoText: whiteLabelLogoText,
+      logo: arr,
+    };
+
+    try {
+      await saveWhiteLabelSettings(data);
+      await getWhiteLabelLogoUrls();
+      await getWhiteLabelLogoText();
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const onRestoreDefault = async () => {
-    await restoreDefault();
+    await restoreDefault(true);
   };
 
   return isLoading ? (
@@ -75,14 +112,14 @@ const Branding = () => {
       isSettingPaid={true}
       logoTextWhiteLabel={whiteLabelLogoText}
       onChangeCompanyName={onChangeCompanyName}
-      onUseTextAsLogo={() => console.log("onUseTextAsLogo")}
+      onUseTextAsLogo={onUseTextAsLogo}
       logoUrlsWhiteLabel={whiteLabelLogos}
       onChangeLogo={onChangeLogo}
-      onSave={() => console.log("onSave")}
+      onSave={onSave}
       onRestoreDefault={onRestoreDefault}
       isEqualLogo={isEqualLogo}
       isEqualText={isEqualText}
-      isSaving={false}
+      isSaving={isSaving}
     />
   );
 };

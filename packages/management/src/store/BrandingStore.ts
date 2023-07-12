@@ -2,9 +2,18 @@ import axios from "axios";
 import { makeAutoObservable, runInAction } from "mobx";
 import isEqual from "lodash/isEqual";
 
+import api from "@docspace/common/api";
+
 import { TLogoUrl } from "SRC_DIR/types/branding";
 
+type BrandingData = {
+  logoText: string | null;
+  logo: TLogoUrl[];
+};
+
 class BrandingStore {
+  isInit = false;
+
   defaultWhiteLabelLogos: TLogoUrl[] | null = null;
   whiteLabelLogos: TLogoUrl[] | null = null;
   whiteLabelLogoText: string | null = null;
@@ -15,32 +24,52 @@ class BrandingStore {
   }
 
   initStore = async () => {
-    const logos = await axios.get("http://localhost:3001/whitelabel");
-    const text = await axios.get("http://localhost:3001/logotext");
+    if (this.isInit) return;
+    this.isInit = true;
 
-    runInAction(() => {
-      this.defaultWhiteLabelLogos = logos.data;
-      this.whiteLabelLogos = logos.data;
-      this.defaultWhiteLabelLogoText = text.data;
-      this.whiteLabelLogoText = text.data;
-    });
+    const requests = [];
+    requests.push(this.getWhiteLabelLogoUrls(), this.getWhiteLabelLogoText());
+
+    return Promise.all(requests);
+  };
+
+  getWhiteLabelLogoUrls = async () => {
+    const res = await api.settings.getLogoUrls();
+    this.setWhiteLabelLogos(Object.values(res));
+    this.setDefaultWhiteLabelLogos(Object.values(res));
+  };
+
+  getWhiteLabelLogoText = async () => {
+    const res = await api.settings.getLogoText();
+    this.setWhiteLabelLogoText(res);
+    this.setDefaultWhiteLabelLogoText(res);
   };
 
   setWhiteLabelLogos = (whiteLabelLogos: TLogoUrl[]) => {
     this.whiteLabelLogos = whiteLabelLogos;
   };
 
+  setDefaultWhiteLabelLogos = (defaultWhiteLabelLogos: TLogoUrl[]) => {
+    this.defaultWhiteLabelLogos = defaultWhiteLabelLogos;
+  };
+
   setWhiteLabelLogoText = (whiteLabelLogoText: string) => {
     this.whiteLabelLogoText = whiteLabelLogoText;
   };
 
-  restoreDefault = async () => {
-    const res = await axios.get("http://localhost:3001/defaultwhitelabel");
+  setDefaultWhiteLabelLogoText = (defaultWhiteLabelLogoText: string) => {
+    this.defaultWhiteLabelLogoText = defaultWhiteLabelLogoText;
+  };
 
-    runInAction(() => {
-      this.defaultWhiteLabelLogos = res.data;
-      this.whiteLabelLogos = res.data;
-    });
+  saveWhiteLabelSettings = async (data: BrandingData) => {
+    const response = await api.settings.setWhiteLabelSettings(data);
+    return Promise.resolve(response);
+  };
+
+  restoreDefault = async (isDefault: boolean) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+    this.getWhiteLabelLogoUrls();
+    this.getWhiteLabelLogoText();
   };
 
   get isEqualLogo() {
