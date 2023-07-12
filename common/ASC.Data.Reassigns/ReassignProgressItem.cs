@@ -39,6 +39,7 @@ public class ReassignProgressItem : DistributedTaskProgress
     private IDictionary<string, StringValues> _httpHeaders;
     private int _tenantId;
     private Guid _currentUserId;
+    private bool _notify;
     private bool _deleteProfile;
 
     public ReassignProgressItem(IServiceScopeFactory serviceScopeFactory)
@@ -48,13 +49,14 @@ public class ReassignProgressItem : DistributedTaskProgress
         //_projectsReassign = new ProjectsReassign();
     }
 
-    public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    public void Init(IDictionary<string, StringValues> httpHeaders, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool notify, bool deleteProfile)
     {
         _httpHeaders = httpHeaders;
         _tenantId = tenantId;
         FromUser = fromUserId;
         ToUser = toUserId;
         _currentUserId = currentUserId;
+        _notify = notify;
         _deleteProfile = deleteProfile;
         Id = QueueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
         Status = DistributedTaskStatus.Created;
@@ -145,7 +147,10 @@ public class ReassignProgressItem : DistributedTaskProgress
         var fromUser = await userManager.GetUsersAsync(FromUser);
         var toUser = await userManager.GetUsersAsync(ToUser);
 
-        await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
+        if (_notify)
+        {
+            await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
+        }
 
         var fromUserName = fromUser.DisplayUserName(false, displayUserSettingsHelper);
         var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);

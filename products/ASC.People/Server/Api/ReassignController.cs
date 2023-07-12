@@ -64,37 +64,43 @@ public class ReassignController : ApiControllerBase
     }
 
     [HttpPost("reassign/start")]
-    public async Task<TaskProgressResponseDto> StartReassignAsync(StartReassignRequestDto inDto)
+    public async Task<IEnumerable<TaskProgressResponseDto>> StartReassignAsync(StartReassignRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var fromUser = await _userManager.GetUsersAsync(inDto.FromUserId);
-
-        if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
-        {
-            throw new ArgumentException("User with id = " + inDto.FromUserId + " not found");
-        }
-
-        if (fromUser.IsOwner(Tenant) || fromUser.IsMe(_authContext) || fromUser.Status != EmployeeStatus.Terminated)
-        {
-            throw new ArgumentException("Can not delete user with id = " + inDto.FromUserId);
-        }
-
         var toUser = await _userManager.GetUsersAsync(inDto.ToUserId);
 
-        if (toUser == null || toUser.Id == Constants.LostUser.Id)
-        {
-            throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
-        }
-
-        if (await _userManager.IsUserAsync(toUser) || toUser.Status == EmployeeStatus.Terminated)
+        if (_userManager.IsSystemUser(toUser.Id)
+            || await _userManager.IsUserAsync(toUser)
+            || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }
 
-        var progressItem = _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
+        foreach (var fromUserId in inDto.FromUserIds)
+        {
+            var fromUser = await _userManager.GetUsersAsync(fromUserId);
 
-        return TaskProgressResponseDto.Get(progressItem);
+            if (_userManager.IsSystemUser(fromUser.Id)
+                || fromUser.IsOwner(Tenant)
+                || fromUser.IsMe(_authContext)
+                || await _userManager.IsUserAsync(toUser)
+                || fromUser.Status != EmployeeStatus.Terminated)
+            {
+                throw new ArgumentException("Can not reassign data from user with id = " + fromUserId);
+            }
+        }
+
+        var notify = inDto.FromUserIds.Count() == 1;
+        var result = new List<TaskProgressResponseDto>();
+
+        foreach (var fromUserId in inDto.FromUserIds)
+        {
+            var progressItem = _queueWorkerReassign.Start(Tenant.Id, fromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, notify, inDto.DeleteProfile);
+            result.Add(TaskProgressResponseDto.Get(progressItem));
+        }
+
+        return result;
     }
 
     [HttpPut("reassign/terminate")]

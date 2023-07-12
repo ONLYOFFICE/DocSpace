@@ -103,11 +103,11 @@ public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
     }
 
-    public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+    public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool notify, bool deleteProfile)
     {
         var result = _serviceProvider.GetService<ReassignProgressItem>();
 
-        result.Init(_httpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+        result.Init(_httpHeaders, tenantId, fromUserId, toUserId, currentUserId, notify, deleteProfile);
 
         return Start(tenantId, fromUserId, result);
     }
