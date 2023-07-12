@@ -170,6 +170,7 @@
   "SMTPSettingsDescription": "Setările SMTP sunt necesare pentru a configura un cont de e-mail care va fi folosit pentru a trimite notificările din portalul folosind un server SMTP propriu în loc de cel pe care îl folosește {{organizationName}}. Vă rugăm să completați toate câmpurile și să faceți clic pe butonul Salvare. Puteți utiliza butonul Trimite un e-mail de testare pentru a verifica dacă toate setările pe care le-ați introdus sunt corecte și funcționează așa cum ar trebui.",
   "StoragePeriod": "Perioada de stocare",
   "StudioTimeLanguageSettings": "Setări limbă și fus orar",
+  "Submit": "Remitere",
   "SuccessfullySaveGreetingSettingsMessage": "Setările paginii principale au fost salvate cu succes",
   "SuccessfullySavePortalNameMessage": "Spaţiul a fost redenumit cu succes",
   "SuccessfullySaveSettingsMessage": "Setările au fost actualizate cu succes",

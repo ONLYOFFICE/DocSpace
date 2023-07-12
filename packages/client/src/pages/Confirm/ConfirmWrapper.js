@@ -6,12 +6,7 @@ import { getBgPattern } from "@docspace/common/utils";
 import { hugeMobile } from "@docspace/components/utils/device";
 
 const StyledWrapper = styled.div`
-  height: ${(props) =>
-    props.height
-      ? props.height
-      : isIOS && !isFirefox
-      ? "calc(var(--vh, 1vh) * 100)"
-      : "100vh"};
+  height: ${isIOS && !isFirefox ? "calc(var(--vh, 1vh) * 100)" : "100vh"};
   width: 100vw;
   z-index: 0;
   display: flex;
@@ -44,11 +39,11 @@ const BgBlock = styled.div`
 `;
 
 const ConfirmWrapper = (props) => {
-  const { children, currentColorScheme, height } = props;
+  const { children, currentColorScheme } = props;
   const bgPattern = getBgPattern(currentColorScheme?.id);
 
   return (
-    <StyledWrapper height={height}>
+    <StyledWrapper>
       <BgBlock bgPattern={bgPattern} />
       {children}
     </StyledWrapper>

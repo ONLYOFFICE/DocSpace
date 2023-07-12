@@ -9,6 +9,7 @@ import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
+import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
   automaticBackupUrl,

@@ -160,6 +160,7 @@
   "SessionLifetime": "Istunnon kesto",
   "SessionLifetimeHelper": "Tallentamisen jälkeen, kaikki käyttäjät kirjataan tästä tilasta ulos.",
   "SettingPasswordStrength": "Salasanan vahvuuden asettaminen",
+  "SettingPasswordStrengthDescription": "<1>Salasanan vahvuusasetuksilla</1> voidaan määrittää salasanan luotettavuus väärinkäyttöä ja tietomurtoja vastaan. <br> Käytä <2>Salasanan vähimmäispituus</2> palkkia määrittääksesi kuinka pitkä salasanan täytyy olla, jotta se voidaan hyväksyä luotettavana. Voit määrittää myös salasanassa käytettävän merkistön palkin alapuolella olevilla valinnoilla. <br>Ota tekemäsi asetukset käyttöön klikkaamalla <3>Tallenna</3> painiketta.",
   "SettingPasswordStrengthHelper": "Salasanan vähimmäispituus -palkin avulla voit määrittää salasanan pituuden. Valitse alla olevat ruudut määrittääksesi merkistön, jota salasanassa on käytettävä.",
   "ShowFeedbackAndSupport": "Näytä Palaute & Tukilinkki",
   "ShowHelpCenter": "Näytä linkki Help Centeriin",

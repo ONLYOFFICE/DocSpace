@@ -293,10 +293,6 @@ class SettingsStore {
     return `${this.apiDocsLink}/docspace/jssdk`;
   }
 
-  get apiBasicLink() {
-    return `${this.apiDocsLink}/docspace/basic`;
-  }
-
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
