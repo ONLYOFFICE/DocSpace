@@ -1,4 +1,0 @@
-FROM        mwader/static-ffmpeg AS ffmpeg
-FROM        ubuntu:20.04 AS base
-COPY --from=ffmpeg /ffprobe /ffmpeg /usr/local/bin/
-ENTRYPOINT  ["bash"]
