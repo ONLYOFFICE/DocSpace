@@ -1,5 +1,0 @@
-{
-  "DeleteGroupUsersSuccessMessage": "Les utilisateurs ont été supprimés avec succès.",
-  "DeleteUsers": "Supprimer les utilisateurs",
-  "DeleteUsersMessage": "Les utilisateurs désactivés sélectionnés seront supprimés de DocSpace. Les documents personnels de ces utilisateurs qui sont accessibles à d’autres personnes seront supprimés."
-}

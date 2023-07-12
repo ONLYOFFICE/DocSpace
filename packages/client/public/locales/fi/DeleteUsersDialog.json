@@ -1,5 +1,0 @@
-{
-  "DeleteGroupUsersSuccessMessage": "Käyttäjät on poistettu.",
-  "DeleteUsers": "Poista käyttäjät",
-  "DeleteUsersMessage": "Valitut käytöstä poistetut käyttäjät poistetaan DocSpacesta. Näiden käyttäjien henkilökohtaiset dokumentit, jotka ovat julkisia, poistetaan."
-}

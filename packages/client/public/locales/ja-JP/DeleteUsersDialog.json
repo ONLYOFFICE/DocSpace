@@ -1,5 +1,0 @@
-{
-  "DeleteGroupUsersSuccessMessage": "ユーザーが正常に削除されました。",
-  "DeleteUsers": "ユーザーを削除する",
-  "DeleteUsersMessage": "選択された無効ユーザーは、DocSpaceから削除されます。このユーザーが他のユーザーに共有している文書も削除されます。"
-}
