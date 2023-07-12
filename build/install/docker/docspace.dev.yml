@@ -139,11 +139,6 @@ services:
       - ${SERVICE_PORT}
       - "9834"
 
-  # onlyoffice-webhooks-service:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
-  #   container_name: ${WEBHOOKS_SERVICE_HOST}
-
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
@@ -159,7 +154,6 @@ services:
       - onlyoffice-backup
       # - onlyoffice-clear-events
       # - onlyoffice-migration
-      # - webhooks-service
       - onlyoffice-files
       - onlyoffice-files-services
       - onlyoffice-people-server
@@ -177,7 +171,6 @@ services:
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
       # - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
       # - SERVICE_MIGRATION=${SERVICE_MIGRATION}
-      # - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
       - SERVICE_SOCKET=${SERVICE_SOCKET}
