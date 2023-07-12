@@ -15,6 +15,7 @@ import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import styled from "styled-components";
+import { size } from "@docspace/components/utils/device";
 
 const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
@@ -45,6 +46,13 @@ const StyledModalDialogContainer = styled(ModalDialogContainer)`
 
   .reassign-data {
     line-height: 15px;
+  }
+
+  @media (min-width: ${size.smallTablet}px) {
+    .delete-button,
+    .cancel-button {
+      width: auto;
+    }
   }
 `;
 
@@ -134,6 +142,7 @@ const DeleteProfileEverDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="delete-button"
           key="OKBtn"
           label={t("Common:Delete")}
           size="normal"
@@ -143,6 +152,7 @@ const DeleteProfileEverDialogComponent = (props) => {
           isLoading={isRequestRunning}
         />
         <Button
+          className="cancel-button"
           label={t("Common:CancelButton")}
           size="normal"
           scale
