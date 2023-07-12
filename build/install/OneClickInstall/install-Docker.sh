@@ -829,13 +829,13 @@ get_available_version () {
 		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.results[].name')
 	fi
 
-	VERSION_REGEX_1="[0-9]+\.[0-9]+\.[0-9]+$"
-	VERSION_REGEX_2="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$"
+	VERSION_REGEX="[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
+	
 	TAG_LIST=""
 
 	for item in $TAGS_RESP
 	do
-		if [[ $item =~ $VERSION_REGEX_1 ]] || [[ $item =~ $VERSION_REGEX_2 ]]; then
+		if [[ $item =~ $VERSION_REGEX ]]; then
 			TAG_LIST="$item,$TAG_LIST"
 		fi
 	done
