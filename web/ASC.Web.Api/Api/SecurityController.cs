@@ -271,17 +271,22 @@ public class SecurityController : ControllerBase
     }
 
     [HttpPost("csp")]
-    public async Task<object> Csp(CspRequestsDto request)
+    public async Task<CspDto> Csp(CspRequestsDto request)
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         ArgumentNullException.ThrowIfNull(request);
 
-        return await _cspSettingsHelper.Save(request.Domains);
+        var header = await _cspSettingsHelper.Save(request.Domains);
+
+        return new CspDto { Domains = request.Domains, Header = header };
     }
 
     [HttpGet("csp")]
-    public CspSettings Csp()
+    public CspDto Csp()
     {
-        return _cspSettingsHelper.Load();
+        var settings = _cspSettingsHelper.Load();
+        return new CspDto { Domains = settings.Domains, Header = _cspSettingsHelper.CreateHeader(settings.Domains) };
     }
 
     private void DemandAuditPermission()

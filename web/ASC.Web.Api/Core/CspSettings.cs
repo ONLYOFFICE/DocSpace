@@ -65,40 +65,10 @@ public class CspSettingsHelper
     public async Task<string> Save(IEnumerable<string> domains)
     {
         var headerKey = GetKey(_tenantManager.GetCurrentTenant().GetTenantDomain(_coreSettings));
-        var headerValue = "";
+        var headerValue = CreateHeader(domains);
 
-        if (domains != null && domains.Any())
+        if (!string.IsNullOrEmpty(headerValue))
         {
-            var csp = new CspBuilder();
-
-            csp.ByDefaultAllow
-                .FromSelf()
-                .From(_filesLinkUtility.DocServiceUrl);
-
-            var scriptBuilder = csp.AllowScripts
-                .FromSelf()
-                .From(_filesLinkUtility.DocServiceUrl)
-                .AllowUnsafeInline();
-
-            var styleBuilder = csp.AllowStyles
-                .FromSelf()
-                .AllowUnsafeInline();
-
-            var imageBuilder = csp.AllowImages
-                .FromSelf();
-
-            var frameBuilder = csp.AllowFraming;
-
-            foreach (var domain in domains)
-            {
-                scriptBuilder.From(domain);
-                styleBuilder.From(domain);
-                imageBuilder.From(domain);
-                frameBuilder.From(domain);
-            }
-
-            (_, headerValue) = csp.BuildCspOptions().ToString(null);
-
             await _distributedCache.SetStringAsync(headerKey, headerValue);
         }
         else
@@ -127,6 +97,45 @@ public class CspSettingsHelper
             await _distributedCache.RemoveAsync(oldKey);
             await _distributedCache.SetStringAsync(GetKey(newDomain), val);
         }
+    }
+
+    public string CreateHeader(IEnumerable<string> domains)
+    {
+        if (domains == null || !domains.Any())
+        {
+            return null;
+        }
+
+        var csp = new CspBuilder();
+
+        csp.ByDefaultAllow
+            .FromSelf()
+            .From(_filesLinkUtility.DocServiceUrl);
+
+        var scriptBuilder = csp.AllowScripts
+            .FromSelf()
+            .From(_filesLinkUtility.DocServiceUrl)
+            .AllowUnsafeInline();
+
+        var styleBuilder = csp.AllowStyles
+            .FromSelf()
+            .AllowUnsafeInline();
+
+        var imageBuilder = csp.AllowImages
+            .FromSelf();
+
+        var frameBuilder = csp.AllowFraming;
+
+        foreach (var domain in domains)
+        {
+            scriptBuilder.From(domain);
+            styleBuilder.From(domain);
+            imageBuilder.From(domain);
+            frameBuilder.From(domain);
+        }
+
+        var (_, headerValue) = csp.BuildCspOptions().ToString(null);
+        return headerValue;
     }
 
     private string GetKey(string domain)
