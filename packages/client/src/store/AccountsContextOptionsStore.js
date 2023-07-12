@@ -187,7 +187,7 @@ class AccountsContextOptionsStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.peopleStore.selectionStore;
-    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+    const { setSendInviteDialogVisible, setDeleteProfileDialogVisible } =
       this.peopleStore.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
@@ -270,7 +270,7 @@ class AccountsContextOptionsStore {
         key: "cm-delete",
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
-        onClick: () => setDeleteDialogVisible(true),
+        onClick: () => setDeleteProfileDialogVisible(true),
         icon: DeleteReactSvgUrl,
       },
     ];

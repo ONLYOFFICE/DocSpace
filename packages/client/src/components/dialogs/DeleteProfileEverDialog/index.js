@@ -68,17 +68,43 @@ const DeleteProfileEverDialogComponent = (props) => {
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
     userPerformedDeletion,
+    userIds,
   } = props;
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const navigate = useNavigate();
 
+  const onlyOneUser = userIds.length !== 2;
+
+  const header = onlyOneUser ? t("DeleteUser") : t("DeleteUsers");
+
+  const deleteMessage = onlyOneUser ? (
+    <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
+      {{ userCaption: t("Common:User") }}
+      <strong>{{ user: user.displayName }}</strong>
+      will be deleted. This action cannot be undone.
+    </Trans>
+  ) : (
+    t("DeleteUsersMessage")
+  );
+
+  const i18nKeyWarningMessage = onlyOneUser
+    ? "DeleteReassignDescriptionUser"
+    : "DeleteReassignDescriptionUsers";
+
+  const warningMessage = (
+    <Trans i18nKey={i18nKeyWarningMessage} ns="DeleteProfileEverDialog" t={t}>
+      <strong>
+        {{ userPerformedDeletion }} ({{ userYou: t("Common:You") }})
+      </strong>
+      Reassign data manually to choose another destination user for reassignment
+    </Trans>
+  );
+
   const onDeleteProfileEver = () => {
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
-
     const url = `/accounts/filter?${params}`;
-
     setIsRequestRunning(true);
     deleteUser(user.id)
       .then((res) => {
@@ -91,43 +117,22 @@ const DeleteProfileEverDialogComponent = (props) => {
       .finally(() => onClose());
   };
 
-  const onClickDataReassignmentDialog = () => {
+  const onClickReassignData = () => {
     setDataReassignmentDialogVisible(true);
     setDeleteProfileDialogVisible(false);
   };
+
   return (
     <StyledModalDialogContainer
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
     >
-      <ModalDialog.Header>{t("DeleteUser")}</ModalDialog.Header>
+      <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="user-delete">
-          <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
-            {{ userCaption: t("Common:User") }}
-            <strong>{{ user: user.displayName }}</strong>
-            will be deleted. This action cannot be undone.
-          </Trans>
-        </Text>
+        <Text className="user-delete">{deleteMessage}</Text>
         <Text className="text-warning">{t("Common:Warning")}!</Text>
-        <Text className="text-delete-description">
-          <Trans
-            i18nKey="DeleteReassignDescription"
-            ns="DeleteProfileEverDialog"
-            t={t}
-          >
-            All personal files and folders in My documents section of this user
-            will be permanently deleted. Rooms created by this user and
-            documents stored in these rooms will be reassigned automatically to
-            an admin performing the deletion:
-            <strong>
-              {{ userPerformedDeletion }} ({{ userYou: t("Common:You") }})
-            </strong>
-            Reassign data manually to choose another destination user for
-            reassignment
-          </Trans>
-        </Text>
+        <Text className="text-delete-description">{warningMessage}</Text>
 
         <Link
           className="reassign-data"
@@ -135,7 +140,7 @@ const DeleteProfileEverDialogComponent = (props) => {
           fontSize="13px"
           fontWeight={600}
           isHovered={true}
-          onClick={onClickDataReassignmentDialog}
+          onClick={onClickReassignData}
         >
           {t("DataReassignmentDialog:ReassignData")}
         </Link>
@@ -178,10 +183,16 @@ DeleteProfileEverDialog.propTypes = {
 
 export default inject(({ peopleStore }) => ({
   homepage: config.homepage,
+
   setFilter: peopleStore.filterStore.setFilterParams,
+
   setDataReassignmentDialogVisible:
     peopleStore.dialogStore.setDataReassignmentDialogVisible,
+
   setDeleteProfileDialogVisible:
     peopleStore.dialogStore.setDeleteProfileDialogVisible,
+
   userPerformedDeletion: peopleStore.authStore.userStore.user.displayName,
+
+  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
 }))(observer(DeleteProfileEverDialog));
