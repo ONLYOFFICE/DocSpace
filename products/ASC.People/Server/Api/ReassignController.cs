@@ -53,7 +53,7 @@ public class ReassignController : ApiControllerBase
         _securityContext = securityContext;
     }
 
-    [HttpGet("reassign/progress")]
+    [HttpGet("reassign/progress/{userid}")]
     public async Task<TaskProgressResponseDto> GetReassignProgressAsync(Guid userId)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
