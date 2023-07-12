@@ -368,12 +368,19 @@ export function sendOwnerChange(ownerId) {
   });
 }
 
-export function dataReassignment(fromUserId, toUserId, deleteProfile) {
-  const data = { fromUserId, toUserId, deleteProfile };
+export function dataReassignment(fromUserIds, toUserId, deleteProfile) {
+  const data = { fromUserIds, toUserId, deleteProfile };
   return request({
     method: "post",
     url: `/people/reassign/start`,
     data,
+  });
+}
+
+export function dataReassignmentProgress(id) {
+  return request({
+    method: "get",
+    url: `/people/reassign/progress?userId=${id}`,
   });
 }
 
