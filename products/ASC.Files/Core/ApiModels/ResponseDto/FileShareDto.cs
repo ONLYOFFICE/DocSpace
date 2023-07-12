@@ -59,6 +59,7 @@ public class FileShareLink
     public bool? Disabled { get; set; }
     public bool? DenyDownload { get; set; }
     public bool IsTemplate { get; set; }
+    public bool? IsExpired { get; set; }
 }
 
 public enum LinkType
@@ -98,6 +99,7 @@ public class FileShareDtoHelper
             if (!string.IsNullOrEmpty(aceWrapper.Link))
             {
                 var date = aceWrapper.FileShareOptions?.ExpirationDate;
+                var expired = aceWrapper.FileShareOptions?.IsExpired;
 
                 result.SharedTo = new FileShareLink
                 {
@@ -106,7 +108,7 @@ public class FileShareDtoHelper
                     ShareLink = aceWrapper.Link,
                     ExpirationDate = date.HasValue && date.Value != default ? _apiDateTimeHelper.Get(date) : null,
                     Password = aceWrapper.FileShareOptions?.Password,
-                    Disabled = aceWrapper.FileShareOptions?.Disabled,
+                    Disabled = aceWrapper.FileShareOptions?.Disabled is true ? true : expired,
                     DenyDownload = aceWrapper.FileShareOptions?.DenyDownload,
                     IsTemplate = aceWrapper.IsTemplate,
                     LinkType = aceWrapper.SubjectType switch
@@ -115,6 +117,7 @@ public class FileShareDtoHelper
                         SubjectType.ExternalLink => LinkType.External,
                         _ => LinkType.Invitation
                     },
+                    IsExpired = expired
                 };
             }
             else
