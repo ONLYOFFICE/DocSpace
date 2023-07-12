@@ -161,7 +161,7 @@
   "SessionLifetime": "Sesijas ilgums",
   "SessionLifetimeHelper": "Pēc saglabāšanas visi lietotāji tiks izrakstīti no telpas.",
   "SettingPasswordStrength": "Paroles stipruma iestatīšana",
-  "SettingPasswordStrengthDescription": "<1>Parole Stiprums Iestatījumi</1> ļauj noteikt paroles stiprumu (paroles efektivitāte prēt brute-force uzbrukumiem). <br> Izmantojiet <2>Minimālā Paroles</2> {1}Garumu{2} bāru, lai noteiktu, cik garai parolei jabūt. Atzimējiet atbilstošos lodziņus zem joslā, lai noteiktu rakstzīmju kopu, kas jāizmanto ar paroli. <br> Lai piemērotu veiktās izmaiņas izmantojiet <3>Saglabāt</3> pogu sadaļā apakšā.\n",
+  "SettingPasswordStrengthDescription": "<1>Parole Stiprums Iestatījumi</1> ļauj noteikt paroles stiprumu (paroles efektivitāte prēt brute-force uzbrukumiem). <br> Izmantojiet <2>Minimālā Paroles Garumu</2> bāru, lai noteiktu, cik garai parolei jabūt. Atzimējiet atbilstošos lodziņus zem joslā, lai noteiktu rakstzīmju kopu, kas jāizmanto ar paroli. <br> Lai piemērotu veiktās izmaiņas izmantojiet <3>Saglabāt</3> pogu sadaļā apakšā.",
   "SettingPasswordStrengthHelper": "Izmantojiet minimālā paroles garuma joslu, lai noteiktu, cik garai parolei jābūt. Atzīmējiet atbilstošās izvēles rūtiņas, lai noteiktu parolē izmantojamo rakstzīmju kopu.",
   "ShowFeedbackAndSupport": "Rādīt atsauksmju un atbalsta saiti",
   "ShowHelpCenter": "Rādīt saiti uz palīdzības centru",

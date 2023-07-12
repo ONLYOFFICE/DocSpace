@@ -188,6 +188,7 @@
   "ThirdPartyTitleDescription": "Com as chaves de Autorização, pode ligar serviços de terceiros ao seu espaço. Inicie sessão facilmente com o Facebook, Google ou LinkedIn; adicione o Dropbox, Onedrive, etc. para trabalhar em ficheiros armazenados nessas plataformas a partir do módulo dos documentos.",
   "TimeZone": "Fuso horário",
   "TrustedMail": "Configurações de domínio de email confiável",
+  "TrustedMailHelper": "Você pode tanto marcar a opção Domínios Personalizados quanto inserir o servidor de e-mail de confiança em um campo abaixo para aquela pessoa que tem uma conta em que será capaz de registrar sozinho clicando no link Junte-se na página Entrar ou desabilitar esta opção.",
   "TwoFactorAuth": "Autenticação de dois fatores",
   "TwoFactorAuthHelper": "Nota: As mensagens (SMS) só podem ser enviadas se tiver um saldo positivo. Pode sempre consultar o seu saldo atual na conta do seu fornecedor de SMS. Não se esqueça de recarregar o seu saldo a tempo.",
   "UseAsLogoButton": "Utilizar como logótipo",

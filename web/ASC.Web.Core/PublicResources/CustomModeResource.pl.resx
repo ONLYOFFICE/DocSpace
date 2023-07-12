@@ -88,4 +88,111 @@ Link jest ważny przez 7 dni.
 
 Nie chcesz zmieniać hasła? Po prostu zignoruj tę wiadomość.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Witaj w ONLYOFFICE Personal
+
+Twoje osobiste biuro w chmurze właśnie zostało utworzone.
+
+h3.Jest to wirtualny obszar roboczy, gdzie możesz edytować i przechowywać dokumenty, pracować nad nimi z dowolnego miejsca oraz udostępniać je znajomym lub współpracownikom.
+
+h3. Na dobry początek zobacz, co możesz zrobić w ONLYOFFICE:
+
+- twórz i edytuj dokumenty tekstowe, arkusze kalkulacyjne oraz prezentacje
+
+- pracuj ze wszystkimi popularnymi formatami Najwyższa kompatybilność z plikami MS Office
+
+- twórz i współedytuj "gotowe do wypełnienia formularze":"https://www.onlyoffice.com/form-creator.aspx"
+
+- udostępniaj dokumenty i współpracuj nad nimi online
+
+- używaj różnych wtyczek, aby zastosować dodatkowe funkcje
+
+- uzyskaj łatwy dostęp do swojej osobistej chmury za pomocą "rozszerzenia Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Możesz również edytować dokumenty w trybie offline za pomocą naszych darmowych "edytorów dla komputerów stacjonarnych":"https://www.onlyoffice.com/download-desktop.aspx" lub pobrać pakiet edytorów mobilnych na urządzenia z "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" bądź "Androidem":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Chcesz zmienić adres e-mail dla swojego konta w chmurze?
+
+Kliknij poniższy przycisk, aby zalogować się* do swojej chmury.
+
+$GreenButton
+
+Link jest ważny przez 7 dni.
+
+*Jeśli nie jesteś zalogowany(a) na swoim koncie w chmurze, musisz użyć starego adresu e-mail do potwierdzenia.
+
+Nie chcesz zmieniać adresu e-mail? Po prostu zignoruj tę wiadomość.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Witaj,
+
+Twoje konto ONLYOFFICE do użytku osobistego zostało pomyślnie utworzone. Kliknij "tutaj":"$InviteLink", aby potwierdzić rejestrację i utworzyć hasło.
+
+Jeśli nie możesz otworzyć linku, skopiuj "$InviteLink":"$InviteLink" i wklej go w pasku adresowym swojej przeglądarki.
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Poproszono o zamknięcie Twojego konta na stronie personal.onlyoffice.com. Kliknij link, aby potwierdzić prośbę (link jest aktywny przez 7 dni): 
+
+Potwierdź zamknięcie konta
+
+*Uwaga*: Po zamknięciu Twoje konto i wszystkie powiązane z nim dane zostaną trwale usunięte zgodnie z naszą "Polityką prywatności":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Dowiedz się więcej na temat procesu zamknięcia konta":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Zignoruj tę wiadomość e-mail, jeśli nie chcesz kontynuować. 
+
+W razie jakichkolwiek pytań prosimy o kontakt pod adresem "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Witaj, {username}
+
+Proces usuwania danych użytkownika "$FromUserName":"$FromUserLink” został pomyślnie zakończony.
+
+Usunięcie danych osobowych umożliwiło uwolnienie:
+
+# Dokumenty – $DocsSpace
+# Wiadomości – $MailSpace
+# Rozmowy – $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Nowy portal został zarejestrowany
+
+# Adres URL portalu: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Imię: $UserName
+# Nazwisko: $UserLastName
+# E-mail: $UserEmail
+# Telefon: $Phone
+# Data utworzenia: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Rób to samo, co użytkownik|Podłącz Dropbox, Box i inne konta w sekcji „Wspólne”|Skonfiguruj prawa dostępu do dokumentów i katalogów w sekcji „Wspólne”</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Twórz i edytuj własne oraz współdzielone dokumenty z odpowiednimi prawami dostępu|Nadawaj innym użytkownikom uprawnienia do odczytu/edycji dokumentów i katalogów|Podłącz Dropbox, Box oraz inne konta w sekcji „Moje dokumenty”</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Aktywuj swój adres e-mail</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Zamknięcie konta ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Zakończono usuwanie danych użytkownika</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Nowy portal został zarejestrowany</value>
+  </data>
 </root>
