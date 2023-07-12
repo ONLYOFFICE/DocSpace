@@ -20,6 +20,7 @@ const ContactContainer = ({ t, salesEmail }) => {
         <Text as="span" noSelect fontWeight={600}>
           {t("ContactUs")}
           <ColorTheme
+            className="sales-email-link"
             tag="a"
             themeId={ThemeType.Link}
             fontWeight="600"

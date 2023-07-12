@@ -4,11 +4,9 @@ import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
   UploadPanel,
-  OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
-  SelectFileDialog,
   HotkeyPanel,
   InvitePanel,
 } from "../panels";
@@ -29,6 +27,8 @@ import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
 import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
+import FilesSelector from "../FilesSelector";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 import LeaveRoomDialog from "../dialogs/LeaveRoomDialog";
 import ChangeRoomOwnerPanel from "../panels/ChangeRoomOwnerPanel";
 
@@ -84,10 +84,11 @@ const Panels = (props) => {
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
     (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
-      <OperationsPanel
-        key="operation-panel"
+      <FilesSelector
+        key="files-selector"
+        isMove={moveToPanelVisible}
         isCopy={copyPanelVisible}
-        isRestore={restoreAllPanelVisible}
+        isRestoreAll={restoreAllPanelVisible}
       />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
@@ -114,21 +115,15 @@ const Panels = (props) => {
       <CreateRoomConfirmDialog key="create-room-confirm-dialog" />
     ),
     selectFileDialogVisible && (
-      <SelectFileDialog
+      <FilesSelector
         key="select-file-dialog"
-        //resetTreeFolders
-        onSelectFile={createMasterForm}
+        filterParam={FilesSelectorFilterTypes.DOCX}
         isPanelVisible={selectFileDialogVisible}
+        onSelectFile={createMasterForm}
         onClose={onClose}
-        filteredType="exceptPrivacyTrashArchiveFolders"
-        ByExtension
-        searchParam={".docx"}
-        dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("Common:SelectDOCXFormat")}
-        creationButtonPrimary
-        withSubfolders={false}
       />
     ),
+
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
     invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (

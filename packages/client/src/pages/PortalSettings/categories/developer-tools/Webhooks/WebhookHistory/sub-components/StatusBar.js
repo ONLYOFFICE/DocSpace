@@ -3,7 +3,7 @@ import moment from "moment";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import SelectedItem from "./SelectedItem";
+import SelectedItem from "@docspace/components/selected-item";
 import Link from "@docspace/components/link";
 
 const StatusBarWrapper = styled.div`
@@ -48,7 +48,8 @@ const StatusBar = (props) => {
           " - " +
           moment(historyFilters.deliveryTo).format("HH:mm")
         }
-        removeSelectedItem={clearDate}
+        onClose={clearDate}
+        onClick={clearDate}
       />
     );
   };
@@ -56,7 +57,8 @@ const StatusBar = (props) => {
   const SelectedDate = () => (
     <SelectedItem
       label={moment(historyFilters.deliveryDate).format("DD MMM YYYY")}
-      removeSelectedItem={clearDate}
+      onClose={clearDate}
+      onClick={clearDate}
     />
   );
 
@@ -64,7 +66,8 @@ const StatusBar = (props) => {
     <SelectedItem
       label={statusCode}
       key={statusCode}
-      removeSelectedItem={() => unselectStatus(statusCode)}
+      onClose={() => unselectStatus(statusCode)}
+      onClick={() => unselectStatus(statusCode)}
     />
   ));
 

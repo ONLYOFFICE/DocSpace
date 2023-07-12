@@ -248,7 +248,7 @@ public class FileHandlerService
         try
         {
             var flushed = false;
-            using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
+            await using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
             {
                 long offset = 0;
                 var length = readStream.Length;
@@ -731,7 +731,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(file.Title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(file.Title);
 
-            using var stream = await fileDao.GetFileStreamAsync(file);
+            await using var stream = await fileDao.GetFileStreamAsync(file);
             context.Response.Headers.Add("Content-Length",
                 stream.CanSeek
                 ? stream.Length.ToString(CultureInfo.InvariantCulture)
@@ -832,7 +832,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(fileName));
             context.Response.ContentType = MimeMapping.GetMimeMapping(fileName);
 
-            using var stream = await storeTemplate.GetReadStreamAsync("", path);
+            await using var stream = await storeTemplate.GetReadStreamAsync("", path);
             context.Response.Headers.Add("Content-Length",
                 stream.CanSeek
                 ? stream.Length.ToString(CultureInfo.InvariantCulture)
@@ -891,7 +891,7 @@ public class FileHandlerService
             return;
         }
 
-        using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
+        await using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
         {
             context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
             await readStream.CopyToAsync(context.Response.Body);
@@ -982,7 +982,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
             context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-            using var stream = await fileDao.GetDifferenceStreamAsync(file);
+            await using var stream = await fileDao.GetDifferenceStreamAsync(file);
             context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
             await stream.CopyToAsync(context.Response.Body);
         }
@@ -1078,7 +1078,7 @@ public class FileHandlerService
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".jpeg");
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".jpeg", true));
 
-                using (var stream = await fileDao.GetFileStreamAsync(file))
+                await using (var stream = await fileDao.GetFileStreamAsync(file))
                 {
                     var processedImage = await Image.LoadAsync(stream);
 
@@ -1099,7 +1099,7 @@ public class FileHandlerService
 
                 var thumbnailFilePath = fileDao.GetUniqThumbnailPath(file, width, height);
 
-                using (var stream = await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(thumbnailFilePath))
+                await using (var stream = await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(thumbnailFilePath))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                     await stream.CopyToAsync(context.Response.Body);
@@ -1161,7 +1161,7 @@ public class FileHandlerService
 
             var fileDao = _daoFactory.GetFileDao<string>();
 
-            using (var stream = await fileDao.GetThumbnailAsync(id, width, height))
+            await using (var stream = await fileDao.GetThumbnailAsync(id, width, height))
             {
                 await stream.CopyToAsync(context.Response.Body);
             }
@@ -1375,7 +1375,7 @@ public class FileHandlerService
         var fileDao = _daoFactory.GetFileDao<T>();
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using var fileStream = await response.Content.ReadAsStreamAsync();
+        await using var fileStream = await response.Content.ReadAsStreamAsync();
 
         if (fileStream.CanSeek)
         {
@@ -1384,7 +1384,7 @@ public class FileHandlerService
         }
         else
         {
-            using var buffered = _tempStream.GetBuffered(fileStream);
+            await using var buffered = _tempStream.GetBuffered(fileStream);
             file.ContentLength = buffered.Length;
             return await fileDao.SaveFileAsync(file, buffered);
         }

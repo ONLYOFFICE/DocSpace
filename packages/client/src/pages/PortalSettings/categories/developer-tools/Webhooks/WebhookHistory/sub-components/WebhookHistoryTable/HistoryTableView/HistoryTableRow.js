@@ -53,7 +53,8 @@ const HistoryTableRow = (props) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
+  const redirectToDetails = () =>
+    navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(item.id);
     await fetchHistoryItems({
@@ -65,12 +66,14 @@ const HistoryTableRow = (props) => {
 
   const contextOptions = [
     {
+      id: "webhook-details",
       key: "Webhook details dropdownItem",
       label: t("WebhookDetails"),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
+      id: "retry",
       key: "Retry dropdownItem",
       label: t("Retry"),
       icon: RetryIcon,
@@ -78,7 +81,8 @@ const HistoryTableRow = (props) => {
     },
   ];
 
-  const formattedDelivery = moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+  const formattedDelivery =
+    moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
 
   const onChange = (e) => {
     if (
@@ -96,11 +100,22 @@ const HistoryTableRow = (props) => {
   const isChecked = isIdChecked(item.id);
 
   return (
-    <StyledWrapper className={isChecked ? "selected-table-row" : ""} onClick={onChange}>
-      <StyledTableRow contextOptions={contextOptions} checked={isChecked} hideColumns={hideColumns}>
+    <StyledWrapper
+      className={isChecked ? "selected-table-row" : ""}
+      onClick={onChange}
+    >
+      <StyledTableRow
+        contextOptions={contextOptions}
+        checked={isChecked}
+        hideColumns={hideColumns}
+      >
         <TableCell>
           <TableCell checked={isChecked} className="checkboxWrapper">
-            <Checkbox onChange={onChange} isChecked={isChecked} />
+            <Checkbox
+              className="checkbox"
+              onChange={onChange}
+              isChecked={isChecked}
+            />
           </TableCell>
 
           <Text fontWeight={600}>{item.id}</Text>

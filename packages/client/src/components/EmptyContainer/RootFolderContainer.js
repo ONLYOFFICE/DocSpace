@@ -248,23 +248,43 @@ const RootFolderContainer = (props) => {
     <span>
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-document empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
 
         <Box className="flex-wrapper_container">
-          <Link data-format="docx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="document"
+            data-format="docx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Document")},
           </Link>
-          <Link data-format="xlsx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="spreadsheet"
+            data-format="xlsx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Spreadsheet")},
           </Link>
-          <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="presentation"
+            data-format="pptx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Presentation")},
           </Link>
-          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="form-template"
+            data-format="docxf"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Translations:NewForm")}
           </Link>
         </Box>
@@ -272,11 +292,11 @@ const RootFolderContainer = (props) => {
 
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-folder empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
-        <Link {...linkStyles} onClick={onCreate}>
+        <Link id="folder" {...linkStyles} onClick={onCreate}>
           {t("Folder")}
         </Link>
       </div>

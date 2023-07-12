@@ -301,6 +301,7 @@ const InvitePanel = ({
         {hasInvitedUsers && (
           <StyledButtons>
             <Button
+              className="send-invitation"
               scale={true}
               size={"normal"}
               isDisabled={hasErrors}
@@ -310,6 +311,7 @@ const InvitePanel = ({
               isLoading={isLoading}
             />
             <Button
+              className="cancel-button"
               scale={true}
               size={"normal"}
               onClick={onClose}
@@ -365,12 +367,8 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     setInvitePanelOptions,
   } = dialogsStore;
 
-  const {
-    getFolderInfo,
-    setRoomSecurity,
-    getRoomSecurityInfo,
-    folders,
-  } = filesStore;
+  const { getFolderInfo, setRoomSecurity, getRoomSecurityInfo, folders } =
+    filesStore;
 
   return {
     folders,

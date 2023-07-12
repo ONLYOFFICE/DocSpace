@@ -74,6 +74,7 @@ const ChangeNameDialog = (props) => {
           className="field"
         >
           <TextInput
+            className="first-name"
             scale={true}
             isAutoFocussed={true}
             value={firstName}
@@ -91,6 +92,7 @@ const ChangeNameDialog = (props) => {
           className="field"
         >
           <TextInput
+            className="last-name"
             scale={true}
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -103,6 +105,7 @@ const ChangeNameDialog = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="save"
           key="ChangeNameSaveBtn"
           label={t("Common:SaveButton")}
           size="normal"
@@ -113,6 +116,7 @@ const ChangeNameDialog = (props) => {
           tabIndex={3}
         />
         <Button
+          className="cancel-button"
           key="CloseBtn"
           label={t("Common:CancelButton")}
           size="normal"

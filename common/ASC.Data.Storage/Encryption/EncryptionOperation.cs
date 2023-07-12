@@ -160,7 +160,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         if (await store.IsFileAsync(string.Empty, ProgressFileName))
         {
-            using var stream = await store.GetReadStreamAsync(string.Empty, ProgressFileName);
+            await using var stream = await store.GetReadStreamAsync(string.Empty, ProgressFileName);
             using var reader = new StreamReader(stream);
             string line;
 
