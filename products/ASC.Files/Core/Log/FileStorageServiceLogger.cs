@@ -42,8 +42,11 @@ internal static partial class FileStorageServiceLogger
     [LoggerMessage(Level = LogLevel.Information, Message = "Delete provider {providerId} for {userId}")]
     public static partial void InformationDeleteProvider(this ILogger logger, int providerId, Guid userId);
 
-    [LoggerMessage(Level = LogLevel.Information, Message = "Reassign data from {fromUser} to {toUser}")]
-    public static partial void InformationReassignData(this ILogger logger, Guid fromUser, Guid toUser);
+    [LoggerMessage(Level = LogLevel.Information, Message = "Reassign folders from {fromUser} to {toUser}")]
+    public static partial void InformationReassignFolders(this ILogger logger, Guid fromUser, Guid toUser);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Reassign files from {fromUser} to {toUser}")]
+    public static partial void InformationReassignFiles(this ILogger logger, Guid fromUser, Guid toUser);
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Delete personal data for {userId}")]
     public static partial void InformationDeletePersonalData(this ILogger logger, Guid userId);

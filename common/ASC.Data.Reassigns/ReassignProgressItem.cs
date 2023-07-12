@@ -78,17 +78,37 @@ public class ReassignProgressItem : DistributedTaskProgress
 
             await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
-            Percentage = 33;
+            Percentage = 5;
             PublishChanges();
 
-            await fileStorageService.ReassignStorageAsync<int>(FromUser, ToUser);
+            await fileStorageService.DemandPermissionToReassignDataAsync(FromUser, ToUser);
 
-            Percentage = 66;
+            Percentage = 10;
+            PublishChanges();
+
+            await fileStorageService.DeletePersonalDataAsync<int>(FromUser);
+
+            Percentage = 30;
+            PublishChanges();
+
+            await fileStorageService.ReassignProvidersAsync<string>(FromUser, ToUser);
+
+            Percentage = 50;
+            PublishChanges();
+
+            await fileStorageService.ReassignFoldersAsync<int>(FromUser, ToUser);
+
+            Percentage = 70;
+            PublishChanges();
+
+            await fileStorageService.ReassignFilesAsync<int>(FromUser, ToUser);
+
+            Percentage = 90;
             PublishChanges();
 
             await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
-            Percentage = 99;
+            Percentage = 95;
             PublishChanges();
 
             if (_deleteProfile)

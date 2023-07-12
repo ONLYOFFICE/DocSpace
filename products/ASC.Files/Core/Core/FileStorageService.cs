@@ -2220,54 +2220,125 @@ public class FileStorageService //: IFileStorageService
         return _filesLinkUtility.GetFileWebEditorUrl(file.Id);
     }
 
-    public async Task ReassignStorageAsync<T>(Guid userFromId, Guid userToId)
+    #region [Reassign|Delete] Data Manager
+
+    public async Task DemandPermissionToReassignDataAsync(Guid userFromId, Guid userToId)
+    {
+        await DemandPermissionToDeletePersonalDataAsync(userFromId);
+
+        //check exist userTo
+        var userTo = await _userManager.GetUsersAsync(userToId);
+        ErrorIf(Equals(userTo, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
+
+        //check user can have personal data
+        ErrorIf(await _userManager.IsUserAsync(userTo), FilesCommonResource.ErrorMassage_SecurityException);
+    }
+
+    public async Task DemandPermissionToDeletePersonalDataAsync(Guid userFromId)
+    {
+        var userFrom = await _userManager.GetUsersAsync(userFromId);
+
+        await DemandPermissionToDeletePersonalDataAsync(userFrom);
+    }
+
+    public async Task DemandPermissionToDeletePersonalDataAsync(UserInfo userFrom)
     {
         //check current user have access
         ErrorIf(!await _global.IsDocSpaceAdministratorAsync, FilesCommonResource.ErrorMassage_SecurityException);
 
         //check exist userFrom
-        var userFrom = await _userManager.GetUsersAsync(userFromId);
         ErrorIf(Equals(userFrom, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
 
-        //check exist userTo
-        var userTo = await _userManager.GetUsersAsync(userToId);
-        ErrorIf(Equals(userTo, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
-        ErrorIf(await _userManager.IsUserAsync(userTo), FilesCommonResource.ErrorMassage_SecurityException);
+        //check user have personal data
+        ErrorIf(await _userManager.IsUserAsync(userFrom), FilesCommonResource.ErrorMassage_SecurityException);
+    }
 
-        var providerDao = GetProviderDao<T>();
-        if (providerDao != null)
+    public async Task DeletePersonalDataAsync<T>(Guid userFromId, bool checkPermission = false)
+    {
+        if (checkPermission)
         {
-            //move thirdparty storage userFrom
-            await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFrom.Id))
-            {
-                _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFrom.Id, userTo.Id);
-                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userTo.Id);
-            }
+            await DemandPermissionToDeletePersonalDataAsync(userFromId);
         }
 
         var folderDao = GetFolderDao<T>();
-        var fileDao = GetFileDao<T>();
-
-        if (!await _userManager.IsUserAsync(userFrom))
+        if (folderDao == null)
         {
-            _logger.InformationDeletePersonalData(userFrom.Id);
-
-            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
-            if (!Equals(folderIdFromMy, 0))
-            {
-                await folderDao.DeleteFolderAsync(folderIdFromMy);
-            }
-
-            var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userFrom.Id);
-            if (!Equals(folderIdFromTrash, 0))
-            {
-                await folderDao.DeleteFolderAsync(folderIdFromTrash);
-            }
+            return;
         }
 
-        _logger.InformationReassignData(userFrom.Id, userTo.Id);
-        await EntryManager.ReassignItemsAsync(userFrom.Id, userTo.Id, folderDao, fileDao);
+        _logger.InformationDeletePersonalData(userFromId);
+
+        var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFromId);
+        if (!Equals(folderIdFromMy, 0))
+        {
+            await folderDao.DeleteFolderAsync(folderIdFromMy);
+        }
+
+        var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userFromId);
+        if (!Equals(folderIdFromTrash, 0))
+        {
+            await folderDao.DeleteFolderAsync(folderIdFromTrash);
+        }
     }
+
+    public async Task ReassignProvidersAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var providerDao = GetProviderDao<T>();
+        if (providerDao == null)
+        {
+            return;
+        }
+
+        //move thirdparty storage userFrom
+        await foreach (var commonProviderInfo in providerDao.GetProvidersInfoAsync(userFromId))
+        {
+            _logger.InformationReassignProvider(commonProviderInfo.ProviderId, userFromId, userToId);
+            await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ProviderId, null, null, FolderType.DEFAULT, userToId);
+        }
+    }
+
+    public async Task ReassignFoldersAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var folderDao = GetFolderDao<T>();
+        if (folderDao == null)
+        {
+            return;
+        }
+
+        _logger.InformationReassignFolders(userFromId, userToId);
+
+        await folderDao.ReassignFoldersAsync(userFromId, userToId);
+    }
+
+    public async Task ReassignFilesAsync<T>(Guid userFromId, Guid userToId, bool checkPermission = false)
+    {
+        if (checkPermission)
+        {
+            await DemandPermissionToReassignDataAsync(userFromId, userToId);
+        }
+
+        var fileDao = GetFileDao<T>();
+        if (fileDao == null)
+        {
+            return;
+        }
+
+        _logger.InformationReassignFiles(userFromId, userToId);
+
+        await fileDao.ReassignFilesAsync(userFromId, userToId);
+    }
+
+    #endregion
 
     #region Favorites Manager
 
