@@ -228,9 +228,10 @@ set_core_machinekey () {
 }
 
 install_json() {
-	if [ ! -e /usr/bin/json ]; then
+	if ! command -v json; then
 		echo -n "Install json package... "
-		npm i json -g >/dev/null 2>&1
+		curl -L https://github.com/trentm/json/raw/master/lib/json.js > /usr/bin/json
+		chmod 755 /usr/bin/json
 		echo "OK"
 	fi
 }
