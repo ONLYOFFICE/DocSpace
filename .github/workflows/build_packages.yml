@@ -117,7 +117,7 @@ jobs:
           sudo npm install -g json
           sudo pip install rpmlint
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.1.0")" >> $GITHUB_OUTPUT
           
       - name: Build
         run: |
