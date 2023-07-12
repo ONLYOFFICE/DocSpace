@@ -319,14 +319,14 @@ const StyledArrowIcon = styled.div`
 
   ${isMobileOnly &&
   css`
-    margin-left: auto;
     ${(props) =>
-      props.theme.interfaceDirection === "rtl" &&
-      css`
-        margin-left: ${(props) =>
-          props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
-        margin-right: auto;
-      `}
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
   `}
 `;
 
