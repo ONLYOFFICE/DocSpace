@@ -89,6 +89,7 @@ public class FileStorageService //: IFileStorageService
     private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
     private readonly QuotaSocketManager _quotaSocketManager;
     private readonly ExternalShare _externalShare;
+    private readonly TenantUtil _tenantUtil;
 
     public FileStorageService(
         Global global,
@@ -147,7 +148,8 @@ public class FileStorageService //: IFileStorageService
         StudioNotifyService studioNotifyService,
         TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
         QuotaSocketManager quotaSocketManager,
-        ExternalShare externalShare)
+        ExternalShare externalShare, 
+        TenantUtil tenantUtil)
     {
         _global = global;
         _globalStore = globalStore;
@@ -206,6 +208,7 @@ public class FileStorageService //: IFileStorageService
         _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
         _quotaSocketManager = quotaSocketManager;
         _externalShare = externalShare;
+        _tenantUtil = tenantUtil;
     }
 
     public async Task<Folder<T>> GetFolderAsync<T>(T folderId)
@@ -3346,9 +3349,11 @@ public class FileStorageService //: IFileStorageService
             DenyDownload = denyDownload
         };
 
-        if (expirationDate != DateTime.MinValue && expirationDate > DateTime.UtcNow)
+        var expirationDateUtc = _tenantUtil.DateTimeToUtc(expirationDate);
+
+        if (expirationDateUtc != DateTime.MinValue && expirationDateUtc > DateTime.UtcNow)
         {
-            options.ExpirationDate = expirationDate;
+            options.ExpirationDate = expirationDateUtc;
         }
 
         if (!string.IsNullOrEmpty(password))

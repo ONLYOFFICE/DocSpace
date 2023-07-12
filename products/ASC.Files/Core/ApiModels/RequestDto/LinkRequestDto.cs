@@ -31,7 +31,7 @@ public class LinkRequestDto
     public Guid LinkId { get; set; }
     public string Title { get; set; }
     public FileShare Access { get; set; }
-    public ApiDateTime ExpirationDate { get; set; }
+    public DateTime? ExpirationDate { get; set; }
     public LinkType LinkType { get; set; }
     public string Password { get; set; }
     public bool Disabled { get; set; }
