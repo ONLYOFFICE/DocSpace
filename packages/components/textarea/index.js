@@ -209,7 +209,6 @@ Textarea.propTypes = {
 };
 
 Textarea.defaultProps = {
-  className: "",
   isDisabled: false,
   isReadOnly: false,
   hasError: false,

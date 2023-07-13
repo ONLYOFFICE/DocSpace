@@ -186,6 +186,7 @@ public class UserManager
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
         EmployeeActivationStatus? activationStatus,
         AccountLoginType? accountLoginType,
         string text,
@@ -196,7 +197,7 @@ public class UserManager
         out int total,
         out int count)
     {
-        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public async Task<string[]> GetUserNamesAsync(EmployeeStatus status)
