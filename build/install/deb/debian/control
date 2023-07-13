@@ -5,10 +5,12 @@ Maintainer: Ascensio System SIA <support@onlyoffice.com>
 Build-Depends: debhelper (>= 10), po-debconf, nodejs (>=18), dotnet-sdk-7.0, yarn
 Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
-Architecture: any
+Architecture: all 
+Multi-Arch: foreign
 
 Package: {{product}}
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: debconf,
          ${misc:Depends}, ${shlibs:Depends},
          {{product}}-api (= {{package_header_tag_version}}),
@@ -36,20 +38,23 @@ Description: {{product}}
 	predefined permissions. Dependency package.
 
 Package: {{product}}-common
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: adduser, logrotate, ${misc:Depends}, ${shlibs:Depends}
 Recommends: default-mysql-client
 Description: {{product}}-common
 	A package containing configs and scripts
 
 Package: {{product}}-backup
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-backup
 	The service which handles API requests related to backup
 
 Package: {{product}}-files
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Recommends: elasticsearch (= 7.10.0)
 Description: {{product}}-files
@@ -57,7 +62,8 @@ Description: {{product}}-files
 	documents and launches the OFormService service
 
 Package: {{product}}-files-services
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Recommends: ffmpeg, elasticsearch (= 7.10.0)
 Description: {{product}}-files-services
@@ -70,7 +76,8 @@ Description: {{product}}-files-services
 	 - Launcher - removes outdated files from Trash;
 
 Package: {{product}}-notify
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Recommends: ffmpeg, elasticsearch (= 7.10.0)
 Description: {{product}}-notify
@@ -80,27 +87,31 @@ Description: {{product}}-notify
 	and NotifyCleanerService which removes messages
 
 Package: {{product}}-people-server
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-people-server
 	The service which handles API requests related to the People module
 
 Package: {{product}}-socket
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Recommends: redis-server
 Description: {{product}}-socket
 	The service which provides two-way communication between a client and a server
 
 Package: {{product}}-studio-notify
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-studio-notify
 	The service responsible for creating notifications and 
 	sending them to other services, for example, TelegramService and NotifyService
 
 Package: {{product}}-api
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Recommends: rabbitmq-server, apache-activemq, redis-server
 Description: {{product}}-api
@@ -109,19 +120,22 @@ Description: {{product}}-api
 	module, for example, requests related to settings, audit, authentication, etc.
 
 Package: {{product}}-api-system
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-api-system
 	The service which is used for working with portals (creating, removing, etc.)
 
 Package: {{product}}-studio
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-studio
 	The service which processes storage handlers and authorization pages
 
 Package: {{product}}-proxy
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), nginx-extras (>= 1.9.5), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-proxy
 	The service which is used as a web server and reverse proxy, 
@@ -129,7 +143,8 @@ Description: {{product}}-proxy
 	receives a response from them and returns it to the client
 
 Package: {{product}}-ssoauth
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-ssoauth
 	The service responsible for enabling and configuring 
@@ -137,7 +152,8 @@ Description: {{product}}-ssoauth
 	easy and secure way to access DocSpace for users
 
 Package: {{product}}-backup-background
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-backup-background
 	The service which launches additional services related to backup creation:
@@ -148,14 +164,16 @@ Description: {{product}}-backup-background
 	 - BackupSchedulerService - runs backup according to a schedule;
 
 Package: {{product}}-clear-events
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-clear-events
 	The service responsible for clearing the login_events and audit_events tables 
 	by LoginHistoryLifeTime and AuditTrailLifeTime to log out users after a timeout
 
 Package: {{product}}-migration-runner
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-migration-runner
 	The service responsible for the database creation.
@@ -163,7 +181,8 @@ Description: {{product}}-migration-runner
 	the service creates tables and populates them with values
 
 Package: {{product}}-radicale
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), python3-pip, python3-requests, python3-setuptools, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-radicale
 	Radicale is a server designed to support the CalDav and CardDav protocols.
@@ -171,19 +190,22 @@ Description: {{product}}-radicale
 	or can be integrated with an existing webserver
 
 Package: {{product}}-doceditor
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-doceditor
 	The service which allows interaction with documentserver
 
 Package: {{product}}-login
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-login
 	The service which is used for logging users and displaying the wizard
 
 Package: {{product}}-healthchecks
-Architecture: any
+Architecture: all
+Multi-Arch: foreign
 Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-healthchecks
 	The service which displays launched services

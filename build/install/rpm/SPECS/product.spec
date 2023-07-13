@@ -1,3 +1,4 @@
+%define         _binaries_in_noarch_packages_terminate_build   0
 %define         _build_id_links none
 
 %global         product docspace
@@ -12,6 +13,7 @@ Release:        %{release}
 
 AutoReqProv:    no
 
+BuildArch:      noarch
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
 Packager:       %{packager}
