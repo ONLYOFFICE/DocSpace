@@ -52,6 +52,8 @@ const SMTPSettings = (props) => {
           place="bottom"
           offsetBottom={0}
           className="smtp-settings_help-button"
+          place="bottom"
+          offsetBottom={0}
           tooltipContent={
             <Text fontSize="12px">{t("HelpText", { organizationName })}</Text>
           }
