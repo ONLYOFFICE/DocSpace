@@ -30,7 +30,7 @@ const UsefulTipsContainer = ({
         <Text {...textDescriptionsProps}>{t("UsefulTipsDescription")}</Text>
       </div>
       <ToggleButton
-        className="toggle-btn"
+        className="useful-tips toggle-btn"
         onChange={onChangeEmailSubscription}
         isChecked={usefulTipsSubscription}
       />

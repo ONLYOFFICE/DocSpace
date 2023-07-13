@@ -119,7 +119,7 @@ const HexColorPickerComponent = (props) => {
           />
           <Button
             label={t("Common:CancelButton")}
-            className="button"
+            className="cancel-button button"
             size="small"
             scale={true}
             onClick={onCloseHexColorPicker}

@@ -110,6 +110,7 @@ const SalesDepartmentRequestDialog = ({
           errorMessage={t("Common:RequiredField")}
         >
           <TextInput
+            id="your-name"
             hasError={!isValidName}
             name="name"
             type="text"
@@ -134,7 +135,7 @@ const SalesDepartmentRequestDialog = ({
         >
           <TextInput
             hasError={!isValidEmail}
-            id="e-mail"
+            id="registration-email"
             name="e-mail"
             type="text"
             size="base"
@@ -156,6 +157,7 @@ const SalesDepartmentRequestDialog = ({
           errorMessage={t("Common:RequiredField")}
         >
           <Textarea
+            id="request-details"
             heightScale={false}
             hasError={!isValidDescription}
             placeholder={t("RequestDetails")}
@@ -168,6 +170,7 @@ const SalesDepartmentRequestDialog = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="send-button"
           label={isLoading ? t("Common:Sending") : t("Common:SendButton")}
           size="normal"
           primary={true}
@@ -177,6 +180,7 @@ const SalesDepartmentRequestDialog = ({
           tabIndex={3}
         />
         <Button
+          className="cancel-button"
           label={t("Common:CancelButton")}
           size="normal"
           onClick={onCloseModal}

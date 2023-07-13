@@ -68,7 +68,8 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
   })
 )`
   ${commonInputStyle};
-  white-space: ${(props) => (props.isJSONField ? "pre" : "normal")};
+  white-space: ${(props) => (props.isJSONField ? "pre" : "pre-line")};
+  width: 100%;
 
   display: table;
   width: -webkit-fill-available;

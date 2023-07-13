@@ -137,6 +137,7 @@ const UpdatePlanButtonContainer = ({
   const payTariffButton = () => {
     return canPayTariff ? (
       <Button
+        className="upgrade-now-button"
         label={t("UpgradeNow")}
         size={"medium"}
         primary
@@ -165,6 +166,7 @@ const UpdatePlanButtonContainer = ({
       />
     ) : (
       <Button
+        className="upgrade-now-button"
         label={t("UpgradeNow")}
         size={"medium"}
         primary

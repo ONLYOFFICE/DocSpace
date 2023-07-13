@@ -1,18 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 import moment from "moment";
-import { inject, observer } from "mobx-react";
-
-import styled, { css } from "styled-components";
 
 import Text from "@docspace/components/text";
+import { useTranslation } from "react-i18next";
+import DatePicker from "@docspace/components/date-picker";
+import Calendar from "@docspace/components/calendar";
+import TimePicker from "@docspace/components/time-picker";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import SelectedItem from "@docspace/components/selected-item";
 
-import Calendar from "@docspace/components/calendar";
-import TimePicker from "@docspace/components/time-picker";
 import { isMobileOnly } from "react-device-detect";
 
-import { useTranslation } from "react-i18next";
+const Selectors = styled.div`
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+
+  .mr-8 {
+    margin-right: 8px;
+  }
+
+  .selectedItem {
+    margin-bottom: 0;
+  }
+`;
 
 const TimePickerCell = styled.span`
   margin-left: 8px;
@@ -37,50 +52,81 @@ const StyledCalendar = styled(Calendar)`
     `}
 `;
 
-const DeliveryDatePicker = ({
-  Selectors,
-  filters,
-  setFilters,
-  isApplied,
-  setIsApplied,
-  isTimeOpen,
-  setIsTimeOpen,
-}) => {
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
+const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) => {
   const { t } = useTranslation(["Webhooks"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isTimeOpen, setIsTimeOpen] = useState(false);
 
-  const setDeliveryDate = (date) => {
-    setFilters((prevFilters) => ({ ...prevFilters, deliveryDate: date }));
+  const deleteSelectedDate = (propKey, label, group, e) => {
+    e.stopPropagation();
+    setIsApplied(false);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      deliveryDate: null,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+    }));
+    setIsTimeOpen(false);
+    setIsCalendarOpen(false);
   };
+
   const setDeliveryFrom = (date) => {
-    setFilters((prevFilters) => ({ ...prevFilters, deliveryFrom: date }));
+    setFilters((prevfilters) => ({ ...prevfilters, deliveryFrom: date }));
   };
   const setDeliveryTo = (date) => {
-    setFilters((prevFilters) => ({ ...prevFilters, deliveryTo: date }));
+    setFilters((prevfilters) => ({ ...prevfilters, deliveryTo: date }));
+  };
+  const onDateSet = (date) => {
+    setIsApplied(false);
+    setIsTimeOpen(false);
+    setIsCalendarOpen(false);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      deliveryDate: date,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+    }));
   };
 
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
+
   const closeCalendar = () => {
     setIsApplied(false);
+    setIsTimeOpen(false);
     setIsCalendarOpen(false);
   };
 
   const showTimePicker = () => setIsTimeOpen(true);
 
-  const deleteSelectedDate = (e) => {
-    e.stopPropagation();
-    setFilters((prevFilters) => ({
-      deliveryDate: null,
-      deliveryFrom: moment().startOf("day"),
-      deliveryTo: moment().endOf("day"),
-      status: prevFilters.status,
-    }));
-    setIsTimeOpen(false);
-    setIsApplied(false);
+  const CalendarElement = () => (
+    <StyledCalendar
+      selectedDate={filters.deliveryDate}
+      setSelectedDate={onDateSet}
+      onChange={closeCalendar}
+      isMobile={isMobileOnly}
+      forwardedRef={calendarRef}
+    />
+  );
+
+  const SelectedDateTime = () => {
+    const formattedTime = isTimeEqual
+      ? ""
+      : ` ${filters.deliveryFrom.format("HH:mm")} - ${moment(filters.deliveryTo).format("HH:mm")}`;
+
+    return (
+      <div>
+        <SelectedItem
+          className="selectedItem delete-delivery-date-button"
+          onClose={deleteSelectedDate}
+          label={filters.deliveryDate.format("DD MMM YYYY") + formattedTime}
+          onClick={toggleCalendar}
+        />
+        {isCalendarOpen && <CalendarElement />}
+      </div>
+    );
   };
 
   const handleClick = (e) => {
@@ -88,76 +134,6 @@ const DeliveryDatePicker = ({
       !calendarRef?.current?.contains(e.target) &&
       setIsCalendarOpen(false);
   };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClick, { capture: true });
-    return () => document.removeEventListener("click", handleClick, { capture: true });
-  }, []);
-
-  const CalendarElement = () => (
-    <StyledCalendar
-      selectedDate={filters.deliveryDate}
-      setSelectedDate={setDeliveryDate}
-      onChange={closeCalendar}
-      isMobile={isMobileOnly}
-      forwardedRef={calendarRef}
-    />
-  );
-
-  const DateSelector = () => (
-    <div>
-      <SelectorAddButton title={t("Add")} onClick={toggleCalendar} style={{ marginRight: "8px" }} />
-      <Text isInline fontWeight={600} color="#A3A9AE">
-        {t("SelectDate")}
-      </Text>
-      {isCalendarOpen && <CalendarElement />}
-    </div>
-  );
-
-  const SelectedDate = () => (
-    <SelectedItem
-      onClose={deleteSelectedDate}
-      text={moment(filters.deliveryDate).format("DD MMM YYYY")}
-    />
-  );
-
-  const SelectedDateWithCalendar = () => (
-    <div>
-      <SelectedItem
-        onClose={deleteSelectedDate}
-        text={moment(filters.deliveryDate).format("DD MMM YYYY")}
-        onClick={toggleCalendar}
-      />
-      {isCalendarOpen && <CalendarElement />}
-    </div>
-  );
-
-  const SelectedDateTime = () => (
-    <div>
-      <SelectedItem
-        onClose={deleteSelectedDate}
-        text={
-          moment(filters.deliveryDate).format("DD MMM YYYY") +
-          " " +
-          moment(filters.deliveryFrom).format("HH:mm") +
-          " - " +
-          moment(filters.deliveryTo).format("HH:mm")
-        }
-        onClick={toggleCalendar}
-      />
-      {isCalendarOpen && <CalendarElement />}
-    </div>
-  );
-
-  const TimeSelectorAdder = () => (
-    <TimePickerCell>
-      <SelectorAddButton title={t("Add")} onClick={showTimePicker} style={{ marginRight: "8px" }} />
-      <Text isInline fontWeight={600} color="#A3A9AE">
-        {t("SelectDeliveryTime")}
-      </Text>
-    </TimePickerCell>
-  );
-
   const isEqualDates = (firstDate, secondDate) => {
     return firstDate.format() === secondDate.format();
   };
@@ -168,42 +144,49 @@ const DeliveryDatePicker = ({
 
   const isTimeValid = filters.deliveryTo > filters.deliveryFrom;
 
+  useEffect(() => {
+    document.addEventListener("click", handleClick, { capture: true });
+    return () => document.removeEventListener("click", handleClick, { capture: true });
+  }, []);
+
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
         {t("DeliveryDate")}
       </Text>
       <Selectors ref={selectorRef}>
-        {filters.deliveryDate === null ? (
-          <DateSelector />
-        ) : isApplied ? (
-          isTimeEqual ? (
-            <SelectedDateWithCalendar />
-          ) : (
-            <SelectedDateTime />
-          )
+        {isApplied && filters.deliveryDate !== null ? (
+          <SelectedDateTime />
         ) : (
-          <SelectedDate />
+          <DatePicker
+            date={filters.deliveryDate}
+            onChange={onDateSet}
+            selectedDateText={t("SelectDate")}
+            showCalendarIcon={false}
+          />
         )}
         {filters.deliveryDate !== null &&
           !isApplied &&
           (isTimeOpen ? (
             <TimePickerCell>
               <span className="timePickerItem">
-                <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+                <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
                   {t("From")}
                 </Text>
                 <TimePicker
+                  classNameInput="from-time"
                   date={filters.deliveryFrom}
                   setDate={setDeliveryFrom}
                   hasError={!isTimeValid}
                   tabIndex={1}
                 />
               </span>
-              <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+
+              <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
                 {t("Before")}
               </Text>
               <TimePicker
+                classNameInput="before-time"
                 date={filters.deliveryTo}
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
@@ -211,15 +194,20 @@ const DeliveryDatePicker = ({
               />
             </TimePickerCell>
           ) : (
-            <TimeSelectorAdder />
+            <TimePickerCell>
+              <SelectorAddButton
+                title={t("Add")}
+                onClick={showTimePicker}
+                className="mr-8 add-delivery-time-button"
+              />
+              <Text isInline fontWeight={600} color="#A3A9AE">
+                {t("SelectDeliveryTime")}
+              </Text>
+            </TimePickerCell>
           ))}
       </Selectors>
     </>
   );
 };
 
-export default inject(({ webhooksStore }) => {
-  const {} = webhooksStore;
-
-  return {};
-})(observer(DeliveryDatePicker));
+export default DeliveryDatePicker;

@@ -107,6 +107,7 @@ const PaymentContainer = (props) => {
     return (
       <>
         <HelpButton
+          className="payment-tooltip"
           offsetRight={0}
           iconName={HelpReactSvgUrl}
           tooltipContent={
@@ -341,11 +342,8 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const {
-    isFreeTariff,
-    currentTariffPlanTitle,
-    isNonProfit,
-  } = currentQuotaStore;
+  const { isFreeTariff, currentTariffPlanTitle, isNonProfit } =
+    currentQuotaStore;
 
   const {
     isNotPaidPeriod,

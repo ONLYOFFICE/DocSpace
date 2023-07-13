@@ -13,8 +13,6 @@ const ButtonContainer = ({
 }) => {
   const prevChange = useRef();
 
- 
-
   useEffect(() => {
     prevChange.current = isChanged;
   }, [isChanged]);
@@ -32,6 +30,7 @@ const ButtonContainer = ({
         />
 
         <Button
+          className="cancel-button"
           label={t("Common:CancelButton")}
           isDisabled={isLoadingData}
           onClick={onCancelModuleSettings}

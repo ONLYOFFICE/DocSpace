@@ -35,6 +35,7 @@ const Backup = ({
               </Trans>
               <div>
                 <Link
+                  id="link-tooltip"
                   as="a"
                   href={automaticBackupUrl}
                   target="_blank"
@@ -90,11 +91,8 @@ export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
-  const {
-    automaticBackupUrl,
-    isTabletView,
-    currentColorScheme,
-  } = settingsStore;
+  const { automaticBackupUrl, isTabletView, currentColorScheme } =
+    settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 

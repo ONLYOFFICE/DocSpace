@@ -30,7 +30,7 @@ internal abstract class ThirdPartyProviderDao
 {
     #region FileDao
 
-    public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
+    public Task ReassignFilesAsync(Guid oldOwner, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }
@@ -125,7 +125,7 @@ internal abstract class ThirdPartyProviderDao
     #endregion
     #region FolderDao
 
-    public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
+    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }

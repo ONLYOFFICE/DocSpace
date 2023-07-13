@@ -39,13 +39,14 @@ const DataManagementWrapper = (props) => {
     };
   }, []);
 
-  const renderTooltip = (helpInfo) => {
+  const renderTooltip = (helpInfo, className) => {
     const isAutoBackupPage = window.location.pathname.includes(
       "portal-settings/backup/auto-backup"
     );
     return (
       <>
         <HelpButton
+          className={className}
           place="bottom"
           iconName={HelpReactSvgUrl}
           tooltipContent={
@@ -55,6 +56,7 @@ const DataManagementWrapper = (props) => {
               </Trans>
               <div>
                 <Link
+                  id="link-tooltip"
                   as="a"
                   href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"

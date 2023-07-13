@@ -19,6 +19,7 @@ import ButtonAlertIcon from "PUBLIC_DIR/images/button.alert.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
 import ButtonMinusIcon from "PUBLIC_DIR/images/actions.button.minus.react.svg";
+import RefreshIcon from "PUBLIC_DIR/images/refresh.react.svg";
 import CloseIcon from "PUBLIC_DIR/images/close-icon.react.svg";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
@@ -104,6 +105,8 @@ const FloatingButton = (props) => {
                 <ButtonPlusIcon />
               ) : icon == "minus" ? (
                 <ButtonMinusIcon />
+              ) : icon == "refresh" ? (
+                <RefreshIcon />
               ) : (
                 <ButtonDuplicateIcon />
               )}
@@ -140,6 +143,7 @@ FloatingButton.propTypes = {
     "duplicate",
     "plus",
     "minus",
+    "refresh",
   ]),
   /** Displays the alert */
   alert: PropTypes.bool,

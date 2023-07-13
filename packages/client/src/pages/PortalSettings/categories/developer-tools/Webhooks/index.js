@@ -111,11 +111,20 @@ const Webhooks = (props) => {
             />
           </ButtonSeating>
         ) : (
-          <Button label={t("CreateWebhook")} primary size={"small"} onClick={openCreateModal} />
+          <Button
+            id="create-webhook-button"
+            label={t("CreateWebhook")}
+            primary
+            size={"small"}
+            onClick={openCreateModal}
+          />
         )}
 
         {!isWebhooksEmpty && (
-          <WebhooksTable openSettingsModal={openSettingsModal} openDeleteModal={openDeleteModal} />
+          <WebhooksTable
+            openSettingsModal={openSettingsModal}
+            openDeleteModal={openDeleteModal}
+          />
         )}
         <WebhookDialog
           visible={isCreateOpened}
