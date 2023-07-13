@@ -149,7 +149,6 @@ const StyledDropdownItem = styled.div`
     css`
       background-color: ${(props) =>
         props.theme.dropDownItem.hoverBackgroundColor};
-      text-align: left;
     `}
 
   ${(props) => props.disabled && !props.isSelected && disabledAndHeaderStyle}
