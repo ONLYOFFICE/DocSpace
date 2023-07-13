@@ -31,6 +31,7 @@ const PluginPage = ({
   changePluginStatus,
   openSettingsDialog,
   uninstallPlugin,
+  updatePluginStatus,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
@@ -60,6 +61,7 @@ const PluginPage = ({
                 openSettingsDialog={openSettingsDialog}
                 isLast={index === pluginList.length - 1}
                 uninstallPlugin={uninstallPlugin}
+                updatePluginStatus={updatePluginStatus}
               />
             ))}
           </StyledPluginList>
@@ -84,6 +86,7 @@ export default inject(({ auth, pluginStore }) => {
     setSettingsPluginDialogVisible,
     setIsAdminSettingsDialog,
     uninstallPlugin,
+    updatePluginStatus,
   } = pluginStore;
 
   const openSettingsDialog = (pluginId) => {
@@ -100,5 +103,6 @@ export default inject(({ auth, pluginStore }) => {
     changePluginStatus,
     openSettingsDialog,
     uninstallPlugin,
+    updatePluginStatus,
   };
 })(observer(PluginPage));

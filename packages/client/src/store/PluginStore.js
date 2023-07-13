@@ -56,6 +56,18 @@ class PluginStore {
     this.isAdminSettingsDialog = value;
   };
 
+  updatePluginStatus = (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    const newStatus = plugin.getStatus();
+
+    const pluginIdx = this.plugins.findIndex((p) => p.id === id);
+
+    if (pluginIdx !== -1) {
+      this.plugins[pluginIdx].status = newStatus;
+    }
+  };
+
   setPluginFrame = (frame) => {
     this.pluginFrame = frame;
 
@@ -140,10 +152,8 @@ class PluginStore {
     this.deactivatePlugin(id);
     const pluginIdx = this.plugins.findIndex((p) => p.id === id);
 
-    console.log(pluginIdx);
     if (pluginIdx !== -1) {
       this.plugins.splice(pluginIdx, 1);
-      console.log(this.plugins);
     }
     await api.plugins.deletePlugin(id);
   };
@@ -235,6 +245,7 @@ class PluginStore {
   };
 
   get pluginList() {
+    console.log(this.plugins);
     return this.plugins;
   }
 

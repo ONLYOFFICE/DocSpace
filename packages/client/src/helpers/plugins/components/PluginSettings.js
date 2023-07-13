@@ -16,6 +16,7 @@ const StyledPluginSettings = styled.div`
 `;
 
 const PluginSettings = ({
+  id,
   groups,
   isLoading,
   onLoad,
@@ -23,6 +24,8 @@ const PluginSettings = ({
   acceptButtonProps,
 
   getPluginSettings,
+
+  updatePluginStatus,
 
   ...rest
 }) => {
@@ -54,7 +57,15 @@ const PluginSettings = ({
 
       const message = await acceptButton.onClick();
 
-      messageActions(message, setAcceptButton);
+      messageActions(
+        message,
+        setAcceptButton,
+        null,
+        id,
+        null,
+        null,
+        updatePluginStatus
+      );
     };
 
     return <Button {...acceptButton} onClick={onClick} />;

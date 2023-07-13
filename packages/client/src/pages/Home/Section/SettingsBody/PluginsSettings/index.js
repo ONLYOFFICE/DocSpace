@@ -15,6 +15,7 @@ const PluginsSettingsBodyContent = ({
   withDelete,
   pluginList,
   changePluginStatus,
+  updatePluginStatus,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
@@ -30,6 +31,7 @@ const PluginsSettingsBodyContent = ({
               withDelete={withDelete}
               isUserSettings={true}
               isLast={index === pluginList.length - 1}
+              updatePluginStatus={updatePluginStatus}
             />
           ))}
         </StyledPluginList>
@@ -46,7 +48,7 @@ export default inject(({ auth, pluginStore }) => {
   const withUpload = pluginOptions.includes("upload");
   const withDelete = pluginOptions.includes("delete");
 
-  const { pluginList, changePluginStatus } = pluginStore;
+  const { pluginList, changePluginStatus, updatePluginStatus } = pluginStore;
 
   return {
     enablePlugins,
@@ -54,5 +56,6 @@ export default inject(({ auth, pluginStore }) => {
     withDelete,
     pluginList,
     changePluginStatus,
+    updatePluginStatus,
   };
 })(observer(PluginsSettingsBodyContent));

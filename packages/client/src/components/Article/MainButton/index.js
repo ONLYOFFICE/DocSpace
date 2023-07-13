@@ -471,7 +471,7 @@ const ArticleMainButtonContent = (props) => {
               buttonOptions={uploadActions}
               isRooms={isRoomsFolder}
               mainButtonMobileVisible={mainButtonMobileVisible}
-              onMainButtonClick={isRoomsFolder ? onCreateRoom : onAddPlugin}
+              onMainButtonClick={onCreateRoom}
             />
           )}
         </>

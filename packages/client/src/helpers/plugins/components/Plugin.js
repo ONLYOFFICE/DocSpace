@@ -51,6 +51,8 @@ const Plugin = ({
 
   uninstallPlugin,
 
+  updatePluginStatus,
+
   isLast,
 
   ...rest
@@ -95,7 +97,9 @@ const Plugin = ({
       {showPluginSettings && (
         <PluginSettings
           {...pluginSettings}
+          id={id}
           getPluginSettings={getPluginSettings}
+          updatePluginStatus={updatePluginStatus}
         />
       )}
       {!isLast && <div className="plugin-separator"></div>}

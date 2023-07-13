@@ -27,11 +27,14 @@ const SettingsPluginDialog = ({
 
   isUserDialog,
 
+  updatePluginSettings,
+
   ...rest
 }) => {
   const [groupsProps, setGroupsProps] = React.useState(groups);
   const [acceptButton, setAcceptButton] = React.useState({});
-  const [isLoadingState, setILoadingState] = React.useState(isLoading);
+  const [isLoadingState, setIsLoadingState] = React.useState(isLoading);
+  const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const onLoadAction = React.useCallback(async () => {
     const res = await onLoad();
@@ -40,7 +43,7 @@ const SettingsPluginDialog = ({
       ? plugin.getUserPluginSettings()
       : plugin.getAdminPluginSettings();
     setGroupsProps(settings.groups);
-    setILoadingState(res);
+    setIsLoadingState(res);
   }, [plugin, onLoad, isUserDialog]);
 
   React.useEffect(() => {
@@ -65,14 +68,24 @@ const SettingsPluginDialog = ({
     const onClick = async () => {
       if (!acceptButton.onClick) return;
 
+      setIsRequestRunning(true);
+
       const message = await acceptButton.onClick();
 
       messageActions(message, setAcceptButton);
 
+      setIsRequestRunning(false);
       onCloseAction();
     };
 
-    return <Button {...acceptButton} onClick={onClick} size={"normal"} />;
+    return (
+      <Button
+        {...acceptButton}
+        onClick={onClick}
+        isLoading={isRequestRunning}
+        size={"normal"}
+      />
+    );
   };
 
   const element = getAcceptButtonElement();
@@ -122,6 +135,7 @@ export default inject(({ pluginStore }) => {
     setCurrentSettingsDialogPlugin,
     setIsAdminSettingsDialog,
     isAdminSettingsDialog,
+    updatePluginSettings,
   } = pluginStore;
 
   const isUserDialog = !isAdminSettingsDialog;
@@ -149,5 +163,6 @@ export default inject(({ pluginStore }) => {
     currentSettingsDialogPlugin,
     onClose,
     isUserDialog,
+    updatePluginSettings,
   };
 })(observer(SettingsPluginDialog));

@@ -9,7 +9,8 @@ export const messageActions = (
   setAcceptButtonProps,
   pluginId,
   setSettingsPluginDialogVisible,
-  setCurrentSettingsDialogPlugin
+  setCurrentSettingsDialogPlugin,
+  updatePluginStatus
 ) => {
   if (!message) return;
 
@@ -19,8 +20,8 @@ export const messageActions = (
         setElementProps({ ...message.newProps });
         break;
       case PluginActions.updateStatus:
-        break;
-      case PluginActions.closeModal:
+        updatePluginStatus && updatePluginStatus(pluginId);
+        console.log("updateStatus", pluginId);
         break;
       case PluginActions.showToast:
         message?.toastProps.forEach((toast) => {
@@ -39,7 +40,6 @@ export const messageActions = (
               break;
           }
         });
-
         break;
       case PluginActions.updateAcceptButtonProps:
         setAcceptButtonProps({ ...message.acceptButtonProps });
