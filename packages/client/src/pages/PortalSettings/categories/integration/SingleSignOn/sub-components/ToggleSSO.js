@@ -47,7 +47,7 @@ const ToggleSSO = (props) => {
         paddingProp="12px"
       >
         <ToggleButton
-          className="toggle"
+          className="enable-sso toggle"
           isChecked={enableSso}
           onChange={
             isSsoEnabled && enableSso ? openConfirmationDisableModal : ssoToggle
