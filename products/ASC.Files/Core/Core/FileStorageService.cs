@@ -2420,6 +2420,16 @@ public class FileStorageService //: IFileStorageService
         return await _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
+    public async IAsyncEnumerable<AceWrapper> GetRoomSharedInfoAsync<T>(T roomId, ShareFilterType filterType, int offset, int count)
+    {
+        var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
+
+        await foreach (var ace in _fileSharing.GetRoomSharedInfoAsync(room, filterType, offset, count))
+        {
+            yield return ace;
+        }
+    }
+
     public async Task<string> SetAceObjectAsync<T>(AceCollection<T> aceCollection, bool notify)
     {
         var fileDao = GetFileDao<T>();

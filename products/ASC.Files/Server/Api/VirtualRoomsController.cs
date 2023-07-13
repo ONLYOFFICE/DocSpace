@@ -40,7 +40,8 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
         IMapper mapper,
-        SocketManager socketManager) : base(
+        SocketManager socketManager,
+        ApiContext apiContext) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
             coreBaseSettings,
@@ -51,7 +52,8 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
             fileDtoHelper,
             fileShareDtoHelper,
             mapper,
-            socketManager)
+            socketManager,
+            apiContext)
     {
     }
 
@@ -94,7 +96,8 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
         IMapper mapper,
-        SocketManager socketManager) : base(
+        SocketManager socketManager,
+        ApiContext apiContext) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
             coreBaseSettings,
@@ -105,7 +108,8 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
             fileDtoHelper,
             fileShareDtoHelper,
             mapper,
-            socketManager)
+            socketManager,
+            apiContext)
     {
     }
 
@@ -149,6 +153,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly FileShareDtoHelper _fileShareDtoHelper;
     private readonly IMapper _mapper;
     private readonly SocketManager _socketManager;
+    private readonly ApiContext _apiContext;
 
     protected VirtualRoomsController(
         GlobalFolderHelper globalFolderHelper,
@@ -161,7 +166,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
         IMapper mapper,
-        SocketManager socketManager) : base(folderDtoHelper, fileDtoHelper)
+        SocketManager socketManager, 
+        ApiContext apiContext) : base(folderDtoHelper, fileDtoHelper)
     {
         _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
@@ -172,6 +178,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _fileShareDtoHelper = fileShareDtoHelper;
         _mapper = mapper;
         _socketManager = socketManager;
+        _apiContext = apiContext;
     }
 
     /// <summary>
@@ -356,16 +363,33 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <param name="id">
     /// Room ID
     /// </param>
+    /// <param name="filterType">
+    /// Share type filter
+    /// </param>
     /// <returns>Room security info</returns>
     [HttpGet("rooms/{id}/share")]
-    public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfoAsync(T id)
+    public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfoAsync(T id, ShareFilterType filterType = ShareFilterType.User)
     {
-        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id });
+        const int margin = 1;
+        
+        var offset = Convert.ToInt32(_apiContext.StartIndex);
+        var count = Convert.ToInt32(_apiContext.Count);
+        var counter = 0;
 
-        foreach (var fileShareDto in fileShares)
+        await foreach (var ace in _fileStorageService.GetRoomSharedInfoAsync(id, filterType, offset, count + margin))
         {
-            yield return await _fileShareDtoHelper.Get(fileShareDto);
+            counter++;
+
+            if (counter > count)
+            {
+                _apiContext.Next = true;
+                yield break;
+            }
+
+            yield return await _fileShareDtoHelper.Get(ace);
         }
+
+        _apiContext.Next = false;
     }
 
     /// <summary>

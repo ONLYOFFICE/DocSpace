@@ -464,6 +464,68 @@ public class FileSharing
         return await _fileSharingHelper.CanSetAccessAsync(entry);
     }
 
+    public async IAsyncEnumerable<AceWrapper> GetRoomSharedInfoAsync<T>(Folder<T> room, ShareFilterType filterType, int offset, int count)
+    {
+        if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
+        {
+            throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
+        }
+
+        if (!await _fileSecurity.CanReadAsync(room))
+        {
+            _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, room.FileEntryType, room.Id.ToString()!);
+
+            yield break;
+        }
+        
+        var canEditAccess = await _fileSecurity.CanEditAccessAsync(room);
+
+        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType).Skip(offset).Take(count).ToListAsync();
+        
+        offset = offset == 0 ? offset : offset - defaultAces.Count;
+        count -= defaultAces.Count;
+
+        var records = _fileSecurity.GetRoomSharesAsync(room, filterType, offset, count);
+
+        foreach (var record in defaultAces)
+        {
+            yield return record;
+        }
+
+        await foreach (var record in records)
+        {
+            var w = new AceWrapper
+            {
+                Id = record.Subject,
+                SubjectGroup = false,
+                Access = record.Share,
+                FileShareOptions = record.FileShareOptions,
+                SubjectType = record.SubjectType
+            };
+
+            w.CanEditAccess = _authContext.CurrentAccount.ID != w.Id && w.SubjectType == SubjectType.UserOrGroup && canEditAccess;
+
+            if (record.IsLink)
+            {
+                w.Link = _invitationLinkService.GetInvitationLink(record.Subject, _authContext.CurrentAccount.ID);
+                w.SubjectGroup = true;
+                w.CanEditAccess = false;
+            }
+            else
+            {
+                var user = await _userManager.GetUsersAsync(record.Subject);
+                
+                w.SubjectName = user.DisplayUserName(false, _displayUserSettingsHelper);
+                w.Owner = room.RootFolderType == FolderType.USER
+                            ? room.RootCreateBy == record.Subject
+                            : room.CreateBy == record.Subject;
+                w.LockedRights = record.Subject == _authContext.CurrentAccount.ID;
+            }
+
+            yield return w;
+        }
+    }
+
     public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry)
     {
         if (entry == null)
@@ -790,5 +852,42 @@ public class FileSharing
         return new List<AceShortWrapper>(aces
             .Where(aceWrapper => !aceWrapper.Id.Equals(FileConstant.ShareLinkId) || aceWrapper.Access != FileShare.Restrict)
             .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
+    }
+    
+    private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType)
+    {
+        switch (filterType)
+        {
+            case ShareFilterType.InvitationLink or ShareFilterType.Link:
+                {
+                    var id = Guid.NewGuid();
+                    var w = new AceWrapper
+                    {
+                        Id = id,
+                        Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
+                        SubjectGroup = true,
+                        Access = FileShare.Read,
+                        Owner = false
+                    };
+
+                    yield return w;
+                    break;
+                }
+            case ShareFilterType.User:
+                {
+                    var w = new AceWrapper
+                    {
+                        Id = room.CreateBy,
+                        SubjectName = await _global.GetUserNameAsync(room.CreateBy),
+                        SubjectGroup = false,
+                        Access = FileShare.ReadWrite,
+                        Owner = true,
+                        CanEditAccess = false,
+                    };
+            
+                    yield return w;
+                    break;
+                }
+        }
     }
 }

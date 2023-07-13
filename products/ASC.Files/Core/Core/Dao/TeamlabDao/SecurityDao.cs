@@ -194,6 +194,51 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         return InternalGetPureShareRecordsAsync(entry);
     }
+    
+    public async IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, int offset = 0, int count = -1)
+    {
+        if (room == null || !DocSpaceHelper.IsRoom(room.FolderType) || count == 0)
+        {
+            yield break;
+        }
+
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = await GetPureSharesQuery(room, filterType, filesDbContext);
+
+        if (filterType == ShareFilterType.User)
+        {
+            q = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, (s, u) => new { s, u })
+                .OrderBy(r => r.u.ActivationStatus)
+                .ThenBy(r => r.s.Share == FileShare.RoomAdmin ? 0 : 
+                    r.s.Share == FileShare.Collaborator ? 1 :
+                    r.s.Share == FileShare.Editing ? 2 :
+                    r.s.Share == FileShare.FillForms ? 3 :
+                    r.s.Share == FileShare.Review ? 4 :
+                    r.s.Share == FileShare.Comment ? 5 :
+                    r.s.Share == FileShare.Read ? 6 : 7)
+                .Select(r => r.s);
+        }
+        else
+        {
+            q = q.OrderBy(s => s.Share);
+        }
+
+        if (offset > 0)
+        {
+            q = q.Skip(offset);
+        }
+
+        if (count > 0)
+        {
+            q = q.Take(count);
+        }
+
+        await foreach (var r in q.ToAsyncEnumerable())
+        {
+            yield return await ToFileShareRecordAsync(r);
+        }
+    }
 
     internal async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsync(FileEntry<T> entry)
     {
@@ -287,6 +332,32 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         result.Level = r.DbFolderTree?.Level ?? -1;
 
         return result;
+    }
+    
+    private async Task<IQueryable<DbFilesSecurity>> GetPureSharesQuery(FileEntry<T> entry, ShareFilterType filterType, FilesDbContext filesDbContext)
+    {
+        var entryId = await MappingIDAsync(entry.Id);
+
+        var q = filesDbContext.Security.AsNoTracking()
+            .Where(s => s.TenantId == TenantID && s.EntryId == entryId.ToString() && s.EntryType == entry.FileEntryType);
+
+        switch (filterType)
+        {
+            case ShareFilterType.User:
+                q = q.Where(s => s.SubjectType == SubjectType.UserOrGroup);
+                break;
+            case ShareFilterType.InvitationLink:
+                q = q.Where(s => s.SubjectType == SubjectType.InvitationLink);
+                break;
+            case ShareFilterType.ExternalLink:
+                q = q.Where(s => s.SubjectType == SubjectType.ExternalLink);
+                break;
+            case ShareFilterType.Link:
+                q = q.Where(s => s.SubjectType == SubjectType.InvitationLink || s.SubjectType == SubjectType.ExternalLink);
+                break;
+        }
+
+        return q;
     }
 }
 

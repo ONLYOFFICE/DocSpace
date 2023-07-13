@@ -1118,6 +1118,11 @@ public class FileSecurity : IFileSecurity
         return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
     }
 
+    public IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync<T>(Folder<T> room, ShareFilterType filterType, int offset, int count)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetRoomSharesAsync(room, filterType, offset, count);
+    }
+
     public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
