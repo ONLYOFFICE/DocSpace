@@ -143,5 +143,7 @@
   "MoveToPublicRoomTitle": "Move to Public room",
   "MoveToPublicRoom": "This room and all its contents are available to anyone with the link. Do you want to continue?",
   "LinkRemovedSuccessfully": "Link removed successfully",
-  "Links": "Links"
+  "Links": "Links",
+  "WantToRestoreTheRoom": "All external links in this room will become active, and its contents will be available to everyone with the link. Do you want to restore the room?",
+  "WantToRestoreTheRooms": "All external links in restored rooms will become active, and their contents will be available to everyone with the room links. Do you want to restore the rooms?"
 }

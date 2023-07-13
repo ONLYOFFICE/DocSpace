@@ -152,19 +152,24 @@ const LinkRow = (props) => {
         withTooltip={expiryDate}
         tooltipContent={tooltipContent}
       />
-
-      <Link
-        isHovered
-        type="action"
-        fontSize="14px"
-        fontWeight={600}
-        onClick={onEditLink}
-        isDisabled={disabled}
-        color={disabled ? "#A3A9AE" : ""}
-        className="external-row-link"
-      >
-        {title}
-      </Link>
+      {isArchiveFolder ? (
+        <Text fontSize="14px" fontWeight={600} className="external-row-link">
+          {title}
+        </Text>
+      ) : (
+        <Link
+          isHovered
+          type="action"
+          fontSize="14px"
+          fontWeight={600}
+          onClick={onEditLink}
+          isDisabled={disabled}
+          color={disabled ? "#A3A9AE" : ""}
+          className="external-row-link"
+        >
+          {title}
+        </Link>
+      )}
 
       {disabled && (
         <Text color={disabled ? "#A3A9AE" : ""}>{t("Settings:Disabled")}</Text>
