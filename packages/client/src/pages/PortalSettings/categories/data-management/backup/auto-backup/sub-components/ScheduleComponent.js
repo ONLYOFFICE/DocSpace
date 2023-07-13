@@ -52,7 +52,8 @@ const ScheduleComponent = ({
           iconName={HelpReactSvgUrl}
           getContent={renderHelpContent}
           tooltipMaxWidth="310px"
-          offsetLeft={160}
+          place="right"
+          offsetRight={0}
         />
       </div>
       <div className="main_options">

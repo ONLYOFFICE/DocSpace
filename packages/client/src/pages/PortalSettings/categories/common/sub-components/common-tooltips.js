@@ -15,6 +15,7 @@ const StyledTooltip = styled.div`
   }
   .display-block {
     display: block;
+    margin-top: 10px;
   }
 `;
 
