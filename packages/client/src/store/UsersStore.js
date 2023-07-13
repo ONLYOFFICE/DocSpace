@@ -192,7 +192,7 @@ class UsersStore {
   };
 
   getUserContextOptions = (isMySelf, statusType, userRole, status) => {
-    const { isOwner, isAdmin, isVisitor, isCollaborator } =
+    const { isOwner, isAdmin, isVisitor, isCollaborator, isRoomAdmin } =
       this.peopleStore.authStore.userStore.user;
 
     const options = [];
@@ -259,7 +259,7 @@ class UsersStore {
           options.push("details");
         }
 
-        if (isOwner || isAdmin || userRole === "manager") {
+        if (isOwner || isAdmin || isRoomAdmin) {
           options.push("reassign-data");
         }
 
