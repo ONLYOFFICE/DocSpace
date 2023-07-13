@@ -20,6 +20,8 @@ import Loaders from "@docspace/common/components/Loaders";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 
+import CSP from "./sub-components/csp";
+
 const Controls = styled(Box)`
   min-width: 350px;
   max-width: 350px;
@@ -352,6 +354,7 @@ const PortalIntegration = (props) => {
             >
               {t("APILink")}.
             </Link>
+            <CSP t={t} />
           </CategoryDescription>
           <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
           <Container>

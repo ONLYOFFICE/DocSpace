@@ -30,5 +30,9 @@
   "SDKDescription": "Using JavaScript SDK, you can embed a room or a folder from ONLYOFFICE DocSpace into your web interface as an iframe. Here, you can find settings for creating a sample iframe and configuring CSP. To use the complete SDK, please refer to the ",
   "SearchTerm": "Search term",
   "SortOrder": "Sort order",
-  "Title": "Navigate and Title"
+  "Title": "Navigate and Title",
+  "CSPHeader": "Embed DocSpace as iframe",
+  "CSPDescription": "To safely embed DocSpace as an iframe in a website, add its URL to your allow list.",
+  "CSPHelp": "This setting is a security mechanism that can be used to protect against content injection attacks. The CSP describes secure resource download sources. Downloading from resources not included in the `white list` is blocked. Specify the domains (together with the protocol) with which it will work",
+  "CSPInputPlaceholder": "Enter URL like this: https://example.com"
 }

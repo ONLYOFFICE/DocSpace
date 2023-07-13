@@ -786,3 +786,18 @@ export function getSendingTestMailStatus() {
     url: `/smtpsettings/smtp/test/status`,
   });
 }
+
+export function setCSPSettings(data) {
+  return request({
+    method: "post",
+    url: `/security/csp`,
+    data,
+  });
+}
+
+export function getCSPSettings() {
+  return request({
+    method: "get",
+    url: `/security/csp`,
+  });
+}
