@@ -106,6 +106,19 @@ public class SuccessApiResponse : CommonApiResponse
         }
     }
 
+    public bool? Next
+    {
+        get
+        {
+            if (_httpContext.Items.TryGetValue("Next", out var next))
+            {
+                return (bool?)next;
+            }
+
+            return null;
+        }
+    }
+
     public List<Link> Links { get; set; }
 
     public SuccessApiResponse()

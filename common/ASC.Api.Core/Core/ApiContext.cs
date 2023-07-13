@@ -50,6 +50,18 @@ public class ApiContext : ICloneable
             }
         }
     }
+    
+    public bool Next
+    {
+        get => (bool)(_httpContextAccessor.HttpContext?.Items[nameof(Next)] ?? false);
+        set
+        {
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                _httpContextAccessor.HttpContext.Items[nameof(Next)] = value;
+            }
+        }
+    }
 
     /// <summary>
     /// Filters responce to specific type from request parameter "type"
