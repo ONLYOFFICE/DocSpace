@@ -7,6 +7,8 @@ import PluginSettings from "./PluginSettings";
 
 import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
 
+import ToggleButton from "@docspace/components/toggle-button";
+
 const StyledPlugin = styled.div`
   display: flex;
 
@@ -94,6 +96,13 @@ const Plugin = ({
         status={status}
         description={description}
       />
+      {!isUserSettings && (
+        <ToggleButton
+          isChecked={false}
+          onChange={() => {}}
+          label={"Enable plugin for all users"}
+        />
+      )}
       {showPluginSettings && (
         <PluginSettings
           {...pluginSettings}

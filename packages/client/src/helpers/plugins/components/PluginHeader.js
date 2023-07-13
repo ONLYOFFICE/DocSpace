@@ -69,7 +69,7 @@ const PluginHeader = ({
 
     const opts = [];
 
-    opts.push(activateOpt);
+    if (isUserSettings) opts.push(activateOpt);
 
     if (showModalPluginSettings) opts.push(settingsOpt);
 
@@ -84,7 +84,9 @@ const PluginHeader = ({
         <Heading className={"plugin-header-text"} level={3} truncate>
           {name}
         </Heading>
-        <Badge className={"plugin-header-badge"} label={badgeLabel} />
+        {isUserSettings && (
+          <Badge className={"plugin-header-badge"} label={badgeLabel} />
+        )}
       </div>
       <ContextMenuButton getData={getOptions} />
     </StyledPluginHeader>

@@ -7,7 +7,7 @@ import { PluginStatus } from "SRC_DIR/helpers/plugins/constants";
 
 const StyledInfo = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 400px 1fr;
   grid-template-rows: 1fr;
 
   gap: 24px;
@@ -63,6 +63,8 @@ const PluginInfo = ({
         <Text>{author}</Text>
         <Text className="row-name">Uploader </Text>
         <Text>{uploader}</Text>
+        <Text className="row-name">Date </Text>
+        <Text>{new Date().toJSON().slice(0, 10).replace(/-/g, "/")}</Text>
         <Text className="row-name">Status </Text>
         <Text>{pluginStatusDesc}</Text>
         <Text className="row-name">Description </Text>
