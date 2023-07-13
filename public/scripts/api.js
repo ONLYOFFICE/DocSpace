@@ -25,6 +25,7 @@
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
       search: "",
       withSubfolders: true,
+      selectorTypes: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     },
     keysForReload: [
       "src",

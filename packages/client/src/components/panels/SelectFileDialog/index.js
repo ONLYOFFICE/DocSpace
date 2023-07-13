@@ -244,6 +244,8 @@ class SelectFileDialog extends React.Component {
 
     const buttonName = creationButtonPrimary
       ? t("Common:Create")
+      : embedded
+      ? t("Common:SelectFile")
       : t("Common:SaveButton");
     const name = dialogName ? dialogName : t("Common:SelectFile");
 
