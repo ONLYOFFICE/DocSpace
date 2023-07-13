@@ -160,9 +160,11 @@ const PeopleSelector = ({
 
         const items = response.items
           .filter((item) => {
-            //TODO: Add isRoomAdmin
             const excludeUser =
-              withAbilityCreateRoomUsers && !item.isAdmin && !item.isOwner;
+              withAbilityCreateRoomUsers &&
+              !item.isAdmin &&
+              !item.isOwner &&
+              !item.isRoomAdmin;
 
             if (excludeItems.includes(item.id) || excludeUser) {
               totalDifferent++;
