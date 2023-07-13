@@ -20,6 +20,7 @@
   "AmazonServiceTip": "Si tratta di una proprietà opzionale; cambiala solo se vuoi provare un endpoint di servizio diverso.",
   "AmazonSSE": "Crittografia lato server",
   "AmazonSSETip": "L’algoritmo di crittografia lato server utilizzato durante l’archiviazione di questo oggetto in S3.",
+  "Api": "Api",
   "Appearance": "Aspetto",
   "AuditSubheader": "La sottosezione ti permette di navigare attraverso l’elenco delle ultime modifiche (creazione, modifica, cancellazione ecc.) apportate dagli utenti alle entità (stanze, opportunità, file ecc.) all’interno del tuo DocSpace.",
   "AuditTrailNav": "Registro di controllo",

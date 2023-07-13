@@ -143,4 +143,111 @@ Linkki on voimassa 7 päivää.
 
 Etkö halua vaihtaa salasanaasi?Jätä tämä viesti huomiotta.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1. Tervetuloa Henkilökohtaiseen ONLYOFFICE:een
+
+Olet juuri luonut henkilökohtaisen toimistosi pilvessä. 
+
+h3. Kyseessä on virtuaalinen työtila, jossa voit muokata ja johon voit tallentaa asiakirjoja, työskennellä niiden kanssa mistä tahansa tarjoten pääsyn myös ystävillesi tai kollegoillesi.
+
+h3. Vinkkejä ONLYOFFICE:n nopeaa aloitusta varten:
+
+- Luo, katsele ja muokkaa tekstiasiakirjoja, taulukoita, esityksiä
+
+- Työskentele kaikkien suosittujen tiedostomuotojen kanssa. Taattu yhteensopivuus MS Office-tiedostojen kanssa.
+
+- Luo ja muokkaa "yhteistyössä täytettäviä lomakkeita":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Jaa ja tee yhteistyötä asiakirjoilla verkossa.
+
+- Käytä erilaisia lisäosia lisätäksesi lisäominaisuuksia.
+
+- Pääsy helposti henkilökohtaiseen pilveesi "Chrome-laajennuksen":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" kautta.
+
+Voit myös muokata asiakirjoja offlinessa ilmaisten "työpöytäsovellusten":"https://www.onlyoffice.com/download-desktop.aspx" avulla tai hanki mobiilimuokkausohjelma "iOS:ille":"https://apps.apple.com/app/onlyoffice-documents/id944896972" tai "Androidille":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Ystävällisin terveisin,
+ONLYOFFICE- tiimi</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Haluatko muuttaa pilvitoimistotilisi sähköpostiosoitetta?
+
+Klikkaa alla olevaa painiketta ja kirjaudu sisään pilveesi.
+
+$GreenButton
+
+Linkki on 7 päivää voimassa.
+
+*Jos et ole sisäänkirjautuneena pilvitoimistoosi tällä selaimella, sinun täytyy käyttää vanhaa sähköpostiosoitettasi vahvistukseen.
+
+Etkö halua vaihtaa sähköpostiosoitettasi? Tässä tapauksessa voit jättää tämän viestin huomiotta.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Hei,
+
+olet juuri rekisteröinyt tili ONLYOFFICE-ratkaisussa henkilökohtaiseen käyttöösi. Klikkaa "tästä":"$InviteLink" vahvistaaksesi rekisteröinnin ja luodaksesi sähköpostin.
+
+Jos linkki ei avaudu, ole hyvä ja kopioi seuraava "$InviteLink":"$InviteLink" ja liitä se selaimesi osoitekenttään.
+
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Olet rekisteröinyt tilisi lopetuksen personal.onlyoffice.comissa. Seuraa linkkiä saattaaksesi pyynnön loppuun saakka (linkki on 7 päivää voimassa):
+
+Vahvista tilin lopetus
+
+*Huomio*: Poistamisen jälkeen tilisi ja kaikki siihen liittyvät tiedot poistetaan lopullisesti "Tietosuojalausuntomme":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" mukaisesti.
+
+"Lue lisää tilin lopetuksesta":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Jätä tämä sähköposti huomiotta mikäli et halua jatkaa. 
+
+Jos sinulla on kysyttävää, ole hyvä ja ota meihin yhteyttä osoitteella "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Ystävällisin terveisin,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Tietojen siirtäminen käyttäjältä "$FromUserName":"$FromUserLink" on onnistunut. 
+
+Henkilötietojen poistaminen on sallittu ilmaiseksi:
+
+#Asiakirjat- $DocsSpace
+#Sähköposti -$MailSpace
+#Puhe - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h2. Uusi portaali on rekisteröity
+
+#Portaalin url:
+"${__VirtualRootPath}":"${__VirtualRootPath}"
+# Etunimi: $UserName
+# Sukunimi: $UserLastName
+# Sähköposti: $UserEmail
+# Puhelin: $Phone
+# Luontipäivä: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Tee samoin kuin käyttäjä |Linkitä Dropbox, Box ja muut tilit ‘Yleistä’-osiossa | Aseta pääsyoikeudet asiakirjoille ja kansioille ‘Yleistä’-osiossa</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Luo ja muokkaa omia asiakirjoja sekä jaa asiakirjoja pääsyoikeuksien kera | Anna asiakirjojen ja kansioiden luku/muokkausoikeuksia muille käyttäjille |Linkitä Dropboxiin, Boxiin ja muihin tileihin ‘Asiakirjani’-osiossa</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Tervetuloa Henkilökohtaiseen ONLYOFFICE:en</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Henkilökohtainen ONLYOFFICE. Ole hyvä ja aktivoi sähköpostiosoitteesi</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Henkilökohtaisen ONLYOFFICE-tilin lopetus</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Käyttäjätiedot on poistettu</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Uusi portaali on rekisteröity</value>
+  </data>
 </root>

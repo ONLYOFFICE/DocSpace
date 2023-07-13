@@ -992,4 +992,772 @@ ONLYOFFICE- tiimi
   <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
     <value>ONLYOFFICE DocSpacesi poistetaan</value>
   </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Klikkaa tästä aktivoidaksesi sähköpostiosoitteesi</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Vaihda sähköpostiosoite</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Vaihda salasana</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Vaihda matkapuhelinnumero</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Määritä todennussovellus</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Vahvista portaalin osoitteenmuutos</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Vahvista portaalin omistajan päivitys</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Vahvista tilin lopettaminen</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Deaktivoi portaali</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Poista portaali</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Klikkaa tästä liittyäksesi portaaliin</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Jätä palautetta</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Poista profiili</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Uudista nyt</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Valitse heti hinnoitteluohjelmat</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Aloita ilmainen kokeilu</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Käytä alennus</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Vahvista sähköpostisi vaihtaminen</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Turvallisuusilmoitus</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Liity ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Liity ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Liity ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Postilaatikon luominen</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Postilaatikon salasanan vaihtaminen</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Tervetuloa henkilökohtaiseen ONLYOFFICE:en!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Tervetuloa henkilökohtaiseen ONLYOFFICE:en</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>Henkilökohtainen ONLYOFFICE. Ole hyvä ja aktivoi sähköpostiosoitteesi</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Henkilökohtaisen ONLYOFFICE-tilin lopetus</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Käyttäjä on poistanut profiilinsa</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Käyttäjätietojen siirto on suoritettu</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Käyttäjätietojen siirto epäonnistui</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}.Käyttäjätietojen poisto suoritettu</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}.Käyttäjätietojen poisto epäonnistui</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Yrityslisenssipyyntö</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>SaaS hinnoitteluohjelmapyyntö</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Liity ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}.. Salauksen purku epäonnistui</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Salauksen purku aloitettu</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}.Salauksen purku suoritettu</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Salaus epäonnistui</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Salaus aloitettu</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Salaus suoritettu</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1. Aktivoi sähköpostisi "${__VirtualRootPath}":"$InviteLink"- portaalille.
+
+Hei!
+
+Osallistuaksesi "${__VirtualRootPath}":"$InviteLink"-portaaliin sinun tulee aktivoida sähköpostiosoitteesi. Tämä tehdään turvallisuussyistä.
+
+$GreenButton
+
+
+
+Tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele sähköpostisi aktivointi siinä ajassa.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" Portaalin varmuuskopio luotu
+
+Hyvä $OwnerName,
+
+Varmuuskopiotiedosto, joka sisältää tiedot portaalistasi "${__VirtualRootPath}":"${__VirtualRootPath}" on luotu.
+
+Lisätietoa varmuuskopioinnista löytyy "Tietojen varmuuskopiointi":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" - käyttäjäoppaasta.
+
+Jos sinulla on kysyttävää tai tarvitset apua ole hyvä ja ota meihin yhteyttä "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+Ystävällisin terveisin,
+ONLYOFFICE™-tukitiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portaalin varmuuskopio luotu
+
+Hyvä $OwnerName,
+
+Varmuuskopiotiedosto, joka sisältää tiedot portaalistasi [${__VirtualRootPath}](${__VirtualRootPath}) on luotu.
+
+Lisätietoa varmuuskopioinnista löytyy [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) käyttäjäoppaasta.
+
+Jos sinulla on kysyttävää tai tarvitset apua ole hyvä ja ota meihin yhteyttä 
+[support.onlyoffice.com](http://support.onlyoffice.com)
+
+Ystävällisin terveisin,
+ONLYOFFICE™-tukitiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Haluatko vaihtaa sähköpostisi ${LetterLogoText} -tililläsi?
+
+Klikkaa alla olevaa painiketta ja kirjaudu sisään* pilvipalveluusi.
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.
+
+*Jos et ole sisäänkirjautuneena ${LetterLogoText} tällä selaimella, sinun täytyy käyttää vanhaa sähköpostiosoitettasi vahvistusta varten. Ota yhteyttä portaalisi järjestelmänvalvojaan mikäli et muista sitä.
+
+Etkö halua vaihtaa sähköpostiasi? Tässä tapauksessa jätä tämä viesti huomiotta.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1. Matkapuhelinnumeron vaihtopyyntö
+
+Olet pyytänyt ${LetterLogoText}-portaaliin kirjautumiseen käyttämäsi matkapuhelinnumeron vaihtoa.
+
+Ole hyvä ja seuraa alla olevaa linkkiä vaihtaaksesi matkapuhelinnumerosi:
+
+$GreenButton
+
+Jos et halua vaihtaa puhelinnumeroasi tai sait virheellisesti tämän sähköpostin, ole hyvä ja jätä viesti huomiotta tai ota yhteyttä portaalin järjestelmänvalvojaan yksityiskohtia varten.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1. Turvallisuusilmoitus
+
+${LetterLogoText}-portaaliin kirjautumiseen käyttämäsi todennussovelluksen asetukset on nollattu.
+
+Ole hyvä ja klikkaa alla olevaa painiketta mennäksesi portaalin sisäänkirjautumissivulle ja määritä todennussovellus:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1. Portaalin "${__VirtualRootPath}":"${__VirtualRootPath}" omistajan muutos
+
+Hyvä  $OwnerName,
+
+Olemme saaneet pyynnön vaihtaa "${__VirtualRootPath}":"${__VirtualRootPath}" - portaalin omistaja nimelle $UserName.
+
+Ole hyvä ja seuraa alla olevaa linkkiä vahvistaaksesi toiminto:
+
+$GreenButton
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin omistajanvaihdostoiminto siinä ajassa.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1. Portaalin osoitteenmuutos
+
+Hyvä $OwnerName,
+
+Olemme saaneet pyynnön vaihtaa "${__VirtualRootPath}":"${__VirtualRootPath}" -portaalin osoite osoitteeksi "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Ole hyvä ja seuraa alla olevaa linkkiä vahvistaaksesi toiminto:
+
+$GreenButton
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin osoitteenmuutostoiminto siinä ajassa.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Sinut on kutsuttu liittymään portaaliin "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+vieraana käyttäjänä. Hyväksy kutsu klikkaamalla linkkiä:
+ 
+$GreenButton
+
+Linkki on voimassa vain 7 päivää.
+
+Saat enemmän vinkkejä verkkotoimistosi käyttöön. Voit perua tilaukset tai tilata ne uudelleen profiilisivullasi milloin tahansa.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Hei, $UserName!
+
+$__AuthorName on kutsunut sinut vieraaksi "${__VirtualRootPath}":"${__VirtualRootPath}"- portaaliin. Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.
+
+Saat enemmän vinkkejä verkkotoimistosi käyttöön. Voit perua tilaukset tai tilata ne uudelleen profiilisivullasi milloin tahansa.</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1. Viesti "${__VirtualRootPath}":"${__VirtualRootPath}"- portaalista
+
+Sähköposti:  $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Viesti "${__VirtualRootPath}":"${__VirtualRootPath}"- portaalista
+
+Sähköposti:  $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1. Liittymiskutsu "${__VirtualRootPath}":"$InviteLink" -portaaliin
+
+Hei,
+
+Olet pyytänyt liittymistä portaaliin "${__VirtualRootPath}":"$InviteLink" ${LetterLogoText}- alustan asiakirjojen ja projektin hallintaa varten. Liity portaaliin ja aloita yhteistyö kollegoidesi tai ystäviesi kanssa saman tien.
+
+Ole hyvä ja syötä nimesi ja salasanasi tämän linkin kautta hyväksyäksesi kutsun:
+
+$GreenButton
+
+*Huom*: tämä linkki on voimassa vain 48 tuntia. Ole hyvä ja viimeistele toiminto sen aikana.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+      Järjestelmänvalvoja on luonut uuden &lt;b&gt;$Address&lt;/b&gt; sähköpostilaatikon sinulle portaalissa "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Käytä seuraavia asetuksia muille sähköpostiohjelmille:
+
+      Sisäänkirjautuminen: &lt;b&gt;$Login&lt;/b&gt;
+      Salasana: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
+
+      Sisääntuleva posti (IMAP):
+      Palvelin: &lt;b&gt;$Server&lt;/b&gt;
+      Portti: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Ulosmenevä posti (SMTP): 
+      Palvelin:&lt;b&gt;$Server&lt;/b&gt;
+      Portti: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Vaatii todennuksen: &lt;b&gt;Yes&lt;/b&gt;
+
+      Jos olet saanut tämän sähköpostin erehdyksessä, ole hyvä ja jätä se huomiotta tai ota yhteyttä portaalisi järjestelmänvalvojaan yksityiskohtia varten.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+      &lt;b&gt;$Address&lt;/b&gt;-postilaatikon salasana on vaihdettu.
+
+      Jos olet saanut tämän sähköpostin erehdyksessä, ole hyvä ja jätä se huomiotta tai ota yhteyttä portaalisi järjestelmänvalvojaan yksityiskohtia varten.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+      Järjestelmänvalvoja on luonut uuden &lt;b&gt;$Address&lt;/b&gt; -postilaatikon sinulle "${__VirtualRootPath}":"${__VirtualRootPath}" -portaalissa.
+
+      Jos olet saanut tämän sähköpostin erehdyksessä, ole hyvä ja jätä se huomiotta tai ota yhteyttä portaalisi järjestelmänvalvojaan yksityiskohtia varten.</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1. Toisen alueportaalin siirtovirhe
+
+Toiselle alueelle siirrettäessä sattui virhe. Ole hyvä ja kokeile vielä kerran uudelleen. Portaalisi on nyt toiminnassa vanhassa osoitteessa "$PortalUrl":"$PortalUrl"
+
+Jos sinulla on kysyttävää tai tarvitset apua ole hyvä ja ota meihin yhteyttä osoitteessa "support@onlyoffice.com":mailto:support@onlyoffice.com
+
+Ystävällisin terveisin,
+ONLYOFFICE™- tukitiimi "www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Vaihtaaksesi ilmoitustyyppiä, ole hyvä ja muokkaa "tilausasetuksiasi":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1. Portaalin siirto
+h1."$PortalUrl":"$PortalUrl"
+
+Portaalisi on siirretty uudelle verkkotunnukselle. Ole hyvä ja palauta pääsysi portaaliin antamalla salasanasi, jota käytetään jatkossa sisäänkirjautumiseen.
+
+Ole hyvä ja seuraa alla olevaa linkkiä asettaaksesi tilisi salasanan: $GreenButton
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele pääsyn palautustoiminto siinä ajassa.
+
+Jos sait tämän viestin erehdyksessä, ole hyvä ja jätä se huomiotta tai ota yhteyttä portaalisi "$PortalUrl":"$PortalUrl" järjestelmänvalvojaan lisätietoja varten.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Hei!
+
+Sinut on kutsuttu liittymään "${__VirtualRootPath}":"${__VirtualRootPath}" portaaliin vieraana. Hyväksy kutsu klikkaamalla linkkiä:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Linkki on voimassa vain 7 päivää.
+
+Saat lisää vinkkejä verkkotoimistosi käyttöön. Voit perua tilaukset ja ottaa ne uudelleen käyttöön profiilisivullasi milloin tahansa.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Hei, $UserName
+Sinut on onnistuneesti rekisteröity henkilökohtaiseen ONLYOFFICE portaaliin "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Yhdistä lempipilvipalvelusi: Dropbox, Google Drive, OneDrive tai Box luodaksesi yhden työtilan asiakirjoillesi, jotka ovat saatavilla mistä tahansa.
+
+Lisätietoja henkilökohtaisesta ONLYOFFICE:sta "blogissamme":"$TagBlogLink".
+
+Olemme iloisia, että olet täällä. Pysy kuulolla!
+
+Ystävällisesti,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1. Tervetuloa henkilökohtaiseen ONLYOFFICE:een
+
+Olet juuri luonut itsellesi henkilökohtaisen toimiston pilveen.
+
+h3. Se on virtuaalinen työtila, jossa voit muokata ja tallentaa asiakirjoja, työskennellä mistä tahansa tarjoten pääsyn ystävillesi tai kollegoille.
+
+h3. Mitä kaikkea voit tehdä ONLYOFFICE:ssa:
+
+- Luo, katsele ja muokkaa tekstidokumentteja, taulukoita, esityksiä.
+
+- Työskentele kaikilla suosituilla formaateilla. Paras yhteensopivuus MS Office-tiedostoilla
+
+- Jaa ja tee yhteistyötä asiakirjojen avulla netissä
+
+- Käytä erilaisia lisäosia saadaksesi lisätoimintoja.
+
+- Helppo pääsy henkilökohtaiseen pilvipalveluusi "Chromen laajennuksen":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" kautta.
+
+Voit myös muokata asiakirjoja offlinessa ilmaisilla "työpöytäeditoreilla":"https://www.onlyoffice.com/download-desktop.aspx" tai lataa mobiilisovellus "iOS:ille":"https://apps.apple.com/app/onlyoffice-documents/id944896972" tai "Androidille":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Ystävällisesti,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Haluatko vaihtaa ONLYOFFICE-tilisi sähköpostiosoitteen?
+
+Klikkaa alla olevaa painiketta ja kirjaudu sisään pilvipalveluusi.
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.
+
+*Jos et ole sisäänkirjautuneena ONLYOFFICE:en tällä selaimella, sinun tulee käyttää vanhaa sähköpostiosoitettasi vahvistamiseen.
+
+Etkö halua muuttaa sähköpostiasi? Tässä tapauksessa voit jättää tämän viestin huomiotta.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Hei,
+
+Olet juuri rekisteröinyt tilin ONLYOFFICE henkilökohtaiseen käyttöön. Klikkaa "tästä":"$InviteLink" vahvistaaksesi rekisteröinti ja luodaksesi salasanan.
+
+Jos linkki ei avaudu, ole hyvä ja kopioi seuraava "$InviteLink":"$InviteLink" ja liitä se selaimesi osoitekenttään.
+
+Ystävällisesti,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Olet pyytänyt tilisi lopettamista personal.onlyoffice.com:issa. Seuraa linkkiä viimeistelläksesi pyynnön (linkki on voimassa 7 päivän ajan)
+
+$GreenButton
+
+*Huom*: Poistamisen jälkeen, tilisi ja kaikki siihen liittyvät tiedot poistetaan pysyvästi "Tietosuojalausuntomme":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" Mukaisesti.
+
+"Lue lisää tilin lopettamisesta":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Jätä tämä sähköposti huomiotta mikäli et haluat jatkaa.
+
+Jos sinulla on kysyttävää, ole hyvä ja ota yhteyttä meihin "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ystävällisesti,
+ONLYOFFICE-tiimi</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1. "${__VirtualRootPath}":"${__VirtualRootPath}" portaalin deaktivointi
+
+Hyvä $OwnerName,
+
+Olet pyytänyt portaalisi "${__VirtualRootPath}":"${__VirtualRootPath}" väliaikaista deaktivointia. Ole hyvä ja seuraa linkkiä vahvistaaksesi toiminnon.
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin deaktivointi siinä ajassa.
+
+Voit aktivoida portaalin uudelleen milloin tahansa klikkaamalla linkkiä:
+p=. "Reactivate Portal":"$ActivateUrl" (this link has no time limit)
+
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota meihin yhteyttä "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ystävällisin terveisin;
+ONLYOFFICE™ Support Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath})- portaalin deaktivointi
+
+Hyvä $OwnerName,
+Olet pyytänyt portaalisi "${__VirtualRootPath}":"${__VirtualRootPath}" väliaikaista deaktivointia. Ole hyvä ja seuraa linkkiä vahvistaaksesi toiminnon.
+
+$GreenButton
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin deaktivointi siinä ajassa.
+
+Voit aktivoida portaalin uudelleen milloin tahansa klikkaamalla linkkiä:
+[Reactivate Portal]($ActivateUrl) (tällä linkillä ei ole aikarajaa)
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota meihin yhteyttä "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ystävällisin terveisin;
+ONLYOFFICE™ Support Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1. "${__VirtualRootPath}":"${__VirtualRootPath}"-tilan poistaminen
+
+Hyvä $OwnerName,
+
+Olet pyytänyt [${__VirtualRootPath}](${__VirtualRootPath}) -portaalin lopullista poistamista.
+
+*Tärkeää! Kaikki tilaasi tallennettu tieto mukaan lukien rekisteröintitiedot poistetaan eikä niitä voi palauttaa.*
+
+#if($AutoRenew == "True")
+Ennen kuin poistat tilan, ole hyvä ja varmista, että automaattinen laskutus on kytketty pois päältä. Voit tarkistaa automaattisen laskutuksen tilan [Avangate-tililläsi](https://secure.avangate.com/myaccount/").
+#end
+
+Jos haluat silti poistaa [${__VirtualRootPath}](${__VirtualRootPath})- tilasi ole hyvä ja seuraa alla olevaa linkkiä vahvistaaksesi operaation:
+
+$GreenButton
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin poistamistoiminto sen ajan kuluessa.
+
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota meihin yhteyttä osoitteessa [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Ystävällisin terveisin,
+ONLYOFFICE™ -tukitiimi
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>"${__VirtualRootPath}":"${__VirtualRootPath}"-portaalin poistaminen
+
+Hyvä $OwnerName,
+
+Olet pyytänyt [${__VirtualRootPath}](${__VirtualRootPath}) -portaalin lopullista poistamista.
+
+_Tärkeää! Kaikki portaaliisi tallennettu tieto mukaan lukien rekisteröintitiedot poistetaan eikä niitä voi palauttaa._
+
+#if($AutoRenew == "True")
+Ennen kuin poistat portaalin, ole hyvä ja varmista, että automaattinen laskutus on kytketty pois päältä. Voit tarkistaa automaattisen laskutuksen tilan [Avangate-tililläsi](https://secure.avangate.com/myaccount/").
+#end
+
+Jos haluat silti poistaa [${__VirtualRootPath}](${__VirtualRootPath})- portaalisi ole hyvä ja seuraa alla olevaa linkkiä vahvistaaksesi operaation:
+
+$GreenButton
+
+_Huom_: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele portaalin poistamistoiminto sen ajan kuluessa.
+
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota meihin yhteyttä osoitteessa [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Ystävällisin terveisin,
+ONLYOFFICE™ -tukitiimi
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath-portaalin profiilinmuutosilmoitus
+
+"$__AuthorName":"$__AuthorUrl" on muuttanut profiilitietojaan "${__VirtualRootPath}":"${__VirtualRootPath}" -portaalissa
+
+
+^Jos et halua saada ilmoituksia profiilipäivityksistä, ole hyvä ja hallitse tilaustasi "tilausasetuksissa":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath})- portaalin profiilinmuutosilmoitus
+
+$__AuthorName]($__AuthorUrl) on muuttanut profiilitietojaan [${__VirtualRootPath}](${__VirtualRootPath})-portaalissa.</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on epäonnistunut.
+
+Joitakin tiedostojen salausta ei pystynyt purkamaan. Lisätietoja "Ohjauspaneelissa":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on alkanut.
+
+Salauksen purku voi viedä vähän aikaa ja sen aikana portaali ei ole käytettävissä. Kun salauksen purku on tehty, voit taas käyttää portaalia.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on onnistuneesti suoritettu.
+
+Portaalisi on taas käytettävissä.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on epäonnistunut.
+
+Joitakin tiedostojen salausta ei pystynyt purkamaan. Lisätietoja "Ohjauspaneelissa":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on alkanut.
+
+Salauksen purku voi viedä vähän aikaa ja sen aikana portaali ei ole käytettävissä. Kun salauksen purku on tehty, voit taas käyttää portaalia.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tiedoston salauksen purku portaalissasi "${PortalUrl}":"${PortalUrl}" on onnistuneesti suoritettu.
+
+Portaalisi on taas käytettävissä.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1. Uusi käyttäjä lisätty "${__VirtualRootPath}":"${__VirtualRootPath}" -portaaliin
+
+"$__AuthorName":"$__AuthorUrl" on liittynyt "${__VirtualRootPath}":"${__VirtualRootPath}"-portaaliisi.
+
+
+^Jos et halua saada ilmoituksia uusista käyttäjistä, ole hyvä ja hallitse tilaustasi "tilausasetuksissa":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Uusi käyttäjä lisätty "${__VirtualRootPath}":"${__VirtualRootPath}" -portaaliin
+"$__AuthorName":"$__AuthorUrl" on liittynyt "${__VirtualRootPath}":"${__VirtualRootPath}"-portaaliisi.</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Sinut on kutsuttu liittymään yrityksesi turvalliseen ja varmaan verkkotoimistoon, joka tehostaa yhteistyötä. Se on osoitteessa "${__VirtualRootPath}":"${__VirtualRootPath}". Lisää linkki kirjanmerkkeihin, jotta se löytyy helposti.
+
+Hyväksy kutsu seuraamalla alla olevaa linkkiä ja käytä yrityksen käyttäjänimeäsi ja salasanaa kirjautuaksesi sisään.
+
+$GreenButton
+
+Linkki on voimassa 7 päivää.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Hei,
+
+Sinut on kutsuttu "${__VirtualRootPath}":"${__VirtualRootPath}" portaaliin vieraana. Hyväksy kutsu klikkaamalla linkkiä:
+
+$GreenButton
+
+Lähetämme sinulle myös silloin tällöin vinkkejä ja uusimmat ONLYOFFICE-uutiset.Voit perua tilaukset ja ottaa ne uudelleen käyttöön profiilisivullasi milloin tahansa.
+
+Ystävällisin terveisin;
+ONLYOFFICE-tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1. Portaalin osoitteenmuutos
+
+Hyvä $UserDisplayName,
+
+$PortalUrl- portaalisi osoite vaihdettiin uuteen "${__VirtualRootPath}":"${__VirtualRootPath}"-osoitteeseen.
+
+*Huom*: DNS-asetukset ja yksivaiheinen sisäänkirjautumisvaihtoehto eivät toimi enää ennen kuin muutat ne.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1. Profiiliin poistaminen "${__VirtualRootPath}":"${__VirtualRootPath}" –portaalista
+
+Olet pyytänyt profiilisi lopullista poistoa "${__VirtualRootPath}":"${__VirtualRootPath}" -portaalista.
+
+Jos vielä haluat poistaa profiilisi, ole hyvä ja seuraa linkkiä vahvistaaksesi operaation:
+
+$GreenButton
+
+*Huom*: tämä linkki on voimassa vain 7 päivää. Ole hyvä ja viimeistele poistotoiminto siinä ajassa.</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Käyttäjä "$FromUserName":"$FromUserLink"  on poistanut profiilinsa, ja tämä profiili on nyt lukittu. Kaikki käyttäjän tiedostot ovat silti hänen tilillään ja vievät levytilaa.
+
+Voit siirtää käyttäjän jaetut asiakirjat toiselle käyttäjälle tai poistaa ne vapauttaaksesi portaalin levytilaa.
+
+Ole hyvä ja mene käyttäjäprofiiliin käyttäen "tätä linkkiä":"$FromUserLink" siirtääksesi asiakirjat toiselle käyttäjälle tai poistaaksesi tiedot.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1. Profiiliasi "$__VirtualRootPath":"$__VirtualRootPath" -portaalissa on muutettu
+
+Hyvä $UserName,
+
+"$__AuthorName":"$__AuthorUrl" on muuttanut profiilisi käyttäjätietoja "$__VirtualRootPath":"$__VirtualRootPath" -portaalissa.
+
+Katsellaksesi profiiliasi seuraa alla olevaa linkkiä: "$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Profiiliasi [${__VirtualRootPath}](${__VirtualRootPath}) - portaalissa on muutettu
+
+Hyvä $UserName,
+
+"$__AuthorName":"$__AuthorUrl" on muuttanut profiilisi käyttäjätietoja "$__VirtualRootPath":"$__VirtualRootPath" -portaalissa.
+
+Katsellaksesi profiiliasi seuraa alla olevaa linkkiä: "$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Tietojen siirto käyttäjältä "$FromUserName":"$FromUserLink" käyttäjälle "$ToUserName":"$ToUserLink" on suoritettu.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Tietojen siirto käyttäjältä "$FromUserName":"$FromUserLink" käyttäjälle "$ToUserName":"$ToUserLink" epäonnistui.
+
+Poikkeusviesti: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Käyttäjän "$FromUserName":"$FromUserLink" poistaminen onnistui.
+
+Henkilökohtaisten tietojen poisto on sallittu ilmaiseksi:
+
+# Asiakirjat - $DocsSpace
+# CRM - $CrmSpace
+# Posti - $MailSpace
+# Puhe- $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Hyvä $UserName,
+
+Käyttäjän "$FromUserName":"$FromUserLink" tietojen poistaminen epäonnistui.
+
+Poikkeusviesti: $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1. Yrityslisenssipyyntö
+
+h3. Etunimi
+$UserName
+
+h3.Sukunimi
+$UserLastName
+
+h3.Asema
+$Position
+
+h3.Sähköposti
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Puhelin
+$Phone
+
+h3.Yrityksen verkkosivu
+$Website
+
+h3.Yrityksen nimi
+$CompanyTitle
+
+h3.Yrityksen koko
+$CompanySize
+
+h3.Pyynnön sisältö
+$Body
+
+h3.Portaalin osoite
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS Tariffipyyntö portaalille"${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Etunimi
+$UserName
+
+h3.Sukunimi
+$UserLastName
+
+h3.Asema
+$Position
+
+h3.Sähköposti
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Puhelin
+$Phone
+h3.Yrityksen verkkosivu
+$Website
+
+h3.Yrityksen nimi
+$CompanyTitle
+
+h3.Yrityksen koko
+$CompanySize
+
+h3.Pyynnön sisältö
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1. Portaalin palautus
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Portaalisi on palautettu. Päästäksesi portaaliin, sinun tulee asettaa uusi salasana:
+
+$GreenButton
+
+*Huom*: linkki on voimassa vain 7 päivää.
+Jos sait tämän viestin erehdyksessä, ole hyvä ja jätä se huomiotta tai ota yhteyttä "${__VirtualRootPath}":"${__VirtualRootPath}"-portaalin järjestelmänvalvojaan lisätietoja varten.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1. Portaalin palautus aloitettu
+
+Portaalin palautus on aloitettu. Tämä voi viedä aikaa riippuen tietojen määrästä.
+
+*Huom*: portaali ei ole käytettävissä palautusprosessin aikana.
+
+Jos sinulla on kysyttävää tai tarvitset apua, ole hyvä ja ota meihin yhteyttä osoitteessa "support@onlyoffice.com":mailto:support@onlyoffice.com"
+
+Ystävällisin terveisin,
+ONLYOFFICE™- tukitiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Muuttaaksesi ilmoitustyyppiä, ole hyvä ja mene “tilauksen hallintaan” :"$RecipientSubscriptionConfigURL".^</value>
+  </data>
 </root>
