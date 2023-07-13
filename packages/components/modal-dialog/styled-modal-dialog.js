@@ -126,8 +126,8 @@ const StyledBody = styled(Box)`
 
     ${(props) =>
       props.theme.interfaceDirection === "rtl"
-        ? `padding-left: 16px !important`
-        : `padding-right: 16px !important`}
+        ? `padding-left: 16px !important;`
+        : `padding-right: 16px !important;`}
 
     ${(props) =>
       props.isScrollLocked &&
