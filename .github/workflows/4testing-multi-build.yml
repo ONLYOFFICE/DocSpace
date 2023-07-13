@@ -10,6 +10,8 @@ env:
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
     DOCKERFILE: "Dockerfile.app"
+    FILE: "build.yml"
+    STATUS: ""
 
 jobs:
   build:
@@ -41,13 +43,13 @@ jobs:
           --set *.platform=linux/amd64 \
           --set *.cache-to=type=gha \
           --set *.cache-from=type=gha \
-          --load
+          --push
 
-          DOCKER_IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep "$REPO" | tr '\n' ' ')
+          DOCKER_IMAGES=$(grep -oP '(?<=image: ")[^"]+' $FILE | sed -e "s/\${REPO}/$REPO/g ;  s/\${DOCKER_IMAGE_PREFIX}/$DOCKER_IMAGE_PREFIX/g ; s/\${DOCKER_TAG}/$DOCKER_TAG/g" |  tr '\n' ' ' )
           IFS=" " read -a IMAGES <<< "$DOCKER_IMAGES"
           for IMAGE in ${IMAGES[@]}; do
             NEW_IMAGE="$IMAGE"."$TAG"
-            docker push "$IMAGE"
+            docker pull "$IMAGE"
             docker tag "$IMAGE" "$NEW_IMAGE"
             docker push "$NEW_IMAGE"
           done
