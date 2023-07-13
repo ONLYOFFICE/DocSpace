@@ -37,6 +37,9 @@ copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml"
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
 
+REM echo ######## Fix Bug #62877 ########
+sed -i "s/\(\W\)SAMEORIGIN\(\W\)/\1\2/g" build\install\win\Files\nginx\conf\onlyoffice.conf
+
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
 del /f /q build\install\win\Files\config\*.dev.json

@@ -430,7 +430,7 @@
     <ROW JsonProperty="postman" Parent="notify" Name="postman" Condition="1" Order="0" Flags="57" Value="services"/>
     <ROW JsonProperty="products" Parent="core" Name="products" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="products_1" Parent="core_1" Name="products" Condition="1" Order="2" Flags="60"/>
-    <ROW JsonProperty="public" Parent="url" Name="public" Condition="1" Order="0" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
+    <ROW JsonProperty="public" Parent="url" Name="public" Condition="1" Order="0" Flags="57" Value="/ds-vpath/"/>
     <ROW JsonProperty="secret" Parent="docservice" Name="secret" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="url" Parent="docservice" Name="url" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="value" Parent="secret" Name="value" Condition="1" Order="0" Flags="57" Value="[DOCUMENT_SERVER_JWT_SECRET]"/>
