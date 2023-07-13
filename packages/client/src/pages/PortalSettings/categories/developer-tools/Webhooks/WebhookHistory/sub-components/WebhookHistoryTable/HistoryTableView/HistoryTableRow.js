@@ -25,6 +25,17 @@ const StyledTableRow = styled(TableRow)`
     text-overflow: ellipsis;
   }
 
+  .p-menuitem-icon {
+    svg {
+      path {
+        fill: red;
+      }
+    }
+  }
+  .p-menuitem-text {
+    color: red;
+  }
+
   ${(props) =>
     props.isHighlight &&
     css`
@@ -48,6 +59,7 @@ const HistoryTableRow = (props) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
@@ -56,6 +68,9 @@ const HistoryTableRow = (props) => {
   const redirectToDetails = () =>
     navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
+    if (isRetryPending) {
+      return;
+    }
     await retryWebhookEvent(item.id);
     await fetchHistoryItems({
       ...(historyFilters ? formatFilters(historyFilters) : {}),
@@ -78,6 +93,7 @@ const HistoryTableRow = (props) => {
       label: t("Retry"),
       icon: RetryIcon,
       onClick: handleRetryEvent,
+      disabled: isRetryPending,
     },
   ];
 
@@ -141,6 +157,7 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = webhooksStore;
 
   return {
@@ -150,5 +167,6 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   };
 })(observer(HistoryTableRow));
