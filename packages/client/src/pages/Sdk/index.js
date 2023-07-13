@@ -145,7 +145,10 @@ const Sdk = ({
           isPanelVisible={true}
           onSelectFile={onSelectFile}
           onClose={onClose}
-          filteredType="roomsOnly"
+          filteredType={
+            frameConfig?.filter.selectorTypes ||
+            "exceptPrivacyTrashArchiveFolders"
+          }
           withSubfolders={false}
           displayType="aside"
           embedded={true}
