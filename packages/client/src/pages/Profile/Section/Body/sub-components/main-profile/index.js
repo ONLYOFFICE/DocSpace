@@ -273,7 +273,7 @@ const MainProfile = (props) => {
             <div className="profile-block-field profile-block-password">
               <Text fontWeight={600}>********</Text>
               <IconButton
-                className="edit-button"
+                className="edit-button password-edit-button"
                 iconName={PencilOutlineReactSvgUrl}
                 size="12"
                 onClick={() => setChangePasswordVisible(true)}

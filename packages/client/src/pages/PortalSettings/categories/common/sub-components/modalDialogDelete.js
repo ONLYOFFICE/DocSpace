@@ -33,14 +33,14 @@ const ModalDialogDelete = (props) => {
       <ModalDialog.Body>{t("Settings:DeleteThemeNotice")}</ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          className="button-modal"
+          className="delete button-modal"
           label={t("Common:Delete")}
           onClick={onClickDelete}
           primary
           size="normal"
         />
         <Button
-          className="button-modal"
+          className="cancel-button button-modal"
           label={t("Common:CancelButton")}
           size="normal"
           onClick={onClose}

@@ -46,6 +46,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -73,7 +74,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Settings settings,
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
-        IQuotaService quotaService)
+        IQuotaService quotaService, EmailValidationKeyProvider emailValidationKeyProvider)
         : base(
               dbContextManager,
               userManager,
@@ -102,6 +103,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -342,11 +344,20 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
-        return await (await _globalStore.GetStoreAsync()).GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
-                                                 new List<string>
-                                                     {
-                                                             string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
-                                                     });
+        var path = GetUniqFilePath(file);
+        var headers = new List<string>
+        {
+            string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
+        };
+
+        if (!_authContext.IsAuthenticated)
+        {
+            headers.Add(SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider));
+        }
+
+        var store = await _globalStore.GetStoreAsync();
+
+        return await store.GetPreSignedUriAsync(string.Empty, path, expires, headers);
     }
 
     public async Task<bool> IsSupportedPreSignedUriAsync(File<int> file)

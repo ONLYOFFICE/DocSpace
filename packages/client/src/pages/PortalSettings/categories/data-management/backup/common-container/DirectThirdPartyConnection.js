@@ -364,6 +364,7 @@ const DirectThirdPartyConnection = (props) => {
 
       {!connectedThirdPartyAccount?.id || !isTheSameThirdPartyAccount ? (
         <Button
+          id="connect-button"
           primary
           label={t("Common:Connect")}
           onClick={onConnect}

@@ -23,12 +23,14 @@ const HistoryRow = (props) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const redirectToDetails = () => navigate(window.location.pathname + `/${historyItem.id}`);
+  const redirectToDetails = () =>
+    navigate(window.location.pathname + `/${historyItem.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(historyItem.id);
     await fetchHistoryItems({
@@ -54,16 +56,19 @@ const HistoryRow = (props) => {
 
   const contextOptions = [
     {
+      id: "webhook-details",
       key: "Webhook details dropdownItem",
       label: t("WebhookDetails"),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
+      id: "retry",
       key: "Retry dropdownItem",
       label: t("Retry"),
       icon: RetryIcon,
       onClick: handleRetryEvent,
+      disabled: isRetryPending,
     },
   ];
 
@@ -75,9 +80,15 @@ const HistoryRow = (props) => {
       checkbox
       checked={isIdChecked(historyItem.id)}
       onSelect={handleOnSelect}
-      className={isIdChecked(historyItem.id) ? "row-item selected-row-item" : "row-item "}
-      onClick={handleRowClick}>
-      <HistoryRowContent sectionWidth={sectionWidth} historyItem={historyItem} />
+      className={
+        isIdChecked(historyItem.id) ? "row-item selected-row-item" : "row-item "
+      }
+      onClick={handleRowClick}
+    >
+      <HistoryRowContent
+        sectionWidth={sectionWidth}
+        historyItem={historyItem}
+      />
     </Row>
   );
 };
@@ -90,6 +101,7 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = webhooksStore;
 
   return {
@@ -99,5 +111,6 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   };
 })(observer(HistoryRow));

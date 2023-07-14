@@ -224,19 +224,21 @@ const PasswordStrength = (props) => {
 
       <Box className="checkboxes">
         <Checkbox
+          className="use-upper-case"
           onChange={onClickCheckbox}
           label={t("UseUpperCase")}
           isChecked={useUpperCase}
           value="upperCase"
         />
         <Checkbox
-          className="second-checkbox"
+          className="use-digits second-checkbox"
           onChange={onClickCheckbox}
           label={t("UseDigits")}
           isChecked={useDigits}
           value="digits"
         />
         <Checkbox
+          className="use-special-char second-checkbox"
           onChange={onClickCheckbox}
           label={t("UseSpecialChar")}
           isChecked={useSpecialSymbols}
@@ -255,6 +257,8 @@ const PasswordStrength = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="password-strength-save"
+        additionalClassCancelButton="password-strength-cancel"
       />
     </MainContainer>
   );

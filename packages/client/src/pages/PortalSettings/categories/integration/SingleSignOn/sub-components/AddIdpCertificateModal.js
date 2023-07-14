@@ -36,6 +36,7 @@ const AddIdpCertificateModal = (props) => {
 
         <TextArea
           className="text-area"
+          id="idp-certificate"
           name="idpCertificate"
           onChange={setInput}
           value={idpCertificate}
@@ -45,6 +46,7 @@ const AddIdpCertificateModal = (props) => {
 
       <ModalDialog.Footer>
         <Button
+          id="ok-button"
           label={t("Common:OKButton")}
           onClick={() => addIdpCertificate(t)}
           primary
@@ -54,6 +56,7 @@ const AddIdpCertificateModal = (props) => {
           size="normal"
         />
         <Button
+          id="cancel-button"
           label={t("Common:CancelButton")}
           onClick={closeIdpModal}
           size="normal"

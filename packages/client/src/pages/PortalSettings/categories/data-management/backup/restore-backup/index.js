@@ -142,10 +142,18 @@ const RestoreBackup = (props) => {
         fontWeight="400"
         className="backup_radio-button"
         options={[
-          { value: LOCAL_FILE, label: t("LocalFile") },
-          { value: BACKUP_ROOM, label: t("RoomsModule") },
-          { value: DISK_SPACE, label: t("ThirdPartyResource") },
-          { value: STORAGE_SPACE, label: t("Common:ThirdPartyStorage") },
+          { id: "local-file", value: LOCAL_FILE, label: t("LocalFile") },
+          { id: "backup-room", value: BACKUP_ROOM, label: t("RoomsModule") },
+          {
+            id: "third-party-resource",
+            value: DISK_SPACE,
+            label: t("ThirdPartyResource"),
+          },
+          {
+            id: "third-party-storage",
+            value: STORAGE_SPACE,
+            label: t("Common:ThirdPartyStorage"),
+          },
         ]}
         onClick={onChangeRadioButton}
         selected={radioButtonState}

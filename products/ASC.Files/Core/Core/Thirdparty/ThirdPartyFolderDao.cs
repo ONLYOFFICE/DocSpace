@@ -745,6 +745,7 @@ internal abstract class BaseFolderDao
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PublicRooms => FolderType.PublicRoom,
             _ => FolderType.DEFAULT,
         };
 

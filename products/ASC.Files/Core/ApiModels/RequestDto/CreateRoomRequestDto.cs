@@ -32,17 +32,8 @@ public enum RoomType
     EditingRoom = 2,
     ReviewRoom = 3,
     ReadOnlyRoom = 4,
-    CustomRoom = 5
-}
-
-public enum RoomFilterType
-{
-    FillingFormsRoomOnly = 1,
-    EditingRoomOnly = 2,
-    ReviewRoomOnly = 3,
-    ReadOnlyRoomOnly = 4,
-    CustomRoomOnly = 5,
-    FoldersOnly = 6,
+    CustomRoom = 5,
+    PublicRoom = 6,
 }
 
 public class CreateRoomRequestDto

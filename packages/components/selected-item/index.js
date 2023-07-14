@@ -16,6 +16,7 @@ const SelectedItem = (props) => {
     propKey,
     group,
     forwardedRef,
+    classNameCloseButton,
   } = props;
   if (!label) return <></>;
 
@@ -40,7 +41,7 @@ const SelectedItem = (props) => {
       ref={forwardedRef}
     >
       <StyledLabel
-        className={"selected-item_label"}
+        className="selected-item_label"
         truncate={true}
         noSelect
         isDisabled={isDisabled}
@@ -48,7 +49,7 @@ const SelectedItem = (props) => {
         {label}
       </StyledLabel>
       <IconButton
-        className="selected-tag-removed"
+        className={"selected-tag-removed " + classNameCloseButton}
         iconName={CrossReactSvgUrl}
         size={12}
         onClick={onCloseClick}

@@ -75,6 +75,7 @@ const RequestDetails = ({ eventDetails }) => {
         <Textarea isDisabled />
       ) : (
         <Textarea
+          classNameCopyIcon="request-header-copy"
           value={eventDetails.requestHeaders}
           enableCopy
           hasNumeration
@@ -89,6 +90,7 @@ const RequestDetails = ({ eventDetails }) => {
       </Text>
       {isJSON(eventDetails.requestPayload) ? (
         <Textarea
+          classNameCopyIcon="request-body-copy"
           value={eventDetails.requestPayload}
           isJSONField
           enableCopy
@@ -97,7 +99,11 @@ const RequestDetails = ({ eventDetails }) => {
           copyInfoText={t("RequestBodyCopied")}
         />
       ) : (
-        <Textarea value={eventDetails.requestPayload} heightScale className="textareaBody" />
+        <Textarea
+          value={eventDetails.requestPayload}
+          heightScale
+          className="textareaBody"
+        />
       )}
     </DetailsWrapper>
   );

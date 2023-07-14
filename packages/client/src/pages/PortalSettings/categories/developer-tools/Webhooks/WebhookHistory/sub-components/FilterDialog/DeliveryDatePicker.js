@@ -119,7 +119,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
     return (
       <div>
         <SelectedItem
-          className="selectedItem"
+          className="selectedItem delete-delivery-date-button"
           onClose={deleteSelectedDate}
           label={filters.deliveryDate.format("DD MMM YYYY") + formattedTime}
           onClick={toggleCalendar}
@@ -134,7 +134,6 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
       !calendarRef?.current?.contains(e.target) &&
       setIsCalendarOpen(false);
   };
-
   const isEqualDates = (firstDate, secondDate) => {
     return firstDate.format("YYYY-MM-D HH:mm") === secondDate.format("YYYY-MM-D HH:mm");
   };
@@ -176,13 +175,19 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
                 <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
                   {t("From")}
                 </Text>
-                <TimePicker onChange={setDeliveryFrom} hasError={!isTimeValid} tabIndex={1} />
+                <TimePicker
+                  classNameInput="from-time"
+                  onChange={setDeliveryFrom}
+                  hasError={!isTimeValid}
+                  tabIndex={1}
+                />
               </span>
 
               <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
                 {t("Before")}
               </Text>
               <TimePicker
+                classNameInput="before-time"
                 date={filters.deliveryTo}
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
@@ -191,7 +196,11 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
             </TimePickerCell>
           ) : (
             <TimePickerCell>
-              <SelectorAddButton title={t("Add")} onClick={showTimePicker} className="mr-8" />
+              <SelectorAddButton
+                title={t("Add")}
+                onClick={showTimePicker}
+                className="mr-8 add-delivery-time-button"
+              />
               <Text isInline fontWeight={600} color="#A3A9AE">
                 {t("SelectDeliveryTime")}
               </Text>
