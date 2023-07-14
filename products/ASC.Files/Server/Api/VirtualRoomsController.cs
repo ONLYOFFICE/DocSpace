@@ -337,22 +337,25 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
         var result = new RoomSecurityDto();
 
-        if (inDto.Invitations != null && inDto.Invitations.Any())
+        if (inDto.Invitations == null || !inDto.Invitations.Any())
         {
-            var wrappers = _mapper.Map<IEnumerable<RoomInvitation>, List<AceWrapper>>(inDto.Invitations);
-
-            var aceCollection = new AceCollection<T>
-            {
-                Files = Array.Empty<T>(),
-                Folders = new[] { id },
-                Aces = wrappers,
-                Message = inDto.Message
-            };
-
-            result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
+            return result;
         }
 
-        result.Members = await GetRoomSecurityInfoAsync(id).ToListAsync();
+        var wrappers = _mapper.Map<IEnumerable<RoomInvitation>, List<AceWrapper>>(inDto.Invitations);
+
+        var aceCollection = new AceCollection<T>
+        {
+            Files = Array.Empty<T>(),
+            Folders = new[] { id },
+            Aces = wrappers,
+            Message = inDto.Message
+        };
+
+        result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
+        result.Members = await _fileStorageService.GetRoomSharedInfoBySubjectsAsync(id, inDto.Invitations.Select(s => s.Id))
+            .SelectAwait(async a => await _fileShareDtoHelper.Get(a))
+            .ToListAsync();
 
         return result;
     }
@@ -376,7 +379,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var counter = 0;
 
-        await foreach (var ace in _fileStorageService.GetRoomSharedInfoAsync(id, filterType, offset, count + margin))
+        await foreach (var ace in _fileStorageService.GetRoomSharedInfoByTypeAsync(id, filterType, offset, count + margin))
         {
             counter++;
 
