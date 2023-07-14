@@ -46,6 +46,7 @@ const ModalDialog = ({
   embedded,
 }) => {
   const onCloseEvent = () => {
+    if (embedded) return;
     isCloseable && onClose();
   };
   const [currentDisplayType, setCurrentDisplayType] = useState(
@@ -116,7 +117,7 @@ const ModalDialog = ({
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
           containerVisible={containerVisible}
-          isCloseable={isCloseable}
+          isCloseable={isCloseable && !embedded}
           embedded={embedded}
         />
       }

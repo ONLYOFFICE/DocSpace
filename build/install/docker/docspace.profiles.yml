@@ -260,7 +260,7 @@ services:
 
   onlyoffice-migration-runner:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
-    profiles: ["migration-runner"]
+    profiles: ["migration-runner", "backend-local"]
     container_name: ${MIGRATION_RUNNER_HOST}
     restart: "no"
     environment:
