@@ -23,10 +23,15 @@ const Selectors = styled.div`
   margin-bottom: 16px;
 `;
 
-const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick }) => {
+const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick, id }) => {
   const handleOnClick = () => handleStatusClick(statusCode);
   return (
-    <RoundedButton label={label} onClick={handleOnClick} primary={isStatusSelected(statusCode)} />
+    <RoundedButton
+      id={id}
+      label={label}
+      onClick={handleOnClick}
+      primary={isStatusSelected(statusCode)}
+    />
   );
 };
 
@@ -50,6 +55,7 @@ const StatusPicker = ({ filters, setFilters }) => {
   const StatusBadgeElements = StatusCodes.map((code) =>
     code === "Not sent" ? (
       <StatusBadgeSelector
+        id="not-sent"
         label={t("NotSent")}
         statusCode={code}
         isStatusSelected={isStatusSelected}
@@ -58,13 +64,14 @@ const StatusPicker = ({ filters, setFilters }) => {
       />
     ) : (
       <StatusBadgeSelector
+        id={code}
         label={code}
         statusCode={code}
         isStatusSelected={isStatusSelected}
         handleStatusClick={handleStatusClick}
         key={code}
       />
-    ),
+    )
   );
 
   return (

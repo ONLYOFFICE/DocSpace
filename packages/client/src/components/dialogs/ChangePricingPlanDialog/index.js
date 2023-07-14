@@ -87,6 +87,7 @@ const ChangePricingPlanDialog = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="ok-button"
           label={t("Common:OKButton")}
           size="normal"
           primary={true}

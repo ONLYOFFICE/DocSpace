@@ -30,18 +30,18 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
 
   const navigate = useNavigate();
 
-  const setting = window.location.pathname.endsWith("/settings/common")
-    ? "common"
-    : "admin";
+  const setting = window.location.pathname.endsWith("/settings/personal")
+    ? "personal"
+    : "general";
 
   const commonSettings = {
-    id: "common",
+    id: "personal",
     name: t("Common:SettingsPersonal"),
     content: <PersonalSettings t={t} />,
   };
 
   const adminSettings = {
-    id: "admin",
+    id: "general",
     name: t("Common:SettingsGeneral"),
     content: <GeneralSettings t={t} />,
   };
@@ -80,7 +80,7 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
       ) : (
         <Submenu
           data={data}
-          startSelect={setting === "common" ? commonSettings : adminSettings}
+          startSelect={setting === "personal" ? commonSettings : adminSettings}
           onSelect={onSelect}
         />
       )}

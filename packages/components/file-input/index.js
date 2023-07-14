@@ -73,6 +73,7 @@ class FileInput extends Component {
       id,
       onInput, // eslint-disable-line no-unused-vars
       buttonLabel,
+      idButton,
       ...rest
     } = this.props;
 
@@ -134,6 +135,7 @@ class FileInput extends Component {
 
         {buttonLabel ? (
           <Button
+            id={idButton}
             isDisabled={isDisabled}
             label={buttonLabel}
             onClick={this.onIconFileClick}

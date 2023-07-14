@@ -1,10 +1,13 @@
 ﻿import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import React, { useState, useEffect } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { isMobile as isMobileRDD } from "react-device-detect";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
+import Loaders from "@docspace/common/components/Loaders";
+import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
 import {
   isDesktop as isDesktopUtils,
@@ -15,7 +18,7 @@ import {
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
-import { RoomsType } from "@docspace/common/constants";
+import { FolderType } from "@docspace/common/constants";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -64,6 +67,8 @@ const InfoPanelHeaderContent = (props) => {
   const setHistory = () => setView("info_history");
   const setDetails = () => setView("info_details");
 
+  //const isArchiveRoot = rootFolderType === FolderType.Archive;
+
   const submenuData = [
     {
       id: "info_members",
@@ -84,6 +89,9 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
+  // const selectionRoomRights = selectionParentRoom
+  //   ? selectionParentRoom.security?.Read
+  //   : selection?.security?.Read;
 
   const roomsSubmenu = [...submenuData];
 
@@ -144,8 +152,12 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
     getIsAccounts,
     getIsTrash,
+    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const { isRootFolder, roomType } = selectedFolderStore;
+  const {
+    isRootFolder,
+    // rootFolderType
+  } = selectedFolderStore;
 
   return {
     selection,
@@ -158,6 +170,14 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
     getIsAccounts,
     getIsTrash,
+
     isRootFolder,
   };
-})(withTranslation(["Common", "InfoPanel"])(InfoPanelHeaderContent));
+})(
+  withTranslation(["Common", "InfoPanel"])(
+    InfoPanelHeaderContent
+    // withLoader(observer(InfoPanelHeaderContent))(
+    //   <Loaders.InfoPanelHeaderLoader />
+    // )
+  )
+);

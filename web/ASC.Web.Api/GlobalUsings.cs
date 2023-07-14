@@ -97,6 +97,7 @@ global using ASC.Files.Core.Core;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
 global using ASC.Files.Core.VirtualRooms;
+global using ASC.Files.Core.Security;
 global using ASC.Geolocation;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem;

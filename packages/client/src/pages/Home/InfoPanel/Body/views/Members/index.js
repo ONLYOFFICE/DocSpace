@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
+import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import PersonPlusReactSvgUrl from "PUBLIC_DIR/images/person+.react.svg?url";
@@ -195,6 +196,7 @@ const Members = ({
           />
         )}
       </StyledUserTypeHeader>
+
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
@@ -215,6 +217,7 @@ const Members = ({
           />
         ))}
       </StyledUserList>
+
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("PendingInvitations")}</Text>
@@ -230,6 +233,7 @@ const Members = ({
           )}
         </StyledUserTypeHeader>
       )}
+
       <StyledUserList>
         {Object.values(members.expected).map((user, i) => (
           <User

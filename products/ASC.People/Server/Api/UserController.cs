@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Api.Core.Security;
-using ASC.Common.Log;
-
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -581,13 +578,13 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null, null, null);
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -633,9 +630,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, employeeTypes, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -1314,7 +1311,15 @@ public class UserController : PeopleControllerBase
         }
     }
 
-    private async Task<IQueryable<UserInfo>> GetByFilterAsync(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments, AccountLoginType? accountLoginType)
+    private async Task<IQueryable<UserInfo>> GetByFilterAsync(
+        EmployeeStatus? employeeStatus,
+        Guid? groupId,
+        EmployeeActivationStatus? activationStatus,
+        EmployeeType? employeeType,
+        IEnumerable<EmployeeType> employeeTypes,
+        bool? isDocSpaceAdministrator,
+        Payments? payments,
+        AccountLoginType? accountLoginType)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -1324,32 +1329,27 @@ public class UserController : PeopleControllerBase
         var isDocSpaceAdmin = (await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID)) ||
                       await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
+        var excludeGroups = new List<Guid>();
         var includeGroups = new List<List<Guid>>();
+        var combinedGroups = new List<Tuple<List<List<Guid>>, List<Guid>>>();
+
         if (groupId.HasValue)
         {
             includeGroups.Add(new List<Guid> { groupId.Value });
         }
 
-        var excludeGroups = new List<Guid>();
-
-        if (employeeType != null)
+        if (employeeType.HasValue)
         {
-            switch (employeeType)
+            FilterByUserType(employeeType.Value, includeGroups, excludeGroups);
+        }
+        else if (employeeTypes != null && employeeTypes.Any())
+        {
+            foreach (var et in employeeTypes)
             {
-                case EmployeeType.DocSpaceAdmin:
-                    includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
-                    break;
-                case EmployeeType.RoomAdmin:
-                    excludeGroups.Add(Constants.GroupUser.ID);
-                    excludeGroups.Add(Constants.GroupAdmin.ID);
-                    excludeGroups.Add(Constants.GroupCollaborator.ID);
-                    break;
-                case EmployeeType.Collaborator:
-                    includeGroups.Add(new List<Guid> { Constants.GroupCollaborator.ID });
-                    break;
-                case EmployeeType.User:
-                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
-                    break;
+                var combinedIncludeGroups = new List<List<Guid>>();
+                var combinedExcludeGroups = new List<Guid>();
+                FilterByUserType(et, combinedIncludeGroups, combinedExcludeGroups);
+                combinedGroups.Add(new(combinedIncludeGroups, combinedExcludeGroups));
             }
         }
 
@@ -1378,11 +1378,32 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 
         return users;
+
+        void FilterByUserType(EmployeeType employeeType, List<List<Guid>> includeGroups, List<Guid> excludeGroups)
+        {
+            switch (employeeType)
+            {
+                case EmployeeType.DocSpaceAdmin:
+                    includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
+                    break;
+                case EmployeeType.RoomAdmin:
+                    excludeGroups.Add(Constants.GroupUser.ID);
+                    excludeGroups.Add(Constants.GroupAdmin.ID);
+                    excludeGroups.Add(Constants.GroupCollaborator.ID);
+                    break;
+                case EmployeeType.Collaborator:
+                    includeGroups.Add(new List<Guid> { Constants.GroupCollaborator.ID });
+                    break;
+                case EmployeeType.User:
+                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
+                    break;
+            }
+        }
     }
 
     ///// <summary>
