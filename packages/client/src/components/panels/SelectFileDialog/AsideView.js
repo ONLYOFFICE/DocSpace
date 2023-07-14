@@ -105,13 +105,15 @@ const SelectFileDialogAsideView = ({
           onClick={onButtonClick}
           isDisabled={!fileId}
         />
-        <Button
-          theme={theme}
-          scale
-          size="normal"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-        />
+        {onClose && (
+          <Button
+            theme={theme}
+            scale
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+          />
+        )}
       </ModalDialog.Footer>
     </ModalDialog>
   );

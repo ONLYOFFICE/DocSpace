@@ -304,7 +304,7 @@ class SelectFileDialog extends React.Component {
   }
 }
 SelectFileDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
   filteredType: PropTypes.oneOf([
