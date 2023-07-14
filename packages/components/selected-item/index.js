@@ -15,6 +15,7 @@ const SelectedItem = (props) => {
     id,
     propKey,
     group,
+    forwardedRef,
   } = props;
   if (!label) return <></>;
 
@@ -36,6 +37,7 @@ const SelectedItem = (props) => {
       className={className}
       isDisabled={isDisabled}
       id={id}
+      ref={forwardedRef}
     >
       <StyledLabel
         className={"selected-item_label"}
@@ -78,6 +80,8 @@ SelectedItem.propTypes = {
   propKey: PropTypes.string,
   /** Accepts group key to remove item */
   group: PropTypes.string,
+  /** Passes ref to component */
+  forwardedRef: PropTypes.object,
 };
 
 SelectedItem.defaultProps = {
