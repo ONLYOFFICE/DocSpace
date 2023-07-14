@@ -1,12 +1,23 @@
 import { makeAutoObservable } from "mobx";
+import { cloneDeep } from "lodash";
 
 import api from "@docspace/common/api";
+
+import defaultConfig from "PUBLIC_DIR/scripts/config.json";
 
 import {
   PluginType,
   PluginContextMenuItemType,
 } from "SRC_DIR/helpers/plugins/constants";
-import { wrapPluginItem } from "SRC_DIR/helpers/plugins/utils";
+
+let { api: apiConf, proxy: proxyConf } = defaultConfig;
+let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;
+let { url: proxyURL } = proxyConf;
+
+const origin =
+  window.DocSpaceConfig?.api?.origin || apiOrigin || window.location.origin;
+const proxy = window.DocSpaceConfig?.proxy?.url || proxyURL;
+const prefix = window.DocSpaceConfig?.api?.prefix || apiPrefix;
 
 class PluginStore {
   plugins = null;
@@ -19,8 +30,12 @@ class PluginStore {
 
   isInit = false;
 
+  settingsPluginDialogVisible = false;
+  currentSettingsDialogPlugin = null;
+  isAdminSettingsDialog = false;
+
   constructor() {
-    this.plugins = new Map();
+    this.plugins = [];
 
     this.contextMenuItems = new Map();
     this.mainButtonItems = new Map();
@@ -28,6 +43,30 @@ class PluginStore {
 
     makeAutoObservable(this);
   }
+
+  setCurrentSettingsDialogPlugin = (value) => {
+    this.currentSettingsDialogPlugin = value;
+  };
+
+  setSettingsPluginDialogVisible = (value) => {
+    this.settingsPluginDialogVisible = value;
+  };
+
+  setIsAdminSettingsDialog = (value) => {
+    this.isAdminSettingsDialog = value;
+  };
+
+  updatePluginStatus = (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    const newStatus = plugin.getStatus();
+
+    const pluginIdx = this.plugins.findIndex((p) => p.id === id);
+
+    if (pluginIdx !== -1) {
+      this.plugins[pluginIdx].status = newStatus;
+    }
+  };
 
   setPluginFrame = (frame) => {
     this.pluginFrame = frame;
@@ -37,6 +76,14 @@ class PluginStore {
 
   setIsInit = (isInit) => {
     this.isInit = isInit;
+  };
+
+  updatePlugins = async () => {
+    this.plugins = [];
+
+    const plugins = await api.plugins.getPlugins();
+
+    plugins.forEach((plugin) => this.initPlugin(plugin));
   };
 
   initPlugins = async () => {
@@ -53,20 +100,24 @@ class PluginStore {
 
     this.setPluginFrame(frame);
 
-    const plugins = await api.plugins.getPlugins();
-
-    plugins.forEach((plugin) => this.initPlugin(plugin));
+    this.updatePlugins();
   };
 
   initPlugin = (plugin, callback) => {
     const onLoad = () => {
-      const newPlugin = this.pluginFrame.contentWindow.Plugins[plugin.name];
+      const newPlugin = cloneDeep({
+        ...plugin,
+        ...this.pluginFrame.contentWindow.Plugins[plugin.plugin.split(".")[0]],
+      });
 
-      newPlugin.isActive = plugin.isActive;
-      newPlugin.id = plugin.id;
-      newPlugin.name = plugin.name;
+      if (newPlugin.apiScope) {
+        newPlugin.setAPI(origin, proxy, prefix);
+      }
 
-      this.installPlugin(plugin.id, newPlugin);
+      this.installPlugin(newPlugin);
+
+      newPlugin.onLoadCallback();
+
       callback && callback(newPlugin);
     };
 
@@ -81,28 +132,58 @@ class PluginStore {
     if (onLoad) script.onload = onLoad.bind(this);
     if (onError) script.onerror = onError.bind(this);
 
-    script.src = `/static/plugins/${plugin.filename}`;
+    script.src = `/static/plugins/${plugin.plugin}`;
     script.async = true;
 
     frameDoc.body.appendChild(script);
   };
 
-  installPlugin = (id, plugin) => {
-    this.plugins.set(+id, plugin);
+  installPlugin = (plugin) => {
+    this.plugins.push(plugin);
 
-    if (plugin.isActive) {
-      this.activatePlugin(+id);
+    if (plugin && plugin.contextMenuItems && plugin.isActive) {
+      Array.from(plugin.contextMenuItems).map(([key, value]) => {
+        this.contextMenuItems.set(key, value);
+      });
     }
   };
 
   uninstallPlugin = async (id) => {
     this.deactivatePlugin(id);
-    this.plugins.delete(+id);
+    const pluginIdx = this.plugins.findIndex((p) => p.id === id);
+
+    if (pluginIdx !== -1) {
+      this.plugins.splice(pluginIdx, 1);
+    }
     await api.plugins.deletePlugin(id);
   };
 
   getInstalledPlugins = () => {
     return this.plugins;
+  };
+
+  activatePlugin = async (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    plugin.isActive = true;
+
+    if (plugin && plugin.contextMenuItems) {
+      Array.from(plugin.contextMenuItems).map(([key, value]) => {
+        this.contextMenuItems.set(key, value);
+      });
+    }
+  };
+
+  deactivatePlugin = async (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    plugin.isActive = false;
+
+    if (plugin && plugin.contextMenuItems) {
+      Array.from(plugin.contextMenuItems).map(([key, value]) => {
+        this.contextMenuItems.delete(key);
+      });
+    }
   };
 
   changePluginStatus = async (id, status) => {
@@ -117,118 +198,39 @@ class PluginStore {
     return plugin;
   };
 
-  activatePlugin = (id) => {
-    this.plugins.get(+id).isActive = true;
-    const pluginItems = this.plugins.get(+id).activate();
+  getContextMenuKeysByType = (type, fileExst) => {
+    if (!this.contextMenuItems) return;
 
-    if (!pluginItems) return;
-
-    Array.from(pluginItems, ([key, value]) => {
-      switch (key) {
-        case PluginType.CONTEXT_MENU:
-          Array.from(value, ([key, item]) => {
-            const newItem = wrapPluginItem(
-              this.plugins.get(+id).name,
-              key,
-              item,
-              PluginType.CONTEXT_MENU,
-              this.pluginFrame
-            );
-
-            this.addContextMenuItem(key, newItem);
-          });
-          break;
-
-        case PluginType.ACTION_BUTTON:
-          Array.from(value, ([key, item]) => {
-            const newItem = wrapPluginItem(
-              this.plugins.get(+id).name,
-              key,
-              item,
-              PluginType.ACTION_BUTTON,
-              this.pluginFrame
-            );
-
-            this.addMainButtonItem(key, newItem);
-          });
-          break;
-
-        case PluginType.PROFILE_MENU:
-          Array.from(value, ([key, item]) => {
-            const newItem = wrapPluginItem(
-              this.plugins.get(+id).name,
-              key,
-              item,
-              PluginType.PROFILE_MENU,
-              this.pluginFrame
-            );
-            this.addProfileMenuItem(key, newItem);
-          });
-          break;
-      }
-    });
-  };
-
-  deactivatePlugin = (id) => {
-    this.plugins.get(+id).isActive = false;
-    const pluginItems = this.plugins.get(+id).deactivate();
-
-    if (!pluginItems) return;
-
-    Array.from(pluginItems, ([key, value]) => {
-      switch (key) {
-        case PluginType.CONTEXT_MENU:
-          value.map((key) => this.deleteContextMenuItem(key));
-          break;
-        case PluginType.ACTION_BUTTON:
-          value.map((key) => this.deleteMainButtonItem(key));
-          break;
-        case PluginType.PROFILE_MENU:
-          value.map((key) => this.deleteProfileMenuItem(key));
-          break;
-      }
-    });
-  };
-
-  addContextMenuItem = (key, contextMenuItem) => {
-    this.contextMenuItems.set(key, contextMenuItem);
-  };
-
-  deleteContextMenuItem = (key) => {
-    this.contextMenuItems.delete(key);
-  };
-
-  getContextMenuKeysByType = (type) => {
-    if (!this.contextMenuItemsList) return;
-
-    const itemsMap = Array.from(this.contextMenuItemsList);
+    const itemsMap = Array.from(this.contextMenuItems);
     const keys = [];
 
     switch (type) {
       case PluginContextMenuItemType.Files:
-        itemsMap.forEach((item) => {
-          if (item.value.type === PluginContextMenuItemType.Files) {
-            keys.push(item.key);
+        itemsMap.forEach(([key, item]) => {
+          if (item.type === PluginContextMenuItemType.Files) {
+            if (item.fileExt === "all" || item.fileExt.includes(fileExst)) {
+              keys.push(item.key);
+            }
           }
         });
         break;
       case PluginContextMenuItemType.Folders:
-        itemsMap.forEach((item) => {
-          if (item.value.type === PluginContextMenuItemType.Folders) {
+        itemsMap.forEach(([key, item]) => {
+          if (item.type === PluginContextMenuItemType.Folders) {
             keys.push(item.key);
           }
         });
         break;
       case PluginContextMenuItemType.Rooms:
-        itemsMap.forEach((item) => {
-          if (item.value.type === PluginContextMenuItemType.Rooms) {
+        itemsMap.forEach(([key, item]) => {
+          if (item.type === PluginContextMenuItemType.Rooms) {
             keys.push(item.key);
           }
         });
         break;
       case PluginContextMenuItemType.All:
-        itemsMap.forEach((item) => {
-          if (item.value.type === PluginContextMenuItemType.All) {
+        itemsMap.forEach(([key, item]) => {
+          if (item.type === PluginContextMenuItemType.All) {
             keys.push(item.key);
           }
         });
@@ -242,60 +244,19 @@ class PluginStore {
     return keys;
   };
 
-  addMainButtonItem = (key, mainButtonItem) => {
-    this.mainButtonItems.set(key, mainButtonItem);
-  };
-
-  deleteMainButtonItem = (key) => {
-    this.mainButtonItems.delete(key);
-  };
-
-  addProfileMenuItem = (key, profileMenuItem) => {
-    this.profileMenuItems.set(key, profileMenuItem);
-  };
-
-  deleteProfileMenuItem = (key) => {
-    this.profileMenuItems.delete(key);
-  };
+  get pluginList() {
+    console.log(this.plugins);
+    return this.plugins;
+  }
 
   get contextMenuItemsList() {
     const items = [];
 
-    Array.from(this.contextMenuItems, ([key, value]) =>
-      items.push({ key, value })
-    );
-
-    if (items.length > 0) {
-      items.sort((a, b) => a.value.position < b.value.position);
-
-      return items;
-    }
-
-    return null;
-  }
-
-  get mainButtonItemsList() {
-    const items = [];
-
-    Array.from(this.mainButtonItems, ([key, value]) =>
-      items.push({ key, value })
-    );
-
-    if (items.length > 0) {
-      items.sort((a, b) => a.value.position < b.value.position);
-
-      return items;
-    }
-
-    return null;
-  }
-
-  get profileMenuItemsList() {
-    const items = [];
-
-    Array.from(this.profileMenuItems, ([key, value]) =>
-      items.push({ key, value })
-    );
+    this.plugins.forEach((plugin) => {
+      Array.from(plugin.getContextMenuItems(), ([key, value]) =>
+        items.push({ key, value: { ...value, pluginId: plugin.id } })
+      );
+    });
 
     if (items.length > 0) {
       items.sort((a, b) => a.value.position < b.value.position);

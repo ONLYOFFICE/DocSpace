@@ -23,6 +23,7 @@ export const getYearElements = (
 
   const yearElements = years.map((year) => (
     <ColorTheme
+      className="year"
       themeId={ThemeType.DateItem}
       isSecondary
       big
@@ -40,6 +41,7 @@ export const getYearElements = (
   for (let i = 1; i < 11; i++) {
     yearElements[i] = (
       <ColorTheme
+        className="year"
         themeId={ThemeType.DateItem}
         big
         key={years[i]}
@@ -59,6 +61,7 @@ export const getYearElements = (
   if (selectedYearIndex !== -1) {
     yearElements[selectedYearIndex] = (
       <ColorTheme
+        className="year"
         themeId={ThemeType.DateItem}
         big
         focused
@@ -78,6 +81,7 @@ export const getYearElements = (
   if (currentYearIndex !== -1) {
     yearElements[currentYearIndex] = (
       <ColorTheme
+        className="year"
         themeId={ThemeType.DateItem}
         isCurrent
         big

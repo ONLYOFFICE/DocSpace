@@ -34,6 +34,7 @@ class FieldContainer extends React.Component {
       inlineHelpButton,
       offsetRight,
       tooltipMaxWidth,
+      tooltipClass,
     } = this.props;
 
     return (
@@ -58,6 +59,7 @@ class FieldContainer extends React.Component {
               />
               {tooltipContent && (
                 <HelpButton
+                  className={tooltipClass}
                   tooltipContent={tooltipContent}
                   place={place}
                   helpButtonHeaderContent={helpButtonHeaderContent}
@@ -75,6 +77,7 @@ class FieldContainer extends React.Component {
               >
                 {tooltipContent && (
                   <HelpButton
+                    className={tooltipClass}
                     tooltipContent={tooltipContent}
                     place={place}
                     helpButtonHeaderContent={helpButtonHeaderContent}

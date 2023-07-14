@@ -124,7 +124,8 @@ const ArticleMainButtonContent = (props) => {
   const location = useLocation();
 
   const isAccountsPage = location.pathname.includes("/accounts/filter");
-  const isSettingsPage = location.pathname.includes("settings");
+
+  const isSettingsPage = location.pathname.includes("/settings");
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -610,5 +611,6 @@ export default inject(
     "Files",
     "People",
     "PeopleTranslations",
+    "PluginsSettings",
   ])(observer(ArticleMainButtonContent))
 );

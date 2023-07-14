@@ -134,7 +134,6 @@ const ClientContent = (props) => {
 
   return (
     <>
-      <GlobalEvents />
       <FilesPanels />
       {!isFormGallery ? (
         isFrame ? (

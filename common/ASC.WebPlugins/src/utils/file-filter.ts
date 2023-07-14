@@ -17,7 +17,7 @@ const fileFilter = (req, file, cb) => {
     isUniqName = !files?.includes(file.originalname);
   }
 
-  if (file.mimetype === "text/javascript" && isUniqName) return cb(null, true);
+  // if (file.mimetype === "text/javascript" && isUniqName) return cb(null, true);
 
   return cb(null, false);
 };

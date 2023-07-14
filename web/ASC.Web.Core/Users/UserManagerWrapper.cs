@@ -380,13 +380,6 @@ public sealed class UserManagerWrapper
             throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
         }
 
-        var settings = await _settingsManager.LoadAsync<IPRestrictionsSettings>();
-
-        if (settings.Enable && !await _iPSecurity.VerifyAsync())
-        {
-            throw new Exception(Resource.ErrorAccessRestricted);
-        }
-
         var userInfo = await _userManager.GetUserByEmailAsync(email);
         if (!_userManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
         {

@@ -710,7 +710,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
 
-                                using (var stream = await FileDao.GetFileStreamAsync(file))
+                                await using (var stream = await FileDao.GetFileStreamAsync(file))
                                 {
                                     newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
 

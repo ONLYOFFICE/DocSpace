@@ -1,25 +1,53 @@
-import { PluginType } from "./constants";
+import toastr from "@docspace/components/toast/toastr";
 
-export const wrapPluginItem = (pluginName, key, item, pluginType, frame) => {
-  if (item?.onClick) {
-    const plugin = frame.contentWindow.Plugins[pluginName];
+import { PluginActions } from "./constants";
+import { PluginToastType } from "./constants";
 
-    const onClick = (value) => {
-      switch (pluginType) {
-        case PluginType.CONTEXT_MENU:
-          plugin.contextMenuItems.get(key).onClick(value);
-          break;
-        case PluginType.ACTION_BUTTON:
-          plugin.mainButtonItems.get(key).onClick(value);
-          break;
-        case PluginType.PROFILE_MENU:
-          plugin.profileMenuItems.get(key).onClick(value);
-          break;
-      }
-    };
+export const messageActions = (
+  message,
+  setElementProps,
+  setAcceptButtonProps,
+  pluginId,
+  setSettingsPluginDialogVisible,
+  setCurrentSettingsDialogPlugin,
+  updatePluginStatus
+) => {
+  if (!message) return;
 
-    return { ...item, onClick };
-  }
-
-  return item;
+  message.actions.forEach((action) => {
+    switch (action) {
+      case PluginActions.updateProps:
+        setElementProps({ ...message.newProps });
+        break;
+      case PluginActions.updateStatus:
+        updatePluginStatus && updatePluginStatus(pluginId);
+        console.log("updateStatus", pluginId);
+        break;
+      case PluginActions.showToast:
+        message?.toastProps.forEach((toast) => {
+          switch (toast.type) {
+            case PluginToastType.success:
+              toastr.success(toast.title);
+              break;
+            case PluginToastType.info:
+              toastr.info(toast.title);
+              break;
+            case PluginToastType.error:
+              toastr.error(toast.title);
+              break;
+            case PluginToastType.warning:
+              toastr.warning(toast.title);
+              break;
+          }
+        });
+        break;
+      case PluginActions.updateAcceptButtonProps:
+        setAcceptButtonProps({ ...message.acceptButtonProps });
+        break;
+      case PluginActions.showSettingsModal:
+        setSettingsPluginDialogVisible(true);
+        setCurrentSettingsDialogPlugin(pluginId);
+        break;
+    }
+  });
 };

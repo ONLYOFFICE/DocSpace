@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -20,7 +20,6 @@ import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 import MediaViewer from "./MediaViewer";
 import SelectionArea from "./SelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
-import { RoomSearchArea } from "@docspace/common/constants";
 
 import {
   useFiles,
@@ -111,12 +110,18 @@ const PureHome = (props) => {
     onClickBack,
 
     showFilterLoader,
+
+    enablePlugins,
   } = props;
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isAccountsPage = location.pathname.includes("/accounts/filter");
-  const isSettingsPage = location.pathname.includes("settings");
+  const isSettingsPage =
+    location.pathname.includes("/settings") &&
+    !location.pathname.includes("settings/plugins");
+  const isPluginsSettingsPage = location.pathname.includes("settings/plugins");
 
   const { onDrop } = useFiles({
     t,
@@ -131,6 +136,7 @@ const PureHome = (props) => {
 
     isAccountsPage,
     isSettingsPage,
+    isPluginsSettingsPage,
 
     location,
 
@@ -158,8 +164,7 @@ const PureHome = (props) => {
     itemsSelectionTitle,
     secondaryProgressDataStoreIcon,
     itemsSelectionLength,
-    isAccountsPage,
-    isSettingsPage,
+
     setItemsSelectionTitle,
   });
 
@@ -175,7 +180,14 @@ const PureHome = (props) => {
     setPortalTariff,
   });
 
-  useSettings({ t, isSettingsPage, setIsLoading });
+  useSettings({
+    t,
+    isSettingsPage,
+    isPluginsSettingsPage,
+    enablePlugins,
+    navigate,
+    setIsLoading,
+  });
 
   useSDK({
     frameConfig,
@@ -203,7 +215,7 @@ const PureHome = (props) => {
 
   let sectionProps = {};
 
-  if (isSettingsPage) {
+  if (isSettingsPage || isPluginsSettingsPage) {
     sectionProps.isInfoPanelAvailable = false;
     sectionProps.viewAs = "settings";
   } else {
@@ -255,7 +267,10 @@ const PureHome = (props) => {
       )}
       <MediaViewer />
       <Section {...sectionProps}>
-        {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
+        {(!isErrorRoomNotAvailable ||
+          isAccountsPage ||
+          isSettingsPage ||
+          isPluginsSettingsPage) && (
           <Section.SectionHeader>
             {isFrame ? (
               showTitle && <SectionHeaderContent />
@@ -267,7 +282,8 @@ const PureHome = (props) => {
 
         {(((!isEmptyPage || showFilterLoader) && !isErrorRoomNotAvailable) ||
           isAccountsPage) &&
-          !isSettingsPage && (
+          !isSettingsPage &&
+          !isPluginsSettingsPage && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
@@ -288,7 +304,7 @@ const PureHome = (props) => {
           <InfoPanelBodyContent />
         </Section.InfoPanelBody>
 
-        {withPaging && !isSettingsPage && (
+        {withPaging && !isSettingsPage && !isPluginsSettingsPage && (
           <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
           </Section.SectionPaging>
@@ -298,7 +314,7 @@ const PureHome = (props) => {
   );
 };
 
-const Home = withTranslation(["Files", "People"])(PureHome);
+const Home = withTranslation(["Files", "People", "PluginsSettings"])(PureHome);
 
 export default inject(
   ({
@@ -408,8 +424,14 @@ export default inject(
 
     const { setPortalTariff } = currentTariffStatusStore;
 
-    const { setFrameConfig, frameConfig, isFrame, withPaging, showCatalog } =
-      settingsStore;
+    const {
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+      withPaging,
+      showCatalog,
+      enablePlugins,
+    } = settingsStore;
 
     const {
       usersStore,
@@ -454,6 +476,8 @@ export default inject(
       selectionLength,
       isProgressFinished,
       selectionTitle,
+
+      enablePlugins,
 
       itemsSelectionLength,
       setItemsSelectionTitle,

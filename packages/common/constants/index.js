@@ -60,6 +60,24 @@ export const AccountLoginType = Object.freeze({
   STANDART: "2",
 });
 /**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const ApplyFilterOption = Object.freeze({
+  All: "All",
+  Files: "Files",
+  Folder: "Folder",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const FilesSelectorFilterTypes = Object.freeze({
+  DOCX: "DOCX",
+  IMG: "IMG",
+  GZ: "GZ",
+});
+/**
  * Enum for filter subject.
  * @readonly
  */
@@ -349,6 +367,7 @@ export const Events = Object.freeze({
   ROOM_EDIT: "edit_room",
   CHANGE_COLUMN: "change_column",
   CHANGE_USER_TYPE: "change_user_type",
+  ADD_PLUGIN: "add_plugin",
 });
 
 /**

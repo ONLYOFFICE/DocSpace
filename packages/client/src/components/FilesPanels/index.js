@@ -4,11 +4,9 @@ import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
   UploadPanel,
-  OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
-  SelectFileDialog,
   HotkeyPanel,
   InvitePanel,
 } from "../panels";
@@ -24,11 +22,14 @@ import {
   InviteUsersWarningDialog,
   CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
+  SettingsPluginDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
 import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
+import FilesSelector from "../FilesSelector";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 
 const Panels = (props) => {
   const {
@@ -62,6 +63,7 @@ const Panels = (props) => {
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
     restoreRoomDialogVisible,
+    settingsPluginDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -71,6 +73,12 @@ const Panels = (props) => {
   };
 
   return [
+    settingsPluginDialogVisible && (
+      <SettingsPluginDialog
+        isVisible={settingsPluginDialogVisible}
+        key={"settings-plugin-dialog"}
+      />
+    ),
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
     sharingPanelVisible && (
       <SharingPanel
@@ -80,10 +88,11 @@ const Panels = (props) => {
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
     (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
-      <OperationsPanel
-        key="operation-panel"
+      <FilesSelector
+        key="files-selector"
+        isMove={moveToPanelVisible}
         isCopy={copyPanelVisible}
-        isRestore={restoreAllPanelVisible}
+        isRestoreAll={restoreAllPanelVisible}
       />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
@@ -110,21 +119,15 @@ const Panels = (props) => {
       <CreateRoomConfirmDialog key="create-room-confirm-dialog" />
     ),
     selectFileDialogVisible && (
-      <SelectFileDialog
+      <FilesSelector
         key="select-file-dialog"
-        //resetTreeFolders
-        onSelectFile={createMasterForm}
+        filterParam={FilesSelectorFilterTypes.DOCX}
         isPanelVisible={selectFileDialogVisible}
+        onSelectFile={createMasterForm}
         onClose={onClose}
-        filteredType="exceptPrivacyTrashArchiveFolders"
-        ByExtension
-        searchParam={".docx"}
-        dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("Common:SelectDOCXFormat")}
-        creationButtonPrimary
-        withSubfolders={false}
       />
     ),
+
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
     invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
@@ -149,6 +152,7 @@ export default inject(
     versionHistoryStore,
     backup,
     createEditRoomStore,
+    pluginStore,
   }) => {
     const {
       sharingPanelVisible,
@@ -187,6 +191,8 @@ export default inject(
     const { hotkeyPanelVisible } = auth.settingsStore;
     const { confirmDialogIsLoading } = createEditRoomStore;
 
+    const { settingsPluginDialogVisible } = pluginStore;
+
     return {
       preparationPortalDialogVisible,
       sharingPanelVisible,
@@ -218,6 +224,7 @@ export default inject(
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
       restoreRoomDialogVisible,
+      settingsPluginDialogVisible,
     };
   }
 )(observer(Panels));

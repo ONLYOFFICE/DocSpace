@@ -130,10 +130,15 @@ const Item = ({
             size={16}
             color="#F21C0E"
           />
-          <StyledDeleteIcon size="medium" onClick={removeItem} />
+          <StyledDeleteIcon
+            className="delete-icon"
+            size="medium"
+            onClick={removeItem}
+          />
         </>
       ) : (
         <AccessSelector
+          className="user-access"
           t={t}
           roomType={roomType}
           defaultAccess={defaultAccess?.access}

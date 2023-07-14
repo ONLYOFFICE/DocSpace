@@ -223,16 +223,16 @@ const PortalSettingsRoutes = {
       element: <DeveloperTools />,
     },
     {
-      path: "developer-tools/web-plugins",
-      element: <DeveloperTools />,
-    },
-    {
       path: "developer-tools/webhooks/:id",
       element: <WebhookHistory />,
     },
     {
       path: "developer-tools/webhooks/:id/:eventId",
       element: <WebhookDetails />,
+    },
+    {
+      path: "developer-tools/plugins",
+      element: <DeveloperTools />,
     },
     {
       path: "backup",

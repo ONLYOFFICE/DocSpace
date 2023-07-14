@@ -17,6 +17,10 @@ In particular case, state is created containing options for particular Row eleme
         `,
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=52-2358&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
   },
 };
 

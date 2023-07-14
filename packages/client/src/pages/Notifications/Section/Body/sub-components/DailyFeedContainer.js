@@ -31,7 +31,7 @@ const DailyFeedContainer = ({
         <Text {...textDescriptionsProps}>{t("DailyFeedDescription")}</Text>
       </div>
       <ToggleButton
-        className="toggle-btn"
+        className="daily-feed toggle-btn"
         onChange={onChangeEmailSubscription}
         isChecked={dailyFeedSubscriptions}
       />

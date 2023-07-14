@@ -261,6 +261,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("FrameId")} />
               <TextInput
+                id="frame-id-input"
                 scale={true}
                 onChange={onChangeFrameId}
                 placeholder={t("EnterId")}
@@ -270,6 +271,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("EmbeddingPanel:Width")} />
               <TextInput
+                id="width-input"
                 scale={true}
                 onChange={onChangeWidth}
                 placeholder={t("EnterWidth")}
@@ -279,6 +281,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("EmbeddingPanel:Height")} />
               <TextInput
+                id="height-input"
                 scale={true}
                 onChange={onChangeHeight}
                 placeholder={t("EnterHeight")}
@@ -286,21 +289,25 @@ const PortalIntegration = (props) => {
               />
             </ControlsGroup>
             <Checkbox
+              id="header-checkbox"
               label={t("Header")}
               onChange={onChangeShowHeader}
               isChecked={config.showHeader}
             />
             <Checkbox
+              id="title-checkbox"
               label={t("Common:Title")}
               onChange={onChangeShowTitle}
               isChecked={config.showTitle}
             />
             <Checkbox
+              id="menu-checkbox"
               label={t("Menu")}
               onChange={onChangeShowArticle}
               isChecked={config.showArticle}
             />
             <Checkbox
+              id="filter-checkbox"
               label={t("Files:Filter")}
               onChange={onChangeShowFilter}
               isChecked={config.showFilter}
@@ -311,6 +318,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("FolderId")} />
               <TextInput
+                id="folder-id-input"
                 scale={true}
                 onChange={onChangeFolderId}
                 placeholder={t("EnterId")}
@@ -320,6 +328,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("ItemsCount")} />
               <TextInput
+                id="items-count-input"
                 scale={true}
                 onChange={onChangeCount}
                 placeholder={t("EnterCount")}
@@ -329,6 +338,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("Page")} />
               <TextInput
+                id="enter-page-input"
                 scale={true}
                 onChange={onChangePage}
                 placeholder={t("EnterPage")}
@@ -341,12 +351,14 @@ const PortalIntegration = (props) => {
                 style={{ flexDirection: "row", display: "flex", gap: "16px" }}
               >
                 <TextInput
+                  id="search-term-input"
                   scale={true}
                   onChange={onChangeSearch}
                   placeholder={t("Common:Search")}
                   value={config.search}
                 />
                 <Checkbox
+                  id="with-subfolders-checkbox"
                   label={t("Files:WithSubfolders")}
                   onChange={onChangeWithSubfolders}
                   isChecked={withSubfolders}
@@ -356,6 +368,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("Files:ByAuthor")} />
               <TextInput
+                id="author-input"
                 scale={true}
                 onChange={onChangeAuthor}
                 placeholder={t("Common:EnterName")}
@@ -365,6 +378,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("Common:SortBy")} />
               <ComboBox
+                id="sort-by-combo-box"
                 onSelect={onChangeSortBy}
                 options={dataSortBy}
                 scaled={true}
@@ -376,6 +390,7 @@ const PortalIntegration = (props) => {
             <ControlsGroup>
               <Label className="label" text={t("SortOrder")} />
               <ComboBox
+                id="sort-order-combo-box"
                 onSelect={onChangeSortOrder}
                 options={dataSortOrder}
                 scaled={true}
@@ -394,12 +409,14 @@ const PortalIntegration = (props) => {
 
             <Buttons>
               <Button
+                id="preview-button"
                 primary
                 size="normal"
                 label={t("Common:Preview")}
                 onClick={loadFrame}
               />
               <Button
+                id="destroy-button"
                 primary
                 size="normal"
                 label={t("Destroy")}

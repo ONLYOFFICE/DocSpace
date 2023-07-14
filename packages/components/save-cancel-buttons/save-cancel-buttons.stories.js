@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import SaveCancelButtons from "./";
 
 export default {
@@ -18,15 +19,32 @@ export default {
   },
 };
 
+const StyledWrapper = styled.div`
+  position: relative;
+  height: 300px;
+
+  .positionAbsolute {
+    position: absolute;
+  }
+`;
+
 const Template = ({ onSaveClick, onCancelClick, ...args }) => {
+  const isAutoDocs =
+    typeof window !== "undefined" && window?.location?.href.includes("docs");
+
   return (
-    <div style={{ position: "relative", height: "60px" }}>
+    <StyledWrapper>
       <SaveCancelButtons
         {...args}
+        className={
+          isAutoDocs && !args.displaySettings
+            ? `positionAbsolute ${args.className}`
+            : args.className
+        }
         onSaveClick={() => onSaveClick("on Save button clicked")}
         onCancelClick={() => onCancelClick("on Cancel button clicked")}
       />
-    </div>
+    </StyledWrapper>
   );
 };
 

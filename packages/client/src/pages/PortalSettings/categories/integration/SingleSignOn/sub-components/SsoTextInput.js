@@ -35,6 +35,7 @@ const SsoTextInput = (props) => {
   return (
     <StyledInputWrapper maxWidth={maxWidth}>
       <TextInput
+        id={name}
         className="field-input"
         hasError={hasError}
         isDisabled={isDisabled ?? (!enableSso || isLoadingXml)}

@@ -30,7 +30,7 @@ export const YearsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title disabled>
+      <Title disabled className="years-header">
         {firstYear}-{firstYear + 9}
         <HeaderActionIcon />
       </Title>

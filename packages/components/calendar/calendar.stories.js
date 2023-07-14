@@ -47,6 +47,10 @@ export default {
         component: "Used to display custom calendar",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=651-4406&mode=design&t=RrB9MOQGCnUPghij-0",
+    },
   },
 };
 
