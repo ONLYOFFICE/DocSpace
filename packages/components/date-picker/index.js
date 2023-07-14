@@ -15,6 +15,7 @@ import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg";
 
 const Wrapper = styled.div`
   .selectedItem {
+    cursor: pointer;
     .calendarIcon {
       width: 12px;
       height: 12px;
@@ -65,25 +66,28 @@ const DatePicker = (props) => {
     maxDate,
     locale,
     showCalendarIcon,
+    outerDate,
   } = props;
 
   const calendarRef = useRef();
   const selectorRef = useRef();
+  const selectedItemRef = useRef();
 
   const [date, setDate] = useState(initialDate ? moment(initialDate) : null);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
-  const handleChange = (date) => {
-    onChange && onChange(date);
-    setDate(date);
-  };
 
   const toggleCalendar = () =>
     setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
 
   const closeCalendar = () => {
     setIsCalendarOpen(false);
+  };
+
+  const handleChange = (date) => {
+    onChange && onChange(date);
+    setDate(date);
+    closeCalendar();
   };
 
   const deleteSelectedDate = (propKey, label, group, e) => {
@@ -108,6 +112,7 @@ const DatePicker = (props) => {
   const handleClick = (e) => {
     !selectorRef?.current?.contains(e.target) &&
       !calendarRef?.current?.contains(e.target) &&
+      !selectedItemRef?.current?.contains(e.target) &&
       setIsCalendarOpen(false);
   };
 
@@ -116,6 +121,15 @@ const DatePicker = (props) => {
     return () =>
       document.removeEventListener("click", handleClick, { capture: true });
   }, []);
+
+  useEffect(() => {
+    if (
+      outerDate &&
+      moment(outerDate).format("YYYY-MM-D") !== moment(date).format("YYYY-MM-D")
+    ) {
+      setDate(outerDate);
+    }
+  }, [outerDate]);
 
   return (
     <Wrapper className={className} id={id}>
@@ -131,7 +145,6 @@ const DatePicker = (props) => {
               {selectDateText}
             </Text>
           </DateSelector>
-          {isCalendarOpen && <CalendarElement />}
         </>
       ) : (
         <SelectedItem
@@ -147,8 +160,12 @@ const DatePicker = (props) => {
               date.format("DD MMM YYYY")
             )
           }
+          onClick={toggleCalendar}
+          forwardedRef={selectedItemRef}
         />
       )}
+
+      {isCalendarOpen && <CalendarElement />}
     </Wrapper>
   );
 };
@@ -157,7 +174,11 @@ DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
   /** Default date */
-  initialDate: PropTypes.object,
+  initialDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func.isRequired,
   /** Allows to set classname */
@@ -165,13 +186,23 @@ DatePicker.propTypes = {
   /** Allows to set id */
   id: PropTypes.string,
   /** Specifies min choosable calendar date */
-  minDate: PropTypes.object,
+  minDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Specifies max choosable calendar date */
-  maxDate: PropTypes.object,
+  maxDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Specifies calendar locale */
   locale: PropTypes.string,
   /** Shows calendar icon in selected item */
   showCalendarIcon: PropTypes.bool,
+  /** Allows to track date outside the component */
+  outerDate: PropTypes.obj,
 };
 
 DatePicker.defaultProps = {
