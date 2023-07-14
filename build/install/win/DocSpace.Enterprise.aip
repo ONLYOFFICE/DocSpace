@@ -50,6 +50,7 @@
     <ROW Property="PS_DB_PORT" Value="5432"/>
     <ROW Property="PS_DB_PWD" Value="onlyoffice"/>
     <ROW Property="PS_DB_USER" Value="onlyoffice"/>
+    <ROW Property="Prereq_IAgree" Value="No"/>
     <ROW Property="ProductCode" Value="1033:{9EB28D7F-9705-4DBB-97E1-FFCA1F5DBF12} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="[|PRODUCT_NAME]"/>
@@ -331,6 +332,16 @@
     <ROW Dialog_="PrepareDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1048577" Text="[ButtonText_Back]" Order="700" TextLocId="-" MsiKey="PrepareDlg#Back" Options="1"/>
     <ROW Dialog_="PreparePrereqDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="PreparePrereqDlg#Back" Options="1"/>
     <ROW Dialog_="PreparePrereqDlg" Control="Bitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="234" Attributes="1048577" Text="dialog.bmp" Order="400" MsiKey="PreparePrereqDlg#Bitmap"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" TextLocId="-" Options="1"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" TextLocId="-" Options="1"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" TextLocId="-" Options="1"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="BottomLine" Type="Line" X="0" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Please read the following license agreement carefully" Order="700"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Title" Type="Text" X="15" Y="6" Width="289" Height="15" Attributes="196611" Text="End-User License Agreement" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="20" Y="60" Width="330" Height="120" Attributes="7" Text="Resources\License_Redist.rtf" Order="900" TextLocId="-"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Buttons" Type="RadioButtonGroup" X="20" Y="187" Width="330" Height="40" Attributes="3" Property="Prereq_IAgree" Order="1000"/>
     <ROW Dialog_="PrerequisitesDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="PrerequisitesDlg#Back" Options="1"/>
     <ROW Dialog_="PrerequisitesDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400" MsiKey="PrerequisitesDlg#BannerBitmap"/>
     <ROW Dialog_="PrerequisitesDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="20" Attributes="196611" Text="Select which prerequisites will be installed" Order="700" TextLocId="Control.Text.PrerequisitesDlg#Description" MsiKey="PrerequisitesDlg#Description"/>
@@ -431,6 +442,10 @@
     <ROW Dialog_="WelcomePrereqDlg" Control="Bitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="234" Attributes="1048577" Text="dialog.bmp" Order="500" MsiKey="WelcomePrereqDlg#Bitmap"/>
     <ATTRIBUTE name="DeletedRows" value="AdminBrowseDlg#Logo@AdminInstallPointDlg#Logo@BrowseDlg#Logo@CustomizeDlg#Logo@DiskCostDlg#Logo@FilesInUse#Logo@FolderDlg#Logo@MaintenanceTypeDlg#Logo@MsiRMFilesInUse#Logo@OutOfDiskDlg#Logo@OutOfRbDiskDlg#Logo@PrerequisitesDlg#Logo@ProgressDlg#Logo@ProgressPrereqDlg#Logo@SQLConnectionDlg#Logo@SQLConnectionDlg#OdbcResourceEdit@SQLConnectionDlg#OdbcResourceLabel@SQLConnectionDlg.aip@VerifyReadyDlg#Logo@VerifyRemoveDlg#Logo@VerifyRepairDlg#Logo"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlConditionComponent">
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control_="Next" Action="Disable" Condition="Prereq_IAgree &lt;&gt; &quot;Yes&quot;"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control_="Next" Action="Enable" Condition="Prereq_IAgree = &quot;Yes&quot;"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL AND ( OLDPRODUCTS = &quot;&quot; )" Ordering="19"/>
     <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="SQLConnectionDlg" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="216"/>
@@ -452,11 +467,14 @@
     <ROW Dialog_="VerifyRemoveDlg" Control_="Remove" Event="EndDialog" Argument="Return" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="299" Options="1"/>
     <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="201"/>
     <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="299"/>
-    <ROW Dialog_="WelcomePrereqDlg" Control_="Next" Event="NewDialog" Argument="PrerequisitesDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
+    <ROW Dialog_="WelcomePrereqDlg" Control_="Next" Event="NewDialog" Argument="PrereqLicenseAgreementDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
     <ROW Dialog_="PrerequisitesDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
+    <ROW Dialog_="PrerequisitesDlg" Control_="Back" Event="NewDialog" Argument="PrereqLicenseAgreementDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="100"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control_="Next" Event="NewDialog" Argument="PrerequisitesDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control_="Back" Event="NewDialog" Argument="WelcomePrereqDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="199"/>
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="205"/>
-    <ROW Dialog_="PrerequisitesDlg" Control_="Back" Event="NewDialog" Argument="WelcomePrereqDlg" Condition="AI_BOOTSTRAPPER" Ordering="1"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="AI_DATA_SETTER_5" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="4"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="Next" Event="DoAction" Argument="TestSQLConnectionMsgBox" Condition="AI_INSTALL AND ( SqlConnectionError &lt;&gt; &quot;&quot; )" Ordering="5"/>
     <ROW Dialog_="SQLConnectionDlg" Control_="SQLConnectionDlgDialogInitializer" Event="[DB_PWD]" Argument="{}" Condition="AI_INSTALL AND ( OLDPRODUCTS=&quot;&quot; AND SQLConnectionDlg_Cond )" Ordering="4"/>
@@ -627,6 +645,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDialogComponent">
     <ROW Dialog="ELKConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="PostgreSQLConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
+    <ROW Dialog="PrereqLicenseAgreementDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel" TitleLocId="-"/>
     <ROW Dialog="RabbitMQConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
     <ROW Dialog="RedisServerConnectionDlg" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_Default="Next" Control_Cancel="Cancel"/>
   </COMPONENT>
@@ -709,6 +728,10 @@
     <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRadioButtonComponent">
+    <ROW Property="Prereq_IAgree" Order="1" Value="Yes" X="5" Y="0" Width="250" Height="15" Text="I &amp;accept the terms in the License Agreement" TextStyle="DlgFont8" TextLocId="RadioButton.Text.IAgree#1"/>
+    <ROW Property="Prereq_IAgree" Order="2" Value="No" X="5" Y="20" Width="250" Height="15" Text="I &amp;do not accept the terms in the License Agreement" TextStyle="DlgFont8" TextLocId="RadioButton.Text.IAgree#2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
