@@ -272,6 +272,23 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         await filesDbContext.SaveChangesAsync();
     }
+    
+    public async IAsyncEnumerable<FileShareRecord> GetPureSharesAsync(FileEntry<T> entry, IEnumerable<Guid> subjects)
+    {
+        if (subjects == null || !subjects.Any())
+        {
+            yield break;
+        }
+        
+        var entryId = await MappingIDAsync(entry.Id);
+
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        await foreach (var security in Queries.EntrySharesBySubjectsAsync(filesDbContext, TenantID, entryId.ToString(), entry.FileEntryType, subjects))
+        {
+            yield return await ToFileShareRecordAsync(security);
+        }
+    }
 
     internal async Task SelectFilesAndFoldersForShareAsync(FileEntry<T> entry, ICollection<string> files, ICollection<string> folders, ICollection<int> foldersInt)
     {
@@ -610,4 +627,10 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId
                                 && (r.Subject == subject || r.Owner == subject))
                     .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, string, FileEntryType, IEnumerable<Guid>, IAsyncEnumerable<DbFilesSecurity>> EntrySharesBySubjectsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId, FileEntryType entryType, IEnumerable<Guid> subjects) => 
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId && r.EntryId == entryId && r.EntryType == entryType && subjects.Contains(r.Subject)));
 }
