@@ -12,6 +12,7 @@
     locale: "en-US",
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
+    editorGoBack: true,
     selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     showHeader: false,
     showTitle: true,
@@ -122,12 +123,12 @@
         }
 
         case "editor": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
