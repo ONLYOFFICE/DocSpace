@@ -12,6 +12,7 @@
     locale: "en-US",
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
+    selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     showHeader: false,
     showTitle: true,
     showMenu: false,
@@ -25,7 +26,6 @@
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
       search: "",
       withSubfolders: true,
-      selectorTypes: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     },
     keysForReload: [
       "src",
@@ -112,7 +112,7 @@
         }
 
         case "file-selector": {
-          path = `/sdk/file-selector`;
+          path = `/sdk/file-selector?selectorType=${config.selectorType}`;
           break;
         }
 

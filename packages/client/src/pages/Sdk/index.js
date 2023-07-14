@@ -32,13 +32,21 @@ const Sdk = ({
     };
   }, [handleMessage]);
 
+  const callCommand = useCallback(() => frameCallCommand("setConfig"), [
+    frameCallCommand,
+  ]);
+
   useEffect(() => {
     if (window.parent && !frameConfig && isLoaded) {
-      frameCallCommand("setConfig");
+      callCommand("setConfig");
     }
-  }, [frameCallCommand, isLoaded]);
+  }, [callCommand, isLoaded]);
 
   const { mode } = match.params;
+
+  const selectorType = new URLSearchParams(window.location.search).get(
+    "selectorType"
+  );
 
   const toRelativeUrl = (data) => {
     try {
@@ -123,6 +131,7 @@ const Sdk = ({
 
   const onClose = useCallback(() => {
     frameCallEvent({ event: "onCloseCallback" });
+
     setFrameConfig(null);
   }, [frameCallEvent]);
 
@@ -145,10 +154,7 @@ const Sdk = ({
           isPanelVisible={true}
           onSelectFile={onSelectFile}
           onClose={onClose}
-          filteredType={
-            frameConfig?.filter.selectorTypes ||
-            "exceptPrivacyTrashArchiveFolders"
-          }
+          filteredType={selectorType}
           withSubfolders={false}
           displayType="aside"
           embedded={true}

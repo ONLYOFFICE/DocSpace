@@ -186,6 +186,7 @@ SelectFolderInput.propTypes = {
     "exceptSortedByTags",
     "exceptPrivacyTrashArchiveFolders",
     "roomsOnly",
+    "userFolderOnly",
     "",
   ]),
 };
