@@ -16,10 +16,12 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+portal_url="http://$local_ip:8092"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "APP_URL_PORTAL: $portal_url"
 
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
@@ -59,4 +61,5 @@ ROOT_DIR=$dir \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
 DATA_DIR="$dir/Data" \
+APP_URL_PORTAL=$portal_url \
 docker-compose -f $dockerDir/docspace.profiles.yml -f $dockerDir/docspace.overcome.yml --profile migration-runner --profile backend-local up -d
