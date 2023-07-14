@@ -166,7 +166,9 @@
 
       if (!!this.#iframe.contentWindow) {
         this.#iframe.contentWindow.postMessage(
-          JSON.stringify(mes),
+          JSON.stringify(mes, (key, value) =>
+            typeof value === "function" ? value.toString() : value
+          ),
           this.config.src
         );
       }

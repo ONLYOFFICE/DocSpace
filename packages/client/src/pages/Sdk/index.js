@@ -29,6 +29,7 @@ const Sdk = ({
     window.addEventListener("message", handleMessage, false);
     return () => {
       window.removeEventListener("message", handleMessage, false);
+      setFrameConfig(null);
     };
   }, [handleMessage]);
 
@@ -131,9 +132,13 @@ const Sdk = ({
 
   const onClose = useCallback(() => {
     frameCallEvent({ event: "onCloseCallback" });
-
-    setFrameConfig(null);
   }, [frameCallEvent]);
+
+  const onCloseCallback = !!frameConfig?.events.onCloseCallback
+    ? {
+        onClose,
+      }
+    : {};
 
   let component;
 
@@ -153,13 +158,13 @@ const Sdk = ({
         <SelectFileDialog
           isPanelVisible={true}
           onSelectFile={onSelectFile}
-          onClose={onClose}
           filteredType={selectorType}
           withSubfolders={false}
           displayType="aside"
           embedded={true}
           searchParam={frameConfig?.filter.search}
           ByExtension
+          {...onCloseCallback}
         />
       );
       break;
