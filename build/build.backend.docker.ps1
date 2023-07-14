@@ -13,6 +13,7 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
+$PortalUrl = ("http://" + $LocalIp + ":8092")
 
 
 # Stop all backend services"
@@ -41,6 +42,7 @@ $Env:ROOT_DIR=$RootDir
 $Env:BUILD_PATH="/var/www"
 $Env:SRC_PATH="$RootDir\publish\services"
 $Env:DATA_DIR="$RootDir\Data"
+$Env:APP_URL_PORTAL=$PortalUrl
 docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner --profile backend-local up -d
 
 Set-Location -Path $PSScriptRoot
