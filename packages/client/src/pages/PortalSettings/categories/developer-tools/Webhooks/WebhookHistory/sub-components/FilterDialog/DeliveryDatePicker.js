@@ -136,7 +136,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
   };
 
   const isEqualDates = (firstDate, secondDate) => {
-    return firstDate.format() === secondDate.format();
+    return firstDate.format("YYYY-MM-D HH:mm") === secondDate.format("YYYY-MM-D HH:mm");
   };
 
   const isTimeEqual =
@@ -150,6 +150,8 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
     return () => document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
+  console.log(filters.deliveryDate, "delivery date picker");
+
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
@@ -160,7 +162,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
           <SelectedDateTime />
         ) : (
           <DatePicker
-            date={filters.deliveryDate}
+            outerDate={filters.deliveryDate}
             onChange={onDateSet}
             selectedDateText={t("SelectDate")}
             showCalendarIcon={false}
@@ -174,12 +176,7 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
                 <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
                   {t("From")}
                 </Text>
-                <TimePicker
-                  date={filters.deliveryFrom}
-                  setDate={setDeliveryFrom}
-                  hasError={!isTimeValid}
-                  tabIndex={1}
-                />
+                <TimePicker onChange={setDeliveryFrom} hasError={!isTimeValid} tabIndex={1} />
               </span>
 
               <Text isInline fontWeight={600} color="#A3A9AE" className="mr-8">
