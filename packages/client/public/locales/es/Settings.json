@@ -177,6 +177,7 @@
   "SMTPSettingsDescription": "Se necesitan los ajustes SMTP para establecer una cuenta de correo electrónico que se usará para enviar las notificaciones desde el portal usando su propio servidor SMTP en vez de uno que utiliza {{organizationName}}. Por favor rellene todos los campos y pulse el botón 'Guardar'. Usted puede utilizar el botón 'Enviar mensaje de prueba' para comprobar si todos los parámetros introducidos están correctos y trabajan como debían.",
   "StoragePeriod": "Período de almacenamiento ",
   "StudioTimeLanguageSettings": "Ajustes de idioma y zona horaria",
+  "Submit": "Enviar",
   "SuccessfullySaveGreetingSettingsMessage": "Los ajustes de la página de bienvenida han sido guardados con éxito",
   "SuccessfullySavePortalNameMessage": "El espacio se ha renombrado correctamente",
   "SuccessfullySaveSettingsMessage": "Ajustes se han actualizado correctamente",

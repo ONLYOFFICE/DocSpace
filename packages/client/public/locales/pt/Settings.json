@@ -170,6 +170,7 @@
   "SMTPSettingsDescription": "As definições de SMTP são necessárias para configurar uma conta de correio eletrónico que será utilizada para enviar notificações a partir do portal utilizando o seu próprio servidor SMTP em vez daquele que a {{organizationName}} utiliza. Preencha todos os campos e clique no botão \"Guardar\". Pode utilizar o botão \"Enviar email de teste\" para verificar se todas as definições introduzidas estão corretas e funcionam como previsto.",
   "StoragePeriod": "Período do armazenamento",
   "StudioTimeLanguageSettings": "Definições de Idioma e Fuso Horário",
+  "Submit": "Submeter",
   "SuccessfullySaveGreetingSettingsMessage": "As definições da Página de Boas-vindas foram guardadas com êxito",
   "SuccessfullySavePortalNameMessage": "O espaço foi renomeado com êxito",
   "SuccessfullySaveSettingsMessage": "As definições foram atualizadas com êxito",

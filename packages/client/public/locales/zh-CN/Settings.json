@@ -173,6 +173,7 @@
   "SMTPSettingsDescription": "需要SMTP设置，以设置一个电子邮件账户，用于使用您自己的SMTP服务器，而非{{organizationName}}使用的SMTP服务器，以从从门户发送通知。请填写所有字段，然后单击“保存”按钮。您可以使用“发送测试邮件”按钮，以检查您输入的所有设置是否正确，并照常工作。",
   "StoragePeriod": "贮存期",
   "StudioTimeLanguageSettings": "语言和时区设置",
+  "Submit": "提交",
   "SuccessfullySaveGreetingSettingsMessage": "欢迎页面设置已成功保存",
   "SuccessfullySavePortalNameMessage": "空间已成功重命名",
   "SuccessfullySaveSettingsMessage": "设置已成功更新",

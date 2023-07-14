@@ -177,6 +177,7 @@
   "SMTPSettingsDescription": "As configurações de SMTP são necessárias para configurar uma conta de e-mail que será usada para enviar notificações do portal usando seu próprio servidor SMTP em vez do que o {{organizationName}} utiliza. Preencha todos os campos e clique no botão \"Salvar\". Você pode usar o botão \"Enviar E-mail de Teste\" para verificar se todas as configurações inseridas estão corretas e funcionam como deveria.",
   "StoragePeriod": "Período de armazenamento",
   "StudioTimeLanguageSettings": "Configurações de Idioma e Fuso Horário",
+  "Submit": "Enviar",
   "SuccessfullySaveGreetingSettingsMessage": "Configurações da página de boas-vindas foram salvas com sucesso",
   "SuccessfullySavePortalNameMessage": "O espaço foi renomeado com sucesso",
   "SuccessfullySaveSettingsMessage": "As configurações foram atualizadas com sucesso",

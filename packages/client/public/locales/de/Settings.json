@@ -169,6 +169,7 @@
   "SMTPSettingsDescription": "Die SMTP-Einstellungen müssen Ihr E-Mail-Konto einrichten, es wird gebraucht, um Benachrichtigungen vom Portal mithilfe Ihres eigenen SMTP-Servers statt eines vom {{organizationName}} zu senden. Bitte füllen Sie alle Felder aus und klicken Sie auf den Button 'Speichern'. Sie können den Button 'Test-E-Mail senden' verwenden, um zu prüfen, ob alle eingegeben Einstellungen korrekt sind und wie vorgesehen funktionieren.",
   "StoragePeriod": "Lagerdauer",
   "StudioTimeLanguageSettings": "Sprach- und Zeitzoneneinstellungen",
+  "Submit": "Senden",
   "SuccessfullySaveGreetingSettingsMessage": "Die Begrüßungseinstellungen wurden gespeichert",
   "SuccessfullySavePortalNameMessage": "Der Bereich wurde erfolgreich umbenannt",
   "SuccessfullySaveSettingsMessage": "Die Einstellungen wurden erfolgreich aktualisiert",

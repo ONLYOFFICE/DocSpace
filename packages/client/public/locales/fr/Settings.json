@@ -174,6 +174,7 @@
   "SMTPSettingsDescription": "Les paramètres SMTP sont nécessaires pour configurer le compte de messagerie qui sera utilisé pour envoyer des notifications du portail en utilisant votre propre serveur SMTP au lieu du serveur utilisé par {{organizationName}}. Remplissez tous les champs et cliquez sur le bouton 'Enregistrer'. Vous pouvez utiliser le bouton 'Envoyer le message de test' pour vérifier si tous les paramètres insérés sont bien corrects et fonctionnent comme prévu.",
   "StoragePeriod": "La période de stockage ",
   "StudioTimeLanguageSettings": "Paramètres de langue et fuseau horaire",
+  "Submit": "Soumettre",
   "SuccessfullySaveGreetingSettingsMessage": "Les paramètres de la page d'accueil ont été enregistrés avec succès",
   "SuccessfullySavePortalNameMessage": "L’espace a été renommé avec succès",
   "SuccessfullySaveSettingsMessage": "Les paramètres ont été mis à jour avec succès",

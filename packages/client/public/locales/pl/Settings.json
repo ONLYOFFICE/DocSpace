@@ -170,6 +170,7 @@
   "SMTPSettingsDescription": "Ustawienia SMTP są konieczne, aby skonfigurować konto e-mail, które będzie używane do wysyłania powiadomień z portalu za pośrednictwem Twojego własnego serwera SMTP, zamiast tego, którego używa {{organizationName}}. Uzupełnij wszystkie pola i kliknij przycisk „Zapisz”. Możesz użyć przycisku „Wyślij wiadomość testową”, aby upewnić się, że wprowadzone dane są poprawne i wszystko działa, jak powinno.",
   "StoragePeriod": "Okres przechowywania",
   "StudioTimeLanguageSettings": "Ustawienia języka i strefy czasowej",
+  "Submit": "Przesłać",
   "SuccessfullySaveGreetingSettingsMessage": "Ustawienia strony startowej zostały pomyślnie zapisane",
   "SuccessfullySavePortalNameMessage": "Nazwa obszaru została zmieniona",
   "SuccessfullySaveSettingsMessage": "Ustawienia zostały pomyślnie zaktualizowane",

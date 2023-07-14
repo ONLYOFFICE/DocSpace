@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ButtonSetPassword" xml:space="preserve">
-    <value>Uzstādīt paroli</value>
+  <data name="POST|api/2.0/files/file/{fileId}/startedit" xml:space="preserve">
+    <value>Sākt rediģēt</value>
   </data>
-  <data name="BackupNotFound" xml:space="preserve">
-    <value>Dublējuma fails ir nederīgs. Izmantojiet failu, kas izveidots ONLYOFFICE v11.5 vai jaunākā versijā.</value>
+  <data name="POST|api/2.0/files/file/{fileId}/startedit_Description" xml:space="preserve">
+    <value>Sākt rediģēt aprakstu</value>
   </data>
 </root>

@@ -170,6 +170,7 @@
   "SMTPSettingsDescription": "De SMTP-instellingen zijn nodig om een e-mailaccount aan te maken dat wordt gebruikt om notificaties van het portaal te verzenden met behulp van uw eigen SMTP-server in plaats van die van {{organizationName}}. Vul alstublieft al de velden in en klik op de knop 'Opslaan'. U kunt de knop 'Verzenden Testmail' gebruiken om te controleren of alle instellingen die u hebt ingevoerd juist zijn en naar wens werken.",
   "StoragePeriod": "Bewaarperiode",
   "StudioTimeLanguageSettings": "Taal- en Tijdzone Instellingen",
+  "Submit": "Verzenden",
   "SuccessfullySaveGreetingSettingsMessage": "Welkomstpagina Instellingen zijn met succes opgeslagen",
   "SuccessfullySavePortalNameMessage": "Ruimte is succesvol hernoemd",
   "SuccessfullySaveSettingsMessage": "De instellingen zijn met succes bijgewerkt",

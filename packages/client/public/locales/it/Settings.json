@@ -170,6 +170,7 @@
   "SMTPSettingsDescription": "Le impostazioni SMTP ti permettono di configurare un account di posta elettronica che sarà usato per inviare le notifiche dal portale usando il proprio server SMTP invece di quello usato da {{organizationName}}. Compila tutti i campi e clicca sul pulsante 'Salva'. Puoi utilizzare il pulsante 'Invia messaggio di prova' per controllare le impostazioni inserite.",
   "StoragePeriod": "Periodo di conservazione",
   "StudioTimeLanguageSettings": "Impostazioni della lingua e del fuso orario",
+  "Submit": "Invia‎",
   "SuccessfullySaveGreetingSettingsMessage": "Le impostazioni della pagina di benvenuto sono state salvate con successo",
   "SuccessfullySavePortalNameMessage": "Lo spazio è stato rinominato correttamente",
   "SuccessfullySaveSettingsMessage": "Le impostazioni sono state aggiornate con successo",
