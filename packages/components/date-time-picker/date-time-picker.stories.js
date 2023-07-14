@@ -30,3 +30,9 @@ const Template = ({ ...args }) => {
 };
 
 export const Default = Template.bind({});
+
+Default.args = {
+  locale: "en",
+  maxDate: new Date(new Date().getFullYear() + 10 + "/01/01"),
+  minDate: new Date("1970/01/01"),
+};
