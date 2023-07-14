@@ -1156,7 +1156,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="IconFile" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="IconFile" Value="[#icon.ico]" Action="0" Component_="icon.ico"/>
     <ROW IniFile="IconIndex" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="IconIndex" Value="0" Action="0" Component_="icon.ico"/>
-    <ROW IniFile="URL" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://localhost/" Action="0" Component_="icon.ico"/>
+    <ROW IniFile="URL" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://[MACHINE_KEY]/" Action="0" Component_="icon.ico"/>
     <ROW IniFile="WorkingDirectory" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="WorkingDirectory" Value="[DesktopFolder]" Action="0" Component_="icon.ico"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
