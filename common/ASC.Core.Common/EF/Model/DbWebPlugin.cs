@@ -30,7 +30,16 @@ public class DbWebPlugin : BaseEntity
 {
     public int Id { get; set; }
     public int TenantId { get; set; }
+
     public string Name { get; set; }
+    public string Version { get; set; }
+    public string Description { get; set; }
+    public string License { get; set; }
+    public string Author { get; set; }
+    public string HomePage {  get; set; }
+    public string PluginName { get; set; }
+    public string Scopes { get; set; }
+
     public bool Enabled { get; set; }
 
     public DbTenant Tenant { get; set; }
@@ -62,18 +71,47 @@ public static class WebPluginExtension
                 .HasName("PRIMARY");
 
             entity.ToTable("webplugins")
-                .HasCharSet("utf8");
+                .HasCharSet("utf8mb4");
 
             entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasColumnName("name")
-                .HasColumnType("varchar(255)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.Version)
+                .HasColumnName("version")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.Description)
+                .HasColumnName("description")
+                .HasColumnType("text");
+
+            entity.Property(e => e.License)
+                .HasColumnName("license")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.Author)
+                .HasColumnName("author")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.HomePage)
+                .HasColumnName("home_page")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.PluginName)
+                .IsRequired()
+                .HasColumnName("plugin_name")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.Scopes)
+                .HasColumnName("scopes")
+                .HasColumnType("text");
 
             entity.Property(e => e.Enabled)
                 .HasColumnName("enabled")
@@ -93,13 +131,43 @@ public static class WebPluginExtension
             entity.HasIndex(e => e.TenantId)
                 .HasDatabaseName("tenant_webplugins");
 
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.TenantId)
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.Name)
+                .IsRequired()
                 .HasColumnName("name")
                 .HasMaxLength(255);
 
-            entity.Property(e => e.Enabled).HasColumnName("enabled");
+            entity.Property(e => e.Version)
+                .HasColumnName("version")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.Description)
+                .HasColumnName("description");
+
+            entity.Property(e => e.License)
+                .HasColumnName("license")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.Author)
+                .HasColumnName("author")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.HomePage)
+                .HasColumnName("home_page")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.PluginName)
+                .IsRequired()
+                .HasColumnName("plugin_name")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.Scopes)
+                .HasColumnName("scopes");
+
+            entity.Property(e => e.Enabled)
+                .HasColumnName("enabled");
         });
     }
 }

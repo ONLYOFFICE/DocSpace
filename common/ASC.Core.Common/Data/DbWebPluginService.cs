@@ -47,11 +47,13 @@ public class DbWebPluginService
         return webPlugin;
     }
 
-    public async Task<DbWebPlugin> GetByIdAsync(int id)
+    public async Task<DbWebPlugin> GetByIdAsync(int tenantId, int id)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        return await dbContext.WebPlugins.FindAsync(id);
+        var webPlugin = await dbContext.WebPlugins.FindAsync(id);
+
+        return webPlugin.TenantId == tenantId ? webPlugin : null;
     }
 
     public async Task<List<DbWebPlugin>> GetAsync(int tenantId, bool? enabled = null)
@@ -64,21 +66,21 @@ public class DbWebPluginService
             .ToListAsync();
     }
 
-    public async Task UpdateAsync(int id, bool enabled)
+    public async Task UpdateAsync(int tenantId, int id, bool enabled)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
         await dbContext.WebPlugins
-           .Where(r => r.Id == id)
+           .Where(r => r.Id == id && r.TenantId == tenantId)
            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Enabled, enabled));
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int tenantId, int id)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
         await dbContext.WebPlugins
-            .Where(r => r.Id == id)
+            .Where(r => r.Id == id && r.TenantId == tenantId)
             .ExecuteDeleteAsync();
     }
 }

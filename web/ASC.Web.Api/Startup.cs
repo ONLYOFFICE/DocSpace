@@ -54,6 +54,7 @@ public class Startup : BaseStartup
         services.AddScoped<CountRoomCheckerStatistic>();
 
         DIHelper.TryAdd<AdditionalWhiteLabelSettingsConverter>();
+        DIHelper.TryAdd<WebPluginManager>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
