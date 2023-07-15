@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Trans } from "react-i18next";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
