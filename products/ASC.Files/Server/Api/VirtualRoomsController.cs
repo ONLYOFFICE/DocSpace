@@ -190,6 +190,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <returns>
     /// Room info
     /// </returns>
+    [AllowAnonymous]
     [HttpGet("rooms/{id}")]
     public async Task<FolderDto<T>> GetRoomInfoAsync(T id)
     {
@@ -396,7 +397,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Setting an external invite link
+    /// Setting an room link
     /// </summary>
     /// <param name="id">
     /// Room ID
@@ -405,16 +406,67 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Link ID
     /// </param>
     /// <param name="title">
-    /// External link name
+    /// Link name
     /// </param>
-    /// /// <param name="access">
+    /// <param name="access">
     /// Access level
+    /// </param>
+    /// <param name="expirationDate">
+    /// Link expiration date
+    /// </param>
+    /// <param name="linkType">
+    /// Link type
+    /// </param>
+    /// <param name="password">
+    /// Link password
+    /// </param>
+    /// <param name="disabled">
+    /// Link status
+    /// </param>
+    /// <param name="denyDownload">
+    /// Download restriction
     /// </param>
     /// <returns>Room security info</returns>
     [HttpPut("rooms/{id}/links")]
-    public async IAsyncEnumerable<FileShareDto> SetInvintationLinkAsync(T id, InvintationLinkRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
     {
-        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.LinkId, inDto.Title, inDto.Access);
+        var fileShares = inDto.LinkType switch
+        {
+            LinkType.Invitation => await _fileStorageService.SetInvitationLinkAsync(id, inDto.LinkId, inDto.Title, inDto.Access),
+            LinkType.External => await _fileStorageService.SetExternalLinkAsync(id, FileEntryType.Folder, inDto.LinkId, inDto.Title, 
+                inDto.Access is not (FileShare.Read or FileShare.None) ? FileShare.Read : inDto.Access , inDto.ExpirationDate ?? default, inDto.Password, inDto.Disabled, inDto.DenyDownload),
+            _ => throw new InvalidOperationException()
+        };
+
+        foreach (var fileShareDto in fileShares)
+        {
+            yield return await _fileShareDtoHelper.Get(fileShareDto);
+        }
+    }
+
+    /// <summary>
+    /// Getting room links
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="type">
+    /// Link type
+    /// </param>
+    /// <returns>Room security info</returns>
+    [HttpGet("rooms/{id}/links")]
+    public async IAsyncEnumerable<FileShareDto> GetLinksAsync(T id, LinkType? type)
+    {
+        var subjectTypes = type.HasValue
+            ? type.Value switch
+            {
+                LinkType.Invitation => new[] { SubjectType.InvitationLink },
+                LinkType.External => new[] { SubjectType.ExternalLink },
+                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink }
+            }
+            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink };
+
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id }, subjectTypes, true);
 
         foreach (var fileShareDto in fileShares)
         {
@@ -663,7 +715,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param name="filterValue">
     /// Filter by name
     /// </param>
-    /// <param name="types">
+    /// <param name="type">
     /// Filter by room type
     /// </param>
     /// <param name="subjectId">
@@ -687,11 +739,17 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param name="excludeSubject">
     /// Exclude subject from search
     /// </param>
+    /// <param name="provider">
+    /// Filter by ThirdParty provider type
+    /// </param>
+    /// <param name="subjectFilter">
+    /// Filter by subject
+    /// </param>
     /// <returns>
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
         ProviderFilter? provider, SubjectFilter? subjectFilter)
     {
         ErrorIfNotDocSpace();
@@ -701,12 +759,12 @@ public class VirtualRoomsCommonController : ApiControllerBase
 
         var filter = type switch
         {
-            RoomFilterType.FillingFormsRoomOnly => FilterType.FillingFormsRooms,
-            RoomFilterType.ReadOnlyRoomOnly => FilterType.ReadOnlyRooms,
-            RoomFilterType.EditingRoomOnly => FilterType.EditingRooms,
-            RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
-            RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
-            RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
+            RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
+            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
+            RoomType.EditingRoom => FilterType.EditingRooms,
+            RoomType.ReviewRoom => FilterType.ReviewRooms,
+            RoomType.CustomRoom => FilterType.CustomRooms,
+            RoomType.PublicRoom => FilterType.PublicRooms,
             _ => FilterType.None
         };
 

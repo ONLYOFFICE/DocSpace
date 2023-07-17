@@ -56,7 +56,7 @@ public class StorageHandler
         var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
         var storageExpire = storage.GetExpire(_domain);
 
-        if (_checkAuth && !securityContext.IsAuthenticated && String.IsNullOrEmpty(auth))
+        if (_checkAuth && !securityContext.IsAuthenticated && !await SecureHelper.CheckSecureKeyHeader(header, path, emailValidationKeyProvider))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return;
