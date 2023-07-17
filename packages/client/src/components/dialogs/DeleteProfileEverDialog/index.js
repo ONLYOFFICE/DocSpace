@@ -67,46 +67,72 @@ const DeleteProfileEverDialogComponent = (props) => {
     visible,
     setDataReassignmentDialogVisible,
     setDeleteProfileDialogVisible,
+    setDataReassignmentDeleteProfile,
+    setDataReassignmentDeleteAdministrator,
     userPerformedDeletion,
+
+    removeUser,
+    setDialogData,
     userIds,
+    filter,
+    setSelected,
+    setReassignDataIds,
   } = props;
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const navigate = useNavigate();
 
-  const onlyOneUser = userIds.length !== 2;
+  console.log("user", user);
+
+  const onlyOneUser = user.length === 1;
+  const needReassignData = onlyOneUser
+    ? user[0].isRoomAdmin
+    : user.some((item) => item.isRoomAdmin);
+
+  console.log("onlyOneUser needReassignData", onlyOneUser, needReassignData);
+  console.log("user", user);
 
   const header = onlyOneUser ? t("DeleteUser") : t("DeleteUsers");
-
   const deleteMessage = onlyOneUser ? (
     <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
       {{ userCaption: t("Common:User") }}
-      <strong>{{ user: user.displayName }}</strong>
+      <strong>{{ user: user[0].displayName }}</strong>
       will be deleted. This action cannot be undone.
     </Trans>
   ) : (
     t("DeleteUsersMessage")
   );
-
   const i18nKeyWarningMessage = onlyOneUser
     ? "DeleteReassignDescriptionUser"
     : "DeleteReassignDescriptionUsers";
 
-  const warningMessage = (
+  const warningMessageMyDocuments = onlyOneUser
+    ? t("DeleteMyDocumentsUser")
+    : t("DeleteMyDocumentsUsers");
+
+  const warningMessageReassign = (
     <Trans i18nKey={i18nKeyWarningMessage} ns="DeleteProfileEverDialog" t={t}>
+      {{ warningMessageMyDocuments }}
       <strong>
-        {{ userPerformedDeletion }} ({{ userYou: t("Common:You") }})
+        {{ userPerformedDeletion: userPerformedDeletion.displayName }}
+        {{ userYou: t("Common:You") }}
       </strong>
-      Reassign data manually to choose another destination user for reassignment
     </Trans>
   );
 
-  const onDeleteProfileEver = () => {
+  const warningMessageOnlyDelete = warningMessageMyDocuments;
+
+  const warningMessage = needReassignData
+    ? warningMessageReassign
+    : warningMessageOnlyDelete;
+
+  const onDeleteUser = (id) => {
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
     const url = `/accounts/filter?${params}`;
     setIsRequestRunning(true);
-    deleteUser(user.id)
+    console.log("onDeleteUser", id);
+    deleteUser(id)
       .then((res) => {
         toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
         navigate(url, params);
@@ -114,11 +140,61 @@ const DeleteProfileEverDialogComponent = (props) => {
         return;
       })
       .catch((error) => toastr.error(error))
-      .finally(() => onClose());
+      .finally(() => {
+        setIsRequestRunning(false);
+        onClose();
+      });
+  };
+
+  const onDeleteUsers = (ids) => {
+    console.log("onDeleteUsers", ids);
+    setIsRequestRunning(true);
+    removeUser(ids, filter)
+      .then(() => {
+        toastr.success(t("DeleteGroupUsersSuccessMessage"));
+      })
+      .catch((error) => toastr.error(error))
+      .finally(() => {
+        setSelected("close");
+        onClose();
+        setIsRequestRunning(false);
+      });
+  };
+  const onDeleteProfileEver = () => {
+    // If room for 1 and more
+    if (needReassignData) {
+      const ids = user.map((item) => item.id);
+      console.log("onDeleteProfileEver ids", ids);
+
+      onlyOneUser ? setDialogData(user) : setReassignDataIds(ids);
+
+      setDataReassignmentDeleteAdministrator(userPerformedDeletion);
+      setDataReassignmentDialogVisible(true);
+      setDataReassignmentDeleteProfile(true);
+      setDeleteProfileDialogVisible(false);
+    }
+
+    // If not room
+    if (!needReassignData) {
+      // 1
+      if (onlyOneUser) {
+        onDeleteUser(user[0].id);
+      }
+      // more  1
+      if (!onlyOneUser) {
+        onDeleteUsers(userIds);
+      }
+    }
   };
 
   const onClickReassignData = () => {
+    const ids = user.map((item) => item.id);
+    console.log("onClickReassignData ids", ids);
+
+    onlyOneUser ? setDialogData(user) : setReassignDataIds(ids);
+
     setDataReassignmentDialogVisible(true);
+    setDataReassignmentDeleteProfile(true);
     setDeleteProfileDialogVisible(false);
   };
 
@@ -134,16 +210,18 @@ const DeleteProfileEverDialogComponent = (props) => {
         <Text className="text-warning">{t("Common:Warning")}!</Text>
         <Text className="text-delete-description">{warningMessage}</Text>
 
-        <Link
-          className="reassign-data"
-          type="action"
-          fontSize="13px"
-          fontWeight={600}
-          isHovered={true}
-          onClick={onClickReassignData}
-        >
-          {t("DataReassignmentDialog:ReassignData")}
-        </Link>
+        {needReassignData && (
+          <Link
+            className="reassign-data"
+            type="action"
+            fontSize="13px"
+            fontWeight={600}
+            isHovered={true}
+            onClick={onClickReassignData}
+          >
+            {t("DataReassignmentDialog:ReassignData")}
+          </Link>
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -178,7 +256,7 @@ const DeleteProfileEverDialog = withTranslation([
 DeleteProfileEverDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  // user: PropTypes.object.isRequired,
 };
 
 export default inject(({ peopleStore }) => ({
@@ -192,7 +270,19 @@ export default inject(({ peopleStore }) => ({
   setDeleteProfileDialogVisible:
     peopleStore.dialogStore.setDeleteProfileDialogVisible,
 
-  userPerformedDeletion: peopleStore.authStore.userStore.user.displayName,
+  setDataReassignmentDeleteProfile:
+    peopleStore.dialogStore.setDataReassignmentDeleteProfile,
+  setDataReassignmentDeleteAdministrator:
+    peopleStore.dialogStore.setDataReassignmentDeleteAdministrator,
+
+  userPerformedDeletion: peopleStore.authStore.userStore.user,
 
   userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+
+  setDialogData: peopleStore.dialogStore.setDialogData,
+  setReassignDataIds: peopleStore.dialogStore.setReassignDataIds,
+
+  removeUser: peopleStore.usersStore.removeUser,
+  filter: peopleStore.filterStore.filter,
+  setSelected: peopleStore.selectionStore.setSelected,
 }))(observer(DeleteProfileEverDialog));
