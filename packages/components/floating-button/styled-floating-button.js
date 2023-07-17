@@ -23,16 +23,10 @@ const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
     z-index: 300;
+    right: 0;
+    direction: ltr;
 
-    ${({ theme }) =>
-      theme.interfaceDirection === "rtl" ? ` right: 0;` : `left: 0;`}
     bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
-
-    ${!isMobile &&
-    css`
-      width: 100px;
-      height: 70px;
-    `}
   }
 
   .layout-progress-bar_close-icon {
