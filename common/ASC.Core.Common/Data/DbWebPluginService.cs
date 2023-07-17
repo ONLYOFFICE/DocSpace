@@ -53,7 +53,7 @@ public class DbWebPluginService
 
         var webPlugin = await dbContext.WebPlugins.FindAsync(id);
 
-        return webPlugin.TenantId == tenantId ? webPlugin : null;
+        return webPlugin != null && webPlugin.TenantId == tenantId ? webPlugin : null;
     }
 
     public async Task<List<DbWebPlugin>> GetAsync(int tenantId, bool? enabled = null)
