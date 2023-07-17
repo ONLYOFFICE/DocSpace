@@ -349,8 +349,8 @@ class SettingsSetupStore {
     return api.settings.dataReassignment(fromUserIds, toUserId, deleteProfile);
   };
 
-  dataReassignmentProgress = (id) => {
-    return api.settings.dataReassignmentProgress(id);
+  dataReassignmentProgress = (ids) => {
+    return api.settings.dataReassignmentProgress(ids);
   };
 
   getCommonThirdPartyList = async () => {
