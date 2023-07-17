@@ -885,38 +885,53 @@ public class FileSharing
     
     private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType)
     {
-        switch (filterType)
+        if (filterType is ShareFilterType.InvitationLink or ShareFilterType.Link)
         {
-            case ShareFilterType.InvitationLink or ShareFilterType.Link:
-                {
-                    var id = Guid.NewGuid();
-                    var w = new AceWrapper
-                    {
-                        Id = id,
-                        Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
-                        SubjectGroup = true,
-                        Access = FileShare.Read,
-                        Owner = false
-                    };
+            var id = Guid.NewGuid();
+            var w = new AceWrapper
+            {
+                Id = id,
+                Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
+                SubjectGroup = true,
+                Access = FileShare.Read,
+                Owner = false,
+                IsTemplate = true,
+                SubjectType = SubjectType.InvitationLink
+            };
 
-                    yield return w;
-                    break;
-                }
-            case ShareFilterType.User:
-                {
-                    var w = new AceWrapper
-                    {
-                        Id = room.CreateBy,
-                        SubjectName = await _global.GetUserNameAsync(room.CreateBy),
-                        SubjectGroup = false,
-                        Access = FileShare.ReadWrite,
-                        Owner = true,
-                        CanEditAccess = false,
-                    };
-            
-                    yield return w;
-                    break;
-                }
+            yield return w;
+        }
+        
+        if (filterType is ShareFilterType.ExternalLink or ShareFilterType.Link)
+        {
+            var id = Guid.NewGuid();
+            var w = new AceWrapper
+            {
+                Id = id,
+                Link = await _externalShare.GetLinkAsync(id),
+                SubjectGroup = true,
+                Access = FileShare.Read,
+                Owner = false,
+                IsTemplate = true,
+                SubjectType = SubjectType.ExternalLink
+            };
+
+            yield return w;
+        }
+        
+        if (filterType == ShareFilterType.User)
+        {
+            var w = new AceWrapper
+            {
+                Id = room.CreateBy,
+                SubjectName = await _global.GetUserNameAsync(room.CreateBy),
+                SubjectGroup = false,
+                Access = FileShare.ReadWrite,
+                Owner = true,
+                CanEditAccess = false,
+            };
+
+            yield return w;
         }
     }
     
@@ -935,9 +950,13 @@ public class FileSharing
 
         if (record.IsLink)
         {
-            w.Link = _invitationLinkService.GetInvitationLink(record.Subject, _authContext.CurrentAccount.ID);
+            w.Link = record.SubjectType == SubjectType.InvitationLink ? 
+                _invitationLinkService.GetInvitationLink(record.Subject, _authContext.CurrentAccount.ID) : 
+                await _externalShare.GetLinkAsync(record.Subject);
             w.SubjectGroup = true;
             w.CanEditAccess = false;
+            w.FileShareOptions.Password = await _externalShare.GetPasswordAsync(w.FileShareOptions.Password);
+            w.SubjectType = record.SubjectType;
         }
         else
         {
