@@ -118,22 +118,14 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
 
             result.Logo = await _roomLogoManager.GetLogoAsync(folder);
-            result.RoomType = folder.FolderType switch
-            {
-                FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
-                FolderType.EditingRoom => RoomType.EditingRoom,
-                FolderType.ReviewRoom => RoomType.ReviewRoom,
-                FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
-                FolderType.CustomRoom => RoomType.CustomRoom,
-                _ => null,
-            };
+            result.RoomType = DocSpaceHelper.GetRoomType(folder.FolderType);
 
             if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
             {
                 result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
 
-            var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
-            result.Mute = isMuted;
+                var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
+                result.Mute = isMuted;
             }
         }
 

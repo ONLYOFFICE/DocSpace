@@ -24,17 +24,16 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Security;
+namespace ASC.Files.Core.ApiModels.RequestDto;
 
-[Serializable]
-public class FileShareOptions
+public class LinkRequestDto
 {
+    public Guid LinkId { get; set; }
     public string Title { get; set; }
-    public DateTime ExpirationDate { get; set; }
+    public FileShare Access { get; set; }
+    public DateTime? ExpirationDate { get; set; }
+    public LinkType LinkType { get; set; }
     public string Password { get; set; }
-    public bool DenyDownload { get; set; }
     public bool Disabled { get; set; }
-    
-    [JsonIgnore]
-    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate<DateTime.UtcNow;
+    public bool DenyDownload { get; set; }
 }

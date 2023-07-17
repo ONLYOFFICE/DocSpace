@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition, Suspense } from "react";
 import styled, { css } from "styled-components";
 import Submenu from "@docspace/components/submenu";
 import { inject, observer } from "mobx-react";
@@ -30,12 +30,11 @@ const StyledSubmenu = styled(Submenu)`
 `;
 
 const DeveloperToolsWrapper = (props) => {
-  const { loadBaseInfo, developerToolsTab, setTab } = props;
-  const [currentTab, setCurrentTab] = useState(developerToolsTab);
-  const [isLoading, setIsLoading] = useState(false);
+  const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
   const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
+  const [isPending, startTransition] = useTransition();
 
   const data = [
     {
@@ -50,9 +49,12 @@ const DeveloperToolsWrapper = (props) => {
     },
   ];
 
+  const [currentTab, setCurrentTab] = useState(
+    data.findIndex((item) => location.pathname.includes(item.id)),
+  );
+
   const load = async () => {
     await loadBaseInfo();
-    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -60,11 +62,12 @@ const DeveloperToolsWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) {
       setCurrentTab(currentTab);
-      setTab(currentTab);
     }
-
-    load();
   }, []);
+
+  useEffect(() => {
+    ready && startTransition(load);
+  }, [ready]);
 
   const onSelect = (e) => {
     navigate(
@@ -76,27 +79,21 @@ const DeveloperToolsWrapper = (props) => {
     );
   };
 
-  if (!isLoading && !ready)
-    return currentTab === 0 ? (
-      <SSOLoader />
-    ) : currentTab === 1 ? (
-      <WebhookConfigsLoader />
-    ) : (
-      <AppLoader />
-    );
+  const loaders = [<SSOLoader />, <AppLoader />];
 
-  return <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />;
+  return (
+    <Suspense fallback={loaders[currentTab] || <AppLoader />}>
+      <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />
+    </Suspense>
+  );
 };
 
-export default inject(({ setup, webhooksStore }) => {
+export default inject(({ setup }) => {
   const { initSettings } = setup;
-  const { developerToolsTab, setTab } = webhooksStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    developerToolsTab,
-    setTab,
   };
 })(observer(DeveloperToolsWrapper));
