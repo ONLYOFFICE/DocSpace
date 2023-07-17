@@ -52,6 +52,9 @@ const PeopleSelector = ({
   currentUserId,
   theme,
   withOutCurrentAuthorizedUser,
+  withFooterCheckbox,
+  footerCheckboxLabel,
+  isChecked,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -242,6 +245,9 @@ const PeopleSelector = ({
       loadNextPage={loadNextPage}
       totalItems={total}
       isLoading={isLoading}
+      withFooterCheckbox={withFooterCheckbox}
+      footerCheckboxLabel={footerCheckboxLabel}
+      isChecked={isChecked}
       searchLoader={<Loaders.SelectorSearchLoader />}
       rowLoader={
         <Loaders.SelectorRowLoader
