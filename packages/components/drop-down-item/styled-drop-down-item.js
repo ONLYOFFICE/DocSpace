@@ -161,7 +161,12 @@ const StyledDropdownItem = styled.div`
     `}
 
   .submenu-arrow {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection == "rtl"
+        ? `margin-right: auto;
+           transform: rotate(180deg);
+        `
+        : `margin-left: auto`}
     ${(props) =>
       props.isActive &&
       css`
