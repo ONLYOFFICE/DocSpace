@@ -27,12 +27,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import DeepLink from "./DeepLink";
-import {
-  getDeepLink,
-  DL_URL,
-  DL_IOS,
-  DL_ANDROID,
-} from "../helpers/deepLinkHelper";
+import { getDeepLink } from "../helpers/deepLinkHelper";
 
 import { getEditorTheme } from "../helpers/utils";
 
@@ -103,6 +98,7 @@ function Editor({
   filesSettings,
   logoUrls,
   currentColorScheme,
+  portalSettings,
 }) {
   const [isShowDeepLink, setIsShowDeepLink] = useState(false);
 
@@ -118,6 +114,10 @@ function Editor({
   }
 
   useEffect(() => {
+    const androidID = portalSettings.deepLink.androidPackageName;
+    const iOSId = portalSettings.deepLink.iosPackageId;
+    const deepLinkUrl = portalSettings.deepLink.url;
+
     const defaultOpenDocument = localStorage.getItem("defaultOpenDocument");
 
     if (isMobileOnly && !defaultOpenDocument) {
@@ -128,14 +128,14 @@ function Editor({
       const nav = navigator.userAgent;
       const storeUrl =
         nav.includes("iPhone;") || nav.includes("iPad;")
-          ? `https://apps.apple.com/app/id${DL_IOS}`
-          : `https://play.google.com/store/apps/details?id=${DL_ANDROID}`;
+          ? `https://apps.apple.com/app/id${iOSId}`
+          : `https://play.google.com/store/apps/details?id=${androidID}`;
 
       window.location = getDeepLink(
         window.location.origin,
         user.email,
         fileInfo,
-        DL_URL
+        deepLinkUrl
       );
 
       setTimeout(() => {
@@ -824,6 +824,7 @@ function Editor({
         setIsShowDeepLink={setIsShowDeepLink}
         userTheme={user.theme}
         currentColorScheme={currentColorScheme}
+        deepLinkUrl={portalSettings.deepLink.url}
       />
     );
 

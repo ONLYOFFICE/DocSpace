@@ -1,7 +1,3 @@
-export const DL_ANDROID = "com.onlyoffice.documents";
-export const DL_IOS = "944896972";
-export const DL_URL = "oodocuments://openfile";
-
 export const getDeepLink = (location, email, file, url) => {
   const jsonData = {
     portal: location,

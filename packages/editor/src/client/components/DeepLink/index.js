@@ -6,7 +6,7 @@ import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
 import { getLogoFromPath } from "@docspace/common/utils";
-import { getDeepLink, DL_URL } from "../../helpers/deepLinkHelper";
+import { getDeepLink } from "../../helpers/deepLinkHelper";
 
 import {
   StyledSimpleNav,
@@ -23,6 +23,7 @@ const DeepLink = ({
   setIsShowDeepLink,
   userTheme,
   currentColorScheme,
+  deepLinkUrl,
 }) => {
   const { t } = useTranslation(["DeepLink", "Common"]);
 
@@ -37,7 +38,7 @@ const DeepLink = ({
       window.location.origin,
       userEmail,
       fileInfo,
-      DL_URL
+      deepLinkUrl
     );
   };
 
