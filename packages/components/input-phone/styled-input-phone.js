@@ -40,6 +40,8 @@ export const StyledBox = styled(Box)`
         margin-left: 0;
         padding-right: 20px;
         border-left: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
         border-right: 1px solid
           ${(props) => props.theme.inputPhone.inactiveBorderColor};
       `}
