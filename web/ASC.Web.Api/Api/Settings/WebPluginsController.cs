@@ -85,11 +85,14 @@ public class WebPluginsController : BaseSettingsController
 
         var outDto = _mapper.Map<IEnumerable<DbWebPlugin>, IEnumerable<WebPluginDto>>(plugins);
 
-        var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
-
-        foreach (var dto in outDto)
+        if (outDto != null && outDto.Any())
         {
-            dto.Url = string.Format(urlTemplate, dto.Name);
+            var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
+
+            foreach (var dto in outDto)
+            {
+                dto.Url = string.Format(urlTemplate, dto.Name);
+            }
         }
 
         return outDto;
@@ -102,9 +105,12 @@ public class WebPluginsController : BaseSettingsController
 
         var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
-        var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
+        if (outDto != null)
+        {
+            var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
 
-        outDto.Url = string.Format(urlTemplate, outDto.Name);
+            outDto.Url = string.Format(urlTemplate, outDto.Name);
+        }
 
         return outDto;
     }
