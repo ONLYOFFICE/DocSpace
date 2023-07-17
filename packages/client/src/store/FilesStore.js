@@ -1701,6 +1701,10 @@ class FilesStore {
         "delete",
       ];
 
+      if (!canDownload) {
+        fileOptions = this.removeOptions(fileOptions, ["download"]);
+      }
+
       if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
         fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
       }
@@ -2019,6 +2023,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        folderOptions = this.removeOptions(folderOptions, ["download"]);
+      }
 
       if (!canRenameItem) {
         folderOptions = this.removeOptions(folderOptions, ["rename"]);
