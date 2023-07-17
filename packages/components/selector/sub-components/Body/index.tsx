@@ -125,6 +125,7 @@ const Body = ({
           ? FOOTER_WITH_NEW_NAME_HEIGHT
           : FOOTER_HEIGHT
       }
+      className="selector_body"
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
     >

@@ -78,4 +78,5 @@ export type SelectorProps = {
 
   acceptButtonId?: string;
   cancelButtonId?: string;
+  isChecked?: boolean;
 };

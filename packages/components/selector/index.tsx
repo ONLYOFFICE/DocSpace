@@ -80,6 +80,7 @@ const Selector = ({
   descriptionText,
   acceptButtonId,
   cancelButtonId,
+  isChecked,
 }: SelectorProps) => {
   const [footerVisible, setFooterVisible] = React.useState<boolean>(false);
   const [isSearch, setIsSearch] = React.useState<boolean>(false);
@@ -91,7 +92,7 @@ const Selector = ({
     currentFooterInputValue || ""
   );
   const [isFooterCheckboxChecked, setIsFooterCheckboxChecked] =
-    React.useState<boolean>(false);
+    React.useState<boolean>(isChecked || false);
 
   const [selectedAccess, setSelectedAccess] =
     React.useState<AccessRight | null>(null);
