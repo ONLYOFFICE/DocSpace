@@ -232,16 +232,31 @@ public class EFUserService : IUserService
             .ToListAsync();
     }
 
-    public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, AccountLoginType? accountLoginType, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
+    public IQueryable<UserInfo> GetUsers(
+        int tenant,
+        bool isDocSpaceAdmin,
+        EmployeeStatus? employeeStatus,
+        List<List<Guid>> includeGroups,
+        List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
+        EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
+        string text,
+        string sortBy,
+        bool sortOrderAsc,
+        long limit,
+        long offset,
+        out int total,
+        out int count)
     {
         var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text);
+        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
         total = totalQuery.Count();
 
         var q = GetUserQuery(userDbContext, tenant);
 
-        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text);
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
 
         var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
         q = orderedQuery;
@@ -596,26 +611,61 @@ public class EFUserService : IUserService
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
         EmployeeActivationStatus? activationStatus,
         AccountLoginType? accountLoginType,
         string text)
     {
         q = q.Where(r => !r.Removed);
 
-        if (includeGroups != null && includeGroups.Count > 0)
+        if (includeGroups != null && includeGroups.Count > 0 || excludeGroups != null && excludeGroups.Count > 0)
         {
-            foreach (var ig in includeGroups)
+            if (includeGroups != null && includeGroups.Count > 0)
             {
-                q = q.Where(r => userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
+                foreach (var ig in includeGroups)
+                {
+                    q = q.Where(r => userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
+                }
+            }
+
+            if (excludeGroups != null && excludeGroups.Count > 0)
+            {
+                foreach (var eg in excludeGroups)
+                {
+                    q = q.Where(r => !userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && a.UserGroupId == eg));
+                }
             }
         }
-
-        if (excludeGroups != null && excludeGroups.Count > 0)
+        else if (combinedGroups != null && combinedGroups.Any())
         {
-            foreach (var eg in excludeGroups)
+            Expression<Func<User, bool>> a = r => false;
+
+            foreach (var cg in combinedGroups)
             {
-                q = q.Where(r => !userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && a.UserGroupId == eg));
+                Expression<Func<User, bool>> b = r => true;
+
+                var cgIncludeGroups = cg.Item1;
+                var cgExcludeGroups = cg.Item2;
+                if (cgIncludeGroups != null && cgIncludeGroups.Count > 0)
+                {
+                    foreach (var ig in cgIncludeGroups)
+                    {
+                        b = b.And(r => userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && ig.Any(r => r == a.UserGroupId)));
+                    }
+                }
+
+                if (cgExcludeGroups != null && cgExcludeGroups.Count > 0)
+                {
+                    foreach (var eg in cgExcludeGroups)
+                    {
+                        b = b.And(r => !userDbContext.UserGroups.Any(a => !a.Removed && a.TenantId == r.TenantId && a.Userid == r.Id && a.UserGroupId == eg));
+                    }
+                }
+
+                a = a.Or(b);
             }
+
+            q = q.Where(a);
         }
 
         if (!isDocSpaceAdmin && employeeStatus == null)

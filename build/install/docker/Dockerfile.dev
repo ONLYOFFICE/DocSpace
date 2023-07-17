@@ -306,15 +306,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Ap
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
-## ASC.Webhooks.Service ##
-# FROM dotnetrun AS webhooks-service
-# WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
-
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/service/ .
-
-# CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
-
 ## ASC.Web.Studio ##
 FROM dotnetrun AS studio
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/

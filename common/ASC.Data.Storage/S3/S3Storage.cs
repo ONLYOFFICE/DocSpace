@@ -111,6 +111,11 @@ public class S3Storage : BaseStorage
 
             foreach (var h in headers)
             {
+                if (h.StartsWith(Constants.SecureKeyHeader))
+                {
+                    continue;
+                }
+                
                 if (h.StartsWith("Content-Disposition"))
                 {
                     headersOverrides.ContentDisposition = (h.Substring("Content-Disposition".Length + 1));

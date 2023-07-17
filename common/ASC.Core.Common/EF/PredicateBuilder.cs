@@ -24,17 +24,43 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Security;
-
-[Serializable]
-public class FileShareOptions
+namespace ASC.Core.Common.EF;
+public static class PredicateBuilder
 {
-    public string Title { get; set; }
-    public DateTime ExpirationDate { get; set; }
-    public string Password { get; set; }
-    public bool DenyDownload { get; set; }
-    public bool Disabled { get; set; }
-    
-    [JsonIgnore]
-    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate<DateTime.UtcNow;
+    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
+    {
+
+        var p = a.Parameters[0];
+
+        var visitor = new SubstExpressionVisitor();
+        visitor.Subst[b.Parameters[0]] = p;
+
+        Expression body = Expression.AndAlso(a.Body, visitor.Visit(b.Body));
+        return Expression.Lambda<Func<T, bool>>(body, p);
+    }
+
+    public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> a, Expression<Func<T, bool>> b)
+    {
+        var p = a.Parameters[0];
+
+        var visitor = new SubstExpressionVisitor();
+        visitor.Subst[b.Parameters[0]] = p;
+
+        Expression body = Expression.OrElse(a.Body, visitor.Visit(b.Body));
+        return Expression.Lambda<Func<T, bool>>(body, p);
+    }
+}
+
+internal class SubstExpressionVisitor : ExpressionVisitor
+{
+    internal Dictionary<Expression, Expression> Subst = new Dictionary<Expression, Expression>();
+
+    protected override Expression VisitParameter(ParameterExpression node)
+    {
+        if (Subst.TryGetValue(node, out var newValue))
+        {
+            return newValue;
+        }
+        return node;
+    }
 }
