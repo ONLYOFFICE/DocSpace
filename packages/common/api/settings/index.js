@@ -377,10 +377,10 @@ export function dataReassignment(fromUserIds, toUserId, deleteProfile) {
   });
 }
 
-export function dataReassignmentProgress(id) {
+export function dataReassignmentProgress(ids) {
   return request({
     method: "get",
-    url: `/people/reassign/progress?userId=${id}`,
+    url: `/people/reassign/progress/${ids}`,
   });
 }
 
