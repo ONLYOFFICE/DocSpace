@@ -23,8 +23,14 @@ const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
     z-index: 300;
-    right: 0;
-    direction: ltr;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0;
+          `
+        : css`
+            right: 0;
+          `}
 
     bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
 
