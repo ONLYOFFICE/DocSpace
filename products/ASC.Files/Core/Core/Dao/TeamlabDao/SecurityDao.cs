@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using User = ASC.Core.Common.EF.User;
+
 namespace ASC.Files.Core.Data;
 
 [Scope]
@@ -194,7 +196,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         return InternalGetPureShareRecordsAsync(entry);
     }
-    
+
     public async IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, int offset = 0, int count = -1)
     {
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType) || count == 0)
@@ -208,20 +210,17 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         if (filterType == ShareFilterType.User)
         {
-            q = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, (s, u) => new { s, u })
-                .OrderBy(r => r.u.ActivationStatus)
-                .ThenBy(r => r.s.Share == FileShare.RoomAdmin ? 0 : 
-                    r.s.Share == FileShare.Collaborator ? 1 :
-                    r.s.Share == FileShare.Editing ? 2 :
-                    r.s.Share == FileShare.FillForms ? 3 :
-                    r.s.Share == FileShare.Review ? 4 :
-                    r.s.Share == FileShare.Comment ? 5 :
-                    r.s.Share == FileShare.Read ? 6 : 7)
-                .Select(r => r.s);
+            var predicate = ShareCompareHelper.GetCompareExpression<SecurityUserRecord>(s => s.Security.Share);
+            
+            q = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, (s, u) => new SecurityUserRecord { Security = s, User = u})
+                .OrderBy(s => s.User.ActivationStatus)
+                .ThenBy(predicate)
+                .Select(s => s.Security);
         }
         else
         {
-            q = q.OrderBy(s => s.Share);
+            var predicate = ShareCompareHelper.GetCompareExpression<DbFilesSecurity>(s => s.Share);
+            q = q.OrderBy(predicate);
         }
 
         if (offset > 0)
@@ -557,6 +556,12 @@ internal class SecurityTreeRecord
 {
     public DbFilesSecurity DbFilesSecurity { get; init; }
     public DbFolderTree DbFolderTree { get; init; }
+}
+
+public class SecurityUserRecord
+{
+    public DbFilesSecurity Security { get; init; }
+    public User User { get; init; }
 }
 
 static file class Queries
