@@ -67,7 +67,7 @@ const mobileDropDown = css`
     props.theme.interfaceDirection === "rtl" &&
     css`
       left: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
-      right: 0;
+      right: unset;
     `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
 
@@ -89,13 +89,14 @@ const StyledDropDown = styled(DropDown)`
   width: ${(props) => props.theme.mainButtonMobile.dropDown.width};
   max-width: calc(100vw - 48px);
 
-  right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
   ${(props) =>
-    props.theme.interfaceDirection === "rtl" &&
-    css`
-      left: ${(props) => props.theme.mainButtonMobile.dropDown.right};
-      right: 0;
-    `}
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+        `
+      : css`
+          right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+        `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
 
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
