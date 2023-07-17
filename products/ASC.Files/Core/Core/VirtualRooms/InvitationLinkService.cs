@@ -137,13 +137,13 @@ public class InvitationLinkService
 
         var record = await GetLinkRecordAsync(validationResult.LinkId);
 
-        if (record?.FileShareOptions == null)
+        if (record?.Options == null)
         {
             linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
             return linkData;
         }
 
-        linkData.Result = record.FileShareOptions.ExpirationDate > DateTime.UtcNow ? 
+        linkData.Result = record.Options.ExpirationDate > DateTime.UtcNow ? 
             EmailValidationKeyProvider.ValidationResult.Ok : EmailValidationKeyProvider.ValidationResult.Expired;
         linkData.Share = record.Share;
         linkData.RoomId = record.EntryId.ToString();
