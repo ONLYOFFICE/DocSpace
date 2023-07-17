@@ -1,6 +1,19 @@
 import Text from "@docspace/components/text";
 import styled from "styled-components";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
+import Loader from "@docspace/components/loader";
+import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
+import commonIconsStyles from "@docspace/components/utils/common-icons-style";
+import { Base } from "@docspace/components/themes";
+
+const StyledCheckIcon = styled(CheckIcon)`
+  ${commonIconsStyles}
+  path {
+    fill: rgba(53, 173, 23, 1) !important;
+  }
+`;
+
+StyledCheckIcon.defaultProps = { theme: Base };
 
 const StyledProgress = styled.div`
   display: flex;
@@ -41,8 +54,37 @@ const StyledProgress = styled.div`
     flex-direction: column;
     gap: 4px;
   }
+
+  .in-progress {
+    display: flex;
+    gap: 4px;
+  }
+
+  .all-data-transferred {
+    display: flex;
+    gap: 6px;
+  }
+
+  .check-icon {
+    width: 16px;
+  }
 `;
 const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
+  const inProgressNode = (
+    <div className="in-progress">
+      <Loader size="20px" type="track" />
+      <Text>In progress</Text>
+    </div>
+  );
+
+  const allDataTransferredNode = (
+    <div className="all-data-transferred">
+      <StyledCheckIcon size="medium" />
+      <Text>All data transferred</Text>
+    </div>
+  );
+
+  console.log("percent", percent);
   return (
     <StyledProgress>
       <Text noSelect>
@@ -65,15 +107,16 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
 
         <div className="progress-status">
           <Text noSelect>
-            {percent < 50 ? "In progress" : "All data transferred"}
+            {percent < 50 ? inProgressNode : allDataTransferredNode}
           </Text>
-          <Text noSelect>
-            {percent < 50
-              ? "Pending..."
-              : percent < 100
-              ? "In progress"
-              : "All data transferred"}
-          </Text>
+
+          {percent < 50 ? (
+            <Text noSelect>Pending...</Text>
+          ) : percent < 100 ? (
+            inProgressNode
+          ) : (
+            allDataTransferredNode
+          )}
         </div>
       </div>
 

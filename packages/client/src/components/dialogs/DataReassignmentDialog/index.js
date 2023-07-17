@@ -233,7 +233,7 @@ const DataReassignmentDialog = ({
       .then(() => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
 
-        // timerId = setInterval(() => checkProgress(fromUserIds), 500);
+        timerId = setInterval(() => checkProgress(fromUserIds), 500);
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
