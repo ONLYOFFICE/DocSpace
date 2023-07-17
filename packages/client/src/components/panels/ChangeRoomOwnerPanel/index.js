@@ -6,7 +6,7 @@ import Backdrop from "@docspace/components/backdrop";
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import { withTranslation } from "react-i18next";
 import Filter from "@docspace/common/api/people/filter";
-import { EmployeeType } from "@docspace/common/constants";
+import { EmployeeType, ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
 const StyledChangeRoomOwner = styled.div`
@@ -18,6 +18,20 @@ const StyledChangeRoomOwner = styled.div`
       .arrow-button {
         display: none;
       }
+
+      .selector_body {
+        height: calc(((100% - 16px) - 111px) - 54px);
+      }
+
+      .selector_footer {
+        height: 110px;
+        min-height: 110px;
+        max-height: 110px;
+      }
+
+      .selector_footer-checkbox {
+        padding: 17px 0 1px 0;
+      }
     `}
 `;
 
@@ -28,8 +42,12 @@ const ChangeRoomOwner = (props) => {
     setIsVisible,
     showBackButton,
     setFilesOwner,
-    selection,
+    roomId,
     setFolder,
+    updateRoomMemberRole,
+    userId,
+    isAdmin,
+    setRoomParams,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -47,12 +65,35 @@ const ChangeRoomOwner = (props) => {
     if (e.keyCode === 13 || e.which === 13) onChangeRoomOwner();
   };
 
-  const onChangeRoomOwner = (user) => {
+  const onLeaveRoom = () => {
+    setIsLoading(true);
+    updateRoomMemberRole(roomId, {
+      invitations: [{ id: userId, access: ShareAccessRights.None }],
+    })
+      .then(() => {
+        if (!isAdmin) removeFiles(null, [roomId]);
+        toastr.success(t("Files:YouLeftTheRoomOwner"));
+      })
+      .finally(() => {
+        onClose();
+        setIsLoading(false);
+      });
+  };
+
+  const onChangeRoomOwner = (
+    user,
+    selectedAccess,
+    newFooterInputValue,
+    isChecked
+  ) => {
     setIsLoading(true);
 
-    setFilesOwner([selection[0].id], null, user[0].id)
-      .then((res) => {
+    setFilesOwner([roomId], null, user[0].id)
+      .then(async (res) => {
         setFolder(res[0]);
+        if (isChecked) await onLeaveRoom();
+        else toastr.success(t("Files:YouHaveAppointedNewOwner"));
+        setRoomParams && setRoomParams(res[0].createdBy);
       })
       .finally(() => {
         setIsLoading(false);
@@ -96,26 +137,42 @@ const ChangeRoomOwner = (props) => {
           headerLabel={t("Files:ChangeOfRoomOwner")}
           filter={filter}
           isLoading={isLoading}
+          withFooterCheckbox={!showBackButton}
+          footerCheckboxLabel={t("Files:LeaveTheRoom")}
+          isChecked={!showBackButton}
         />
       </Aside>
     </StyledChangeRoomOwner>
   );
 };
 
-export default inject(({ dialogsStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, filesStore }) => {
   const {
     changeRoomOwnerIsVisible,
     setChangeRoomOwnerIsVisible,
-    showChangeRoomOwnerBackButton,
+    changeRoomOwnerData,
   } = dialogsStore;
-  const { setFilesOwner, selection, bufferSelection, setFolder } = filesStore;
+  const { user } = auth.userStore;
+  const {
+    setFilesOwner,
+    selection,
+    bufferSelection,
+    setFolder,
+    updateRoomMemberRole,
+  } = filesStore;
+
+  const item = selection.length ? selection : [bufferSelection];
 
   return {
     visible: changeRoomOwnerIsVisible,
     setIsVisible: setChangeRoomOwnerIsVisible,
-    showBackButton: showChangeRoomOwnerBackButton,
+    showBackButton: changeRoomOwnerData.showBackButton,
+    setRoomParams: changeRoomOwnerData.setRoomParams,
     setFilesOwner,
-    selection: selection.length ? selection : [bufferSelection],
+    userId: user.id,
+    roomId: item[0].id,
     setFolder,
+    updateRoomMemberRole,
+    isAdmin: user.isOwner || user.isAdmin,
   };
 })(observer(withTranslation(["Files"])(ChangeRoomOwner)));

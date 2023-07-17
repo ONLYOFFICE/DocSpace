@@ -124,5 +124,8 @@
   "ChangeOfRoomOwner": "Change of room Owner",
   "AssignAnOwner": "Assign an Owner",
   "WantLeaveRoom": "Do you really want to leave this room?",
-  "RoomOwner": "Room owner"
+  "RoomOwner": "Room owner",
+  "YouLeftTheRoom": "You left the room",
+  "YouLeftTheRoomOwner": "You left the room and appointed its new owner.",
+  "YouHaveAppointedNewOwner": "You have appointed a new owner."
 }

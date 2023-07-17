@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { ShareAccessRights } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const LeaveRoomDialog = (props) => {
   const {
@@ -13,7 +15,14 @@ const LeaveRoomDialog = (props) => {
     setIsVisible,
     setChangeRoomOwnerIsVisible,
     isOwner,
+    updateRoomMemberRole,
+    roomId,
+    userId,
+    removeFiles,
+    isAdmin,
   } = props;
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     document.addEventListener("keyup", onKeyUp, false);
@@ -29,11 +38,22 @@ const LeaveRoomDialog = (props) => {
   };
 
   const onLeaveRoom = () => {
-    onClose();
     if (isOwner) {
       setChangeRoomOwnerIsVisible(true);
+      onClose();
     } else {
-      console.log("onLeaveRoom");
+      setIsLoading(true);
+      updateRoomMemberRole(roomId, {
+        invitations: [{ id: userId, access: ShareAccessRights.None }],
+      })
+        .then(() => {
+          if (!isAdmin) removeFiles(null, [roomId]);
+          toastr.success(t("Files:YouLeftTheRoom"));
+        })
+        .finally(() => {
+          onClose();
+          setIsLoading(false);
+        });
     }
   };
 
@@ -54,11 +74,12 @@ const LeaveRoomDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={isOwner ? t("Common:Yes") : t("Common:OKButton")}
+          label={isOwner ? t("Files:AssignAnOwner") : t("Common:OKButton")}
           size="normal"
           primary
           scale
           onClick={onLeaveRoom}
+          isDisabled={isLoading}
         />
         <Button
           key="CancelButton"
@@ -66,6 +87,7 @@ const LeaveRoomDialog = (props) => {
           size="normal"
           scale
           onClick={onClose}
+          isDisabled={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
@@ -79,7 +101,8 @@ export default inject(({ auth, dialogsStore, filesStore }) => {
     setChangeRoomOwnerIsVisible,
   } = dialogsStore;
   const { user } = auth.userStore;
-  const { selection, bufferSelection } = filesStore;
+  const { selection, bufferSelection, updateRoomMemberRole, removeFiles } =
+    filesStore;
 
   const selections = selection.length ? selection : [bufferSelection];
   const isRoomOwner = selections[0].createdBy.id === user.id;
@@ -89,5 +112,10 @@ export default inject(({ auth, dialogsStore, filesStore }) => {
     setIsVisible,
     setChangeRoomOwnerIsVisible,
     isOwner: isRoomOwner,
+    updateRoomMemberRole,
+    roomId: selections[0].id,
+    userId: user.id,
+    removeFiles,
+    isAdmin: user.isOwner || user.isAdmin,
   };
 })(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));

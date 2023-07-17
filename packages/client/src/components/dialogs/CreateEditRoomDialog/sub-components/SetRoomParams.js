@@ -100,7 +100,9 @@ const SetRoomParams = ({
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
   const onOwnerChange = () => {
-    setChangeRoomOwnerIsVisible(true, true);
+    setChangeRoomOwnerIsVisible(true, true, (roomOwner) =>
+      setRoomParams({ ...roomParams, roomOwner })
+    );
   };
 
   const isMe = userId === roomParams.roomOwner.id;
@@ -237,7 +239,7 @@ export default inject(({ auth, dialogsStore }) => {
     currentColorScheme,
     setChangeRoomOwnerIsVisible,
     userId: user.id,
-    isAdmin: auth.isAdmin,
+    isAdmin: user.isAdmin || user.isOwner,
   };
 })(
   observer(
