@@ -10,8 +10,6 @@ env:
     REPO: "onlyoffice"
     DOCKER_IMAGE_PREFIX: "4testing-docspace"
     DOCKERFILE: "Dockerfile.app"
-    FILE: "build.yml"
-    STATUS: ""
 
 jobs:
   build:
