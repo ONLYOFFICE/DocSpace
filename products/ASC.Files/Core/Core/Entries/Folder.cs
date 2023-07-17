@@ -46,7 +46,8 @@ public enum FolderType
     ReadOnlyRoom = 18,
     CustomRoom = 19,
     Archive = 20,
-    ThirdpartyBackup = 21
+    ThirdpartyBackup = 21,
+    PublicRoom = 22
 }
 
 public interface IFolder

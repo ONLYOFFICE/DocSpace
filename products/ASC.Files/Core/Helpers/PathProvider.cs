@@ -142,7 +142,7 @@ public class PathProvider
         return uriBuilder.Uri + "?" + query;
     }
 
-    public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
+    public string GetFileStreamUrl<T>(File<T> file, string key = null, string keyName = null, bool lastVersion = false)
     {
         if (file == null)
         {
@@ -162,15 +162,13 @@ public class PathProvider
         }
 
         query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(file.Id.ToString() + version);
-        if (!string.IsNullOrEmpty(doc))
-        {
-            query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
-        }
+
+        query += GetExternalShareKey(keyName, key);
 
         return uriBuilder.Uri + "?" + query;
     }
 
-    public async Task<string> GetFileChangesUrlAsync<T>(File<T> file, string doc = null)
+    public async Task<string> GetFileChangesUrlAsync<T>(File<T> file, string key = null, string keyName = null)
     {
         if (file == null)
         {
@@ -183,10 +181,8 @@ public class PathProvider
         query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.Id.ToString())}&";
         query += $"{FilesLinkUtility.Version}={file.Version}&";
         query += $"{FilesLinkUtility.AuthKey}={await _emailValidationKeyProvider.GetEmailKeyAsync(file.Id + file.Version.ToString(CultureInfo.InvariantCulture))}";
-        if (!string.IsNullOrEmpty(doc))
-        {
-            query += $"&{FilesLinkUtility.DocShareKey}={HttpUtility.UrlEncode(doc)}";
-        }
+        
+        query += GetExternalShareKey(keyName, key);
 
         return $"{uriBuilder.Uri}?{query}";
     }
@@ -228,5 +224,20 @@ public class PathProvider
         query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
         return $"{uriBuilder.Uri}?{query}";
+    }
+    
+    private static string GetExternalShareKey(string keyName, string keyValue)
+    {
+        if (string.IsNullOrEmpty(keyValue))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrEmpty(keyName))
+        {
+            return "&" + keyName + '=' + HttpUtility.UrlEncode(keyValue);
+        }
+
+        return "&" + FilesLinkUtility.DocShareKey + '=' + HttpUtility.UrlEncode(keyValue);
     }
 }
