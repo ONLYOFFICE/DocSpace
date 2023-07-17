@@ -3,9 +3,12 @@ import styled from "styled-components";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledProgress = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
   .description {
     line-height: 20px;
-    padding-bottom: 16px;
   }
 
   .user-name {
@@ -16,15 +19,32 @@ const StyledProgress = styled.div`
     margin: 16px 0;
   }
 
+  .progress-container {
+    display: flex;
+    gap: 16px;
+  }
+
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .progress-section-text {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 16px;
+  }
+
   .progress-status {
     display: flex;
-    align-items: center;
-    gap: 40px;
+    flex-direction: column;
+    gap: 4px;
   }
 `;
 const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
   return (
-    <StyledProgress className="description">
+    <StyledProgress>
       <Text noSelect>
         The process of data reassignment from user
         <span className="user-name"> {fromUser} </span> to user
@@ -33,19 +53,27 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
         has started. Please note that it may take a considerable time.
       </Text>
 
-      <div className="progress-status">
-        <Text noSelect>Rooms</Text>
-        <div>{percent < 50 ? "In progress" : "All data transferred"} </div>
-      </div>
+      <div className="progress-container">
+        <div className="progress-section">
+          <Text className="progress-section-text" noSelect>
+            Rooms
+          </Text>
+          <Text className="progress-section-text" noSelect>
+            Documents
+          </Text>
+        </div>
 
-      <div className="progress-status">
-        <Text noSelect>Documents</Text>
-        <div>
-          {percent < 50
-            ? "Pending..."
-            : percent < 100
-            ? "In progress"
-            : "All data transferred"}
+        <div className="progress-status">
+          <Text noSelect>
+            {percent < 50 ? "In progress" : "All data transferred"}
+          </Text>
+          <Text noSelect>
+            {percent < 50
+              ? "Pending..."
+              : percent < 100
+              ? "In progress"
+              : "All data transferred"}
+          </Text>
         </div>
       </div>
 
