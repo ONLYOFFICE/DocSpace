@@ -22,7 +22,15 @@ const StyledChangeRoomOwner = styled.div`
 `;
 
 const ChangeRoomOwner = (props) => {
-  const { t, visible, setIsVisible, showBackButton } = props;
+  const {
+    t,
+    visible,
+    setIsVisible,
+    showBackButton,
+    setFilesOwner,
+    selection,
+    setFolder,
+  } = props;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,11 +47,17 @@ const ChangeRoomOwner = (props) => {
     if (e.keyCode === 13 || e.which === 13) onChangeRoomOwner();
   };
 
-  const onChangeRoomOwner = () => {
+  const onChangeRoomOwner = (user) => {
     setIsLoading(true);
-    console.log("onChangeRoomOwnerAction");
-    onClose();
-    setIsLoading(false);
+
+    setFilesOwner([selection[0].id], null, user[0].id)
+      .then((res) => {
+        setFolder(res[0]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onClose();
+      });
   };
 
   const onClose = () => {
@@ -88,16 +102,20 @@ const ChangeRoomOwner = (props) => {
   );
 };
 
-export default inject(({ dialogsStore }) => {
+export default inject(({ dialogsStore, filesStore }) => {
   const {
     changeRoomOwnerIsVisible,
     setChangeRoomOwnerIsVisible,
     showChangeRoomOwnerBackButton,
   } = dialogsStore;
+  const { setFilesOwner, selection, bufferSelection, setFolder } = filesStore;
 
   return {
     visible: changeRoomOwnerIsVisible,
     setIsVisible: setChangeRoomOwnerIsVisible,
     showBackButton: showChangeRoomOwnerBackButton,
+    setFilesOwner,
+    selection: selection.length ? selection : [bufferSelection],
+    setFolder,
   };
 })(observer(withTranslation(["Files"])(ChangeRoomOwner)));

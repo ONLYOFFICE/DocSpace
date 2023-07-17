@@ -533,7 +533,11 @@ export function removeShareFiles(fileIds, folderIds) {
 }
 
 export function setFileOwner(folderIds, fileIds, userId) {
-  const data = { folderIds, fileIds, userId };
+  let data = { folderIds, userId };
+  if (fileIds && fileIds.length) {
+    data = { ...data, fileIds };
+  }
+
   return request({
     method: "post",
     url: "/files/owner",
