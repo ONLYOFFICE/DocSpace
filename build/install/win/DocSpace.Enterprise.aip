@@ -340,7 +340,7 @@
     <ROW Dialog_="PrereqLicenseAgreementDlg" Control="BottomLine" Type="Line" X="0" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
     <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Please read the following license agreement carefully" Order="700"/>
     <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Title" Type="Text" X="15" Y="6" Width="289" Height="15" Attributes="196611" Text="End-User License Agreement" TextStyle="[DlgTitleFont]" Order="800"/>
-    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="20" Y="60" Width="330" Height="120" Attributes="7" Text="Resources\License_Redist.rtf" Order="900" TextLocId="-"/>
+    <ROW Dialog_="PrereqLicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="20" Y="60" Width="330" Height="120" Attributes="7" Text="Resources\License_Enterprise_Redist.rtf" Order="900" TextLocId="-"/>
     <ROW Dialog_="PrereqLicenseAgreementDlg" Control="Buttons" Type="RadioButtonGroup" X="20" Y="187" Width="330" Height="40" Attributes="3" Property="Prereq_IAgree" Order="1000"/>
     <ROW Dialog_="PrerequisitesDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" TextLocId="-" MsiKey="PrerequisitesDlg#Back" Options="1"/>
     <ROW Dialog_="PrerequisitesDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400" MsiKey="PrerequisitesDlg#BannerBitmap"/>
