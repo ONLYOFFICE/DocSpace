@@ -457,20 +457,17 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     [HttpGet("rooms/{id}/links")]
     public async IAsyncEnumerable<FileShareDto> GetLinksAsync(T id, LinkType? type)
     {
-        var subjectTypes = type.HasValue
-            ? type.Value switch
+        var filterType = type.HasValue ? type.Value switch 
             {
-                LinkType.Invitation => new[] { SubjectType.InvitationLink },
-                LinkType.External => new[] { SubjectType.ExternalLink },
-                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink }
-            }
-            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink };
+                LinkType.Invitation => ShareFilterType.InvitationLink,
+                LinkType.External => ShareFilterType.ExternalLink,
+                _ => ShareFilterType.Link
+            } 
+            : ShareFilterType.Link;
 
-        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id }, subjectTypes, true);
-
-        foreach (var fileShareDto in fileShares)
+        await foreach (var ace in  _fileStorageService.GetRoomSharedInfoByTypeAsync(id, filterType, 0, 100))
         {
-            yield return await _fileShareDtoHelper.Get(fileShareDto);
+            yield return await _fileShareDtoHelper.Get(ace);
         }
     }
 
