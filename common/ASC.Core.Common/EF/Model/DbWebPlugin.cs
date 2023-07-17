@@ -39,8 +39,13 @@ public class DbWebPlugin : BaseEntity
     public string HomePage {  get; set; }
     public string PluginName { get; set; }
     public string Scopes { get; set; }
+    public string Image { get; set; }
+
+    public Guid CreateBy { get; set; }
+    public DateTime CreateOn { get; set; }
 
     public bool Enabled { get; set; }
+    public bool System { get; set; }
 
     public DbTenant Tenant { get; set; }
 
@@ -113,8 +118,26 @@ public static class WebPluginExtension
                 .HasColumnName("scopes")
                 .HasColumnType("text");
 
+            entity.Property(e => e.Image)
+                .HasColumnName("image")
+                .HasColumnType("varchar(255)");
+
+            entity.Property(e => e.CreateBy)
+                .IsRequired()
+                .HasColumnName("create_by")
+                .HasColumnType("char(36)");
+
+            entity.Property(e => e.CreateOn)
+                .HasColumnName("create_on")
+                .HasColumnType("datetime");
+
             entity.Property(e => e.Enabled)
                 .HasColumnName("enabled")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
+
+            entity.Property(e => e.System)
+                .HasColumnName("system")
                 .HasColumnType("tinyint(1)")
                 .HasDefaultValueSql("'0'");
         });
@@ -166,8 +189,24 @@ public static class WebPluginExtension
             entity.Property(e => e.Scopes)
                 .HasColumnName("scopes");
 
+            entity.Property(e => e.Image)
+                .HasColumnName("image")
+                .HasMaxLength(255);
+
+            entity.Property(e => e.CreateBy)
+                .IsRequired()
+                .HasColumnName("create_by")
+                .HasMaxLength(36)
+                .IsFixedLength();
+
+            entity.Property(e => e.CreateOn)
+                .HasColumnName("create_on");
+
             entity.Property(e => e.Enabled)
                 .HasColumnName("enabled");
+
+            entity.Property(e => e.System)
+                .HasColumnName("system");
         });
     }
 }

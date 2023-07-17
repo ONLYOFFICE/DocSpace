@@ -43,31 +43,41 @@ public class WebPluginManager
     private readonly DbWebPluginService _webPluginService;
     private readonly IConfiguration _configuration;
     private readonly StorageFactory _storageFactory;
+    private readonly AuthContext _authContext;
 
     private readonly bool _webPluginsEnabled;
     private readonly long _webPluginMaxSize;
     private readonly string _webPluginExtension;
+    private readonly List<string> _webPluginAllowedActions;
 
     public WebPluginManager(
         DbWebPluginService webPluginService,
         IConfiguration configuration,
-        StorageFactory storageFactory)
+        StorageFactory storageFactory,
+        AuthContext authContext)
     {
         _webPluginService = webPluginService;
         _configuration = configuration;
         _storageFactory = storageFactory;
+        _authContext = authContext;
 
         _ = bool.TryParse(_configuration["plugins:enabled"], out _webPluginsEnabled);
         _ = long.TryParse(_configuration["plugins:max-size"], out _webPluginMaxSize);
 
         _webPluginExtension = _configuration["plugins:extension"];
+        _webPluginAllowedActions = _configuration.GetSection("plugins:allow").Get<List<string>>() ?? new List<string>();
     }
 
-    private void DemandWebPlugins()
+    private void DemandWebPlugins(string action = null)
     {
         if (!_webPluginsEnabled)
         {
-            throw new SecurityException();
+            throw new SecurityException("Plugins disabled");
+        }
+
+        if (!string.IsNullOrWhiteSpace(action) && !_webPluginAllowedActions.Contains(action))
+        {
+            throw new SecurityException("Forbidden action");
         }
     }
 
@@ -82,7 +92,7 @@ public class WebPluginManager
 
     public async Task<DbWebPlugin> AddWebPluginFromFile(int tenantId, IFormFile file)
     {
-        DemandWebPlugins();
+        DemandWebPlugins("upload");
 
         if (Path.GetExtension(file.FileName)?.ToLowerInvariant() != _webPluginExtension)
         {
@@ -136,7 +146,10 @@ public class WebPluginManager
                 }
 
                 webPlugin.TenantId = tenantId;
+                webPlugin.CreateBy = _authContext.CurrentAccount.ID;
+                webPlugin.CreateOn = DateTime.UtcNow;
                 webPlugin.Enabled = true;
+                webPlugin.System = false;
 
                 webPlugin = await _webPluginService.SaveAsync(webPlugin);
             }
@@ -185,14 +198,24 @@ public class WebPluginManager
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
 
+        if (plugin.System)
+        {
+            throw new SecurityException("System plugin");
+        }
+
         await _webPluginService.UpdateAsync(tenantId, plugin.Id, enabled);
     }
 
     public async Task DeleteWebPluginAsync(int tenantId, int id)
     {
-        DemandWebPlugins();
+        DemandWebPlugins("delete");
 
         var plugin = await _webPluginService.GetByIdAsync(tenantId, id) ?? throw new ItemNotFoundException("Plugin not found");
+
+        if (plugin.System)
+        {
+            throw new SecurityException("System plugin");
+        }
 
         await _webPluginService.DeleteAsync(tenantId, plugin.Id);
 

@@ -39,6 +39,10 @@ public class WebPluginDto: IMapFrom<DbWebPlugin>
     public string HomePage { get; set; }
     public string PluginName { get; set; }
     public string Scopes { get; set; }
+    public string Image { get; set; }
+    public Guid CreateBy { get; set; }
+    public DateTime CreateOn { get; set; }
     public bool Enabled { get; set; }
+    public bool System { get; set; }
     public string Url { get; set; }
 }
