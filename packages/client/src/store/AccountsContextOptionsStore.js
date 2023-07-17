@@ -137,7 +137,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: TrashReactSvgUrl,
             label: t("DeleteProfileEverDialog:DeleteUser"),
-            onClick: () => this.toggleDeleteProfileEverDialog(item),
+            onClick: () => this.toggleDeleteProfileEverDialog([item]),
           };
 
         case "details":
@@ -370,19 +370,10 @@ class AccountsContextOptionsStore {
   toggleDeleteProfileEverDialog = (item) => {
     const { setDialogData, setDeleteProfileDialogVisible, closeDialogs } =
       this.peopleStore.dialogStore;
-    const { id, displayName, userName, avatar, statusType } = item;
 
     closeDialogs();
 
-    setDialogData({
-      id,
-      avatar,
-      displayName,
-      statusType,
-      userName,
-      deleteProfile: true,
-    });
-
+    setDialogData(item);
     setDeleteProfileDialogVisible(true);
   };
 
@@ -393,14 +384,15 @@ class AccountsContextOptionsStore {
 
     closeDialogs();
 
-    setDialogData({
-      id,
-      avatar,
-      displayName,
-      statusType,
-      userName,
-      deleteProfile: false,
-    });
+    setDialogData([
+      {
+        id,
+        avatar,
+        displayName,
+        statusType,
+        userName,
+      },
+    ]);
 
     setDataReassignmentDialogVisible(true);
   };
