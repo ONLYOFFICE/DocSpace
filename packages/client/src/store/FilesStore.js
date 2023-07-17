@@ -2330,7 +2330,11 @@ class FilesStore {
   };
 
   removeFiles = (fileIds, folderIds, showToast) => {
-    const newFilter = this.filter.clone();
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+    const newFilter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
 
     if (newFilter.total <= newFilter.pageCount) {
@@ -2344,7 +2348,7 @@ class FilesStore {
       newFilter.total -= deleteCount;
 
       runInAction(() => {
-        this.setFilter(newFilter);
+        isRooms ? this.setRoomsFilter(newFilter) : this.setFilter(newFilter);
         this.setFiles(files);
         this.setFolders(folders);
         this.setTempActionFilesIds([]);
