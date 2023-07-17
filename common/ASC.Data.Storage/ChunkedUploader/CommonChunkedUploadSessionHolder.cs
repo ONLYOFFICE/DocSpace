@@ -52,7 +52,7 @@ public class CommonChunkedUploadSessionHolder
 
     public async Task StoreAsync(CommonChunkedUploadSession s)
     {
-        using var stream = s.Serialize();
+        await using var stream = s.Serialize();
         await DataStore.SavePrivateAsync(_domain, GetPathWithId(s.Id), stream, s.Expired);
     }
 
@@ -61,24 +61,19 @@ public class CommonChunkedUploadSessionHolder
         await DataStore.DeleteAsync(_domain, GetPathWithId(s.Id));
     }
 
-    public Task<Stream> GetStreamAsync(string sessionId)
+    public async Task<Stream> GetStreamAsync(string sessionId)
     {
-        return DataStore.GetReadStreamAsync(_domain, GetPathWithId(sessionId));
+        return await DataStore.GetReadStreamAsync(_domain, GetPathWithId(sessionId));
     }
 
-    public Task InitAsync(CommonChunkedUploadSession chunkedUploadSession)
+    public async ValueTask InitAsync(CommonChunkedUploadSession chunkedUploadSession)
     {
         if (chunkedUploadSession.BytesTotal < MaxChunkUploadSize && chunkedUploadSession.BytesTotal != -1)
         {
             chunkedUploadSession.UseChunks = false;
-            return Task.CompletedTask;
+            return;
         }
 
-        return internalInitAsync(chunkedUploadSession);
-    }
-
-    private async Task internalInitAsync(CommonChunkedUploadSession chunkedUploadSession)
-    {
         var tempPath = Guid.NewGuid().ToString();
         var uploadId = await DataStore.InitiateChunkedUploadAsync(_domain, tempPath);
 
@@ -141,39 +136,6 @@ public class CommonChunkedUploadSessionHolder
         return Path.GetFileName(tempPath);
     }
 
-    public Stream UploadSingleChunk(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
-    {
-        if (uploadSession.BytesTotal == 0)
-        {
-            uploadSession.BytesTotal = chunkLength;
-        }
-
-        if (uploadSession.BytesTotal >= chunkLength)
-        {
-            //This is hack fixing strange behaviour of plupload in flash mode.
-
-            if (string.IsNullOrEmpty(uploadSession.ChunksBuffer))
-            {
-                uploadSession.ChunksBuffer = _tempPath.GetTempFileName();
-            }
-
-            using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
-            {
-                stream.CopyTo(bufferStream);
-            }
-
-            uploadSession.BytesUploaded += chunkLength;
-
-            if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
-            {
-                return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite,
-                    4096, FileOptions.DeleteOnClose);
-            }
-        }
-
-        return Stream.Null;
-    }
-
     public async Task<Stream> UploadSingleChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
     {
         if (uploadSession.BytesTotal == 0)
@@ -190,7 +152,7 @@ public class CommonChunkedUploadSessionHolder
                 uploadSession.ChunksBuffer = _tempPath.GetTempFileName();
             }
 
-            using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
+            await using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
             {
                 await stream.CopyToAsync(bufferStream);
             }

@@ -66,14 +66,14 @@ public abstract class PrivacyRoomController<T> : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpGet("access/{fileId}")]
-    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(T fileId)
+    public async Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(T fileId)
     {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (!await PrivacyRoomSettings.GetEnabledAsync(_settingsManager))
         {
             throw new SecurityException();
         }
 
-        return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
+        return await _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
     }
 }
 
@@ -111,16 +111,16 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpGet("keys")]
-    public EncryptionKeyPairDto GetKeys()
+    public async Task<EncryptionKeyPairDto> GetKeysAsync()
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (!await PrivacyRoomSettings.GetEnabledAsync(_settingsManager))
         {
             throw new SecurityException();
         }
 
-        return _encryptionKeyPairHelper.GetKeyPair();
+        return await _encryptionKeyPairHelper.GetKeyPairAsync();
     }
 
 
@@ -130,11 +130,11 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [HttpGet("")]
-    public bool PrivacyRoom()
+    public async Task<bool> PrivacyRoomAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        return PrivacyRoomSettings.GetEnabled(_settingsManager);
+        return await PrivacyRoomSettings.GetEnabledAsync(_settingsManager);
     }
 
     /// <summary>
@@ -142,16 +142,16 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [HttpPut("keys")]
-    public object SetKeys(PrivacyRoomRequestDto inDto)
+    public async Task<object> SetKeysAsync(PrivacyRoomRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        if (!await PrivacyRoomSettings.GetEnabledAsync(_settingsManager))
         {
             throw new SecurityException();
         }
 
-        var keyPair = _encryptionKeyPairHelper.GetKeyPair();
+        var keyPair = await _encryptionKeyPairHelper.GetKeyPairAsync();
         if (keyPair != null)
         {
             if (!string.IsNullOrEmpty(keyPair.PublicKey) && !inDto.Update)
@@ -162,7 +162,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
             _logger.InformationUpdateAddress(_authContext.CurrentAccount.ID);
         }
 
-        _encryptionKeyPairHelper.SetKeyPair(inDto.PublicKey, inDto.PrivateKeyEnc);
+        await _encryptionKeyPairHelper.SetKeyPairAsync(inDto.PublicKey, inDto.PrivateKeyEnc);
 
         return new
         {
@@ -177,9 +177,9 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [HttpPut("")]
-    public bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
+    public async Task<bool> SetPrivacyRoomAsync(PrivacyRoomRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (inDto.Enable)
         {
@@ -189,9 +189,9 @@ public class PrivacyRoomControllerCommon : ControllerBase
             }
         }
 
-        PrivacyRoomSettings.SetEnabled(_settingsManager, inDto.Enable);
+        await PrivacyRoomSettings.SetEnabledAsync(_settingsManager, inDto.Enable);
 
-        _messageService.Send(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+        await _messageService.SendAsync(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
         return inDto.Enable;
     }

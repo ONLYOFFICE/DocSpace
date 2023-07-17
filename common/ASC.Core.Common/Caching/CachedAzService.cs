@@ -43,7 +43,7 @@ class AzServiceCache
 
     private void UpdateCache(AzRecord r, bool remove)
     {
-        var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
+        var aces = Cache.Get<AzRecordStore>(GetKey(r.TenantId));
         if (aces != null)
         {
             lock (aces)
@@ -82,13 +82,13 @@ class CachedAzService : IAzService
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 
-    public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
+    public async Task<IEnumerable<AzRecord>> GetAcesAsync(int tenant, DateTime from)
     {
         var key = AzServiceCache.GetKey(tenant);
         var aces = _cache.Get<AzRecordStore>(key);
         if (aces == null)
         {
-            var records = _service.GetAces(tenant, default);
+            var records = await _service.GetAcesAsync(tenant, default);
             aces = new AzRecordStore(records);
             _cache.Insert(key, aces, DateTime.UtcNow.Add(_cacheExpiration));
         }
@@ -96,17 +96,17 @@ class CachedAzService : IAzService
         return aces;
     }
 
-    public AzRecord SaveAce(int tenant, AzRecord r)
+    public async Task<AzRecord> SaveAceAsync(int tenant, AzRecord r)
     {
-        r = _service.SaveAce(tenant, r);
+        r = await _service.SaveAceAsync(tenant, r);
         _cacheNotify.Publish((AzRecordCache)r, CacheNotifyAction.InsertOrUpdate);
 
         return r;
     }
 
-    public void RemoveAce(int tenant, AzRecord r)
+    public async Task RemoveAceAsync(int tenant, AzRecord r)
     {
-        _service.RemoveAce(tenant, r);
+        await _service.RemoveAceAsync(tenant, r);
         _cacheNotify.Publish((AzRecordCache)r, CacheNotifyAction.Remove);
     }
 }

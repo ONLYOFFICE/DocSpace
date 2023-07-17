@@ -140,7 +140,7 @@ public class OnlyoShortener : IUrlShortener
 
         var httpClient = ClientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using var stream = await response.Content.ReadAsStreamAsync();
+        await using var stream = await response.Content.ReadAsStreamAsync();
         using var rs = new StreamReader(stream);
         return CommonLinkUtility.GetFullAbsolutePath(_url + await rs.ReadToEndAsync());
     }
@@ -158,6 +158,6 @@ public class NullShortener : IUrlShortener
 {
     public Task<string> GetShortenLinkAsync(string shareLink)
     {
-        return null;
+        return Task.FromResult<string>(null);
     }
 }

@@ -1,5 +1,4 @@
 {
-  "Authorization": "Autorizace",
   "CodeSubtitle": "Na adresu {{email}} jsme zaslali šestimístný kód. Kód má omezenou dobu platnosti, zadejte jej co nejdříve.",
   "CodeTitle": "Kód vám byl zaslán e-mailem",
   "CookieSettingsTitle": "Trvání relace",

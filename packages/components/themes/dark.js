@@ -238,18 +238,18 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#ED7309",
-    disableBackgroundColor: "#4C3B2D",
-    hoverBackgroundColor: "#FFAD3D",
-    clickBackgroundColor: "#E6842E",
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgba(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgba(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: black,
-    textColorDisabled: black,
+    textColor: white,
+    textColorDisabled: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -1110,8 +1110,8 @@ const Dark = {
     },
 
     icon: {
-      background: grayMain,
-      color: globalColors.lightHover,
+      background: "#242424",
+      color: "#ADADAD",
     },
 
     width: {
@@ -1280,6 +1280,10 @@ const Dark = {
     background: "#3D3D3D",
     disableColor: "#858585",
 
+    icon: {
+      color: "#ADADAD",
+    },
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -1289,6 +1293,7 @@ const Dark = {
 
       title: {
         width: "85%",
+        color: "#000",
       },
     },
 
@@ -1665,7 +1670,7 @@ const Dark = {
       defaultColor: white,
       disabledColor: "#858585",
       color: white,
-      selectedColor: white,
+      // selectedColor: white,
     },
   },
 
@@ -1723,6 +1728,7 @@ const Dark = {
     arrowColor: "#F6F9FC",
     disabledArrow: "#474747",
     weekdayColor: "#858585",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -1869,6 +1875,7 @@ const Dark = {
       width: "100%",
       height: "36px",
       padding: "0 12px",
+      background: "#1b1c1d",
       marginBottom: "16px",
       tablet: {
         height: "44px",
@@ -1946,6 +1953,7 @@ const Dark = {
   navigation: {
     expanderColor: "#eeeeee",
     background: black,
+    rootFolderTitleColor: "#858585",
 
     icon: {
       fill: "#E06A1B",
@@ -2281,6 +2289,13 @@ const Dark = {
 
   selector: {
     border: `1px solid #474747`,
+
+    breadCrumbs: {
+      prevItemColor: "#858585",
+      arrowRightColor: "#858585",
+    },
+
+    bodyDescriptionText: "#858585",
 
     item: {
       hoverBackground: "#3d3d3d",
@@ -2874,6 +2889,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",
@@ -2953,6 +2969,7 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {
@@ -3105,6 +3122,11 @@ const Dark = {
   deepLink: {
     navBackground: "#282828",
     fileTileBackground: "#3D3D3D",
+  },
+
+  emailChips: {
+    borderColor: "#858585",
+    dashedBorder: "1px dashed #fff",
   },
 };
 

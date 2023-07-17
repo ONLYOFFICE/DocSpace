@@ -11,12 +11,11 @@ import FilesView from "SRC_DIR/pages/Home/View/Files";
 import AccountsView from "SRC_DIR/pages/Home/View/Accounts";
 import SettingsView from "SRC_DIR/pages/Home/View/Settings";
 
+import { generalRoutes } from "./general";
+
 const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
-
-const Profile = loadable(() => import("../pages/Profile"));
-const NotificationComponent = loadable(() => import("../pages/Notifications"));
 
 const FormGallery = loadable(() => import("../pages/FormGallery"));
 const About = loadable(() => import("../pages/About"));
@@ -55,6 +54,14 @@ const ClientRoutes = [
             element: (
               <PrivateRoute>
                 <Navigate to="/rooms/shared" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "archived",
+            element: (
+              <PrivateRoute>
+                <Navigate to="/rooms/archived" replace />
               </PrivateRoute>
             ),
           },
@@ -182,12 +189,12 @@ const ClientRoutes = [
             path: "settings",
             element: (
               <PrivateRoute withCollaborator restricted>
-                <Navigate to="/settings/common" replace />
+                <Navigate to="/settings/personal" replace />
               </PrivateRoute>
             ),
           },
           {
-            path: "settings/common",
+            path: "settings/personal",
             element: (
               <PrivateRoute withCollaborator restricted>
                 <SettingsView />
@@ -195,7 +202,7 @@ const ClientRoutes = [
             ),
           },
           {
-            path: "settings/admin",
+            path: "settings/general",
             element: (
               <PrivateRoute withCollaborator restricted>
                 <SettingsView />
@@ -205,22 +212,7 @@ const ClientRoutes = [
         ],
       },
 
-      {
-        path: "accounts/view/@self",
-        element: (
-          <PrivateRoute>
-            <Profile />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "accounts/view/@self/notification",
-        element: (
-          <PrivateRoute>
-            <NotificationComponent />
-          </PrivateRoute>
-        ),
-      },
+      ...generalRoutes,
     ],
   },
   {

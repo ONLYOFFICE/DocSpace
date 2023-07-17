@@ -56,42 +56,42 @@ public class TariffSettings : ISettings<TariffSettings>
         get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
     }
 
-    public static bool GetHideNotify(SettingsManager settingsManager)
+    public static async Task<bool> GetHideNotifyAsync(SettingsManager settingsManager)
     {
-        return settingsManager.LoadForCurrentUser<TariffSettings>().HideNotifySetting;
+        return (await settingsManager.LoadForCurrentUserAsync<TariffSettings>()).HideNotifySetting;
     }
 
-    public static void SetHideNotify(SettingsManager settingsManager, bool newVal)
+    public static async Task SetHideNotifyAsync(SettingsManager settingsManager, bool newVal)
     {
-        var tariffSettings = settingsManager.LoadForCurrentUser<TariffSettings>();
+        var tariffSettings = await settingsManager.LoadForCurrentUserAsync<TariffSettings>();
         tariffSettings.HideNotifySetting = newVal;
-        settingsManager.SaveForCurrentUser(tariffSettings);
+        await settingsManager.SaveForCurrentUserAsync(tariffSettings);
     }
 
-    public static bool GetHidePricingPage(SettingsManager settingsManager)
+    public static async Task<bool> GetHidePricingPageAsync(SettingsManager settingsManager)
     {
-        return settingsManager.Load<TariffSettings>().HidePricingPageForUsers;
+        return (await settingsManager.LoadAsync<TariffSettings>()).HidePricingPageForUsers;
     }
 
-    public static void SetHidePricingPage(SettingsManager settingsManager, bool newVal)
+    public static async Task SetHidePricingPageAsync(SettingsManager settingsManager, bool newVal)
     {
-        var tariffSettings = settingsManager.Load<TariffSettings>();
+        var tariffSettings = await settingsManager.LoadAsync<TariffSettings>();
         tariffSettings.HidePricingPageForUsers = newVal;
-        settingsManager.Save(tariffSettings);
+        await settingsManager.SaveAsync(tariffSettings);
     }
 
-    public static bool GetLicenseAccept(SettingsManager settingsManager)
+    public static async Task<bool> GetLicenseAcceptAsync(SettingsManager settingsManager)
     {
-        return !DateTime.MinValue.ToString(_cultureInfo).Equals(settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting);
+        return !DateTime.MinValue.ToString(_cultureInfo).Equals((await settingsManager.LoadForDefaultTenantAsync<TariffSettings>()).LicenseAcceptSetting);
     }
 
-    public static void SetLicenseAccept(SettingsManager settingsManager)
+    public static async Task SetLicenseAcceptAsync(SettingsManager settingsManager)
     {
-        var tariffSettings = settingsManager.LoadForDefaultTenant<TariffSettings>();
+        var tariffSettings = await settingsManager.LoadForDefaultTenantAsync<TariffSettings>();
         if (DateTime.MinValue.ToString(_cultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
         {
             tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(_cultureInfo);
-            settingsManager.SaveForDefaultTenant(tariffSettings);
+            await settingsManager.SaveForDefaultTenantAsync(tariffSettings);
         }
     }
 }

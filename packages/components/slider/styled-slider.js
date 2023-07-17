@@ -1,9 +1,8 @@
 import styled, { css } from "styled-components";
 import { Base } from "../themes";
 
-const StyledSlider = styled.input.attrs((props) => ({
+const StyledSlider = styled.input.attrs(() => ({
   type: "range",
-  readOnly: props.isReadOnly,
 }))`
   width: ${(props) => props.theme.avatarEditorBody.slider.width};
   margin: ${(props) => props.theme.avatarEditorBody.slider.margin};

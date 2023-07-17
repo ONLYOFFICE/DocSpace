@@ -109,7 +109,7 @@ public class FilesSettings : ISettings<FilesSettings>
             HideTemplatesSetting = false,
             DownloadTarGzSetting = false,
             AutomaticallyCleanUpSetting = null,
-            DefaultSharingAccessRightsSetting = null
+            DefaultSharingAccessRightsSetting = null,
         };
     }
 
@@ -125,19 +125,23 @@ public class FilesSettingsHelper
     private readonly SetupInfo _setupInfo;
     private readonly FileUtility _fileUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly AuthContext _authContext;
+    private static readonly FilesSettings _emptySettings = new();
 
     public FilesSettingsHelper(
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         FileUtility fileUtility,
-        FilesLinkUtility filesLinkUtility)
+        FilesLinkUtility filesLinkUtility, 
+        AuthContext authContext)
     {
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
         _fileUtility = fileUtility;
         _filesLinkUtility = filesLinkUtility;
+        _authContext = authContext;
     }
 
     public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
@@ -152,7 +156,7 @@ public class FilesSettingsHelper
     public List<string> ExtsWebTemplate => _fileUtility.ExtsWebTemplate;
     public List<string> ExtsCoAuthoring => _fileUtility.ExtsCoAuthoring;
     public List<string> ExtsMustConvert => _fileUtility.ExtsMustConvert;
-    public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.ExtsConvertible;
+    public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.GetExtsConvertible();
     public List<string> ExtsUploadable => _fileUtility.ExtsUploadable;
     public List<string> ExtsArchive => FileUtility.ExtsArchive;
     public List<string> ExtsVideo => FileUtility.ExtsVideo;
@@ -458,21 +462,31 @@ public class FilesSettingsHelper
 
     private FilesSettings Load()
     {
-        return _settingsManager.Load<FilesSettings>();
+        return !_authContext.IsAuthenticated ? _emptySettings : _settingsManager.Load<FilesSettings>();
     }
 
     private void Save(FilesSettings settings)
     {
+        if (!_authContext.IsAuthenticated)
+        {
+            return;
+        }
+        
         _settingsManager.Save(settings);
     }
 
     private FilesSettings LoadForCurrentUser()
     {
-        return _settingsManager.LoadForCurrentUser<FilesSettings>();
+        return !_authContext.IsAuthenticated ? _emptySettings : _settingsManager.LoadForCurrentUser<FilesSettings>();
     }
 
     private void SaveForCurrentUser(FilesSettings settings)
     {
+        if (!_authContext.IsAuthenticated)
+        {
+            return;
+        }
+        
         _settingsManager.SaveForCurrentUser(settings);
     }
 }

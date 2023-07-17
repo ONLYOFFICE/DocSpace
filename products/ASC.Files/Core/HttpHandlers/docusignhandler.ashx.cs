@@ -34,7 +34,7 @@ public class DocuSignHandler
 
     public async Task Invoke(HttpContext context, DocuSignHandlerService docuSignHandlerService)
     {
-        await docuSignHandlerService.Invoke(context);
+        await docuSignHandlerService.InvokeAsync(context);
     }
 }
 
@@ -66,9 +66,9 @@ public class DocuSignHandlerService
         _log = logger;
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
-        if (_tenantExtra.IsNotPaid())
+        if (await _tenantExtra.IsNotPaidAsync())
         {
             context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
             await context.Response.WriteAsync("Payment Required.");
@@ -146,7 +146,7 @@ public class DocuSignHandlerService
 
             var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + XmlPrefix + ":CustomField[" + XmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
             var userIdString = GetSingleNode(customFieldUserIdNode, "Value", mgr).InnerText;
-            Auth(userIdString);
+            await AuthAsync(userIdString);
 
             switch (status)
             {
@@ -180,7 +180,7 @@ public class DocuSignHandlerService
 
                             var file = await _docuSignHelper.SaveDocumentAsync(envelopeId, documentId, documentName, folderId);
 
-                            _notifyClient.SendDocuSignComplete(file, sourceTitle ?? documentName);
+                            await _notifyClient.SendDocuSignCompleteAsync(file, sourceTitle ?? documentName);
                         }
                         catch (Exception ex)
                         {
@@ -193,7 +193,7 @@ public class DocuSignHandlerService
                     var statusFromResource = status == DocuSignStatus.Declined
                                                  ? FilesCommonResource.DocuSignStatusDeclined
                                                  : FilesCommonResource.DocuSignStatusVoided;
-                    _notifyClient.SendDocuSignStatus(subject, statusFromResource);
+                    await _notifyClient.SendDocuSignStatusAsync(subject, statusFromResource);
                     break;
             }
         }
@@ -205,14 +205,14 @@ public class DocuSignHandlerService
         }
     }
 
-    private void Auth(string userIdString)
+    private async Task AuthAsync(string userIdString)
     {
         if (!Guid.TryParse(userIdString ?? "", out var userId))
         {
             throw new Exception("DocuSign incorrect User ID: " + userIdString);
         }
 
-        _securityContext.AuthenticateMeWithoutCookie(userId);
+        await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
     }
 
     private static XmlNode GetSingleNode(XmlNode node, string xpath, XmlNamespaceManager mgr, bool canMiss = false)

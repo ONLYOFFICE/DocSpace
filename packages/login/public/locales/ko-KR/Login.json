@@ -1,5 +1,4 @@
 {
-  "Authorization": "승인",
   "CodeSubtitle": "{{email}} 이메일 주소로 6자리 코드를 전송해 드렸습니다. 이 코드는 한정 시간 동안 유효하므로, 최대한 빨리 입력하시기 바랍니다.",
   "CodeTitle": "코드가 이메일로 전송되었습니다",
   "CookieSettingsTitle": "세션 기간",

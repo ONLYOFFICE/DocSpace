@@ -1,6 +1,17 @@
 import React from "react";
 import TabContainer from "./";
 
+export default {
+  title: "Components/TabContainer",
+  component: TabContainer,
+  parameters: {
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=638-4439&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
+  },
+};
+
 const arrayItems = [
   {
     key: "tab0",

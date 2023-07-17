@@ -64,10 +64,41 @@ public abstract class BaseStartup
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddCustomHealthCheck(_configuration);        
+        services.AddCustomHealthCheck(_configuration);
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
+
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.ForwardLimit = null;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+
+            var knownProxies = _configuration.GetSection("core:hosting:forwardedHeadersOptions:knownProxies").Get<List<String>>();
+            var knownNetworks = _configuration.GetSection("core:hosting:forwardedHeadersOptions:knownNetworks").Get<List<String>>();
+
+            if (knownProxies != null && knownProxies.Count > 0)
+            {
+                foreach (var knownProxy in knownProxies)
+                {
+                    options.KnownProxies.Add(IPAddress.Parse(knownProxy));
+                }
+            }
+
+
+            if (knownNetworks != null && knownNetworks.Count > 0)
+            {
+                foreach (var knownNetwork in knownNetworks)
+                {
+                    var prefix = IPAddress.Parse(knownNetwork.Split("/")[0]);
+                    var prefixLength = Convert.ToInt32(knownNetwork.Split("/")[1]);
+
+                    options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
+                }
+            }
+        });
 
         services.AddScoped<EFLoggerFactory>();
 
@@ -107,9 +138,7 @@ public abstract class BaseStartup
                 }
             };
 
-        services.AddControllers()
-            .AddXmlSerializerFormatters()
-            .AddJsonOptions(jsonOptions);
+        services.AddControllers().AddJsonOptions(jsonOptions);
 
         services.AddSingleton(jsonOptions);
 
@@ -172,11 +201,6 @@ public abstract class BaseStartup
             config.Filters.Add(new CustomResponseFilterAttribute());
             config.Filters.Add(new CustomExceptionFilterAttribute());
             config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
-
-
-            config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
-            config.OutputFormatters.Add(new XmlOutputFormatter());
         });
 
         var authBuilder = services.AddAuthentication(options =>
@@ -198,7 +222,7 @@ public abstract class BaseStartup
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = ctx =>
+                    OnTokenValidated = async ctx =>
                     {
                         using var scope = ctx.HttpContext.RequestServices.CreateScope();
 
@@ -213,9 +237,7 @@ public abstract class BaseStartup
 
                         var userId = new Guid(claimUserId);
 
-                        securityContext.AuthenticateMeWithoutCookie(userId, ctx.Principal.Claims.ToList());
-
-                        return Task.CompletedTask;
+                        await securityContext.AuthenticateMeWithoutCookieAsync(userId, ctx.Principal.Claims.ToList());
                     }
                 };
             })
@@ -270,10 +292,7 @@ public abstract class BaseStartup
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
+        app.UseForwardedHeaders();
 
         app.UseRouting();
 
@@ -286,6 +305,8 @@ public abstract class BaseStartup
         {
             app.UseSession();
         }
+
+        app.UseSynchronizationContextMiddleware();
 
         app.UseAuthentication();
 

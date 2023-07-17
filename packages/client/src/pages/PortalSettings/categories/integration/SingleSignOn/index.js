@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { isMobile } from "react-device-detect";
+import React, { useEffect, useState } from "react";
+import { isMobile, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -23,10 +23,31 @@ const SP_METADATA = "spMetadata";
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   useEffect(() => {
     load();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => window.removeEventListener("resize", onCheckView);
   }, []);
+
+  const onCheckView = () => {
+    if (isDesktop && window.innerWidth < 795) {
+      setIsSmallWindow(true);
+    } else {
+      setIsSmallWindow(false);
+    }
+  };
+
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning
+        sectionName={t("Settings:SingleSignOn")}
+        isSmallWindow
+      />
+    );
 
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
@@ -40,6 +61,7 @@ const SingleSignOn = (props) => {
       <ToggleSSO isSSOAvailable={isSSOAvailable} />
 
       <HideButton
+        id="sp-settings-hide-button"
         text={t("ServiceProviderSettings")}
         label={SERVICE_PROVIDER_SETTINGS}
         value={serviceProviderSettings}
@@ -61,6 +83,7 @@ const SingleSignOn = (props) => {
       <StyledSettingsSeparator />
 
       <HideButton
+        id="sp-metadata-hide-button"
         text={t("SpMetadata")}
         label={SP_METADATA}
         value={spMetadata}

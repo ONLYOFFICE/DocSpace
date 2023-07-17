@@ -28,7 +28,7 @@
       return;
     }
 
-    if (!session.user) {
+    if (!session.user && !session.anonymous) {
       logger.error("invalid session: unknown user");
       return;
     }
@@ -45,14 +45,18 @@
       return `${tenantId}-${roomPart}`;
     };
 
-    logger.info(
-      `connect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}'`
-    );
+    const connectMessage = !session.anonymous ? 
+      `connect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}'` : 
+      `connect anonymous user by share key on tenant='${tenantId}' socketId='${socket.id}'`;
+
+    logger.info(connectMessage);
 
     socket.on("disconnect", (reason) => {
-      logger.info(
-        `disconnect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}`
-      );
+      const disconnectMessage = !session.anonymous ? 
+        `disconnect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}` :
+        `disconnect anonymous user by share key on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}`;
+
+      logger.info(disconnectMessage)
     });
 
     socket.on("subscribe", ({ roomParts, individual }) => {
@@ -80,7 +84,7 @@
 
       changeFunc(roomParts);
 
-      if (individual) {
+      if (individual && !session.anonymous) {
         if (Array.isArray(roomParts)) {
           changeFunc(roomParts.map((p) => `${p}-${userId}`));
         } else {

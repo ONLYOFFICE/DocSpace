@@ -31,6 +31,8 @@ public class DbFilesProperties : BaseEntity
     public string EntryId { get; set; }
     public string Data { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { TenantId, EntryId };
@@ -41,6 +43,8 @@ public static class DbFilesPropertiesExtension
 {
     public static ModelBuilderWrapper AddDbFilesProperties(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFilesProperties>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlDbFilesProperties, Provider.MySql)
             .Add(PgSqlDbFilesProperties, Provider.PostgreSql);

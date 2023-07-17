@@ -26,8 +26,8 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
-
-import queryString from "query-string";
+import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
+import { IndexedDBStores } from "@docspace/common/constants";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -49,6 +49,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    userId,
   } = rest;
 
   useEffect(() => {
@@ -194,7 +195,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
-      clickAction: () => {
+      onAction: () => {
         setMaintenanceExist(false);
         setSnackbarExist(false);
         Snackbar.close();
@@ -254,6 +255,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         console.error(err);
       });
   };
+
+  const initIndexedDb = React.useCallback(async () => {
+    await indexedDbHelper.init(userId, [IndexedDBStores.images]);
+  }, [userId]);
+
+  useEffect(() => {
+    if (!userId || !window.DocSpaceConfig.imageThumbnails) return;
+    initIndexedDb();
+
+    return () => {
+      indexedDbHelper.deleteDatabase(userId);
+    };
+  }, [userId, initIndexedDb]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -325,7 +339,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       {toast}
       <ReactSmartBanner t={t} ready={ready} />
-      {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+      {isEditor ? <></> : <NavMenu />}
       {isMobileOnly && <MainBar />}
       <IndicatorLoader />
       <ScrollToTop />
@@ -389,14 +403,22 @@ const ShellWrapper = inject(({ auth, backup }) => {
         ? "Dark"
         : "Base"
       : auth?.userStore?.user?.theme,
+    userId: auth?.userStore?.user?.id,
     whiteLabelLogoUrls,
   };
 })(observer(Shell));
 
-const ThemeProviderWrapper = inject(({ auth }) => {
+const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
   const { settingsStore } = auth;
+  let currentColorScheme = false;
 
-  return { theme: settingsStore.theme };
+  if (loginStore) {
+    currentColorScheme = loginStore.currentColorScheme;
+  } else if (auth) {
+    currentColorScheme = settingsStore.currentColorScheme || false;
+  }
+
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default () => (

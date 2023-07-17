@@ -44,7 +44,9 @@ public static class UserPhotoThumbnailManager
 
         var resultBitmaps = new List<ThumbnailItem>();
 
-        using var img = thumbnailsData.MainImgBitmap(out var format);
+        (var mainImg, var format) = await thumbnailsData.MainImgBitmapAsync();
+
+        using var img = mainImg;
 
         if (img == null)
         {
@@ -63,9 +65,9 @@ public static class UserPhotoThumbnailManager
             resultBitmaps.Add(thumbnail);
         }
 
-        await thumbnailsData.Save(resultBitmaps);
+        await thumbnailsData.SaveAsync(resultBitmaps);
 
-        settingsManager.Save(thumbnailSettings, userId);
+        await settingsManager.SaveAsync(thumbnailSettings, userId);
 
         return await thumbnailsData.ThumbnailList();
     }
@@ -209,11 +211,10 @@ public class ThumbnailsData
         _userPhotoManager = userPhotoManager;
     }
 
-    public Image MainImgBitmap(out IImageFormat format)
+    public async Task<(Image, IImageFormat)> MainImgBitmapAsync()
     {
-        var img = _userPhotoManager.GetPhotoImage(_userId, out var imageFormat);
-        format = imageFormat;
-        return img;
+        (var img, var imageFormat) = await _userPhotoManager.GetPhotoImageAsync(_userId);
+        return (img, imageFormat);
     }
 
     public async Task<List<ThumbnailItem>> ThumbnailList()
@@ -248,11 +249,12 @@ public class ThumbnailsData
             };
     }
 
-    public async Task Save(List<ThumbnailItem> bitmaps)
+    public async Task SaveAsync(List<ThumbnailItem> bitmaps)
     {
         foreach (var item in bitmaps)
         {
-            using var mainImgBitmap = MainImgBitmap(out var format);
+            (var mainImgBitmap, var format) = await MainImgBitmapAsync();
+            using var mainImg = mainImgBitmap;
             await _userPhotoManager.SaveThumbnail(_userId, item.Image, format);
         }
     }

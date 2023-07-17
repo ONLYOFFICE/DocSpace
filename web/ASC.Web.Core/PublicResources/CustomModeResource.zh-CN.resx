@@ -62,6 +62,36 @@
     <value>具备普通用户的操作权限|在“公用文档”区中链结Dropbox、Box.net等第三方云储存服务中的文档资源|为“公用文档”区中文档和文件夹设置访问权限</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
-    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源。</value>
+    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>尊敬的$UserName!，
+
+欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+* 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
+
+* *处理不同格式的文件*：文本文档、电子表格、演示文稿、数字表单、PDF、电子书、多媒体文件等。
+
+* *协作处理文档* 两种共同编辑模式可用：实时或段落锁定。可以跟踪变更，使用内置聊天工具或通过音频和视频通话实时交流。
+
+* *连接任意云存储* 工作中无需在应用之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/"，或询问我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>想更改云办公帐号的密码吗？请点击下方按钮确认。
+
+$GreenButton
+
+该链接的有效期为 7 天。
+ 
+不想更改密码？请忽略此消息。</value>
   </data>
 </root>

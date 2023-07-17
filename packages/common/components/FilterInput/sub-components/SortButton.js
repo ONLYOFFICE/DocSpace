@@ -98,7 +98,7 @@ const StyledSortButton = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-between;
-
+        gap: 12px;
         min-width: 200px;
 
         svg {
@@ -107,7 +107,8 @@ const StyledSortButton = styled.div`
         }
 
         .option-item__icon {
-          display: none;
+          display: flex;
+          visibility: hidden;
           cursor: pointer;
           ${(props) =>
             props.isDesc &&
@@ -122,7 +123,7 @@ const StyledSortButton = styled.div`
 
         :hover {
           .option-item__icon {
-            display: flex;
+            visibility: visible;
           }
         }
       }
@@ -132,7 +133,7 @@ const StyledSortButton = styled.div`
         cursor: auto;
 
         .selected-option-item__icon {
-          display: flex;
+          visibility: visible;
         }
       }
     }
@@ -316,7 +317,7 @@ const SortButton = ({
       >
         <ComboBox
           opened={isOpen}
-          toggleAction={toggleCombobox}
+          onToggle={toggleCombobox}
           className={"sort-combo-box"}
           options={[]}
           selectedOption={{}}

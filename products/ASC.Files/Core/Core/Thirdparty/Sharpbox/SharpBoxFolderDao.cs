@@ -126,8 +126,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -161,8 +161,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 
@@ -239,45 +239,31 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         var folder = GetFolderById(folderId);
         var id = MakeId(folder);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-               .Where(r => r.Id.StartsWith(id))
-               .Select(r => r.HashId)
-               .ToListAsync()
-               ;
-
-                var link = await Query(filesDbContext.TagLink)
-                .Where(r => hashIDs.Any(h => h == r.EntryId))
-                .ToListAsync()
-                ;
+                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
 
                 filesDbContext.TagLink.RemoveRange(link);
                 await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in filesDbContext.Tag
-                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
+                var tagsToRemove = await Queries.TagsAsync(filesDbContext).ToListAsync();
 
-                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var securityToDelete = Query(filesDbContext.Security)
-                .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
-                .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await filesDbContext.SaveChangesAsync();
 
                 await tx.CommitAsync();
@@ -511,11 +497,54 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             string folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return null;
+        return Task.FromResult<IDataWriteOperator>(null);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> TagLinksAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> TagsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                from ft in ctx.Tag
+                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                {
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
+                }
+                where ftl == null
+                select ft);
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync =
+            EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, string idStart) =>
+                    ctx.ThirdpartyIdMapping
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart)));
 }

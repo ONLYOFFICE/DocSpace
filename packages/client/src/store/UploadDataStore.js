@@ -390,11 +390,8 @@ class UploadDataStore {
   };
 
   startConversion = async (t, isOpen = false) => {
-    const {
-      isRecentFolder,
-      isFavoritesFolder,
-      isShareFolder,
-    } = this.treeFoldersStore;
+    const { isRecentFolder, isFavoritesFolder, isShareFolder } =
+      this.treeFoldersStore;
 
     if (!this.converted) return;
 
@@ -777,14 +774,8 @@ class UploadDataStore {
   };
 
   refreshFiles = async (currentFile) => {
-    const {
-      files,
-      setFiles,
-      folders,
-      setFolders,
-      filter,
-      setFilter,
-    } = this.filesStore;
+    const { files, setFiles, folders, setFolders, filter, setFilter } =
+      this.filesStore;
 
     const { withPaging } = this.authStore.settingsStore;
 
@@ -1335,10 +1326,8 @@ class UploadDataStore {
     deleteAfter,
     operationId
   ) => {
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.secondaryProgressDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      this.secondaryProgressDataStore;
 
     return copyToFolder(
       destFolderId,
@@ -1389,10 +1378,9 @@ class UploadDataStore {
     deleteAfter,
     operationId
   ) => {
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = this.secondaryProgressDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      this.secondaryProgressDataStore;
+    const { refreshFiles, setMovingInProgress } = this.filesStore;
 
     return moveToFolder(
       destFolderId,
@@ -1432,6 +1420,9 @@ class UploadDataStore {
         this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return Promise.reject(err);
+      })
+      .finally(() => {
+        refreshFiles().then(() => setMovingInProgress(false));
       });
   };
 
@@ -1493,10 +1484,8 @@ class UploadDataStore {
   };
 
   loopFilesOperations = async (data, pbData, isDownloadAction) => {
-    const {
-      clearSecondaryProgressData,
-      setSecondaryProgressBarData,
-    } = this.secondaryProgressDataStore;
+    const { clearSecondaryProgressData, setSecondaryProgressBarData } =
+      this.secondaryProgressDataStore;
 
     const label = this.secondaryProgressDataStore.label;
     let progress = data.progress;
@@ -1543,11 +1532,8 @@ class UploadDataStore {
       removeFiles,
     } = this.filesStore;
 
-    const {
-      clearSecondaryProgressData,
-      setSecondaryProgressBarData,
-      label,
-    } = this.secondaryProgressDataStore;
+    const { clearSecondaryProgressData, setSecondaryProgressBarData, label } =
+      this.secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
     let receivedFolder = destFolderId;
@@ -1625,12 +1611,8 @@ class UploadDataStore {
   };
 
   clearActiveOperations = (fileIds = [], folderIds = []) => {
-    const {
-      activeFiles,
-      activeFolders,
-      setActiveFiles,
-      setActiveFolders,
-    } = this.filesStore;
+    const { activeFiles, activeFolders, setActiveFiles, setActiveFolders } =
+      this.filesStore;
 
     const newActiveFiles = activeFiles.filter((el) => !fileIds?.includes(el));
     const newActiveFolders = activeFolders.filter(

@@ -4,12 +4,12 @@ import { ReactSVG } from "react-svg";
 import Text from "../text";
 import { GroupMainButton } from "./styled-main-button";
 import ContextMenu from "../context-menu";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
 
 const MainButton = (props) => {
-  const { text, model, isDropdown, isDisabled, clickAction } = props;
+  const { text, model, isDropdown, isDisabled, onAction } = props;
   const { id, ...rest } = props;
 
   const ref = useRef();
@@ -32,7 +32,7 @@ const MainButton = (props) => {
   const onMainButtonClick = (e) => {
     if (!isDisabled) {
       if (!isDropdown) {
-        clickAction && clickAction(e);
+        onAction && onAction(e);
       } else {
         toggle(e, !isOpen);
       }
@@ -79,9 +79,7 @@ MainButton.propTypes = {
   /** Activates a drop-down list for MainButton */
   isDropdown: PropTypes.bool,
   /** Sets a callback function that is triggered when the button is clicked */
-  clickAction: PropTypes.func,
-  /** Sets a callback function that is triggered when the secondary button is clicked   */
-  clickActionSecondary: PropTypes.func,
+  onAction: PropTypes.func,
   /** Opens DropDown */
   opened: PropTypes.bool, //TODO: Make us whole
   /** Accepts class */

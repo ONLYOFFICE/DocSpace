@@ -241,10 +241,10 @@ const Base = {
   },
 
   mainButton: {
-    backgroundColor: orangeMain,
-    disableBackgroundColor: orangeDisabled,
-    hoverBackgroundColor: orangeHover,
-    clickBackgroundColor: orangePressed,
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgba(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgba(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
@@ -1119,8 +1119,8 @@ const Base = {
     },
 
     icon: {
-      background: lightHover,
-      color: grayMain,
+      background: "#ECEEF1",
+      color: "#A3A9AE",
     },
 
     width: {
@@ -1300,6 +1300,9 @@ const Base = {
       title: {
         width: "85%",
       },
+    },
+    icon: {
+      color: grayMain,
     },
 
     draggable: {
@@ -1728,6 +1731,7 @@ const Base = {
     arrowColor: "#555f65",
     disabledArrow: "#A3A9AE",
     weekdayColor: "#A3A9AE",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -1876,6 +1880,7 @@ const Base = {
       height: "36px",
       padding: "0 12px",
       marginBottom: "16px",
+      background: "#fff",
       tablet: {
         height: "44px",
         padding: "0 12px",
@@ -1952,6 +1957,7 @@ const Base = {
   navigation: {
     expanderColor: black,
     background: white,
+    rootFolderTitleColor: "#A3A9AE",
 
     icon: {
       fill: "#316DAA",
@@ -2279,6 +2285,13 @@ const Base = {
 
   selector: {
     border: `1px solid ${grayLightMid}`,
+
+    breadCrumbs: {
+      prevItemColor: "#A3A9AE",
+      arrowRightColor: "#A3A9AE",
+    },
+
+    bodyDescriptionText: "#A3A9AE",
 
     item: {
       hoverBackground: grayLight,
@@ -2870,6 +2883,7 @@ const Base = {
 
     settings: {
       iconFill: black,
+      trashIcon: "#A3A9AE",
       article: {
         titleColor: grayMain,
         fillIcon: "dimgray",
@@ -2949,6 +2963,7 @@ const Base = {
         separatorBorder: "1px solid #eceef1",
         warningColor: "#f21c0e",
         textColor: "#A3A9AE",
+        backupCheckedListItemBackground: "#F3F4F4",
       },
 
       payment: {
@@ -3103,6 +3118,11 @@ const Base = {
   deepLink: {
     navBackground: "#f8f9f9",
     fileTileBackground: "#f3f4f4",
+  },
+
+  emailChips: {
+    borderColor: "#A3A9AE",
+    dashedBorder: "1px dashed #5299E0",
   },
 };
 

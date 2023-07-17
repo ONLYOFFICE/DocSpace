@@ -36,17 +36,17 @@ public class DbRadicale
         _dbContextFactory = dbContextFactory;
     }
 
-    public void SaveCardDavUser(int tenant, Guid id)
+    public async Task SaveCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(userDbContext.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
-        userDbContext.SaveChanges();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        await userDbContext.AddOrUpdateAsync(q => q.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
+        await userDbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveCardDavUser(int tenant, Guid id)
+    public async Task RemoveCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        var userDav = await userDbContext.UsersDav.FirstOrDefaultAsync(r => r.TenantId == tenant && r.UserId == id);
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        var userDav = await Queries.UserDavAsync(userDbContext, tenant, id);
         if (userDav != null)
         {
             userDbContext.UsersDav.Remove(userDav);
@@ -54,10 +54,22 @@ public class DbRadicale
         }
     }
 
-    public async Task<bool> IsExistCardDavUser(int tenant, Guid id)
+    public async Task<bool> IsExistCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        return await userDbContext.UsersDav.AnyAsync(r => r.TenantId == tenant && r.UserId == id);
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.UserDavAnyAsync(userDbContext, tenant, id);
     }
+}
 
+static file class Queries
+{
+    public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> UserDavAsync =
+        EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid userId) =>
+                ctx.UsersDav.FirstOrDefault(r => r.TenantId == tenantId && r.UserId == userId));
+
+    public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync =
+        EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid userId) =>
+                ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId));
 }

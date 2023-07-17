@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
-public class IpSecurityFilter : IResourceFilter
+public class IpSecurityFilter : IAsyncResourceFilter
 {
     private readonly AuthContext _authContext;
     private readonly IPSecurity.IPSecurity _iPSecurity;
@@ -46,15 +46,13 @@ public class IpSecurityFilter : IResourceFilter
         _settingsManager = settingsManager;
     }
 
-    public void OnResourceExecuted(ResourceExecutedContext context) { }
-
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
     {
         if (_authContext.IsAuthenticated)
         {
-            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
+            var enable = (await _settingsManager.LoadAsync<IPRestrictionsSettings>()).Enable;
 
-            if (enable && !_iPSecurity.Verify())
+            if (enable && !(await _iPSecurity.VerifyAsync()))
             {
                 context.Result = new ObjectResult(Resource.ErrorIpSecurity)
                 {
@@ -64,5 +62,6 @@ public class IpSecurityFilter : IResourceFilter
                 return;
             }
         }
+        await next();
     }
 }

@@ -2,14 +2,17 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { PaymentsType } from "@docspace/common/constants";
+import { PaymentsType, AccountLoginType } from "@docspace/common/constants";
 
 import Badge from "@docspace/components/badge";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 import SendClockIcon from "PUBLIC_DIR/images/send.clock.react.svg";
 import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
+
+import { SSO_LABEL } from "SRC_DIR/helpers/constants";
 
 const StyledBadgesContainer = styled.div`
   height: 100%;
@@ -42,20 +45,41 @@ const Badges = ({
   withoutPaid,
   isPaid = false,
   filter,
-  getUsersList,
+
+  isSSO = false,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const onClickPaid = () => {
     if (filter.payments === PaymentsType.Paid) return;
-
     const newFilter = filter.clone();
-
     newFilter.payments = PaymentsType.Paid;
 
-    getUsersList(newFilter, true);
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
+  };
+
+  const onClickSSO = () => {
+    if (filter.accountLoginType === AccountLoginType.SSO) return;
+    const newFilter = filter.clone();
+    newFilter.accountLoginType = AccountLoginType.SSO;
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   return (
     <StyledBadgesContainer className="badges additional-badges">
+      {isSSO && (
+        <Badge
+          label={SSO_LABEL}
+          color={"#FFFFFF"}
+          backgroundColor="#22C386"
+          fontSize={"9px"}
+          fontWeight={800}
+          noHover
+          lineHeight={"13px"}
+          onClick={onClickSSO}
+        />
+      )}
       {!withoutPaid && isPaid && (
         <StyledPaidBadge
           className="paid-badge"
@@ -80,10 +104,9 @@ const Badges = ({
 };
 
 export default inject(({ peopleStore }) => {
-  const { filterStore, usersStore } = peopleStore;
+  const { filterStore } = peopleStore;
 
   const { filter } = filterStore;
 
-  const { getUsersList } = usersStore;
-  return { filter, getUsersList };
+  return { filter };
 })(withTranslation(["Common"])(observer(Badges)));

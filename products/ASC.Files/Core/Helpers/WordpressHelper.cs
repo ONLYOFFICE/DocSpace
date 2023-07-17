@@ -43,33 +43,33 @@ public class WordpressToken
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
-    public OAuth20Token GetToken()
+    public async Task<OAuth20Token> GetTokenAsync()
     {
-        return _tokenHelper.GetToken(AppAttr);
+        return await _tokenHelper.GetTokenAsync(AppAttr);
     }
 
-    public void SaveToken(OAuth20Token token)
+    public async Task SaveTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        _tokenHelper.SaveToken(new Token(token, AppAttr));
+        await _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
     }
 
-    public OAuth20Token SaveTokenFromCode(string code)
+    public async Task<OAuth20Token> SaveTokenFromCodeAsync(string code)
     {
         var token = _oAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(_consumerFactory, code);
         ArgumentNullException.ThrowIfNull(token);
 
-        _tokenHelper.SaveToken(new Token(token, AppAttr));
+        await _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
 
         return token;
     }
 
-    public void DeleteToken(OAuth20Token token)
+    public async Task DeleteTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        _tokenHelper.DeleteToken(AppAttr);
+        await _tokenHelper.DeleteTokenAsync(AppAttr);
     }
 }
 

@@ -8,6 +8,7 @@ import RowContainer from "@docspace/components/row-container";
 import EmptyScreen from "../EmptyScreen";
 
 import SimpleUserRow from "./SimpleUserRow";
+import withLoader from "SRC_DIR/HOCs/withLoader";
 
 const marginStyles = css`
   margin-left: -24px;
@@ -100,7 +101,6 @@ const PeopleRowContainer = ({
   hasMoreAccounts,
   filterTotal,
   withPaging,
-  isLoading,
 }) => {
   useEffect(() => {
     const width = window.innerWidth;
@@ -122,8 +122,6 @@ const PeopleRowContainer = ({
       accountsViewAs !== "table" && setViewAs("table");
     }
   }, [sectionWidth]);
-
-  if (isLoading) return <></>;
 
   return peopleList.length !== 0 || !isFiltered ? (
     <StyledRowContainer
@@ -162,8 +160,6 @@ export default inject(({ peopleStore, auth, filesStore }) => {
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isLoading } = filesStore;
-
   return {
     peopleList,
     accountsViewAs,
@@ -171,7 +167,7 @@ export default inject(({ peopleStore, auth, filesStore }) => {
     theme,
     infoPanelVisible,
     withPaging,
-    isLoading,
+
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,

@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
@@ -58,25 +57,26 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhook")]
-    public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
+    public async IAsyncEnumerable<WebhooksConfigWithStatusDto> GetTenantWebhooks()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        await foreach (var w in _webhookDbWorker.GetTenantWebhooks())
+        await foreach (var webhook in _webhookDbWorker.GetTenantWebhooksWithStatus())
         {
-            yield return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(w);
+            yield return _mapper.Map<WebhooksConfigWithStatusDto>(webhook);
         }
     }
 
     [HttpPost("webhook")]
     public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         ArgumentNullException.ThrowIfNull(model.Uri);
         ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.Name, model.SecretKey, model.Enabled, model.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -84,12 +84,12 @@ public class WebhooksController : BaseSettingsController
     [HttpPut("webhook")]
     public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled, model.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -97,30 +97,34 @@ public class WebhooksController : BaseSettingsController
     [HttpDelete("webhook/{id}")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var webhook = await _webhookDbWorker.RemoveWebhookConfig(id);
+        var webhook = await _webhookDbWorker.RemoveWebhookConfigAsync(id);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
 
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? webhookId, int? configId, int? eventId, WebhookGroupStatus? groupStatus)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+        _context.SetTotalCount(await _webhookDbWorker.GetTotalByQuery(deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus));
+
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.WebhookId))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus))
         {
-            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+            j.Log.Config = j.Config;
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j.Log);
         }
     }
 
     [HttpPut("webhook/{id}/retry")]
     public async Task<WebhooksLogDto> RetryWebhook(int id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (id == 0)
         {
@@ -134,11 +138,6 @@ public class WebhooksController : BaseSettingsController
             throw new ItemNotFoundException();
         }
 
-        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
-        {
-            throw new HttpException(HttpStatusCode.Forbidden);
-        }
-
         var result = await _webhookPublisher.PublishAsync(item.Id, item.RequestPayload, item.ConfigId);
 
         return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
@@ -147,13 +146,13 @@ public class WebhooksController : BaseSettingsController
     [HttpPut("webhook/retry")]
     public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         foreach (var id in model.Ids)
         {
             var item = await _webhookDbWorker.ReadJournal(id);
 
-            if (item == null || item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+            if (item == null)
             {
                 continue;
             }
@@ -164,32 +163,10 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
-    [HttpGet("webhook/ssl")]
-    public WebhooksSslSettingsDto GetSslSettings()
-    {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        var settings = _settingsManager.Load<WebHooksSettings>();
-
-        return _mapper.Map<WebhooksSslSettingsDto>(settings);
-    }
-
-    [HttpPost("webhook/ssl/{isEnabled}")]
-    public WebhooksSslSettingsDto SetSslSettings(bool isEnabled)
-    {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        var settings = _settingsManager.Load<WebHooksSettings>();
-        settings.EnableSSLVerification = isEnabled;
-        _settingsManager.Save(settings);
-
-        return _mapper.Map<WebhooksSslSettingsDto>(settings);
-    }
-
     [HttpGet("webhooks")]
     public async IAsyncEnumerable<Webhook> Settings()
     {
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
 
         foreach (var w in await _webhookDbWorker.GetWebhooksAsync())
         {
@@ -201,7 +178,7 @@ public class WebhooksController : BaseSettingsController
     [HttpPut("webhook/{id}")]
     public async Task<Webhook> DisableWebHook(int id)
     {
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
 
         Webhook result = null;
 
@@ -212,7 +189,7 @@ public class WebhooksController : BaseSettingsController
 
         if (result != null)
         {
-            _settingsManager.Save(settings);
+            await _settingsManager.SaveAsync(settings);
         }
 
         return result;

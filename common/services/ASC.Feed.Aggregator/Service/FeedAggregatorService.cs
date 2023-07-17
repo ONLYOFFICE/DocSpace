@@ -47,7 +47,7 @@ public class FeedAggregatorService : FeedBaseService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            await AggregateFeeds(cfg.AggregateInterval);
+            await AggregateFeedsAsync(cfg.AggregateInterval);
 
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
@@ -74,11 +74,11 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private static bool TryAuthenticate(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
+    private static async Task<bool> TryAuthenticateAsync(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
     {
         try
         {
-            securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
+            await securityContext.AuthenticateMeWithoutCookieAsync(await authManager.GetAccountByIDAsync(tenantId, userid));
             return true;
         }
         catch
@@ -87,7 +87,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private async Task AggregateFeeds(object interval)
+    private async Task AggregateFeedsAsync(object interval)
     {
         try
         {
@@ -113,7 +113,7 @@ public class FeedAggregatorService : FeedBaseService
             foreach (var module in modules)
             {
                 var result = new List<FeedRow>();
-                var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
+                var fromTime = await feedAggregateDataProvider.GetLastTimeAggregateAsync(module.GetType().Name);
                 if (fromTime == default)
                 {
                     fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
@@ -134,13 +134,13 @@ public class FeedAggregatorService : FeedBaseService
 
                     try
                     {
-                        if (tenantManager.GetTenant(tenant) == null)
+                        if (await tenantManager.GetTenantAsync(tenant) == null)
                         {
                             continue;
                         }
 
-                        tenantManager.SetCurrentTenant(tenant);
-                        var users = userManager.GetUsers();
+                        await tenantManager.SetCurrentTenantAsync(tenant);
+                        var users = await userManager.GetUsersAsync();
 
                         var feeds = await Attempt(10, async () => (await module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant })).Where(r => r.Item1 != null).ToList());
                         _logger.DebugCountFeeds(feeds.Count, tenant);
@@ -150,19 +150,19 @@ public class FeedAggregatorService : FeedBaseService
                         var feedsRow = feeds
                             .Select(tuple => new Tuple<FeedRow, object>(new FeedRow(tuple.Item1)
                             {
-                                Tenant = tenant1,
+                                TenantId = tenant1,
                                 Product = module1.Product
                             }, tuple.Item2))
                             .ToList();
 
                         foreach (var u in users)
                         {
-                            if (!TryAuthenticate(securityContext, authManager, tenant1, u.Id))
+                            if (!await TryAuthenticateAsync(securityContext, authManager, tenant1, u.Id))
                             {
                                 continue;
                             }
 
-                            await module.VisibleFor(feedsRow, u.Id);
+                            await module.VisibleForAsync(feedsRow, u.Id);
                         }
 
                         result.AddRange(feedsRow.Select(r => r.Item1));
@@ -173,13 +173,13 @@ public class FeedAggregatorService : FeedBaseService
                     }
                 }
 
-                feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime, cfg.PortionSize);
+                await feedAggregateDataProvider.SaveFeedsAsync(result, module.GetType().Name, toTime, cfg.PortionSize);
 
                 foreach (var res in result)
                 {
                     foreach (var userGuid in res.Users.Where(userGuid => !userGuid.Equals(res.ModifiedBy)))
                     {
-                        if (!unreadUsers.TryGetValue(res.Tenant, out var dictionary))
+                        if (!unreadUsers.TryGetValue(res.TenantId, out var dictionary))
                         {
                             dictionary = new Dictionary<Guid, int>();
                         }
@@ -192,7 +192,7 @@ public class FeedAggregatorService : FeedBaseService
                             dictionary.Add(userGuid, 1);
                         }
 
-                        unreadUsers[res.Tenant] = dictionary;
+                        unreadUsers[res.TenantId] = dictionary;
                     }
                 }
             }

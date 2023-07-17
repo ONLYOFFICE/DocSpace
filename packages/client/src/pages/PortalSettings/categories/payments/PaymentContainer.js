@@ -101,11 +101,13 @@ const PaymentContainer = (props) => {
     paymentDate,
     t,
     isNonProfit,
+    isPaymentDateValid,
   } = props;
   const renderTooltip = () => {
     return (
       <>
         <HelpButton
+          className="payment-tooltip"
           offsetRight={0}
           iconName={HelpReactSvgUrl}
           tooltipContent={
@@ -251,7 +253,7 @@ const PaymentContainer = (props) => {
         </Text>
       );
 
-    if (isPaidPeriod)
+    if (isPaidPeriod && isPaymentDateValid)
       return (
         <Text
           noSelect
@@ -340,11 +342,8 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const {
-    isFreeTariff,
-    currentTariffPlanTitle,
-    isNonProfit,
-  } = currentQuotaStore;
+  const { isFreeTariff, currentTariffPlanTitle, isNonProfit } =
+    currentQuotaStore;
 
   const {
     isNotPaidPeriod,
@@ -355,6 +354,7 @@ export default inject(({ auth, payments }) => {
     paymentDate,
     gracePeriodEndDate,
     delayDaysCount,
+    isPaymentDateValid,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
@@ -388,5 +388,6 @@ export default inject(({ auth, payments }) => {
     portalTariffStatus,
     portalPaymentQuotas,
     isNonProfit,
+    isPaymentDateValid,
   };
 })(observer(PaymentContainer));

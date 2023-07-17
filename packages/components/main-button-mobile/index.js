@@ -27,7 +27,7 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertReactSvg)`
   cursor: pointer;
@@ -265,6 +265,7 @@ const MainButtonMobile = (props) => {
               return (
                 <div key="mobile-submenu">
                   <StyledDropDownItem
+                    id={option.id}
                     key={option.key}
                     label={option.label}
                     className={`${option.className} ${
@@ -287,6 +288,7 @@ const MainButtonMobile = (props) => {
 
                       return (
                         <StyledDropDownItem
+                          id={item.id}
                           key={item.key}
                           label={item.label}
                           className={`${item.className} sublevel`}
@@ -303,6 +305,7 @@ const MainButtonMobile = (props) => {
 
             return (
               <StyledDropDownItem
+                id={option.id}
                 key={option.key}
                 label={option.label}
                 className={`${option.className} ${
@@ -347,6 +350,7 @@ const MainButtonMobile = (props) => {
                   </div>
                 ) : (
                   <StyledDropDownItem
+                    id={option.id}
                     className={`drop-down-item-button ${
                       option.isSeparator ? "is-separator" : ""
                     }`}
@@ -393,6 +397,7 @@ const MainButtonMobile = (props) => {
           heightProp={height}
           sectionWidth={sectionWidth}
           isDefaultMode={false}
+          className="mainBtnDropdown"
         >
           {isMobile ? (
             <Scrollbar
@@ -407,13 +412,12 @@ const MainButtonMobile = (props) => {
             children
           )}
         </StyledDropDown>
-        <StyledAlertIcon>
-          {alert && !isOpen ? (
+
+        {alert && !isOpen && (
+          <StyledAlertIcon>
             <StyledButtonAlertIcon onClick={onAlertClickAction} size="medium" />
-          ) : (
-            <></>
-          )}
-        </StyledAlertIcon>
+          </StyledAlertIcon>
+        )}
       </div>
     </>
   );

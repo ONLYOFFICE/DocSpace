@@ -138,6 +138,26 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".dotx", Output = ".html" },
            new FilesConverts { Input = ".dotx", Output = ".ott" },
 
+           new FilesConverts { Input = ".dps", Output = ".odp" },
+           new FilesConverts { Input = ".dps", Output = ".otp" },
+           new FilesConverts { Input = ".dps", Output = ".pdf" },
+           new FilesConverts { Input = ".dps", Output = ".potm" },
+           new FilesConverts { Input = ".dps", Output = ".potx" },
+           new FilesConverts { Input = ".dps", Output = ".ppsm" },
+           new FilesConverts { Input = ".dps", Output = ".ppsx" },
+           new FilesConverts { Input = ".dps", Output = ".pptm" },
+           new FilesConverts { Input = ".dps", Output = ".pptx" },
+
+           new FilesConverts { Input = ".dpt", Output = ".odp" },
+           new FilesConverts { Input = ".dpt", Output = ".otp" },
+           new FilesConverts { Input = ".dpt", Output = ".pdf" },
+           new FilesConverts { Input = ".dpt", Output = ".potm" },
+           new FilesConverts { Input = ".dpt", Output = ".potx" },
+           new FilesConverts { Input = ".dpt", Output = ".ppsm" },
+           new FilesConverts { Input = ".dpt", Output = ".ppsx" },
+           new FilesConverts { Input = ".dpt", Output = ".pptm" },
+           new FilesConverts { Input = ".dpt", Output = ".pptx" },
+
            new FilesConverts { Input = ".epub", Output = ".docx" },
            new FilesConverts { Input = ".epub", Output = ".odt" },
            new FilesConverts { Input = ".epub", Output = ".pdf" },
@@ -149,6 +169,24 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".epub", Output = ".fb2" },
            new FilesConverts { Input = ".epub", Output = ".html" },
            new FilesConverts { Input = ".epub", Output = ".ott" },
+
+           new FilesConverts { Input = ".et", Output = ".csv" },
+           new FilesConverts { Input = ".et", Output = ".ods" },
+           new FilesConverts { Input = ".et", Output = ".ots" },
+           new FilesConverts { Input = ".et", Output = ".pdf" },
+           new FilesConverts { Input = ".et", Output = ".xlsm" },
+           new FilesConverts { Input = ".et", Output = ".xlsx" },
+           new FilesConverts { Input = ".et", Output = ".xltm" },
+           new FilesConverts { Input = ".et", Output = ".xltx" },
+
+           new FilesConverts { Input = ".ett", Output = ".csv" },
+           new FilesConverts { Input = ".ett", Output = ".ods" },
+           new FilesConverts { Input = ".ett", Output = ".ots" },
+           new FilesConverts { Input = ".ett", Output = ".pdf" },
+           new FilesConverts { Input = ".ett", Output = ".xlsm" },
+           new FilesConverts { Input = ".ett", Output = ".xlsx" },
+           new FilesConverts { Input = ".ett", Output = ".xltm" },
+           new FilesConverts { Input = ".ett", Output = ".xltx" },
 
            new FilesConverts { Input = ".fb2", Output = ".docx" },
            new FilesConverts { Input = ".fb2", Output = ".odt" },
@@ -192,6 +230,19 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".fodt", Output = ".html" },
            new FilesConverts { Input = ".fodt", Output = ".ott" },
 
+              new FilesConverts { Input = ".htm", Output = ".docm" },
+               new FilesConverts { Input = ".htm", Output = ".docx" },
+               new FilesConverts { Input = ".htm", Output = ".dotm" },
+               new FilesConverts { Input = ".htm", Output = ".dotx" },
+               new FilesConverts { Input = ".htm", Output = ".epub" },
+               new FilesConverts { Input = ".htm", Output = ".fb2" },
+               new FilesConverts { Input = ".htm", Output = ".html" },
+               new FilesConverts { Input = ".htm", Output = ".odt" },
+               new FilesConverts { Input = ".htm", Output = ".ott" },
+               new FilesConverts { Input = ".htm", Output = ".pdf" },
+               new FilesConverts { Input = ".htm", Output = ".rtf" },
+               new FilesConverts { Input = ".htm", Output = ".txt" },
+
            new FilesConverts { Input = ".html", Output = ".docx" },
            new FilesConverts { Input = ".html", Output = ".odt" },
            new FilesConverts { Input = ".html", Output = ".pdf" },
@@ -214,7 +265,21 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".mht", Output = ".dotx" },
            new FilesConverts { Input = ".mht", Output = ".epub" },
            new FilesConverts { Input = ".mht", Output = ".fb2" },
+           new FilesConverts { Input = ".mht", Output = ".html" },
            new FilesConverts { Input = ".mht", Output = ".ott" },
+
+           new FilesConverts { Input = ".mhtml", Output = ".docm" },
+           new FilesConverts { Input = ".mhtml", Output = ".docx" },
+           new FilesConverts { Input = ".mhtml", Output = ".dotm" },
+           new FilesConverts { Input = ".mhtml", Output = ".dotx" },
+           new FilesConverts { Input = ".mhtml", Output = ".epub" },
+           new FilesConverts { Input = ".mhtml", Output = ".fb2" },
+           new FilesConverts { Input = ".mhtml", Output = ".html" },
+           new FilesConverts { Input = ".mhtml", Output = ".odt" },
+           new FilesConverts { Input = ".mhtml", Output = ".ott" },
+           new FilesConverts { Input = ".mhtml", Output = ".pdf" },
+           new FilesConverts { Input = ".mhtml", Output = ".rtf" },
+           new FilesConverts { Input = ".mhtml", Output = ".txt" },
 
            new FilesConverts { Input = ".odp", Output = ".pdf" },
            new FilesConverts { Input = ".odp", Output = ".pptx" },
@@ -397,6 +462,51 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".rtf", Output = ".html" },
            new FilesConverts { Input = ".rtf", Output = ".ott" },
 
+           new FilesConverts { Input = ".stw", Output = ".docm" },
+           new FilesConverts { Input = ".stw", Output = ".docx" },
+           new FilesConverts { Input = ".stw", Output = ".dotm" },
+           new FilesConverts { Input = ".stw", Output = ".dotx" },
+           new FilesConverts { Input = ".stw", Output = ".epub" },
+           new FilesConverts { Input = ".stw", Output = ".fb2" },
+           new FilesConverts { Input = ".stw", Output = ".html" },
+           new FilesConverts { Input = ".stw", Output = ".odt" },
+           new FilesConverts { Input = ".stw", Output = ".ott" },
+           new FilesConverts { Input = ".stw", Output = ".pdf" },
+           new FilesConverts { Input = ".stw", Output = ".rtf" },
+           new FilesConverts { Input = ".stw", Output = ".txt" },
+
+           new FilesConverts { Input = ".sxc", Output = ".csv" },
+           new FilesConverts { Input = ".sxc", Output = ".ods" },
+           new FilesConverts { Input = ".sxc", Output = ".ots" },
+           new FilesConverts { Input = ".sxc", Output = ".pdf" },
+           new FilesConverts { Input = ".sxc", Output = ".xlsm" },
+           new FilesConverts { Input = ".sxc", Output = ".xlsx" },
+           new FilesConverts { Input = ".sxc", Output = ".xltm" },
+           new FilesConverts { Input = ".sxc", Output = ".xltx" },
+
+           new FilesConverts { Input = ".sxi", Output = ".odp" },
+           new FilesConverts { Input = ".sxi", Output = ".otp" },
+           new FilesConverts { Input = ".sxi", Output = ".pdf" },
+           new FilesConverts { Input = ".sxi", Output = ".potm" },
+           new FilesConverts { Input = ".sxi", Output = ".potx" },
+           new FilesConverts { Input = ".sxi", Output = ".ppsm" },
+           new FilesConverts { Input = ".sxi", Output = ".ppsx" },
+           new FilesConverts { Input = ".sxi", Output = ".pptm" },
+           new FilesConverts { Input = ".sxi", Output = ".pptx" },
+
+           new FilesConverts { Input = ".sxw", Output = ".docm" },
+           new FilesConverts { Input = ".sxw", Output = ".docx" },
+           new FilesConverts { Input = ".sxw", Output = ".dotm" },
+           new FilesConverts { Input = ".sxw", Output = ".dotx" },
+           new FilesConverts { Input = ".sxw", Output = ".epub" },
+           new FilesConverts { Input = ".sxw", Output = ".fb2" },
+           new FilesConverts { Input = ".sxw", Output = ".html" },
+           new FilesConverts { Input = ".sxw", Output = ".odt" },
+           new FilesConverts { Input = ".sxw", Output = ".ott" },
+           new FilesConverts { Input = ".sxw", Output = ".pdf" },
+           new FilesConverts { Input = ".sxw", Output = ".rtf" },
+           new FilesConverts { Input = ".sxw", Output = ".txt" },
+
            new FilesConverts { Input = ".txt", Output = ".pdf" },
            new FilesConverts { Input = ".txt", Output = ".docx" },
            new FilesConverts { Input = ".txt", Output = ".odt" },
@@ -409,6 +519,32 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".txt", Output = ".html" },
            new FilesConverts { Input = ".txt", Output = ".ott" },
 
+           new FilesConverts { Input = ".wps", Output = ".docm" },
+           new FilesConverts { Input = ".wps", Output = ".docx" },
+           new FilesConverts { Input = ".wps", Output = ".dotm" },
+           new FilesConverts { Input = ".wps", Output = ".dotx" },
+           new FilesConverts { Input = ".wps", Output = ".epub" },
+           new FilesConverts { Input = ".wps", Output = ".fb2" },
+           new FilesConverts { Input = ".wps", Output = ".html" },
+           new FilesConverts { Input = ".wps", Output = ".odt" },
+           new FilesConverts { Input = ".wps", Output = ".ott" },
+           new FilesConverts { Input = ".wps", Output = ".pdf" },
+           new FilesConverts { Input = ".wps", Output = ".rtf" },
+           new FilesConverts { Input = ".wps", Output = ".txt" },
+
+           new FilesConverts { Input = ".wpt", Output = ".docm" },
+           new FilesConverts { Input = ".wpt", Output = ".docx" },
+           new FilesConverts { Input = ".wpt", Output = ".dotm" },
+           new FilesConverts { Input = ".wpt", Output = ".dotx" },
+           new FilesConverts { Input = ".wpt", Output = ".epub" },
+           new FilesConverts { Input = ".wpt", Output = ".fb2" },
+           new FilesConverts { Input = ".wpt", Output = ".html" },
+           new FilesConverts { Input = ".wpt", Output = ".odt" },
+           new FilesConverts { Input = ".wpt", Output = ".ott" },
+           new FilesConverts { Input = ".wpt", Output = ".pdf" },
+           new FilesConverts { Input = ".wpt", Output = ".rtf" },
+           new FilesConverts { Input = ".wpt", Output = ".txt" },
+
            new FilesConverts { Input = ".xls", Output = ".csv" },
            new FilesConverts { Input = ".xls", Output = ".ods" },
            new FilesConverts { Input = ".xls", Output = ".pdf" },
@@ -417,6 +553,15 @@ public static class FilesConvertsExtension
            new FilesConverts { Input = ".xls", Output = ".xlsm" },
            new FilesConverts { Input = ".xls", Output = ".xltm" },
            new FilesConverts { Input = ".xls", Output = ".xltx" },
+
+           new FilesConverts { Input = ".xlsb", Output = ".csv" },
+           new FilesConverts { Input = ".xlsb", Output = ".ods" },
+           new FilesConverts { Input = ".xlsb", Output = ".ots" },
+           new FilesConverts { Input = ".xlsb", Output = ".pdf" },
+           new FilesConverts { Input = ".xlsb", Output = ".xlsm" },
+           new FilesConverts { Input = ".xlsb", Output = ".xlsx" },
+           new FilesConverts { Input = ".xlsb", Output = ".xltm" },
+           new FilesConverts { Input = ".xlsb", Output = ".xltx" },
 
            new FilesConverts { Input = ".xlsm", Output = ".csv" },
            new FilesConverts { Input = ".xlsm", Output = ".xltm" },
@@ -492,23 +637,23 @@ public static class FilesConvertsExtension
     {
         modelBuilder.Entity<FilesConverts>(entity =>
         {
-            entity.HasKey(e => new { e.Input, e.Output })
-                .HasName("PRIMARY");
+           entity.HasKey(e => new { e.Input, e.Output })
+               .HasName("PRIMARY");
 
-            entity.ToTable("files_converts")
-                .HasCharSet("utf8");
+           entity.ToTable("files_converts")
+               .HasCharSet("utf8");
 
-            entity.Property(e => e.Input)
-                .HasColumnName("input")
-                .HasColumnType("varchar(50)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+           entity.Property(e => e.Input)
+               .HasColumnName("input")
+               .HasColumnType("varchar(50)")
+               .HasCharSet("utf8")
+               .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Output)
-                .HasColumnName("output")
-                .HasColumnType("varchar(50)")
-                .HasCharSet("utf8")
-                .UseCollation("utf8_general_ci");
+           entity.Property(e => e.Output)
+               .HasColumnName("output")
+               .HasColumnType("varchar(50)")
+               .HasCharSet("utf8")
+               .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddFilesConverts(this ModelBuilder modelBuilder)

@@ -35,6 +35,7 @@ public static class HostExtension
 {
     public static async Task RunWithTasksAsync(this WebApplication webHost, CancellationToken cancellationToken = default)
     {
+        CustomSynchronizationContext.CreateContext();
         // Load all tasks from DI
         var startupTasks = webHost.Services.GetServices<IStartupTask>();
 

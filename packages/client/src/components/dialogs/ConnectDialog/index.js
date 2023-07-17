@@ -200,7 +200,11 @@ const PureConnectDialogContainer = (props) => {
   ]);
 
   const onReconnect = () => {
-    let authModal = window.open("", "Authorization", "height=600, width=1020");
+    let authModal = window.open(
+      "",
+      t("Common:Authorization"),
+      "height=600, width=1020"
+    );
     openConnectWindow(provider_key, authModal).then((modal) =>
       getOAuthToken(modal).then((token) => {
         authModal.close();
@@ -269,6 +273,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("Common:RequiredField")}
               >
                 <TextInput
+                  id="connection-url-input"
                   isAutoFocussed={true}
                   hasError={!isUrlValid}
                   isDisabled={isLoading}
@@ -288,6 +293,7 @@ const PureConnectDialogContainer = (props) => {
               errorMessage={t("Common:RequiredField")}
             >
               <TextInput
+                id="login-input"
                 isAutoFocussed={!showUrlField}
                 hasError={!isLoginValid}
                 isDisabled={isLoading}
@@ -306,6 +312,7 @@ const PureConnectDialogContainer = (props) => {
               style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
+                id="password-input"
                 hasError={!isPasswordValid}
                 isDisabled={isLoading}
                 tabIndex={3}
@@ -338,6 +345,7 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="save"
           tabIndex={5}
           label={t("Common:SaveButton")}
           size="normal"
@@ -348,6 +356,7 @@ const PureConnectDialogContainer = (props) => {
           isLoading={isLoading}
         />
         <Button
+          id="cancel"
           tabIndex={5}
           label={t("Common:CancelButton")}
           size="normal"

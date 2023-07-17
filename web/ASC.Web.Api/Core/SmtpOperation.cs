@@ -87,7 +87,7 @@ public class SmtpOperation
         _logger = logger;
     }
 
-    public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    public async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
     {
         try
         {
@@ -95,15 +95,15 @@ public class SmtpOperation
 
             SetProgress(5, "Setup tenant");
 
-            _tenantManager.SetCurrentTenant(CurrentTenant);
+            await _tenantManager.SetCurrentTenantAsync(CurrentTenant);
 
             SetProgress(10, "Setup user");
 
-            _securityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
             SetProgress(15, "Find user data");
 
-            var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
             SetProgress(20, "Create mime message");
 

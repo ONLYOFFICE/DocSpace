@@ -63,8 +63,7 @@
 
 Siz indicə buludda şəxsi ofisinizi yaratdınız.
 
-h3.Bu, dostlarınız və ya həmkarlarınıza girişi təmin etməklə istənilən yerdən sənədləri redaktə edə və saxlaya, onlarla işləyə biləcəyiniz virtual iş sahəsidir.
-ONLYOFFICE Microsoft Office™ sənəd formatları ilə uyğun gəlir və yaradılmış obyektlərin format və keyfiyyətində heç bir itkinin olmayacağına zəmanət verir. Sizi uyğunluqla bağlı problemlərdən xilas etməyi və tam peşəkar redaktə alətləri dəsti ilə təmin etməyi vəd edirik.
+h3.Bu, dostlarınız və ya həmkarlarınıza girişi təmin etməklə istənilən yerdən sənədləri redaktə edə və saxlaya, onlarla işləyə biləcəyiniz virtual iş sahəsidir. ONLYOFFICE Microsoft Office™ sənəd formatları ilə uyğun gəlir və yaradılmış obyektlərin format və keyfiyyətində heç bir itkinin olmayacağına zəmanət verir. Sizi uyğunluqla bağlı problemlərdən xilas etməyi və tam peşəkar redaktə alətləri dəsti ilə təmin etməyi vəd edirik.
 
 h3. Sürətli başlanğıc üçün ONLYOFFICE-də edə biləcəkləriniz bunlardır:
 
@@ -147,6 +146,7 @@ ONLYOFFICE komandası</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Yeni portal qeydiyyatdan keçdi
+
 # Portal url: "${__VirtualRootPath}":"${__VirtualRootPath}"
 # First name: $UserName
 # Last name: $UserLastName
@@ -177,5 +177,34 @@ ONLYOFFICE komandası</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Yeni portal qeydiyyatdan keçib</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Bulud ofis hesabınızdakı parolu dəyişmək istəyirsiniz? Təsdiqləmək üçün aşağıdakı düyməni basın.
+
+$GreenButton
+
+Link 7 gün ərzində etibarlıdır.
+
+Parolunuzu dəyişmək istəmirsiniz? Sadəcə bu mesaja əhəmiyyət verməyin.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}"-a əlavə edildi. İndi edə bilərsiniz:
+
+* Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin*: real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+
+* *Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+
+* *İki ümumi redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin.
+
+* *İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin.
+
+$ GreenButton
+
+Köməyə ehtiyacınız varsa, "Yardım Mərkəzimizə":"https://helpcenter.onlyoffice.com/" baxın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+Hörmətlə,
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
 </root>

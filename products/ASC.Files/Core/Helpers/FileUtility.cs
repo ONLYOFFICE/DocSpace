@@ -437,42 +437,74 @@ public class FileUtility
 
     private Dictionary<string, List<string>> _extsConvertible;
 
-    public Dictionary<string, List<string>> ExtsConvertible
+    public Dictionary<string, List<string>> GetExtsConvertible()
     {
-        get
+        if (_extsConvertible == null)
         {
-            if (_extsConvertible == null)
+            _extsConvertible = new Dictionary<string, List<string>>();
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
             {
-                _extsConvertible = new Dictionary<string, List<string>>();
-                if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
-                {
-                    return _extsConvertible;
-                }
-
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
-
-                foreach (var item in list)
-                {
-                    var input = item.Input;
-                    var output = item.Output;
-                    if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
-                    {
-                        continue;
-                    }
-
-                    input = input.ToLower().Trim();
-                    output = output.ToLower().Trim();
-                    if (!_extsConvertible.ContainsKey(input))
-                    {
-                        _extsConvertible[input] = new List<string>();
-                    }
-
-                    _extsConvertible[input].Add(output);
-                }
+                return _extsConvertible;
             }
-            return _extsConvertible;
+
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var list = Queries.Folders(filesDbContext);
+
+            foreach (var item in list)
+            {
+                var input = item.Input;
+                var output = item.Output;
+                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                {
+                    continue;
+                }
+
+                input = input.ToLower().Trim();
+                output = output.ToLower().Trim();
+                if (!_extsConvertible.ContainsKey(input))
+                {
+                    _extsConvertible[input] = new List<string>();
+                }
+
+                _extsConvertible[input].Add(output);
+            }
         }
+        return _extsConvertible;
+    }
+
+    public async Task<Dictionary<string, List<string>>> GetExtsConvertibleAsync()
+    {
+        if (_extsConvertible == null)
+        {
+            _extsConvertible = new Dictionary<string, List<string>>();
+            if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
+            {
+                return _extsConvertible;
+            }
+
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var list = await Queries.FoldersAsync(filesDbContext).ToListAsync();
+
+            foreach (var item in list)
+            {
+                var input = item.Input;
+                var output = item.Output;
+                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                {
+                    continue;
+                }
+
+                input = input.ToLower().Trim();
+                output = output.ToLower().Trim();
+                if (!_extsConvertible.ContainsKey(input))
+                {
+                    _extsConvertible[input] = new List<string>();
+                }
+
+                _extsConvertible[input].Add(output);
+            }
+        }
+        return _extsConvertible;
     }
 
     private List<string> _extsUploadable;
@@ -711,4 +743,17 @@ public class FileUtility
     private bool GetCanForcesave() => _fileUtilityConfiguration.GetCanForcesave();
 
     #endregion
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> Folders =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx) =>
+                ctx.FilesConverts.AsNoTracking());
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<FilesConverts>> FoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.FilesConverts.AsNoTracking());
 }

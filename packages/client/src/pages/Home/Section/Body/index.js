@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
 import { observer, inject } from "mobx-react";
@@ -40,7 +41,13 @@ const SectionBodyContent = (props) => {
     filesList,
     uploaded,
     onClickBack,
+
+    movingInProgress,
   } = props;
+
+  useEffect(() => {
+    return () => window?.getSelection()?.removeAllRanges();
+  }, []);
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
@@ -118,7 +125,8 @@ const SectionBodyContent = (props) => {
         !e.target.closest(".files-item") &&
         !e.target.closest(".not-selectable") &&
         !e.target.closest(".info-panel") &&
-        !e.target.closest(".table-container_group-menu")) ||
+        !e.target.closest(".table-container_group-menu") &&
+        !e.target.closest(".document-catalog")) ||
       e.target.closest(".files-main-button") ||
       e.target.closest(".add-button") ||
       e.target.closest(".search-input-block")
@@ -243,12 +251,14 @@ const SectionBodyContent = (props) => {
     }
   };
 
-  //console.log("Files Home SectionBodyContent render", props);
+  if (isEmptyFilesList && movingInProgress) return <></>;
+
+  const isEmptyPage = isEmptyFilesList;
 
   return (
     <Consumer>
       {(context) =>
-        isEmptyFilesList || null ? (
+        isEmptyPage ? (
           <>
             <EmptyContainer sectionWidth={context.sectionWidth} />
           </>
@@ -298,6 +308,8 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
+
+      movingInProgress,
     } = filesStore;
     return {
       dragging,
@@ -322,10 +334,11 @@ export default inject(
       filesList,
       uploaded: uploadDataStore.uploaded,
       onClickBack: filesActionsStore.onClickBack,
+      movingInProgress,
     };
   }
 )(
   withTranslation(["Files", "Common", "Translations"])(
-    withHotkeys(observer(SectionBodyContent))
+    withHotkeys(withLoader(observer(SectionBodyContent))())
   )
 );

@@ -194,7 +194,7 @@
     <value>Súbor bol poškodený, keď ste sa ho pokúsili uložiť</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Nepodarilo sa získať súbor, ktorý chcete uložiť.</value>
+    <value>Nepodarilo sa získať súbor, ktorý chcete uložiť</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
     <value>Nemáte dostatočné práva na vykonanie operácie</value>
@@ -315,5 +315,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Spolupracovník</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Odoslane tlačivo</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Nová verzia nemôže byť taká istá, ako aktuálna verzia</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Nemáte dostatočné oprávnenie na kopírovanie súboru</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Nemáte oprávnenie na kopírovanie priečinka</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Neplatný poskytovateľ</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Nemôžete použiť tento priečinok na ukladanie miestnosti</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Odkaz na pozvánku je neplatný alebo jeho platnosť vypršala</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Tento poskytovateľ je už pripojený k miestnosti</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Táto rola nie je dostupná pre tento typ používateľa</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatočné oprávnenia na archiváciu miestnosti</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Nemáte oprávnenie na kopírovanie do tohto priečinka</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Nemáte oprávnenie upravovať túto miestnosť</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Nemáte oprávnenie na presun do tohto priečinka</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatočné oprávnenia na vrátenie miestnosti z archívu</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Nemôžete upravovať archivované miestnosti</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Nemôžete ukotviť miestnosť</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Spolupracovník</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redaktor</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Vlastný filter</value>
   </data>
 </root>

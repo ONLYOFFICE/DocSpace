@@ -27,7 +27,7 @@ const GeneralSettings = ({
           {t("StoringFileVersion")}
         </Heading>
         <ToggleButton
-          className="toggle-btn"
+          className="intermediate-version toggle-btn"
           label={t("IntermediateVersion")}
           onChange={onChangeStoreForceSave}
           isChecked={storeForceSave}

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 class TabContainer extends Component {
   constructor(props) {
@@ -162,6 +162,7 @@ class TabContainer extends Component {
             {elements.map((item, index) => (
               <ColorTheme
                 {...this.props}
+                id={item.id}
                 themeId={ThemeType.TabsContainer}
                 onMouseMove={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}

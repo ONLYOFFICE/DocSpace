@@ -62,27 +62,23 @@
     <value>h1. $Message: $DocumentTitle</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" σας ανέφερε σε σχόλιο εγγράφου
+    <value>h1. Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου
 
-Αυτό είναι ένα μήνυμα email για να σας ειδοποιήσει ότι έχετε αναφερθεί από τον/την "$__AuthorName":"$__AuthorUrl" σε σχόλιο στο "$DocumentTitle":"$DocumentURL" έγγραφο:
+Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου "$DocumentTitle":"$DocumentURL" στο δωμάτιο "$RoomTitle":"$RoomURL":
 
 $Message</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.$__DateTime User "$__AuthorName":"$__AuthorUrl"
 
-σας παραχωρεί την πρόσβαση στο "$DocumentTitle":"$DocumentURL" 
-
-με δικαιώματα πρόσβασης: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" σας παραχωρεί την πρόσβαση στο "$DocumentTitle":"$DocumentURL" με δικαιώματα πρόσβασης: "$AccessRights". 
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.$__DateTime User "$__AuthorName ":"$__AuthorUrl"
 
-σας παραχωρεί την πρόσβαση στο φάκελο "$DocumentTitle":"$DocumentURL" 
-
-με δικαιώματα πρόσβασης: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" σας παραχωρεί την πρόσβαση στο φάκελο "$DocumentTitle":"$DocumentURL" με δικαιώματα πρόσβασης: "$AccessRights". 
 
 $Message</value>
   </data>
@@ -96,7 +92,7 @@ $Message</value>
     <value>Έγγραφα. Η κατάσταση υπογραφής άλλαξε</value>
   </data>
   <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Έγγραφα. Αναφέρεται σε έγγραφο.</value>
+    <value>Ειδοποίηση DocSpace. Αναφέρεται στο έγγραφο</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
     <value>Έγγραφα. Πρόσβαση που παρέχεται στο $DocumentTitle</value>
@@ -109,5 +105,37 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Έγγραφα. Παραχωρήθηκε πρόσβαση στον φάκελο: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. Ο/Η $__AuthorName διέγραψε ένα δωμάτιο
+
+Ο/Η $__AuthorName διέγραψε το δωμάτιο: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Όλοι οι υπογράφοντες συμπλήρωσαν το $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Η κατάσταση υπογραφής άλλαξε</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Αναφέρεται στο έγγραφο</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Η αποστολή έχει ολοκληρωθεί.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Ειδοποίηση DocSpace. Διαγραφή δωματίου</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Χορήγηση πρόσβασης στο έγγραφο: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Πρόσβαση στο κρυπτογραφημένο έγγραφο: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Πρόσβαση στον φάκελο: $DocumentTitle</value>
+  </data>
+  <data name="subject_MailMergeEnd" xml:space="preserve">
+    <value>Έγγραφα. Η αποστολή έχει ολοκληρωθεί.</value>
   </data>
 </root>

@@ -1,5 +1,4 @@
 {
-  "Authorization": "許可",
   "CodeSubtitle": "{{email}}に6桁のコードを送りました。コードは有効期限がありますので、お早めにご入力ください。",
   "CodeTitle": "コードを送りました",
   "CookieSettingsTitle": "セッション期間",

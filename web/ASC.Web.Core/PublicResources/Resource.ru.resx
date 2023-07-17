@@ -107,9 +107,6 @@
     <value>Подключите это приложение для сокращения пригласительных ссылок на портал и ссылок для доступа к файлам в модуле 'Документы' с помощью сервиса Bitly.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>Добавив сервис Bitly, Вы будуте получать сокращенные ссылки для приглашения новых пользователей на портал ONLYOFFICE™ и сокращенные ссылки для документов в модуле 'Документы', к которым был предоставлен доступ для внешних пользователей.</value>
-  </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы сокращать пригласительные ссылки и ссылки на документы. {0}Вставьте ваш логин Bitly и ключ API ниже:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
@@ -125,9 +122,6 @@
     <value>Подключите приложение для управления файлами и папками Box.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Box, Вы сможете подключить свой аккаунт Box в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Box, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы подключить свой аккаунт Box к модулю "Документы". Вы сможете управлять документами из Box, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись на странице для разработчиков Box и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -140,9 +134,6 @@
     <value>Подключите приложение для включения двухфакторной аутентификации через Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Clickatell, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE.</value>
-  </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
     <value>Используйте это приложение, чтобы включить двухфакторную аутентификацию с помощью сервиса Clickatell. {0}Войдите в аккаунт SMS Platform и создайте новую интеграцию для ONLYOFFICE. Скопируйте apiKey и вставьте его ниже:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -161,9 +152,6 @@
     <value>Конечная точка авторизации DocuSign</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса DocuSign, Вы сможете подписывать файлы модуля 'Документы'. Это позволит Вам отправлять файл на получение электронной подписи сотрудникам портала ONLYOFFICE™ средствами сервиса DocuSugn. Подписанный файл будет сохранён в модуле 'Документы' портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы подписывать документы электронной подписью DocuSign. {0}Перейдите в консоль администратора DocuSign и добавьте интеграцию ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
@@ -173,9 +161,6 @@
     <value>Подключите приложение для управления файлами и папками Dropbox.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Dropbox, Вы сможете подключить свой аккаунт Dropbox в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Dropbox, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы подключить свой аккаунт Dropbox к модулю "Документы". Вы сможете управлять документами из Dropbox, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись на сайте для разработчиков Dropbox Developers и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -193,9 +178,6 @@
   <data name="ConsumersEasyBibDescription" xml:space="preserve">
     <value>Подключите это приложение для создания библиографических списков в документах с помощью сервиса EasyBib.</value>
   </data>
-  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>Добавив приложение EasyBib, вы сможете легко создавать библиографические списки в документах.</value>
-  </data>
   <data name="ConsumersFacebook" xml:space="preserve">
     <value>Facebook</value>
   </data>
@@ -212,9 +194,6 @@
     <value>Подключите приложение для входа на портал по учетной записи Facebook.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Facebook, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Facebook. Также Вы сможете на странице редактирования персоны или компании CRM находить и привязывать аккаунт Facebook.</value>
-  </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Facebook, и привязывать Facebook-аккаунты клиентов в модуле CRM. {0}Перейдите на портал для разработчиков Facebook и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
@@ -234,9 +213,6 @@
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
     <value>Подключите это приложение для получения оповещений об отправленных вам сообщениях с помощью сервиса Firebase Cloud Messaging.</value>
-  </data>
-  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>Подключив сервис Firebase Cloud Messaging, вы сможете получать оповещения об отправленных вам сообщениях, даже если вы не в сети.</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
     <value>Google</value>
@@ -259,9 +235,6 @@
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
     <value>Подключите сервис Google Cloud Storage для резервного копирования и хранения данных портала.</value>
   </data>
-  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>Добавив сервис Google Cloud Storage, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
-  </data>
   <data name="ConsumersGoogleCloudjson" xml:space="preserve">
     <value>json-файл GoogleCloud</value>
   </data>
@@ -269,9 +242,6 @@
     <value>Подключите проект для входа на портал по учетной записи Google и для управления файлами и папками Google Drive.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>Добавив проект сервиса Google, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Google и подключить свой аккаунт Google Drive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Google Drive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы подключить свой аккаунт Google Drive к модулю "Документы". Вы сможете управлять документами из Google Drive, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Перейдите в консоль API Google и создайте новый проект для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
@@ -281,9 +251,6 @@
     <value>Подключите приложение для входа на портал по учетной записи LinkedIn.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса LinkedIn, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта LinkedIn.</value>
-  </data>
-  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя свои аккаунты в LinkedIn. {0}Перейдите на сайт Сеть разработчиков LinkedIn и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
@@ -312,9 +279,6 @@
   </data>
   <data name="ConsumersRackspaceDescription" xml:space="preserve">
     <value>Подключите сервис Rackspace Cloud Storage для резервного копирования и хранения данных портала.</value>
-  </data>
-  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>Добавив сервис Rackspace Cloud Storage, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
   </data>
   <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
     <value>Приватный контейнер</value>
@@ -346,9 +310,6 @@
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Подключите Amazon AWS S3 для резервного копирования и хранения данных портала.</value>
   </data>
-  <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>Добавив Amazon AWS S3, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
-  </data>
   <data name="ConsumersS3region" xml:space="preserve">
     <value>Регион</value>
   </data>
@@ -369,9 +330,6 @@
   </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Подключите сервис Selectel Облачное хранилище для резервного копирования и хранения данных портала.</value>
-  </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Добавив сервис Selectel, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Приватный контейнер</value>
@@ -398,9 +356,6 @@
     <value>Подключите приложение для управления файлами и папками OneDrive.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса OneDrive, Вы сможете подключить свой аккаунт OneDrive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в OneDrive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы подключить свой аккаунт OneDrive к модулю "Документы". Вы сможете управлять документами из OneDrive, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись Microsoft Azure и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
@@ -410,9 +365,6 @@
     <value>Подключите приложение для включения двухфакторной аутентификации через SMS-центр.</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса SMS-центр, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE. SMS-центр удобно использовать как SMS-провайдер для стран СНГ.</value>
-  </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
     <value>Используйте это приложение, чтобы включить двухфакторную аутентификацию с помощью сервиса SMS Center. {0}Вставьте логин от аккаунта smsc и пароль (или MD5 хэш от пароля) в нижнем регистре:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
@@ -434,9 +386,6 @@
     <value>Подключите это приложение, чтобы звонить контактам CRM с помощью сервиса Twilio.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>После добавления Twilio вы сможете звонить любому контакту CRM прямо из браузера.</value>
-  </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы пользователи могли звонить контактам из модуля CRM с помощью Twilio. {0}Перейдите в Консоль Twilio и вставьте следующие данные ниже:</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -455,9 +404,6 @@
     <value>Подключите приложение для входа на портал по учетной записи Twitter и поиска контактов.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Twitter, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Twitter. Также Вы сможете на странице персоны или компании CRM привязывать аккаунт и читать новости Twitter.</value>
-  </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Twitter, и привязывать Twitter-аккаунты клиентов в модуле CRM. {0}Перейдите на портал для разработчиков Twitter и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
@@ -490,9 +436,6 @@
   <data name="ConsumersWordpressDescription" xml:space="preserve">
     <value>Подключите приложение для публикации документов прямо в WordPress.</value>
   </data>
-  <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>Добавив приложение WordPress Вы сможете легко, сохраняя форматирование, публиковать документы на своем сайте WordPress.</value>
-  </data>
   <data name="ConsumerswpClientId" xml:space="preserve">
     <value>Ключ WordPress</value>
   </data>
@@ -512,9 +455,6 @@
     <value>Подключите приложение для импорта контактов Yahoo.</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>Добавив приложение сервиса Yahoo, Вы сможете добавлять новых пользователей на портал ONLYOFFICE из списка контактов.</value>
-  </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
     <value>Подключите это приложение, чтобы добавлять новых пользователей портала из вашего списка контактов Yahoo. {0}Перейдите на страницу создания приложения в сети разработчиков Yahoo Developer Network и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
@@ -629,7 +569,7 @@
     <value>Превышен лимит запросов</value>
   </data>
   <data name="ErrorTenantTooShort" xml:space="preserve">
-    <value>Домен клиента не может быть пустым</value>
+    <value>Домен клиента не может быть пустым.</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>Доменное имя должно содержать от {0} до {1} символов.</value>
@@ -960,5 +900,71 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Количество администраторов/опытных пользователей:</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID клиента приложения</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10-значный идентификатор ключа, сгенерированный для входа в систему с помощью приватного ключа Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Подключите приложение для входа на портал по учетной записи Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Apple ID. {0}Перейдите на портал Apple Developers и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Приватный ключ, скачанный с Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-значный Team ID аккаунта разработчика</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Секрет клиента</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестный тип файла изображения</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размер изображения превышает допустимые параметры</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Microsoft. {0}Перейдите в Microsoft Azure и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Имя пользователя бота</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Подключите аккаунт Telegram для получения оповещений портала через Telegram.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Облачное пространство для ваших офисных документов</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Чтобы получать оповещения портала через Telegram, включите бота Telegram. Вы можете создать нового бота, используя BotFather в десктопном приложении Telegram. Чтобы использовать этого бота, пользователи портала должны включить оповещения Telegram на странице своего профиля. {0}Вставьте полученные имя пользователя бота и токен в поля ниже.</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Токен бота</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Подключите приложение для входа на портал по учетной записи Microsoft.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID клиента приложения</value>
   </data>
 </root>

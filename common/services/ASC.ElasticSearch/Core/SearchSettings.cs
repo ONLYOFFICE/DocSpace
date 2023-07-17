@@ -97,14 +97,14 @@ public class SearchSettingsHelper
         _configuration = configuration;
     }
 
-    public List<SearchSettingsItem> GetAllItems()
+    public async Task<List<SearchSettingsItem>> GetAllItemsAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
             return new List<SearchSettingsItem>();
         }
 
-        var settings = _settingsManager.Load<SearchSettings>();
+        var settings = await _settingsManager.LoadAsync<SearchSettings>();
 
         return AllItems.Select(r => new SearchSettingsItem
         {
@@ -114,34 +114,34 @@ public class SearchSettingsHelper
         }).ToList();
     }
 
-    public void Set(List<SearchSettingsItem> items)
+    public async Task SetAsync(List<SearchSettingsItem> items)
     {
         if (!_coreBaseSettings.Standalone)
         {
             return;
         }
 
-        var settings = _settingsManager.Load<SearchSettings>();
+        var settings = await _settingsManager.LoadAsync<SearchSettings>();
 
         var settingsItems = settings.Items;
         var toReIndex = settingsItems.Count == 0 ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
 
         settings.Items = items;
         settings.Data = JsonConvert.SerializeObject(items);
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
-        var action = new ReIndexAction() { Tenant = _tenantManager.GetCurrentTenant().Id };
+        var action = new ReIndexAction() { Tenant = await _tenantManager.GetCurrentTenantIdAsync() };
         action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
         _cacheNotify.Publish(action, CacheNotifyAction.Any);
     }
 
-    public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem
+    public async Task<bool> CanIndexByContentAsync<T>(int tenantId) where T : class, ISearchItem
     {
-        return CanIndexByContent(typeof(T), tenantId);
+        return await CanIndexByContentAsync(typeof(T), tenantId);
     }
 
-    public bool CanIndexByContent(Type t, int tenantId)
+    public async Task<bool> CanIndexByContentAsync(Type t, int tenantId)
     {
         if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
         {
@@ -158,20 +158,20 @@ public class SearchSettingsHelper
             return true;
         }
 
-        var settings = _settingsManager.Load<SearchSettings>(tenantId);
+        var settings = await _settingsManager.LoadAsync<SearchSettings>(tenantId);
 
         return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }
 
-    public bool CanSearchByContent<T>() where T : class, ISearchItem
+    public async Task<bool> CanSearchByContentAsync<T>() where T : class, ISearchItem
     {
-        return CanSearchByContent(typeof(T));
+        return await CanSearchByContentAsync(typeof(T));
     }
 
-    public bool CanSearchByContent(Type t)
+    public async Task<bool> CanSearchByContentAsync(Type t)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
-        if (!CanIndexByContent(t, tenantId))
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
+        if (!await CanIndexByContentAsync(t, tenantId))
         {
             return false;
         }
@@ -181,7 +181,7 @@ public class SearchSettingsHelper
             return true;
         }
 
-        return _tenantManager.GetTenantQuota(tenantId).ContentSearch;
+        return (await _tenantManager.GetTenantQuotaAsync(tenantId)).ContentSearch;
     }
 }
 

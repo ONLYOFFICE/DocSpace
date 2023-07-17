@@ -67,19 +67,19 @@ public class InvitationLinkService
         return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy) + "&toRoom=true";
     }
 
-    public string GetInvitationLink(string email, FileShare share, Guid createdBy)
+    public async Task<string> GetInvitationLinkAsync(string email, FileShare share, Guid createdBy)
     {
         var type = FileSecurity.GetTypeByShare(share);
         
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
+        var link = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.LinkInvite, type, createdBy)
                    + $"&emplType={type:d}&toRoom=true";
 
         return link;
     }
 
-    public string GetInvitationLink(string email, EmployeeType employeeType, Guid createdBy)
+    public async Task<string> GetInvitationLinkAsync(string email, EmployeeType employeeType, Guid createdBy)
     {
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, employeeType, createdBy)
+        var link = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.LinkInvite, employeeType, createdBy)
             + $"&emplType={employeeType:d}";
 
         return link;
@@ -97,23 +97,23 @@ public class InvitationLinkService
 
         try
         {
-            tenant = _tenantManager.GetCurrentTenant();
+            tenant = await _tenantManager.GetCurrentTenantAsync();
         }
         catch (Exception)
         {
             return linkData;
         }
 
-        if (_tariffService.GetTariff(tenant.Id).State > TariffState.Paid)
+        if ((await _tariffService.GetTariffAsync(tenant.Id)).State > TariffState.Paid)
         {
             return new InvitationLinkData { Result = EmailValidationKeyProvider.ValidationResult.Invalid };
         }
         
         if (userId != default)
         {
-            var account = _authManager.GetAccountByID(tenant.Id, userId);
+            var account = await _authManager.GetAccountByIDAsync(tenant.Id, userId);
 
-            if (!_permissionContext.CheckPermissions(account, new UserSecurityProvider(employeeType), Constants.Action_AddRemoveUser))
+            if (!await _permissionContext.CheckPermissionsAsync(account, new UserSecurityProvider(employeeType), Constants.Action_AddRemoveUser))
             {
                 return linkData;
             }
@@ -137,13 +137,13 @@ public class InvitationLinkService
 
         var record = await GetLinkRecordAsync(validationResult.LinkId);
 
-        if (record?.FileShareOptions == null)
+        if (record?.Options == null)
         {
             linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
             return linkData;
         }
 
-        linkData.Result = record.FileShareOptions.ExpirationDate > DateTime.UtcNow ? 
+        linkData.Result = record.Options.ExpirationDate > DateTime.UtcNow ? 
             EmailValidationKeyProvider.ValidationResult.Ok : EmailValidationKeyProvider.ValidationResult.Expired;
         linkData.Share = record.Share;
         linkData.RoomId = record.EntryId.ToString();

@@ -119,7 +119,7 @@
     <value>Wystąpił błąd podczas operacji wysyłania</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Wysyłanie dokumentu przez DocuSign zostało przerwane.</value>
+    <value>Wysyłanie dokumentu przez DocuSign zostało przerwane</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
     <value>Dokument został wysłany do podpisania przez DocuSign</value>
@@ -137,7 +137,7 @@
     <value>Konwersja zajmuje zbyt dużo czasu.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>W usłudze dokumentów wystąpił błąd.</value>
+    <value>W usłudze dokumentów wystąpił błąd</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Plik jest otwarty do edycji przez {0}. Obecnie funkcja współtworzenia nie jest obsługiwana dla tego formatu pliku.</value>
@@ -188,7 +188,7 @@
     <value>Autor zapisu jest nieznany</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>Plik został uszkodzony podczas próby jego zapisania.</value>
+    <value>Plik został uszkodzony podczas próby jego zapisania</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
     <value>Nie udało się pobrać pliku do zapisu</value>
@@ -263,7 +263,7 @@
     <value>Wszyscy</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anonimowy użytkownik </value>
+    <value>Anonimowy użytkownik</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
     <value>Plik utworzony w folderze "{0}"</value>
@@ -290,7 +290,7 @@
     <value>Nazwisko</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>Plik jest odblokowany.</value>
+    <value>Plik jest odblokowany</value>
   </data>
   <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
     <value>Administrator DocSpace</value>
@@ -318,5 +318,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Współpracownik</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Współpracownik</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Edytujący</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrator pokoju</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Wysłano formularz</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Nowa wersja nie może być taka sama jak obecna</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień, aby skopiować plik</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień, aby skopiować katalog</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Nieprawidłowy dostawca</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Nie można użyć tego katalogu do przechowywania pokoju</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Link z zaproszeniem jest nieprawidłowy lub wygasł</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Dany dostawca jest już podłączony do pokoju</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Rola jest niedostępna dla tego rodzaju użytkownika</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień, aby zarchiwizować pokój</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Nie masz uprawnień do skopiowania do tego katalogu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Nie masz uprawnień do edycji pokoju</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Nie masz uprawnień do przeniesienia tego katalogu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Nie masz wystarczających uprawnień, aby cofnąć archiwizację pokoju</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Nie możesz edytować zarchiwizowanych pokoi</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Nie możesz przypiąć pokoju</value>
   </data>
 </root>

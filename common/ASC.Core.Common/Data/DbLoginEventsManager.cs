@@ -61,74 +61,63 @@ public class DbLoginEventsManager
         _mapper = mapper;
     }
 
-    public async Task<LoginEvent> GetById(int id)
+    public async Task<LoginEvent> GetByIdAsync(int id)
     {
         if (id < 0) return null;
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
-
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
+        
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
-    public async Task<List<BaseEvent>> GetLoginEvents(int tenantId, Guid userId)
+    public async Task<List<BaseEvent>> GetLoginEventsAsync(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
-        var loginInfo = await loginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
-            .OrderByDescending(r => r.Id)
-            .ToListAsync();
+        var loginInfo = await Queries.LoginEventsAsync(loginEventContext, tenantId, userId, _loginActions, date).ToListAsync();
 
         return _mapper.Map<List<LoginEvent>, List<BaseEvent>>(loginInfo);
     }
 
-    public async Task LogOutEvent(int loginEventId)
+    public async Task LogOutEventAsync(int loginEventId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
-        await loginEventContext.LoginEvents
-           .Where(r => r.Id == loginEventId)
-           .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
+        await Queries.DeleteLoginEventsAsync(loginEventContext, loginEventId);
 
-        ResetCache();
+        await ResetCacheAsync();
     }
 
-    public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsAsync(int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
-        await loginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Active)
-            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
+        await Queries.DeleteLoginEventsByUserIdAsync(loginEventContext, tenantId, userId);
 
         ResetCache(tenantId, userId);
     }
 
-    public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
+    public async Task LogOutAllActiveConnectionsForTenantAsync(int tenantId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
-        await loginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.Active)
-            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
+        await Queries.UpdateLoginEventsByTenantIdAsync(loginEventContext, tenantId);
     }
 
-    public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsExceptThisAsync(int loginEventId, int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
-        await loginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)
-            .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
+        await Queries.UpdateLoginEventsAsync(loginEventContext, tenantId, userId, loginEventId);
 
         ResetCache(tenantId, userId);
     }
 
-    public void ResetCache()
+    public async Task ResetCacheAsync()
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var userId = _authContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }
@@ -142,4 +131,53 @@ public class DbLoginEventsManager
     {
         return string.Join("", GuidLoginEvent, tenantId, userId);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<LoginEvent>>
+        LoginEventsAsync = EF.CompileAsyncQuery(
+            (MessagesContext ctx, int tenantId, Guid userId, IEnumerable<int> loginActions, DateTime date) =>
+                ctx.LoginEvents
+                    .Where(r => r.TenantId == tenantId
+                                && r.UserId == userId
+                                && loginActions.Contains(r.Action ?? 0)
+                                && r.Date >= date
+                                && r.Active)
+                    .OrderByDescending(r => r.Id)
+                    .AsQueryable());
+
+    public static readonly Func<MessagesContext, int, Task<int>> DeleteLoginEventsAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, int loginEventId) =>
+                ctx.LoginEvents
+                    .Where(r => r.Id == loginEventId)
+                    .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
+
+    public static readonly Func<MessagesContext, int, Guid, Task<int>> DeleteLoginEventsByUserIdAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, int tenantId, Guid userId) =>
+                ctx.LoginEvents
+                    .Where(r => r.TenantId == tenantId
+                                && r.UserId == userId
+                                && r.Active)
+                    .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
+
+    public static readonly Func<MessagesContext, int, Task<int>> UpdateLoginEventsByTenantIdAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, int tenantId) =>
+                ctx.LoginEvents
+                    .Where(r => r.TenantId == tenantId
+                                && r.Active)
+                    .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
+
+    public static readonly Func<MessagesContext, int, Guid, int, Task<int>> UpdateLoginEventsAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, int tenantId, Guid userId, int loginEventId) =>
+                ctx.LoginEvents
+                    .Where(r => r.TenantId == tenantId
+                                && r.UserId == userId
+                                && r.Id != loginEventId
+                                && r.Active)
+                    .ExecuteUpdate(r => r.SetProperty(p => p.Active, false)));
 }

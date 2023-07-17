@@ -1,5 +1,4 @@
 {
-  "Authorization": "Yetki",
   "CodeSubtitle": "{{email}} adresine 6 haneli bir kod gönderdik. Kodun sınırlı bir geçerlilik süresi vardır, kodu en kısa sürede girin.",
   "CodeTitle": "Kod tarafınıza e-posta olarak gönderildi",
   "CookieSettingsTitle": "Oturum ömrü",

@@ -320,7 +320,7 @@ public static class DocumentService
 
         string dataResponse;
         using (var response = await httpClient.SendAsync(request, cancellationTokenSource.Token))
-        using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
+        await using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
         {
             if (stream == null)
             {
@@ -417,7 +417,7 @@ public static class DocumentService
         string dataResponse = null;
 
         using (var response = await httpClient.SendAsync(request))
-        using (var responseStream = await response.Content.ReadAsStreamAsync())
+        await using (var responseStream = await response.Content.ReadAsStreamAsync())
         {
             if (responseStream != null)
             {
@@ -474,7 +474,7 @@ public static class DocumentService
         httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
         using var response = await httpClient.SendAsync(request);
-        using var responseStream = await response.Content.ReadAsStreamAsync();
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
         if (responseStream == null)
         {
             throw new Exception("Empty response");

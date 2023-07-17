@@ -92,7 +92,7 @@ public class RestorePortalTask : PortalTaskBase
 
         using (var dataReader = new ZipReadOperator(BackupFilePath))
         {
-            using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
+            await using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
             {
                 Dump = entry != null && _coreBaseSettings.Standalone;
             }
@@ -118,7 +118,7 @@ public class RestorePortalTask : PortalTaskBase
 
                     await restoreTask.RunJob();
                 }
-                _backupRepository.MigrationBackupRecords(TenantId, _columnMapper.GetTenantMapping(), _region);
+                await _backupRepository.MigrationBackupRecordsAsync(TenantId, _columnMapper.GetTenantMapping(), _region);
             }
 
             _options.DebugEndRestoreData();
@@ -145,7 +145,7 @@ public class RestorePortalTask : PortalTaskBase
             _options.DebugRefreshLicense();
             try
             {
-                _licenseReader.RejectLicense();
+                await _licenseReader.RejectLicenseAsync();
             }
             catch (Exception ex)
             {
@@ -187,13 +187,13 @@ public class RestorePortalTask : PortalTaskBase
         if (ProcessStorage)
         {
             var storageModules = StorageFactoryConfig.GetModuleList(_region).Where(IsStorageModuleAllowed);
-            var tenants = _tenantManager.GetTenants(false);
+            var tenants = await _tenantManager.GetTenantsAsync(false);
 
             stepscount += storageModules.Count() * tenants.Count;
 
             SetStepsCount(stepscount + 1);
 
-            await DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorageAsync(storageModules, tenants);
         }
         else
         {
@@ -215,7 +215,7 @@ public class RestorePortalTask : PortalTaskBase
         }
         try
         {
-            using (var connection = DbFactory.OpenConnection())
+            await using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 command.CommandText = "select id, connection_string from mail_server_server";
@@ -259,7 +259,7 @@ public class RestorePortalTask : PortalTaskBase
     private async Task RestoreFromDumpFile(IDataReadOperator dataReader, string fileName1, string fileName2 = null, string db = null)
     {
         _options.DebugRestoreFrom(fileName1);
-        using (var stream = dataReader.GetEntry(fileName1))
+        await using (var stream = dataReader.GetEntry(fileName1))
         {
             await RunMysqlFile(stream, db);
         }
@@ -268,7 +268,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugRestoreFrom(fileName2);
         if (fileName2 != null)
         {
-            using (var stream = dataReader.GetEntry(fileName2))
+            await using (var stream = dataReader.GetEntry(fileName2))
             {
                 await RunMysqlFile(stream, db);
             }
@@ -359,7 +359,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
+                var storage = await StorageFactory.GetStorageAsync(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -374,7 +374,8 @@ public class RestorePortalTask : PortalTaskBase
                         {
                             key = CrossPlatform.PathCombine(KeyHelper.GetStorage(), key);
                         }
-                        using var stream = dataReader.GetEntry(key);
+
+                        await using var stream = dataReader.GetEntry(key);
                         try
                         {
                             await storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
@@ -405,7 +406,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorageAsync(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 
@@ -413,7 +414,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(tenant.Id, module, _region);
+                var storage = await StorageFactory.GetStorageAsync(tenant.Id, module, _region);
                 var domains = StorageFactoryConfig.GetDomainList(module, _region).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);

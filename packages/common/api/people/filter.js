@@ -11,6 +11,7 @@ const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
 const DEFAULT_PAYMENTS = null;
+const DEFAULT_ACCOUNT_LOGIN_TYPE = null;
 
 const ACTIVE_EMPLOYEE_STATUS = 1;
 
@@ -24,6 +25,7 @@ const SORT_ORDER = "sortorder";
 const PAGE = "page";
 const PAGE_COUNT = "pagecount";
 const PAYMENTS = "payments";
+const ACCOUNT_LOGIN_TYPE = "accountLoginType";
 
 class Filter {
   static getDefault(total = DEFAULT_TOTAL) {
@@ -42,7 +44,8 @@ class Filter {
       DEFAULT_ROLE,
       DEFAULT_SEARCH,
       DEFAULT_GROUP,
-      DEFAULT_PAYMENTS
+      DEFAULT_PAYMENTS,
+      DEFAULT_ACCOUNT_LOGIN_TYPE
     );
   }
   static getFilter(location) {
@@ -71,6 +74,8 @@ class Filter {
       (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
       defaultFilter.pageCount;
     const payments = urlFilter[PAYMENTS] || defaultFilter.payments;
+    const accountLoginType =
+      urlFilter[ACCOUNT_LOGIN_TYPE] || defaultFilter.accountLoginType;
 
     const newFilter = new Filter(
       page,
@@ -83,7 +88,8 @@ class Filter {
       role,
       search,
       group,
-      payments
+      payments,
+      accountLoginType
     );
 
     return newFilter;
@@ -100,7 +106,8 @@ class Filter {
     role = DEFAULT_ROLE,
     search = DEFAULT_SEARCH,
     group = DEFAULT_GROUP,
-    payments = DEFAULT_PAYMENTS
+    payments = DEFAULT_PAYMENTS,
+    accountLoginType = DEFAULT_ACCOUNT_LOGIN_TYPE
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -113,6 +120,7 @@ class Filter {
     this.total = total;
     this.group = group;
     this.payments = payments;
+    this.accountLoginType = accountLoginType;
   }
 
   getStartIndex = () => {
@@ -138,6 +146,7 @@ class Filter {
       search,
       group,
       payments,
+      accountLoginType,
     } = this;
 
     let dtoFilter = {
@@ -152,6 +161,7 @@ class Filter {
       groupId: group,
       fields: fields,
       payments,
+      accountLoginType,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -170,6 +180,7 @@ class Filter {
       group,
       page,
       payments,
+      accountLoginType,
     } = this;
 
     const dtoFilter = {};
@@ -202,6 +213,7 @@ class Filter {
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
     dtoFilter[PAYMENTS] = payments;
+    dtoFilter[ACCOUNT_LOGIN_TYPE] = accountLoginType;
 
     const str = toUrlParams(dtoFilter, true);
 
@@ -228,7 +240,8 @@ class Filter {
           this.role,
           this.search,
           this.group,
-          this.payments
+          this.payments,
+          this.accountLoginType
         );
   }
 
@@ -245,6 +258,7 @@ class Filter {
         null,
         "",
         idGroup,
+        null,
         null
       );
     } else {
@@ -263,7 +277,8 @@ class Filter {
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
       this.pageCount === filter.pageCount &&
-      this.payments === filter.payments;
+      this.payments === filter.payments &&
+      this.accountLoginType === filter.accountLoginType;
 
     return equals;
   }

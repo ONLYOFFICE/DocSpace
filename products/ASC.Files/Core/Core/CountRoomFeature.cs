@@ -38,14 +38,14 @@ public class CountRoomChecker : TenantQuotaFeatureCheckerCount<CountRoomFeature>
         _tariffService = tariffService;
     }
 
-    public override void CheckAdd(int tenantId, int newValue)
+    public override async Task CheckAddAsync(int tenantId, int newValue)
     {
-        if (_tariffService.GetTariff(tenantId).State > TariffState.Paid)
+        if ((await _tariffService.GetTariffAsync(tenantId)).State > TariffState.Paid)
         {
             throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "room");
         }
 
-        base.CheckAdd(tenantId, newValue);
+        await base.CheckAddAsync(tenantId, newValue);
     }
 }
 
@@ -58,7 +58,7 @@ public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeatur
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<int> GetValue()
+    public async Task<int> GetValueAsync()
     {
         var daoFactory = _serviceProvider.GetService<IDaoFactory>();
         var folderDao = _serviceProvider.GetService<IFolderDao<int>>();

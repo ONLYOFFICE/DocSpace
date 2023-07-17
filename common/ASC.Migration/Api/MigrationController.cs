@@ -63,9 +63,9 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("backuptmp")]
-    public string GetTmpFolder()
+    public async Task<string> GetTmpFolderAsync()
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -84,9 +84,9 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("list")]
-    public string[] List()
+    public async Task<string[]> ListAsync()
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -100,9 +100,9 @@ public class MigrationController : ControllerBase
     /// <param name="migratorName"></param>
     /// <param name="path"></param>
     [HttpPost("init/{migratorName}")]
-    public void UploadAndInit(string migratorName, string path)
+    public async Task UploadAndInitAsync(string migratorName, string path)
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -141,7 +141,7 @@ public class MigrationController : ControllerBase
     [HttpGet("status")]
     public async Task<object> Status()
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -173,9 +173,9 @@ public class MigrationController : ControllerBase
     /// 
     /// </summary>
     [HttpPost("cancel")]
-    public void Cancel()
+    public async Task CancelAsync()
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -193,9 +193,9 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <param name="info"></param>
     [HttpPost("migrate")]
-    public void Migrate(MigrationApiInfo info)
+    public async Task MigrateAsync(MigrationApiInfo info)
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -218,9 +218,9 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("logs")]
-    public async Task Logs()
+    public async Task LogsAsync()
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -241,9 +241,9 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <param name="isSendWelcomeEmail"></param>
     [HttpPost("finish")]
-    public void Finish(bool isSendWelcomeEmail)
+    public async Task FinishAsync(bool isSendWelcomeEmail)
     {
-        if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!_coreBaseSettings.Standalone || !await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new System.Security.SecurityException();
         }
@@ -258,8 +258,8 @@ public class MigrationController : ControllerBase
             var guidUsers = ongoingMigration.Migration.GetGuidImportedUsers();
             foreach (var gu in guidUsers)
             {
-                var u = _userManager.GetUsers(gu);
-                _studioNotifyService.UserInfoActivation(u);
+                var u = await _userManager.GetUsersAsync(gu);
+                await _studioNotifyService.UserInfoActivationAsync(u);
             }
         }
         ClearCache();

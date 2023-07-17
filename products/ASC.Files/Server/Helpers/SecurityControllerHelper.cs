@@ -129,7 +129,7 @@ public class SecurityControllerHelper : FilesHelperBase
     {
         if (share != null && share.Any())
         {
-            var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
+            var list = await share.ToAsyncEnumerable().SelectAwait(async s => await _fileShareParamsHelper.ToAceObjectAsync(s)).ToListAsync();
 
             var aceCollection = new AceCollection<T>
             {

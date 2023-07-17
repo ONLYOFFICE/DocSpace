@@ -114,7 +114,7 @@ public class MigrationRunner
             Console.WriteLine($"start restore fileGroup: {group.Key}");
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
+                var storage = await _storageFactory.GetStorageAsync(columnMapper.GetTenantMapping(), group.Key, _region);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -168,7 +168,7 @@ public class MigrationRunner
         if (!dbContextUser.Users.Any(q => q.Id == tenant.OwnerId))
         {
 
-            var user = dbContextUser.Users.Single(u => u.Tenant == tenantId);
+            var user = dbContextUser.Users.Single(u => u.TenantId == tenantId);
             tenant.OwnerId = user.Id;
             Console.WriteLine($"set ownerId {user.Id}");
         }
@@ -182,13 +182,13 @@ public class MigrationRunner
         var tenant = dbContextTenant.Tenants.Single(t => t.Id == tenantId);
         using var dbContextUser = _creatorDbContext.CreateDbContext<UserDbContext>(_region);
 
-        if (!dbContextUser.UserGroups.Any(q => q.Tenant == tenantId))
+        if (!dbContextUser.UserGroups.Any(q => q.TenantId == tenantId))
         {
             var userGroup = new UserGroup()
             {
-                Tenant = tenantId,
+                TenantId = tenantId,
                 LastModified = DateTime.UtcNow,
-                RefType = Core.UserGroupRefType.Contains,
+                RefType = ASC.Core.UserGroupRefType.Contains,
                 Removed = false,
                 UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
                 Userid = tenant.OwnerId.Value

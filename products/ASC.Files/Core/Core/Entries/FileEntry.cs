@@ -149,7 +149,7 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     {
         get
         {
-            if (!ModifiedOn.Equals(default) && Equals(FolderIdDisplay, _globalFolderHelper.FolderTrash) && _filesSettingsHelper.AutomaticallyCleanUp.IsAutoCleanUp)
+            if (!ModifiedOn.Equals(default) && Equals(FolderIdDisplay, _globalFolderHelper.FolderTrashAsync.Result) && _filesSettingsHelper.AutomaticallyCleanUp.IsAutoCleanUp)
             {
                 return _fileDateTime.GetModifiedOnWithAutoCleanUp(ModifiedOn, _filesSettingsHelper.AutomaticallyCleanUp.Gap);
             } 

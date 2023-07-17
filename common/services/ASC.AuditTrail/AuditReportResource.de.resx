@@ -97,242 +97,8 @@
   <data name="BrowserCol" xml:space="preserve">
     <value>Browser</value>
   </data>
-  <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Dateien angehängt: {1}</value>
-  </data>
-  <data name="CaseClosed" xml:space="preserve">
-    <value>Veranstaltung geschlossen: {0}</value>
-  </data>
-  <data name="CaseCreated" xml:space="preserve">
-    <value>Veranstaltung erstellt: {0}</value>
-  </data>
-  <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Ereignis der Historie erstellt: {1}</value>
-  </data>
-  <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Tag erstellt: {1}</value>
-  </data>
-  <data name="CaseDeleted" xml:space="preserve">
-    <value>Veranstaltung gelöscht: {0}</value>
-  </data>
-  <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Ereignis der Historie gelöscht: {1}</value>
-  </data>
-  <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Tag gelöscht: {1}</value>
-  </data>
-  <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Datei getrennt: {1}</value>
-  </data>
-  <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Unternehmen verknüpft: {1}</value>
-  </data>
-  <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Person verknüpft: {1}</value>
-  </data>
-  <data name="CaseOpened" xml:space="preserve">
-    <value>Veranstaltung geöffnet: {0}</value>
-  </data>
-  <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Zugriff geöffnet</value>
-  </data>
-  <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Zugriff beschränkt: {1}</value>
-  </data>
-  <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Veranstaltungen. Tag erstellt: {0}</value>
-  </data>
-  <data name="CasesDeleted" xml:space="preserve">
-    <value>Veranstaltungen gelöscht: {0}</value>
-  </data>
-  <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Veranstaltungen. Tag gelöscht: {0}</value>
-  </data>
-  <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Veranstaltungen in CSV-Datei exportiert: {0}</value>
-  </data>
-  <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Veranstaltungen aus der CSV-Datei importiert</value>
-  </data>
-  <data name="CasesModule" xml:space="preserve">
-    <value>Veranstaltungen</value>
-  </data>
-  <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Veranstaltungen [{0}]. Unternehmen unverknüpft: {1}</value>
-  </data>
-  <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Veranstaltungen[{0}]. Person unverknüpft: {1}</value>
-  </data>
-  <data name="CaseUpdated" xml:space="preserve">
-    <value>Veranstaltung aktualisiert: {0}</value>
-  </data>
-  <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen erstellt: {0}</value>
-  </data>
-  <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen gelöscht: {0}</value>
-  </data>
-  <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Veranstaltungen aktualisiert: {0}</value>
-  </data>
-  <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Veranstaltungen aktualisiert: {0}</value>
-  </data>
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Farbschema wurde geändert</value>
-  </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Allgemeine Einstellungen</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Unternehmen zusammengeführt: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Unternehmen</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Unternehmen [{0}]. Dateien angehängt: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Unternehmen erstellt: {0}</value>
-  </data>
-  <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Unternehmen [{0}]. Ereignis der Historie erstellt: {1}</value>
-  </data>
-  <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag für die Person erstellt: {1}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag erstellt: {1}</value>
-  </data>
-  <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Unternehmen mithilfe des Web-Formulars erstellt: {0}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Unternehmen gelöscht: {0}</value>
-  </data>
-  <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Unternehmen [{0}]. Ereignis der Historie gelöscht: {1}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Unternehmen [{0}]. Tag gelöscht: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Unternehmen [{0}]. Datei getrennt: {1}</value>
-  </data>
-  <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Unternehmen [{0}]. Person verknüpft: {1}</value>
-  </data>
-  <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Unternehmen [{0}]. Projekt verknüpft: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Unternehmen [{0}]. Person unverknüpft: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Unternehmen [{0}]. Projekt unverknüpft: {1}</value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Unternehmen aktualisiert: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Unternehmen [{0}]. Temperaturniveau der Person aktualisiert</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Unternehmen [{0}]. Foto aktualisiert</value>
-  </data>
-  <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Unternehmen [{0}]. Hauptinformation aktualisiert</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Unternehmen [{0}]. Temperaturniveau aktualisiert</value>
-  </data>
-  <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen erstellt: {0}</value>
-  </data>
-  <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen gelöscht: {0}</value>
-  </data>
-  <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Unternehmen aktualisiert: {0}</value>
-  </data>
-  <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Unternehmen aktualisiert: {0}</value>
-  </data>
-  <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Nachricht an den Administrator gesendet</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Kontakte [{0}]. Aufgabe erstellt: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Kontakte. Tag erstellt: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Kontakte gelöscht: {0}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Kontakte. Tag gelöscht: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Kontakte in CSV-Datei exportiert: {0}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Kontakte aus der CSV-Datei importiert</value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Kontakte</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Einstellungen</value>
-  </data>
-  <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Tag-Einstellungen für Kontakte aktualisiert</value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Kontakttemperaturniveau erstellt: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Kontakttemperaturniveau gelöscht: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Einstellungen der Kontakttemperaturniveaus wurden aktualisiert</value>
-  </data>
-  <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Kontakttemperaturniveaus aktualisiert: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Kontakttemperaturniveau aktualisiert: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Kontakttemperaturniveau [{0}]. Farbe aktualisiert</value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Kontakttyp erstellt: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Kontakttyp gelöscht: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Kontakttypen</value>
-  </data>
-  <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Kontakttypen aktualisiert: {0}</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Kontakttyp aktualisiert: {0}</value>
-  </data>
-  <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte erstellt: {0}</value>
-  </data>
-  <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte gelöscht: {0}</value>
-  </data>
-  <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Benutzerfeldern für Kontakte aktualisiert: {0}</value>
-  </data>
-  <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Kontakte aktualisiert: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
     <value>Cookie-Einstellungen sind aktualisiert</value>
@@ -342,66 +108,6 @@
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Erstellen</value>
-  </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Alle Daten wurden exportiert</value>
-  </data>
-  <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Standardwährung aktualisiert</value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>Verschikte Mails per SMTP Server</value>
-  </data>
-  <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP-Einstellungen wurden aktualisiert</value>
-  </data>
-  <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Kategorien der CRM-Aufgaben aktualisiert: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie erstellt: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie gelöscht: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM-Aufgabenkategorie aktualisiert: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>Symbol der CRM-Aufgabenkategorie aktualisiert: {0}</value>
-  </data>
-  <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM-Aufgabe geschlossen: {0}</value>
-  </data>
-  <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM-Aufgabe erstellt: {0}</value>
-  </data>
-  <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM-Aufgabe gelöscht: {0}</value>
-  </data>
-  <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM-Aufgabe geöffnet: {0}</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM-Aufgaben in die CSV-Datei exportiert: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM-Aufgaben aus der CSV-Datei importiert</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM-Aufgaben</value>
-  </data>
-  <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM-Aufgaben aktualisiert: {0}</value>
-  </data>
-  <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Testnachricht wurde gesendet</value>
-  </data>
-  <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Währungskurs aktualisiert: {0} - {1}</value>
   </data>
   <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
     <value>Benutzerdefinierte Navigationseinstellungen sind aktualisiert</value>
@@ -417,36 +123,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Abtrennen</value>
-  </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Dateien angehängt: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar erstellt</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar gelöscht</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar aktualisiert</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion erstellt: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion gelöscht: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Datei getrennt: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Diskussionen</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussion aktualisiert: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekte [{0}]. Verfolgung der Diskussion aktualisiert: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS-Einstellungen aktualisiert</value>
@@ -628,74 +304,8 @@
   <data name="GuestImported" xml:space="preserve">
     <value>Gast importiert: {0}</value>
   </data>
-  <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Kategorien vom Ereignis der Historie. Reihenfolge aktualisiert: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie erstellt: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie gelöscht: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Kategorie vom Ereignis der Historie aktualisiert: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Kategorien der Ereignisse der Historie [{0}]. Symbol aktualisiert</value>
-  </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Import</value>
-  </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Rechnung erstellt: {0} </value>
-  </data>
-  <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Standardmäßige Rechnungsbedingungen aktualisiert</value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Rechnung gelöscht: {0}</value>
-  </data>
-  <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>heruntergeladene Rechnung: {0}</value>
-  </data>
-  <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Artikel der Rechnungen erstellt: {0}</value>
-  </data>
-  <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Artikel der Rechnungen gelöscht: {0}</value>
-  </data>
-  <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Artikel der Rechnungen gelöscht: {0}</value>
-  </data>
-  <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Artikel der Rechnungen aktualisiert: {0}</value>
-  </data>
-  <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Nummerformat der Rechnungen aktualisiert</value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Rechnungen gelöscht: {0}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Einstellungen der Rechnungen</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Rechnungen</value>
-  </data>
-  <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Rechnungen [{0}]. Status aktualisiert: {1}</value>
-  </data>
-  <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Steuer der Rechnungen erstellt: {0}</value>
-  </data>
-  <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Steuer der Rechnungen gelöscht: {0}</value>
-  </data>
-  <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Steuer der Rechnungen aktualisiert: {0}</value>
-  </data>
-  <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Rechnung aktualisiert: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
@@ -728,7 +338,7 @@
     <value>Anmeldung fehlgeschlagen. Ungültiges Recaptcha</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden.</value>
+    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
     <value>Fehlgeschlagene Anmeldung via API</value>
@@ -737,7 +347,7 @@
     <value>Fehlgeschlagene Anmeldung via API und SMS-Code</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
-    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen </value>
+    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen</value>
   </data>
   <data name="LoginFailViaApiTfa" xml:space="preserve">
     <value>Anmeldung über API und Authentifizierungsanwendung ist fehlgeschlagen</value>
@@ -758,7 +368,7 @@
     <value>Bericht über Anmeldehistorie ({0}-{1})</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung </value>
+    <value>Erfolgreiche Anmeldung</value>
   </data>
   <data name="LoginSuccessSocialAccount" xml:space="preserve">
     <value>Login über Konto im sozialen Netzwerk ist erfolgreich</value>
@@ -793,131 +403,11 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Mail Service Einstellungen sind aktualisiert</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein erstellt: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein gelöscht: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Meilensteine</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Meilenstein aktualisiert: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Meilensteine [{1}]. Status aktualisiert: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modul</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Verschieben</value>
-  </data>
-  <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Verkaufschancen. Tag erstellt: {0}</value>
-  </data>
-  <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Verkaufschancen gelöscht: {0}</value>
-  </data>
-  <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Verkaufschancen. Tag gelöscht: {0}</value>
-  </data>
-  <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Verkaufschancen in CSV-Datei exportiert: {0}</value>
-  </data>
-  <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Verkaufschancen aus der CSV-Datei importiert</value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Verkaufschancen</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Dateien angehängt: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Verkaufschance erstellt: {0}</value>
-  </data>
-  <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Ereignis der Historie erstellt: {1}</value>
-  </data>
-  <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Tag erstellt: {1}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Verkaufschance gelöscht: {0}</value>
-  </data>
-  <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Ereignis der Historie gelöscht: {1}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Tag gelöscht: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Datei getrennt: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Unternehmen verknüpft: {1}</value>
-  </data>
-  <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Person verknüpft: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Zugriff geöffnet</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Zugriff beschränkt: {1}</value>
-  </data>
-  <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Phase der Verkaufschance erstellt: {0}</value>
-  </data>
-  <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Phase der Verkaufschance gelöscht: {0}</value>
-  </data>
-  <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge von Phasen der Verkaufschancen aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Phase der Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Farbe von Phase der Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Unternehmen unverknüpft: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Verkaufschancen [{0}]. Person unverknüpft: {1}</value>
-  </data>
-  <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Phase der Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance erstellt: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance gelöscht: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Benutzerfelder für Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Verkaufschance aktualisiert: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Profil des Unternehmens. Adresse aktualisiert.</value>
-  </data>
-  <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Profil des Unternehmens. Unternehmensname aktualisiert: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Profil des Unternehmens. Logo der Rechnung aktualisiert</value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Andere Einstellungen</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Sonstiges</value>
@@ -942,78 +432,6 @@
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Personen</value>
-  </data>
-  <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Personen [{0}]. Dateien angehängt: {1}</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Person erstellt: {0}</value>
-  </data>
-  <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag für das Unternehmen erstellt: {1}</value>
-  </data>
-  <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Ereignis der Historie erstellt: {1}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag erstellt: {1}</value>
-  </data>
-  <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Person mithilfe des Web-Formulars erstellt: {0}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Person gelöscht: {0}</value>
-  </data>
-  <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Ereignis der Historie gelöscht: {1}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag gelöscht: {1}</value>
-  </data>
-  <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Personen [{0}]. Datei getrennt: {1}</value>
-  </data>
-  <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Projekt verknüpft: {1}</value>
-  </data>
-  <data name="PersonsCreated" xml:space="preserve">
-    <value>Personen erstellt: {0}</value>
-  </data>
-  <data name="PersonsMerged" xml:space="preserve">
-    <value>Personen zusammengeführt: {0} - {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Personen</value>
-  </data>
-  <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Projekt unverknüpft: {1}</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Person aktualisiert: {0}</value>
-  </data>
-  <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Temperaturniveau des Unternehmens aktualisiert</value>
-  </data>
-  <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Personen [{0}]. Foto aktualisiert</value>
-  </data>
-  <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Personen [{0}]. Grundinformation aktualisiert</value>
-  </data>
-  <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Temperaturniveau aktualisiert</value>
-  </data>
-  <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Benutzerfeld für Personen erstellt: {0}</value>
-  </data>
-  <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Benutzerfeld für Personen gelöscht: {0}</value>
-  </data>
-  <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Reihenfolge der Benutzerfelder für Personen aktualisiert: {0}</value>
-  </data>
-  <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Benutzerfeld für Personen aktualisiert: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Plattform</value>
@@ -1060,86 +478,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Produkte</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Projekt erstellt: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Vorlagen [{0}]. Projekt erstellt: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projekt gelöscht: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekte [{0}]. Mitglied gelöscht: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Projekt gefolgt: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projekte [{0}]. Unternehmen verknüpft: {1}</value>
-  </data>
-  <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projekte [{0}]. Kontakte verknüpft: {1}</value>
-  </data>
-  <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projekte [{0}]. Person verknüpft: {1}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekte aus Basecamp importiert: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekte</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekte</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Einstellungen</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Vorlage des Projektes erstellt: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Vorlage des Projektes gelöscht: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Vorlage des Projektes aktualisiert: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projekt nicht mehr verfolgt: {0}</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projekte [{0}]. Unternehmen unverknüpft: {1}</value>
-  </data>
-  <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projekte [{0}]. Person unverknüpft: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekt aktualisiert: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekte [{0}]. Mitglieder [{1}]. Zugriffsrechte aktualisiert</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Status aktualisiert: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekte [{0}]. Team aktualisiert: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Erneut zuweisen</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Berichte</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes erstellt: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes gelöscht: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Berichtsvorlage des Projektes aktualisiert: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Senden</value>
@@ -1163,7 +503,7 @@
     <value>SSO aktiviert</value>
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
-    <value>Backup starten </value>
+    <value>Backup starten</value>
   </data>
   <data name="StartStorageDecryption" xml:space="preserve">
     <value>Entschlüsselung des Speichers anfangen</value>
@@ -1174,83 +514,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Regionsmigration des Portals starten</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe erstellt: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe gelöscht: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe aktualisiert: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgaben [{2}]. Status aktualisiert: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Systemkonto</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Ziel-ID</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Dateien angehängt: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar erstellt</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar gelöscht</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar aktualisiert</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe erstellt: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekte [{0}]. Diskussionen [{1}]. Aufgabe erstellt: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe gelöscht: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe: {1}. Datei getrennt: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekte [{0}]. Meilensteine [{1}]. Aufgabe verschoben: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben verknüpft: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Aufgaben</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben unverknüpft: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe erstellt: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Arbeitszeit an der Aufgabe gelöscht: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Arbeitszeit an der Aufgabe[{0}]. Status aktualisiert: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe aktualisiert: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Von Meilensteinen unverknüpft.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgabe aktualisiert: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekte [{0}]. Verfolgung der Aufgabe aktualisiert: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekte [{0}]. Aufgaben [{1}]. Status aktualisiert: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Team-Vorlage wurde geändert</value>
@@ -1393,7 +661,13 @@
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Kennwort aktualisiert</value>
   </data>
-  <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Schlüssel des Formulars Kontakte der Webseite wurde aktualisiert</value>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Raum erstellt</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Raum</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Papierkorb wurde geleert</value>
   </data>
 </root>

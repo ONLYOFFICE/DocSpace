@@ -147,7 +147,7 @@ public class ProductEntryPoint : Product
 
         if (whatsNewType == WhatsNewType.RoomsActivity)
         {
-            events = _auditEventsRepository.GetByFilterWithActions(
+            events = await _auditEventsRepository.GetByFilterWithActionsAsync(
                 withoutUserId: userId,
                 actions: StudioWhatsNewNotify.RoomsActivityActions,
                 from: scheduleDate.AddHours(-1),
@@ -156,22 +156,22 @@ public class ProductEntryPoint : Product
         }
         else
         {
-            events = _auditEventsRepository.GetByFilterWithActions(
+            events = await _auditEventsRepository.GetByFilterWithActionsAsync(
                 withoutUserId: userId,
                 actions: StudioWhatsNewNotify.DailyActions,
                 from: scheduleDate.Date.AddDays(-1),
                 to: scheduleDate.Date.AddSeconds(-1),
-            limit: 100);
+                limit: 100);
         }
 
         var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
 
-        var userRoomsWithRole = await GetUserRoomsWithRole(userId);
+        var userRoomsWithRole = await GetUserRoomsWithRoleAsync(userId);
 
         var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
-        var userRoomsForSend = userRoomsWithRoleForSend.Select(r=> r.Key);
+        var userRoomsForSend = userRoomsWithRoleForSend.Select(r => r.Key);
 
-        var docSpaceAdmin = _userManager.IsDocSpaceAdmin(userId);
+        var docSpaceAdmin = await _userManager.IsDocSpaceAdminAsync(userId);
 
         var result = new List<ActivityInfo>();
 
@@ -193,17 +193,6 @@ public class ProductEntryPoint : Product
                 activityInfo.FileTitle = e.Description[1];
             }
 
-            if (e.Action == (int)MessageAction.UserCreated
-            || e.Action == (int)MessageAction.UserUpdated)
-            {
-                if (docSpaceAdmin)
-                {
-                    result.Add(activityInfo);
-                }
-
-                continue;
-            }
-
             if (e.Action == (int)MessageAction.RoomCreated && !docSpaceAdmin)
             {
                 continue;
@@ -223,6 +212,17 @@ public class ProductEntryPoint : Product
             additionalInfo = JsonSerializer.Deserialize<AdditionalNotificationInfo>(obj);
 
             activityInfo.TargetUsers = additionalInfo.UserIds;
+
+            if (e.Action == (int)MessageAction.UserCreated
+                || e.Action == (int)MessageAction.UserUpdated)
+            {
+                if (docSpaceAdmin)
+                {
+                    result.Add(activityInfo);
+                }
+
+                continue;
+            }
 
             if (e.Action == (int)MessageAction.UsersUpdatedType)
             {
@@ -296,14 +296,14 @@ public class ProductEntryPoint : Product
     public override ProductContext Context => _productContext;
     public override string ApiURL => string.Empty;
 
-    private async Task<Dictionary<string, bool>> GetUserRoomsWithRole(Guid userId)
+    private async Task<Dictionary<string, bool>> GetUserRoomsWithRoleAsync(Guid userId)
     {
         var result = new Dictionary<string, bool>();
 
         var folderDao = _daoFactory.GetFolderDao<int>();
         var securityDao = _daoFactory.GetSecurityDao<int>();
 
-        var currentUserSubjects = _fileSecurity.GetUserSubjects(userId);
+        var currentUserSubjects = await _fileSecurity.GetUserSubjectsAsync(userId);
         var currentUsersRecords = await securityDao.GetSharesAsync(currentUserSubjects).ToListAsync();
 
         foreach (var record in currentUsersRecords)

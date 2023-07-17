@@ -1,5 +1,4 @@
 {
-  "Authorization": "Valtuutus",
   "CodeSubtitle": "Lähetimme 6-numeroisen koodin osoitteeseen {{email}}. Koodilla on rajoitettu voimassaoloaika, syötä se mahdollisimman pian.",
   "CodeTitle": "Koodi lähetettiin sinulle sähköpostitse",
   "CookieSettingsTitle": "Istunnon kesto",

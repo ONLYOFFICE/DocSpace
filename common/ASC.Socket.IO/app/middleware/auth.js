@@ -9,9 +9,10 @@ module.exports = (socket, next) => {
 
   const cookie = req?.cookies?.authorization || req?.cookies?.asc_auth_key;
   const token = req?.headers?.authorization;
+  const share = socket.handshake.query?.share;
 
-  if (!cookie && !token) {
-    const err = new Error("Authentication error (not token or cookie)");
+  if (!cookie && !token && !share) {
+    const err = new Error("Authentication error (not token or cookie or share key)");
     logger.error(err);
     socket.disconnect("unauthorized");
     next(err);
@@ -31,20 +32,18 @@ module.exports = (socket, next) => {
     return;
   }
 
-  let headers;
-  if (cookie)
-    headers = {
-      Authorization: cookie,
-    };
-
   const basePath = portalManager(req)?.replace(/\/$/g, "");
+  let headers = {};
 
-  logger.info(`API basePath='${basePath}' Authorization='${cookie}'`);
+  if (cookie) {
+    headers.Authorization = cookie;
+
+    logger.info(`API basePath='${basePath}' Authorization='${cookie}'`);
 
   const getUser = () => {
     return request({
       method: "get",
-      url: "/people/@self.json?fields=id,userName,displayName",
+      url: "/people/@self?fields=id,userName,displayName",
       headers,
       basePath,
     });
@@ -53,23 +52,59 @@ module.exports = (socket, next) => {
   const getPortal = () => {
     return request({
       method: "get",
-      url: "/portal.json?fields=tenantId,tenantDomain",
+      url: "/portal?fields=tenantId,tenantDomain",
       headers,
       basePath,
     });
   };
 
-  return Promise.all([getUser(), getPortal()])
-    .then(([user, portal]) => {
-      logger.info("Get account info", { user, portal });
-      session.user = user;
-      session.portal = portal;
-      session.save();
-      next();
-    })
-    .catch((err) => {
-      logger.error("Error of getting account info", err);
+    return Promise.all([getUser(), getPortal()])
+      .then(([user, portal]) => {
+        logger.info("Get account info", { user, portal });
+        session.user = user;
+        session.portal = portal;
+        session.save();
+        next();
+      })
+      .catch((err) => {
+        logger.error("Error of getting account info", err);
+        socket.disconnect("Unauthorized");
+        next(err);
+      });
+  }
+
+  if (share) {
+    if (req?.cookies) {
+      const pairs = Object.entries(req.cookies).map(([key, value]) => `${key}=${value}`);
+
+      if (pairs.length > 0) {
+        let cookie = pairs.join(';');
+        cookie += ';';
+        headers.Cookie = cookie;
+      }
+    }
+    
+    return request({
+      method: "get",
+      url: `/files/share/${share}`,
+      headers,
+      basePath,
+    }).then(validation => {
+      if (validation.status !== 0) {
+        const err = new Error("Invalid share key");
+        logger.error("Share key validation failure:", err);
+        next(err);
+      } else {
+        logger.info(`Share key validation successful: key=${share}`)
+        session.anonymous = true;
+        session.portal = { tenantId: validation.tenantId }
+        session.save();
+        next();
+      }
+    }).catch(err => {
+      logger.error(err);
       socket.disconnect("Unauthorized");
       next(err);
-    });
+    })
+  }
 };

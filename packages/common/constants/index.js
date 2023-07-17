@@ -7,6 +7,7 @@ export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 export const LIVE_CHAT_LOCAL_STORAGE_KEY = "live_chat_state";
+export const MAX_FILE_COMMENT_LENGTH = 255;
 
 /**
  * Enum for employee activation status.
@@ -48,6 +49,33 @@ export const EmployeeType = Object.freeze({
 export const PaymentsType = Object.freeze({
   Paid: "0",
   Free: "1",
+});
+/**
+ * Enum for account login type.
+ * @readonly
+ */
+export const AccountLoginType = Object.freeze({
+  SSO: "0",
+  LDAP: "1",
+  STANDART: "2",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const ApplyFilterOption = Object.freeze({
+  All: "All",
+  Files: "Files",
+  Folder: "Folder",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const FilesSelectorFilterTypes = Object.freeze({
+  DOCX: "DOCX",
+  IMG: "IMG",
+  GZ: "GZ",
 });
 /**
  * Enum for filter subject.
@@ -407,6 +435,7 @@ export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",
   filterFolders: "filter-folders",
+  filterRoom: "filter-room",
   filterContent: "filter-withContent",
   roomFilterProviderType: "filter-provider-type",
   roomFilterType: "filter-type",
@@ -424,4 +453,13 @@ export const FilterKeys = Object.freeze({
   me: "me",
   other: "other",
   user: "user",
+});
+
+export const IndexedDBStores = Object.freeze({
+  images: "images",
+});
+
+export const FilterSelectorTypes = Object.freeze({
+  people: "people-selector",
+  rooms: "rooms-selector",
 });

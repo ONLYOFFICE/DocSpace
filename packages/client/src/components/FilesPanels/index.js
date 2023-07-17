@@ -4,11 +4,9 @@ import { inject, observer } from "mobx-react";
 import {
   SharingPanel,
   UploadPanel,
-  OperationsPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
   NewFilesPanel,
-  SelectFileDialog,
   HotkeyPanel,
   InvitePanel,
 } from "../panels";
@@ -27,7 +25,10 @@ import {
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
+import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
+import FilesSelector from "../FilesSelector";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 
 const Panels = (props) => {
   const {
@@ -60,6 +61,7 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible,
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
+    restoreRoomDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -78,10 +80,11 @@ const Panels = (props) => {
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
     (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
-      <OperationsPanel
-        key="operation-panel"
+      <FilesSelector
+        key="files-selector"
+        isMove={moveToPanelVisible}
         isCopy={copyPanelVisible}
-        isRestore={restoreAllPanelVisible}
+        isRestoreAll={restoreAllPanelVisible}
       />
     ),
     connectDialogVisible && <ConnectDialog key="connect-dialog" />,
@@ -108,27 +111,22 @@ const Panels = (props) => {
       <CreateRoomConfirmDialog key="create-room-confirm-dialog" />
     ),
     selectFileDialogVisible && (
-      <SelectFileDialog
+      <FilesSelector
         key="select-file-dialog"
-        //resetTreeFolders
-        onSelectFile={createMasterForm}
+        filterParam={FilesSelectorFilterTypes.DOCX}
         isPanelVisible={selectFileDialogVisible}
+        onSelectFile={createMasterForm}
         onClose={onClose}
-        filteredType="exceptPrivacyTrashArchiveFolders"
-        ByExtension
-        searchParam={".docx"}
-        dialogName={t("Translations:CreateMasterFormFromFile")}
-        filesListTitle={t("Common:SelectDOCXFormat")}
-        creationButtonPrimary
-        withSubfolders={false}
       />
     ),
+
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
     invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
     archiveDialogVisible && <ArchiveDialog key="archive-dialog" />,
+    restoreRoomDialogVisible && <RestoreRoomDialog key="archive-dialog" />,
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
@@ -167,6 +165,7 @@ export default inject(
       connectItem, //TODO:
       restoreAllPanelVisible,
       archiveDialogVisible,
+      restoreRoomDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -213,6 +212,7 @@ export default inject(
       inviteUsersWarningDialogVisible,
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
+      restoreRoomDialogVisible,
     };
   }
 )(observer(Panels));

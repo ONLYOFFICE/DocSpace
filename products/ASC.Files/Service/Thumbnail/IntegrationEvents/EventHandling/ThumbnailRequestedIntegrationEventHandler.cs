@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Threading.Channels;
-
-using ASC.Core.Billing;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
 [Scope]
@@ -59,36 +53,40 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
     private async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var result = filesDbContext.Files
-                    .AsQueryable()
-                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating && EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5);
+        var files = await Queries.DbFilesAsync(filesDbContext).ToListAsync();
 
-        var updatedRows = await result.ExecuteUpdateAsync(s => s.SetProperty(b => b.ThumbnailStatus, b => ASC.Files.Core.Thumbnail.Waiting));
-
-        if (updatedRows == 0)
+        if (files.Count == 0)
         {
             return new List<FileData<int>>();
         }
 
-        return result.ToList().Select(r =>
+        foreach (var f in files)
         {
-            var tariff = _tariffService.GetTariff(r.TenantId);
+            f.ThumbnailStatus = Files.Core.Thumbnail.Waiting;
+        }
+
+        await filesDbContext.SaveChangesAsync();
+
+        return await files.ToAsyncEnumerable().SelectAwait(async r =>
+        {
+            var tariff = await _tariffService.GetTariffAsync(r.TenantId);
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
 
             return fileData;
-        });
+        }).ToListAsync();
     }
 
 
     public async Task Handle(ThumbnailRequestedIntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            var tariff = _tariffService.GetTariff(@event.TenantId);
+            var tariff = await _tariffService.GetTariffAsync(@event.TenantId);
             var freezingThumbnails = await GetFreezingThumbnailsAsync();
             var data = @event.FileIds.Select(fileId => new FileData<int>(@event.TenantId, Convert.ToInt32(fileId), @event.BaseUrl, tariff.State))
                           .Union(freezingThumbnails);
@@ -96,11 +94,22 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
             if (await _channelWriter.WaitToWriteAsync())
             {
-                foreach(var item in data)
+                foreach (var item in data)
                 {
                     await _channelWriter.WriteAsync(item);
                 }
             }
         }
     }
+}
+
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFile>> DbFilesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.Files
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == Files.Core.Thumbnail.Creating &&
+                                EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5));
 }

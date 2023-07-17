@@ -3,6 +3,11 @@ import React from "react";
 import AccessRightSelect from "./";
 import { data } from "./data";
 
+export default {
+  title: "Components/AccessRightSelect",
+  component: AccessRightSelect,
+};
+
 const Wrapper = (props) => (
   <div
     style={{

@@ -5,6 +5,32 @@ import toastr from "./toastr";
 import Button from "../button";
 import Link from "../link";
 
+export default {
+  title: "Components/Toast",
+  component: Toast,
+
+  argTypes: {
+    withCross: {
+      description:
+        "If `false`: toast disappeared after clicking on any area of toast. If `true`: toast disappeared after clicking on close button",
+    },
+    timeout: {
+      description:
+        "Time (in milliseconds) for showing your toast. Setting in `0` let you to show toast constantly until clicking on it",
+    },
+    data: {
+      description: "Any components or data inside a toast",
+    },
+  },
+
+  parameters: {
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?node-id=648%3A4421&mode=dev",
+    },
+  },
+};
+
 const BaseTemplate = ({ type, data, title, timeout, withCross, ...args }) => {
   return (
     <>

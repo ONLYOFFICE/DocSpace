@@ -242,6 +242,7 @@ const InviteInput = ({
         {t("AddManually")}
         {!hideSelector && (
           <StyledLink
+            className="link-list"
             fontWeight="600"
             type="action"
             isHovered
@@ -260,6 +261,7 @@ const InviteInput = ({
       <StyledInviteInputContainer ref={inputsRef}>
         <StyledInviteInput ref={searchRef}>
           <TextInput
+            className="invite-input"
             scale
             onChange={onChange}
             placeholder={
@@ -288,6 +290,7 @@ const InviteInput = ({
               foundUsers
             ) : (
               <DropDownItem
+                className="add-item"
                 style={{ width: "inherit" }}
                 textOverflow
                 onClick={addEmail}
@@ -300,6 +303,7 @@ const InviteInput = ({
         )}
 
         <AccessSelector
+          className="add-manually-access"
           t={t}
           roomType={roomType}
           defaultAccess={selectedAccess}

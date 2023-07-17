@@ -1,23 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
-import config from "PACKAGE_FILE";
 import { RoomSearchArea } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
+
 import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { combineUrl } from "@docspace/common/utils";
-import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
+import AccountsFilter from "@docspace/common/api/people/filter";
+
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../HOCs/withLoader";
-import { withTranslation } from "react-i18next";
-import toastr from "@docspace/components/toast/toastr";
+
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
@@ -31,93 +31,135 @@ const StyledBlock = styled.div`
 
 const ArticleBodyContent = (props) => {
   const {
-    personal,
-    docSpace,
-    firstLoad,
-    showText,
     isDesktopClient,
-    // enableThirdParty,
-    isVisitor,
+    firstLoad,
     FirebaseHelper,
     theme,
+
+    showText,
     toggleArticleOpen,
-    categoryType,
-    isAdmin,
-    filesIsLoading,
+
     roomsFolderId,
     archiveFolderId,
+    myFolderId,
+    recycleBinFolderId,
+    rootFolderId,
+
+    isVisitor,
+    setIsLoading,
+
+    clearFiles,
+    selectedFolderId,
+    showArticleLoader,
+    setIsBurgerLoading,
   } = props;
 
-  const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  let loadTimeout = null;
+  const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
+  const [activeItemId, setActiveItemId] = React.useState(null);
 
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const cleanTimer = () => {
-    loadTimeout && clearTimeout(loadTimeout);
-    loadTimeout = null;
-  };
+  const isAccounts = location.pathname.includes("accounts/filter");
 
   const onClick = React.useCallback(
-    (folderId) => {
-      const {
-        toggleArticleOpen,
-        setIsLoading,
-        fetchFiles,
+    (folderId, title, rootFolderType) => {
+      const { toggleArticleOpen } = props;
 
-        fetchRooms,
-        setAlreadyFetchingRooms,
-      } = props;
+      let params = null;
+      let path = ``;
 
-      if (filesIsLoading) return;
-      const filesSection = window.location.pathname.indexOf("/filter") > 0;
+      const state = {
+        title,
+        isRoot: true,
+        rootFolderType,
+      };
 
-      if (filesSection) {
-        // loadTimeout = setTimeout(() => {
-        setIsLoading(true);
-        // }, 200);
-      } else {
-        showLoader();
-      }
+      let withTimer = !!selectedFolderId;
 
-      if (folderId === roomsFolderId || folderId === archiveFolderId) {
-        setAlreadyFetchingRooms(true);
+      switch (folderId) {
+        case myFolderId:
+          const myFilter = FilesFilter.getDefault();
+          myFilter.folder = folderId;
+          params = myFilter.toUrlParams();
 
-        const filter = RoomsFilter.getDefault();
-        filter.searchArea =
-          folderId === archiveFolderId
-            ? RoomSearchArea.Archive
-            : RoomSearchArea.Active;
+          path = getCategoryUrl(CategoryType.Personal);
 
-        fetchRooms(folderId, filter).finally(() => {
-          if (filesSection) {
-            cleanTimer();
-            setIsLoading(false);
-          } else {
-            hideLoader();
+          if (activeItemId === myFolderId && folderId === selectedFolderId)
+            return;
+
+          break;
+        case archiveFolderId:
+          const archiveFilter = RoomsFilter.getDefault();
+          archiveFilter.searchArea = RoomSearchArea.Archive;
+          params = archiveFilter.toUrlParams();
+          path = getCategoryUrl(CategoryType.Archive);
+          if (activeItemId === archiveFolderId && folderId === selectedFolderId)
+            return;
+          break;
+        case recycleBinFolderId:
+          const recycleBinFilter = FilesFilter.getDefault();
+          recycleBinFilter.folder = folderId;
+          params = recycleBinFilter.toUrlParams();
+          path = getCategoryUrl(CategoryType.Trash);
+          if (
+            activeItemId === recycleBinFolderId &&
+            folderId === selectedFolderId
+          )
+            return;
+          break;
+        case "accounts":
+          clearFiles();
+          const accountsFilter = AccountsFilter.getDefault();
+          params = accountsFilter.toUrlParams();
+          path = getCategoryUrl(CategoryType.Accounts);
+
+          if (activeItemId === "accounts" && isAccounts) return;
+
+          break;
+        case "settings":
+          clearFiles();
+
+          path = getCategoryUrl(CategoryType.Settings);
+          navigate(path);
+
+          if (isMobileOnly || isMobile()) {
+            toggleArticleOpen();
           }
-        });
-      } else {
-        fetchFiles(folderId, null, true, false)
-          .catch((err) => toastr.error(err))
-          .finally(() => {
-            if (filesSection) {
-              cleanTimer();
-              setIsLoading(false);
-            } else {
-              hideLoader();
-            }
-          });
+          return;
+        case roomsFolderId:
+        default:
+          const roomsFilter = RoomsFilter.getDefault();
+          roomsFilter.searchArea = RoomSearchArea.Active;
+          params = roomsFilter.toUrlParams();
+          path = getCategoryUrl(CategoryType.Shared);
+          if (activeItemId === roomsFolderId && folderId === selectedFolderId)
+            return;
+          break;
       }
+
+      setIsLoading(true, withTimer);
+      path += `?${params}`;
+
+      navigate(path, { state });
 
       if (isMobileOnly || isMobile()) {
         toggleArticleOpen();
       }
     },
-    [categoryType, roomsFolderId, archiveFolderId]
+    [
+      roomsFolderId,
+      archiveFolderId,
+      myFolderId,
+      recycleBinFolderId,
+      activeItemId,
+      selectedFolderId,
+      isAccounts,
+    ]
   );
 
   const onShowNewFilesPanel = React.useCallback(
@@ -133,6 +175,65 @@ const ArticleBodyContent = (props) => {
     [disableBadgeClick]
   );
 
+  React.useEffect(() => {
+    if (
+      location.pathname.includes("/rooms/shared") &&
+      activeItemId !== roomsFolderId
+    )
+      return setActiveItemId(roomsFolderId);
+
+    if (
+      location.pathname.includes("/rooms/archived") &&
+      activeItemId !== archiveFolderId
+    )
+      return setActiveItemId(archiveFolderId);
+
+    if (
+      location.pathname.includes("/rooms/personal") &&
+      activeItemId !== myFolderId
+    )
+      return setActiveItemId(myFolderId);
+
+    if (
+      location.pathname.includes("/files/trash") &&
+      activeItemId !== recycleBinFolderId
+    )
+      return setActiveItemId(recycleBinFolderId);
+
+    if (
+      location.pathname.includes("/accounts/filter") &&
+      activeItemId !== "accounts"
+    )
+      return setActiveItemId("accounts");
+
+    if (location.pathname.includes("/settings") && activeItemId !== "settings")
+      return setActiveItemId("settings");
+
+    if (location.pathname.includes("profile")) {
+      if (activeItemId) return;
+      return setActiveItemId(rootFolderId || roomsFolderId);
+    }
+
+    if (location.pathname.includes("/products/files/#preview")) {
+      setActiveItemId(rootFolderId);
+    }
+  }, [
+    location.pathname,
+    activeItemId,
+    roomsFolderId,
+    archiveFolderId,
+    myFolderId,
+    recycleBinFolderId,
+    isVisitor,
+    rootFolderId,
+  ]);
+
+  React.useEffect(() => {
+    setIsBurgerLoading(showArticleLoader);
+  }, [showArticleLoader]);
+
+  if (showArticleLoader) return <Loaders.ArticleFolder />;
+
   return (
     <>
       <Items
@@ -140,17 +241,17 @@ const ArticleBodyContent = (props) => {
         onBadgeClick={onShowNewFilesPanel}
         showText={showText}
         onHide={toggleArticleOpen}
+        activeItemId={activeItemId}
       />
 
-      {!isDesktopClient && showText && !docSpace && (
+      {/* {!isDesktopClient && showText && (
         <StyledBlock showText={showText}>
           <DownloadAppList theme={theme} />
-          {(isDesktop || isTablet) &&
-            personal &&
-            !firstLoad &&
-            campaigns.length > 0 && <Banner FirebaseHelper={FirebaseHelper} />}
+          {(isDesktop || isTablet) && !firstLoad && campaigns.length > 0 && (
+            <Banner FirebaseHelper={FirebaseHelper} />
+          )}
         </StyledBlock>
-      )}
+      )} */}
     </>
   );
 };
@@ -160,68 +261,50 @@ export default inject(
     auth,
     filesStore,
     treeFoldersStore,
-    selectedFolderStore,
     dialogsStore,
-    settingsStore,
+    selectedFolderStore,
+    clientLoadingStore,
   }) => {
+    const { clearFiles } = filesStore;
     const {
-      fetchFiles,
-      fetchRooms,
-      setAlreadyFetchingRooms,
-      setIsLoading,
-      setFirstLoad,
-      firstLoad,
-      isLoading,
-      isLoaded,
-      categoryType,
-      filesIsLoading,
-    } = filesStore;
+      showArticleLoader,
 
-    const { roomsFolderId, archiveFolderId } = treeFoldersStore;
+      setIsSectionFilterLoading,
+      firstLoad,
+    } = clientLoadingStore;
+
+    const setIsLoading = (param, withTimer) => {
+      setIsSectionFilterLoading(param, withTimer);
+    };
+
+    const { roomsFolderId, archiveFolderId, myFolderId, recycleBinFolderId } =
+      treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
-    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+
+    const selectedFolderId = selectedFolderStore.id;
+
+    const rootFolderId = selectedFolderStore.rootFolderId;
+
     const {
       showText,
-      articleOpen,
 
       toggleArticleOpen,
-
-      personal,
-      docSpace,
 
       isDesktopClient,
       FirebaseHelper,
       theme,
+      setIsBurgerLoading,
     } = auth.settingsStore;
-
-    const selectedFolderTitle = selectedFolderStore.title;
-
-    selectedFolderTitle
-      ? setDocumentTitle(selectedFolderTitle)
-      : setDocumentTitle();
 
     return {
       toggleArticleOpen,
       showText,
-      articleOpen,
-      enableThirdParty: settingsStore.enableThirdParty,
+      showArticleLoader,
       isVisitor: auth.userStore.user.isVisitor,
-      isAdmin: auth.userStore.user.isAdmin,
-      homepage: config.homepage,
-
-      fetchRooms,
-      setAlreadyFetchingRooms,
-
-      personal,
-      docSpace,
-
-      isArticleLoading,
-      setIsLoading,
-      setFirstLoad,
-      fetchFiles,
 
       setNewFilesPanelVisible,
+
       firstLoad,
       isDesktopClient,
       FirebaseHelper,
@@ -229,13 +312,15 @@ export default inject(
 
       roomsFolderId,
       archiveFolderId,
+      myFolderId,
+      recycleBinFolderId,
+      rootFolderId,
 
-      categoryType,
-      filesIsLoading,
+      setIsLoading,
+
+      clearFiles,
+      selectedFolderId,
+      setIsBurgerLoading,
     };
   }
-)(
-  withTranslation([])(
-    withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
-  )
-);
+)(withTranslation([])(observer(ArticleBodyContent)));

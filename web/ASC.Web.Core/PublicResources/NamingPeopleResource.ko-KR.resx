@@ -112,4 +112,37 @@
   <data name="DefaultUserTitle" xml:space="preserve">
     <value>직위</value>
   </data>
+  <data name="CommonGuest" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="DefaultGuest" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="EducationGuest" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="EducationGroupHead" xml:space="preserve">
+    <value>그룹 리드</value>
+  </data>
+  <data name="EducationGroups" xml:space="preserve">
+    <value>그룹</value>
+  </data>
+  <data name="EducationGuests" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="EducationGroup" xml:space="preserve">
+    <value>그룹</value>
+  </data>
+  <data name="CommonGuests" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="DefaultGuests" xml:space="preserve">
+    <value>게스트</value>
+  </data>
+  <data name="EducationRegDate" xml:space="preserve">
+    <value>회원 가입일</value>
+  </data>
+  <data name="EducationUserTitle" xml:space="preserve">
+    <value>제목</value>
+  </data>
 </root>

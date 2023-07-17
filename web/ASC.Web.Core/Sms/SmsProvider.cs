@@ -47,11 +47,11 @@ public class SmsProviderManager
         return SmscProvider.Enable() || ClickatellProvider.Enable() || ClickatellUSAProvider.Enable() || TwilioProvider.Enable() || TwilioSaaSProvider.Enable();
     }
 
-    public Task<bool> SendMessageAsync(string number, string message)
+    public async Task<bool> SendMessageAsync(string number, string message)
     {
         if (!Enabled())
         {
-            return Task.FromResult(false);
+            return false;
         }
 
         SmsProvider provider = null;
@@ -86,10 +86,10 @@ public class SmsProviderManager
 
         if (provider == null)
         {
-            return Task.FromResult(false);
+            return false;
         }
 
-        return provider.SendMessageAsync(number, message);
+        return await provider.SendMessageAsync(number, message);
     }
 }
 
@@ -157,7 +157,7 @@ public abstract class SmsProvider : Consumer
             httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
             using var response = await httpClient.SendAsync(request);
-            using var stream = await response.Content.ReadAsStreamAsync();
+            await using var stream = await response.Content.ReadAsStreamAsync();
             if (stream != null)
             {
                 using var reader = new StreamReader(stream);
@@ -255,7 +255,7 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
                 httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
                 using var response = await httpClient.SendAsync(request);
-                using var stream = await response.Content.ReadAsStreamAsync();
+                await using var stream = await response.Content.ReadAsStreamAsync();
                 if (stream != null)
                 {
                     using var reader = new StreamReader(stream);
@@ -290,9 +290,9 @@ public class SmscProvider : SmsProvider, IValidateKeysProvider
         return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
     }
 
-    public bool ValidateKeys()
+    public async Task<bool> ValidateKeysAsync()
     {
-        return double.TryParse(GetBalanceAsync(TenantManager.GetCurrentTenant(false), true).Result, NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+        return double.TryParse(await GetBalanceAsync(await TenantManager.GetCurrentTenantAsync(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
     }
 }
 
@@ -429,11 +429,11 @@ public class TwilioProvider : SmsProvider, IValidateKeysProvider
     }
 
 
-    public bool ValidateKeys()
+    public async Task<bool> ValidateKeysAsync()
     {
         try
         {
-            IncomingPhoneNumberResource.Read(client: new TwilioRestClient(AccountSid, AuthToken));
+            await IncomingPhoneNumberResource.ReadAsync(client: new TwilioRestClient(AccountSid, AuthToken));
             return true;
         }
         catch (Exception)

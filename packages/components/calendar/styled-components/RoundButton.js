@@ -24,10 +24,12 @@ export const RoundButton = styled.button`
     outline: ${(props) =>
       props.disabled
         ? `1px solid ${props.theme.calendar.outlineColor}`
-        : "2px solid #4781d1"};
+        : `2px solid ${props.theme.calendar.accent}`};
     span {
       border-color: ${(props) =>
-        props.disabled ? props.theme.calendar.disabledArrow : "#4781d1"};
+        props.disabled
+          ? props.theme.calendar.disabledArrow
+          : props.theme.calendar.accent};
     }
   }
 `;

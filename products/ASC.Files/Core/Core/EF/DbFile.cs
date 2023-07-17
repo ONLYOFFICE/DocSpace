@@ -62,6 +62,8 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public ForcesaveType Forcesave { get; set; }
     public Thumbnail ThumbnailStatus { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
 
     [Nested]
     public List<DbFolderTree> Folders { get; set; }
@@ -73,7 +75,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
 
     public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
     {
-        if (searchSettings.CanSearchByContent(GetType()))
+        if (searchSettings.CanSearchByContentAsync(GetType()).Result)
         {
             return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
         }
@@ -91,6 +93,8 @@ public static class DbFileExtension
 {
     public static ModelBuilderWrapper AddDbFiles(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFile>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFiles, Provider.MySql)
             .Add(PgSqlAddDbFiles, Provider.PostgreSql);

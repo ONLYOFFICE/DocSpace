@@ -14,6 +14,7 @@ import { decode } from "he";
 const HistoryBlock = ({
   t,
   selection,
+  selectionIsFile,
   feed,
   selectedFolder,
   selectionParentRoom,
@@ -22,6 +23,7 @@ const HistoryBlock = ({
   openUser,
   isVisitor,
   isCollaborator,
+  withFileList,
   isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
@@ -38,8 +40,6 @@ const HistoryBlock = ({
   const userAvatar = initiator.hasAvatar
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
-
-  const isSelectedFile = !selection.isFolder && !selection.isRoom;
 
   return (
     <StyledHistoryBlock
@@ -77,7 +77,7 @@ const HistoryBlock = ({
           selectionParentRoom={selectionParentRoom}
         />
 
-        {isItemAction && !isSelectedFile && (
+        {isItemAction && withFileList && (
           <HistoryBlockItemList
             t={t}
             items={[json, ...groupedFeeds]}

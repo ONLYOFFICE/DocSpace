@@ -93,7 +93,7 @@ $Message</value>
     <value>Dokumenty. Wszyscy sygnatariusze zakończeni $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Dokumenty. Zmienił się status podpisania.</value>
+    <value>Dokumenty. Zmienił się status podpisania</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Dokumenty. Wiadomości zostały wysłane.</value>
@@ -103,5 +103,53 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenty. Udzielono dostępu do folderu: $DocumentTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName wspomniał o Tobie w komentarzu do dokumentu
+
+$__AuthorName wspomniał o Tobie w komentarzu do dokumentu „$DocumentTitle”:”$ DocumentURL” w pokoju „$RoomTitle”:”$RoomURL”:
+
+$Wiadomość</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__ AuthorName usunął pokój
+
+$__AuthorName usunął pokój: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Wszyscy sygnatariusze zakończyli pracę nad dokumentem $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Dokumenty. Wszyscy sygnatariusze zakończyli pracę nad dokumentem $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Status podpisu uległ zmianie</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Powiadomienie DocSpace. Wspomniano w dokumencie</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Wspomniano w dokumencie</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Wysłano.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Powiadomienie DocSpace. Pokój został usunięty</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Przyznano dostęp do dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Przyznano dostęp do zaszyfrowanego dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Dokumenty. Przyznano dostęp do dokumentu: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Przyznano dostęp do katalogu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Dokumenty. Przyznano dostęp do katalogu: [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

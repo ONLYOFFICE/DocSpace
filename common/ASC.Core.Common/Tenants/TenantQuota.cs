@@ -29,7 +29,7 @@ namespace ASC.Core.Tenants;
 [DebuggerDisplay("{Tenant} {Name}")]
 public class TenantQuota : IMapFrom<DbQuota>
 {
-    public static readonly TenantQuota Default = new TenantQuota(Tenants.Tenant.DefaultTenant)
+    public static readonly TenantQuota Default = new TenantQuota(Tenant.DefaultTenant)
     {
         Name = "Default",
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
@@ -39,9 +39,10 @@ public class TenantQuota : IMapFrom<DbQuota>
         CountRoom = int.MaxValue
     };
 
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public string PriceCurrencySymbol { get; set; }
     public string ProductId { get; set; }
     public bool Visible { get; set; }
 
@@ -270,12 +271,12 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public TenantQuota(int tenant) : this()
     {
-        Tenant = tenant;
+        TenantId = tenant;
     }
 
     public TenantQuota(TenantQuota quota) : this()
     {
-        Tenant = quota.Tenant;
+        TenantId = quota.TenantId;
         Name = quota.Name;
         Price = quota.Price;
         ProductId = quota.ProductId;
@@ -286,15 +287,15 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public override int GetHashCode()
     {
-        return Tenant.GetHashCode();
+        return TenantId.GetHashCode();
     }
 
     public override bool Equals(object obj)
     {
-        return obj is TenantQuota q && q.Tenant == Tenant;
+        return obj is TenantQuota q && q.TenantId == TenantId;
     }
 
-    public async Task Check(IServiceProvider serviceProvider)
+    public async Task CheckAsync(IServiceProvider serviceProvider)
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
@@ -373,7 +374,8 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbQuota, TenantQuota>();
+        profile.CreateMap<DbQuota, TenantQuota>()
+            .ForMember(dest => dest.Price, o => o.MapFrom<TenantQuotaPriceResolver>());
     }
 
     public TenantQuotaFeature<T> GetFeature<T>(string name)

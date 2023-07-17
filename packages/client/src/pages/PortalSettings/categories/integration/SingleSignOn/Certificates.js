@@ -72,6 +72,11 @@ const Certificates = (props) => {
               ? t("idpCertificatesTooltip")
               : t("spCertificatesTooltip")
           }
+          className={
+            prefix === "idp"
+              ? "idp-certificates-tooltip icon-button"
+              : "sp-certificates-tooltip icon-button"
+          }
         />
       </Box>
 
@@ -81,6 +86,7 @@ const Certificates = (props) => {
         {prefix === "idp" && (
           <>
             <Button
+              id="idp-add-certificate"
               isDisabled={!enableSso || isLoadingXml}
               label={t("AddCertificate")}
               onClick={openIdpModal}
@@ -94,6 +100,7 @@ const Certificates = (props) => {
         {prefix === "sp" && (
           <>
             <Button
+              id="sp-add-certificate"
               isDisabled={!enableSso || isLoadingXml}
               label={t("AddCertificate")}
               onClick={openSpModal}
@@ -105,6 +112,7 @@ const Certificates = (props) => {
         )}
 
         <HideButton
+          id={prefix === "idp" ? "idp-hide-button" : "sp-hide-button"}
           value={additionalParameters}
           label={
             prefix === "idp"

@@ -138,6 +138,8 @@ const IpSecurity = (props) => {
   };
 
   const onSaveClick = async () => {
+    const newIps = ips.filter((ips) => ips.trim() !== "");
+    setIps(newIps);
     setIsSaving(true);
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
@@ -145,13 +147,17 @@ const IpSecurity = (props) => {
       return;
     }
 
+    const ipsObjectArr = ips.map((ip) => {
+      return { ip: ip };
+    });
+
     try {
-      await setIpRestrictions(ips);
+      await setIpRestrictions(ipsObjectArr);
       await setIpRestrictionsEnable(enable);
 
       saveToSessionStorage("defaultIPSettings", {
         enable: enable,
-        ips: ips,
+        ips: ipsObjectArr,
       });
       setShowReminder(false);
       toastr.success(t("SuccessfullySaveSettingsMessage"));
@@ -188,10 +194,12 @@ const IpSecurity = (props) => {
         spacing="8px"
         options={[
           {
+            id: "ip-security-disabled",
             label: t("Disabled"),
             value: "disabled",
           },
           {
+            id: "ip-security-enable",
             label: t("Common:Enable"),
             value: "enable",
           },
@@ -209,6 +217,7 @@ const IpSecurity = (props) => {
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
           regexp={regexp}
+          classNameAdditional="add-allowed-ip-address"
         />
       )}
 
@@ -237,6 +246,8 @@ const IpSecurity = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="ip-security-save"
+        additionalClassCancelButton="ip-security-cancel"
       />
     </MainContainer>
   );

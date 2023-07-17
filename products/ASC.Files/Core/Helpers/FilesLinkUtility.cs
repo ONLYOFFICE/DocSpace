@@ -39,6 +39,7 @@ public class FilesLinkUtility
     private readonly CoreSettings _coreSettings;
     private readonly IConfiguration _configuration;
     private readonly InstanceCrypto _instanceCrypto;
+    private readonly ExternalShare _externalShare;
 
     public FilesLinkUtility(
         CommonLinkUtility commonLinkUtility,
@@ -46,7 +47,8 @@ public class FilesLinkUtility
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         IConfiguration configuration,
-        InstanceCrypto instanceCrypto)
+        InstanceCrypto instanceCrypto, 
+        ExternalShare externalShare)
     {
         _commonLinkUtility = commonLinkUtility;
         _baseCommonLinkUtility = baseCommonLinkUtility;
@@ -54,6 +56,7 @@ public class FilesLinkUtility
         _coreSettings = coreSettings;
         _configuration = configuration;
         _instanceCrypto = instanceCrypto;
+        _externalShare = externalShare;
         _filesUploaderURL = _configuration["files:uploader:url"] ?? "~";
     }
 
@@ -75,6 +78,7 @@ public class FilesLinkUtility
     public const string AuthKey = "stream_auth";
     public const string Anchor = "anchor";
     public const string Size = "size";
+    public const string FolderShareKey = "share";
 
     public string FileHandlerPath
     {
@@ -262,14 +266,18 @@ public class FilesLinkUtility
 
     public string GetFileDownloadUrl(object fileId, int fileVersion, string convertToExtension)
     {
-        return string.Format(FileDownloadUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+        var url = string.Format(FileDownloadUrlString, HttpUtility.UrlEncode(fileId.ToString()))
                + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty)
                + (string.IsNullOrEmpty(convertToExtension) ? string.Empty : "&" + OutType + "=" + convertToExtension);
+
+        return GetUrlWithShare(url);
     }
 
     public string GetFileWebMediaViewUrl(object fileId)
     {
-        return FilesBaseAbsolutePath + "#preview/" + HttpUtility.UrlEncode(fileId.ToString());
+        var url = FilesBaseAbsolutePath + "#preview/" + HttpUtility.UrlEncode(fileId.ToString());
+
+        return GetUrlWithShare(url);
     }
 
     public string FileWebViewerUrlString
@@ -289,8 +297,10 @@ public class FilesLinkUtility
 
     public string GetFileWebEditorUrl<T>(T fileId, int fileVersion = 0)
     {
-        return string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+        var url = string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()))
             + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
+
+        return GetUrlWithShare(url);
     }
 
     public string GetFileWebEditorTryUrl(FileType fileType)
@@ -330,7 +340,8 @@ public class FilesLinkUtility
         {
             if (fileUtility.ExtsMustConvert.Contains(FileUtility.GetFileExtension(fileTitle)))
             {
-                return string.Format(FileWebViewerUrlString, HttpUtility.UrlEncode(fileId.ToString()));
+                var url = string.Format(FileWebViewerUrlString, HttpUtility.UrlEncode(fileId.ToString()));
+                return GetUrlWithShare(url);
             }
 
             return GetFileWebEditorUrl(fileId, fileVersion);
@@ -356,8 +367,10 @@ public class FilesLinkUtility
 
     public string GetFileThumbnailUrl(object fileId, int fileVersion)
     {
-        return string.Format(FileThumbnailUrlString, HttpUtility.UrlEncode(fileId.ToString()))
+        var url = string.Format(FileThumbnailUrlString, HttpUtility.UrlEncode(fileId.ToString()))
                + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
+
+        return GetUrlWithShare(url);
     }
 
 
@@ -369,7 +382,7 @@ public class FilesLinkUtility
                                         contentLength,
                                         tenantId,
                                         HttpUtility.UrlEncode(_instanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
-                                        Thread.CurrentThread.CurrentUICulture.Name,
+                                        CultureInfo.CurrentUICulture.Name,
                                         encrypted.ToString().ToLower());
 
         if (fileId != null)
@@ -430,12 +443,29 @@ public class FilesLinkUtility
 
         if (GetUrlSetting(key) != value)
         {
-            _coreSettings.SaveSetting(GetSettingsKey(key), value);
+             _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 
     private string GetSettingsKey(string key)
     {
         return "DocKey_" + key;
+    }
+    
+    private string GetUrlWithShare(string url)
+    {
+        if (_externalShare.GetLinkId() == default)
+        {
+            return url;
+        }
+
+        var key = _externalShare.GetKey();
+
+        if (!string.IsNullOrEmpty(key))
+        {
+            url += $"&{FolderShareKey}={key}";
+        }
+
+        return url;
     }
 }

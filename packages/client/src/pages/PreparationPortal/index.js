@@ -7,7 +7,7 @@ import Text from "@docspace/components/text";
 import { getRestoreProgress } from "@docspace/common/api/portal";
 import { observer, inject } from "mobx-react";
 import PropTypes from "prop-types";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const baseSize = 1073741824; //number of bytes in one GB
 const unSizeMultiplicationFactor = 3;
@@ -23,8 +23,13 @@ let timerId = null,
   prevProgress;
 
 const PreparationPortal = (props) => {
-  const { multiplicationFactor, t, withoutHeader, style, clearLocalStorage } =
-    props;
+  const {
+    multiplicationFactor,
+    t,
+    withoutHeader,
+    style,
+    clearLocalStorage,
+  } = props;
 
   const [percent, setPercent] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
