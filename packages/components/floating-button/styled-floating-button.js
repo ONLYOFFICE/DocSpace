@@ -27,6 +27,12 @@ const StyledFloatingButtonWrapper = styled.div`
     direction: ltr;
 
     bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
+
+    ${!isMobile &&
+    css`
+      width: 100px;
+      height: 70px;
+    `}
   }
 
   .layout-progress-bar_close-icon {
