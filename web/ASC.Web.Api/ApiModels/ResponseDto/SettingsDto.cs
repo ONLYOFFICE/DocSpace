@@ -62,6 +62,8 @@ public class SettingsDto
 
     public PluginsDto Plugins { get; set; }
 
+    public DeepLinkDto DeepLink { get; set; }
+
     public static SettingsDto GetSample()
     {
         return new SettingsDto

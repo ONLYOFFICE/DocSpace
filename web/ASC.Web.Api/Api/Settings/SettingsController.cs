@@ -187,6 +187,13 @@ public class SettingsController : BaseSettingsController
                 MeasurementId = _configuration["firebase:measurementId"] ?? ""
             };
 
+            settings.DeepLink = new DeepLinkDto
+            {
+                AndroidPackageName = _configuration["deeplink:androidpackagename"] ?? "",
+                Url = _configuration["deeplink:url"] ?? "",
+                IosPackageId = _configuration["deeplink:iospackageid"] ?? "",
+            };
+
             settings.HelpLink = await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
 
             bool debugInfo;
