@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public interface IBackupProvider
+namespace ASC.Data.Storage.Tar;
+public static class BuilderHeaders
 {
-    string Name { get; }
-    event EventHandler<ProgressChangedEventArgs> ProgressChanged;
-
-    Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer);
-    Task LoadFromAsync(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader);
-}
-
-public class ProgressChangedEventArgs : EventArgs
-{
-    public string Status { get; private set; }
-    public double Progress { get; private set; }
-    public bool Completed { get; private set; }
-
-    public ProgressChangedEventArgs(string status, double progress)
-        : this(status, progress, false) { }
-
-    public ProgressChangedEventArgs(string status, double progress, bool completed)
+    public static byte[] CreateHeader(string name, long size)
     {
-        Status = status;
-        Progress = progress;
-        Completed = completed;
+        var blockBuffer = new byte[512];
+
+        var tarHeader = new TarHeader()
+        {
+            Name = name,
+            Size = size
+        };
+
+        tarHeader.WriteHeader(blockBuffer, null);
+
+        return blockBuffer;
     }
 }

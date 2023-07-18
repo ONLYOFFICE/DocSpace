@@ -33,7 +33,7 @@ public class BackupProgressItem : BaseBackupProgressItem
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
-    private const string ArchiveFormat = "tar.gz";
+    private const string ArchiveFormat = "tar";
 
     private bool _isScheduled;
     private Guid _userId;

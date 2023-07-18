@@ -63,7 +63,21 @@ public class ChunkZipWriteOperator : IDataWriteOperator
         _sha = SHA256.Create();
     }
 
-    public async Task WriteEntryAsync(string key, Stream stream)
+    public async Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store)
+    {
+        Stream fileStream = null;
+        await ActionInvoker.TryAsync(async () =>
+        {
+            fileStream = await store.GetReadStreamAsync(domain, path);
+        }, 5, error => throw error);
+        if (fileStream != null)
+        {
+            await WriteEntryAsync(tarKey, fileStream);
+            fileStream.Dispose();
+        }
+    }
+
+    public async Task WriteEntryAsync(string tarKey, Stream stream)
     {
         if (_fileStream == null)
         {
@@ -73,7 +87,7 @@ public class ChunkZipWriteOperator : IDataWriteOperator
 
         await using (var buffered = _tempStream.GetBuffered(stream))
         {
-            var entry = TarEntry.CreateTarEntry(key);
+            var entry = TarEntry.CreateTarEntry(tarKey);
             entry.Size = buffered.Length;
             await _tarOutputStream.PutNextEntryAsync(entry, default);
             buffered.Position = 0;

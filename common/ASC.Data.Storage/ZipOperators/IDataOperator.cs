@@ -28,7 +28,8 @@ namespace ASC.Data.Storage.ZipOperators;
 
 public interface IDataWriteOperator : IAsyncDisposable
 {
-    Task WriteEntryAsync(string key, Stream stream);
+    Task WriteEntryAsync(string tarKey, Stream stream);
+    Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store);
     bool NeedUpload { get; }
     string Hash { get; }
     string StoragePath { get; }

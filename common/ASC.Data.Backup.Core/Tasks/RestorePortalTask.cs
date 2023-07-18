@@ -421,7 +421,7 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var domain in domains)
                 {
-                    await ActionInvoker.Try(
+                    await ActionInvoker.TryAsync(
                         async state =>
                         {
                             if (await storage.IsDirectoryAsync((string)state))

@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup;
+namespace ASC.Data.Storage.ZipOperators;
 
 public static class ActionInvoker
 {
@@ -77,7 +77,18 @@ public static class ActionInvoker
         }
     }
 
-    public static async Task Try(
+    public static async Task TryAsync(
+        Func<Task> action,
+        int maxAttempts,
+        Action<Exception> onFailure = null,
+        Action<Exception> onAttemptFailure = null,
+        int sleepMs = 1000,
+        bool isSleepExponential = true)
+    {
+        await TryAsync(state => action(), null, maxAttempts, onFailure, onAttemptFailure, sleepMs, isSleepExponential);
+    }
+
+    public static async Task TryAsync(
         Func<object, Task> action,
         object state,
         int maxAttempts,
