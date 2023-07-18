@@ -245,21 +245,21 @@ public class DbWorker
 
         var dbWebhooks = await Queries.DbWebhooksAsync(webhooksDbContext).ToListAsync();
 
-        //foreach (var webhook in webhooks)
-        //{
-        //    if (!dbWebhooks.Any(r => r.Route == webhook.Route && r.Method == webhook.Method))
-        //    {
-        //        try
-        //        {
-        //          //  await webhooksDbContext.Webhooks.AddAsync(_mapper.Map<DbWebhook>(webhook));
-        //           // await webhooksDbContext.SaveChangesAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
+        foreach (var webhook in webhooks)
+        {
+            if (!dbWebhooks.Any(r => r.Route == webhook.Route && r.Method == webhook.Method))
+            {
+                try
+                {
+                    await webhooksDbContext.Webhooks.AddAsync(_mapper.Map<DbWebhook>(webhook));
+                    await webhooksDbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
 
-        //        }
-        //    }
-        //}
+                }
+            }
+        }
     }
 
     public async Task<List<Webhook>> GetWebhooksAsync()
