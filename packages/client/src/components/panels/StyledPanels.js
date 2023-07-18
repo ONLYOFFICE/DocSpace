@@ -96,6 +96,7 @@ const StyledVersionHistoryPanel = styled.div`
   }
 
   .version-history-panel-header {
+    margin-bottom: 12px;
     height: 53px;
     margin-left: 0px;
     .version-history-panel-heading {
@@ -113,11 +114,11 @@ const StyledVersionHistoryPanel = styled.div`
     box-sizing: border-box;
 
     .version-comment-wrapper {
-      margin-left: 79px;
+      margin-left: 85px;
     }
 
     .version_edit-comment {
-      padding-left: 2px;
+      padding-left: 7px;
     }
   }
 `;

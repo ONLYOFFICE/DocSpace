@@ -141,6 +141,10 @@ class TreeFoldersStore {
     return this.rootFoldersTitles[FolderType.Archive]?.id;
   }
 
+  get recycleBinFolderId() {
+    return this.rootFoldersTitles[FolderType.TRASH]?.id;
+  }
+
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderType === FolderType.USER);
   }

@@ -13,10 +13,9 @@
   "FrameId": "Çerçeve kimliği",
   "Header": "Üst Bilgi",
   "ItemsCount": "Ürün sayısı",
-  "JavascriptSdk": "Javascript sdk'sı",
+  "JavascriptSdk": "Javascript SDK'sı",
   "Menu": "Menü",
   "Page": "Sayfa",
   "SearchTerm": "Arama terimi",
-  "SortOrder": "Sıralama düzeni",
-  "WindowParameters": "Pencere parametreleri"
+  "SortOrder": "Sıralama düzeni"
 }

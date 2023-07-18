@@ -147,4 +147,111 @@ Saite ir derīga septiņas dienas.
 
 Vai nevēlaties mainīt paroli? Vienkārši ignorējiet šo ziņojumu.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Laipni lūdzam ONLYOFFICE Personal
+
+Jūs tikko izveidojāt savu personīgo biroju mākonī.
+
+h3.Tā ir virtuāla darbvieta, kurā varat rediģēt un glabāt dokumentus, strādāt ar tiem no jebkuras vietas, nodrošinot piekļuvi draugiem vai kolēģiem.
+
+h3.Lūk, ko jūs varat darīt ONLYOFFICE iesākumam:
+
+- Izveidot, skatīt un rediģēt teksta dokumentus, izklājlapas, prezentācijas.
+
+- Strādājiet ar visiem populārajiem formātiem. Augstākā saderība ar MS Office failiem.
+
+- Izveidojiet un koprediģējiet "aizpildīšanai gatavas veidlapas":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Kopīgojiet dokumentus tiešsaistē un sadarbojieties saistībā ar tiem.
+
+- Izmantojiet dažādus spraudņus, lai izmantotu papildu funkcijas.
+
+- Viegli piekļūstiet savam personiskajam mākonim, izmantojot "Chrome paplašinājumu":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Varat arī rediģēt dokumentus bezsaistē, izmantojot mūsu bezmaksas "darbvirsmas redaktorus":"https://www.onlyoffice.com/download-desktop.aspx" vai iegūt mobilo rediģēšanas komplektu savai "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" vai "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" ierīcei.
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Vai vēlaties mainīt sava mākoņa biroja konta e-pastu?
+
+Noklikšķiniet uz tālāk redzamās pogas un piesakieties* savā mākonī.
+
+$GreenButton
+
+Saite ir derīga septiņas dienas.
+
+*Ja šajā pārlūkprogrammā neesat pierakstījies savā mākoņdatošanas birojā, apstiprināšanai jāizmanto iepriekšējais e-pasts.
+
+Vai nevēlaties mainīt e-pasta adresi? Vienkārši ignorējiet šo ziņojumu.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Sveiki,
+
+jūs tikko reģistrējāt kontu ONLYOFFICE risinājumā personīgai lietošanai. Noklikšķiniet "šeit":"$InviteLink", lai apstiprinātu reģistrāciju un izveidotu paroli.
+
+Ja nevarat atvērt saiti, nokopējiet šo "$InviteLink":"$InviteLink" un ielīmējiet to pārlūkprogrammas adreses joslā.
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Jūs pieprasījāt pārtraukt konta darbību personal.onlyoffice.com. Lai pabeigtu pieprasījumu, izmantojiet saiti (saite ir aktīva septiņas dienas): 
+
+Apstiprināt konta darbības izbeigšanu
+
+*Piezīme*: pēc izdzēšanas jūsu konts un visi ar to saistītie dati tiks neatgriezeniski izdzēsti saskaņā ar mūsu "Paziņojumu par konfidencialitāti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+"Lasīt vairāk par konta darbības izbeigšanu":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Ignorējiet šo e-pasta ziņojumu, ja nevēlaties turpināt. 
+
+Ja jums ir kādi jautājumi, sazinieties ar mums pa e-pastu "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Cien. $UserName,
+
+Datu noņemšanas no lietotāja "$FromUserName":"$FromUserLink" process ir veiksmīgi pabeigts.
+
+Personas datu izdzēšana ļāva atbrīvot:
+
+# Dokumenti - $DocsSpace
+# Pasts - $MailSpace
+# Saruna - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Ir reģistrēts jauns portāls
+
+# Portāla vietrādis URL: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Vārds: $UserName
+# Uzvārds: $UserLastName
+# E-pasts: $UserEmail
+# Tālrunis: $Phone
+# Izveides datums: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Rīkojieties kā lietotājs|Piesaistiet Dropbox, Box un citus kontus sadaļā Kopīgs |Iestatiet piekļuves tiesības dokumentiem un mapēm sadaļā Kopīgs</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Izveidojiet un rediģējiet savus dokumentus, kā arī kopīgotos dokumentus ar atbilstošām piekļuves tiesībām|Piešķiriet citiem lietotājiem lasīšanas/rediģēšanas piekļuvi dokumentiem un mapēm| Sadaļā Mani dokumenti saistiet Dropbox, Box un citus kontus</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Aktivizējiet savu e-pasta adresi</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal konta darbības pārtraukšana</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Lietotāja datu noņemšana ir pabeigta</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Ir reģistrēts jauns portāls</value>
+  </data>
 </root>

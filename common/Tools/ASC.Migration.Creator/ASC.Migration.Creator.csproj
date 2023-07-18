@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\migrations\mysql\ASC.Migrations.MySql.csproj" />
-    <ProjectReference Include="..\..\..\migrations\postgre\ASC.Migrations.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\..\migrations\mysql\SaaS\ASC.Migrations.MySql.SaaS.csproj" />
     <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
     <ProjectReference Include="..\..\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj" />
     <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />

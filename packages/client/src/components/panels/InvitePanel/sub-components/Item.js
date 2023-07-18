@@ -8,7 +8,6 @@ import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
 
 import {
-  StyledComboBox,
   StyledEditInput,
   StyledEditButton,
   StyledCheckIcon,
@@ -18,6 +17,7 @@ import {
 } from "../StyledInvitePanel";
 import AccessSelector from "./AccessSelector";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import AccessSelector from "./AccessSelector";
 
 const Item = ({
   t,

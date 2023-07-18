@@ -33,6 +33,7 @@ namespace ASC.Data.Storage.S3;
 [Scope]
 public class S3Storage : BaseStorage
 {
+    public override bool IsSupportCdnUri => true;
     public override bool IsSupportChunking => true;
 
     private readonly List<string> _domains = new List<string>();
@@ -41,6 +42,7 @@ public class S3Storage : BaseStorage
     private string _accessKeyId = string.Empty;
     private string _bucket = string.Empty;
     private string _recycleDir = string.Empty;
+    private bool _recycleUse;
     private Uri _bucketRoot;
     private Uri _bucketSSlRoot;
     private string _region = "";
@@ -50,8 +52,10 @@ public class S3Storage : BaseStorage
     private readonly ServerSideEncryptionMethod _sse = ServerSideEncryptionMethod.AES256;
     private bool _useHttp = true;
     private bool _lowerCasing = true;
-    private bool _revalidateCloudFront;
-    private string _distributionId = "";
+    private bool _cdnEnabled;
+    private string _cdnKeyPairId;
+    private string _cdnPrivateKeyPath;
+    private string _cdnDistributionDomain;
     private string _subDir = "";
 
     private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
@@ -145,7 +149,78 @@ public class S3Storage : BaseStorage
         }
 
         using var client = GetClient();
+
         return Task.FromResult(MakeUri(client.GetPreSignedURL(pUrlRequest)));
+    }
+
+    public override Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+    {
+        if (!_cdnEnabled) return GetInternalUriAsync(domain, path, expire, headers);
+
+        var proto = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? "https" : "http";
+
+        var baseUrl = $"{proto}://{_cdnDistributionDomain}/{MakePath(domain, path)}";
+
+        var uriBuilder = new UriBuilder(baseUrl)
+        {
+            Port = -1
+        };
+
+        var queryParams = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+        if (headers != null && headers.Any())
+        {
+            foreach (var h in headers)
+            {
+                if (h.StartsWith("Content-Disposition"))
+                {
+                    queryParams["response-content-disposition"] = h.Substring("Content-Disposition".Length + 1);
+                }
+                else if (h.StartsWith("Cache-Control"))
+                {
+                    queryParams["response-cache-control"] = h.Substring("Cache-Control".Length + 1);
+                }
+                else if (h.StartsWith("Content-Encoding"))
+                {
+                    queryParams["response-content-encoding"] = h.Substring("Content-Encoding".Length + 1);
+                }
+                else if (h.StartsWith("Content-Language"))
+                {
+                    queryParams["response-content-language"] = h.Substring("Content-Language".Length + 1);
+                }
+                else if (h.StartsWith("Content-Type"))
+                {
+                    queryParams["response-content-type"] = h.Substring("Content-Type".Length + 1);
+                }
+                else if (h.StartsWith("Expires"))
+                {
+                    queryParams["response-expires"] = h.Substring("Expires".Length + 1);
+                }
+                else if (h.StartsWith("Custom-Cache-Key"))
+                {
+                    queryParams["custom-cache-key"] = h.Substring("Custom-Cache-Key".Length + 1);
+                }
+                else
+                {
+                    throw new FormatException(string.Format("Invalid header: {0}", h));
+                }
+            }
+        }
+
+        uriBuilder.Query = queryParams.ToString();
+
+        var signedUrl = "";
+
+        using (TextReader textReader = File.OpenText(_cdnPrivateKeyPath))
+        {
+            signedUrl = AmazonCloudFrontUrlSigner.GetCannedSignedURL(
+                      uriBuilder.ToString(),
+                      textReader,
+                      _cdnKeyPairId,
+                      DateTime.UtcNow.Add(expire));
+        }
+
+        return Task.FromResult(new Uri(signedUrl));
     }
 
     public override Task<Stream> GetReadStreamAsync(string domain, string path)
@@ -217,12 +292,7 @@ public class S3Storage : BaseStorage
             ContentType = mime,
             ServerSideEncryptionMethod = _sse,
             InputStream = buffered,
-            AutoCloseStream = false,
-            Headers =
-                {
-                    CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds),
-                    ExpiresUtc = DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays))
-                }
+            AutoCloseStream = false
         };
 
         if (!(client is IAmazonS3Encryption))
@@ -259,7 +329,7 @@ public class S3Storage : BaseStorage
 
         await uploader.UploadAsync(request);
 
-        await InvalidateCloudFrontAsync(MakePath(domain, path));
+        //await InvalidateCloudFrontAsync(MakePath(domain, path));
 
         await QuotaUsedAddAsync(domain, buffered.Length);
 
@@ -348,7 +418,7 @@ public class S3Storage : BaseStorage
             using (var s3 = GetClient())
             {
                 await s3.CompleteMultipartUploadAsync(request);
-                await InvalidateCloudFrontAsync(MakePath(domain, path));
+                //    await InvalidateCloudFrontAsync(MakePath(domain, path));
             }
 
             if (QuotaController != null)
@@ -490,7 +560,14 @@ public class S3Storage : BaseStorage
 
             await client.DeleteObjectAsync(deleteRequest);
 
-            await QuotaUsedDeleteAsync(domain, s3Object.Size);
+            if (QuotaController != null)
+            {
+                if (string.IsNullOrEmpty(QuotaController.ExcludePattern) ||
+                    !Path.GetFileName(s3Object.Key).StartsWith(QuotaController.ExcludePattern))
+                {
+                    await QuotaUsedDeleteAsync(domain, s3Object.Size);
+                }
+            }
         }
     }
 
@@ -902,6 +979,11 @@ public class S3Storage : BaseStorage
 
         props.TryGetValue("recycleDir", out _recycleDir);
 
+        if (props.TryGetValue("recycleUse", out var recycleUseProp) && bool.TryParse(recycleUseProp, out var recycleUse))
+        {
+            _recycleUse = recycleUse;
+        }
+
         if (props.TryGetValue("region", out var region) && !string.IsNullOrEmpty(region))
         {
             _region = region;
@@ -957,12 +1039,17 @@ public class S3Storage : BaseStorage
         {
             bool.TryParse(lower, out _lowerCasing);
         }
-        if (props.TryGetValue("cloudfront", out var front))
+
+        if (props.TryGetValue("cdn_enabled", out var cdnEnabled))
         {
-            bool.TryParse(front, out _revalidateCloudFront);
+            if (bool.TryParse(cdnEnabled, out _cdnEnabled))
+            {
+                _cdnKeyPairId = props["cdn_keyPairId"];
+                _cdnPrivateKeyPath = props["cdn_privateKeyPath"];
+                _cdnDistributionDomain = props["cdn_distributionDomain"];
+            }
         }
 
-        props.TryGetValue("distribution", out _distributionId);
         props.TryGetValue("subdir", out _subDir);
 
         return this;
@@ -1017,7 +1104,7 @@ public class S3Storage : BaseStorage
 
     private async ValueTask InvalidateCloudFrontAsync(params string[] paths)
     {
-        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
+        if (!_cdnEnabled || string.IsNullOrEmpty(_cdnDistributionDomain))
         {
             return;
         }
@@ -1025,7 +1112,7 @@ public class S3Storage : BaseStorage
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
-            DistributionId = _distributionId,
+            DistributionId = _cdnDistributionDomain,
             InvalidationBatch = new InvalidationBatch
             {
                 CallerReference = Guid.NewGuid().ToString(),
@@ -1165,7 +1252,7 @@ public class S3Storage : BaseStorage
 
     private async ValueTask RecycleAsync(IAmazonS3 client, string domain, string key)
     {
-        if (string.IsNullOrEmpty(_recycleDir))
+        if (string.IsNullOrEmpty(_recycleDir) || string.IsNullOrEmpty(domain) || domain.EndsWith("_temp") || !_recycleUse)
         {
             return;
         }
@@ -1214,6 +1301,8 @@ public class S3Storage : BaseStorage
 
             var partSize = GetChunkSize();
 
+            var uploadTasks = new List<Task<CopyPartResponse>>();
+
             long bytePosition = 0;
             for (var i = 1; bytePosition < objectSize; i++)
             {
@@ -1229,10 +1318,12 @@ public class S3Storage : BaseStorage
                     PartNumber = i
                 };
 
-                copyResponses.Add(await client.CopyPartAsync(copyRequest));
+                uploadTasks.Add(client.CopyPartAsync(copyRequest));
 
                 bytePosition += partSize;
             }
+
+            copyResponses.AddRange(await Task.WhenAll(uploadTasks));
 
             var completeRequest =
                 new CompleteMultipartUploadRequest
@@ -1243,7 +1334,7 @@ public class S3Storage : BaseStorage
                 };
             completeRequest.AddPartETags(copyResponses);
 
-            var completeUploadResponse = await client.CompleteMultipartUploadAsync(completeRequest);
+            await client.CompleteMultipartUploadAsync(completeRequest);
         }
         else
         {

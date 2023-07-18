@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Vrsta prijave v račun",
   "DeleteSelfProfile": "Izbriši profil",
   "DisabledEmployeeStatus": "Onemogočeno",
   "DisableUserButton": "Onemogoči",
@@ -12,6 +13,7 @@
   "RemoveData": "Izbriši osebne podatke",
   "ResetAuth": "Ponastavi avtentikacijo",
   "SendInviteAgain": "Ponovno pošlji vabilo",
+  "StandardLogin": "Standardna prijava",
   "SuccessChangeUserStatus": "Status uporabnika je bil uspešno spremenjen",
   "SuccessDeletePersonalData": "Osebni podatki so bili uspešno izbrisani",
   "SuccessSentInvitation": "Vabilo je bilo uspešno poslano",

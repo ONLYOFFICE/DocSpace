@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Migration.Core.Models;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Migrations.Core.Utils;
@@ -37,11 +39,11 @@ public class DbContextActivator
         _serviceProvider = serviceProvider;
     }
 
-    public DbContext CreateInstance(Type contextType, ProviderInfo provider)
+    public DbContext CreateInstance(Type contextType, ProviderInfo provider, ConfigurationInfo configurationInfo = ConfigurationInfo.SaaS)
     {
         var scope = _serviceProvider.CreateScope();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
+        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}.{configurationInfo}";
         configuration["ConnectionStrings:default:name"] = "default";
         configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
         configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;

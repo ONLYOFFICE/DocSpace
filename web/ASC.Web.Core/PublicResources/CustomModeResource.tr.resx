@@ -147,4 +147,112 @@ Bağlantı 7 gün boyunca geçerlidir.
 
 Şifrenizi değiştirmek istemiyorsanız bu mesajı yoksayın.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.ONLYOFFICE Personal'a Hoş Geldiniz
+
+Buluttaki kişisel ofisinizi oluşturmuş bulunuyorsunuz.
+
+h3.Bu, arkadaşlarınıza veya meslektaşlarınıza erişim olanağı sağlayan, belgeleri düzenleyebileceğiniz ve saklayabileceğiniz, onlarla her yerden çalışabileceğiniz sanal bir çalışma alanıdır.
+
+Hızlı bir başlangıç için, ONLYOFFICE ile yapabilecekleriniz şunlardır:
+
+- Metin belgeleri, tablolar, sunumlar oluşturma, görüntüleme ve düzenleme
+
+- Tüm popüler formatlarla çalışma. MS Office dosyaları ile en yüksek uyumluluk.
+
+- "Doldurmaya hazır şablonlar":"https://www.onlyoffice.com/form-creator.aspx" oluşturma ve birlikte düzenleme
+
+- Çevrimiçi olarak belgeler paylaşma ve belgeler üzerinde birlikte çalışma
+
+- Ekstra özellikler uygulamak için çeşitli eklentiler kullanma
+
+- "Chrome eklentisi ile":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" Personal bulutunuza kolay erişim
+
+Ayrıca, belgeleri ücretsiz "masaüstü düzenleyicilerimiz":"https://www.onlyoffice.com/download-desktop.aspx" ile çevrimdışı olarak da düzenleyebilir ya da "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" cihazınız için mobil düzenleme programını indirebilirsiniz.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Bulut ofis hesabınızdaki e-postayı değiştirmek mi istiyorsunuz?
+
+Aşağıdaki düğmeye tıklayın ve bulutunuzda oturum açın*.
+
+$GreenButton
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+*Bu tarayıcıdan bulut ofisinizde oturum açmadıysanız, onay için eski e-posta adresinizi kullanmanız gerekir.
+
+E-postanızı değiştirmek istemiyorsanız, lütfen bu mesajı yok sayın.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Merhaba,
+
+ONLYOFFICE çözümünde kişisel kullanım için bir hesap oluşturdunuz. Kaydınızı onaylamak ve bir parola oluşturmak için "buraya":"$InviteLink" tıklayın.
+
+Bağlantıyı açamıyorsanız, lütfen bağlantı adresini "$InviteLink":"$InviteLink" kopyalayın ve tarayıcınızın adres çubuğuna yapıştırın.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Personal.onlyoffice.com adresindeki hesabınızın sonlandırılmasını talep ettiniz. İsteği tamamlamak için bağlantıya tıklayın (bağlantı 7 günlük bir süre boyunca etkindir):
+
+Hesap sonlandırmasını onaylayın
+
+*Not*: Silme sonrasında, hesabınız ve tüm ilişkili veriler “Gizlilik Politikası":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" uyarınca kalıcı olarak silinecektir.
+
+"Hesap sonlandırma hakkında daha fazla bilgi edinin":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Devam etmek istemiyorsanız bu e-postayı dikkate almayın.
+
+Herhangi bir sorunuz varsa, lütfen "support@onlyoffice.com":"mailto:support@onlyoffice.com" adresinden bizimle iletişime geçin.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Sayın $UserName,
+
+"$FromUserName":"$FromUserLink" kullanıcısından veri silme işlemi başarıyla tamamlandı.
+
+Aşağıdakileri boşaltmak üzere kişisel veri silinmesine izin verilmiştir: 
+
+# Belgeler - $DocsSpace
+# CRM - $CrmSpace
+# E-Posta - $MailSpace
+# Konuşma - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Yeni portal kaydedildi
+
+#Portal url’si: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Ad: $UserName
+# Soyad: $UserLastName
+# E-posta: "$UserEmail"
+# Telefon: $Phone
+# Oluşturma tarihi: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Kullanıcı olarak aynı şeyi yapın|'Ortak' bölümünde Dropbox, Box ve diğer hesapları 'Ortak' bölümünde bağlayın|'Ortak' bölümünde belgelere ve klasörlere erişim haklarını ayarlayın</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Kendi belgelerinizi ve uygun erişim hakları sayesinde paylaşılan belgeleri oluşturun ve düzenleyin|Diğer kullanıcılara belgeler ve klasörler için okuma/düzenleme erişimi verin|Dropbox, Box ve diğer hesapları 'Belgelerim' bölümünde bağlayın</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>ONLYOFFICE Personal'a Hoş Geldiniz</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Lütfen e-posta adresinizi etkinleştirin</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Kişisel hesap sonlandırma</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Yeni portal kaydedildi</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Kullanıcı verilerini kaldırma tamamlandı</value>
+  </data>
 </root>

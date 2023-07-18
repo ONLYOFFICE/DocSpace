@@ -232,7 +232,7 @@ public class FileStorageService //: IFileStorageService
         try
         {
             (entries, _) = await _entryManager.GetEntriesAsync(
-                await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly,
+                await folderDao.GetFolderAsync(parentId), 0, -1, FilterType.FoldersOnly,
                 false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
         }
         catch (Exception e)
@@ -2137,7 +2137,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanConvert(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (fileInfo.StartConvert && _fileConverter.MustConvert(file))
             {

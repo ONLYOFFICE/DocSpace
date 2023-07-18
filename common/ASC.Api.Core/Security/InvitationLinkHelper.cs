@@ -86,6 +86,12 @@ public class InvitationLinkHelper
         var commonLinkResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType,
             key, _emailValidationKeyProvider.ValidEmailKeyInterval);
 
+        if (commonLinkResult == ValidationResult.Invalid)
+        {
+            commonLinkResult = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.EmpInvite.ToStringFast() + (int)employeeType, 
+                key, _emailValidationKeyProvider.ValidEmailKeyInterval);
+        }
+
         if (commonLinkResult != ValidationResult.Invalid)
         {
             validationResult.Result = commonLinkResult;

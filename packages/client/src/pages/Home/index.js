@@ -310,6 +310,7 @@ export default inject(
     peopleStore,
     filesActionsStore,
     oformsStore,
+    tagsStore,
     selectedFolderStore,
     clientLoadingStore,
   }) => {
@@ -359,7 +360,14 @@ export default inject(
       disableDrag,
       isErrorRoomNotAvailable,
       setIsPreview,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      getRooms,
     } = filesStore;
+
+    const { updateProfileCulture } = peopleStore.targetUserStore;
+
+    const { createTag } = tagsStore;
 
     const { gallerySelected } = oformsStore;
 
@@ -392,8 +400,12 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const { setUploadPanelVisible, startUpload, uploaded, converted } =
-      uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
@@ -511,6 +523,18 @@ export default inject(
       onClickBack,
 
       showFilterLoader,
+
+      getSettings,
+      logout: auth.logout,
+      login: auth.login,
+
+      createTag,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      loadCurrentUser,
+      user,
+      updateProfileCulture,
+      getRooms,
     };
   }
 )(observer(Home));

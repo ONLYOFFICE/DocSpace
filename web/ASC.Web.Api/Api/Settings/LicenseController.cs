@@ -28,8 +28,6 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class LicenseController : BaseSettingsController
 {
-    private Tenant Tenant { get { return ApiContext.Tenant; } }
-
     private readonly MessageService _messageService;
     private readonly FirstTimeTenantSettings _firstTimeTenantSettings;
     private readonly UserManager _userManager;
@@ -172,7 +170,7 @@ public class LicenseController : BaseSettingsController
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        await _tariffService.SetTariffAsync(-1, tariff);
+        await _tariffService.SetTariffAsync(-1, tariff, new List<TenantQuota>() { quota });
 
         await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
@@ -199,6 +197,11 @@ public class LicenseController : BaseSettingsController
             if (!_authContext.IsAuthenticated && (await _settingsManager.LoadAsync<WizardSettings>()).Completed)
             {
                 throw new SecurityException(Resource.PortalSecurity);
+            }
+
+            if (!_coreBaseSettings.Standalone)
+            {
+                throw new NotSupportedException();
             }
 
             if (!inDto.Files.Any())

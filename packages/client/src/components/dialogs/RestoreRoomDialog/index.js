@@ -122,7 +122,7 @@ export default inject(
       ? selection
       : bufferSelection
       ? [bufferSelection]
-      : [{ id: selectedFolderStore.id }];
+      : [selectedFolderStore];
 
     return {
       visible,

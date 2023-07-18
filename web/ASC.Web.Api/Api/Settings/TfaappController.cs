@@ -359,9 +359,10 @@ public class TfaappController : BaseSettingsController
         await TfaAppUserSettings.DisableForUserAsync(_settingsManager, user.Id);
         await _messageService.SendAsync(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
+        await _cookiesManager.ResetUserCookie(user.Id);
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookieAsync();
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
             return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation);
         }
 

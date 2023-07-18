@@ -37,8 +37,9 @@ public interface ITariffService
     Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null);
     void ClearCache(int tenantId);
     Task DeleteDefaultBillingInfoAsync();
-    Task SetTariffAsync(int tenantId, Tariff tariff);
+    Task SetTariffAsync(int tenantId, Tariff tariff, List<TenantQuota> quotas = null);
     Task<Uri> GetAccountLinkAsync(int tenant, string backUrl);
     Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
     int GetPaymentDelay();
+    Task<Tariff> GetBillingInfoAsync(int? tenant = null, int? id = null);
 }

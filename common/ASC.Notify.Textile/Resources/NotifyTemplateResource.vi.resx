@@ -192,4 +192,10 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Email này được tạo tự động và bạn không cần trả lời nó.
+&lt;br /&gt;Bạn nhận được email này vì bạn là người dùng đã đăng ký của &lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;
+&lt;br /&gt; Nhấp vào đây để hủy đăng ký nhận email thông báo của DocSpace: &lt;a href="{1}"  target="_blank"&gt;Hủy đăng ký&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

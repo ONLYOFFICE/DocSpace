@@ -147,4 +147,111 @@ Povezava je veljavna 7 dni.
 
 Ne želite spremeniti gesla? Prezrite to sporočilo.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Dobrodošli v ONLYOFFICE osebni pisarni
+
+Pravkar ste ustvarili svojo osebno pisarno v oblaku.
+
+h3.To je navidezni delovni prostor, kjer lahko urejate in shranjujete dokumente, delate z njimi od koder koli, lahko pa omogočate dostop tudi vašim prijateljem ali sodelavcem.
+
+h3.Za hiter začetek si oglejte, kaj lahko delate v ONLYOFFICE:
+
+- Ustvarjate, pregledujete in urejate besedilne dokumente, preglednice, predstavitve.
+
+- Delate z vsemi priljubljenimi formati. Najvišja združljivost z datotekami MS Office.
+
+- Ustvarite in souredite "obrazce, pripravljene za izpolnjevanje":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Delite dokumente in sodelujete pri njih online.
+
+- Za uporabo dodatnih funkcij uporabite različne vtičnike.
+
+- Enostavno dostopajte do osebnega oblaka prek "Chrome razširitve":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Dokumente lahko urejate tudi brez povezave z našimi brezplačnimi "namiznimi urejevalniki":"https://www.onlyoffice.com/download-desktop.aspx" ali pridobite program za mobilno urejanje za vašo "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ali "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" napravo.
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Želite spremeniti email naslov v svojem računu za pisarno v oblaku?
+
+Kliknite spodnji gumb in se prijavite* v svoj oblak.
+
+$GreenButton
+
+Povezava je veljavna 7 dni.
+
+*Če v tem brskalniku niste prijavljeni v svojo pisarno v oblaku, boste morali za potrditev uporabiti svoj stari email naslov.
+
+Ne želite spremeniti vašega emaila? Prezrite to sporočilo.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Pozdravljeni,
+
+pravkar ste registrirali račun v okolju ONLYOFFICE za osebno uporabo. Kliknite "tukaj":"$InviteLink", da potrdite registracijo in ustvarite geslo.
+
+Če ne morete odpreti povezave, kopirajte naslednjo povezavo "$InviteLink":"$InviteLink" in jo prilepite v naslovno vrstico brskalnika.
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Zahtevali ste ukinitev vašega računa na personal.onlyoffice.com. Sledite povezavi za dokončanje zahteve (povezava je aktivna 7 dni): 
+
+Potrdite ukinitev računa
+
+*Opomba*: Po izbrisu bodo vaš račun in vsi z njim povezani podatki trajno izbrisani v skladu z našo "Politiko zasebnosti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Preberite več o ukinitvi računa":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Prezrite ta email, če ne želite nadaljevati. 
+
+Če imate kakršna koli vprašanja, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Postopek odstranjevanja podatkov uporabnika "$FromUserName":"$FromUserLink" je bil uspešno zaključen.
+
+Izbris osebnih podatkov je dovoljen za sprostitev:
+
+# Dokumentov - $DocsSpace
+# Emailov- $MailSpace
+# Pogovorov - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Nov portal je bil registriran
+
+# Portal url: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Ime: $UserName
+# Priimek: $UserLastName
+# Email: $UserEmail
+# Telefon: $Phone
+# Datum nastanka: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Naredite enako kot uporabnik|Povežite Dropbox, Box in druge račune v razdelku 'Skupno' |Nastavite pravice dostopa do dokumentov in map v razdelku 'Skupno'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Ustvarite in uredite lastne dokumente ter dokumente v skupni rabi z ustreznimi pravicami dostopa|Omogočite dostop za branje/urejanje drugim uporabnikom do dokumentov in map|Povežite Dropbox, Box in druge račune v razdelku 'Moji dokumenti'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE osebni pisarni</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE osebna pisarna. Aktivirajte svoj email naslov</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Ukinitev osebnega računa ONLYOFFICE</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranitev uporabniških podatkov je končana</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Nov portal je registriran</value>
+  </data>
 </root>

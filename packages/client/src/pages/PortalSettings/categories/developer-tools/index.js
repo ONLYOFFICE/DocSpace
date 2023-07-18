@@ -6,16 +6,18 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
 import { useNavigate } from "react-router-dom";
-
 import JavascriptSDK from "./JavascriptSDK";
-import Webhooks from "./Webhooks";
+import Api from "./Api";
 
 import AppLoader from "@docspace/common/components/AppLoader";
-import SSOLoader from "./sub-components/ssoLoader";
-import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
+
+import Webhooks from "./Webhooks";
 
 import { useTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import AppLoader from "@docspace/common/components/AppLoader";
+import SSOLoader from "./sub-components/ssoLoader";
+import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 const StyledSubmenu = styled(Submenu)`
   .sticky {
@@ -33,10 +35,18 @@ const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
-  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks", "Settings"]);
   const [isPending, startTransition] = useTransition();
 
   const data = [
+    {
+      id: "api",
+      name: t("Settings:Api"),
+      content: <Api />,
+    },
     {
       id: "javascript-sdk",
       name: t("JavascriptSdk"),

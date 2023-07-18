@@ -108,7 +108,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/account")]
-    public async Task<Uri> GetPaymentAccountAsync(string backUrl)
+    public async Task<object> GetPaymentAccountAsync(string backUrl)
     {
         var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
         var payer = await _userManager.GetUserByEmailAsync(payerId);
@@ -119,7 +119,8 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        return await _tariffService.GetAccountLinkAsync(Tenant.Id, backUrl);
+        var result = "payment.ashx";
+        return !string.IsNullOrEmpty(backUrl) ? $"{result}?backUrl={backUrl}" : result;
     }
 
     [HttpGet("payment/prices")]
