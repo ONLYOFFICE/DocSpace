@@ -34,16 +34,27 @@ const Calendar = ({
   initialDate = moment(initialDate);
 
   useEffect(() => {
-    if (!initialDate || initialDate > maxDate || initialDate < minDate) {
-      initialDate = minDate
-        .clone()
-        .add(maxDate.diff(minDate, "days") / 2, "day");
+    const today = moment();
+    if (!initialDate) {
+      initialDate =
+        today <= maxDate && initialDate >= minDate
+          ? today
+          : today.diff(minDate, "day") > today.diff(maxDate, "day")
+          ? minDate.clone()
+          : maxDate.clone();
+      initialDate.startOf("day");
+    } else if (initialDate > maxDate || initialDate < minDate) {
+      initialDate =
+        today <= maxDate && today >= minDate
+          ? today
+          : today.diff(minDate, "day") > today.diff(maxDate, "day")
+          ? minDate.clone()
+          : maxDate.clone();
+      initialDate.startOf("day");
       console.error(
-        "Initial date is out of min/max dates boundaries. Initial date will be set as mid value between min and max dates"
+        "Initial date is out of min/max dates boundaries. Initial date will be set as closest boundary value"
       );
     }
-    initialDate.startOf("day");
-    // setSelectedDate(initialDate);
     setObservedDate(initialDate);
   }, []);
 
