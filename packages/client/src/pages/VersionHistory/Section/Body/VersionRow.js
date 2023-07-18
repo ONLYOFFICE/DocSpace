@@ -1,3 +1,7 @@
+import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
+import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
+import { useHistory } from "react-router-dom";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "@docspace/components/link";
@@ -10,7 +14,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import { StyledVersionRow } from "./StyledVersionHistory";
-import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
+import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg?url";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
@@ -43,14 +47,18 @@ const VersionRow = (props) => {
     isEditing,
     theme,
     canChangeVersionFileHistory,
+    openUser,
+    onClose,
+    setIsVisible,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const title = `${new Date(info.updated).toLocaleString(
-    culture
-  )} ${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
+  const history = useHistory();
+
+  const versionDate = `${new Date(info.updated).toLocaleString(culture)}`;
+  const title = `${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
@@ -61,9 +69,17 @@ const VersionRow = (props) => {
   const onChange = (e) => {
     const value = e.target.value;
 
-    if (value.length > MAX_FILE_COMMENT_LENGTH) return;
+    if (value.length > MAX_FILE_COMMENT_LENGTH) {
+      return setCommentValue(value.slice(0, MAX_FILE_COMMENT_LENGTH));
+    }
 
     setCommentValue(value);
+  };
+
+  const onUserClick = () => {
+    onClose(true);
+    setIsVisible(true);
+    openUser(info?.updatedBy, history);
   };
 
   const onSaveClick = () => {
@@ -98,27 +114,37 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
+    {
+      key: "open",
+      icon: ExternalLinkIcon,
+      label: t("Files:Open"),
+      onClick: onOpenFile,
+    },
     canChangeVersionFileHistory && {
       key: "edit",
+      icon: AccessCommentReactSvgUrl,
       label: t("EditComment"),
       onClick: onEditComment,
     },
     index !== 0 &&
       canChangeVersionFileHistory && {
         key: "restore",
+        icon: RestoreAuthReactSvgUrl,
         label: t("Common:Restore"),
         onClick: onRestoreClick,
       },
     {
       key: "download",
+      icon: DownloadReactSvgUrl,
       label: `${t("Common:Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
 
-  const onClickProp = canChangeVersionFileHistory
-    ? { onClick: onVersionClick }
-    : {};
+  // uncomment if we want to change versions again
+  // const onClickProp = canChangeVersionFileHistory
+  //   ? { onClick: onVersionClick }
+  //   : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -147,19 +173,35 @@ const VersionRow = (props) => {
             isVersion={isVersion}
             index={index}
             versionGroup={info.versionGroup}
-            {...onClickProp}
+            //  {...onClickProp}
             t={t}
           />
-          <Link
-            onClick={onOpenFile}
-            fontWeight={600}
-            fontSize="14px"
-            title={title}
-            isTextOverflow={true}
-            className="version-link-file"
+          <Box
+            displayProp="flex"
+            flexDirection="column"
+            marginProp="-2px 0 0 0"
           >
-            {title}
-          </Link>
+            <Link
+              onClick={onOpenFile}
+              fontWeight={600}
+              fontSize="14px"
+              title={versionDate}
+              isTextOverflow={true}
+              className="version-link-file"
+            >
+              {versionDate}
+            </Link>
+            <Link
+              onClick={onUserClick}
+              fontWeight={600}
+              fontSize="14px"
+              title={title}
+              isTextOverflow={true}
+              className="version-link-file"
+            >
+              {title}
+            </Link>
+          </Box>
 
           {/*<Text
             className="version_content-length"
@@ -170,11 +212,7 @@ const VersionRow = (props) => {
             {info.contentLength}
           </Text>*/}
         </Box>
-        <Box
-          className="version-comment-wrapper"
-          marginProp="0 0 0 70px"
-          displayProp="flex"
-        >
+        <Box className="version-comment-wrapper" displayProp="flex">
           <>
             {showEditPanel && (
               <>
@@ -191,7 +229,7 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Text className="version_text" truncate={true}>
+            <Text className="version_text" color="#A3A9AE" truncate={true}>
               {info.comment}
             </Text>
           </>
@@ -232,6 +270,7 @@ const VersionRow = (props) => {
 
 export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
   const { user } = auth.userStore;
+  const { openUser, setIsVisible } = auth.infoPanelStore;
   const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en";
 
@@ -256,6 +295,8 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     updateCommentVersion,
     isEditing: isEdit,
     canChangeVersionFileHistory,
+    openUser,
+    setIsVisible,
   };
 })(
   withRouter(

@@ -82,10 +82,10 @@ public class ModelBuilderWrapper
         return ModelBuilder.Entity<T>();
     }
 
-    public void AddDbFunction()
+    public void AddDbFunctions()
     {
         ModelBuilder
-            .HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
+            .HasDbFunction(typeof(DbFunctionsExtension).GetMethod(nameof(DbFunctionsExtension.JsonValue))!)
             .HasTranslation(e =>
             {
                 var res = new List<SqlExpression>();
@@ -104,5 +104,21 @@ public class ModelBuilderWrapper
 
                 return new SqlFunctionExpression("JSON_EXTRACT", res, true, res.Select((SqlExpression a) => false), typeof(string), null);
             });
+
+        switch (Provider)
+        {
+            case Provider.MySql:
+                ModelBuilder
+                    .HasDbFunction(typeof(DbFunctionsExtension).GetMethod(nameof(DbFunctionsExtension.SubstringIndex), new[] { typeof(string), typeof(char), typeof(int) })!)
+                    .HasName("SUBSTRING_INDEX");
+                break;
+            case Provider.PostgreSql:
+                ModelBuilder
+                    .HasDbFunction(typeof(DbFunctionsExtension).GetMethod(nameof(DbFunctionsExtension.SubstringIndex), new[] { typeof(string), typeof(char), typeof(int) })!)
+                    .HasName("SPLIT_PART");
+                break;
+            default:
+                throw new InvalidOperationException();
+        }
     }
 }

@@ -66,5 +66,12 @@ public class Startup : BaseStartup
             {
                 appBranch.UseLogoUploader();
             });
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("payment.ashx"),
+            appBranch =>
+            {
+                appBranch.UseAccountHandler();
+            });
     }
 }

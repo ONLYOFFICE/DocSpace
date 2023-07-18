@@ -230,7 +230,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new FreeFeature(this) { Visible = false };
-        _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
+        _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Standalone = true };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
         _ldapFeature = new TenantQuotaFeatureFlag(this) { Name = "ldap", Visible = false };
@@ -239,9 +239,9 @@ public class TenantQuota : IMapFrom<DbQuota>
         _customizationFeature = new TenantQuotaFeatureFlag(this) { Name = "customization", Visible = false };
         _customFeature = new TenantQuotaFeatureFlag(this) { Name = "custom", Visible = false };
         _autoBackupRestoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
-        _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
+        _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth" };
         _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
-        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Visible = false };
+        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Order = 9 };
 
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
@@ -333,7 +333,10 @@ public class TenantQuota : IMapFrom<DbQuota>
         {
             if (f is MaxFileSizeFeature fileSize)
             {
-                fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                if (quota.MaxFileSize != long.MaxValue)
+                {
+                    fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+                }
             }
             else if (f is TenantQuotaFeatureCount count)
             {
@@ -346,7 +349,17 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else if (currentValue != count.Default && newValue != count.Default)
                 {
-                    count.Value += newValue;
+                    try
+                    {
+                        if (newValue != int.MaxValue)
+                        {
+                            count.Value = checked(count.Value + newValue);
+                        }
+                    }
+                    catch (OverflowException)
+                    {
+                        count.Value = int.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureSize length)
@@ -360,7 +373,17 @@ public class TenantQuota : IMapFrom<DbQuota>
                 }
                 else
                 {
-                    length.Value += newValue;
+                    try
+                    {
+                        if (newValue != long.MaxValue)
+                        {
+                            length.Value = checked(length.Value + newValue);
+                        }
+                    }
+                    catch (OverflowException)
+                    {
+                        length.Value = long.MaxValue;
+                    }
                 }
             }
             else if (f is TenantQuotaFeatureFlag flag)
@@ -393,14 +416,21 @@ public class TenantQuota : IMapFrom<DbQuota>
         return _featuresList.FirstOrDefault(f => string.Equals(f.Split(':')[0], $"{name}", StringComparison.OrdinalIgnoreCase));
     }
 
-    internal void ReplaceFeature<T>(string name, T value)
+    internal void ReplaceFeature<T>(string name, T value, T defaultValue)
     {
         var featureValue = GetFeature(name);
         _featuresList.Remove(featureValue);
 
-        if (!EqualityComparer<T>.Default.Equals(value, default))
+        if (!EqualityComparer<T>.Default.Equals(value, default) && !EqualityComparer<T>.Default.Equals(value, defaultValue))
         {
-            _featuresList.Add($"{name}:{value}");
+            if (value is bool)
+            {
+                _featuresList.Add($"{name}");
+            }
+            else
+            {
+                _featuresList.Add($"{name}:{value}");
+            }
         }
     }
 }

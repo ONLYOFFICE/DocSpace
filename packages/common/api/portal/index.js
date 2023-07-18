@@ -230,6 +230,10 @@ export function getPortalPaymentQuotas() {
   return request({ method: "get", url: "/portal/payment/quotas" });
 }
 
+export function getPortalTenantExtra(refresh) {
+  const params = refresh ? { refresh: true } : {};
+  return request({ method: "get", url: "/portal/tenantextra", params });
+}
 export function getPortalQuota(refresh = false) {
   const params = refresh ? { refresh: true } : {};
   console.log("getPortalQuota", { params });
@@ -285,4 +289,12 @@ export function sendPaymentRequest(email, userName, message) {
       message,
     },
   });
+}
+
+export function getPortal() {
+  const options = {
+    method: "get",
+    url: "/portal",
+  };
+  return request(options);
 }

@@ -16,6 +16,7 @@ import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 import ArticleAlerts from "./sub-components/article-alerts";
 import ArticleLiveChat from "./sub-components/article-live-chat";
+import ArticleApps from "./sub-components/article-apps";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -40,13 +41,14 @@ const Article = ({
   isBannerVisible,
 
   isLiveChatAvailable,
+
+  theme,
+
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [
-    articleMainButtonContent,
-    setArticleMainButtonContent,
-  ] = React.useState(null);
+  const [articleMainButtonContent, setArticleMainButtonContent] =
+    React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -88,6 +90,8 @@ const Article = ({
   }, [children]);
 
   const sizeChangeHandler = React.useCallback(() => {
+    const showArticle = JSON.parse(localStorage.getItem("showArticle"));
+
     if (isMobileOnly || isMobileUtils() || window.innerWidth === 375) {
       setShowText(true);
       setIsMobileArticle(true);
@@ -96,8 +100,11 @@ const Article = ({
       ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
       !isMobileOnly
     ) {
-      setShowText(false);
       setIsMobileArticle(true);
+
+      if (showArticle) return;
+
+      setShowText(false);
     }
     if (isDesktopUtils() && !isMobile) {
       setShowText(true);
@@ -115,7 +122,8 @@ const Article = ({
   const onResize = React.useCallback(() => {
     let correctTabletHeight = window.innerHeight;
 
-    if (mainBarVisible) correctTabletHeight -= 62;
+    if (mainBarVisible)
+      correctTabletHeight -= window.innerHeight <= 768 ? 62 : 90;
 
     const isTouchDevice =
       "ontouchstart" in window ||
@@ -181,7 +189,7 @@ const Article = ({
           )}
 
           <ArticleAlerts />
-
+          <ArticleApps showText={showText} theme={theme} />
           {!isMobile && isLiveChatAvailable && (
             <ArticleLiveChat
               currentColorScheme={currentColorScheme}
@@ -266,6 +274,7 @@ export default inject(({ auth }) => {
     currentColorScheme,
     setArticleOpen,
     mainBarVisible,
+    theme,
   } = settingsStore;
 
   return {
@@ -283,5 +292,7 @@ export default inject(({ auth }) => {
     isBannerVisible,
 
     isLiveChatAvailable,
+
+    theme,
   };
 })(observer(Article));

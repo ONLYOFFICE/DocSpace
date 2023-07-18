@@ -47,6 +47,16 @@ const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
+const Sdk = React.lazy(() => import("./pages/Sdk"));
+
+const SdkRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Sdk {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -167,6 +177,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    standalone,
   } = rest;
 
   useEffect(() => {
@@ -206,10 +217,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
-    socketHelper.emit({
-      command: "subscribe",
-      data: { roomParts: "quota" },
-    });
+
+    !standalone && // unlimited quota (standalone)
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: "quota" },
+      });
+
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });
@@ -309,7 +323,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
-        productName: "ONLYOFFICE Personal",
+        productName: "ONLYOFFICE DocSpace",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
       clickAction: () => {
@@ -487,6 +501,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/files/trash/filter",
 
                   "/accounts",
+                  "/accounts/changeOwner",
                   "/accounts/filter",
 
                   "/accounts/create/:type",
@@ -539,6 +554,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/sdk/:mode"} component={SdkRoute} />
               <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
@@ -565,9 +581,18 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
+    standalone,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
+
+  const userTheme = isDesktopClient
+    ? auth?.userStore?.user?.theme
+      ? auth?.userStore?.user?.theme
+      : window.RendererProcessVariable?.theme?.type === "dark"
+      ? "Dark"
+      : "Base"
+    : auth?.userStore?.user?.theme;
 
   return {
     loadBaseInfo: async () => {
@@ -594,12 +619,9 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: isDesktopClient
-      ? window.RendererProcessVariable?.theme?.type === "dark"
-        ? "Dark"
-        : "Base"
-      : auth?.userStore?.user?.theme,
+    userTheme: userTheme,
     whiteLabelLogoUrls,
+    standalone,
   };
 })(observer(Shell));
 

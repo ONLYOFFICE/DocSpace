@@ -164,7 +164,8 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        fileInfo?.viewAccessability?.Convert
+        fileInfo?.viewAccessability?.Convert &&
+        fileInfo?.security?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -246,7 +247,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (fileInfo?.viewAccessability?.Convert) {
+      if (fileInfo?.viewAccessability?.Convert && fileInfo?.security?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -448,6 +449,8 @@ function Editor({
     console.log("onDocumentReady", arguments, { docEditor });
     documentIsReady = true;
 
+    config?.errorMessage && docEditor?.showMessage(config.errorMessage);
+
     // if (isSharingAccess) {
     //   loadUsersRightsList(docEditor);
     // }
@@ -596,6 +599,7 @@ function Editor({
 
       let goBack;
       const url = window.location.href;
+      const search = window.location.search;
 
       if (fileInfo) {
         let backUrl = "";
@@ -608,17 +612,22 @@ function Editor({
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
-        goBack = {
-          blank: true,
-          requestClose: false,
-          text: t("FileLocation"),
-          url: `${combineUrl(origin, backUrl)}`,
-        };
+        const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+        goBack =
+          editorGoBack === "false"
+            ? {}
+            : {
+                blank: true,
+                requestClose: false,
+                text: t("FileLocation"),
+                url: `${combineUrl(origin, backUrl)}`,
+              };
       }
 
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
-        goback: goBack,
+        goback: { ...goBack },
       };
 
       config.editorConfig.customization.uiTheme = getEditorTheme(user?.theme);

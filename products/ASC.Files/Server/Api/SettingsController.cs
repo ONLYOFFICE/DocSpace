@@ -33,23 +33,17 @@ public class SettingsController : ApiControllerBase
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
-    private readonly SettingsManager _settingsManager;
-    private readonly TenantManager _tenantManager;
 
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper,
-        SettingsManager settingsManager,
-        TenantManager tenantManager) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
-        _settingsManager = settingsManager;
-        _tenantManager = tenantManager;
     }
 
     /// <summary>
@@ -146,9 +140,10 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("forcesave")]
-    public bool Forcesave(SettingsRequestDto inDto)
+    public bool Forcesave()
     {
-        return _fileStorageServiceString.Forcesave(inDto.Set);
+        return true;
+        //return _fileStorageServiceString.Forcesave(inDto.Set);
     }
 
     /// <summary>
@@ -192,9 +187,10 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("storeforcesave")]
-    public bool StoreForcesave(SettingsRequestDto inDto)
+    public bool StoreForcesave()
     {
-        return _fileStorageServiceString.StoreForcesave(inDto.Set);
+        return false;
+        //return _fileStorageServiceString.StoreForcesave(inDto.Set);
     }
 
     /// <summary>

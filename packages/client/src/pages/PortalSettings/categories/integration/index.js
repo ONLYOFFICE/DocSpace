@@ -13,6 +13,7 @@ import PortalPlugins from "./PortalPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
+import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
   const { t, tReady, history, loadBaseInfo, enablePlugins, toDefault } = props;
@@ -41,6 +42,11 @@ const IntegrationWrapper = (props) => {
       id: "single-sign-on",
       name: t("SingleSignOn"),
       content: <SSO />,
+    },
+    {
+      id: "smtp-settings",
+      name: t("SMTPSettings"),
+      content: <SMTPSettings />,
     },
   ];
 

@@ -45,6 +45,7 @@ const Body = ({
   isLoading,
   searchLoader,
   rowLoader,
+  withHeader,
 }) => {
   const [bodyHeight, setBodyHeight] = React.useState(null);
 
@@ -110,6 +111,7 @@ const Body = ({
       footerHeight={FOOTER_HEIGHT}
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
+      withHeader={withHeader}
     >
       {isLoading && !isSearch ? (
         searchLoader

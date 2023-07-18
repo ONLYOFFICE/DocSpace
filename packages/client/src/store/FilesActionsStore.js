@@ -252,7 +252,11 @@ class FilesActionStore {
     newSelection = null,
     withoutDialog = false
   ) => {
-    const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      recycleBinFolderId,
+    } = this.treeFoldersStore;
     const {
       addActiveItems,
       getIsEmptyTrash,
@@ -291,12 +295,14 @@ class FilesActionStore {
     while (selection.length !== i) {
       if (selection[i].fileExst || selection[i].contentLength) {
         // try to fix with one check later (see onDeleteMediaFile)
-        const isActiveFile = activeFiles.find((id) => id === selection[i].id);
+        const isActiveFile = activeFiles.find(
+          (elem) => elem.id === selection[i].id
+        );
         !isActiveFile && fileIds.push(selection[i].id);
       } else {
         // try to fix with one check later (see onDeleteMediaFile)
         const isActiveFolder = activeFolders.find(
-          (id) => id === selection[i].id
+          (elem) => elem.id === selection[i].id
         );
         !isActiveFolder && folderIds.push(selection[i].id);
       }
@@ -316,8 +322,10 @@ class FilesActionStore {
       operationId,
     });
 
-    addActiveItems(fileIds);
-    addActiveItems(null, folderIds);
+    const destFolderId = immediately ? null : recycleBinFolderId;
+
+    addActiveItems(fileIds, null, destFolderId);
+    addActiveItems(null, folderIds, destFolderId);
 
     if (this.dialogsStore.isFolderActions && withoutDialog) {
       folderIds = [];
@@ -362,7 +370,14 @@ class FilesActionStore {
               showToast();
             } else {
               this.updateFilesAfterDelete(operationId);
-              this.filesStore.removeFiles(fileIds, folderIds, showToast);
+
+              this.filesStore.removeFiles(
+                fileIds,
+                folderIds,
+                showToast,
+                destFolderId
+              );
+
               this.uploadDataStore.removeFiles(fileIds);
             }
 
@@ -725,7 +740,8 @@ class FilesActionStore {
     if (
       this.settingsStore.confirmDelete ||
       this.treeFoldersStore.isPrivacyFolder ||
-      isThirdParty
+      isThirdParty ||
+      isRoom
     ) {
       this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
@@ -769,6 +785,7 @@ class FilesActionStore {
   deleteItemOperation = (isFile, itemId, translations, isRoom, operationId) => {
     const { addActiveItems, getIsEmptyTrash } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
+    const { isRecycleBinFolder, recycleBinFolderId } = this.treeFoldersStore;
 
     const pbData = {
       icon: "trash",
@@ -778,8 +795,10 @@ class FilesActionStore {
 
     this.filesStore.setOperationAction(true);
 
+    const destFolderId = isRecycleBinFolder ? null : recycleBinFolderId;
+
     if (isFile) {
-      addActiveItems([itemId]);
+      addActiveItems([itemId], null, destFolderId);
       this.isMediaOpen();
       return deleteFile(itemId)
         .then(async (res) => {
@@ -792,8 +811,11 @@ class FilesActionStore {
             toastr.success(translations.successRemoveFile);
           } else {
             this.updateFilesAfterDelete(operationId);
-            this.filesStore.removeFiles([itemId], null, () =>
-              toastr.success(translations.successRemoveFile)
+            this.filesStore.removeFiles(
+              [itemId],
+              null,
+              () => toastr.success(translations.successRemoveFile),
+              destFolderId
             );
           }
         })
@@ -803,7 +825,7 @@ class FilesActionStore {
       addActiveItems(null, items);
 
       this.setGroupMenuBlocked(true);
-      return removeFiles(items, [], true, true)
+      return removeFiles(items, [], false, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -821,7 +843,7 @@ class FilesActionStore {
           this.setGroupMenuBlocked(false);
         });
     } else {
-      addActiveItems(null, [itemId]);
+      addActiveItems(null, [itemId], destFolderId);
       return deleteFolder(itemId)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
@@ -833,8 +855,11 @@ class FilesActionStore {
             toastr.success(translations.successRemoveFolder);
           } else {
             this.updateFilesAfterDelete(operationId);
-            this.filesStore.removeFiles(null, [itemId], () =>
-              toastr.success(translations.successRemoveFolder)
+            this.filesStore.removeFiles(
+              null,
+              [itemId],
+              () => toastr.success(translations.successRemoveFolder),
+              destFolderId
             );
           }
 
@@ -1093,7 +1118,9 @@ class FilesActionStore {
       operationId,
     });
 
-    addActiveItems(null, items);
+    const destFolder = action === "archive" ? archiveRoomsId : myRoomsId;
+
+    addActiveItems(null, items, destFolder);
 
     switch (action) {
       case "archive":
@@ -1292,9 +1319,12 @@ class FilesActionStore {
   };
 
   openLocationAction = async (locationId) => {
-    this.filesStore.setBufferSelection(null);
+    const { setBufferSelection, setIsLoading, fetchFiles } = this.filesStore;
 
-    const files = await this.filesStore.fetchFiles(locationId, null);
+    setBufferSelection(null);
+    setIsLoading(true);
+    const files = await fetchFiles(locationId, null);
+    setIsLoading(false);
     return files;
   };
 
@@ -1418,8 +1448,8 @@ class FilesActionStore {
   };
 
   checkFileConflicts = (destFolderId, folderIds, fileIds) => {
-    this.filesStore.addActiveItems(fileIds);
-    this.filesStore.addActiveItems(null, folderIds);
+    this.filesStore.addActiveItems(fileIds, null, destFolderId);
+    this.filesStore.addActiveItems(null, folderIds, destFolderId);
     return checkFileConflicts(destFolderId, folderIds, fileIds);
   };
 
@@ -2002,7 +2032,8 @@ class FilesActionStore {
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
     const canWebEdit = item.viewAccessability?.WebEdit;
     const canViewedDocs = item.viewAccessability?.WebView;
 
@@ -2128,6 +2159,22 @@ class FilesActionStore {
   };
 
   backToParentFolder = () => {
+    const {
+      archiveFolderId,
+      myFolderId,
+      myRoomsId,
+      isTrashFolder,
+    } = this.treeFoldersStore;
+    const currentFolderId = this.selectedFolderStore?.id;
+
+    if (
+      currentFolderId === archiveFolderId ||
+      currentFolderId === myFolderId ||
+      currentFolderId === myRoomsId ||
+      isTrashFolder
+    )
+      return;
+
     const { setIsLoading, fetchFiles } = this.filesStore;
 
     let id = this.selectedFolderStore.parentId;

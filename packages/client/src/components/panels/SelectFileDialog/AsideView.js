@@ -32,6 +32,7 @@ const SelectFileDialogAsideView = ({
   isFolderPanelVisible,
   maxInputWidth,
   newFilter,
+  embedded,
 }) => {
   return (
     <ModalDialog
@@ -40,10 +41,11 @@ const SelectFileDialogAsideView = ({
       displayType="aside"
       withoutBodyScroll
       withFooterBorder
+      embedded={embedded}
     >
-      <ModalDialog.Header>{dialogName}</ModalDialog.Header>
+      {!embedded && <ModalDialog.Header>{dialogName}</ModalDialog.Header>}
       <ModalDialog.Body className="select-file_body-modal-dialog">
-        <StyledAsideBody theme={theme}>
+        <StyledAsideBody embedded={embedded} theme={theme}>
           <div className="selection-panel_aside-body">
             <div className="selection-panel_folder-info">
               <Text
@@ -72,6 +74,7 @@ const SelectFileDialogAsideView = ({
                 isFolderTreeLoading={!!!resultingFolderTree}
                 withFileSelectDialog
                 maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
+                embedded={embedded}
               />
 
               <Text color="#A3A9AE" className="selection-panel_aside-title">
@@ -102,13 +105,15 @@ const SelectFileDialogAsideView = ({
           onClick={onButtonClick}
           isDisabled={!fileId}
         />
-        <Button
-          theme={theme}
-          scale
-          size="normal"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-        />
+        {onClose && (
+          <Button
+            theme={theme}
+            scale
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+          />
+        )}
       </ModalDialog.Footer>
     </ModalDialog>
   );

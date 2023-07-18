@@ -4,34 +4,10 @@ rd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo "Run script directory:" $dir
 
 dir=$(builtin cd $rd/../; pwd)
+dockerDir="$dir/build/install/docker"
 
 echo "Root directory:" $dir
-
-cd $dir
-
-branch=$(git branch --show-current)
-
-echo "GIT_BRANCH:" $branch
-
-branch_exist_remote=$(git ls-remote --heads origin $branch)
-
-if [ -z "$branch_exist_remote" ]; then
-    echo "The current branch does not exist in the remote repository. Please push changes."
-    exit 1
-fi
-
-cd $dir/build/install/docker/
-
-docker_dir="$( pwd )"
-
-echo "Docker directory:" $docker_dir
-
-docker_file=Dockerfile.dev
-core_base_domain="localhost"
-build_date=$(date +%Y-%m-%d)
-env_extension="dev"
-
-echo "BUILD DATE: $build_date"
+echo "Docker files root directory:" $dockerDir
 
 local_ip=$(ipconfig getifaddr en0)
 
@@ -40,19 +16,15 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+portal_url="http://$local_ip:8092"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "APP_URL_PORTAL: $portal_url"
 
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
-
-echo "Remove all backend containers"
-docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
-
-echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
-docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Run MySQL"
 
@@ -60,43 +32,34 @@ arch_name="$(uname -m)"
 
 if [ "${arch_name}" = "x86_64" ]; then
     echo "CPU Type: x86_64 -> run db.yml"
-    docker compose -f db.yml up -d
+    docker compose -f $dockerDir/db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
     echo "CPU Type: arm64 -> run db.yml with arm64v8 image"
     MYSQL_IMAGE=arm64v8/mysql:8.0.32-oracle \
-    docker compose -f db.yml up -d
+    docker compose -f $dockerDir/db.yml up -d
 else
     echo "Error: Unknown CPU Type: ${arch_name}."
     exit 1
 fi
 
-echo "Run environments (redis, rabbitmq)"
-DOCKERFILE=$docker_file \
-docker compose -f redis.yml -f rabbitmq.yml up -d
+echo "Clear publish folder"
+rm -rf $dir/publish
 
-if [ "$1" = "--no_ds" ]; then
-    echo "SKIP Document server"
-else 
-    echo "Run Document server"
-    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-    ROOT_DIR=$dir \
-    docker compose -f ds.dev.yml up -d
-fi
+echo "Build backend services (to "publish/" folder)"
+bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dockerDir/docker-entrypoint.py"
 
-echo "Build all backend services"
-DOCKERFILE=$docker_file \
-RELEASE_DATE=$build_date \
-GIT_BRANCH=$branch \
+echo "Run migration and services"
+ENV_EXTENSION="dev" \
+Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
+Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
-APP_CORE_BASE_DOMAIN=$core_base_domain \
-ENV_EXTENSION=$env_extension \
-docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
-
-echo "Run DB migration"
-DOCKERFILE=$docker_file \
-docker compose -f migration-runner.yml up -d
-
-# Start all backend services"
-$dir/build/start/start.backend.docker.sh
+ROOT_DIR=$dir \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
+DATA_DIR="$dir/Data" \
+APP_URL_PORTAL=$portal_url \
+docker-compose -f $dockerDir/docspace.profiles.yml -f $dockerDir/docspace.overcome.yml --profile migration-runner --profile backend-local up -d

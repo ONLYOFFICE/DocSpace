@@ -27,21 +27,51 @@
 namespace ASC.Core.Billing;
 
 [Singletone]
+public class TenantExtraConfig
+{
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly LicenseReaderConfig _licenseReaderConfig;
+
+    public TenantExtraConfig(CoreBaseSettings coreBaseSettings, LicenseReaderConfig licenseReaderConfig)
+    {
+        _coreBaseSettings = coreBaseSettings;
+        _licenseReaderConfig = licenseReaderConfig;
+    }
+
+    public bool Saas
+    {
+        get { return !_coreBaseSettings.Standalone; }
+    }
+
+    public bool Enterprise
+    {
+        get { return _coreBaseSettings.Standalone && !string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+
+    public bool Opensource
+    {
+        get { return _coreBaseSettings.Standalone && string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
+    }
+}
+
+[Singletone]
 public class TariffServiceStorage
 {
     private static readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan _standaloneCacheExpiration = TimeSpan.FromMinutes(15);
     internal readonly ICache Cache;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IServiceProvider _serviceProvider;
     internal readonly ICacheNotify<TariffCacheItem> Notify;
     private TimeSpan _cacheExpiration;
 
-    public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify, ICache cache, CoreBaseSettings coreBaseSettings)
+    public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify, ICache cache, CoreBaseSettings coreBaseSettings, IServiceProvider serviceProvider)
     {
         _cacheExpiration = _defaultCacheExpiration;
 
         Cache = cache;
         _coreBaseSettings = coreBaseSettings;
+        _serviceProvider = serviceProvider;
         Notify = notify;
         Notify.Subscribe((i) =>
         {
@@ -54,23 +84,14 @@ public class TariffServiceStorage
 
         Notify.Subscribe((i) =>
         {
-            Cache.Insert(TariffService.GetTariffCacheKey(i.TenantId), i.TariffId.ToString(), DateTime.UtcNow.Add(GetCacheExpiration()));
-        }, CacheNotifyAction.Insert);
-
-        //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
-        /*try
-        {
-            var section = (ClientSection)ConfigurationManager.GetSection("system.serviceModel/client");
-            if (section != null)
+            using var scope = _serviceProvider.CreateScope();
+            var tariffService = scope.ServiceProvider.GetService<ITariffService>();
+            var tariff = tariffService.GetBillingInfo(i.TenantId, i.TariffId);
+            if (tariff != null)
             {
-                billingConfigured = section.Endpoints.Cast<ChannelEndpointElement>()
-                    .Any(e => e.Contract == typeof(IService).FullName);
+                InsertToCache(i.TenantId, tariff);
             }
-        }
-        catch (Exception err)
-        {
-            log.Error(err);
-        }*/
+        }, CacheNotifyAction.Insert);
     }
 
     private TimeSpan GetCacheExpiration()
@@ -80,6 +101,11 @@ public class TariffServiceStorage
             _cacheExpiration = _cacheExpiration.Add(TimeSpan.FromSeconds(30));
         }
         return _cacheExpiration;
+    }
+
+    public void InsertToCache(int tenantId, Tariff tariff)
+    {
+        Cache.Insert(TariffService.GetTariffCacheKey(tenantId), tariff, DateTime.UtcNow.Add(GetCacheExpiration()));
     }
 
     public void ResetCacheExpiration()
@@ -108,6 +134,7 @@ public class TariffService : ITariffService
     private readonly TariffServiceStorage _tariffServiceStorage;
     private readonly BillingClient _billingClient;
     private readonly IServiceProvider _serviceProvider;
+    private readonly TenantExtraConfig _tenantExtraConfig;
 
     //private readonly int _activeUsersMin;
     //private readonly int _activeUsersMax;
@@ -126,8 +153,8 @@ public class TariffService : ITariffService
         TariffServiceStorage tariffServiceStorage,
         ILogger<TariffService> logger,
         BillingClient billingClient,
-        IServiceProvider serviceProvider)
-
+        IServiceProvider serviceProvider,
+        TenantExtraConfig tenantExtraConfig)
     {
         _logger = logger;
         _quotaService = quotaService;
@@ -136,9 +163,10 @@ public class TariffService : ITariffService
         _tariffServiceStorage = tariffServiceStorage;
         _billingClient = billingClient;
         _serviceProvider = serviceProvider;
+        _tenantExtraConfig = tenantExtraConfig;
         _coreBaseSettings = coreBaseSettings;
 
-        var paymentConfiguration = configuration.GetSection("core:payment").Get<PaymentConfiguration>();
+        var paymentConfiguration = configuration.GetSection("core:payment").Get<PaymentConfiguration>() ?? new PaymentConfiguration();
         _paymentDelay = paymentConfiguration.Delay;
         _trialEnabled = paymentConfiguration.TrialEnabled;
 
@@ -155,17 +183,13 @@ public class TariffService : ITariffService
             tenantId = -1;
         }
 
-        var tariff = refresh ? null : GetTariffFromCache(tenantId);
+        var tariff = refresh ? null : _cache.Get<Tariff>(GetTariffCacheKey(tenantId));
 
         if (tariff == null)
         {
             tariff = GetBillingInfo(tenantId) ?? CreateDefault();
             tariff = CalculateTariff(tenantId, tariff);
-
-            if (string.IsNullOrEmpty(_cache.Get<string>(GetTariffNeedToUpdateCacheKey(tenantId))))
-            {
-                UpdateCache(tariff.Id);
-            }
+            _tariffServiceStorage.InsertToCache(tenantId, tariff);
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
@@ -261,6 +285,29 @@ public class TariffService : ITariffService
                     UpdateCache(tariff.Id);
                 }
             }
+            else if (_tenantExtraConfig.Enterprise && tariff.Id == 0)
+            {
+                var defaultQuota = _quotaService.GetTenantQuota(Tenant.DefaultTenant);
+
+                var quota = new TenantQuota(defaultQuota)
+                {
+                    Name = "start_trial",
+                    Trial = true,
+                    Tenant = -1000
+                };
+
+                _quotaService.SaveTenantQuota(quota);
+
+                tariff = new Tariff
+                {
+                    Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+                    DueDate = DateTime.UtcNow.AddDays(DefaultTrialPeriod),
+                    Id = 1000
+                };
+
+                SetTariff(-1, tariff, new List<TenantQuota> { quota });
+                UpdateCache(tariff.Id);
+            }
         }
         else
         {
@@ -343,13 +390,12 @@ public class TariffService : ITariffService
     }
 
 
-    public void SetTariff(int tenantId, Tariff tariff)
+    public void SetTariff(int tenantId, Tariff tariff, List<TenantQuota> quotas = null)
     {
         ArgumentNullException.ThrowIfNull(tariff);
 
-        List<TenantQuota> quotas = null;
         if (tariff.Quotas == null ||
-            (quotas = tariff.Quotas.Select(q => _quotaService.GetTenantQuota(q.Id)).ToList()).Any(q => q == null))
+            (quotas ??= tariff.Quotas.Select(q => _quotaService.GetTenantQuota(q.Id)).ToList()).Any(q => q == null))
         {
             return;
         }
@@ -367,19 +413,6 @@ public class TariffService : ITariffService
             }
         }
     }
-
-    internal Tariff GetTariffFromCache(int tenantId)
-    {
-        var id = _cache.Get<string>(GetTariffCacheKey(tenantId));
-
-        if (!int.TryParse(id, out var tariffId))
-        {
-            return null;
-        }
-
-        return GetBillingInfo(tenantId, tariffId);
-    }
-
 
     internal static string GetTariffCacheKey(int tenantId)
     {
@@ -677,7 +710,7 @@ public class TariffService : ITariffService
     }
 
 
-    private Tariff GetBillingInfo(int? tenant = null, int? id = null)
+    public Tariff GetBillingInfo(int? tenant = null, int? id = null)
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
         var q = coreDbContext.Tariffs.AsQueryable();
@@ -872,6 +905,39 @@ public class TariffService : ITariffService
             tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date < DateTime.UtcNow.Date.AddDays(-delay))
         {
             tariff.State = TariffState.NotPaid;
+
+            if (_coreBaseSettings.Standalone)
+            {
+                TenantQuota updatedQuota = null;
+
+                var tenantQuotas = _quotaService.GetTenantQuotas();
+
+                foreach (var quota in tariff.Quotas)
+                {
+                    var tenantQuota = tenantQuotas.SingleOrDefault(q => q.Tenant == quota.Id);
+
+                    if (tenantQuota != null)
+                    {
+                        tenantQuota *= quota.Quantity;
+                        updatedQuota += tenantQuota;
+                    }
+                }
+
+                var defaultQuota = _quotaService.GetTenantQuota(Tenant.DefaultTenant);
+                defaultQuota.Name = "overdue";
+                defaultQuota.Features = updatedQuota.Features;
+
+                _quotaService.SaveTenantQuota(defaultQuota);
+
+                var unlimTariff = CreateDefault();
+                unlimTariff.LicenseDate = tariff.DueDate;
+                unlimTariff.Quotas = new List<Quota>()
+                {
+                    new Quota(defaultQuota.Tenant, 1)
+                };
+
+                tariff = unlimTariff;
+            }
         }
 
         return tariff;
@@ -926,11 +992,10 @@ public class TariffService : ITariffService
         if (_trialEnabled)
         {
             toAdd = allQuotas.FirstOrDefault(r => r.Trial && !r.Custom);
-
         }
         else
         {
-            toAdd = allQuotas.FirstOrDefault(r => r.Free && !r.Custom);
+            toAdd = allQuotas.FirstOrDefault(r => _coreBaseSettings.Standalone || r.Free && !r.Custom);
         }
 
         if (toAdd != null)

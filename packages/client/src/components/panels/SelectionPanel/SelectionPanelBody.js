@@ -14,6 +14,8 @@ import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashArchiveFolders,
+  roomsOnly,
+  userFolderOnly,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
@@ -48,6 +50,7 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
+  displayType,
 }) => {
   const isLoaded = folderId && resultingFolderTree;
   return (
@@ -60,9 +63,11 @@ const SelectionPanelBody = ({
       isDoubleFooterLine
       autoMaxWidth
     >
-      <ModalDialog.Header className={"select-panel-modal-header"}>
-        {dialogName}
-      </ModalDialog.Header>
+      {displayType !== "embedded" && (
+        <ModalDialog.Header className={"select-panel-modal-header"}>
+          {dialogName}
+        </ModalDialog.Header>
+      )}
       <ModalDialog.Body className="select-file_body-modal-dialog">
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
@@ -195,6 +200,10 @@ class SelectionPanel extends React.Component {
             treeFolders,
             exceptPrivacyTrashArchiveFolders
           );
+        case "roomsOnly":
+          return filterFoldersTree(treeFolders, roomsOnly);
+        case "userFolderOnly":
+          return filterFoldersTree(treeFolders, userFolderOnly);
       }
     };
 
@@ -203,14 +212,20 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0].id;
-
     if (
       filteredType === "exceptSortedByTags" ||
-      filteredType === "exceptPrivacyTrashArchiveFolders"
+      filteredType === "exceptPrivacyTrashArchiveFolders" ||
+      filteredType === "roomsOnly" ||
+      filteredType === "userFolderOnly"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
+
+    const passedId = id
+      ? id
+      : filteredTreeFolders
+      ? filteredTreeFolders[0].id
+      : foldersTree[0].id;
 
     return [filteredTreeFolders || foldersTree, passedId];
   };

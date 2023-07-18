@@ -29,4 +29,5 @@ namespace ASC.Web.Api.Models;
 public class CookieSettingsRequestsDto
 {
     public int LifeTime { get; set; }
+    public bool Enabled { get; set; }
 }

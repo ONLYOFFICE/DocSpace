@@ -395,6 +395,11 @@ public class EntryManager
 
         searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
 
+        if (parent.FolderType == FolderType.TRASH)
+        {
+            withSubfolders = false;
+        }
+
         if (parent.FolderType == FolderType.Projects && parent.Id.Equals(await _globalFolderHelper.FolderProjectsAsync))
         {
 
@@ -438,7 +443,7 @@ public class EntryManager
             var folderDao = _daoFactory.GetFolderDao<T>();
             var fileDao = _daoFactory.GetFileDao<T>();
 
-            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText,  withSubfolders);
+            var folders = folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders);
             var files = fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
             //share
             var shared = _fileSecurity.GetPrivacyForMeAsync(filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
@@ -459,13 +464,39 @@ public class EntryManager
 
             CalculateTotal();
         }
+        else if (!parent.ProviderEntry)
+        {
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            var fileDao = _daoFactory.GetFileDao<T>();
+
+            var allFoldersCountTask = folderDao.GetFoldersCountAsync(parent.Id, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
+            var allFilesCountTask = fileDao.GetFilesCountAsync(parent.Id, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
+
+            var folders = await folderDao.GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject, from, count)
+                .ToListAsync();
+
+            var filesCount = count - folders.Count;
+            var filesOffset = folders.Count > 0 ? 0 : from - await allFoldersCountTask;
+
+            var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesOffset, filesCount)
+                .ToListAsync();
+
+            entries = new List<FileEntry>(folders.Count + files.Count);
+            entries.AddRange(folders);
+            entries.AddRange(files);
+
+            var fileStatusTask = _entryStatusManager.SetFileStatusAsync(files);
+            var tagsNewTask = _fileMarker.SetTagsNewAsync(parent, entries);
+            var originsTask = SetOriginsAsync(parent, entries);
+
+            await Task.WhenAll(fileStatusTask, tagsNewTask, originsTask);
+
+            total = await allFoldersCountTask + await allFilesCountTask;
+
+            return (entries, total);
+        }
         else
         {
-            if (parent.FolderType == FolderType.TRASH)
-            {
-                withSubfolders = false;
-            }
-
             var folders = _daoFactory.GetFolderDao<T>().GetFoldersAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, withSubfolders, excludeSubject);
             var files = _daoFactory.GetFileDao<T>().GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject);
 
@@ -492,11 +523,6 @@ public class EntryManager
                 {
                     entries.AddRange(items);
                 }
-            }
-            
-            if (parent.FolderType == FolderType.TRASH)
-            { 
-                entries = await GetWithOriginAsync(entries, roomId is int id ? id : default);
             }
         }
 
@@ -955,19 +981,20 @@ public class EntryManager
                 {
                     return 0;
                 }
-                
+
                 if (x1 == null)
                 {
                     return c * 1;
                 }
-                
+
                 if (x2 == null)
                 {
                     return c * -1;
                 }
 
                 return c * x1.EnumerableComparer(x2);
-            },
+            }
+            ,
             _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
         };
 
@@ -1358,7 +1385,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanFillFormsAsync(file) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1425,6 +1452,11 @@ public class EntryManager
                 }
             }
             file.Version++;
+
+            if (file.VersionGroup == 1)
+            {
+                file.VersionGroup++;
+            }
         }
         file.Forcesave = forcesave ?? ForcesaveType.None;
 
@@ -1645,7 +1677,7 @@ public class EntryManager
 
             newFile.Id = fromFile.Id;
             newFile.Version = currFile.Version + 1;
-            newFile.VersionGroup = currFile.VersionGroup;
+            newFile.VersionGroup = currFile.VersionGroup + 1;
             newFile.Title = FileUtility.ReplaceFileExtension(currFile.Title, FileUtility.GetFileExtension(fromFile.Title));
             newFile.FileStatus = currFile.FileStatus;
             newFile.ParentId = currFile.ParentId;
@@ -1666,9 +1698,10 @@ public class EntryManager
 
             if (fromFile.ThumbnailStatus == Thumbnail.Created)
             {
-                var CopyThumbnailsAsync = async () => {
-                    await using (var scope =  _serviceProvider.CreateAsyncScope())
-                    { 
+                var CopyThumbnailsAsync = async () =>
+                {
+                    await using (var scope = _serviceProvider.CreateAsyncScope())
+                    {
                         var _fileDao = scope.ServiceProvider.GetService<IDaoFactory>().GetFileDao<T>();
                         var _globalStoreLocal = scope.ServiceProvider.GetService<GlobalStore>();
 
@@ -1863,10 +1896,13 @@ public class EntryManager
         await tagDao.SaveTags(tag);
     }
 
-    private async Task<List<FileEntry>> GetWithOriginAsync(List<FileEntry> entries, int filterRoomId)
+    private async Task SetOriginsAsync(IFolder parent, IEnumerable<FileEntry> entries)
     {
-        var result = new List<FileEntry>(entries.Count);
-        var needFiltering = filterRoomId != default;
+        if (parent.FolderType != FolderType.TRASH || !entries.Any())
+        {
+            return;
+        }
+
         var folderDao = _daoFactory.GetFolderDao<int>();
 
         var originsData = await folderDao.GetOriginsDataAsync(entries.Cast<FileEntry<int>>().Select(e => e.Id)).ToListAsync();
@@ -1881,22 +1917,15 @@ public class EntryManager
                 fileEntry.OriginRoomId = data.OriginRoom.Id;
                 fileEntry.OriginRoomTitle = data.OriginRoom.Title;
             }
-            
-            if (needFiltering && fileEntry.OriginRoomId != filterRoomId)
+
+            if (data?.OriginFolder == null)
             {
                 continue;
             }
 
-            if (data?.OriginFolder != null)
-            {
-                fileEntry.OriginId = data.OriginFolder.Id;
-                fileEntry.OriginTitle = data.OriginFolder.FolderType == FolderType.USER ? FilesUCResource.MyFiles : data.OriginFolder.Title;
-            }
-
-            result.Add(entry);
+            fileEntry.OriginId = data.OriginFolder.Id;
+            fileEntry.OriginTitle = data.OriginFolder.FolderType == FolderType.USER ? FilesUCResource.MyFiles : data.OriginFolder.Title;
         }
-
-        return result;
     }
 
     //Long operation

@@ -24,6 +24,8 @@ import {
   InfoPanelBodyContent,
 } from "../Home/InfoPanel";
 
+import SelectionArea from "./SelectionArea";
+
 const PureHome = ({
   isLoading,
   history,
@@ -44,6 +46,8 @@ const PureHome = ({
   withPaging,
   onClickBack,
   setPortalTariff,
+
+  setChangeOwnerDialogVisible,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -73,6 +77,9 @@ const PureHome = ({
           setIsLoading(false);
           setIsRefresh(false);
         });
+
+      if (location?.state?.openChangeOwnerDialog)
+        setChangeOwnerDialogVisible(true);
     }
   }, [pathname, location, setSelectedNode]);
 
@@ -125,6 +132,7 @@ const PureHome = ({
       </Section>
 
       <Dialogs />
+      <SelectionArea />
     </>
   );
 };
@@ -140,24 +148,15 @@ export default inject(
     const { settingsStore, currentTariffStatusStore } = auth;
     const { setPortalTariff } = currentTariffStatusStore;
     const { showCatalog, withPaging } = settingsStore;
-    const {
-      usersStore,
-      selectedGroupStore,
-      loadingStore,
-      viewAs,
-    } = peopleStore;
+    const { usersStore, selectedGroupStore, loadingStore, viewAs } =
+      peopleStore;
     const { getUsersList } = usersStore;
     const { selectedGroup } = selectedGroupStore;
     const { setSelectedNode } = treeFoldersStore;
     const { onClickBack } = filesActionsStore;
-    const {
-      isLoading,
-      setIsLoading,
-      setIsRefresh,
-      firstLoad,
-      setFirstLoad,
-    } = loadingStore;
-
+    const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } =
+      loadingStore;
+    const { setChangeOwnerDialogVisible } = peopleStore.dialogStore;
     return {
       setPortalTariff,
       isAdmin: auth.isAdmin,
@@ -176,6 +175,7 @@ export default inject(
       snackbarExist: auth.settingsStore.snackbarExist,
       withPaging,
       onClickBack,
+      setChangeOwnerDialogVisible,
     };
   }
 )(observer(withRouter(Home)));

@@ -198,14 +198,20 @@ public class LicenseReader
 
         var quota = new TenantQuota(-1000)
         {
-            CountUser = _constants.MaxEveryoneCount,
+            Name = "license",
+            Trial = license.Trial,
+            Audit = true,
+            Ldap = true,
+            Sso = true,
+            WhiteLabel = true,
+            ThirdParty = true,
+            AutoBackupRestore = true,
+            Oauth = true,
+            ContentSearch = true,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
-            Name = "license",
             DocsEdition = true,
-            Customization = license.Customization,
-            Update = true,
-            Trial = license.Trial
+            Customization = license.Customization
         };
 
         _tenantManager.SaveTenantQuota(quota);
@@ -216,7 +222,7 @@ public class LicenseReader
             DueDate = license.DueDate,
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff, new List<TenantQuota> { quota });
     }
 
     private void LogError(Exception error)

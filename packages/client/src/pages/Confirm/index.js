@@ -29,6 +29,11 @@ const Confirm = () => {
     <Switch>
       <ConfirmRoute
         forUnauthorized
+        path={`${path}/EmpInvite`}
+        component={CreateUserForm}
+      />
+      <ConfirmRoute
+        forUnauthorized
         path={`${path}/LinkInvite`}
         component={CreateUserForm}
       />

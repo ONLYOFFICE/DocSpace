@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core;
+
 namespace ASC.Migration.PersonalToDocspace.Runner;
 
 [Scope]
@@ -188,7 +190,7 @@ public class MigrationRunner
             {
                 Tenant = tenantId,
                 LastModified = DateTime.UtcNow,
-                RefType = Core.UserGroupRefType.Contains,
+                RefType = UserGroupRefType.Contains,
                 Removed = false,
                 UserGroupId = ASC.Common.Security.Authorizing.Constants.DocSpaceAdmin.ID,
                 Userid = tenant.OwnerId.Value

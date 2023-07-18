@@ -43,6 +43,7 @@ class SelectFolderDialog extends React.Component {
       storeFolderId,
       withoutBasicSelection,
       setResultingFoldersTree,
+      embedded,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -51,7 +52,7 @@ class SelectFolderDialog extends React.Component {
 
     let resultingFolderTree, resultingId;
 
-    if (!withFileSelectDialog) {
+    if (!withFileSelectDialog || embedded) {
       treeFolders = await this.props.fetchTreeFolders();
 
       const roomsFolder = treeFolders.find(
@@ -68,7 +69,7 @@ class SelectFolderDialog extends React.Component {
         ] = await SelectionPanel.getBasicFolderInfo(
           treeFolders,
           filteredType,
-          initialFolderId,
+          embedded ? null : initialFolderId,
           passedFoldersTree,
           hasSharedFolder
         );
@@ -91,7 +92,7 @@ class SelectFolderDialog extends React.Component {
 
     const resId = withFileSelectDialog ? id : resultingId;
 
-    if (!withoutBasicSelection) {
+    if (!withoutBasicSelection || embedded) {
       onSelectFolder && onSelectFolder(resId);
       onSetBaseFolderPath && onSetBaseFolderPath(resId);
     }
@@ -294,6 +295,8 @@ SelectFolderDialog.propTypes = {
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
     "exceptPrivacyTrashArchiveFolders",
+    "roomsOnly",
+    "userFolderOnly",
     "",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),

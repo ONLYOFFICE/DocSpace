@@ -108,7 +108,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/account")]
-    public Uri GetPaymentAccount(string backUrl)
+    public object GetPaymentAccount(string backUrl)
     {
         var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
         var payer = _userManager.GetUserByEmail(payerId);
@@ -119,7 +119,8 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        return _tariffService.GetAccountLink(Tenant.Id, backUrl);
+        var result = "payment.ashx";
+        return !string.IsNullOrEmpty(backUrl) ? $"{result}?backUrl={backUrl}" : result;
     }
 
     [HttpGet("payment/prices")]

@@ -91,6 +91,11 @@ const StyledRow = styled.div`
     font-size: 14px;
     line-height: 16px;
   }
+
+  .invite-panel_access-selector {
+    margin-left: auto;
+    margin-right: 0;
+  }
 `;
 
 const StyledInviteInput = styled.div`

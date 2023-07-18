@@ -102,7 +102,7 @@ public class FilesSettings : ISettings<FilesSettings>
             DefaultSortedAscSetting = false,
             HideConfirmConvertSaveSetting = false,
             HideConfirmConvertOpenSetting = false,
-            ForcesaveSetting = false,
+            ForcesaveSetting = true,
             StoreForcesaveSetting = false,
             HideRecentSetting = false,
             HideFavoritesSetting = false,
@@ -125,19 +125,22 @@ public class FilesSettingsHelper
     private readonly SetupInfo _setupInfo;
     private readonly FileUtility _fileUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly SearchSettingsHelper _searchSettingsHelper;
 
     public FilesSettingsHelper(
         SettingsManager settingsManager,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         FileUtility fileUtility,
-        FilesLinkUtility filesLinkUtility)
+        FilesLinkUtility filesLinkUtility,
+        SearchSettingsHelper searchSettingsHelper)
     {
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
         _fileUtility = fileUtility;
         _filesLinkUtility = filesLinkUtility;
+        _searchSettingsHelper = searchSettingsHelper;
     }
 
     public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
@@ -306,27 +309,27 @@ public class FilesSettingsHelper
     {
         set
         {
-            var setting = LoadForCurrentUser();
-            setting.ForcesaveSetting = value;
-            SaveForCurrentUser(setting);
+            //var setting = LoadForCurrentUser();
+            //setting.ForcesaveSetting = value;
+            //SaveForCurrentUser(setting);
         }
-        get => LoadForCurrentUser().ForcesaveSetting;
+        get => true;//LoadForCurrentUser().ForcesaveSetting;
     }
 
     public bool StoreForcesave
     {
         set
         {
-            if (_coreBaseSettings.Personal)
-            {
-                throw new NotSupportedException();
-            }
+            //if (_coreBaseSettings.Personal)
+            //{
+            //    throw new NotSupportedException();
+            //}
 
-            var setting = _settingsManager.Load<FilesSettings>();
-            setting.StoreForcesaveSetting = value;
-            _settingsManager.Save(setting);
+            //var setting = _settingsManager.Load<FilesSettings>();
+            //setting.StoreForcesaveSetting = value;
+            //_settingsManager.Save(setting);
         }
-        get => !_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
+        get => false;//!_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
     }
 
     public bool RecentSection
@@ -383,7 +386,7 @@ public class FilesSettingsHelper
         get
         {
             var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
-            
+
             if (setting != null)
             {
                 return setting;
@@ -393,6 +396,14 @@ public class FilesSettingsHelper
             AutomaticallyCleanUp = setting;
 
             return setting;
+        }
+    }
+
+    public bool CanSearchByContent
+    {
+        get
+        {
+            return _searchSettingsHelper.CanSearchByContent<DbFile>();
         }
     }
 

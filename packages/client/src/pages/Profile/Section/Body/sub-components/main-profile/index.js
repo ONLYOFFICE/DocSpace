@@ -8,6 +8,7 @@ import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
+import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import ComboBox from "@docspace/components/combobox";
 import IconButton from "@docspace/components/icon-button";
@@ -20,12 +21,7 @@ import { getUserRole, convertLanguage } from "@docspace/common/utils";
 import { Trans } from "react-i18next";
 //import TimezoneCombo from "./timezoneCombo";
 
-import {
-  AvatarEditorDialog,
-  ChangeEmailDialog,
-  ChangePasswordDialog,
-  ChangeNameDialog,
-} from "SRC_DIR/components/dialogs";
+import { AvatarEditorDialog } from "SRC_DIR/components/dialogs";
 
 import {
   StyledWrapper,
@@ -48,11 +44,8 @@ const MainProfile = (props) => {
     helpLink,
     cultureNames,
     setIsLoading,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
@@ -92,7 +85,7 @@ const MainProfile = (props) => {
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text fontSize="13px">
+    <Text fontSize="12px">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
@@ -104,15 +97,19 @@ const MainProfile = (props) => {
           {{ supportEmail: documentationEmail }}
         </Link>
         to take part in the translation and get up to 1 year free of charge."
-      </Trans>{" "}
-      <Link
-        color={theme.profileInfo.tooltipLinkColor}
-        isHovered={true}
-        href={`${helpLink}/guides/become-translator.aspx`}
-        target="_blank"
-      >
-        {t("Common:LearnMore")}
-      </Link>
+      </Trans>
+      <Box displayProp="block" marginProp="10px 0 0">
+        <Link
+          isHovered
+          isBold
+          color="#333333"
+          fontSize="13px"
+          href={`${helpLink}/guides/become-translator.aspx`}
+          target="_blank"
+        >
+          {t("Common:LearnMore")}
+        </Link>
+      </Box>
     </Text>
   );
 
@@ -433,30 +430,6 @@ const MainProfile = (props) => {
         {/* <TimezoneCombo title={t("Common:ComingSoon")} /> */}
       </StyledInfo>
 
-      {changeEmailVisible && (
-        <ChangeEmailDialog
-          visible={changeEmailVisible}
-          onClose={() => setChangeEmailVisible(false)}
-          user={profile}
-        />
-      )}
-
-      {changePasswordVisible && (
-        <ChangePasswordDialog
-          visible={changePasswordVisible}
-          onClose={() => setChangePasswordVisible(false)}
-          email={profile.email}
-        />
-      )}
-
-      {changeNameVisible && (
-        <ChangeNameDialog
-          visible={changeNameVisible}
-          onClose={() => setChangeNameVisible(false)}
-          profile={profile}
-        />
-      )}
-
       {changeAvatarVisible && (
         <AvatarEditorDialog
           t={t}
@@ -481,11 +454,8 @@ export default inject(({ auth, peopleStore }) => {
 
   const {
     targetUser: profile,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
@@ -498,11 +468,8 @@ export default inject(({ auth, peopleStore }) => {
     culture,
     helpLink,
     setIsLoading,
-    changeEmailVisible,
     setChangeEmailVisible,
-    changePasswordVisible,
     setChangePasswordVisible,
-    changeNameVisible,
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
