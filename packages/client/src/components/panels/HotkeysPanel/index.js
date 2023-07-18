@@ -45,6 +45,7 @@ const HotkeyPanel = ({
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
     useEffect(() => {
+      scrollRef.current && scrollRef?.current?.view.focus();
       document.addEventListener("keyup", onKeyPress);
 
       return () => document.removeEventListener("keyup", onKeyPress);
