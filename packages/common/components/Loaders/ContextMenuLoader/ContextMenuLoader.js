@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { desktop, isDesktop } from "@docspace/components/utils/device";
-import { StyledContextMenuLoader } from "./StyledRowLoader";
+import { StyledContextMenuLoader } from "./StyledContextMenuLoader";
 import RectangleLoader from "../RectangleLoader";
 
 const ContextMenuLoader = ({ id, className, style, isRectangle, ...rest }) => {
@@ -34,7 +34,7 @@ const ContextMenuLoader = ({ id, className, style, isRectangle, ...rest }) => {
         animate={animate}
       />
       <RectangleLoader
-        className="first-row-content__mobile"
+        className="context-menu-rectangle"
         title={title}
         width={isDesktopView ? "97px" : "102px"}
         height={isDesktopView ? "16px" : "20px"}
