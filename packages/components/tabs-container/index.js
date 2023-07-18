@@ -155,6 +155,7 @@ class TabContainer extends Component {
           autoHide={onScrollHide}
           stype="preMediumBlack"
           className="scrollbar"
+          horizontal
           ref={this.scrollRef}
         >
           <NavItem className="className_items">

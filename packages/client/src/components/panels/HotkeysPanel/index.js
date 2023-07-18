@@ -44,13 +44,11 @@ const HotkeyPanel = ({
   const onKeyPress = (e) =>
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
-  useEffect(() => {
-    scrollRef.current && scrollRef.current.view.focus();
+    useEffect(() => {
+      document.addEventListener("keyup", onKeyPress);
 
-    document.addEventListener("keyup", onKeyPress);
-
-    return () => document.removeEventListener("keyup", onKeyPress);
-  });
+      return () => document.removeEventListener("keyup", onKeyPress);
+    });
 
   return (
     <StyledHotkeysPanel>

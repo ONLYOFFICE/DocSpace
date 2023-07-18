@@ -64,15 +64,9 @@ const Scrollbar = React.forwardRef((props, ref) => {
   const stype = scrollbarType[props.stype];
   const thumbV = stype ? stype.thumbV : {};
   const thumbH = stype ? stype.thumbH : {};
-  const view = stype ? stype.view : {};
+
   return (
-    <CustomScrollbars
-      thumbh={thumbH}
-      thumbv={thumbV}
-      view={view}
-      {...props}
-      ref={ref}
-    />
+    <CustomScrollbars thumbh={thumbH} thumbv={thumbV} {...props} ref={ref} />
   );
 });
 

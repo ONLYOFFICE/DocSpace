@@ -31,7 +31,17 @@ const StyledScrollbar = styled.div`
   }
   .container::-webkit-scrollbar {
     width: ${(props) => props.thumbv?.width};
-    height: ${(props) => (props.stype === "thumbV" ? 0 : props.thumbh?.height)};
+    height: ${(props) => props.thumbh?.height};
+    ${(props) =>
+      props.vertical &&
+      css`
+        height: 0;
+      `}
+    ${(props) =>
+      props.horizontal &&
+      css`
+        width: 0;
+      `}
   }
 
   .container::-webkit-scrollbar-track {
