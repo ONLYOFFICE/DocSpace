@@ -34,3 +34,4 @@ import DatePicker from "@docspace/components/date-picker";
 | `onChange`         | `func`           |    -     | -      | -                         | Function called when the user select a day |
 | `showCalendarIcon` | `bool`           |    -     | -      | -                         | Shows calendar icon in selected item       |
 | `outerDate`        | `obj`            |    -     | -      | -                         | Allows to track date outside the component |
+| `openDate`         | `date`, `string` |    -     | -      | -                         | Allows to set first shown date in calendar |

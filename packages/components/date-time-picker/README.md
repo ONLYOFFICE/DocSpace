@@ -30,3 +30,4 @@ import DateTimePicker from "@docspace/components/date-time-picker";
 | `maxDate`        | `date`, `string` |    -     |   -    |             -             | Maximum date that the user can select.           |
 | `minDate`        | `date`, `string` |    -     |   -    |             -             | Minimum date that the user can select.           |
 | `hasError`       |    `boolean`     |    -     |   -    |             -             | Minimum date that the user can select.           |
+| `openDate`       | `date`, `string` |    -     |   -    |             -             | Allows to set first shown date in calendar       |

@@ -73,6 +73,7 @@ const DateTimePicker = (props) => {
     minDate,
     maxDate,
     locale,
+    openDate,
   } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);
@@ -117,6 +118,7 @@ const DateTimePicker = (props) => {
         minDate={minDate}
         maxDate={maxDate}
         locale={locale}
+        openDate={openDate}
       />
       <TimeSelector>
         {date !== null &&
@@ -171,6 +173,12 @@ DateTimePicker.propTypes = {
   locale: PropTypes.string,
   /** Indicates the input field has an error  */
   hasError: PropTypes.bool,
+  /** Allows to set first shown date in calendar */
+  openDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 
 export default DateTimePicker;

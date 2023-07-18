@@ -67,6 +67,7 @@ const DatePicker = (props) => {
     locale,
     showCalendarIcon,
     outerDate,
+    openDate,
   } = props;
 
   const calendarRef = useRef();
@@ -106,6 +107,7 @@ const DatePicker = (props) => {
       minDate={minDate}
       maxDate={maxDate}
       locale={locale}
+      initialDate={openDate}
     />
   );
 
@@ -173,7 +175,7 @@ const DatePicker = (props) => {
 DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
-  /** Default date */
+  /** Selected date */
   initialDate: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.string,
@@ -202,7 +204,13 @@ DatePicker.propTypes = {
   /** Shows calendar icon in selected item */
   showCalendarIcon: PropTypes.bool,
   /** Allows to track date outside the component */
-  outerDate: PropTypes.obj,
+  outerDate: PropTypes.object,
+  /** Allows to set first shown date in calendar */
+  openDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 
 DatePicker.defaultProps = {

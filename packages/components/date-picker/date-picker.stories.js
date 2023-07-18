@@ -37,6 +37,8 @@ export default {
   argTypes: {
     minDate: { control: "date" },
     maxDate: { control: "date" },
+    initialDate: { control: "date" },
+    openDate: { control: "date" },
     onChange: { action: "onChange" },
     locale: { control: "select", options: locales },
   },
@@ -48,8 +50,7 @@ export default {
     },
     design: {
       type: "figma",
-      url:
-        "https://www.figma.com/file/9AtdOHnhjhZCIRDrj4Unta/Public-room?type=design&node-id=1846-218508&mode=design&t=xSsXehQdoxpp5o7F-4",
+      url: "https://www.figma.com/file/9AtdOHnhjhZCIRDrj4Unta/Public-room?type=design&node-id=1846-218508&mode=design&t=xSsXehQdoxpp5o7F-4",
     },
   },
 };
@@ -67,3 +68,10 @@ const Template = ({ ...args }) => {
 };
 
 export const Default = Template.bind({});
+
+Default.args = {
+  maxDate: new Date(new Date().getFullYear() + 10 + "/01/01"),
+  minDate: new Date("1970/01/01"),
+  openDate: new Date(),
+  initialDate: null,
+};
