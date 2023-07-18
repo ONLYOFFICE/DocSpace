@@ -50,6 +50,8 @@ var logger = LogManager.Setup()
 try
 {
     logger.Info("Configuring web host ({applicationContext})...", AppName);
+
+    builder.Logging.ClearProviders();
     builder.Host.ConfigureDefault();
 
     var startup = new Startup(builder.Configuration, builder.Environment);

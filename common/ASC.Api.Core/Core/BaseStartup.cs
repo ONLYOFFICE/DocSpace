@@ -318,8 +318,6 @@ public abstract class BaseStartup
 
         app.UseEndpoints(async endpoints =>
         {
-            await endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices);
-
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {
                 Predicate = _ => true,
@@ -335,6 +333,8 @@ public abstract class BaseStartup
             {
                 Predicate = r => r.Name.Contains("self")
             });
+
+            await endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices);
         });
 
         app.Map("/switch", appBuilder =>
