@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
@@ -15,9 +15,6 @@ const StyledPublicRoomBar = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-  }
-
-  .header-icon {
   }
 
   .header-body {
@@ -87,6 +84,18 @@ const StyledLinkRow = styled.div`
     margin-left: auto;
     display: flex;
     gap: 16px;
+  }
+
+  .avatar_role-wrapper {
+    ${({ isExpired }) =>
+      isExpired &&
+      css`
+        svg {
+          path {
+            fill: #f98e86;
+          }
+        }
+      `}
   }
 `;
 

@@ -142,8 +142,18 @@ const EditLinkPanel = (props) => {
 
   const linkNameIsValid = !!linkNameValue.trim();
 
+  const isExpired = expirationDate
+    ? new Date(expirationDate).getTime() <= new Date().getTime()
+    : false;
+
+  const expiredLinkText = isExpired
+    ? t("Translations:LinkHasExpiredAndHasBeenDisabled")
+    : expirationDate
+    ? `${t("Files:LinkValidUntil")}:`
+    : t("Files:ChooseExpirationDate");
+
   return (
-    <StyledEditLinkPanel>
+    <StyledEditLinkPanel isExpired={isExpired}>
       <Backdrop
         onClick={onClosePanel}
         visible={visible}
@@ -191,9 +201,10 @@ const EditLinkPanel = (props) => {
               onChange={onDenyDownloadChange}
             />
             <LimitTimeBlock
+              isExpired={isExpired}
               isLoading={isLoading}
               headerText={t("Files:LimitByTimePeriod")}
-              bodyText={t("Files:ChooseExpirationDate")}
+              bodyText={expiredLinkText}
               expirationDate={expirationDate}
               setExpirationDate={setExpirationDate}
             />
@@ -206,7 +217,7 @@ const EditLinkPanel = (props) => {
             primary
             size="normal"
             label={t("Common:SaveButton")}
-            isDisabled={isLoading || !linkNameIsValid}
+            isDisabled={isLoading || !linkNameIsValid || isExpired}
             onClick={onSave}
           />
           <Button
