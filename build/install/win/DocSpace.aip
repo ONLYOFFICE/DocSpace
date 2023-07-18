@@ -58,7 +58,7 @@
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE" ValueLocId="-"/>
     <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpace_Community_Win-install.v[|ProductVersion]" MultiBuildValue="ExeBuild:ONLYOFFICE_DocSpace_Win-install"/>
-    <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace Community"/>
+    <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace Community" MultiBuildValue="ExeBuild:ONLYOFFICE DocSpace Enterprise"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
     <ROW Property="PS_DB_NAME" Value="onlyoffice"/>
     <ROW Property="PS_DB_PORT" Value="5432"/>
