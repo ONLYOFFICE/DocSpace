@@ -475,4 +475,13 @@ Highest compatibility with docx, xlsx, pptx.</value>
   <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
     <value>You don't have enough permission to archive the room</value>
   </data>
+  <data name="ErrorMessage_MaxLinksCount" xml:space="preserve">
+    <value>The maximum number of links may not exceed {0}</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>External link</value>
+  </data>
+  <data name="ErrorMessage_SharePasswordManyAttempts" xml:space="preserve">
+    <value>You have tried too many times to enter your password. Please try again later</value>
+  </data>
 </root>

@@ -35,7 +35,9 @@ namespace ASC.Web.Core;
 public enum CookiesType
 {
     AuthKey,
-    SocketIO
+    SocketIO,
+    ShareLink,
+    AnonymousSessionKey
 }
 
 [Scope]
@@ -43,6 +45,8 @@ public class CookiesManager
 {
     private const string AuthCookiesName = "asc_auth_key";
     private const string SocketIOCookiesName = "socketio.sid";
+    private const string ShareLinkCookiesName = "sharelink";
+    private const string AnonymousSessionKeyCookiesName = "anonymous_session_key";
 
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager _userManager;
@@ -73,7 +77,7 @@ public class CookiesManager
         _messageService = messageService;
     }
 
-    public async Task SetCookiesAsync(CookiesType type, string value, bool session = false)
+    public async Task SetCookiesAsync(CookiesType type, string value, bool session = false, string itemId = null)
     {
         if (_httpContextAccessor?.HttpContext == null)
         {
@@ -101,7 +105,14 @@ public class CookiesManager
             }
         }
 
-        _httpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
+        var cookieName = GetCookiesName(type);
+
+        if (!string.IsNullOrEmpty(itemId))
+        {
+            cookieName += itemId;
+        }
+
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(cookieName, value, options);
     }
 
     public string GetCookies(CookiesType type)
@@ -118,16 +129,50 @@ public class CookiesManager
         return "";
     }
 
-    public void ClearCookies(CookiesType type)
+    public string GetCookies(CookiesType type, string itemId, bool allowHeader = false)
+    {
+        if (_httpContextAccessor?.HttpContext == null)
+        {
+            return string.Empty;
+        }
+
+        var cookieName = GetCookiesName(type);
+
+        if (!string.IsNullOrEmpty(itemId))
+        {
+            cookieName += itemId;
+        }
+
+        if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(cookieName))
+        {
+            return _httpContextAccessor.HttpContext.Request.Cookies[cookieName] ?? string.Empty;
+        }
+
+        if (allowHeader)
+        {
+            return _httpContextAccessor.HttpContext.Request.Headers[cookieName].FirstOrDefault() ?? string.Empty;
+        }
+        
+        return string.Empty;
+    }
+
+    public void ClearCookies(CookiesType type, string itemId = null)
     {
         if (_httpContextAccessor?.HttpContext == null)
         {
             return;
         }
 
-        if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(GetCookiesName(type)))
+        var cookieName = GetCookiesName(type);
+
+        if (!string.IsNullOrEmpty(itemId))
         {
-            _httpContextAccessor.HttpContext.Response.Cookies.Delete(GetCookiesName(type), new CookieOptions() { Expires = DateTime.Now.AddDays(-3) });
+            cookieName += itemId;
+        }
+
+        if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(cookieName))
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete(cookieName, new CookieOptions() { Expires = DateTime.Now.AddDays(-3) });
         }
     }
 
@@ -283,7 +328,8 @@ public class CookiesManager
         {
             CookiesType.AuthKey => AuthCookiesName,
             CookiesType.SocketIO => SocketIOCookiesName,
-
+            CookiesType.ShareLink => ShareLinkCookiesName,
+            CookiesType.AnonymousSessionKey => AnonymousSessionKeyCookiesName,
             _ => string.Empty,
         };
 
