@@ -16,7 +16,8 @@ import SSOLoader from "./sub-components/ssoLoader";
 import DocumentService from "./DocumentService";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, loadBaseInfo, enablePlugins, toDefault } = props;
+  const { t, tReady, loadBaseInfo, baseDomain, enablePlugins, toDefault } =
+    props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -26,12 +27,6 @@ const IntegrationWrapper = (props) => {
       toDefault();
     };
   }, []);
-
-  const pluginData = {
-    id: "plugins",
-    name: "Plugins",
-    content: <PortalPlugins />,
-  };
 
   const data = [
     {
@@ -44,16 +39,25 @@ const IntegrationWrapper = (props) => {
       name: t("SingleSignOn"),
       content: <SSO />,
     },
-    {
-      id: "document-service",
-      name: t("DocumentService"),
-      content: <DocumentService />,
-    },
   ];
+
+  const pluginData = {
+    id: "plugins",
+    name: "Plugins",
+    content: <PortalPlugins />,
+  };
+
+  const documentServiceData = {
+    id: "document-service",
+    name: t("DocumentService"),
+    content: <DocumentService />,
+  };
 
   if (!isMobile) {
     enablePlugins && data.push(pluginData);
   }
+
+  if (baseDomain) data.push(documentServiceData);
 
   const load = async () => {
     const path = location.pathname;
@@ -87,13 +91,14 @@ const IntegrationWrapper = (props) => {
 export default inject(({ setup, auth, ssoStore }) => {
   const { initSettings } = setup;
   const { load: toDefault } = ssoStore;
-  const { enablePlugins } = auth.settingsStore;
+  const { enablePlugins, baseDomain } = auth.settingsStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
     enablePlugins,
+    baseDomain,
     toDefault,
   };
 })(
