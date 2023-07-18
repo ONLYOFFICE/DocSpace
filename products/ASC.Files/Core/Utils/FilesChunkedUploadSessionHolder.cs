@@ -29,10 +29,12 @@ namespace ASC.Web.Files.Utils;
 public class FilesChunkedUploadSessionHolder : CommonChunkedUploadSessionHolder
 {
     private readonly IDaoFactory _daoFactory;
+
     public FilesChunkedUploadSessionHolder(IDaoFactory daoFactory, TempPath tempPath, IDataStore dataStore, string domain, long maxChunkUploadSize = 10485760)
         : base(tempPath, dataStore, domain, maxChunkUploadSize)
     {
         _daoFactory = daoFactory;
+        TempDomain = FileConstant.StorageDomainTmp;
     }
     public override async Task<string> UploadChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long length)
     {

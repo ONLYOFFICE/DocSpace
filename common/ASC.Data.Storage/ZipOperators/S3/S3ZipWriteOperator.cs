@@ -72,7 +72,7 @@ public class S3ZipWriteOperator : IDataWriteOperator
         Stream fileStream = null;
         await ActionInvoker.TryAsync(async () =>
         {
-            fileStream = await _sessionHolder.DataStore.GetReadStreamAsync(domain, path);
+            fileStream = await store.GetReadStreamAsync(domain, path);
         }, 5, error => throw error);
         if (fileStream != null)
         {

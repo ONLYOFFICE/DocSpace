@@ -1143,7 +1143,7 @@ public class S3Storage : BaseStorage
         return s30Objects;
     }
 
-    private string MakePath(string domain, string path)
+    public string MakePath(string domain, string path)
     {
         string result;
 
@@ -1351,10 +1351,9 @@ public class S3Storage : BaseStorage
         }
     }
 
-    public async Task ConcatFileAsync(string domain, string path, string tarKey, string destinationDomain, string destinationKey, string uploadId, List<PartETag> eTags, int partNumber)
+    public async Task ConcatFileAsync(string pathFile, string tarKey, string destinationDomain, string destinationKey, string uploadId, List<PartETag> eTags, int partNumber)
     {
         using var s3 = GetClient();
-        var file = MakePath(domain, path);
         var destinationPath = MakePath(destinationDomain, destinationKey);
 
         var blockSize = 512;
@@ -1367,7 +1366,7 @@ public class S3Storage : BaseStorage
         }
         catch{}
 
-        var objFile = await s3.GetObjectMetadataAsync(_bucket, file);
+        var objFile = await s3.GetObjectMetadataAsync(_bucket, pathFile);
         var header = BuilderHeaders.CreateHeader(tarKey, objFile.ContentLength);
 
         using var stream = new MemoryStream();
@@ -1408,7 +1407,7 @@ public class S3Storage : BaseStorage
             DestinationBucket = _bucket,
             DestinationKey = destinationPath,
             SourceBucket = _bucket,
-            SourceKey = file,
+            SourceKey = pathFile,
             UploadId = uploadId,
             PartNumber = partNumber
         };

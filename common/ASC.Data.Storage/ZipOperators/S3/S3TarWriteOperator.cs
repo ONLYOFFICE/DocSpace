@@ -35,7 +35,7 @@ internal class S3TarWriteOperator : IDataWriteOperator
     private readonly CommonChunkedUploadSessionHolder _sessionHolder;
     private readonly S3Storage _store;
     private bool _first = true;
-    private readonly string _domain = "files_temp";
+    private readonly string _domain;
     private readonly string _key;
 
     public string Hash { get; private set; }
@@ -48,18 +48,39 @@ internal class S3TarWriteOperator : IDataWriteOperator
         _sessionHolder = sessionHolder;
         _store = _sessionHolder.DataStore as S3Storage;
 
+        _key = _chunkedUploadSession.TempPath;
+        _domain = string.IsNullOrEmpty(_sessionHolder.TempDomain) ? _sessionHolder.Domain : _sessionHolder.TempDomain;
+
         using var stream = new MemoryStream();
         var buffer = new byte[5 * 1024 * 1024];
         stream.Write(buffer);
         stream.Position = 0;
-        _key = _chunkedUploadSession.TempPath;
         _sessionHolder.UploadChunkAsync(_chunkedUploadSession, stream, stream.Length).Wait();
     }
 
     public async Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store)
     {
-        (var uploadId, var eTags, var chunkNumber) = await GetDataAsync();
-        await _store.ConcatFileAsync(domain, path, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
+        if (store is S3Storage) 
+        {
+            var s3Store = store as S3Storage;
+            var fullPath = s3Store.MakePath(domain, path);
+
+            (var uploadId, var eTags, var chunkNumber) = await GetDataAsync();
+            await _store.ConcatFileAsync(fullPath, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
+        }
+        else
+        {
+            Stream fileStream = null;
+            await ActionInvoker.TryAsync(async () =>
+            {
+                fileStream = await store.GetReadStreamAsync(domain, path);
+            }, 5, error => throw error);
+            if (fileStream != null)
+            {
+                await WriteEntryAsync(tarKey, fileStream);
+                fileStream.Dispose();
+            }
+        }
     }
 
     public async Task WriteEntryAsync(string tarKey, Stream stream)
