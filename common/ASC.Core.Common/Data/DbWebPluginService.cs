@@ -51,9 +51,22 @@ public class DbWebPluginService
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
 
-        var webPlugin = await dbContext.WebPlugins.FindAsync(id);
+        var webPlugin = await dbContext.WebPlugins
+            .Where(r => r.Id == id && r.TenantId == tenantId)
+            .FirstOrDefaultAsync();
 
-        return webPlugin != null && webPlugin.TenantId == tenantId ? webPlugin : null;
+        return webPlugin;
+    }
+
+    public async Task<DbWebPlugin> GetByNameAsync(int tenantId, string name)
+    {
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        var webPlugin = await dbContext.WebPlugins
+            .Where(r => r.TenantId == tenantId && r.Name == name)
+            .FirstOrDefaultAsync();
+
+        return webPlugin;
     }
 
     public async Task<List<DbWebPlugin>> GetAsync(int tenantId, bool? enabled = null)

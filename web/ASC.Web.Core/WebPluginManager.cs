@@ -139,10 +139,17 @@ public class WebPluginManager
                 //TODO: think about special characters
                 webPlugin.Name = webPlugin.Name.Replace(" ", string.Empty).ToLowerInvariant();
 
-                var exist = await storage.IsDirectoryAsync(string.Empty, webPlugin.Name);
-                if (exist)
+                var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
+                if (existingPlugin != null)
                 {
-                    throw new ArgumentException("Plugin already exist");
+                    if (webPlugin.Version == existingPlugin.Version)
+                    {
+                        throw new ArgumentException("Plugin already exist");
+                    }
+
+                    webPlugin.Id = existingPlugin.Id;
+
+                    await storage.DeleteDirectoryAsync(string.Empty, webPlugin.Name);
                 }
 
                 webPlugin.TenantId = tenantId;
