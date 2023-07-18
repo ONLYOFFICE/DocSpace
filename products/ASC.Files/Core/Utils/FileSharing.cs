@@ -96,7 +96,7 @@ public class FileSharingAceHelper
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await _fileSharingHelper.CanSetAccessAsync(entry) && advancedSettings is not { InvitationLink: true })
+        if (!aceWrappers.All(r => r.Id == _authContext.CurrentAccount.ID && r.Access == FileShare.None) && !await _fileSharingHelper.CanSetAccessAsync(entry) && advancedSettings is not { InvitationLink: true })
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -160,7 +160,7 @@ public class FileSharingAceHelper
                     {
                         await _countPaidUserChecker.CheckAppend();
                     }
-                    
+
                     userType = FileSecurity.GetTypeByShare(w.Access);
 
                     if (!emailInvite && currentUserType != EmployeeType.DocSpaceAdmin)
@@ -562,7 +562,7 @@ public class FileSharing
             {
                 continue;
             }
-            
+
             if (r.Subject == FileConstant.ShareLinkId)
             {
                 linkAccess = r.Share;
@@ -615,8 +615,8 @@ public class FileSharing
 
             if (isRoom && r.IsLink)
             {
-                w.Link = r.SubjectType == SubjectType.InvitationLink ? 
-                    _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) : 
+                w.Link = r.SubjectType == SubjectType.InvitationLink ?
+                    _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID) :
                     await _externalShare.GetLinkAsync(r.Subject);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
@@ -745,7 +745,7 @@ public class FileSharing
         return result;
     }
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null, 
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
         bool withoutTemplates = false)
     {
         if (!_authContext.IsAuthenticated)
