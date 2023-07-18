@@ -44,7 +44,7 @@
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
     <ROW Property="NEED_REINDEX_ELASTICSEARCH" Value="FALSE"/>
     <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_DocSpace_Enterprise_Win-install.v[|ProductVersion]"/>
-    <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace"/>
+    <ROW Property="PRODUCT_NAME" Value="ONLYOFFICE DocSpace Enterprise"/>
     <ROW Property="PS_DB_HOST" Value="localhost"/>
     <ROW Property="PS_DB_NAME" Value="onlyoffice"/>
     <ROW Property="PS_DB_PORT" Value="5432"/>
@@ -59,6 +59,7 @@
     <ROW Property="REDIS_PORT" Value="6379"/>
     <ROW Property="REDIS_PWD" Value=" " Options="1"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="ShortProductName" Value="ONLYOFFICE DocSpace"/>
     <ROW Property="UpgradeCode" Value="{4BCD210E-EB09-4CC7-B23A-ECA6D6AFA76D}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -736,62 +737,62 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
     <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
-    <ROW Signature_="AppSearchSign" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Type="2"/>
-    <ROW Signature_="AppSearchSign_1" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Type="2"/>
-    <ROW Signature_="AppSearchSign_10" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_MSG" Type="2"/>
-    <ROW Signature_="AppSearchSign_11" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_HOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_12" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_USER" Type="2"/>
-    <ROW Signature_="AppSearchSign_13" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PWD" Type="2"/>
-    <ROW Signature_="AppSearchSign_14" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PORT" Type="2"/>
-    <ROW Signature_="AppSearchSign_15" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_NAME" Type="2"/>
-    <ROW Signature_="AppSearchSign_16" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DB_HOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_17" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_VHOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_18" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_USER" Type="2"/>
-    <ROW Signature_="AppSearchSign_19" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PWD" Type="2"/>
-    <ROW Signature_="AppSearchSign_2" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_20" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PORT" Type="2"/>
-    <ROW Signature_="AppSearchSign_21" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_HOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_22" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Type="2"/>
-    <ROW Signature_="AppSearchSign_23" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Type="2"/>
-    <ROW Signature_="AppSearchSign_24" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Type="2"/>
-    <ROW Signature_="AppSearchSign_25" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_PORT" Type="2"/>
-    <ROW Signature_="AppSearchSign_3" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_USER" Type="2"/>
-    <ROW Signature_="AppSearchSign_4" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PWD" Type="2"/>
-    <ROW Signature_="AppSearchSign_5" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PORT" Type="2"/>
-    <ROW Signature_="AppSearchSign_6" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_NAME" Type="2"/>
-    <ROW Signature_="AppSearchSign_7" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_HOST" Type="2"/>
-    <ROW Signature_="AppSearchSign_8" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_SCHEME" Type="2"/>
-    <ROW Signature_="AppSearchSign_9" Root="2" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_1" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_10" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_MSG" Type="2"/>
+    <ROW Signature_="AppSearchSign_11" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_12" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_13" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_14" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_15" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_NAME" Type="2"/>
+    <ROW Signature_="AppSearchSign_16" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_17" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_VHOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_18" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_19" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_2" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_20" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_21" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_22" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Type="2"/>
+    <ROW Signature_="AppSearchSign_23" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Type="2"/>
+    <ROW Signature_="AppSearchSign_24" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Type="2"/>
+    <ROW Signature_="AppSearchSign_25" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_3" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_USER" Type="2"/>
+    <ROW Signature_="AppSearchSign_4" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_PWD" Type="2"/>
+    <ROW Signature_="AppSearchSign_5" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_PORT" Type="2"/>
+    <ROW Signature_="AppSearchSign_6" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_NAME" Type="2"/>
+    <ROW Signature_="AppSearchSign_7" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_HOST" Type="2"/>
+    <ROW Signature_="AppSearchSign_8" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_SCHEME" Type="2"/>
+    <ROW Signature_="AppSearchSign_9" Root="2" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_PORT" Type="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="APPDIR"/>
-    <ROW Registry="AMQP_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_HOST" Value="[AMQP_HOST]" Component_="APPDIR"/>
-    <ROW Registry="AMQP_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PORT" Value="[AMQP_PORT]" Component_="APPDIR"/>
-    <ROW Registry="AMQP_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_PWD" Value="[AMQP_PWD]" Component_="APPDIR"/>
-    <ROW Registry="AMQP_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_USER" Value="[AMQP_USER]" Component_="APPDIR"/>
-    <ROW Registry="AMQP_VHOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="AMQP_VHOST" Value="[AMQP_VHOST]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_HOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_HOST" Value="[AMQP_HOST]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_PORT" Value="[AMQP_PORT]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_PWD" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_PWD" Value="[AMQP_PWD]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_USER" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_USER" Value="[AMQP_USER]" Component_="APPDIR"/>
+    <ROW Registry="AMQP_VHOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="AMQP_VHOST" Value="[AMQP_VHOST]" Component_="APPDIR"/>
     <ROW Registry="AdvancedInstaller" Root="-1" Key="Software\Caphyon\Advanced Installer" Name="\" Component_="APPDIR"/>
     <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\" Component_="APPDIR"/>
-    <ROW Registry="DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_HOST" Value="[DB_HOST]" Component_="APPDIR"/>
-    <ROW Registry="DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_NAME" Value="[DB_NAME]" Component_="APPDIR"/>
-    <ROW Registry="DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PORT" Value="[DB_PORT]" Component_="APPDIR"/>
-    <ROW Registry="DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_PWD" Value="[DB_PWD]" Component_="APPDIR"/>
-    <ROW Registry="DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DB_USER" Value="[DB_USER]" Component_="APPDIR"/>
-    <ROW Registry="DOCUMENT_SERVER_JWT_ENABLED" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Value="[DOCUMENT_SERVER_JWT_ENABLED]" Component_="APPDIR"/>
-    <ROW Registry="DOCUMENT_SERVER_JWT_HEADER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Value="[DOCUMENT_SERVER_JWT_HEADER]" Component_="APPDIR"/>
-    <ROW Registry="DOCUMENT_SERVER_JWT_SECRET" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Value="[DOCUMENT_SERVER_JWT_SECRET]" Component_="APPDIR"/>
-    <ROW Registry="DOCUMENT_SERVER_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="DOCUMENT_SERVER_PORT" Value="[DOCUMENT_SERVER_PORT]" Component_="APPDIR"/>
-    <ROW Registry="ELASTICSEARCH_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_HOST" Value="[ELASTICSEARCH_HOST]" Component_="APPDIR"/>
-    <ROW Registry="ELASTICSEARCH_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_PORT" Value="[ELASTICSEARCH_PORT]" Component_="APPDIR"/>
-    <ROW Registry="ELASTICSEARCH_SCHEME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="ELASTICSEARCH_SCHEME" Value="[ELASTICSEARCH_SCHEME]" Component_="APPDIR"/>
+    <ROW Registry="DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_HOST" Value="[DB_HOST]" Component_="APPDIR"/>
+    <ROW Registry="DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_NAME" Value="[DB_NAME]" Component_="APPDIR"/>
+    <ROW Registry="DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_PORT" Value="[DB_PORT]" Component_="APPDIR"/>
+    <ROW Registry="DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_PWD" Value="[DB_PWD]" Component_="APPDIR"/>
+    <ROW Registry="DB_USER" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DB_USER" Value="[DB_USER]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_ENABLED" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_ENABLED" Value="[DOCUMENT_SERVER_JWT_ENABLED]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_HEADER" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_HEADER" Value="[DOCUMENT_SERVER_JWT_HEADER]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_JWT_SECRET" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_JWT_SECRET" Value="[DOCUMENT_SERVER_JWT_SECRET]" Component_="APPDIR"/>
+    <ROW Registry="DOCUMENT_SERVER_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="DOCUMENT_SERVER_PORT" Value="[DOCUMENT_SERVER_PORT]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_HOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_HOST" Value="[ELASTICSEARCH_HOST]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_PORT" Value="[ELASTICSEARCH_PORT]" Component_="APPDIR"/>
+    <ROW Registry="ELASTICSEARCH_SCHEME" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="ELASTICSEARCH_SCHEME" Value="[ELASTICSEARCH_SCHEME]" Component_="APPDIR"/>
     <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\" Component_="APPDIR"/>
     <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ONLYOFFICEDocumentS" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="ONLYOFFICEDocumentS" Value="1" Component_="ONLYOFFICEDocumentS"/>
-    <ROW Registry="PS_DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_HOST" Value="[PS_DB_HOST]" Component_="APPDIR"/>
-    <ROW Registry="PS_DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_NAME" Value="[PS_DB_NAME]" Component_="APPDIR"/>
-    <ROW Registry="PS_DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PORT" Value="[PS_DB_PORT]" Component_="APPDIR"/>
-    <ROW Registry="PS_DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_PWD" Value="[PS_DB_PWD]" Component_="APPDIR"/>
-    <ROW Registry="PS_DB_USER" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="PS_DB_USER" Value="[PS_DB_USER]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_HOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_HOST" Value="[PS_DB_HOST]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_NAME" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_NAME" Value="[PS_DB_NAME]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_PORT" Value="[PS_DB_PORT]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_PWD" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_PWD" Value="[PS_DB_PWD]" Component_="APPDIR"/>
+    <ROW Registry="PS_DB_USER" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="PS_DB_USER" Value="[PS_DB_USER]" Component_="APPDIR"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="APPDIR"/>
     <ROW Registry="Prereqs" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs" Name="\"/>
     <ROW Registry="ProductCode" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]" Name="\" Component_="APPDIR"/>
@@ -799,9 +800,9 @@
     <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\" Component_="APPDIR"/>
     <ROW Registry="ProductVersion_1" Root="-1" Key="Software\Caphyon\Advanced Installer\Prereqs\[ProductCode]\[ProductVersion]" Name="\"/>
-    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_HOST" Value="[REDIS_HOST]" Component_="APPDIR"/>
-    <ROW Registry="REDIS_PORT" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PORT" Value="[REDIS_PORT]" Component_="APPDIR"/>
-    <ROW Registry="REDIS_PWD" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="REDIS_PWD" Value="[REDIS_PWD]" Component_="APPDIR"/>
+    <ROW Registry="REDIS_HOST" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_HOST" Value="[REDIS_HOST]" Component_="APPDIR"/>
+    <ROW Registry="REDIS_PORT" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_PORT" Value="[REDIS_PORT]" Component_="APPDIR"/>
+    <ROW Registry="REDIS_PWD" Root="-1" Key="Software\[Manufacturer]\[ShortProductName]" Name="REDIS_PWD" Value="[REDIS_PWD]" Component_="APPDIR"/>
     <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="APPDIR"/>
   </COMPONENT>
