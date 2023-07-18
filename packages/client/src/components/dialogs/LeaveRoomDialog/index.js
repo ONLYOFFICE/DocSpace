@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
@@ -6,6 +7,7 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 const LeaveRoomDialog = (props) => {
   const {
@@ -20,7 +22,11 @@ const LeaveRoomDialog = (props) => {
     userId,
     removeFiles,
     isAdmin,
+    setSelected,
+    isRoot,
   } = props;
+
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,12 +53,21 @@ const LeaveRoomDialog = (props) => {
         invitations: [{ id: userId, access: ShareAccessRights.None }],
       })
         .then(() => {
-          if (!isAdmin) removeFiles(null, [roomId]);
+          if (!isAdmin) {
+            if (isRoot) {
+              const filter = RoomsFilter.getDefault();
+              navigate(`rooms/shared/filter?${filter.toUrlParams()}`);
+            } else {
+              removeFiles(null, [roomId]);
+            }
+          }
+
           toastr.success(t("Files:YouLeftTheRoom"));
         })
         .finally(() => {
           onClose();
           setIsLoading(false);
+          setSelected("none");
         });
     }
   };
@@ -74,7 +89,7 @@ const LeaveRoomDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={isOwner ? t("Files:AssignAnOwner") : t("Common:OKButton")}
+          label={isOwner ? t("Files:AssignOwner") : t("Common:OKButton")}
           size="normal"
           primary
           scale
@@ -94,28 +109,46 @@ const LeaveRoomDialog = (props) => {
   );
 };
 
-export default inject(({ auth, dialogsStore, filesStore }) => {
-  const {
-    leaveRoomDialogVisible: visible,
-    setLeaveRoomDialogVisible: setIsVisible,
-    setChangeRoomOwnerIsVisible,
-  } = dialogsStore;
-  const { user } = auth.userStore;
-  const { selection, bufferSelection, updateRoomMemberRole, removeFiles } =
-    filesStore;
+export default inject(
+  ({ auth, dialogsStore, filesStore, selectedFolderStore }) => {
+    const {
+      leaveRoomDialogVisible: visible,
+      setLeaveRoomDialogVisible: setIsVisible,
+      setChangeRoomOwnerIsVisible,
+    } = dialogsStore;
+    const { user } = auth.userStore;
+    const {
+      selection,
+      bufferSelection,
+      updateRoomMemberRole,
+      removeFiles,
+      setSelected,
+    } = filesStore;
 
-  const selections = selection.length ? selection : [bufferSelection];
-  const isRoomOwner = selections[0].createdBy.id === user.id;
+    const roomId = selection.length
+      ? selection[0].id
+      : bufferSelection
+      ? bufferSelection.id
+      : selectedFolderStore.id;
 
-  return {
-    visible,
-    setIsVisible,
-    setChangeRoomOwnerIsVisible,
-    isOwner: isRoomOwner,
-    updateRoomMemberRole,
-    roomId: selections[0].id,
-    userId: user.id,
-    removeFiles,
-    isAdmin: user.isOwner || user.isAdmin,
-  };
-})(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));
+    const selections = selection.length ? selection : [bufferSelection];
+    const folderItem = selections[0] ? selections[0] : selectedFolderStore;
+
+    const isRoomOwner = folderItem?.createdBy?.id === user.id;
+    const isRoot = selection.length || bufferSelection ? false : true;
+
+    return {
+      visible,
+      setIsVisible,
+      setChangeRoomOwnerIsVisible,
+      isOwner: isRoomOwner,
+      updateRoomMemberRole,
+      roomId,
+      userId: user.id,
+      removeFiles,
+      isAdmin: user.isOwner || user.isAdmin,
+      setSelected,
+      isRoot,
+    };
+  }
+)(observer(withTranslation(["Common", "Files"])(LeaveRoomDialog)));

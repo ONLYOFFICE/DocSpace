@@ -72,7 +72,7 @@ const ChangeRoomOwner = (props) => {
     })
       .then(() => {
         if (!isAdmin) removeFiles(null, [roomId]);
-        toastr.success(t("Files:YouLeftTheRoomOwner"));
+        toastr.success(t("Files:LeftAndAppointNewOwner"));
       })
       .finally(() => {
         onClose();
@@ -92,7 +92,7 @@ const ChangeRoomOwner = (props) => {
       .then(async (res) => {
         setFolder(res[0]);
         if (isChecked) await onLeaveRoom();
-        else toastr.success(t("Files:YouHaveAppointedNewOwner"));
+        else toastr.success(t("Files:AppointNewOwner"));
         setRoomParams && setRoomParams(res[0].createdBy);
       })
       .finally(() => {
@@ -133,8 +133,8 @@ const ChangeRoomOwner = (props) => {
           {...backClickProp}
           onAccept={onChangeRoomOwner}
           onCancel={onClose}
-          acceptButtonLabel={t("Files:AssignAnOwner")}
-          headerLabel={t("Files:ChangeOfRoomOwner")}
+          acceptButtonLabel={t("Files:AssignOwner")}
+          headerLabel={t("Files:ChangeTheRoomOwner")}
           filter={filter}
           isLoading={isLoading}
           withFooterCheckbox={!showBackButton}

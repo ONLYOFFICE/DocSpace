@@ -120,12 +120,12 @@
   "TableSettingsTitle": "Manage displayed columns",
   "DocumentEdited": "Cannot perform the action because the document is being edited.",
   "LeaveTheRoom": "Leave the room",
-  "LeaveRoomDescription": "You are about to leave the room in which you are the owner. You must first transfer the owner's rights to another user.",
-  "ChangeOfRoomOwner": "Change of room Owner",
-  "AssignAnOwner": "Assign an Owner",
+  "LeaveRoomDescription": "You are the owner of this room. Before you leave the room, you must transfer the owner's role to another user.",
+  "ChangeTheRoomOwner": "Change the Room Owner",
+  "AssignOwner": "Assign Owner",
   "WantLeaveRoom": "Do you really want to leave this room?",
   "RoomOwner": "Room owner",
-  "YouLeftTheRoom": "You left the room",
-  "YouLeftTheRoomOwner": "You left the room and appointed its new owner.",
-  "YouHaveAppointedNewOwner": "You have appointed a new owner."
+  "YouLeftTheRoom": "You have left the room",
+  "LeftAndAppointNewOwner": "You have left the room and appointed a new owner",
+  "AppointNewOwner": "You have appointed a new owner."
 }

@@ -105,7 +105,7 @@ const SetRoomParams = ({
     );
   };
 
-  const isMe = userId === roomParams.roomOwner.id;
+  const isMe = userId === roomParams?.roomOwner?.id;
   const canOwnerChange = isAdmin || isMe;
 
   return (
