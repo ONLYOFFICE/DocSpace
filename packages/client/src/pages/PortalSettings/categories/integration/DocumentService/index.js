@@ -9,10 +9,11 @@ import {
   InputBlock,
   Label,
 } from "@docspace/components";
+import toastr from "@docspace/components/toast/toastr";
 
-const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}$/;
+const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}$\//;
 
-const DocumentService = ({ changeDocumentServiceLocation }) => {
+const DocumentService = ({ baseDomain, changeDocumentServiceLocation }) => {
   const { t } = useTranslation(["Settings", "Common"]);
 
   const [apiUrl, setApiUrl] = useState("");
@@ -41,7 +42,11 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl);
+    changeDocumentServiceLocation(apiUrl, internalUrl, portalUrl)
+      .then(() => toastr.success("Success"))
+      .catch((e) =>
+        toastr.error(`${e.message}:\n${e.response.data.error.message}`)
+      );
   };
 
   const onReset = () => {
@@ -59,13 +64,17 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
 
   const anyInputFilled = apiUrl || internalUrl || portalUrl;
 
-  // useEffect(() => {
-  //   const fetchDocumentServiceLocation = async () => {
-  //     const result = await changeDocumentServiceLocation();
-  //     console.log(result);
-  //   };
-  //   fetchDocumentServiceLocation();
-  // }, []);
+  console.log(baseDomain);
+
+  useEffect(() => {
+    console.log(baseDomain);
+    const fetchDocumentServiceLocation = async () => {
+      const result = await changeDocumentServiceLocation();
+      const res2 = await fetch();
+      console.log(result);
+    };
+    fetchDocumentServiceLocation();
+  }, []);
 
   return (
     <Styled.Location>
@@ -140,7 +149,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             primary
             size={"small"}
             label={t("Common:SaveButton")}
-            isDisabled={isFormEmpty || !allInputsValid}
+            // isDisabled={isFormEmpty || !allInputsValid}
           />
           <Button
             onClick={onReset}
@@ -155,8 +164,9 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
   );
 };
 
-export default inject(({ settingsStore }) => {
+export default inject(({ auth, settingsStore }) => {
   return {
+    baseDomain: auth.settingsStore.baseDomain,
     changeDocumentServiceLocation: settingsStore.changeDocumentServiceLocation,
   };
 })(observer(DocumentService));
