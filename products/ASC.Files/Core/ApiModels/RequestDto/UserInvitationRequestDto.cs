@@ -26,7 +26,8 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class UserInvintationRequestDto
+public class UserInvitationRequestDto
 {
     public IEnumerable<Guid> UsersIds { get; set; }
+    public bool ResendAll { get; set; }
 }

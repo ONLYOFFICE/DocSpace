@@ -2428,7 +2428,7 @@ public class FileStorageService //: IFileStorageService
     {
         var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
 
-        await foreach (var ace in _fileSharing.GetRoomSharesByTypeAsync(room, filterType, offset, count))
+        await foreach (var ace in _fileSharing.GetRoomSharesByFilterAsync(room, filterType, null, offset, count))
         {
             yield return ace;
         }
@@ -3159,34 +3159,64 @@ public class FileStorageService //: IFileStorageService
         return fileIds;
     }
 
-    public async Task ResendEmailInvitationsAsync<T>(T id, IEnumerable<Guid> usersIds)
+    public async Task ResendEmailInvitationsAsync<T>(T id, IEnumerable<Guid> usersIds, bool resendAll)
     {
-        ArgumentNullException.ThrowIfNull(usersIds);
+        if (!resendAll && (usersIds == null || !usersIds.Any()))
+        {
+            return;
+        }
 
         var folderDao = _daoFactory.GetFolderDao<T>();
-        var room = await folderDao.GetFolderAsync(id);
+        var room = await folderDao.GetFolderAsync(id).NotFoundIfNull();
 
-        ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        var counter1 = 0;
+        
         ErrorIf(!await _fileSecurity.CanEditRoomAsync(room), FilesCommonResource.ErrorMassage_SecurityException);
 
-        var shares = (await _fileSharing.GetSharedInfoAsync(room)).ToDictionary(k => k.Id, v => v);
-
-        foreach (var userId in usersIds)
+        if (!resendAll)
         {
-            if (!shares.TryGetValue(userId, out var share))
+            await foreach (var ace in _fileSharing.GetRoomSharesBySubjectsAsync(room, usersIds))
             {
-                continue;
+                counter1++;
+                
+                var user = await _userManager.GetUsersAsync(ace.Id);
+                
+                var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID);
+                await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
+            }
+            
+            return;
+        }
+
+        const int margin = 1;
+        const int packSize = 1000;
+        var offset = 0;
+        var finish = false;
+
+        while (!finish)
+        {
+            var counter = 0;
+
+            await foreach (var ace in _fileSharing.GetRoomSharesByFilterAsync(room, ShareFilterType.User, EmployeeActivationStatus.Pending, offset, packSize + margin))
+            {
+                counter++;
+                
+                if (counter > packSize)
+                {
+                    offset += packSize;
+                    break;
+                }
+                
+                var user = await _userManager.GetUsersAsync(ace.Id);
+                
+                var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, ace.Access, _authContext.CurrentAccount.ID);
+                await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
             }
 
-            var user = await _userManager.GetUserAsync(share.Id, null);
-
-            if (user.ActivationStatus != EmployeeActivationStatus.Pending)
+            if (counter <= packSize)
             {
-                continue;
+                finish = true;
             }
-
-            var link = await _invitationLinkService.GetInvitationLinkAsync(user.Email, share.Access, _authContext.CurrentAccount.ID);
-            await _studioNotifyService.SendEmailRoomInviteAsync(user.Email, room.Title, link);
         }
     }
 

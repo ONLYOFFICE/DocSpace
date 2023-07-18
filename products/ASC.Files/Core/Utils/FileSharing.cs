@@ -495,7 +495,7 @@ public class FileSharing
         }
     }
 
-    public async IAsyncEnumerable<AceWrapper> GetRoomSharesByTypeAsync<T>(Folder<T> room, ShareFilterType filterType, int offset, int count)
+    public async IAsyncEnumerable<AceWrapper> GetRoomSharesByFilterAsync<T>(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status, int offset, int count)
     {
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType))
         {
@@ -511,12 +511,12 @@ public class FileSharing
         
         var canEditAccess = await _fileSecurity.CanEditAccessAsync(room);
 
-        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType).Skip(offset).Take(count).ToListAsync();
+        var defaultAces = await GetDefaultRoomAcesAsync(room, filterType, status).Skip(offset).Take(count).ToListAsync();
         
         offset = offset == 0 ? offset : offset - defaultAces.Count;
         count -= defaultAces.Count;
 
-        var records = _daoFactory.GetSecurityDao<T>().GetRoomSharesAsync(room, filterType, offset, count);
+        var records = _daoFactory.GetSecurityDao<T>().GetRoomSharesAsync(room, filterType, status, offset, count);
 
         foreach (var record in defaultAces)
         {
@@ -883,12 +883,12 @@ public class FileSharing
             .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
     }
     
-    private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType)
+    private async IAsyncEnumerable<AceWrapper> GetDefaultRoomAcesAsync<T>(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status)
     {
         if (filterType is ShareFilterType.InvitationLink or ShareFilterType.Link)
         {
             var id = Guid.NewGuid();
-            var w = new AceWrapper
+            var invitationTemplate = new AceWrapper
             {
                 Id = id,
                 Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
@@ -899,13 +899,13 @@ public class FileSharing
                 SubjectType = SubjectType.InvitationLink
             };
 
-            yield return w;
+            yield return invitationTemplate;
         }
         
         if (filterType is ShareFilterType.ExternalLink or ShareFilterType.Link)
         {
             var id = Guid.NewGuid();
-            var w = new AceWrapper
+            var externalTemplate = new AceWrapper
             {
                 Id = id,
                 Link = await _externalShare.GetLinkAsync(id),
@@ -916,23 +916,35 @@ public class FileSharing
                 SubjectType = SubjectType.ExternalLink
             };
 
-            yield return w;
+            yield return externalTemplate;
         }
-        
-        if (filterType == ShareFilterType.User)
-        {
-            var w = new AceWrapper
-            {
-                Id = room.CreateBy,
-                SubjectName = await _global.GetUserNameAsync(room.CreateBy),
-                SubjectGroup = false,
-                Access = FileShare.ReadWrite,
-                Owner = true,
-                CanEditAccess = false,
-            };
 
-            yield return w;
+        if (filterType != ShareFilterType.User)
+        {
+            yield break;
         }
+
+        if (status.HasValue)
+        {
+            var user = await _userManager.GetUsersAsync(room.CreateBy);
+
+            if (user.ActivationStatus != status.Value)
+            {
+                yield break;
+            }
+        }
+
+        var owner = new AceWrapper
+        {
+            Id = room.CreateBy,
+            SubjectName = await _global.GetUserNameAsync(room.CreateBy),
+            SubjectGroup = false,
+            Access = FileShare.ReadWrite,
+            Owner = true,
+            CanEditAccess = false,
+        };
+
+        yield return owner;
     }
     
     private async Task<AceWrapper> ToAceAsync(FileEntry entry, FileShareRecord record, bool canEditAccess)

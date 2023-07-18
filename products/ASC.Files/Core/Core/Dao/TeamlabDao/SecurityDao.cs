@@ -197,7 +197,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         return InternalGetPureShareRecordsAsync(entry);
     }
 
-    public async IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, int offset = 0, int count = -1)
+    public async IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
     {
         if (room == null || !DocSpaceHelper.IsRoom(room.FolderType) || count == 0)
         {
@@ -211,11 +211,22 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         if (filterType == ShareFilterType.User)
         {
             var predicate = ShareCompareHelper.GetCompareExpression<SecurityUserRecord>(s => s.Security.Share);
-            
-            q = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, (s, u) => new SecurityUserRecord { Security = s, User = u})
-                .OrderBy(s => s.User.ActivationStatus)
-                .ThenBy(predicate)
-                .Select(s => s.Security);
+
+            var q1 = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, 
+                (s, u) => new SecurityUserRecord { Security = s, User = u });
+
+            if (status.HasValue)
+            {
+                q = q1.Where(s => s.User.ActivationStatus == status.Value)
+                    .OrderBy(predicate)
+                    .Select(s => s.Security);
+            }
+            else
+            {
+                q = q1.OrderBy(s => s.User.ActivationStatus)
+                    .ThenBy(predicate)
+                    .Select(s => s.Security);
+            }
         }
         else
         {

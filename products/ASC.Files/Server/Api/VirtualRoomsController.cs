@@ -641,9 +641,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Void
     /// </returns>
     [HttpPost("rooms/{id}/resend")]
-    public async Task ResendEmailInvitationsAsync(T id, UserInvintationRequestDto inDto)
+    public async Task ResendEmailInvitationsAsync(T id, UserInvitationRequestDto inDto)
     {
-        await _fileStorageService.ResendEmailInvitationsAsync(id, inDto.UsersIds);
+        await _fileStorageService.ResendEmailInvitationsAsync(id, inDto.UsersIds, inDto.ResendAll);
     }
 
     protected void ErrorIfNotDocSpace()
