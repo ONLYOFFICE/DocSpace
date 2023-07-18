@@ -103,6 +103,8 @@ const DocumentService = ({ baseDomain, changeDocumentServiceLocation }) => {
             />
             <InputBlock
               id="editingAdress"
+              type="text"
+              autocomplete="off"
               scale
               iconButtonClassName={"icon-button"}
               value={apiUrl}
@@ -118,6 +120,8 @@ const DocumentService = ({ baseDomain, changeDocumentServiceLocation }) => {
             />
             <InputBlock
               id="fromDocspaceAdress"
+              type="text"
+              autocomplete="off"
               scale
               iconButtonClassName={"icon-button"}
               value={internalUrl}
@@ -133,6 +137,8 @@ const DocumentService = ({ baseDomain, changeDocumentServiceLocation }) => {
             />
             <InputBlock
               id="fromDocServiceAdress"
+              type="text"
+              autocomplete="off"
               scale
               iconButtonClassName={"icon-button"}
               value={portalUrl}
