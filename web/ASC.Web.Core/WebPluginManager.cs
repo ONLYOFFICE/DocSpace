@@ -228,6 +228,6 @@ public class WebPluginManager
 
         var storage = await _storageFactory.GetStorageAsync(tenantId, StorageModuleName);
 
-        await storage.DeleteAsync(string.Empty, plugin.Name);
+        await storage.DeleteDirectoryAsync(string.Empty, plugin.Name);
     }
 }
