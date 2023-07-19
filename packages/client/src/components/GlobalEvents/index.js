@@ -8,7 +8,6 @@ import RenameEvent from "./RenameEvent";
 import CreateRoomEvent from "./CreateRoomEvent";
 import EditRoomEvent from "./EditRoomEvent";
 import ChangeUserTypeEvent from "./ChangeUserTypeEvent";
-import AddPluginEvent from "./AddPluginEvent";
 
 const GlobalEvents = () => {
   const [createDialogProps, setCreateDialogProps] = useState({
@@ -40,11 +39,6 @@ const GlobalEvents = () => {
   });
 
   const [changeUserTypeDialog, setChangeUserTypeDialogProps] = useState({
-    visible: false,
-    onClose: null,
-  });
-
-  const [addPluginDialogProps, setAddPluginDialogProps] = useState({
     visible: false,
     onClose: null,
   });
@@ -126,20 +120,12 @@ const GlobalEvents = () => {
     });
   }, []);
 
-  const onAddPlugin = useCallback((e) => {
-    setAddPluginDialogProps({
-      visible: true,
-      onClose: () => setAddPluginDialogProps({ visible: false, onClose: null }),
-    });
-  }, []);
-
   useEffect(() => {
     window.addEventListener(Events.CREATE, onCreate);
     window.addEventListener(Events.RENAME, onRename);
     window.addEventListener(Events.ROOM_CREATE, onCreateRoom);
     window.addEventListener(Events.ROOM_EDIT, onEditRoom);
     window.addEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
-    window.addEventListener(Events.ADD_PLUGIN, onAddPlugin);
 
     return () => {
       window.removeEventListener(Events.CREATE, onCreate);
@@ -147,16 +133,8 @@ const GlobalEvents = () => {
       window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
       window.removeEventListener(Events.ROOM_EDIT, onEditRoom);
       window.removeEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
-      window.removeEventListener(Events.ADD_PLUGIN, onAddPlugin);
     };
-  }, [
-    onRename,
-    onCreate,
-    onCreateRoom,
-    onEditRoom,
-    onChangeUserType,
-    onAddPlugin,
-  ]);
+  }, [onRename, onCreate, onCreateRoom, onEditRoom, onChangeUserType]);
 
   return [
     createDialogProps.visible && (
@@ -176,9 +154,6 @@ const GlobalEvents = () => {
         key={Events.CHANGE_USER_TYPE}
         {...changeUserTypeDialog}
       />
-    ),
-    addPluginDialogProps.visible && (
-      <AddPluginEvent key={Events.ADD_PLUGIN} {...addPluginDialogProps} />
     ),
   ];
 };

@@ -340,7 +340,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       {toast}
       <ReactSmartBanner t={t} ready={ready} />
-      <GlobalEvents />
       {isEditor ? <></> : <NavMenu />}
       {isMobileOnly && <MainBar />}
       <IndicatorLoader />
