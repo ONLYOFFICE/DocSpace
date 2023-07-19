@@ -29,6 +29,8 @@ export const getRoomTypeDescriptionTranslation = (roomType = 1, t) => {
       return t("CreateEditRoomDialog:ViewOnlyRoomDescription");
     case RoomsType.CustomRoom:
       return t("CreateEditRoomDialog:CustomRoomDescription");
+    case RoomsType.PublicRoom:
+      return t("CreateEditRoomDialog:PublicRoomDescription");
   }
 };
 
