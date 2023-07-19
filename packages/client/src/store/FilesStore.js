@@ -1631,7 +1631,7 @@ class FilesStore {
     return newOptions.filter((o) => o);
   };
 
-  getFilesContextOptions = (item) => {
+  getFilesContextOptions = (item, fromInfoPanel) => {
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -2019,7 +2019,7 @@ class FilesStore {
         }
       }
 
-      if (!isPublicRoomType) {
+      if (!isPublicRoomType || fromInfoPanel) {
         roomOptions = this.removeOptions(roomOptions, ["external-link"]);
       }
 
