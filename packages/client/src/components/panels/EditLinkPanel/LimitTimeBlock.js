@@ -9,8 +9,10 @@ const LimitTimeBlock = (props) => {
     setExpirationDate(date);
   };
 
-  const minDate = new Date(new Date().getTime());
-  minDate.setDate(new Date().getDate() - 1);
+  // const minDate = new Date(new Date().getTime());
+  // minDate.setDate(new Date().getDate() - 1);
+  // minDate.setTime(minDate.getTime() + 60 * 60 * 1000);
+  const minDate = new Date();
 
   return (
     <ToggleBlock {...props} withToggle={false}>
@@ -22,6 +24,7 @@ const LimitTimeBlock = (props) => {
         minDate={minDate}
         openDate={new Date()}
         hasError={isExpired}
+        // initialTime={minDate}
       />
     </ToggleBlock>
   );

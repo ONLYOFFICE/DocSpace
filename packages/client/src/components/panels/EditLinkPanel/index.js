@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import copy from "copy-to-clipboard";
@@ -48,6 +48,10 @@ const EditLinkPanel = (props) => {
   const [linkNameValue, setLinkNameValue] = useState(linkTitle);
   const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState(date);
+  const isExpiredDate = expirationDate
+    ? new Date(expirationDate).getTime() <= new Date().getTime()
+    : false;
+  const [isExpired, setIsExpired] = useState(isExpiredDate);
 
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
@@ -75,6 +79,14 @@ const EditLinkPanel = (props) => {
     if (!isPasswordValid && passwordAccessIsChecked) {
       setIsPasswordValid(false);
 
+      return;
+    }
+
+    const isExpired = expirationDate
+      ? new Date(expirationDate).getTime() <= new Date().getTime()
+      : false;
+    if (isExpired) {
+      setIsExpired(isExpired);
       return;
     }
 
@@ -141,10 +153,6 @@ const EditLinkPanel = (props) => {
   }, [unsavedChangesDialogVisible]);
 
   const linkNameIsValid = !!linkNameValue.trim();
-
-  const isExpired = expirationDate
-    ? new Date(expirationDate).getTime() <= new Date().getTime()
-    : false;
 
   const expiredLinkText = isExpired
     ? t("Translations:LinkHasExpiredAndHasBeenDisabled")
