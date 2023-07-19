@@ -39,14 +39,23 @@ const LinkRow = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { title, shareLink, id, password, disabled, expirationDate } =
-    link.sharedTo;
+  const {
+    title,
+    shareLink,
+    id,
+    password,
+    disabled,
+    expirationDate,
+    isExpired,
+  } = link.sharedTo;
 
   const isLocked = !!password;
   const expiryDate = !!expirationDate;
   const date = moment(expirationDate).format("LLL");
 
-  const tooltipContent = t("Translations:PublicRoomLinkValidTime", { date });
+  const tooltipContent = isExpired
+    ? t("Translations:LinkHasExpiredAndHasBeenDisabled")
+    : t("Translations:PublicRoomLinkValidTime", { date });
 
   const onEditLink = () => {
     setEditLinkPanelIsVisible(true);
@@ -54,6 +63,12 @@ const LinkRow = (props) => {
   };
 
   const onDisableLink = () => {
+    if (isExpired) {
+      setEditLinkPanelIsVisible(true);
+      setLinkParams({ isEdit: true, link });
+      return;
+    }
+
     setIsLoading(true);
 
     const newLink = JSON.parse(JSON.stringify(link));
@@ -109,7 +124,7 @@ const LinkRow = (props) => {
       //   icon: ShareReactSvgUrl,
       //   // onClick: () => args.onClickLabel("label2"),
       // },
-      {
+      !isExpired && {
         key: "embedding-settings-key",
         label: t("Files:EmbeddingSettings"),
         icon: CodeReactSvgUrl,
@@ -143,7 +158,7 @@ const LinkRow = (props) => {
   };
 
   return (
-    <StyledLinkRow {...rest}>
+    <StyledLinkRow {...rest} isExpired={isExpired}>
       <Avatar
         className="avatar"
         size="min"

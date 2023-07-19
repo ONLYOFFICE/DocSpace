@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Box from "@docspace/components/box";
 import Scrollbar from "@docspace/components/scrollbar";
 
@@ -58,6 +58,14 @@ const StyledEditLinkPanel = styled.div`
       }
     }
 
+    .edit-link-toggle-description {
+      color: ${({ theme }) => theme.editLink.text.color};
+    }
+
+    .edit-link-toggle-description_expired {
+      color: ${({ theme }) => theme.editLink.text.errorColor};
+    }
+
     .edit-link_password-block {
       width: 100%;
       display: flex;
@@ -90,6 +98,11 @@ const StyledEditLinkPanel = styled.div`
 
   .public-room_date-picker {
     padding-top: 8px;
+    ${({ isExpired }) =>
+      isExpired &&
+      css`
+        color: ${({ theme }) => theme.datePicker.errorColor};
+      `};
   }
 `;
 

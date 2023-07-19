@@ -11,8 +11,13 @@ const StyledContextMenuLoader = styled.div`
   align-items: center;
 
   @media ${tablet} {
-    padding: 4px 12px 4px 4px;
+    padding: 4px 12px 4px 16px;
     grid-column-gap: 0px;
+  }
+
+  .context-menu-rectangle {
+    margin-right: auto;
+    margin-left: 8px;
   }
 `;
 

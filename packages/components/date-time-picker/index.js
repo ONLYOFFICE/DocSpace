@@ -74,6 +74,7 @@ const DateTimePicker = (props) => {
     maxDate,
     locale,
     openDate,
+    initialTime,
   } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);

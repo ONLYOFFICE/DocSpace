@@ -47,7 +47,7 @@ const DeleteLinkDialogComponent = (props) => {
     editExternalLink(roomId, newLink)
       .then((res) => {
         setExternalLinks(res);
-        toastr.success("Files:LinkRemovedSuccessfully");
+        toastr.success(t("Files:LinkDeletedSuccessfully"));
       })
       .catch((err) => toastr.error(err?.message))
       .finally(() => {

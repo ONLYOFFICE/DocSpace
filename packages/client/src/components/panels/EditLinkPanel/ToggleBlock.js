@@ -10,6 +10,7 @@ const ToggleBlock = ({
   onChange,
   children,
   withToggle = true,
+  isExpired,
 }) => {
   return (
     <div className="edit-link-toggle-block">
@@ -26,14 +27,19 @@ const ToggleBlock = ({
           />
         )}
       </div>
-      <Text
-        className="edit-link-toggle-description"
-        fontSize="12px"
-        fontWeight={400}
-        color="#A3A9AE"
-      >
-        {bodyText}
-      </Text>
+      {bodyText && (
+        <Text
+          className={
+            isExpired
+              ? "edit-link-toggle-description_expired"
+              : "edit-link-toggle-description"
+          }
+          fontSize="12px"
+          fontWeight={400}
+        >
+          {bodyText}
+        </Text>
+      )}
 
       {children}
     </div>
