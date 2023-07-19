@@ -4,7 +4,7 @@ import ImageReactSvgUrl from "PUBLIC_DIR/images/image.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
-import React, { useState } from "react";
+import { useState } from "react";
 import { withTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { inject, observer } from "mobx-react";
@@ -15,8 +15,6 @@ import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
 import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 
 import { StyledHeader } from "./StyledHeader";
 import RoomsFilter from "@docspace/common/api/rooms/filter";

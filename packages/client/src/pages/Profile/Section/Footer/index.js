@@ -11,7 +11,7 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
-import Loaders from "@docspace/common/components/Loaders";
+import { useTheme } from "styled-components";
 
 import {
   LogoutConnectionDialog,
@@ -51,9 +51,10 @@ const ActiveSessions = ({
   const [currentSession, setCurrentSession] = useState(0);
   const [modalData, setModalData] = useState({});
   const [loading, setLoading] = useState(false);
+  const { interfaceDirection } = useTheme();
 
   useEffect(() => {
-    getAllSessions().then((res) => {
+    getAllSessions().then(res => {
       setSessions(res.items);
       setCurrentSession(res.loginEvent);
     });
@@ -62,7 +63,7 @@ const ActiveSessions = ({
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions().then((res) => window.location.replace(res));
+      await removeAllSessions().then(res => window.location.replace(res));
     } catch (error) {
       toastr.error(error);
     } finally {
@@ -75,7 +76,7 @@ const ActiveSessions = ({
     try {
       setLoading(true);
       await removeAllExecptThis().then(() =>
-        getAllSessions().then((res) => setSessions(res.items))
+        getAllSessions().then(res => setSessions(res.items))
       );
     } catch (error) {
       toastr.error(error);
@@ -85,12 +86,12 @@ const ActiveSessions = ({
     }
   };
 
-  const onClickRemoveSession = async (id) => {
-    const foundSession = sessions.find((s) => s.id === id);
+  const onClickRemoveSession = async id => {
+    const foundSession = sessions.find(s => s.id === id);
     try {
       setLoading(true);
       await removeSession(foundSession.id).then(() =>
-        getAllSessions().then((res) => setSessions(res.items))
+        getAllSessions().then(res => setSessions(res.items))
       );
       toastr.success(
         t("Profile:SuccessLogout", {
@@ -106,10 +107,26 @@ const ActiveSessions = ({
     }
   };
 
-  const convertTime = (date) => {
+  const convertTime = date => {
     return new Date(date).toLocaleString(locale);
   };
-
+  console.log(isMobile);
+  const tableCell = (platform, browser) =>
+    interfaceDirection === "rtl" && !isMobile ? (
+      <>
+        <span className="session-browser">
+          <span>{browser}r</span>
+        </span>
+        {platform}
+      </>
+    ) : (
+      <>
+        {platform}
+        <span className="session-browser">
+          <span>{browser}l</span>
+        </span>
+      </>
+    );
   return (
     <StyledFooter>
       <Text fontSize="16px" fontWeight={700}>
@@ -119,14 +136,12 @@ const ActiveSessions = ({
         displayProp="flex"
         alignItems="center"
         justifyContent="flex-start"
-        marginProp="10px 0 0"
-      >
+        marginProp="10px 0 0">
         <Link
           className="session-logout"
           type="action"
           isHovered
-          onClick={() => setLogoutAllVisible(true)}
-        >
+          onClick={() => setLogoutAllVisible(true)}>
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
@@ -142,13 +157,10 @@ const ActiveSessions = ({
       {isMobile ? (
         <Table>
           <TableBody>
-            {sessions.map((session) => (
+            {sessions.map(session => (
               <TableRow key={session.id}>
                 <TableDataCell style={{ borderTop: "0" }}>
-                  {session.platform}
-                  <span className="session-browser">
-                    <span>{session.browser}</span>
-                  </span>
+                  {tableCell(session.platform, session.browser)}
                   {currentSession === session.id ? tickIcon : null}
 
                   <Box flexDirection="column" alignItems="center">
@@ -168,8 +180,7 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}
-                >
+                  }}>
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>
@@ -186,13 +197,10 @@ const ActiveSessions = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sessions.map((session) => (
+            {sessions.map(session => (
               <TableRow key={session.id}>
                 <TableDataCell>
-                  {session.platform}
-                  <span className="session-browser">
-                    <span>{session.browser}</span>
-                  </span>
+                  {tableCell(session.platform, session.browser)}
                   {currentSession === session.id ? tickIcon : null}
                 </TableDataCell>
                 <TableDataCell>{convertTime(session.date)}</TableDataCell>
@@ -205,8 +213,7 @@ const ActiveSessions = ({
                       platform: session.platform,
                       browser: session.browser,
                     });
-                  }}
-                >
+                  }}>
                   {currentSession !== session.id ? removeIcon : null}
                 </TableDataCell>
               </TableRow>

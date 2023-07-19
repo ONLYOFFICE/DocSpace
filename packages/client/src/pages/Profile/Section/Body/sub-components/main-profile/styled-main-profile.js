@@ -14,7 +14,7 @@ export const StyledWrapper = styled.div`
   display: flex;
   padding: 24px 24px 18px 24px;
   gap: 40px;
-  background: ${(props) => props.theme.profile.main.background};
+  background: ${props => props.theme.profile.main.background};
   border-radius: 12px;
 
   box-sizing: border-box;
@@ -47,6 +47,14 @@ export const StyledAvatarWrapper = styled.div`
       display: flex;
       position: fixed;
       right: 16px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              left: 16px;
+            `
+          : css`
+              right: 16px;
+            `}
     }
   }
 `;
@@ -86,7 +94,14 @@ export const StyledInfo = styled.div`
       }
 
       .sso-badge {
-        margin-left: 18px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 18px;
+              `
+            : css`
+                margin-left: 18px;
+              `}
       }
 
       .profile-block-password {
@@ -113,7 +128,14 @@ export const StyledInfo = styled.div`
 
         .language-combo-box {
           .combo-button {
-            margin-left: -16px;
+            ${props =>
+              props.theme.interfaceDirection === "rtl"
+                ? css`
+                    margin-right: -16px;
+                  `
+                : css`
+                    margin-left: -16px;
+                  `}
           }
         }
       }
@@ -128,18 +150,25 @@ export const StyledInfo = styled.div`
     min-width: 12px;
 
     svg path {
-      fill: ${(props) => props.theme.isBase && `#657077`};
+      fill: ${props => props.theme.isBase && `#657077`};
     }
   }
 
   .email-edit-container {
     display: flex;
     align-items: center;
-    padding-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 16px;
+          `
+        : css`
+            padding-right: 16px;
+          `}
     line-height: 20px;
 
     .email-text-container {
-      ${(props) =>
+      ${props =>
         props.withActivationBar &&
         css`
           color: ${props.theme.profile.main.pendingEmailTextColor};
@@ -149,6 +178,14 @@ export const StyledInfo = styled.div`
     .email-edit-button {
       display: block;
       padding-left: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-right: 8px;
+            `
+          : css`
+              padding-left: 8px;
+            `}
     }
   }
 
@@ -163,10 +200,17 @@ export const StyledInfo = styled.div`
 
     .send-again-text {
       margin-left: 5px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 5px;
+            `
+          : css`
+              margin-left: 5px;
+            `}
       line-height: 15px;
-      color: ${(props) => props.currentColorScheme.main.accent};
-      border-bottom: 1px solid
-        ${(props) => props.currentColorScheme.main.accent};
+      color: ${props => props.currentColorScheme.main.accent};
+      border-bottom: 1px solid ${props => props.currentColorScheme.main.accent};
       margin-top: 2px;
     }
 
@@ -188,7 +232,7 @@ export const StyledInfo = styled.div`
         height: 12px;
 
         path {
-          fill: ${(props) => props.currentColorScheme.main.accent};
+          fill: ${props => props.currentColorScheme.main.accent};
         }
       }
     }
@@ -211,7 +255,7 @@ export const StyledInfo = styled.div`
 
       .mobile-profile-row {
         gap: 8px;
-        background: ${(props) => props.theme.profile.main.mobileRowBackground};
+        background: ${props => props.theme.profile.main.mobileRowBackground};
         padding: 12px 16px;
         border-radius: 6px;
         display: flex;
@@ -252,11 +296,18 @@ export const StyledInfo = styled.div`
         }
 
         .edit-button {
-          margin-left: auto;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-right: auto;
+                `
+              : css`
+                  margin-left: auto;
+                `}
           min-width: 12px;
 
           svg path {
-            fill: ${(props) => props.theme.isBase && `#657077`};
+            fill: ${props => props.theme.isBase && `#657077`};
           }
         }
 
@@ -303,7 +354,7 @@ export const StyledLabel = styled(Text)`
   width: 100%;
   line-height: 20px;
   white-space: nowrap;
-  color: ${(props) => props.theme.profile.main.descriptionTextColor};
+  color: ${props => props.theme.profile.main.descriptionTextColor};
 
   overflow: hidden;
   text-overflow: ellipsis;
