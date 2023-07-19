@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import AppLoader from "@docspace/common/components/AppLoader";
 import RoomSelector from "../../components/RoomSelector";
 import SelectFileDialog from "../../components/panels/SelectFileDialog";
@@ -33,9 +33,10 @@ const Sdk = ({
     };
   }, [handleMessage]);
 
-  const callCommand = useCallback(() => frameCallCommand("setConfig"), [
-    frameCallCommand,
-  ]);
+  const callCommand = useCallback(
+    () => frameCallCommand("setConfig"),
+    [frameCallCommand]
+  );
 
   useEffect(() => {
     if (window.parent && !frameConfig && isLoaded) {
@@ -177,13 +178,8 @@ const Sdk = ({
 
 export default inject(({ auth, settingsStore, peopleStore }) => {
   const { login, logout, userStore } = auth;
-  const {
-    theme,
-    setFrameConfig,
-    frameConfig,
-    getSettings,
-    isLoaded,
-  } = auth.settingsStore;
+  const { theme, setFrameConfig, frameConfig, getSettings, isLoaded } =
+    auth.settingsStore;
   const { loadCurrentUser, user } = userStore;
   const { updateProfileCulture } = peopleStore.targetUserStore;
   const { getIcon } = settingsStore;

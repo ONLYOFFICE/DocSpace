@@ -15,7 +15,6 @@ import {
   StyledHelpButton,
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
-import AccessSelector from "./AccessSelector";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 import AccessSelector from "./AccessSelector";
 

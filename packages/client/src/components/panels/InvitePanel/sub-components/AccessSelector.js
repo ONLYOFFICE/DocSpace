@@ -50,25 +50,25 @@ const AccessSelector = ({
 
   const isMobileHorizontalOrientation = isMobileOnly && horizontalOrientation;
 
-  return (
-    <StyledAccessSelector className="invite-panel_access-selector">
-      {!(isMobileOnly && !isMobileHorizontalOrientation) && (
-        <AccessRightSelect
-          className={className}
-          selectedOption={selectedOption}
-          onSelect={onSelectAccess}
-          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
-          noBorder={false}
-          directionX="right"
-          directionY="bottom"
-          fixedDirection={true}
-          manualWidth={width + "px"}
-          isDefaultMode={false}
-          isAside={false}
-          setIsOpenItemAccess={setIsOpenItemAccess}
-          hideMobileView={isMobileHorizontalOrientation}
-        />
-      )}
+  // return (
+  // <StyledAccessSelector className="invite-panel_access-selector">
+  //   {!(isMobileOnly && !isMobileHorizontalOrientation) && (
+  //     <AccessRightSelect
+  //       className={className}
+  //       selectedOption={selectedOption}
+  //       onSelect={onSelectAccess}
+  //       accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+  //       noBorder={false}
+  //       directionX="right"
+  //       directionY="bottom"
+  //       fixedDirection={true}
+  //       manualWidth={width + "px"}
+  //       isDefaultMode={false}
+  //       isAside={false}
+  //       setIsOpenItemAccess={setIsOpenItemAccess}
+  //       hideMobileView={isMobileHorizontalOrientation}
+  //     />
+  //   )}
 
   return (
     <StyledAccessSelector className="invite-panel_access-selector">

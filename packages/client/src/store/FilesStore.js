@@ -639,7 +639,8 @@ class FilesStore {
 
   updateActiveFiles = (items) => {
     this.activeFiles = items;
-};
+  };
+
   clearFiles = () => {
     this.setFolders([]);
     this.setFiles([]);
@@ -647,13 +648,12 @@ class FilesStore {
     this.selectedFolderStore.setSelectedFolder(null);
   };
 
-
   setActiveFiles = (activeFiles, destFolderId) => {
     const arrayFormation = activeFiles.map((id) => ({
       id,
       destFolderId,
     }));
-
+  };
 
   setActiveFolders = (activeFolders, destFolderId) => {
     const arrayFormation = activeFolders.map((id) => ({
@@ -2851,12 +2851,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];

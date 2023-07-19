@@ -256,11 +256,8 @@ class FilesActionStore {
     newSelection = null,
     withoutDialog = false
   ) => {
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      recycleBinFolderId,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder, isPrivacyFolder, recycleBinFolderId } =
+      this.treeFoldersStore;
     const {
       addActiveItems,
       getIsEmptyTrash,
@@ -1307,13 +1304,7 @@ class FilesActionStore {
   };
 
   openLocationAction = async (item) => {
-    const { setBufferSelection, setIsLoading, fetchFiles } = this.filesStore;
-
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
-
-    const setIsLoading = (param) => {
-      setIsSectionFilterLoading(param);
-    };
 
     const { id, isRoom, title, rootFolderType } = item;
     const categoryType = getCategoryTypeByFolderType(rootFolderType, id);

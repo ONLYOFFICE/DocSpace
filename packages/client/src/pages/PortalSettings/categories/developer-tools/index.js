@@ -9,8 +9,6 @@ import { useNavigate } from "react-router-dom";
 import JavascriptSDK from "./JavascriptSDK";
 import Api from "./Api";
 
-import AppLoader from "@docspace/common/components/AppLoader";
-
 import Webhooks from "./Webhooks";
 
 import { useTranslation } from "react-i18next";
@@ -35,10 +33,13 @@ const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
-  const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks", "Settings"]);
+  const { t, ready } = useTranslation([
+    "JavascriptSdk",
+    "Webhooks",
+    "Settings",
+  ]);
   const [isPending, startTransition] = useTransition();
 
   const data = [
@@ -60,7 +61,7 @@ const DeveloperToolsWrapper = (props) => {
   ];
 
   const [currentTab, setCurrentTab] = useState(
-    data.findIndex((item) => location.pathname.includes(item.id)),
+    data.findIndex((item) => location.pathname.includes(item.id))
   );
 
   const load = async () => {
@@ -84,8 +85,8 @@ const DeveloperToolsWrapper = (props) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/developer-tools/${e.id}`,
-      ),
+        `/portal-settings/developer-tools/${e.id}`
+      )
     );
   };
 
