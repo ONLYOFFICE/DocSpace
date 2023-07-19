@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -26,13 +26,20 @@ const StyledWrapper = styled.div`
 
   .checkbox {
     height: 20px;
-    margin-right: 8px !important;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px !important;
+          `
+        : css`
+            margin-right: 8px !important;
+          `}
   }
 
   .system-theme-description {
     padding: 0px 0 4px 24px;
     max-width: 295px;
-    color: ${(props) => props.theme.profile.themePreview.descriptionColor};
+    color: ${props => props.theme.profile.themePreview.descriptionColor};
   }
 
   .themes-container {
