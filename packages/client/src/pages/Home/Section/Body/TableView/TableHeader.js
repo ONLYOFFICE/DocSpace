@@ -544,7 +544,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Files", "Common", "Translations"])(
+  withTranslation(["Files", "Common", "Translations", "Notifications"])(
     observer(FilesTableHeader)
   )
 );

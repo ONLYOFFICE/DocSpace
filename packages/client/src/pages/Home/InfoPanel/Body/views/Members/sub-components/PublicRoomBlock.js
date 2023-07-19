@@ -42,7 +42,7 @@ const PublicRoomBlock = (props) => {
             <Text fontSize="14px" fontWeight={600} color="#a3a9ae">
               {externalLinks.length
                 ? t("LinksToViewingIcon")
-                : t("NoExternalLinks")}
+                : t("Files:NoExternalLinks")}
             </Text>
             <IconButton
               className="link-to-viewing-icon"

@@ -559,26 +559,53 @@ class ContextOptionsStore {
 
   onLoadLinks = async (t, item) => {
     const promise = new Promise(async (resolve, reject) => {
-      const linksArray = [];
+      let linksArray = [];
 
       this.setLoaderTimer(true);
       try {
         const links = await this.publicRoomStore.fetchExternalLinks(item.id);
 
         for (let item of links) {
-          const { id, title, shareLink } = item.sharedTo;
+          const { id, title, shareLink, disabled, isExpired } = item.sharedTo;
 
-          linksArray.push({
-            icon: InvitationLinkReactSvgUrl,
-            id,
-            key: `external-link_${id}`,
-            label: title,
-            onClick: () => {
-              copy(shareLink);
-              toastr.success(t("Files:LinkSuccessfullyCopied"));
-            },
-          });
+          if (!disabled && !isExpired) {
+            linksArray.push({
+              icon: InvitationLinkReactSvgUrl,
+              id,
+              key: `external-link_${id}`,
+              label: title,
+              onClick: () => {
+                copy(shareLink);
+                toastr.success(t("Files:LinkSuccessfullyCopied"));
+              },
+            });
+          }
         }
+
+        if (!linksArray.length) {
+          linksArray = [
+            {
+              id: "no-external-links-option",
+              key: "no-external-links",
+              label: !links.length
+                ? t("Files:NoExternalLinks")
+                : t("Files:AllLinksAreDisabled"),
+              disableColor: true,
+            },
+            {
+              key: "separator0",
+              isSeparator: true,
+            },
+            {
+              icon: SettingsReactSvgUrl,
+              id: "manage-option",
+              key: "manage-links",
+              label: t("Notifications:ManageNotifications"),
+              onClick: () => this.onShowInfoPanel(item),
+            },
+          ];
+        }
+
         this.setLoaderTimer(false, () => resolve(linksArray));
       } catch (error) {
         toastr.error(error);

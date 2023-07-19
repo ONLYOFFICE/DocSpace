@@ -155,10 +155,10 @@ const SubMenu = (props) => {
       item.className
     );
     const linkClassName = classNames("p-menuitem-link", "not-selectable", {
-      "p-disabled": item.disabled,
+      "p-disabled": item.disabled || item.disableColor,
     });
     const iconClassName = classNames("p-menuitem-icon", {
-      "p-disabled": item.disabled,
+      "p-disabled": item.disabled || item.disableColor,
     });
     const subMenuIconClassName = "p-submenu-icon";
 
