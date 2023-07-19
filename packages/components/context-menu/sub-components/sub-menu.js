@@ -135,7 +135,7 @@ const SubMenu = (props) => {
         <SubMenu
           model={item.onLoad ? [loaderItem] : item.items}
           resetMenu={item !== activeItem}
-          onLeafClick={item.onLoad ? () => {} : onLeafClick}
+          onLeafClick={onLeafClick}
           onEnter={onEnter}
           onLoad={item.onLoad}
         />

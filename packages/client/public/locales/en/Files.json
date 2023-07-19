@@ -148,5 +148,6 @@
   "WantToRestoreTheRooms": "All external links in restored rooms will become active, and their contents will be available to everyone with the room links. Do you want to restore the rooms?",
   "LinkValidUntil": "This link will be valid until",
   "NoExternalLinks": "No external links",
-  "AllLinksAreDisabled": "All links are disabled"
+  "AllLinksAreDisabled": "All links are disabled",
+  "MaximumNumberOfExternalLinksCreated": "Maximum number of external links created"
 }

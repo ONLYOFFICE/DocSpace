@@ -594,7 +594,7 @@ class ContextOptionsStore {
                 : t("Files:AllLinksAreDisabled"),
               disableColor: true,
             },
-            {
+            !isMobile && {
               key: "separator0",
               isSeparator: true,
             },
