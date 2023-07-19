@@ -127,7 +127,8 @@ const DatePicker = (props) => {
   useEffect(() => {
     if (
       outerDate &&
-      moment(outerDate).format("YYYY-MM-D") !== moment(date).format("YYYY-MM-D")
+      moment(outerDate).format("YYYY-MM-D HH:mm") !==
+        moment(date).format("YYYY-MM-D HH:mm")
     ) {
       setDate(outerDate);
     }

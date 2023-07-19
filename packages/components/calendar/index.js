@@ -24,8 +24,12 @@ const Calendar = ({
   moment.locale(locale);
 
   function handleDateChange(date) {
-    setSelectedDate(date);
-    onChange(date);
+    const formattedDate = moment(
+      date.format("YYYY-MM-DD") +
+        (selectedDate ? ` ${selectedDate.format("HH:mm")}` : "")
+    );
+    setSelectedDate(formattedDate);
+    onChange(formattedDate);
   }
 
   const [observedDate, setObservedDate] = useState(moment());

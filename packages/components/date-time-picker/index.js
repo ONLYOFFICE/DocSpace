@@ -120,6 +120,7 @@ const DateTimePicker = (props) => {
         maxDate={maxDate}
         locale={locale}
         openDate={openDate}
+        outerDate={date}
       />
       <TimeSelector>
         {date !== null &&
