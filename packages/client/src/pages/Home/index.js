@@ -111,6 +111,16 @@ const PureHome = (props) => {
     onClickBack,
 
     showFilterLoader,
+
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   } = props;
 
   const location = useLocation();
@@ -191,6 +201,15 @@ const PureHome = (props) => {
     createRoom,
     refreshFiles,
     setViewAs,
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   });
 
   React.useEffect(() => {
@@ -400,12 +419,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
