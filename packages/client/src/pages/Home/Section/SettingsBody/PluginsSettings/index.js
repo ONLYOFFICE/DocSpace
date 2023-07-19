@@ -1,10 +1,8 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import { useTranslation } from "react-i18next";
 
 import Plugin from "SRC_DIR/helpers/plugins/components/Plugin";
-import EmptyScreen from "SRC_DIR/helpers/plugins/components/EmptyScreen";
 
 import {
   StyledPluginsSettings,
@@ -13,31 +11,33 @@ import {
 
 const PluginsSettingsBodyContent = ({
   withDelete,
-  pluginList,
+  enabledPluginList,
   changePluginStatus,
   updatePluginStatus,
 }) => {
-  const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (enabledPluginList.length === 0) {
+      navigate("/");
+    }
+  }, [enabledPluginList]);
 
   return (
     <StyledPluginsSettings>
-      {pluginList.length > 0 ? (
-        <StyledPluginList>
-          {pluginList.map((plugin, index) => (
-            <Plugin
-              key={`plugin-${plugin.name}-${plugin.version}`}
-              {...plugin}
-              changePluginStatus={changePluginStatus}
-              withDelete={withDelete}
-              isUserSettings={true}
-              isLast={index === pluginList.length - 1}
-              updatePluginStatus={updatePluginStatus}
-            />
-          ))}
-        </StyledPluginList>
-      ) : (
-        <EmptyScreen t={t} withUpload={false} />
-      )}
+      <StyledPluginList>
+        {enabledPluginList.map((plugin, index) => (
+          <Plugin
+            key={`plugin-${plugin.name}-${plugin.version}`}
+            {...plugin}
+            changePluginStatus={changePluginStatus}
+            withDelete={withDelete}
+            isUserSettings={true}
+            isLast={index === enabledPluginList.length - 1}
+            updatePluginStatus={updatePluginStatus}
+          />
+        ))}
+      </StyledPluginList>
     </StyledPluginsSettings>
   );
 };
@@ -48,13 +48,14 @@ export default inject(({ auth, pluginStore }) => {
   const withUpload = pluginOptions.includes("upload");
   const withDelete = pluginOptions.includes("delete");
 
-  const { pluginList, changePluginStatus, updatePluginStatus } = pluginStore;
+  const { enabledPluginList, changePluginStatus, updatePluginStatus } =
+    pluginStore;
 
   return {
     enablePlugins,
     withUpload,
     withDelete,
-    pluginList,
+    enabledPluginList,
     changePluginStatus,
     updatePluginStatus,
   };

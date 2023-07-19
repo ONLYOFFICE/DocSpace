@@ -32,7 +32,8 @@ const StyledPluginHeader = styled.div`
 const PluginHeader = ({
   id,
   name,
-  isActive,
+  enabled,
+  system,
   changePluginStatus,
   withDelete,
   showModalPluginSettings,
@@ -40,18 +41,18 @@ const PluginHeader = ({
   isUserSettings,
   uninstallPlugin,
 }) => {
-  const badgeLabel = isActive ? "active" : "disabled";
+  const badgeLabel = enabled ? "enabled" : "disabled";
 
   const changePluginStatusAction = () => {
-    changePluginStatus && changePluginStatus(id, isActive ? "false" : "true");
+    changePluginStatus && changePluginStatus(id, enabled ? "false" : "true");
   };
 
   const getOptions = () => {
-    const activateOptLabel = !isActive ? "Activate" : "Disable";
+    const enabledOptLabel = !enabled ? "Enable" : "Disable";
 
-    const activateOpt = {
-      key: "activate-plugin",
-      label: activateOptLabel,
+    const enabledOpt = {
+      key: "enable-plugin",
+      label: enabledOptLabel,
       onClick: changePluginStatusAction,
     };
 
@@ -69,14 +70,16 @@ const PluginHeader = ({
 
     const opts = [];
 
-    if (isUserSettings) opts.push(activateOpt);
+    if (!isUserSettings && !system) opts.push(enabledOpt);
 
     if (showModalPluginSettings) opts.push(settingsOpt);
 
-    if (withDelete && !isUserSettings) opts.push(deleteOpt);
+    if (withDelete && !system && !isUserSettings) opts.push(deleteOpt);
 
     return opts;
   };
+
+  const options = getOptions();
 
   return (
     <StyledPluginHeader>
@@ -84,11 +87,11 @@ const PluginHeader = ({
         <Heading className={"plugin-header-text"} level={3} truncate>
           {name}
         </Heading>
-        {isUserSettings && (
+        {!isUserSettings && (
           <Badge className={"plugin-header-badge"} label={badgeLabel} />
         )}
       </div>
-      <ContextMenuButton getData={getOptions} />
+      {options.length > 0 && <ContextMenuButton getData={getOptions} />}
     </StyledPluginHeader>
   );
 };

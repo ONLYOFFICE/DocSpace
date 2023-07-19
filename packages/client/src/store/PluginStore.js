@@ -8,10 +8,11 @@ import defaultConfig from "PUBLIC_DIR/scripts/config.json";
 import {
   PluginType,
   PluginContextMenuItemType,
+  PluginScopes,
 } from "SRC_DIR/helpers/plugins/constants";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
-let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;
+let { orign: apiOrigin, prefix: apiPrefix } = apiConf;
 let { url: proxyURL } = proxyConf;
 
 const origin =
@@ -20,9 +21,12 @@ const proxy = window.DocSpaceConfig?.proxy?.url || proxyURL;
 const prefix = window.DocSpaceConfig?.api?.prefix || apiPrefix;
 
 class PluginStore {
+  authStore = null;
+
   plugins = null;
 
   contextMenuItems = null;
+  infoPanelItems = null;
   mainButtonItems = null;
   profileMenuItems = null;
 
@@ -34,10 +38,13 @@ class PluginStore {
   currentSettingsDialogPlugin = null;
   isAdminSettingsDialog = false;
 
-  constructor() {
+  constructor(authStore) {
+    this.authStore = authStore;
+
     this.plugins = [];
 
     this.contextMenuItems = new Map();
+    this.infoPanelItems = new Map();
     this.mainButtonItems = new Map();
     this.profileMenuItems = new Map();
 
@@ -78,14 +85,6 @@ class PluginStore {
     this.isInit = isInit;
   };
 
-  updatePlugins = async () => {
-    this.plugins = [];
-
-    const plugins = await api.plugins.getPlugins();
-
-    plugins.forEach((plugin) => this.initPlugin(plugin));
-  };
-
   initPlugins = async () => {
     const frame = document.createElement("iframe");
     frame.id = "plugin-iframe";
@@ -103,20 +102,35 @@ class PluginStore {
     this.updatePlugins();
   };
 
+  updatePlugins = async () => {
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    this.plugins = [];
+
+    const plugins = await api.plugins.getPlugins(!isAdmin && !isOwner);
+
+    plugins.forEach((plugin) => this.initPlugin(plugin));
+  };
+
+  addPlugin = async (data) => {
+    const plugin = await api.plugins.addPlugin(data);
+
+    this.initPlugin(plugin);
+  };
+
   initPlugin = (plugin, callback) => {
-    const onLoad = () => {
+    const onLoad = async () => {
       const newPlugin = cloneDeep({
         ...plugin,
-        ...this.pluginFrame.contentWindow.Plugins[plugin.plugin.split(".")[0]],
+        ...this.pluginFrame.contentWindow.Plugins[plugin.pluginName],
       });
 
-      if (newPlugin.apiScope) {
-        newPlugin.setAPI(origin, proxy, prefix);
-      }
+      const { displayName } = await api.people.getUserById(plugin.createBy);
+
+      newPlugin.createBy = displayName;
+      newPlugin.scopes = newPlugin.scopes.split(",");
 
       this.installPlugin(newPlugin);
-
-      newPlugin.onLoadCallback();
 
       callback && callback(newPlugin);
     };
@@ -132,18 +146,60 @@ class PluginStore {
     if (onLoad) script.onload = onLoad.bind(this);
     if (onError) script.onerror = onError.bind(this);
 
-    script.src = `/static/plugins/${plugin.plugin}`;
+    script.src = plugin.url;
     script.async = true;
 
     frameDoc.body.appendChild(script);
   };
 
-  installPlugin = (plugin) => {
-    this.plugins.push(plugin);
+  installPlugin = (plugin, addToList = true) => {
+    if (addToList) {
+      this.plugins.push(plugin);
+    }
 
-    if (plugin && plugin.contextMenuItems && plugin.isActive) {
+    if (plugin.enabled) {
+      plugin.onLoadCallback();
+    }
+
+    if (plugin.scopes.includes(PluginScopes.API) && plugin.enabled) {
+      plugin.setAPI(origin, proxy, prefix);
+    }
+
+    if (plugin && plugin.contextMenuItems && plugin.enabled) {
       Array.from(plugin.contextMenuItems).map(([key, value]) => {
         this.contextMenuItems.set(key, value);
+      });
+    }
+
+    if (plugin && plugin.infoPanelItems && plugin.enabled) {
+      Array.from(plugin.infoPanelItems).map(([key, value]) => {
+        this.infoPanelItems.set(key, value);
+      });
+    }
+  };
+
+  activatePlugin = async (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    plugin.enabled = true;
+
+    this.installPlugin(plugin, false);
+  };
+
+  deactivatePlugin = async (id) => {
+    const plugin = this.plugins.find((p) => p.id === id);
+
+    plugin.enabled = false;
+
+    if (plugin && plugin.contextMenuItems) {
+      Array.from(plugin.contextMenuItems).map(([key, value]) => {
+        this.contextMenuItems.delete(key);
+      });
+    }
+
+    if (plugin && plugin.infoPanelItems) {
+      Array.from(plugin.infoPanelItems).map(([key, value]) => {
+        this.infoPanelItems.delete(key);
       });
     }
   };
@@ -158,34 +214,6 @@ class PluginStore {
     await api.plugins.deletePlugin(id);
   };
 
-  getInstalledPlugins = () => {
-    return this.plugins;
-  };
-
-  activatePlugin = async (id) => {
-    const plugin = this.plugins.find((p) => p.id === id);
-
-    plugin.isActive = true;
-
-    if (plugin && plugin.contextMenuItems) {
-      Array.from(plugin.contextMenuItems).map(([key, value]) => {
-        this.contextMenuItems.set(key, value);
-      });
-    }
-  };
-
-  deactivatePlugin = async (id) => {
-    const plugin = this.plugins.find((p) => p.id === id);
-
-    plugin.isActive = false;
-
-    if (plugin && plugin.contextMenuItems) {
-      Array.from(plugin.contextMenuItems).map(([key, value]) => {
-        this.contextMenuItems.delete(key);
-      });
-    }
-  };
-
   changePluginStatus = async (id, status) => {
     if (status === "true") {
       this.activatePlugin(id);
@@ -193,7 +221,7 @@ class PluginStore {
       this.deactivatePlugin(id);
     }
 
-    const plugin = await api.plugins.activatePlugin(id);
+    const plugin = await api.plugins.activatePlugin(id, status === "true");
 
     return plugin;
   };
@@ -245,8 +273,11 @@ class PluginStore {
   };
 
   get pluginList() {
-    console.log(this.plugins);
     return this.plugins;
+  }
+
+  get enabledPluginList() {
+    return this.plugins.filter((p) => p.enabled);
   }
 
   get contextMenuItemsList() {
@@ -265,6 +296,18 @@ class PluginStore {
     }
 
     return null;
+  }
+
+  get infoPanelItemsList() {
+    const items = [];
+
+    this.plugins.forEach((plugin) => {
+      Array.from(plugin.getInfoPanelItems(), ([key, value]) =>
+        items.push({ key, value: { ...value, pluginId: plugin.id } })
+      );
+    });
+
+    return items;
   }
 }
 

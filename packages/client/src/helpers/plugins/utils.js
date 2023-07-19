@@ -1,7 +1,10 @@
+import combineUrl from "@docspace/common/utils/combineUrl";
+
 import toastr from "@docspace/components/toast/toastr";
 
-import { PluginActions } from "./constants";
-import { PluginToastType } from "./constants";
+import config from "PACKAGE_FILE";
+
+import { PluginActions, PluginToastType } from "./constants";
 
 export const messageActions = (
   message,
@@ -18,10 +21,15 @@ export const messageActions = (
     switch (action) {
       case PluginActions.updateProps:
         setElementProps({ ...message.newProps });
+
+        break;
+      case PluginActions.updateAcceptButtonProps:
+        setAcceptButtonProps({ ...message.acceptButtonProps });
+
         break;
       case PluginActions.updateStatus:
         updatePluginStatus && updatePluginStatus(pluginId);
-        console.log("updateStatus", pluginId);
+
         break;
       case PluginActions.showToast:
         message?.toastProps.forEach((toast) => {
@@ -41,13 +49,26 @@ export const messageActions = (
           }
         });
         break;
-      case PluginActions.updateAcceptButtonProps:
-        setAcceptButtonProps({ ...message.acceptButtonProps });
-        break;
+
       case PluginActions.showSettingsModal:
         setSettingsPluginDialogVisible(true);
         setCurrentSettingsDialogPlugin(pluginId);
         break;
     }
   });
+};
+
+export const getPluginUrl = (url, file) => {
+  const splittedURL = url.split("/");
+
+  splittedURL.pop();
+
+  const path = splittedURL.join("/");
+
+  return combineUrl(
+    window.DocSpaceConfig?.proxy?.url,
+    config.homepage,
+    path,
+    file
+  );
 };

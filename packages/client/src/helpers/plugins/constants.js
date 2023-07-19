@@ -5,6 +5,13 @@ export const PluginContextMenuItemType = Object.freeze({
   All: "All",
 });
 
+export const PluginScopes = Object.freeze({
+  API: "API",
+  Settings: "Settings",
+  ContextMenu: "ContextMenu",
+  InfoPanel: "InfoPanel",
+});
+
 export const PluginType = Object.freeze({
   CONTEXT_MENU: "context menu",
   ACTION_BUTTON: "action button",
@@ -26,11 +33,9 @@ export const PluginSettingsType = Object.freeze({
 export const PluginActions = Object.freeze({
   updateProps: "update-props",
   updateAcceptButtonProps: "update-accept-button-props",
-  updateLoading: "update-loading",
   updateStatus: "update-status",
   showToast: "show-toast",
   showSettingsModal: "show-settings-modal",
-  closeModal: "close-modal",
 });
 
 export const PluginToastType = Object.freeze({

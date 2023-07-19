@@ -30,7 +30,7 @@ const SectionBodyContent = ({
   isErrorSettings,
   user,
   enablePlugins,
-  plugins,
+  enabledPluginList,
 }) => {
   const { t } = useTranslation(["FilesSettings", "Common", "PluginsSettings"]);
 
@@ -62,7 +62,7 @@ const SectionBodyContent = ({
 
   const data = [commonSettings];
 
-  if (enablePlugins && (plugins.length > 0 || user.isAdmin || user.isOwner)) {
+  if (enablePlugins && enabledPluginList.length > 0) {
     data.push(pluginsSettings);
   }
 
@@ -118,7 +118,7 @@ const SectionBodyContent = ({
 
 export default inject(({ auth, settingsStore, pluginStore }) => {
   const { settingsIsLoaded } = settingsStore;
-  const { plugins } = pluginStore;
+  const { enabledPluginList } = pluginStore;
 
   const { enablePlugins } = auth.settingsStore;
 
@@ -126,6 +126,6 @@ export default inject(({ auth, settingsStore, pluginStore }) => {
     settingsIsLoaded,
     user: auth.userStore.user,
     enablePlugins,
-    plugins,
+    enabledPluginList,
   };
 })(observer(SectionBodyContent));
