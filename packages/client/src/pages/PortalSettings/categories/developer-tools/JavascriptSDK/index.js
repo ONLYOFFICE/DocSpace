@@ -163,7 +163,7 @@ const PortalIntegration = (props) => {
   const frameId = config.frameId || "ds-frame";
 
   const destroyFrame = () => {
-    window.DocSpace?.SDK.frames[frameId]?.destroyFrame();
+    window.DocSpace?.SDK?.frames[frameId]?.destroyFrame();
   };
 
   const loadFrame = debounce(() => {

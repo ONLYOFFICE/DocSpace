@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
+import { useParams } from "react-router-dom";
 import Button from "@docspace/components/button";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -44,7 +45,7 @@ const Sdk = ({
     }
   }, [callCommand, isLoaded]);
 
-  const { mode } = match.params;
+  const { mode } = useParams();
 
   const selectorType = new URLSearchParams(window.location.search).get(
     "selectorType"

@@ -435,8 +435,14 @@ export default inject(
 
     const { setPortalTariff } = currentTariffStatusStore;
 
-    const { setFrameConfig, frameConfig, isFrame, withPaging, showCatalog } =
-      settingsStore;
+    const {
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+      withPaging,
+      showCatalog,
+      getSettings,
+    } = settingsStore;
 
     const {
       usersStore,
@@ -546,8 +552,7 @@ export default inject(
       createTag,
       addTagsToRoom,
       removeTagsFromRoom,
-      loadCurrentUser,
-      user,
+      loadCurrentUser: auth.userStore.loadCurrentUser,
       updateProfileCulture,
       getRooms,
     };
