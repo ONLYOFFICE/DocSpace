@@ -7,7 +7,7 @@ import { Base } from "@docspace/components/themes";
 import { StyledCategoryWrapper, StyledTooltip } from "../StyledSecurity";
 
 const CategoryWrapper = (props) => {
-  const { t, title, tooltipTitle, tooltipUrl, theme } = props;
+  const { t, title, tooltipTitle, tooltipUrl, theme, classNameTooltip } = props;
 
   const tooltip = () => (
     <StyledTooltip>

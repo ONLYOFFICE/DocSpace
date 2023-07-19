@@ -58,7 +58,7 @@ const SessionLifetime = (props) => {
     );
 
     const defaultData = {
-      lifetime: lifetime.toString(),
+      lifetime: lifetime?.toString(),
       type: enabled,
     };
     saveToSessionStorage("defaultSessionLifetimeSettings", defaultData);
@@ -67,7 +67,7 @@ const SessionLifetime = (props) => {
       setSessionLifetime(currentSettings.lifetime);
       setType(currentSettings.type);
     } else {
-      setSessionLifetime(lifetime.toString());
+      setSessionLifetime(lifetime?.toString());
       setType(enabled);
     }
 
@@ -76,7 +76,7 @@ const SessionLifetime = (props) => {
       setSessionLifetime(currentSettings.lifetime);
     } else {
       setType(enabled);
-      setSessionLifetime(lifetime.toString());
+      setSessionLifetime(lifetime?.toString());
     }
     setIsLoading(true);
   };
@@ -103,7 +103,7 @@ const SessionLifetime = (props) => {
       "defaultSessionLifetimeSettings"
     );
     const newSettings = {
-      lifetime: sessionLifetime.toString(),
+      lifetime: sessionLifetime?.toString(),
       type: type,
     };
 
@@ -156,7 +156,7 @@ const SessionLifetime = (props) => {
       sessionValue = lifetime;
 
       saveToSessionStorage("currentSessionLifetimeSettings", {
-        lifetime: sessionValue.toString(),
+        lifetime: sessionValue?.toString(),
         type: type,
       });
     }
@@ -165,7 +165,7 @@ const SessionLifetime = (props) => {
       .then(() => {
         toastr.success(t("SuccessfullySaveSettingsMessage"));
         saveToSessionStorage("defaultSessionLifetimeSettings", {
-          lifetime: sessionValue.toString(),
+          lifetime: sessionValue?.toString(),
           type: type,
         });
         setShowReminder(false);
