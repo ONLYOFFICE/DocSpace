@@ -276,7 +276,7 @@ const PortalSettingsRoutes = {
       element: <RestoreBackup />,
     },
     {
-      path: "/bonus",
+      path: "bonus",
       element: <Bonus />,
     },
     ...generalRoutes,
