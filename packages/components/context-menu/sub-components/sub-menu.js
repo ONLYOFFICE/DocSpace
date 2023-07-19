@@ -23,6 +23,7 @@ const SubMenu = (props) => {
   } = props;
 
   const [model, setModel] = useState(props.model);
+  const [isLoading, setIsLoading] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
 
   const subMenuRef = useRef();
@@ -92,8 +93,10 @@ const SubMenu = (props) => {
   };
 
   const onEnter = async () => {
-    if (onLoad) {
+    if (onLoad && model && model.length && model[0].isLoader && !isLoading) {
+      setIsLoading(true);
       const res = await onLoad();
+      setIsLoading(false);
       setModel(res);
     }
 
@@ -123,15 +126,16 @@ const SubMenu = (props) => {
     const loaderItem = {
       id: "link-loader-option",
       key: "link-loader",
+      isLoader: true,
       label: <Loaders.ContextMenuLoader />,
     };
 
-    if (item.items || item.isLoader) {
+    if (item.items || item.onLoad) {
       return (
         <SubMenu
-          model={item.isLoader ? [loaderItem] : item.items}
+          model={item.onLoad ? [loaderItem] : item.items}
           resetMenu={item !== activeItem}
-          onLeafClick={onLeafClick}
+          onLeafClick={item.onLoad ? () => {} : onLeafClick}
           onEnter={onEnter}
           onLoad={item.onLoad}
         />
@@ -169,7 +173,7 @@ const SubMenu = (props) => {
     const label = item.label && (
       <span className="p-menuitem-text not-selectable">{item.label}</span>
     );
-    const subMenuIcon = (item.items || item.isLoader) && (
+    const subMenuIcon = (item.items || item.onLoad) && (
       <ArrowIcon className={subMenuIconClassName} />
     );
     const subMenu = renderSubMenu(item);

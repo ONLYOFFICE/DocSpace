@@ -1022,7 +1022,6 @@ class ContextOptionsStore {
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
         disabled: this.treeFoldersStore.isArchiveFolder,
-        isLoader: true,
         onLoad: () => this.onLoadLinks(t, item),
       },
       {
