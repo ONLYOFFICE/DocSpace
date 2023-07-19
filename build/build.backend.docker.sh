@@ -45,7 +45,6 @@ WebPlugins=${local_ip}:5014
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
-echo "SERVICE_WEB_PLUGINS: $WebPlugins"
 
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
@@ -92,7 +91,6 @@ GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
-SERVICE_WEB_PLUGINS=$WebPlugins \
 APP_CORE_BASE_DOMAIN=$core_base_domain \
 ENV_EXTENSION=$env_extension \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
