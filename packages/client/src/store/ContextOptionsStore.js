@@ -48,6 +48,11 @@ import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
+import api from "@docspace/common/api";
+
+const LOADER_TIMER = 500;
+let loadingTime;
+let timer;
 
 class ContextOptionsStore {
   authStore;
@@ -61,6 +66,8 @@ class ContextOptionsStore {
   settingsStore;
   selectedFolderStore;
   publicRoomStore;
+
+  linksIsLoading = false;
 
   constructor(
     authStore,
@@ -550,10 +557,37 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickCopyExternalLink = (item, t) => {
-    console.log("item", item);
-    console.log("");
-    toastr.success("TODO: onClickCopyExternalLink");
+  onLoadLinks = async (t, item) => {
+    const promise = new Promise(async (resolve, reject) => {
+      const linksArray = [];
+
+      this.setLoaderTimer(true);
+      try {
+        const links = await this.publicRoomStore.fetchExternalLinks(item.id);
+
+        for (let item of links) {
+          const { id, title, shareLink } = item.sharedTo;
+
+          linksArray.push({
+            icon: InvitationLinkReactSvgUrl,
+            id,
+            key: `external-link_${id}`,
+            label: title,
+            onClick: () => {
+              copy(shareLink);
+              toastr.success(t("Files:LinkSuccessfullyCopied"));
+            },
+          });
+        }
+        this.setLoaderTimer(false, () => resolve(linksArray));
+      } catch (error) {
+        toastr.error(error);
+        this.setLoaderTimer(false);
+        return reject(linksArray);
+      }
+    });
+
+    return promise;
   };
 
   onClickInviteUsers = (e) => {
@@ -620,6 +654,46 @@ class ContextOptionsStore {
     const { action } = data;
 
     this.filesActionsStore.setMuteAction(action, item, t);
+  };
+
+  setLoaderTimer = (isLoading, cb) => {
+    if (isLoading) {
+      loadingTime = new Date();
+
+      return (timer = setTimeout(() => {
+        this.linksIsLoading = true;
+      }, LOADER_TIMER));
+    } else {
+      if (loadingTime) {
+        const currentDate = new Date();
+
+        let ms = Math.abs(loadingTime.getTime() - currentDate.getTime());
+
+        if (timer) {
+          let ms = Math.abs(ms - LOADER_TIMER);
+
+          clearTimeout(timer);
+          timer = null;
+        }
+
+        if (ms < LOADER_TIMER) {
+          return setTimeout(() => {
+            this.linksIsLoading = true;
+            loadingTime = null;
+            cb && cb();
+          }, LOADER_TIMER - ms);
+        }
+      }
+
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      loadingTime = null;
+      this.linksIsLoading = false;
+      cb && cb();
+    }
   };
 
   getRoomsRootContextOptions = (item, t) => {
@@ -947,8 +1021,9 @@ class ContextOptionsStore {
         key: "external-link",
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
-        onClick: () => this.onClickCopyExternalLink(item, t),
         disabled: this.treeFoldersStore.isArchiveFolder,
+        isLoader: true,
+        onLoad: () => this.onLoadLinks(t, item),
       },
       {
         id: "option_room-info",

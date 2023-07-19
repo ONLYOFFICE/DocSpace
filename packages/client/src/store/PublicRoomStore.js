@@ -32,10 +32,13 @@ class PublicRoomStore {
     if (status === ValidationResult.Ok) this.isLoaded = true;
   };
 
-  getExternalLinks = async (roomId) => {
+  fetchExternalLinks = (roomId) => {
     const type = 1;
-    const externalLinks = await api.rooms.getExternalLinks(roomId, type);
+    return api.rooms.getExternalLinks(roomId, type);
+  };
 
+  getExternalLinks = async (roomId) => {
+    const externalLinks = await this.fetchExternalLinks(roomId);
     this.externalLinks = externalLinks;
   };
 
