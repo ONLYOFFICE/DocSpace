@@ -24,28 +24,4 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Reflection;
-global using System.Text.RegularExpressions;
-
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Hosting;
-global using ASC.Core.Common.Hosting.Extensions;
-global using ASC.Data.Backup.EF.Model;
-global using ASC.EventBus.Extensions.Logger;
-global using ASC.EventBus.Extensions.Logger.Extensions;
-global using ASC.Feed.Model;
-global using ASC.Files.Core.EF;
-global using ASC.MessagingSystem.EF.Model;
-global using ASC.Migrations.Core.Models;
-global using ASC.Migrations.Core.Utils;
-global using ASC.Webhooks.Core.EF.Model;
-
-global using Microsoft.Build.Construction;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore.Design;
-global using Microsoft.EntityFrameworkCore.Infrastructure;
-global using Microsoft.EntityFrameworkCore.Migrations.Design;
-global using Microsoft.EntityFrameworkCore.Migrations.Operations;
-global using Microsoft.EntityFrameworkCore.Storage;
-global using Microsoft.Extensions.DependencyInjection;
+global using ASC.Migrations.Core;

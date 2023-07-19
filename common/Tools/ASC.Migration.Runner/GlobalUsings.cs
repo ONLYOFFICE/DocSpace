@@ -27,12 +27,13 @@
 global using ASC.Common.Logging;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Teamlabsite.Context;
+global using ASC.Migrations.Core;
+global using ASC.Migrations.Core.Models;
+global using ASC.Migrations.Core.Utils;
+
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 
-global using ASC.Migrations.Core.Models;
-global using ASC.Migrations.Core.Utils;
 global using Migration.Runner;
-global using ASC.Migrations.Core;
 
 global using DbContextActivator = ASC.Migrations.Core.Utils.DbContextActivator;
