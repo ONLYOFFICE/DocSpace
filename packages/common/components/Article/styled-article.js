@@ -377,20 +377,27 @@ const StyledProfileWrapper = styled.div`
   z-index: 209;
   position: fixed;
   bottom: 0;
-  left: 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 0;
+        `
+      : css`
+          left: 0;
+        `}
   min-width: 251px;
   max-width: 251px;
-  background-color: ${(props) => props.theme.catalog.profile.background};
+  background-color: ${props => props.theme.catalog.profile.background};
 
   @media ${tablet} {
-    min-width: ${(props) => (props.showText ? "243px" : "60px")};
-    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+    min-width: ${props => (props.showText ? "243px" : "60px")};
+    max-width: ${props => (props.showText ? "243px" : "60px")};
   }
 
   ${isTablet &&
   css`
-    min-width: ${(props) => (props.showText ? "243px" : "60px")};
-    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+    min-width: ${props => (props.showText ? "243px" : "60px")};
+    max-width: ${props => (props.showText ? "243px" : "60px")};
   `}
 `;
 
