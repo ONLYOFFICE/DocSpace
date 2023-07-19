@@ -124,7 +124,7 @@ const DateTimePicker = (props) => {
         {date !== null &&
           (isTimeFocused ? (
             <TimePicker
-              initialDate={initialDate}
+              initialTime={date}
               onChange={handleChange}
               tabIndex={1}
               onBlur={hideTimePicker}
