@@ -215,6 +215,7 @@ const EditLinkPanel = (props) => {
               bodyText={expiredLinkText}
               expirationDate={expirationDate}
               setExpirationDate={setExpirationDate}
+              setIsExpired={setIsExpired}
             />
           </div>
         </StyledScrollbar>
