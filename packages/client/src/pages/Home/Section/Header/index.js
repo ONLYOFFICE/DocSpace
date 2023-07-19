@@ -938,7 +938,7 @@ const SectionHeaderContent = (props) => {
   const isRoot =
     isLoading && stateIsRoot
       ? stateIsRoot
-      : isRootFolder || isAccountsPage || isSettingsPage;
+      : isRootFolder || isAccountsPage || isSettingsPage || isPublicRoom;
 
   const currentTitle = isSettingsPage
     ? t("Common:Settings")
