@@ -544,11 +544,13 @@ class ContextOptionsStore {
     return options.filter((o) => !!o);
   };
 
-  onShowInfoPanel = (item) => {
-    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item, view) => {
+    const { setSelection, setIsVisible, setView } =
+      this.authStore.infoPanelStore;
 
     setSelection(item);
     setIsVisible(true);
+    view && setView(view);
   };
 
   onClickEditRoom = (item) => {
@@ -601,7 +603,7 @@ class ContextOptionsStore {
               id: "manage-option",
               key: "manage-links",
               label: t("Notifications:ManageNotifications"),
-              onClick: () => this.onShowInfoPanel(item),
+              onClick: () => this.onShowInfoPanel(item, "info_members"),
             },
           ];
         }
