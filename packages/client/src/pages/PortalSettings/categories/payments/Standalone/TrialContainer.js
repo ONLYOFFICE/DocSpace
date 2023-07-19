@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router";
+
 import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
@@ -33,4 +33,4 @@ export default inject(({ auth }) => {
   const { isLicenseDateExpired } = currentTariffStatusStore;
 
   return { isLicenseDateExpired };
-})(withRouter(observer(TrialContainer)));
+})(observer(TrialContainer));

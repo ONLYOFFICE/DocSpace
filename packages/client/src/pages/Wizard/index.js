@@ -254,7 +254,7 @@ const Wizard = (props) => {
         analytics
       );
       setWizardComplete();
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+
       // navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
 
       window.location.replace(

@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router";
+
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
 
@@ -57,4 +57,4 @@ export default inject(({ auth, payments }) => {
 
   const { isLicenseDateExpired } = currentTariffStatusStore;
   return { buyUrl, salesEmail, isLicenseDateExpired };
-})(withRouter(observer(EnterpriseContainer)));
+})(observer(EnterpriseContainer));
