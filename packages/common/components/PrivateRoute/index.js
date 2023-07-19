@@ -47,7 +47,7 @@ const PrivateRoute = ({ children, ...rest }) => {
       location.pathname === "/portal-settings/delete-data/deletion" ||
       location.pathname === "/portal-settings/delete-data/deactivation";
 
-    const isBonusPage = props.location.pathname === "/portal-settings/bonus";
+    const isBonusPage = location.pathname === "/portal-settings/bonus";
 
     if (isLoaded && !isAuthenticated) {
       // console.log("PrivateRoute render Redirect to login", rest);x
@@ -200,13 +200,8 @@ export default inject(({ auth }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
 
-  const {
-    setModuleInfo,
-    wizardCompleted,
-    personal,
-    tenantStatus,
-    standalone,
-  } = settingsStore;
+  const { setModuleInfo, wizardCompleted, personal, tenantStatus, standalone } =
+    settingsStore;
 
   return {
     isCommunity,
