@@ -3,10 +3,21 @@ import ToggleBlock from "./ToggleBlock";
 import DateTimePicker from "@docspace/components/date-time-picker";
 
 const LimitTimeBlock = (props) => {
-  const { isLoading, expirationDate, setExpirationDate, isExpired } = props;
+  const {
+    isLoading,
+    expirationDate,
+    setExpirationDate,
+    setIsExpired,
+    isExpired,
+  } = props;
 
   const onChange = (date) => {
+    const isExpired = date
+      ? new Date(date).getTime() <= new Date().getTime()
+      : false;
+
     setExpirationDate(date);
+    setIsExpired(isExpired);
   };
 
   // const minDate = new Date(new Date().getTime());
@@ -24,7 +35,6 @@ const LimitTimeBlock = (props) => {
         minDate={minDate}
         openDate={new Date()}
         hasError={isExpired}
-        // initialTime={minDate}
       />
     </ToggleBlock>
   );
