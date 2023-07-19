@@ -110,12 +110,11 @@ const ActiveSessions = ({
   const convertTime = date => {
     return new Date(date).toLocaleString(locale);
   };
-  console.log(isMobile);
   const tableCell = (platform, browser) =>
     interfaceDirection === "rtl" && !isMobile ? (
       <>
         <span className="session-browser">
-          <span>{browser}r</span>
+          <span>{browser}</span>
         </span>
         {platform}
       </>
@@ -123,7 +122,7 @@ const ActiveSessions = ({
       <>
         {platform}
         <span className="session-browser">
-          <span>{browser}l</span>
+          <span>{browser}</span>
         </span>
       </>
     );
