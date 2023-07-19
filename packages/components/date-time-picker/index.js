@@ -74,6 +74,7 @@ const DateTimePicker = (props) => {
     maxDate,
     locale,
     openDate,
+    initialTime,
   } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);
@@ -124,6 +125,7 @@ const DateTimePicker = (props) => {
         {date !== null &&
           (isTimeFocused ? (
             <TimePicker
+              initialTime={initialTime}
               initialDate={initialDate}
               onChange={handleChange}
               tabIndex={1}
