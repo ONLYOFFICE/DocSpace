@@ -67,11 +67,8 @@ const Selector = ({
   loadNextPage,
   totalItems,
   isLoading,
-  searchLoader,
-  rowLoader,
+
   withHeader,
-}) => {
-  const [footerVisible, setFooterVisible] = React.useState(false);
 
   withFooterInput,
   withFooterCheckbox,
@@ -394,8 +391,8 @@ const Selector = ({
 //   /** Accepts css style */
 //   style: PropTypes.object,
 
-  /** Add header */
-  withHeader: PropTypes.bool,
+/** Add header */
+// withHeader: PropTypes.bool,
 //   /** Selector header text */
 //   headerLabel: PropTypes.string,
 //   /** Hide header back button */
