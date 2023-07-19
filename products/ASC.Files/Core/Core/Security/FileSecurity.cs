@@ -292,7 +292,6 @@ public class FileSecurity : IFileSecurity
         return CheckDenySharing(entry);
     }
 
-    public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     public Task<bool> CanConvert<T>(FileEntry<T> entry, Guid userId)
     {
         return CanAsync(entry, userId, FilesSecurityActions.Convert);
@@ -1282,8 +1281,8 @@ public class FileSecurity : IFileSecurity
             _ => new[] { await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory), await _globalFolder.GetFolderArchiveAsync(_daoFactory) }
         };
 
-       var rooms = await folderDao.GetRoomsAsync(roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries, rootFoldersIds)
-            .Where(r => Filter(r, roomsIds)).ToListAsync();
+        var rooms = await folderDao.GetRoomsAsync(roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries, rootFoldersIds)
+             .Where(r => Filter(r, roomsIds)).ToListAsync();
         var thirdPartyRooms = await folderThirdPartyDao.GetFakeRoomsAsync(rootFoldersIds.Select(id => id.ToString()), thirdPartyRoomsIds.Keys, filterType,
                 tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries)
             .Where(r => Filter(r, thirdPartyRoomsIds)).ToListAsync();

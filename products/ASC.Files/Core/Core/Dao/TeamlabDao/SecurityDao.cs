@@ -353,6 +353,32 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
 
         return records;
     }
+
+    private async Task DeleteExpiredAsync(List<FileShareRecord> records, FilesDbContext filesDbContext)
+    {
+        var expired = new List<Guid>();
+
+        for (var i = 0; i < records.Count; i++)
+        {
+            var r = records[i];
+            if (r.SubjectType != SubjectType.InvitationLink || r.FileShareOptions is not { IsExpired: true })
+            {
+                continue;
+            }
+
+            expired.Add(r.Subject);
+            records.RemoveAt(i);
+        }
+
+        if (expired.Count > 0)
+        {
+            var tenantId = TenantID;
+
+            await filesDbContext.Security
+                .Where(s => s.TenantId == tenantId && s.SubjectType == SubjectType.InvitationLink && expired.Contains(s.Subject))
+                .ExecuteDeleteAsync();
+        }
+    }
 }
 
 [Scope]
@@ -465,32 +491,6 @@ internal class ThirdPartySecurityDao : SecurityBaseDao<string>, ISecurityDao<str
                 pureShareRecord.EntryId = folder.Id;
                 yield return pureShareRecord;
             }
-        }
-    }
-
-    private async Task DeleteExpiredAsync(List<FileShareRecord> records, FilesDbContext filesDbContext)
-    {
-        var expired = new List<Guid>();
-
-        for (var i = 0; i < records.Count; i++)
-        {
-            var r = records[i];
-            if (r.SubjectType != SubjectType.InvitationLink || r.FileShareOptions is not { IsExpired: true })
-            {
-                continue;
-            }
-
-            expired.Add(r.Subject);
-            records.RemoveAt(i);
-        }
-
-        if (expired.Count > 0)
-        {
-            var tenantId = TenantID;
-
-            await filesDbContext.Security
-                .Where(s => s.TenantId == tenantId && s.SubjectType == SubjectType.InvitationLink && expired.Contains(s.Subject))
-                .ExecuteDeleteAsync();
         }
     }
 }

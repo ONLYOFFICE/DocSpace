@@ -403,7 +403,7 @@ public class FilesSettingsHelper
     {
         get
         {
-            return _searchSettingsHelper.CanSearchByContent<DbFile>();
+            return _searchSettingsHelper.CanSearchByContentAsync<DbFile>().Result;
         }
     }
 

@@ -33,7 +33,7 @@ public class PaymentAccountHandler
 
     }
 
-    public Task Invoke
+    public async Task Invoke
         (HttpContext context,
         ITariffService tariffService,
         UserManager userManager,
@@ -41,18 +41,18 @@ public class PaymentAccountHandler
         TenantManager tenantManager)
     {
         var tenant = tenantManager.GetCurrentTenant();
-        var payerId = tariffService.GetTariff(tenant.Id).CustomerId;
-        var payer = userManager.GetUserByEmail(payerId);
+        var payerId = (await tariffService.GetTariffAsync(tenant.Id)).CustomerId;
+        var payer = await userManager.GetUserByEmailAsync(payerId);
 
         if (securityContext.CurrentAccount.ID != payer.Id &&
             securityContext.CurrentAccount.ID != tenant.OwnerId)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var backUrl = context.Request.Query["backUrl"];
-        context.Response.Redirect(tariffService.GetAccountLink(tenant.Id, backUrl).AbsoluteUri);
-        return Task.CompletedTask;
+        context.Response.Redirect((await tariffService.GetAccountLinkAsync(tenant.Id, backUrl)).AbsoluteUri);
+        return;
     }
 }
 

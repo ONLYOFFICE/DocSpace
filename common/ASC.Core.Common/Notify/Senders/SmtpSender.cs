@@ -159,7 +159,7 @@ public class SmtpSender : INotifySender
 
     private async Task BuildSmtpSettingsAsync(CoreConfiguration configuration)
     {
-        if ((await configuration.GetSmtpSettingsAsync()).IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
+        if ((await configuration.GetDefaultSmtpSettingsAsync()).IsDefaultSettings && _initProperties.ContainsKey("host") && !string.IsNullOrEmpty(_initProperties["host"]))
         {
             _host = _initProperties["host"];
 
@@ -190,7 +190,7 @@ public class SmtpSender : INotifySender
         }
         else
         {
-            var s = await configuration.GetSmtpSettingsAsync();
+            var s = await configuration.GetDefaultSmtpSettingsAsync();
 
             _host = s.Host;
             _port = s.Port;

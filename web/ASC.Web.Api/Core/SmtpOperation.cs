@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Threading.Progress;
-
 namespace ASC.Web.Api.Core;
 
 [Singletone(Additional = typeof(SmtpOperationExtension))]
@@ -41,69 +39,11 @@ public class SmtpOperation
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
-    public async Task StartSmtpJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    public void StartSmtpJob(SmtpSettingsDto smtpSettings, Tenant tenant, Guid user)
     {
-        try
-        {
-            CancellationToken = cancellationToken;
         var item = _progressQueue.GetAllTasks<SmtpJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
 
-            SetProgress(5, "Setup tenant");
-
-            await _tenantManager.SetCurrentTenantAsync(CurrentTenant);
-
-            SetProgress(10, "Setup user");
-
-            await _securityContext.AuthenticateMeWithoutCookieAsync(CurrentUser); //Core.Configuration.Constants.CoreSystem);
-
-            SetProgress(15, "Find user data");
-
-            var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
-
-            SetProgress(20, "Create mime message");
-
-            var toAddress = new MailboxAddress(currentUser.UserName, currentUser.Email);
-
-            var fromAddress = new MailboxAddress(_smtpSettings.SenderDisplayName, _smtpSettings.SenderAddress);
-
-            var mimeMessage = new MimeMessage
-            {
-                Subject = _messageSubject
-            };
-
-            mimeMessage.From.Add(fromAddress);
-
-            mimeMessage.To.Add(toAddress);
-
-            var bodyBuilder = new BodyBuilder
-            {
-                TextBody = _messageBody
-            };
-
-            mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-            mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
-
-            using var client = GetSmtpClient();
-            SetProgress(40, "Connect to host");
-
-            client.Connect(_smtpSettings.Host, _smtpSettings.Port.GetValueOrDefault(25),
-                _smtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
-
-            if (_smtpSettings.EnableAuth)
-            {
-                SetProgress(60, "Authenticate");
-
-                client.Authenticate(_smtpSettings.CredentialsUserName,
-                    _smtpSettings.CredentialsUserPassword, cancellationToken);
-            }
-
-            SetProgress(80, "Send test message");
-
-            client.Send(FormatOptions.Default, mimeMessage, cancellationToken);
-
-        }
-        catch (AuthorizingException authError)
+        if (item != null && item.IsCompleted)
         {
             _progressQueue.DequeueTask(item.Id);
             item = null;

@@ -92,7 +92,7 @@ public class MessageSettingsController : BaseSettingsController
     [HttpGet("cookiesettings")]
     public async Task<CookieSettingsDto> GetCookieSettings()
     {
-        var result = _await _cookiesManager.GetLifeTimeAsync(await _tenantManager.GetCurrentTenantIdAsync());
+        var result = await _cookiesManager.GetLifeTimeAsync(await _tenantManager.GetCurrentTenantIdAsync());
         return new CookieSettingsDto
         {
             Enabled = result.Enabled,

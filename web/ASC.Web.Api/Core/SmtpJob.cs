@@ -84,17 +84,17 @@ public class SmtpJob : DistributedTaskProgress
         _smtpSettings = smtpSettings;
     }
 
-    protected override Task DoJob()
+    protected override async Task DoJob()
     {
         try
         {
             SetProgress(5, "Setup tenant");
 
-            _tenantManager.SetCurrentTenant(TenantId);
+            await _tenantManager.SetCurrentTenantAsync(TenantId);
 
             SetProgress(10, "Setup user");
 
-            _securityContext.AuthenticateMeWithoutCookie(_currentUser);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(_currentUser);
 
             SetProgress(15, "Find user data");
 
@@ -190,8 +190,6 @@ public class SmtpJob : DistributedTaskProgress
                 _logger.ErrorLdapOperationFinalizationProblem(ex);
             }
         }
-
-        return Task.CompletedTask;
     }
 
     private void SetProgress(int percentage, string? status = null)

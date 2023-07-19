@@ -88,7 +88,7 @@ public class InvitationLinkHelper
 
         if (commonLinkResult == ValidationResult.Invalid)
         {
-            commonLinkResult = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.EmpInvite.ToStringFast() + (int)employeeType, 
+            commonLinkResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.EmpInvite.ToStringFast() + (int)employeeType,
                 key, _emailValidationKeyProvider.ValidEmailKeyInterval);
         }
 
@@ -96,7 +96,7 @@ public class InvitationLinkHelper
         {
             validationResult.Result = commonLinkResult;
             validationResult.LinkType = InvitationLinkType.Common;
-            
+
             return validationResult;
         }
 
@@ -115,7 +115,7 @@ public class InvitationLinkHelper
 
     private async Task<ValidationResult> ValidateIndividualLinkAsync(string email, string key, EmployeeType employeeType)
     {
-        var result = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(), 
+        var result = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(),
             key, IndividualLinkExpirationInterval);
 
         if (result != ValidationResult.Ok)
@@ -129,7 +129,7 @@ public class InvitationLinkHelper
         {
             return ValidationResult.Invalid;
         }
-        
+
         var visitMessage = await GetLinkVisitMessageAsync(email, key);
 
         if (visitMessage == null)
@@ -154,7 +154,7 @@ public class InvitationLinkHelper
     private async Task<AuditEvent> GetLinkVisitMessageAsync(string email, string key)
     {
         await using var context = _dbContextFactory.CreateDbContext();
-        
+
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key });
 
