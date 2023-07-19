@@ -158,4 +158,4 @@ export default inject(({ publicRoomStore }) => {
     setRoomData,
     roomTitle,
   };
-})(withTranslation(["Common"])(observer(RoomPassword)));
+})(withTranslation(["Common", "UploadPanel"])(observer(RoomPassword)));
