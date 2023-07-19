@@ -50,31 +50,29 @@ const ArticleAlerts = ({
 
 export default inject(({ auth }) => {
   const {
-      currentQuotaStore,
-      settingsStore,
-      isPaymentPageAvailable,
-      isTeamTrainingAlertAvailable,
-      currentTariffStatusStore,
-      isEnterprise,
+    currentQuotaStore,
+    settingsStore,
+    isPaymentPageAvailable,
+    isTeamTrainingAlertAvailable,
+    currentTariffStatusStore,
+    isEnterprise,
   } = auth;
   const { isFreeTariff, isNonProfit, isTrial } = currentQuotaStore;
-  const { isGracePeriod,
-      isLicenseExpiring,
-      isLicenseDateExpired } = currentTariffStatusStore;
+  const { isGracePeriod, isLicenseExpiring, isLicenseDateExpired } =
+    currentTariffStatusStore;
   const { showText, standalone } = settingsStore;
 
-    return {
-      isEnterprise,
-      showText,
-      isNonProfit,
-      isGracePeriod,
-      isFreeTariff,
-      isPaymentPageAvailable,
-      isTeamTrainingAlertAvailable,
-      isLicenseExpiring,
-      isLicenseDateExpired,
-      isTrial,
-      standalone,
-    };
-  })(observer(ArticleAlerts))
-);
+  return {
+    isEnterprise,
+    showText,
+    isNonProfit,
+    isGracePeriod,
+    isFreeTariff,
+    isPaymentPageAvailable,
+    isTeamTrainingAlertAvailable,
+    isLicenseExpiring,
+    isLicenseDateExpired,
+    isTrial,
+    standalone,
+  };
+})(observer(ArticleAlerts));
