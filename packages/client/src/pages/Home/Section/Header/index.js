@@ -578,9 +578,10 @@ const SectionHeaderContent = (props) => {
 
     const isDisabled = isRecycleBinFolder || isRoom;
 
-    const isMultiExternalLink = externalLinks.length > 1;
+    const links = externalLinks.filter((l) => !l.sharedTo.disabled);
+    const isMultiExternalLink = links.length > 1;
 
-    const roomLinks = externalLinks.map((link) => {
+    const roomLinks = links.map((link) => {
       return {
         // id: "option_move-to",
         key: `external-link_${link.sharedTo.id}`,
@@ -594,25 +595,27 @@ const SectionHeaderContent = (props) => {
       };
     });
 
-    const publicAction = isMultiExternalLink
-      ? {
-          id: "header_option_copy-external-link",
-          key: "copy-external-link",
-          label: t("SharingPanel:CopyExternalLink"),
-          icon: CopyToReactSvgUrl,
-          disabled: !isPublicRoomType,
-          items: roomLinks,
-        }
-      : {
-          id: "header_option_copy-external-link",
-          key: "copy-external-link",
-          label: t("SharingPanel:CopyExternalLink"),
-          icon: CopyToReactSvgUrl,
-          onClick: () => {
-            roomLinks[0]?.onClick();
-          },
-          disabled: !isPublicRoomType || roomLinks[0]?.disabled,
-        };
+    const publicAction = links.length
+      ? isMultiExternalLink
+        ? {
+            id: "header_option_copy-external-link",
+            key: "copy-external-link",
+            label: t("SharingPanel:CopyExternalLink"),
+            icon: CopyToReactSvgUrl,
+            disabled: !isPublicRoomType,
+            items: roomLinks,
+          }
+        : {
+            id: "header_option_copy-external-link",
+            key: "copy-external-link",
+            label: t("SharingPanel:CopyExternalLink"),
+            icon: CopyToReactSvgUrl,
+            onClick: () => {
+              roomLinks[0]?.onClick();
+            },
+            disabled: !isPublicRoomType || roomLinks[0]?.disabled,
+          }
+      : {};
 
     if (isArchiveFolder) {
       return [
@@ -976,7 +979,9 @@ const SectionHeaderContent = (props) => {
                 showText={showText}
                 isRootFolder={isRoot}
                 canCreate={
-                  (security?.Create || isAccountsPage) && !isSettingsPage && !isPublicRoom
+                  (security?.Create || isAccountsPage) &&
+                  !isSettingsPage &&
+                  !isPublicRoom
                 }
                 title={currentTitle}
                 isDesktop={isDesktop}
