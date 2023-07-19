@@ -350,10 +350,7 @@ class FilesStore {
       )
         return (this.roomCreated = false);
 
-      const folderInfo = await api.files.getFolderInfo(
-        folder.id,
-        this.publicRoomStore.publicRoomKey
-      );
+      const folderInfo = await api.files.getFolderInfo(folder.id);
 
       console.log("[WS] create new folder", folderInfo.id, folderInfo.title);
 
@@ -390,7 +387,7 @@ class FilesStore {
       if (!folder || !folder.id) return;
 
       api.files
-        .getFolderInfo(folder.id, this.publicRoomStore.publicRoomKey)
+        .getFolderInfo(folder.id)
         .then(() => this.setFolder(folderInfo))
         .catch(() => {
           // console.log("Folder deleted")
@@ -1308,10 +1305,7 @@ class FilesStore {
             const folderInfo =
               data.current.id === folderId
                 ? data.current
-                : await api.files.getFolderInfo(
-                    folderId,
-                    this.publicRoomStore.publicRoomKey
-                  );
+                : await api.files.getFolderInfo(folderId);
 
             const {
               id,
@@ -3219,10 +3213,7 @@ class FilesStore {
   };
 
   getFolderInfo = async (id) => {
-    const folderInfo = await api.files.getFolderInfo(
-      id,
-      this.publicRoomStore.publicRoomKey
-    );
+    const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
     return folderInfo;
   };
