@@ -17,6 +17,8 @@ const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
 
+const Sdk = loadable(() => import("../pages/Sdk"));
+
 const FormGallery = loadable(() => import("../pages/FormGallery"));
 const About = loadable(() => import("../pages/About"));
 const Wizard = loadable(() => import("../pages/Wizard"));
@@ -239,6 +241,10 @@ const ClientRoutes = [
         </ErrorBoundary>
       </PublicRoute>
     ),
+  },
+  {
+    path: "/sdk/:mode",
+    element: <Sdk />,
   },
   {
     path: "/about",
