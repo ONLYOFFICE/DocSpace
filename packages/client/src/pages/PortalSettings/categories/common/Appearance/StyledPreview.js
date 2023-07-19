@@ -6,16 +6,16 @@ const StyledComponent = styled.div`
   width: 100%;
 
   .menu {
-    width: ${(props) => (props.isViewTablet ? "61px" : "251px")};
+    width: ${props => (props.isViewTablet ? "61px" : "251px")};
     display: flex;
     flex-direction: column;
-    padding: ${(props) =>
+    padding: ${props =>
       props.isViewTablet ? "15px 0px 0px" : "21px 0px 17px"};
 
     height: 100%;
-    background: ${(props) =>
+    background: ${props =>
       props.themePreview === "Light" ? "#f8f9f9" : "#292929"};
-    ${(props) =>
+    ${props =>
       props.withBorder &&
       css`
         border-width: 1px;
@@ -35,7 +35,7 @@ const StyledComponent = styled.div`
   .line {
     width: 20px;
     height: 1px;
-    background: ${(props) =>
+    background: ${props =>
       props.themePreview === "Light" ? "#eceef1" : "#474747"};
     margin: 0 20px 31px 20px;
   }
@@ -44,8 +44,8 @@ const StyledComponent = styled.div`
     padding: 20px 16px 20px 16px;
 
     circle {
-      fill: ${(props) => props.colorPreview};
-      stroke: ${(props) => props.themePreview === "Dark" && "#292929"};
+      fill: ${props => props.colorPreview};
+      stroke: ${props => props.themePreview === "Dark" && "#292929"};
     }
   }
 
@@ -60,12 +60,19 @@ const StyledComponent = styled.div`
   }
 
   .section-flex-tablet {
-    display: ${(props) => props.isViewTablet && "flex"};
-    justify-content: ${(props) => props.isViewTablet && "space-between"};
+    display: ${props => props.isViewTablet && "flex"};
+    justify-content: ${props => props.isViewTablet && "space-between"};
   }
 
   .tile-half {
-    margin-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
     width: 44% !important;
     border-right: none !important;
     border-radius: 12px 0 0 12px !important;
@@ -73,8 +80,8 @@ const StyledComponent = styled.div`
 
   .section {
     position: relative;
-    width: ${(props) => (props.isViewTablet ? "100%" : "56%")};
-    ${(props) =>
+    width: ${props => (props.isViewTablet ? "100%" : "56%")};
+    ${props =>
       props.withBorder &&
       css`
         border-width: 1px;
@@ -82,18 +89,32 @@ const StyledComponent = styled.div`
         border-left-style: none;
         border-radius: 0px 16px 16px 0px;
       `}
-    background: ${(props) =>
+    background: ${props =>
       props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
   }
 
   .section-header {
     display: flex;
     align-items: flex-start;
-    padding: 26px 0px 28px 20px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 26px 0px 28px 20px;
+          `
+        : css`
+            padding: 26px 0px 28px 20px;
+          `}
   }
 
   .section-header-loader {
-    padding-right: 17px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 17px;
+          `
+        : css`
+            padding-right: 17px;
+          `}
     height: 16px;
   }
 
@@ -103,12 +124,26 @@ const StyledComponent = styled.div`
     border-style: solid;
     border-radius: 3px 0px 0px 3px;
     border-right-style: none;
-    margin: 0px 0px 24px 20px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0px 20px 24px 0px;
+          `
+        : css`
+            margin: 0px 0px 24px 20px;
+          `}
   }
 
   .section-search-loader {
     padding-top: 9px;
-    padding-left: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 8px;
+          `
+        : css`
+            padding-left: 8px;
+          `}
   }
 
   .loader-search {
@@ -116,30 +151,37 @@ const StyledComponent = styled.div`
   }
 
   .main-button-container {
-    margin: 0px 20px 23px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0px 0px 23px 20px;
+          `
+        : css`
+            margin: 0px 20px 23px 0;
+          `}
   }
 
   .main-button-preview {
     cursor: auto;
-    background-color: ${(props) => props.colorPreview};
+    background-color: ${props => props.colorPreview};
     border-radius: 3px;
 
     &:active {
-      background-color: ${(props) => props.colorPreview} !important;
+      background-color: ${props => props.colorPreview} !important;
       opacity: none !important;
       filter: none !important;
     }
   }
 
   .color-badge rect {
-    fill: ${(props) =>
+    fill: ${props =>
       props.themePreview === "Dark" && props.selectThemeId === 7
         ? "#FFFFFF"
         : props.colorPreview} !important;
   }
 
   .color-loaders rect {
-    fill: ${(props) =>
+    fill: ${props =>
       props.themePreview === "Light"
         ? `${props.colorPreview} !important`
         : `#FFFFFF !important`};
@@ -157,7 +199,7 @@ const StyledComponent = styled.div`
   }
 
   .loaders-theme {
-    background-color: ${(props) =>
+    background-color: ${props =>
       props.themePreview === "Light" ? "#FFF" : "#858585"};
     border-radius: 3px;
   }
@@ -165,8 +207,14 @@ const StyledComponent = styled.div`
   .flex {
     display: flex;
     align-items: center;
-
-    padding: 10px 32px 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 10px 0px 0px 32px;
+          `
+        : css`
+            padding: 10px 32px 0px;
+          `}
 
     &:not(:last-child) {
       padding-bottom: 10px;
@@ -175,16 +223,37 @@ const StyledComponent = styled.div`
 
   .padding-right {
     height: 16px;
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 
   .title-section {
     height: 12px;
-    margin: 0px 32px 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0px 0px 4px 32px;
+          `
+        : css`
+            margin: 0px 32px 4px;
+          `}
   }
 
   .menu-badge {
-    padding-left: 93px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 93px;
+          `
+        : css`
+            padding-left: 93px;
+          `}
     border: none;
     cursor: auto;
   }
@@ -192,16 +261,16 @@ const StyledComponent = styled.div`
   .select {
     padding-top: 9px;
     padding-bottom: 9px !important;
-    background: ${(props) =>
+    background: ${props =>
       props.themePreview === "Light" ? "#f0f0f0" : "#333333"};
   }
 
   .section-tile {
-    padding: ${(props) => (props.isViewTablet ? "0 0 0 20px" : "0 20px 0")};
+    padding: ${props => (props.isViewTablet ? "0 0 0 20px" : "0 20px 0")};
   }
 
   .border-color {
-    border-color: ${(props) =>
+    border-color: ${props =>
       props.themePreview === "Light" ? "#d0d5da" : "#474747"};
   }
 
@@ -210,11 +279,11 @@ const StyledComponent = styled.div`
     border-style: solid;
     border-radius: 12px;
     margin-bottom: 16px;
-    width: ${(props) => props.isViewTablet && "64%"};
+    width: ${props => props.isViewTablet && "64%"};
   }
 
   .background {
-    background: ${(props) =>
+    background: ${props =>
       props.themePreview === "Light" ? "#FFF" : "#292929"};
   }
 
@@ -228,13 +297,20 @@ const StyledComponent = styled.div`
 
   .tablet-tile-name {
     width: 44% !important;
-    margin-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
     border-right: none !important;
     border-radius: 12px 0 16px 0 !important;
   }
 
   .only-tile-name {
-    width: ${(props) => props.isViewTablet && "66%"};
+    width: ${props => props.isViewTablet && "66%"};
     border-top-width: 1px;
     border-right-width: 1px;
     border-left-width: 1px;
@@ -254,7 +330,14 @@ const StyledComponent = styled.div`
     display: flex;
     border-top-width: 1px;
     border-top-style: solid;
-    padding: 16px 0px 16px 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 16px 16px 16px 0px;
+          `
+        : css`
+            padding: 16px 0px 16px 16px;
+          `}
   }
 
   .tile-container {
@@ -263,18 +346,39 @@ const StyledComponent = styled.div`
   }
 
   .tile-icon {
-    padding-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .section-badge {
-    padding-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .pin {
-    padding-right: 14px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 14px;
+          `
+        : css`
+            padding-right: 14px;
+          `}
 
     path {
-      fill: ${(props) =>
+      fill: ${props =>
         props.themePreview === "Light"
           ? `${props.colorPreview} !important`
           : `#FFFFFF !important`};
@@ -296,7 +400,7 @@ const StyledFloatingButton = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: ${(props) => props.colorPreview};
+  background-color: ${props => props.colorPreview};
   text-align: center;
   position: absolute;
   display: flex;
@@ -314,7 +418,7 @@ const IconBox = styled.div`
 
   svg {
     path {
-      fill: ${(props) => props.colorCheckImg};
+      fill: ${props => props.colorCheckImg};
     }
   }
 `;
