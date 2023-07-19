@@ -4,7 +4,7 @@ import Button from "@docspace/components/button";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import AppLoader from "@docspace/common/components/AppLoader";
 import RoomSelector from "../../components/RoomSelector";
-import SelectFileDialog from "../../components/panels/SelectFileDialog";
+import FilesSelector from "../../components/FilesSelector";
 import {
   frameCallEvent,
   frameCallbackData,
@@ -156,7 +156,7 @@ const Sdk = ({
       break;
     case "file-selector":
       component = (
-        <SelectFileDialog
+        <FilesSelector
           isPanelVisible={true}
           onSelectFile={onSelectFile}
           filteredType={selectorType}
