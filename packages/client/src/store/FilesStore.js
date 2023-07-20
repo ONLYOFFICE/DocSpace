@@ -1664,6 +1664,7 @@ class FilesStore {
 
     const canCopy = item.security?.Copy;
     const canDuplicate = item.security?.Duplicate;
+    const canDownload = item.security?.Download;
 
     if (isFile) {
       const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
@@ -1722,6 +1723,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        fileOptions = this.removeOptions(fileOptions, ["download"]);
+      }
 
       if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
         fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
@@ -1935,6 +1940,7 @@ class FilesStore {
         "mute-room",
         "unmute-room",
         "separator1",
+        "download",
         "archive-room",
         "unarchive-room",
         "delete",
@@ -1962,8 +1968,11 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["delete"]);
       }
 
-      if (!canArchiveRoom && !canRemoveRoom) {
-        roomOptions = this.removeOptions(roomOptions, ["separator1"]);
+      if (!canDownload) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "separator1",
+          "download",
+        ]);
       }
 
       if (!item.providerKey) {
@@ -2044,6 +2053,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        folderOptions = this.removeOptions(folderOptions, ["download"]);
+      }
 
       if (!canRenameItem) {
         folderOptions = this.removeOptions(folderOptions, ["rename"]);
