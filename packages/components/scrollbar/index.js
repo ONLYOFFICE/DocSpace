@@ -2,9 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { isMobile } from "@docspace/components/utils/device";
-import CustomScrollbars from "./customScrollbar";
+import { classNames } from "../utils/classNames";
+import StyledScrollbar from "./styled-scrollbar";
+import { useTheme } from "styled-components";
 
-const Scrollbar = React.forwardRef((props, ref) => {
+const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
+  const { interfaceDirection } = useTheme();
+  const isRtl = interfaceDirection === "rtl";
+  const viewPaddingKey = isRtl ? "paddingLeft" : "paddingRight";
   const scrollbarType = {
     smallWhite: {
       thumbV: {
@@ -42,7 +47,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
         borderRadius: "inherit",
       },
       view: {
-        paddingRight: isMobile() ? "8px" : "17px",
+        [viewPaddingKey]: isMobile() ? "8px" : "17px",
         outline: "none",
         WebkitOverflowScrolling: "auto",
       },
@@ -61,12 +66,44 @@ const Scrollbar = React.forwardRef((props, ref) => {
       view: { outline: "none", WebkitOverflowScrolling: "auto" },
     },
   };
+
   const stype = scrollbarType[props.stype];
+
   const thumbV = stype ? stype.thumbV : {};
   const thumbH = stype ? stype.thumbH : {};
+  const view = stype ? stype.view : {};
 
   return (
-    <CustomScrollbars thumbh={thumbH} thumbv={thumbV} {...props} ref={ref} />
+    <StyledScrollbar
+      disableTracksWidthCompensation
+      rtl={isRtl}
+      ref={ref}
+      {...props}
+      scrollerProps={{ id }}
+      contentProps={{
+        style: view,
+        tabIndex: -1,
+        className: classNames("scroll-body", props.scrollclass),
+      }}
+      thumbYProps={{
+        className: "nav-thumb-vertical",
+        style: thumbV,
+      }}
+      thumbXProps={{
+        className: "nav-thumb-horizontal",
+        style: thumbH,
+      }}
+      trackYProps={{
+        style: { width: thumbV.width, background: "transparent" },
+      }}
+      trackXProps={{
+        style: {
+          height: thumbH.height,
+          background: "transparent",
+          direction: "ltr",
+        },
+      }}
+    />
   );
 });
 
