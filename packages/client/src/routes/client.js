@@ -180,6 +180,18 @@ const ClientRoutes = [
             ),
           },
           {
+            path: "accounts/changeOwner",
+            element: (
+              <PrivateRoute restricted withManager>
+                <Navigate
+                  to="/accounts/filter"
+                  state={{ openChangeOwnerDialog: true }}
+                  replace
+                />
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "accounts/filter",
             element: (
               <PrivateRoute restricted withManager>
