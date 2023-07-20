@@ -192,7 +192,6 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         var fileDao = await GetFileDaoAsync<T>();
         try
         {
-
             var file = await fileDao.GetFileAsync(fileId);
 
             return file != null && file.RootFolderType != FolderType.TRASH;
@@ -226,6 +225,21 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
             var uploadSession = await InitUploadChunkAsync(storageBasePath, title);
             var folderDao = GetFolderDao<string>();
             return await folderDao.CreateDataWriteOperatorAsync(storageBasePath, uploadSession, _sessionHolder);
+        }
+    }
+
+    public async Task<string> GetBackupExtensionAsync(string storageBasePath)
+    {
+        await _tenantManager.SetCurrentTenantAsync(_tenantId);
+        if (int.TryParse(storageBasePath, out var fId))
+        {
+            var folderDao = GetFolderDao<int>();
+            return await folderDao.GetBackupExtensionAsync(fId);
+        }
+        else
+        {
+            var folderDao = GetFolderDao<string>();
+            return await folderDao.GetBackupExtensionAsync(storageBasePath);
         }
     }
 

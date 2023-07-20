@@ -67,7 +67,6 @@ public class ChunkedUploadSession<T> : CommonChunkedUploadSession
         chunkedUploadSession.TransformItems();
 
         return chunkedUploadSession;
-
     }
 }
 

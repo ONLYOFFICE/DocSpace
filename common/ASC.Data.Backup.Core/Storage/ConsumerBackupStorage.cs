@@ -119,6 +119,11 @@ public class ConsumerBackupStorage : IBackupStorage, IGetterWriteOperator
             TempPath = title,
             UploadId = await _store.InitiateChunkedUploadAsync(Domain, title)
         };
-        return _store.CreateDataWriteOperator(session, _sessionHolder);
+        return _store.CreateDataWriteOperator(session, _sessionHolder, true);
+    }
+
+    public Task<string> GetBackupExtensionAsync(string storageBasePath)
+    {
+        return Task.FromResult(_store.GetBackupExtension(true));
     }
 }

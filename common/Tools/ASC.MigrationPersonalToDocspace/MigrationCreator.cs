@@ -378,7 +378,7 @@ public class MigrationCreator
             {
                 var storage = await _storageFactory.GetStorageAsync(_fromTenantId, group.Key);
                 var file1 = file;
-                await ActionInvoker.Try(async state =>
+                await ActionInvoker.TryAsync(async state =>
                 {
                     var f = (BackupFileInfo)state;
                     using var fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);

@@ -63,6 +63,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private BackupRepository _backupRepository;
     private RestorePortalTask _restorePortalTask;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly SetupInfo _setupInfo;
 
     private string _region;
     private string _upgradesPath;
@@ -73,7 +74,8 @@ public class RestoreProgressItem : BaseBackupProgressItem
         ICache cache,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
-        CoreBaseSettings coreBaseSettings)
+        CoreBaseSettings coreBaseSettings,
+        SetupInfo setupInfo)
         : base(logger, serviceScopeFactory)
     {
         _configuration = configuration;
@@ -83,6 +85,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         _coreBaseSettings = coreBaseSettings;
 
         BackupProgressItemEnum = BackupProgressItemEnum.Restore;
+        _setupInfo = setupInfo;
     }
 
     public BackupStorageType StorageType { get; set; }
@@ -131,12 +134,17 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             if (!_coreBaseSettings.Standalone)
             {
-                var backupHash = BackupWorker.GetBackupHash(tempFile);
-                var record = await _backupRepository.GetBackupRecordAsync(backupHash, TenantId);
+                var shaHash = BackupWorker.GetBackupHashSHA(tempFile);
+                var record = await _backupRepository.GetBackupRecordAsync(shaHash, TenantId);
 
                 if (record == null)
                 {
-                    throw new Exception(BackupResource.BackupNotFound);
+                    var md5Hash = BackupWorker.GetBackupHashMD5(tempFile, S3Storage.ChunkSize);
+                    record = await _backupRepository.GetBackupRecordAsync(md5Hash, TenantId);
+                    if (record == null)
+                    {
+                        throw new Exception(BackupResource.BackupNotFound);
+                    }
                 }
             }
 

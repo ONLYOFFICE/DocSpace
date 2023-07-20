@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Storage.ZipOperators;
 
-public static class ZipWriteOperatorFactory
+public static class DataOperatorFactory
 {
     public static async Task<IDataWriteOperator> GetWriteOperatorAsync(TempStream tempStream, string storageBasePath, string title, string tempFolder, Guid userId, IGetterWriteOperator getter)
     {
@@ -38,6 +38,18 @@ public static class ZipWriteOperatorFactory
     public static IDataWriteOperator GetDefaultWriteOperator(TempStream tempStream, string backupFilePath)
     {
         return new ZipWriteOperator(tempStream, backupFilePath);
+    }
+
+    public static IDataReadOperator GetReadOperator(string targetFile)
+    {
+        try
+        {
+            return new ZipReadOperator(targetFile);
+        }
+        catch
+        {
+            return new TarReadOperator(targetFile);
+        }
     }
 }
  

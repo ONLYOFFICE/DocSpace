@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,56 +24,49 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
-
-[Scope]
-public class LocalBackupStorage : IBackupStorage, IGetterWriteOperator
+namespace ASC.Data.Storage.ZipOperators;
+public class TarReadOperator: IDataReadOperator
 {
-    public Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId)
+    private readonly string tmpdir;
+
+    public TarReadOperator(string targetFile)
     {
-        if (!Directory.Exists(storageBasePath))
+        tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+
+        using (var stream = File.OpenRead(targetFile))
+        using (var tarOutputStream = TarArchive.CreateInputTarArchive(stream, Encoding.UTF8))
         {
-            throw new FileNotFoundException("Directory not found.");
+            tarOutputStream.ExtractContents(tmpdir);
         }
 
-        var storagePath = CrossPlatform.PathCombine(storageBasePath, Path.GetFileName(localPath));
-        if (localPath != storagePath)
+        File.Delete(targetFile);
+    }
+
+    public Stream GetEntry(string key)
+    {
+        var filePath = Path.Combine(tmpdir, key);
+        return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
+    }
+
+    public IEnumerable<string> GetEntries(string key)
+    {
+        var path = Path.Combine(tmpdir, key);
+        var files = Directory.EnumerateFiles(path);
+        return files;
+    }
+
+    public IEnumerable<string> GetDirectories(string key)
+    {
+        var path = Path.Combine(tmpdir, key);
+        var files = Directory.EnumerateDirectories(path);
+        return files;
+    }
+
+    public void Dispose()
+    {
+        if (Directory.Exists(tmpdir))
         {
-            File.Copy(localPath, storagePath, true);
+            Directory.Delete(tmpdir, true);
         }
-
-        return Task.FromResult(storagePath);
-    }
-
-    public Task DownloadAsync(string storagePath, string targetLocalPath)
-    {
-        File.Copy(storagePath, targetLocalPath, true);
-        return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(string storagePath)
-    {
-        File.Delete(storagePath);
-        return Task.CompletedTask;
-    }
-
-    public Task<bool> IsExistsAsync(string storagePath)
-    {
-        return Task.FromResult(File.Exists(storagePath));
-    }
-
-    public Task<string> GetPublicLinkAsync(string storagePath)
-    {
-        return Task.FromResult(string.Empty);
-    }
-
-    public Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId)
-    {
-        return Task.FromResult<IDataWriteOperator>(null);
-    }
-
-    public Task<string> GetBackupExtensionAsync(string storageBasePath)
-    {
-        return Task.FromResult("tar.gz");
     }
 }

@@ -33,7 +33,9 @@ public interface IDataStore
 {
     IDataWriteOperator CreateDataWriteOperator(
             CommonChunkedUploadSession chunkedUploadSession,
-            CommonChunkedUploadSessionHolder sessionHolder);
+            CommonChunkedUploadSessionHolder sessionHolder,
+            bool isConsumerStorage = false);
+    string GetBackupExtension(bool isConsumerStorage = false);
 
     IQuotaController QuotaController { get; set; }
 

@@ -24,17 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.IO;
-
-using Google.Apis.Storage.v1.Data;
-
 namespace ASC.Data.Storage.ZipOperators;
-internal class S3TarWriteOperator : IDataWriteOperator
+public class S3TarWriteOperator : IDataWriteOperator
 {
     private readonly CommonChunkedUploadSession _chunkedUploadSession;
     private readonly CommonChunkedUploadSessionHolder _sessionHolder;
     private readonly S3Storage _store;
-    private bool _first = true;
     private readonly string _domain;
     private readonly string _key;
 
@@ -50,12 +45,6 @@ internal class S3TarWriteOperator : IDataWriteOperator
 
         _key = _chunkedUploadSession.TempPath;
         _domain = string.IsNullOrEmpty(_sessionHolder.TempDomain) ? _sessionHolder.Domain : _sessionHolder.TempDomain;
-
-        using var stream = new MemoryStream();
-        var buffer = new byte[5 * 1024 * 1024];
-        stream.Write(buffer);
-        stream.Position = 0;
-        _sessionHolder.UploadChunkAsync(_chunkedUploadSession, stream, stream.Length).Wait();
     }
 
     public async Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store)
@@ -65,7 +54,7 @@ internal class S3TarWriteOperator : IDataWriteOperator
             var s3Store = store as S3Storage;
             var fullPath = s3Store.MakePath(domain, path);
 
-            (var uploadId, var eTags, var chunkNumber) = await GetDataAsync();
+            (var uploadId, var eTags, var chunkNumber) = await _store.InitiateConcatAsync(_domain, _key);
             await _store.ConcatFileAsync(fullPath, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
         }
         else
@@ -85,45 +74,26 @@ internal class S3TarWriteOperator : IDataWriteOperator
 
     public async Task WriteEntryAsync(string tarKey, Stream stream)
     {
-        (var uploadId, var eTags, var chunkNumber) = await GetDataAsync();
+        (var uploadId, var eTags, var chunkNumber) = await _store.InitiateConcatAsync(_domain, _key);
         await _store.ConcatFileStreamAsync(stream, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
-    }
-
-    private async Task<(string uploadId, List<PartETag> eTags, int partNumber)> GetDataAsync()
-    {
-        List<PartETag> eTags = null;
-        var chunkNumber = 0;
-        string uploadId = null;
-        if (_first)
-        {
-            eTags = _chunkedUploadSession.GetItemOrDefault<Dictionary<int, string>>("ETag").Select(x => new PartETag(x.Key, x.Value)).ToList();
-            int.TryParse(_chunkedUploadSession.GetItemOrDefault<string>("ChunksUploaded"), out chunkNumber);
-            chunkNumber++;
-            uploadId = _chunkedUploadSession.UploadId;
-            _first = false;
-        }
-        else
-        {
-            (uploadId, eTags, chunkNumber) = await _store.InitiateConcatAsync(_domain, _key);
-        }
-        return (uploadId, eTags, chunkNumber);
     }
 
     public async ValueTask DisposeAsync()
     {
         await _store.AddEndAsync(_domain ,_key);
+        await _store.RemoveFirstBlockAsync(_domain ,_key);
 
         var contentLength = await _store.GetFileSizeAsync(_domain, _key);
+        Hash = (await _store.GetFileEtagAsync(_domain, _key)).Trim('\"');
 
-        (var uploadId, var eTags, var partNumber) = await _store.InitiateConcatAsync(_domain, _key, removeEmptyHeader: true);
+        (var uploadId, var eTags, var partNumber) = await _store.InitiateConcatAsync(_domain, _key, lastInit: true);
 
         _chunkedUploadSession.BytesUploaded = contentLength;
         _chunkedUploadSession.BytesTotal = contentLength;
         _chunkedUploadSession.UploadId = uploadId;
         _chunkedUploadSession.Items["ETag"] = eTags.ToDictionary(e => e.PartNumber, e => e.ETag);
-        _chunkedUploadSession.Items["ChunksUploaded"] = partNumber.ToString();
-        StoragePath = await _sessionHolder.FinalizeAsync(_chunkedUploadSession);
+        _chunkedUploadSession.Items["ChunksUploaded"] = (partNumber - 1).ToString();
 
-        Hash = "";
+        StoragePath = await _sessionHolder.FinalizeAsync(_chunkedUploadSession);
     }
 }

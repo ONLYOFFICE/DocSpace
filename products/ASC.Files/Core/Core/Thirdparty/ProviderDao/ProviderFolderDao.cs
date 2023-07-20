@@ -466,6 +466,13 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return await folderDao.CreateDataWriteOperatorAsync(folderId, chunkedUploadSession, sessionHolder);
     }
 
+    public async Task<string> GetBackupExtensionAsync(string folderId)
+    {
+        var selector = _selectorFactory.GetSelector(folderId);
+        var folderDao = selector.GetFolderDao(folderId);
+        return await folderDao.GetBackupExtensionAsync(folderId);
+    }
+
     private IAsyncEnumerable<Folder<string>> FilterByProvider(IAsyncEnumerable<Folder<string>> folders, ProviderFilter provider)
     {
         if (provider != ProviderFilter.kDrive && provider != ProviderFilter.WebDav && provider != ProviderFilter.Yandex)

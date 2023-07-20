@@ -90,7 +90,7 @@ public class RestorePortalTask : PortalTaskBase
 
         _options.DebugBeginRestoreData();
 
-        using (var dataReader = new ZipReadOperator(BackupFilePath))
+        using (var dataReader = DataOperatorFactory.GetReadOperator(BackupFilePath))
         {
             await using (var entry = dataReader.GetEntry(KeyHelper.GetDumpKey()))
             {

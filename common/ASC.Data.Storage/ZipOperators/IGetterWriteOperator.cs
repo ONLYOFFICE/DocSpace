@@ -29,4 +29,5 @@ namespace ASC.Data.Storage.ZipOperators;
 public interface IGetterWriteOperator
 {
     Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId);
+    Task<string> GetBackupExtensionAsync(string storageBasePath);
 }

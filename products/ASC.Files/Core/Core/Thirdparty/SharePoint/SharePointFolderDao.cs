@@ -439,6 +439,11 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         return Task.FromResult<IDataWriteOperator>(null);
     }
+
+    public Task<string> GetBackupExtensionAsync(string folderId)
+    {
+        return Task.FromResult("tar.gz");
+    }
 }
 
 static file class Queries

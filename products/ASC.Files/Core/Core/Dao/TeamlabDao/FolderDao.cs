@@ -1543,57 +1543,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return (await _globalStore.GetStoreAsync()).CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
 
-    private string GetProjectTitle(object folderID)
+    public async Task<string> GetBackupExtensionAsync(int folderId)
     {
-        return "";
-        //if (!ApiServer.Available)
-        //{
-        //    return string.Empty;
-        //}
-
-        //var cacheKey = "documents/folders/" + folderID.ToString();
-
-        //var projectTitle = Convert.ToString(cache.Get<string>(cacheKey));
-
-        //if (!string.IsNullOrEmpty(projectTitle)) return projectTitle;
-
-        //var bunchObjectID = GetBunchObjectID(folderID);
-
-        //if (string.IsNullOrEmpty(bunchObjectID))
-        //    throw new Exception("Bunch Object id is null for " + folderID);
-
-        //if (!bunchObjectID.StartsWith("projects/project/"))
-        //    return string.Empty;
-
-        //var bunchObjectIDParts = bunchObjectID.Split('/');
-
-        //if (bunchObjectIDParts.Length < 3)
-        //    throw new Exception("Bunch object id is not supported format");
-
-        //var projectID = Convert.ToInt32(bunchObjectIDParts[bunchObjectIDParts.Length - 1]);
-
-        //if (HttpContext.Current == null || !SecurityContext.IsAuthenticated)
-        //    return string.Empty;
-
-        //var apiServer = new ApiServer();
-
-        //var apiUrl = string.Format("{0}project/{1}.json?fields=id,title", SetupInfo.WebApiBaseUrl, projectID);
-
-        //var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
-
-        //if (responseApi != null && responseApi.HasValues)
-        //{
-        //    projectTitle = Global.ReplaceInvalidCharsAndTruncate(responseApi["title"].Value<string>());
-        //}
-        //else
-        //{
-        //    return string.Empty;
-        //}
-        //if (!string.IsNullOrEmpty(projectTitle))
-        //{
-        //    cache.Insert(cacheKey, projectTitle, TimeSpan.FromMinutes(15));
-        //}
-        //return projectTitle;
+        return (await _globalStore.GetStoreAsync()).GetBackupExtension();
     }
 }
 

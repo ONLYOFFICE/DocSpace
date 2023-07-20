@@ -96,7 +96,7 @@ public class TransferPortalTask : PortalTaskBase
 
             //save db data to temporary file
             var backupTask = _serviceProvider.GetService<BackupPortalTask>();
-            backupTask.Init(TenantId, backupFilePath, Limit, ZipWriteOperatorFactory.GetDefaultWriteOperator(_tempStream, backupFilePath));
+            backupTask.Init(TenantId, backupFilePath, Limit, DataOperatorFactory.GetDefaultWriteOperator(_tempStream, backupFilePath));
             backupTask.ProcessStorage = false;
             backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
             foreach (var moduleName in _ignoredModules)
