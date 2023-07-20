@@ -31,7 +31,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASC.Migrations.MySql.Migrations.CoreDb;
 
 /// <inheritdoc />
-public partial class CoreDbContextMigrate : Migration
+public partial class MigrationContextMigrate : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)

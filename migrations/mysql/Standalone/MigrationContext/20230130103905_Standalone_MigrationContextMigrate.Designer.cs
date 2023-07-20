@@ -12,7 +12,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
 {
     [DbContext(typeof(CoreDbContext))]
     [Migration("20230130103905_Standalone_CoreDbContextMigrate")]
-    partial class CoreDbContextMigrate
+    partial class MigrationContextMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
