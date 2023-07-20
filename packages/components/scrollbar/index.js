@@ -6,10 +6,9 @@ import { classNames } from "../utils/classNames";
 import StyledScrollbar from "./styled-scrollbar";
 import { useTheme } from "styled-components";
 
-const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
+const Scrollbar = React.forwardRef(({ id, onScroll, ...props }, ref) => {
   const { interfaceDirection } = useTheme();
   const isRtl = interfaceDirection === "rtl";
-  const viewPaddingKey = isRtl ? "paddingLeft" : "paddingRight";
   const scrollbarType = {
     smallWhite: {
       thumbV: {
@@ -47,7 +46,8 @@ const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
         borderRadius: "inherit",
       },
       view: {
-        [viewPaddingKey]: isMobile() ? "8px" : "17px",
+        paddingRight: !isRtl && (isMobile() ? "8px" : "17px"),
+        paddingLeft: isRtl && (isMobile() ? "8px" : "17px"),
         outline: "none",
         WebkitOverflowScrolling: "auto",
       },
@@ -73,44 +73,19 @@ const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
   const thumbH = stype ? stype.thumbH : {};
   const view = stype ? stype.view : {};
 
-  return (
-    <Scroll1
-      isRtl={isRtl}
-      ref={ref}
-      id={id}
-      view={view}
-      thumbH={thumbH}
-      thumbV={thumbV}
-      {...props}
-    />
-  );
-});
+  // onScroll handler placed here on Scroller element to get native event instead of parameters that library put
+  const renderScroller = (props) => {
+    const { elementRef, ...restProps } = props;
+    return <div {...restProps} id={id} ref={elementRef} onScroll={onScroll} />;
+  };
 
-Scrollbar.propTypes = {
-  /** Scrollbar style type */
-  stype: PropTypes.string,
-  /** Accepts class */
-  className: PropTypes.string,
-  /** Accepts id  */
-  id: PropTypes.string,
-  /** Accepts css style  */
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-};
-
-Scrollbar.defaultProps = {
-  stype: "mediumBlack",
-};
-
-export default Scrollbar;
-
-const Scroll1 = ({ isRtl, ref, id, thumbV, thumbH, view, ...props }) => {
   return (
     <StyledScrollbar
       disableTracksWidthCompensation
       rtl={isRtl}
       ref={ref}
       {...props}
-      scrollerProps={{ id }}
+      scrollerProps={{ renderer: renderScroller }}
       contentProps={{
         style: view,
         tabIndex: -1,
@@ -131,59 +106,26 @@ const Scroll1 = ({ isRtl, ref, id, thumbV, thumbH, view, ...props }) => {
         style: {
           height: thumbH.height,
           background: "transparent",
-          direction: "ltr",
+          direction: "ltr", // Required to make the horizontal thumb work properly
         },
       }}
     />
   );
+});
+
+Scrollbar.propTypes = {
+  /** Scrollbar style type */
+  stype: PropTypes.string,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Accepts id  */
+  id: PropTypes.string,
+  /** Accepts css style  */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
-const Scroll2 = ({
-  isRtl,
-  ref,
-  id,
-  thumbV,
-  thumbH,
-  view,
-  children,
-  ...props
-}) => {
-  return (
-    <StyledScrollbar
-      disableTracksWidthCompensation
-      rtl={isRtl}
-      {...props}
-      // scrollerProps={{ id }}
-      contentProps={{
-        id,
-      }}
-      thumbYProps={{
-        className: "nav-thumb-vertical",
-        style: thumbV,
-      }}
-      thumbXProps={{
-        className: "nav-thumb-horizontal",
-        style: thumbH,
-      }}
-      trackYProps={{
-        style: { width: thumbV.width, background: "transparent" },
-      }}
-      trackXProps={{
-        style: {
-          height: thumbH.height,
-          background: "transparent",
-          direction: "ltr",
-        },
-      }}
-    >
-      <div
-        ref={ref}
-        tabIndex={-1}
-        style={view}
-        className={classNames("scroll-body", props.scrollclass)}
-      >
-        {children}
-      </div>
-    </StyledScrollbar>
-  );
+Scrollbar.defaultProps = {
+  stype: "mediumBlack",
 };
+
+export default Scrollbar;
