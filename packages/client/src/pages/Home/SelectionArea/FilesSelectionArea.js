@@ -80,13 +80,8 @@ const SelectionArea = (props) => {
 };
 
 export default inject(({ auth, filesStore, treeFoldersStore }) => {
-  const {
-    dragging,
-    viewAs,
-    setSelections,
-    getCountTilesInRow,
-    folders,
-  } = filesStore;
+  const { dragging, viewAs, setSelections, getCountTilesInRow, folders } =
+    filesStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
   const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
 

@@ -18,7 +18,8 @@ import {
 import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 
 import MediaViewer from "./MediaViewer";
-import SelectionArea from "./SelectionArea";
+import FilesSelectionArea from "./SelectionArea/FilesSelectionArea";
+import AccountsSelectionArea from "./SelectionArea/AccountsSelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import { RoomSearchArea } from "@docspace/common/constants";
 
@@ -265,11 +266,14 @@ const PureHome = (props) => {
       {isSettingsPage ? (
         <></>
       ) : isAccountsPage ? (
-        <AccountsDialogs />
+        <>
+          <AccountsDialogs />
+          <AccountsSelectionArea />
+        </>
       ) : (
         <>
           <DragTooltip />
-          <SelectionArea />
+          <FilesSelectionArea />
         </>
       )}
       <MediaViewer />
