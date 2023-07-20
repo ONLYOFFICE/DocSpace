@@ -128,7 +128,8 @@ class TabContainer extends Component {
       rightTabs--;
     }
     rightFullWidth -= marginRight;
-    this.scrollRef.current?.scrollTo(this.scrollRef.current.scrollHeight, 0);
+    const staticScroll = this.scrollRef.current?.scrollWidth; //get static scroll width
+    this.scrollRef.current?.scrollTo(staticScroll - rightFullWidth);
   };
 
   onMouseEnter = () => {
@@ -155,7 +156,6 @@ class TabContainer extends Component {
           autoHide={onScrollHide}
           stype="preMediumBlack"
           className="scrollbar"
-          horizontal
           ref={this.scrollRef}
         >
           <NavItem className="className_items">
