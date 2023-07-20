@@ -2467,31 +2467,28 @@ public class FileStorageService //: IFileStorageService
         {
             try
             {
-
                 var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access, string Email)>();
                 foreach (var ace in aceCollection.Aces)
                 {
-                    var user = _userManager.GetUsers(ace.Id);
+                    var user = await _userManager.GetUsersAsync(ace.Id);
 
-                    if (user == Constants.LostUser)
+                    if (user.Equals(Constants.LostUser))
                     {
                         eventTypes.Add((null, EventType.Create, ace.Access, ace.Email));
                         continue;
                     }
 
-                    var userId = user.Id;
-
                     var userSubjects = await _fileSecurity.GetUserSubjectsAsync(user.Id);
                     var usersRecords = await securityDao.GetSharesAsync(userSubjects).ToListAsync();
-                    var recordEntrys = usersRecords.Select(r => r.EntryId.ToString());
+                    var recordEntries = usersRecords.Select(r => r.EntryId.ToString());
 
                     EventType eventType;
 
-                    if (usersRecords.Any() && ace.Access != FileShare.None && recordEntrys.Contains(entry.Id.ToString()))
+                    if (usersRecords.Any() && ace.Access != FileShare.None && recordEntries.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Update;
                     }
-                    else if (!usersRecords.Any() || !recordEntrys.Contains(entry.Id.ToString()))
+                    else if (!usersRecords.Any() || !recordEntries.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Create;
                     }
@@ -2506,37 +2503,39 @@ public class FileStorageService //: IFileStorageService
                 var (changed, warningMessage) = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
                 warning ??= warningMessage;
 
-                if (changed)
+                if (!changed)
                 {
-                    foreach (var e in eventTypes)
+                    continue;
+                }
+
+                foreach (var e in eventTypes)
+                {
+                    var userInfo = e.User ?? await _userManager.GetUserByEmailAsync(e.Email);
+                    var name = userInfo.DisplayUserName(false, _displayUserSettingsHelper);
+
+                    var access = e.Access;
+
+                    if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                     {
-                        var user = e.User ?? await _userManager.GetUserByEmailAsync(e.Email);
-                        var name = user.DisplayUserName(false, _displayUserSettingsHelper);
-
-                        var access = e.Access;
-
-                        if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
+                        switch (e.EventType)
                         {
-                            switch (e.EventType)
-                            {
-                                case EventType.Create:
-                                    _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomCreateUser, user.Id, name, GetAccessString(access));
-                                    break;
-                                case EventType.Remove:
-                                    _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomRemoveUser, user.Id, name, GetAccessString(access));
-                                    break;
-                                case EventType.Update:
-                                    _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccessForUser, access, user.Id, name);
-                                    break;
-                            }
+                            case EventType.Create:
+                                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomCreateUser, userInfo.Id, name, GetAccessString(access));
+                                break;
+                            case EventType.Remove:
+                                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomRemoveUser, userInfo.Id, name, GetAccessString(access));
+                                break;
+                            case EventType.Update:
+                                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccessForUser, access, userInfo.Id, name);
+                                break;
                         }
-                        else
-                        {
+                    }
+                    else
+                    {
 
-                            _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(),
-                                                 entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
-                                                 entry.Title, name, GetAccessString(access));
-                        }
+                        _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(),
+                            entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
+                            entry.Title, name, GetAccessString(access));
                     }
                 }
             }

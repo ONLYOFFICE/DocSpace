@@ -96,12 +96,8 @@ public class FileSharingAceHelper
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!aceWrappers.All(r => r.Id == _authContext.CurrentAccount.ID && r.Access == FileShare.None) && !await _fileSharingHelper.CanSetAccessAsync(entry) && advancedSettings is not { InvitationLink: true })
-        {
-            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
-        }
-
-        if (entry is Folder<T> { Private: true } && advancedSettings is not { AllowSharingPrivateRoom: true })
+        if (!aceWrappers.All(r => r.Id == _authContext.CurrentAccount.ID && r.Access == FileShare.None) && 
+            !await _fileSharingHelper.CanSetAccessAsync(entry) && advancedSettings is not { InvitationLink: true })
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -274,9 +270,7 @@ public class FileSharingAceHelper
                                || (share == FileShare.None && entry.RootFolderType == FolderType.COMMON);
 
             var removeNew = share == FileShare.Restrict || (share == FileShare.None
-                && (entry.RootFolderType == FolderType.USER ||
-                    entry.RootFolderType == FolderType.VirtualRooms ||
-                    entry.RootFolderType == FolderType.Archive));
+                && entry.RootFolderType is FolderType.USER or FolderType.VirtualRooms or FolderType.Archive);
 
             listUsersId.ForEach(id =>
             {
@@ -306,8 +300,7 @@ public class FileSharingAceHelper
                 await _fileMarker.MarkAsNewAsync(entry, recipients.Keys.ToList());
             }
 
-            if ((entry.RootFolderType == FolderType.USER
-               || entry.RootFolderType == FolderType.Privacy)
+            if (entry.RootFolderType is FolderType.USER or FolderType.Privacy
                && notify)
             {
                 await _notifyClient.SendShareNoticeAsync(entry, recipients, message);
