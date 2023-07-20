@@ -250,6 +250,52 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         }
     }
 
+    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, bool excludeShared, int offset, int count)
+    {
+        if (entry == null || count == 0)
+        {
+            yield break;
+        }
+
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var tenantId = TenantID;
+        var entryId = (await MappingIDAsync(entry.Id)).ToString();
+
+        var q = filesDbContext.Users.AsNoTracking().Where(u => u.TenantId == tenantId && u.ActivationStatus != EmployeeActivationStatus.Pending);
+
+        if (!string.IsNullOrEmpty(text))
+        {
+            q = q.Where(u => u.FirstName.Contains(text) || u.LastName.Contains(text) || u.Email.Contains(text));
+        }
+
+        var q1 = excludeShared
+            ? q.Where(u => !filesDbContext.Security.Any(s => s.TenantId == tenantId && s.EntryType == entry.FileEntryType && s.EntryId == entryId && s.Subject == u.Id) &&
+                           u.Id != entry.CreateBy)
+                .OrderBy(u => u.FirstName)
+                .Select(u => new { User = u, Shared = false })
+            : from user in q
+            join security in filesDbContext.Security.Where(s => s.TenantId == tenantId && s.EntryId == entryId && s.EntryType == entry.FileEntryType) on user.Id equals
+                security.Subject into grouping
+            from s in grouping.DefaultIfEmpty()
+            orderby user.FirstName
+            select new { User = user, Shared = s != null || user.Id == entry.CreateBy };
+
+        if (offset > 0)
+        {
+            q1 = q1.Skip(offset);
+        }
+        
+        if (count > 0)
+        {
+            q1 = q1.Take(count);
+        }
+
+        await foreach (var r in q1.ToAsyncEnumerable())
+        {
+            yield return new UserWithShared { User = _mapper.Map<User, UserInfo>(r.User), Shared = r.Shared };
+        }
+    }
+
     internal async IAsyncEnumerable<FileShareRecord> InternalGetPureShareRecordsAsync(FileEntry<T> entry)
     {
         var files = new List<string>();
@@ -573,6 +619,12 @@ public class SecurityUserRecord
 {
     public DbFilesSecurity Security { get; init; }
     public User User { get; init; }
+}
+
+public class UserWithShared
+{
+    public UserInfo User { get; set; }
+    public bool Shared { get; set; }
 }
 
 static file class Queries

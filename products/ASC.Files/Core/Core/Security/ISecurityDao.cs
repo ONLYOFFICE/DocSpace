@@ -40,4 +40,5 @@ public interface ISecurityDao<T>
     Task<bool> IsSharedAsync(T entryId, FileEntryType type);
     IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status, int offset, int count);
     IAsyncEnumerable<FileShareRecord> GetPureSharesAsync(FileEntry<T> entry, IEnumerable<Guid> subjects);
+    IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, bool excludeShared, int offset, int count);
 }
