@@ -3615,6 +3615,7 @@ __metadata:
     react-json-pretty: ^2.2.0
     react-lifecycles-compat: ^3.0.4
     react-onclickoutside: ^6.13.0
+    react-scrollbars-custom: ^4.1.1
     react-svg: ^12.1.0
     react-text-mask: ^5.5.0
     react-toastify: ^7.0.4
@@ -10855,6 +10856,13 @@ __metadata:
   bin:
     cmake-js: bin/cmake-js
   checksum: 450c2377d6f7dd5362e34542a5813d6fb8402fdbe13a4f67f5254d75a1d5c64ae9caa0c92933ff46b091e4f5a1fc5823c46bd721d2ff3a7120f8366c631cdc8f
+  languageName: node
+  linkType: hard
+
+"cnbuilder@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "cnbuilder@npm:3.1.0"
+  checksum: 9457b1d12a1b7a686d4677a820ad9ef7377ef92a3ea5734c02d0050a60e63571ff5c7fdec7d3684c5fec9d356f348478ce3395d2fea9636fd112d507717d1f57
   languageName: node
   linkType: hard
 
@@ -21174,6 +21182,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-draggable@npm:^4.4.5":
+  version: 4.4.5
+  resolution: "react-draggable@npm:4.4.5"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 21c3775db086e13020967627c20acd41d1ddbc7c7d7fca51491a5bbb54a0aa7e1730a4bc9af17141eb50a4954e547a5e25b2368f5f54b70db6f2686a897bacf2
+  languageName: node
+  linkType: hard
+
 "react-dropzone@npm:^11.7.1":
   version: 11.7.1
   resolution: "react-dropzone@npm:11.7.1"
@@ -21447,6 +21468,19 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: a23a0f2e6635eba19aec8d50b9126f61663d1e6ee6e69d6b2ca6e5dd678496b54d925f0d86a375270646da11cc12be66ac5e6ebf73962957af91ac828b63d10b
+  languageName: node
+  linkType: hard
+
+"react-scrollbars-custom@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "react-scrollbars-custom@npm:4.1.1"
+  dependencies:
+    cnbuilder: ^3.1.0
+    react-draggable: ^4.4.5
+    zoom-level: ^2.5.0
+  peerDependencies:
+    react: ">=16.0.0"
+  checksum: 95431e447191d48a00f6d86da866449aa483991aff09e642f599221a6080ee4aa36b9327e991eec301582413c1be9f36b96591df0310c384310af78cbeb35540
   languageName: node
   linkType: hard
 
@@ -26222,6 +26256,13 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zoom-level@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "zoom-level@npm:2.5.0"
+  checksum: a5ef4080d38f975cfc983f2c358eb5d00bff88da80842fb85bc3e762a2b6584f0851ee661257d6eaeead7793726e43df010d8573be39432b41cb9402dcd84ab8
   languageName: node
   linkType: hard
 
