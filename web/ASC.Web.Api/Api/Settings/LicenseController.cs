@@ -170,7 +170,7 @@ public class LicenseController : BaseSettingsController
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        await _tariffService.SetTariffAsync(-1, tariff, new List<TenantQuota>() { quota });
+        await _tariffService.SetTariffAsync(-2, tariff, new List<TenantQuota>() { quota });
 
         await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
