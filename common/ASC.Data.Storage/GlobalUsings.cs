@@ -70,7 +70,7 @@ global using ASC.Data.Storage.Log;
 global using ASC.Data.Storage.RackspaceCloud;
 global using ASC.Data.Storage.S3;
 global using ASC.Data.Storage.Tar;
-global using ASC.Data.Storage.ZipOperators;
+global using ASC.Data.Storage.DataOperators;
 global using ASC.EventBus.Events;
 global using ASC.Notify.Messages;
 global using ASC.Protos.Migration;

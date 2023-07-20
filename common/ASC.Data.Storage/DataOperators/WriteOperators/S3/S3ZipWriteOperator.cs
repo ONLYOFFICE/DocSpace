@@ -24,9 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+namespace ASC.Data.Storage.DataOperators;
 
-public class ChunkZipWriteOperator : IDataWriteOperator
+public class S3ZipWriteOperator : IDataWriteOperator
 {
     private readonly TarOutputStream _tarOutputStream;
     private readonly GZipOutputStream _gZipOutputStream;
@@ -34,6 +34,9 @@ public class ChunkZipWriteOperator : IDataWriteOperator
     private readonly CommonChunkedUploadSessionHolder _sessionHolder;
     private readonly SHA256 _sha;
     private Stream _fileStream;
+    protected const int TasksLimit = 10;
+    private readonly List<Task> _tasks = new List<Task>(TasksLimit);
+    private readonly List<Stream> _streams = new List<Stream>(TasksLimit);
     private readonly TempStream _tempStream;
 
     public string Hash { get; private set; }
@@ -46,13 +49,14 @@ public class ChunkZipWriteOperator : IDataWriteOperator
         }
     }
 
-    public ChunkZipWriteOperator(TempStream tempStream,
+    public S3ZipWriteOperator(TempStream tempStream,
         CommonChunkedUploadSession chunkedUploadSession,
         CommonChunkedUploadSessionHolder sessionHolder)
     {
-        _tempStream = tempStream; 
+        _tempStream = tempStream;
         _chunkedUploadSession = chunkedUploadSession;
         _sessionHolder = sessionHolder;
+
 
         _fileStream = _tempStream.Create();
         _gZipOutputStream = new GZipOutputStream(_fileStream)
@@ -98,44 +102,56 @@ public class ChunkZipWriteOperator : IDataWriteOperator
 
         if (_fileStream.Length > _sessionHolder.MaxChunkUploadSize)
         {
-            await UploadAsync(false);
+            var fs = _fileStream;
+            _fileStream = null;
+            SplitAndUpload(fs);
         }
     }
 
-    private async Task UploadAsync(bool last)
+    private void SplitAndUpload(Stream stream, bool last = false)
     {
-        var chunkUploadSize = _sessionHolder.MaxChunkUploadSize;
+        stream.Position = 0;
+        var buffer = new byte[_sessionHolder.MaxChunkUploadSize];
 
-        var buffer = new byte[chunkUploadSize];
         int bytesRead;
-        _fileStream.Position = 0;
-        while ((bytesRead = _fileStream.Read(buffer, 0, (int)chunkUploadSize)) > 0)
+
+        while ((bytesRead = stream.Read(buffer, 0, (int)_sessionHolder.MaxChunkUploadSize)) > 0)
         {
-            using (var theMemStream = new MemoryStream())
+            var tempStream = _tempStream.Create();
+
+            tempStream.Write(buffer, 0, bytesRead);
+            if (tempStream.Length == _sessionHolder.MaxChunkUploadSize)
             {
-                await theMemStream.WriteAsync(buffer, 0, bytesRead);
-                theMemStream.Position = 0;
-                if (bytesRead == chunkUploadSize || last)
+                tempStream.Position = 0;
+                ComputeHash(tempStream, false);
+                Upload(tempStream);
+            }
+            else
+            {
+                if (last)
                 {
-                    if (_fileStream.Position == _fileStream.Length && last)
-                    {
-                        _chunkedUploadSession.LastChunk = true;
-                    }
-                    
-                    theMemStream.Position = 0;
-                    StoragePath = await _sessionHolder.UploadChunkAsync(_chunkedUploadSession, theMemStream, theMemStream.Length);
+                    ComputeHash(tempStream, last);
+                    Upload(tempStream);
                 }
                 else
                 {
-                    await _fileStream.DisposeAsync();
-                    _fileStream = _tempStream.Create();
+                    tempStream.Position = tempStream.Length;
+                    _fileStream = tempStream;
                     _gZipOutputStream.baseOutputStream_ = _fileStream;
-
-                    await theMemStream.CopyToAsync(_fileStream);
-                    _fileStream.Flush();
                 }
-                _sha.TransformBlock(buffer, 0, bytesRead, buffer, 0);
             }
+        }
+        stream.Dispose();
+    }
+
+    private void ComputeHash(Stream stream, bool last)
+    {
+        stream.Position = 0;
+        var buffer = new byte[_sessionHolder.MaxChunkUploadSize];
+        int bytesRead;
+        while ((bytesRead = stream.Read(buffer, 0, (int)_sessionHolder.MaxChunkUploadSize)) > 0)
+        {
+            _sha.TransformBlock(buffer, 0, bytesRead, buffer, 0);
         }
         if (last)
         {
@@ -143,15 +159,40 @@ public class ChunkZipWriteOperator : IDataWriteOperator
         }
     }
 
+    private void Upload(Stream stream)
+    {
+        stream.Position = 0;
+        if (_tasks.Count == TasksLimit)
+        {
+            Task.WaitAny(_tasks.ToArray());
+            for (var i = 0; i < _tasks.Count; i++)
+            {
+                if (_tasks[i].IsCompleted)
+                {
+                    _tasks.RemoveAt(i);
+                    _streams[i].Dispose();
+                    _streams.RemoveAt(i);
+                }
+            }
+        }
+        _streams.Add(stream);
+        _tasks.Add(_sessionHolder.UploadChunkAsync(_chunkedUploadSession, stream, stream.Length));
+    }
+
     public async ValueTask DisposeAsync()
     {
         _tarOutputStream.Close();
         _tarOutputStream.Dispose();
 
-        await UploadAsync(true);
-        _fileStream.Dispose();
+        SplitAndUpload(_fileStream, true);
+
+        Task.WaitAll(_tasks.ToArray());
+
+        StoragePath = await _sessionHolder.FinalizeAsync(_chunkedUploadSession);
 
         Hash = BitConverter.ToString(_sha.Hash).Replace("-", string.Empty);
         _sha.Dispose();
+
+        _streams.ForEach(s => s.Dispose());
     }
 }

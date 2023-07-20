@@ -24,10 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
-
-public interface IGetterWriteOperator
+namespace ASC.Data.Storage.DataOperators;
+public class ZipReadOperator : BaseReadOperator, IDataReadOperator
 {
-    Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId);
-    Task<string> GetBackupExtensionAsync(string storageBasePath);
+    public ZipReadOperator(string targetFile)
+    {
+        _tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+
+        using (var stream = File.OpenRead(targetFile))
+        using (var reader = new GZipInputStream(stream))
+        using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
+        {
+            tarOutputStream.ExtractContents(_tmpdir);
+        }
+
+        File.Delete(targetFile);
+    }
 }

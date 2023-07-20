@@ -24,32 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+namespace ASC.Data.Storage.DataOperators;
 
-public static class DataOperatorFactory
+public interface IGetterWriteOperator
 {
-    public static async Task<IDataWriteOperator> GetWriteOperatorAsync(TempStream tempStream, string storageBasePath, string title, string tempFolder, Guid userId, IGetterWriteOperator getter)
-    {
-        var writer = await getter.GetWriteOperatorAsync(storageBasePath, title, userId);
-
-        return writer ?? new ZipWriteOperator(tempStream, Path.Combine(tempFolder, title));
-    }
-
-    public static IDataWriteOperator GetDefaultWriteOperator(TempStream tempStream, string backupFilePath)
-    {
-        return new ZipWriteOperator(tempStream, backupFilePath);
-    }
-
-    public static IDataReadOperator GetReadOperator(string targetFile)
-    {
-        try
-        {
-            return new ZipReadOperator(targetFile);
-        }
-        catch
-        {
-            return new TarReadOperator(targetFile);
-        }
-    }
+    Task<IDataWriteOperator> GetWriteOperatorAsync(string storageBasePath, string title, Guid userId);
+    Task<string> GetBackupExtensionAsync(string storageBasePath);
 }
- 

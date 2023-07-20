@@ -24,49 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
-public class TarReadOperator: IDataReadOperator
+namespace ASC.Data.Storage.DataOperators;
+
+public static class DataOperatorFactory
 {
-    private readonly string tmpdir;
-
-    public TarReadOperator(string targetFile)
+    public static async Task<IDataWriteOperator> GetWriteOperatorAsync(TempStream tempStream, string storageBasePath, string title, string tempFolder, Guid userId, IGetterWriteOperator getter)
     {
-        tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+        var writer = await getter.GetWriteOperatorAsync(storageBasePath, title, userId);
 
-        using (var stream = File.OpenRead(targetFile))
-        using (var tarOutputStream = TarArchive.CreateInputTarArchive(stream, Encoding.UTF8))
+        return writer ?? new ZipWriteOperator(tempStream, Path.Combine(tempFolder, title));
+    }
+
+    public static IDataWriteOperator GetDefaultWriteOperator(TempStream tempStream, string backupFilePath)
+    {
+        return new ZipWriteOperator(tempStream, backupFilePath);
+    }
+
+    public static IDataReadOperator GetReadOperator(string targetFile)
+    {
+        try
         {
-            tarOutputStream.ExtractContents(tmpdir);
+            return new ZipReadOperator(targetFile);
         }
-
-        File.Delete(targetFile);
-    }
-
-    public Stream GetEntry(string key)
-    {
-        var filePath = Path.Combine(tmpdir, key);
-        return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
-    }
-
-    public IEnumerable<string> GetEntries(string key)
-    {
-        var path = Path.Combine(tmpdir, key);
-        var files = Directory.EnumerateFiles(path);
-        return files;
-    }
-
-    public IEnumerable<string> GetDirectories(string key)
-    {
-        var path = Path.Combine(tmpdir, key);
-        var files = Directory.EnumerateDirectories(path);
-        return files;
-    }
-
-    public void Dispose()
-    {
-        if (Directory.Exists(tmpdir))
+        catch
         {
-            Directory.Delete(tmpdir, true);
+            return new TarReadOperator(targetFile);
         }
     }
 }
+ 

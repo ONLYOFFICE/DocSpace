@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Storage.ZipOperators;
+namespace ASC.Data.Storage.DataOperators;
 public class S3TarWriteOperator : IDataWriteOperator
 {
     private readonly CommonChunkedUploadSession _chunkedUploadSession;
@@ -54,8 +54,7 @@ public class S3TarWriteOperator : IDataWriteOperator
             var s3Store = store as S3Storage;
             var fullPath = s3Store.MakePath(domain, path);
 
-            (var uploadId, var eTags, var chunkNumber) = await _store.InitiateConcatAsync(_domain, _key);
-            await _store.ConcatFileAsync(fullPath, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
+            await _store.ConcatFileAsync(fullPath, tarKey, _domain, _key);
         }
         else
         {
@@ -74,8 +73,7 @@ public class S3TarWriteOperator : IDataWriteOperator
 
     public async Task WriteEntryAsync(string tarKey, Stream stream)
     {
-        (var uploadId, var eTags, var chunkNumber) = await _store.InitiateConcatAsync(_domain, _key);
-        await _store.ConcatFileStreamAsync(stream, tarKey, _domain, _key, uploadId, eTags, chunkNumber);
+        await _store.ConcatFileStreamAsync(stream, tarKey, _domain, _key);
     }
 
     public async ValueTask DisposeAsync()

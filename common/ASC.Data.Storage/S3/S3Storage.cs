@@ -1294,8 +1294,10 @@ public class S3Storage : BaseStorage
         }
     }
 
-    public async Task ConcatFileStreamAsync(Stream stream, string tarKey, string destinationDomain, string destinationKey, string uploadId, List<PartETag> eTags, int partNumber)
+    public async Task ConcatFileStreamAsync(Stream stream, string tarKey, string destinationDomain, string destinationKey)
     {
+        (var uploadId, var eTags, var partNumber) = await InitiateConcatAsync(destinationDomain, destinationKey);
+
         using var s3 = GetClient();
         var destinationPath = MakePath(destinationDomain, destinationKey);
 
@@ -1348,8 +1350,9 @@ public class S3Storage : BaseStorage
         await s3.CompleteMultipartUploadAsync(completeRequest);
     }
 
-    public async Task ConcatFileAsync(string pathFile, string tarKey, string destinationDomain, string destinationKey, string uploadId, List<PartETag> eTags, int partNumber)
+    public async Task ConcatFileAsync(string pathFile, string tarKey, string destinationDomain, string destinationKey)
     {
+        (var uploadId, var eTags, var partNumber) = await InitiateConcatAsync(destinationDomain, destinationKey);
         using var s3 = GetClient();
         var destinationPath = MakePath(destinationDomain, destinationKey);
 

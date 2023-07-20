@@ -69,7 +69,7 @@ global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
 global using ASC.Data.Storage.DiscStorage;
 global using ASC.Data.Storage.S3;
-global using ASC.Data.Storage.ZipOperators;
+global using ASC.Data.Storage.DataOperators;
 global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.MessagingSystem.Core;
