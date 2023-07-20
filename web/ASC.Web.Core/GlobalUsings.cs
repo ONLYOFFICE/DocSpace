@@ -40,6 +40,7 @@ global using System.Security.Authentication;
 global using System.Security.Cryptography;
 global using System.Security.Principal;
 global using System.Text;
+global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
@@ -69,6 +70,7 @@ global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Security;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Common.WhiteLabel;
+global using ASC.Core.Data;
 global using ASC.Core.Notify;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
@@ -111,6 +113,8 @@ global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 global using ASC.Web.Studio.Utility;
 
 global using Google.Authenticator;
+
+global using ICSharpCode.SharpZipLib.Zip;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;

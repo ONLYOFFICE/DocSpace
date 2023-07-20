@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.Json;
-
-using ASC.Core.Data;
-
-using ICSharpCode.SharpZipLib.Zip;
-
 namespace ASC.Web.Core;
 
 [Scope]
@@ -41,41 +35,30 @@ public class WebPluginManager
     private const string AssetsFolderName = "assets";
 
     private readonly DbWebPluginService _webPluginService;
-    private readonly IConfiguration _configuration;
+    private readonly WebPluginSettings _webPluginSettings;
     private readonly StorageFactory _storageFactory;
     private readonly AuthContext _authContext;
 
-    private readonly bool _webPluginsEnabled;
-    private readonly long _webPluginMaxSize;
-    private readonly string _webPluginExtension;
-    private readonly List<string> _webPluginAllowedActions;
-
     public WebPluginManager(
         DbWebPluginService webPluginService,
-        IConfiguration configuration,
+        WebPluginSettings webPluginSettings,
         StorageFactory storageFactory,
         AuthContext authContext)
     {
         _webPluginService = webPluginService;
-        _configuration = configuration;
+        _webPluginSettings = webPluginSettings;
         _storageFactory = storageFactory;
         _authContext = authContext;
-
-        _ = bool.TryParse(_configuration["plugins:enabled"], out _webPluginsEnabled);
-        _ = long.TryParse(_configuration["plugins:max-size"], out _webPluginMaxSize);
-
-        _webPluginExtension = _configuration["plugins:extension"];
-        _webPluginAllowedActions = _configuration.GetSection("plugins:allow").Get<List<string>>() ?? new List<string>();
     }
 
     private void DemandWebPlugins(string action = null)
     {
-        if (!_webPluginsEnabled)
+        if (!_webPluginSettings.Enabled)
         {
             throw new SecurityException("Plugins disabled");
         }
 
-        if (!string.IsNullOrWhiteSpace(action) && !_webPluginAllowedActions.Contains(action))
+        if (!string.IsNullOrWhiteSpace(action) && !_webPluginSettings.Allow.Contains(action))
         {
             throw new SecurityException("Forbidden action");
         }
@@ -94,12 +77,12 @@ public class WebPluginManager
     {
         DemandWebPlugins("upload");
 
-        if (Path.GetExtension(file.FileName)?.ToLowerInvariant() != _webPluginExtension)
+        if (Path.GetExtension(file.FileName)?.ToLowerInvariant() != _webPluginSettings.Extension)
         {
             throw new ArgumentException("Wrong file extension");
         }
 
-        if (file.Length > _webPluginMaxSize)
+        if (file.Length > _webPluginSettings.MaxSize)
         {
             throw new ArgumentException("File size exceeds limit");
         }
