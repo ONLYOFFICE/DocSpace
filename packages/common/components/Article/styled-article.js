@@ -325,20 +325,18 @@ const StyledArticleProfile = styled.div`
   align-items: center;
   justify-content: center;
 
-  border-top: ${(props) => props.theme.catalog.profile.borderTop};
-  border-right: ${(props) => props.theme.catalog.verticalLine}
-  background-color: ${(props) => props.theme.catalog.profile.background};
+  border-top: ${props => props.theme.catalog.profile.borderTop};
+  border-right: ${props => props.theme.catalog.verticalLine};
+  background-color: ${props => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     padding: 16px 14px;
   }
 
-  ${
-    isTablet &&
-    css`
-      padding: 16px 14px;
-    `
-  }
+  ${isTablet &&
+  css`
+    padding: 16px 14px;
+  `}
 
   .profile-avatar {
     cursor: pointer;
@@ -366,10 +364,17 @@ StyledArticleProfile.defaultProps = { theme: Base };
 
 const StyledUserName = styled.div`
   display: flex;
-  flex-direction: ${(props) => (props.length > 18 ? "column" : "row")};
+  flex-direction: ${props => (props.length > 18 ? "column" : "row")};
   max-width: 131px;
   min-width: 131px;
-  padding-left: 12px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-right: 12px;
+        `
+      : css`
+          padding-left: 12px;
+        `}
   cursor: pointer;
 `;
 
