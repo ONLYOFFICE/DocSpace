@@ -74,6 +74,37 @@ const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
   const view = stype ? stype.view : {};
 
   return (
+    <Scroll1
+      isRtl={isRtl}
+      ref={ref}
+      id={id}
+      view={view}
+      thumbH={thumbH}
+      thumbV={thumbV}
+      {...props}
+    />
+  );
+});
+
+Scrollbar.propTypes = {
+  /** Scrollbar style type */
+  stype: PropTypes.string,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Accepts id  */
+  id: PropTypes.string,
+  /** Accepts css style  */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
+
+Scrollbar.defaultProps = {
+  stype: "mediumBlack",
+};
+
+export default Scrollbar;
+
+const Scroll1 = ({ isRtl, ref, id, thumbV, thumbH, view, ...props }) => {
+  return (
     <StyledScrollbar
       disableTracksWidthCompensation
       rtl={isRtl}
@@ -105,21 +136,54 @@ const Scrollbar = React.forwardRef(({ id, ...props }, ref) => {
       }}
     />
   );
-});
-
-Scrollbar.propTypes = {
-  /** Scrollbar style type */
-  stype: PropTypes.string,
-  /** Accepts class */
-  className: PropTypes.string,
-  /** Accepts id  */
-  id: PropTypes.string,
-  /** Accepts css style  */
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
-Scrollbar.defaultProps = {
-  stype: "mediumBlack",
+const Scroll2 = ({
+  isRtl,
+  ref,
+  id,
+  thumbV,
+  thumbH,
+  view,
+  children,
+  ...props
+}) => {
+  return (
+    <StyledScrollbar
+      disableTracksWidthCompensation
+      rtl={isRtl}
+      {...props}
+      // scrollerProps={{ id }}
+      contentProps={{
+        id,
+      }}
+      thumbYProps={{
+        className: "nav-thumb-vertical",
+        style: thumbV,
+      }}
+      thumbXProps={{
+        className: "nav-thumb-horizontal",
+        style: thumbH,
+      }}
+      trackYProps={{
+        style: { width: thumbV.width, background: "transparent" },
+      }}
+      trackXProps={{
+        style: {
+          height: thumbH.height,
+          background: "transparent",
+          direction: "ltr",
+        },
+      }}
+    >
+      <div
+        ref={ref}
+        tabIndex={-1}
+        style={view}
+        className={classNames("scroll-body", props.scrollclass)}
+      >
+        {children}
+      </div>
+    </StyledScrollbar>
+  );
 };
-
-export default Scrollbar;

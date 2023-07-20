@@ -6,7 +6,7 @@ export class CustomScrollbars extends React.Component {
   refSetter = (scrollbarsRef, forwardedRef) => {
     const isFuntion = typeof forwardedRef === "function";
 
-    const ref = scrollbarsRef?.view ?? null;
+    const ref = scrollbarsRef?.contentElement ?? null;
 
     if (isFuntion) {
       forwardedRef(ref);
