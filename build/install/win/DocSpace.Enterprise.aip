@@ -147,7 +147,7 @@
     <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
     <ROW Action="AI_ExtractPrereq" Description="Extracting prerequisite software" DescriptionLocId="ActionText.Description.AI_ExtractPrereq" Template="[1]" TemplateLocId="ActionText.Template.AI_ExtractPrereq"/>
     <ROW Action="AI_InstallPostPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="[1]" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
-    <ROW Action="AI_InstallPrerequisite" Description="Installing prerequisite software" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="[1]" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
+    <ROW Action="AI_InstallPrerequisite" Description="Installing Document Server EE" DescriptionLocId="ActionText.Description.AI_InstallPrerequisite" Template="[1]" TemplateLocId="ActionText.Template.AI_InstallPrerequisite"/>
     <ROW Action="AI_JsonCommit" Description="Committing JSON file configurations." DescriptionLocId="ActionText.Description.AI_JsonCommit" Template="Committing JSON file configurations." TemplateLocId="ActionText.Template.AI_JsonCommit"/>
     <ROW Action="AI_JsonConfig" Description="Executing JSON file configurations" DescriptionLocId="ActionText.Description.AI_JsonConfig" Template="Configuring JSON file: &quot;[1]&quot;" TemplateLocId="ActionText.Template.AI_JsonConfig"/>
     <ROW Action="AI_JsonInstall" Description="Generating actions to configure JSON files" DescriptionLocId="ActionText.Description.AI_JsonInstall"/>
