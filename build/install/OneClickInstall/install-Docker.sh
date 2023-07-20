@@ -721,8 +721,8 @@ domain_check () {
 
 	if [[ -n "$DOMAINS" ]]; then
 		while IFS= read -r DOMAIN; do
-			IP_ADDRESS=$(dig +short "$DOMAIN")
-			if [[ -n "$IP_ADDRESS" || "$IP_ADDRESS" =~ ^127\. ]]; then
+			IP_ADDRESS=$(ping -c 1 -W 1 $DOMAIN | grep -oP '(\d+\.\d+\.\d+\.\d+)' | head -n 1)
+			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
 				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
 			elif [[ -n "$IP_ADDRESS" ]]; then
 				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
@@ -732,7 +732,6 @@ domain_check () {
 	
 	if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
 		DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
-		APP_URL_PORTAL=${APP_URL_PORTAL:-${LOCAL_RESOLVED_DOMAINS[0]}}
 		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
 			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
 			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
@@ -1032,7 +1031,7 @@ install_product () {
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:${EXTERNAL_PORT}"}"
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
