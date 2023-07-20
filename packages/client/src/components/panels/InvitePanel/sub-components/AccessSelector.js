@@ -50,46 +50,43 @@ const AccessSelector = ({
 
   const isMobileHorizontalOrientation = isMobileOnly && horizontalOrientation;
 
-  // return (
-  // <StyledAccessSelector className="invite-panel_access-selector">
-  //   {!(isMobileOnly && !isMobileHorizontalOrientation) && (
-  //     <AccessRightSelect
-  //       className={className}
-  //       selectedOption={selectedOption}
-  //       onSelect={onSelectAccess}
-  //       accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
-  //       noBorder={false}
-  //       directionX="right"
-  //       directionY="bottom"
-  //       fixedDirection={true}
-  //       manualWidth={width + "px"}
-  //       isDefaultMode={false}
-  //       isAside={false}
-  //       setIsOpenItemAccess={setIsOpenItemAccess}
-  //       hideMobileView={isMobileHorizontalOrientation}
-  //     />
-  //   )}
-
   return (
     <StyledAccessSelector className="invite-panel_access-selector">
-      <AccessRightSelect
-        selectedOption={selectedOption}
-        onSelect={onSelectAccess}
-        accessOptions={accessOptions}
-        noBorder={false}
-        directionX="right"
-        directionY={isMobileHorizontalOrientation ? "both" : "bottom"}
-        fixedDirection={isMobileHorizontalOrientation ? false : true}
-        manualWidth={width + "px"}
-        isDefaultMode={
-          isMobileHorizontalOrientation ? isMobileHorizontalOrientation : false
-        }
-        withBackdrop={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isAside={true}
-        withBackground={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isNoFixedHeightOptions={isMobileHorizontalOrientation}
-        {...setDropDownMaxHeight}
-      />
+      {!(isMobileOnly && !isMobileHorizontalOrientation) && (
+        <AccessRightSelect
+          className={className}
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="bottom"
+          fixedDirection={true}
+          manualWidth={width + "px"}
+          isDefaultMode={false}
+          isAside={false}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          hideMobileView={isMobileHorizontalOrientation}
+        />
+      )}
+
+      {isMobileOnly && !isMobileHorizontalOrientation && (
+        <AccessRightSelect
+          className={className}
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="top"
+          fixedDirection={true}
+          manualWidth={"fit-content"}
+          isDefaultMode={true}
+          isAside={false}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          manualY={"0px"}
+        />
+      )}
     </StyledAccessSelector>
   );
 };
