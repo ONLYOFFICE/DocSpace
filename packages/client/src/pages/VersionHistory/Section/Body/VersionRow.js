@@ -1,6 +1,6 @@
 import AccessCommentReactSvgUrl from "PUBLIC_DIR/images/access.comment.react.svg?url";
 import RestoreAuthReactSvgUrl from "PUBLIC_DIR/images/restore.auth.react.svg?url";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
@@ -54,7 +54,7 @@ const VersionRow = (props) => {
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const versionDate = `${new Date(info.updated).toLocaleString(culture)}`;
   const title = `${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
@@ -78,7 +78,7 @@ const VersionRow = (props) => {
   const onUserClick = () => {
     onClose(true);
     setIsVisible(true);
-    openUser(info?.updatedBy, history);
+    openUser(info?.updatedBy, navigate);
   };
 
   const onSaveClick = () => {
