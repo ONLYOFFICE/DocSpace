@@ -126,7 +126,7 @@ const PureHome = (props) => {
 
   const location = useLocation();
 
-  const isAccountsPage = location.pathname.includes("/accounts/filter");
+  const isAccountsPage = location.pathname.includes("/accounts");
   const isSettingsPage = location.pathname.includes("settings");
 
   const { onDrop } = useFiles({
