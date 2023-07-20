@@ -107,7 +107,9 @@ class PluginStore {
 
     this.plugins = [];
 
-    const plugins = await api.plugins.getPlugins(!isAdmin && !isOwner);
+    const plugins = await api.plugins.getPlugins(
+      !isAdmin && !isOwner ? true : null
+    );
 
     plugins.forEach((plugin) => this.initPlugin(plugin));
   };
@@ -157,7 +159,7 @@ class PluginStore {
       this.plugins.push(plugin);
     }
 
-    if (plugin.enabled) {
+    if (plugin.enabled && plugin.onLoadCallback) {
       plugin.onLoadCallback();
     }
 
@@ -165,13 +167,23 @@ class PluginStore {
       plugin.setAPI(origin, proxy, prefix);
     }
 
-    if (plugin && plugin.contextMenuItems && plugin.enabled) {
+    if (
+      plugin &&
+      plugin.scopes.includes(PluginScopes.ContextMenu) &&
+      plugin.contextMenuItems &&
+      plugin.enabled
+    ) {
       Array.from(plugin.contextMenuItems).map(([key, value]) => {
         this.contextMenuItems.set(key, value);
       });
     }
 
-    if (plugin && plugin.infoPanelItems && plugin.enabled) {
+    if (
+      plugin &&
+      plugin.scopes.includes(PluginScopes.InfoPanel) &&
+      plugin.infoPanelItems &&
+      plugin.enabled
+    ) {
       Array.from(plugin.infoPanelItems).map(([key, value]) => {
         this.infoPanelItems.set(key, value);
       });
@@ -191,13 +203,21 @@ class PluginStore {
 
     plugin.enabled = false;
 
-    if (plugin && plugin.contextMenuItems) {
+    if (
+      plugin &&
+      plugin.scopes.includes(PluginScopes.ContextMenu) &&
+      plugin.contextMenuItems
+    ) {
       Array.from(plugin.contextMenuItems).map(([key, value]) => {
         this.contextMenuItems.delete(key);
       });
     }
 
-    if (plugin && plugin.infoPanelItems) {
+    if (
+      plugin &&
+      plugin.scopes.includes(PluginScopes.InfoPanel) &&
+      plugin.infoPanelItems
+    ) {
       Array.from(plugin.infoPanelItems).map(([key, value]) => {
         this.infoPanelItems.delete(key);
       });

@@ -80,7 +80,7 @@ const Plugin = ({
       pluginSettings.type === PluginSettingsType.settingsPage);
 
   const showModalPluginSettings =
-    withSettings && pluginSettings && !showPluginSettingsPage;
+    withSettings && pluginSettings?.type && !showPluginSettingsPage;
 
   return (
     <StyledPlugin>

@@ -1,9 +1,13 @@
 import { request } from "../client";
 
 export const getPlugins = async (enabled) => {
+  const url = enabled
+    ? `/settings/webplugins?enabled=${enabled}`
+    : `/settings/webplugins`;
+
   return request({
     method: "GET",
-    url: `/settings/webplugins?enabled=${enabled}`,
+    url,
   });
 };
 

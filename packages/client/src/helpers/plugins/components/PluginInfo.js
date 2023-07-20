@@ -66,7 +66,7 @@ const PluginInfo = ({
 
   return (
     <StyledInfo>
-      <img className="plugin-info-image" src={imgSrc} />
+      {image ? <img className="plugin-info-image" src={imgSrc} /> : <div></div>}
       <div className="plugin-info-container">
         <Text className="row-name">Version</Text>
         <Text>{version}</Text>
