@@ -12,8 +12,6 @@ import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Link from "@docspace/components/link";
 import { inject, observer } from "mobx-react";
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
 import styled from "styled-components";
 import { size } from "@docspace/components/utils/device";
 
@@ -60,7 +58,6 @@ const DeleteProfileEverDialogComponent = (props) => {
   const {
     user,
     t,
-    homepage,
     setFilter,
     onClose,
     tReady,
@@ -81,8 +78,6 @@ const DeleteProfileEverDialogComponent = (props) => {
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
 
   const navigate = useNavigate();
-
-  console.log("user", user);
 
   const onlyOneUser = user.length === 1;
   const needReassignData = onlyOneUser
@@ -256,33 +251,36 @@ const DeleteProfileEverDialog = withTranslation([
 DeleteProfileEverDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  // user: PropTypes.object.isRequired,
 };
 
-export default inject(({ peopleStore }) => ({
-  homepage: config.homepage,
+export default inject(({ peopleStore }) => {
+  const { dialogStore, filterStore, selectionStore } = peopleStore;
 
-  setFilter: peopleStore.filterStore.setFilterParams,
+  const { setFilterParams: setFilter } = filterStore;
 
-  setDataReassignmentDialogVisible:
-    peopleStore.dialogStore.setDataReassignmentDialogVisible,
+  const {
+    setDataReassignmentDialogVisible,
+    setDeleteProfileDialogVisible,
+    setDataReassignmentDeleteProfile,
+    setDataReassignmentDeleteAdministrator,
+    setDialogData,
+    setReassignDataIds,
+  } = dialogStore;
 
-  setDeleteProfileDialogVisible:
-    peopleStore.dialogStore.setDeleteProfileDialogVisible,
+  const { getUsersToRemoveIds: userIds, setSelected } = selectionStore;
 
-  setDataReassignmentDeleteProfile:
-    peopleStore.dialogStore.setDataReassignmentDeleteProfile,
-  setDataReassignmentDeleteAdministrator:
-    peopleStore.dialogStore.setDataReassignmentDeleteAdministrator,
-
-  userPerformedDeletion: peopleStore.authStore.userStore.user,
-
-  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
-
-  setDialogData: peopleStore.dialogStore.setDialogData,
-  setReassignDataIds: peopleStore.dialogStore.setReassignDataIds,
-
-  removeUser: peopleStore.usersStore.removeUser,
-  filter: peopleStore.filterStore.filter,
-  setSelected: peopleStore.selectionStore.setSelected,
-}))(observer(DeleteProfileEverDialog));
+  return {
+    setFilter,
+    setDataReassignmentDialogVisible,
+    setDeleteProfileDialogVisible,
+    setDataReassignmentDeleteProfile,
+    setDataReassignmentDeleteAdministrator,
+    setDialogData,
+    setReassignDataIds,
+    userIds,
+    setSelected,
+    removeUser: peopleStore.usersStore.removeUser,
+    userPerformedDeletion: peopleStore.authStore.userStore.user,
+    filter: peopleStore.filterStore.filter,
+  };
+})(observer(DeleteProfileEverDialog));
