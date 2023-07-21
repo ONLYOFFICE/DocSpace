@@ -14,7 +14,6 @@ class DialogStore {
   changeUserStatusDialogVisible = false;
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
-  deleteDialogVisible = false;
   resetAuthDialogVisible = false;
   dataReassignmentDialogVisible = false;
   dataReassignmentDeleteProfile = false;
@@ -80,10 +79,6 @@ class DialogStore {
     this.sendInviteDialogVisible = visible;
   };
 
-  setDeleteDialogVisible = (visible) => {
-    this.deleteDialogVisible = visible;
-  };
-
   setResetAuthDialogVisible = (visible) => {
     this.resetAuthDialogVisible = visible;
   };
@@ -104,7 +99,6 @@ class DialogStore {
     this.setChangeUserStatusDialogVisible(false);
 
     this.setSendInviteDialogVisible(false);
-    this.setDeleteDialogVisible(false);
     this.setResetAuthDialogVisible(false);
   };
 }

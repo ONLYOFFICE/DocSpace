@@ -10,7 +10,6 @@ import {
   ChangeUserTypeDialog,
   ChangeUserStatusDialog,
   SendInviteDialog,
-  DeleteUsersDialog,
   ChangeNameDialog,
   ResetApplicationDialog,
   DataReassignmentDialog,
@@ -29,7 +28,6 @@ const Dialogs = ({
   changeUserStatusDialogVisible,
   disableDialogVisible,
   sendInviteDialogVisible,
-  deleteDialogVisible,
   resetAuthDialogVisible,
 
   changeNameVisible,
@@ -92,12 +90,6 @@ const Dialogs = ({
           onClose={closeDialogs}
         />
       )}
-      {deleteDialogVisible && (
-        <DeleteUsersDialog
-          visible={deleteDialogVisible}
-          onClose={closeDialogs}
-        />
-      )}
 
       {changeNameVisible && (
         <ChangeNameDialog
@@ -142,7 +134,6 @@ export default inject(({ auth, peopleStore }) => {
     changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
-    deleteDialogVisible,
     resetAuthDialogVisible,
     dataReassignmentDialogVisible,
   } = peopleStore.dialogStore;
@@ -170,7 +161,6 @@ export default inject(({ auth, peopleStore }) => {
     changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
-    deleteDialogVisible,
     resetAuthDialogVisible,
 
     changeNameVisible,
