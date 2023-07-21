@@ -63,7 +63,6 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private BackupRepository _backupRepository;
     private RestorePortalTask _restorePortalTask;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly SetupInfo _setupInfo;
 
     private string _region;
     private string _upgradesPath;
@@ -74,8 +73,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         ICache cache,
         IServiceScopeFactory serviceScopeFactory,
         NotifyHelper notifyHelper,
-        CoreBaseSettings coreBaseSettings,
-        SetupInfo setupInfo)
+        CoreBaseSettings coreBaseSettings)
         : base(logger, serviceScopeFactory)
     {
         _configuration = configuration;
@@ -85,7 +83,6 @@ public class RestoreProgressItem : BaseBackupProgressItem
         _coreBaseSettings = coreBaseSettings;
 
         BackupProgressItemEnum = BackupProgressItemEnum.Restore;
-        _setupInfo = setupInfo;
     }
 
     public BackupStorageType StorageType { get; set; }
