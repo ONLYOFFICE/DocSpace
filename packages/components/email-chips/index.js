@@ -292,7 +292,11 @@ const EmailChips = ({
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
-          <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
+          <Scrollbar
+            scrollclass={"scroll"}
+            stype={"preMediumBlack"}
+            ref={scrollbarRef}
+          >
             <ChipsRender
               chips={chips}
               checkSelected={checkSelected}
