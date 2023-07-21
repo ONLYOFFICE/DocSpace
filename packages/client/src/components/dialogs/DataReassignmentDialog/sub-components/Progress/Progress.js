@@ -106,9 +106,7 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
         </div>
 
         <div className="progress-status">
-          <Text noSelect>
-            {percent < 50 ? inProgressNode : allDataTransferredNode}
-          </Text>
+          {percent < 50 ? inProgressNode : allDataTransferredNode}
 
           {percent < 50 ? (
             <Text noSelect>Pending...</Text>
