@@ -62,7 +62,7 @@ let timerId = null;
 
 const DataReassignmentDialog = ({
   visible,
-  user,
+  users,
   setDataReassignmentDialogVisible,
   dataReassignment,
   dataReassignmentProgress,
@@ -82,7 +82,6 @@ const DataReassignmentDialog = ({
   setSelected,
   setDataReassignmentDeleteAdministrator,
 }) => {
-  // const { id, avatar, displayName, statusType, deleteProfile } = user;
   const [selectorVisible, setSelectorVisible] = useState(false);
 
   if (dataReassignmentDeleteAdministrator) {
@@ -102,15 +101,8 @@ const DataReassignmentDialog = ({
 
   const [percent, setPercent] = useState(0);
 
-  const onlyOneUser = user.length === 1;
+  const onlyOneUser = users.length === 1;
   const navigate = useNavigate();
-
-  console.log(
-    "DataReassignmentDialog user reassignDataIds onlyOneUser ",
-    user,
-    reassignDataIds,
-    onlyOneUser
-  );
 
   const onDeleteUser = (id) => {
     const filter = Filter.getDefault();
@@ -132,8 +124,6 @@ const DataReassignmentDialog = ({
   };
 
   const onDeleteUsers = (ids) => {
-    console.log("onDeleteUsers", ids);
-
     removeUser(ids, filter)
       .then(() => {
         toastr.success(t("DeleteGroupUsersSuccessMessage"));
@@ -187,7 +177,6 @@ const DataReassignmentDialog = ({
   };
 
   const checkProgress = (ids) => {
-    console.log("checkProgress", ids);
     dataReassignmentProgress(ids)
       .then((res) => {
         setPercent(res.percentage);
@@ -198,7 +187,7 @@ const DataReassignmentDialog = ({
   };
 
   const onReassign = useCallback(() => {
-    // checkReassignCurrentUser();
+    checkReassignCurrentUser();
     setIsLoading(true);
     setShowProgress(true);
 
@@ -206,21 +195,12 @@ const DataReassignmentDialog = ({
     let deleteIds = [];
 
     if (!onlyOneUser) {
-      user.forEach((item) => {
+      users.forEach((item) => {
         item.isRoomAdmin ? reassignIds.push(item.id) : deleteIds.push(item.id);
       });
     }
 
-    const fromUserIds = onlyOneUser ? [user[0].id] : reassignIds;
-
-    console.log(
-      "dataReassignment",
-      fromUserIds,
-      selectedUser.id,
-      isDeleteProfile
-    );
-
-    console.log("deleteIds reassignIds", deleteIds, reassignIds);
+    const fromUserIds = onlyOneUser ? [users[0].id] : reassignIds;
 
     // with simple delete
     if (deleteIds.length && isDeleteProfile) {
@@ -242,7 +222,7 @@ const DataReassignmentDialog = ({
       });
 
     setIsLoading(false);
-  }, [onlyOneUser, user, selectedUser, isDeleteProfile]);
+  }, [onlyOneUser, users, selectedUser, isDeleteProfile]);
 
   return (
     <StyledModalDialog
@@ -257,7 +237,7 @@ const DataReassignmentDialog = ({
         <ModalDialog.Container>
           <PeopleSelector
             acceptButtonLabel={t("Common:SelectAction")}
-            excludeItems={[user[0].id]}
+            excludeItems={[users[0].id]}
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
@@ -275,7 +255,7 @@ const DataReassignmentDialog = ({
         {tReady && showProgress && (
           <Progress
             isReassignCurrentUser={isReassignCurrentUser}
-            fromUser={user[0].displayName}
+            fromUser={users[0].displayName}
             toUser={selectedUser.label}
             percent={percent}
           />
@@ -288,7 +268,7 @@ const DataReassignmentDialog = ({
                 <Avatar
                   className="avatar"
                   role="user"
-                  source={user[0].avatar}
+                  source={users[0].avatar}
                   size={"big"}
                   hideRoleIcon
                 />
@@ -297,17 +277,17 @@ const DataReassignmentDialog = ({
                     <Text
                       className="display-name"
                       noSelect
-                      title={user[0].displayName}
+                      title={users[0].displayName}
                     >
-                      {user[0].displayName}
+                      {users[0].displayName}
                     </Text>
-                    {user[0].statusType === "disabled" && (
+                    {users[0].statusType === "disabled" && (
                       <StyledCatalogSpamIcon size="small" />
                     )}
                   </div>
 
                   <Text className="status" noSelect>
-                    {firstLetterToUppercase(user[0].statusType)}
+                    {firstLetterToUppercase(users[0].statusType)}
                   </Text>
                 </div>
               </StyledOwnerInfo>

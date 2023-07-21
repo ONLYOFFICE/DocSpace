@@ -56,7 +56,7 @@ const StyledModalDialogContainer = styled(ModalDialogContainer)`
 
 const DeleteProfileEverDialogComponent = (props) => {
   const {
-    user,
+    users,
     t,
     setFilter,
     onClose,
@@ -67,7 +67,6 @@ const DeleteProfileEverDialogComponent = (props) => {
     setDataReassignmentDeleteProfile,
     setDataReassignmentDeleteAdministrator,
     userPerformedDeletion,
-
     removeUser,
     setDialogData,
     userIds,
@@ -79,19 +78,16 @@ const DeleteProfileEverDialogComponent = (props) => {
 
   const navigate = useNavigate();
 
-  const onlyOneUser = user.length === 1;
+  const onlyOneUser = users.length === 1;
   const needReassignData = onlyOneUser
-    ? user[0].isRoomAdmin
-    : user.some((item) => item.isRoomAdmin);
-
-  console.log("onlyOneUser needReassignData", onlyOneUser, needReassignData);
-  console.log("user", user);
+    ? users[0].isRoomAdmin
+    : users.some((item) => item.isRoomAdmin);
 
   const header = onlyOneUser ? t("DeleteUser") : t("DeleteUsers");
   const deleteMessage = onlyOneUser ? (
     <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
       {{ userCaption: t("Common:User") }}
-      <strong>{{ user: user[0].displayName }}</strong>
+      <strong>{{ user: users[0].displayName }}</strong>
       will be deleted. This action cannot be undone.
     </Trans>
   ) : (
@@ -126,9 +122,9 @@ const DeleteProfileEverDialogComponent = (props) => {
     const params = filter.toUrlParams();
     const url = `/accounts/filter?${params}`;
     setIsRequestRunning(true);
-    console.log("onDeleteUser", id);
+
     deleteUser(id)
-      .then((res) => {
+      .then(() => {
         toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
         navigate(url, params);
         setFilter(filter);
@@ -142,7 +138,6 @@ const DeleteProfileEverDialogComponent = (props) => {
   };
 
   const onDeleteUsers = (ids) => {
-    console.log("onDeleteUsers", ids);
     setIsRequestRunning(true);
     removeUser(ids, filter)
       .then(() => {
@@ -158,10 +153,9 @@ const DeleteProfileEverDialogComponent = (props) => {
   const onDeleteProfileEver = () => {
     // If room for 1 and more
     if (needReassignData) {
-      const ids = user.map((item) => item.id);
-      console.log("onDeleteProfileEver ids", ids);
+      const ids = users.map((item) => item.id);
 
-      onlyOneUser ? setDialogData(user) : setReassignDataIds(ids);
+      onlyOneUser ? setDialogData(users) : setReassignDataIds(ids);
 
       setDataReassignmentDeleteAdministrator(userPerformedDeletion);
       setDataReassignmentDialogVisible(true);
@@ -171,22 +165,14 @@ const DeleteProfileEverDialogComponent = (props) => {
 
     // If not room
     if (!needReassignData) {
-      // 1
-      if (onlyOneUser) {
-        onDeleteUser(user[0].id);
-      }
-      // more  1
-      if (!onlyOneUser) {
-        onDeleteUsers(userIds);
-      }
+      onlyOneUser ? onDeleteUser(users[0].id) : onDeleteUsers(userIds);
     }
   };
 
   const onClickReassignData = () => {
-    const ids = user.map((item) => item.id);
-    console.log("onClickReassignData ids", ids);
+    const ids = users.map((item) => item.id);
 
-    onlyOneUser ? setDialogData(user) : setReassignDataIds(ids);
+    onlyOneUser ? setDialogData(users) : setReassignDataIds(ids);
 
     setDataReassignmentDialogVisible(true);
     setDataReassignmentDeleteProfile(true);

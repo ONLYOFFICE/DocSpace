@@ -67,7 +67,7 @@ const Dialogs = ({
         <DeleteProfileEverDialog
           visible={deleteProfileEver}
           onClose={closeDialogs}
-          user={data}
+          users={data}
         />
       )}
       {changeUserTypeDialogVisible && (
@@ -112,7 +112,7 @@ const Dialogs = ({
       {dataReassignmentDialogVisible && (
         <DataReassignmentDialog
           visible={dataReassignmentDialogVisible}
-          user={data}
+          users={data}
         />
       )}
     </>
