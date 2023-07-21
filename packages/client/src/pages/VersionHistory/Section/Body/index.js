@@ -45,7 +45,7 @@ class SectionBodyContent extends React.Component {
           this.setState({
             isRestoreProcess: restoring,
           }),
-        100
+        100,
       );
     } else {
       clearTimeout(this.timerId);
@@ -114,8 +114,7 @@ class SectionBodyContent extends React.Component {
             itemSize={this.getSize}
             itemCount={versions.length}
             itemData={versions}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
+            outerElementType={CustomScrollbarsVirtualList}>
             {this.renderRow}
           </List>
         </StyledVersionList>

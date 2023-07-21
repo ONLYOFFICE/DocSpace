@@ -61,6 +61,7 @@ public class SettingsController : BaseSettingsController
     private readonly QuotaUsageManager _quotaUsageManager;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly QuotaSyncOperation _quotaSyncOperation;
+    private readonly ExternalShare _externalShare;
 
     public SettingsController(
         ILoggerProvider option,
@@ -96,7 +97,8 @@ public class SettingsController : BaseSettingsController
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager,
-        TenantDomainValidator tenantDomainValidator
+        TenantDomainValidator tenantDomainValidator, 
+        ExternalShare externalShare
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -129,6 +131,7 @@ public class SettingsController : BaseSettingsController
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
         _quotaUsageManager = quotaUsageManager;
         _tenantDomainValidator = tenantDomainValidator;
+        _externalShare = externalShare;
     }
 
     [HttpGet("")]
@@ -154,6 +157,11 @@ public class SettingsController : BaseSettingsController
             CookieSettingsEnabled = tenantCookieSettings.Enabled
         };
 
+        if (!_authContext.IsAuthenticated && (await _externalShare.GetSessionIdAsync() != default || await _externalShare.GetLinkIdAsync() != default))
+        {
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
+        }
+
         if (_authContext.IsAuthenticated)
         {
             settings.TrustedDomains = Tenant.TrustedDomains;
@@ -164,11 +172,11 @@ public class SettingsController : BaseSettingsController
             settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
-            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
             settings.DomainValidator = _tenantDomainValidator;
             settings.ZendeskKey = _setupInfo.ZendeskKey;
             settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
             settings.DocumentationEmail = _setupInfo.DocumentationEmail;
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
 
             settings.Firebase = new FirebaseDto
             {

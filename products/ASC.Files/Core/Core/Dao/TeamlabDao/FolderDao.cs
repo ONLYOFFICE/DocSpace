@@ -318,7 +318,15 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds)
     {
-        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+        var roomTypes = new List<FolderType>
+        {
+            FolderType.CustomRoom, 
+            FolderType.ReviewRoom, 
+            FolderType.FillingFormsRoom, 
+            FolderType.EditingRoom, 
+            FolderType.ReadOnlyRoom,
+            FolderType.PublicRoom,
+        };
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
@@ -1207,7 +1215,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
     {
-        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+        var roomTypes = new List<FolderType>
+        {
+            FolderType.CustomRoom, 
+            FolderType.ReviewRoom, 
+            FolderType.FillingFormsRoom, 
+            FolderType.EditingRoom, 
+            FolderType.ReadOnlyRoom,
+            FolderType.PublicRoom
+        };
+        
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var e in GetFeedsInternalAsync(tenant, from, to, filter, null))
@@ -1279,7 +1296,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
     {
-        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+        var roomTypes = new List<FolderType> 
+        { 
+            FolderType.CustomRoom, 
+            FolderType.ReviewRoom, 
+            FolderType.FillingFormsRoom, 
+            FolderType.EditingRoom, 
+            FolderType.ReadOnlyRoom,
+            FolderType.PublicRoom,
+        };
+        
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var q in GetTenantsWithFeeds(fromTime, filter, true))
@@ -1488,6 +1514,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PublicRooms => FolderType.PublicRoom,
             _ => FolderType.CustomRoom,
         };
     }
