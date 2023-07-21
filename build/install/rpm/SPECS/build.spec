@@ -17,6 +17,9 @@ json -I -f %{_builddir}/%{sourcename}/config/appsettings.services.json -e "this.
 
 find %{_builddir}/%{sourcename}/config/ -type f -regex '.*\.\(test\|dev\).*' -delete
 
+json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.notify.postman=\"services\""
+json -I -f %{_builddir}/%{sourcename}/config/apisystem.json -e "this.core.notify.postman=\"services\""
+
 find %{_builddir}/%{sourcename}/publish/ \
      %{_builddir}/%{sourcename}/ASC.Migration.Runner \
      -depth -type f -regex '.*\(dll\|dylib\|so\)$' -exec chmod 755 {} \;

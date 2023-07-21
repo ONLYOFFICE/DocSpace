@@ -222,8 +222,8 @@ set_core_machinekey () {
 		fi
 	fi
 
-	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
+	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
