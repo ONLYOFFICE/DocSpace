@@ -1,4 +1,4 @@
-﻿﻿// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -354,7 +354,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         };
 
         result.Warning = await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
-        result.Members = await _fileStorageService.GetRoomSharedInfoBySubjectsAsync(id, inDto.Invitations.Select(s => s.Id))
+        result.Members = await _fileStorageService.GetSharedInfoAsync(id, inDto.Invitations.Select(s => s.Id))
             .SelectAwait(async a => await _fileShareDtoHelper.Get(a))
             .ToListAsync();
 
@@ -380,7 +380,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var counter = 0;
 
-        await foreach (var ace in _fileStorageService.GetRoomSharedInfoByTypeAsync(id, filterType, offset, count + margin))
+        await foreach (var ace in _fileStorageService.GetRoomSharedInfoAsync(id, filterType, offset, count + margin))
         {
             counter++;
 
@@ -428,9 +428,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// </param>
     /// <returns>Room security info</returns>
     [HttpPut("rooms/{id}/links")]
-    public async IAsyncEnumerable<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
+    public async Task<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
     {
-        var fileShares = inDto.LinkType switch
+        var linkAce = inDto.LinkType switch
         {
             LinkType.Invitation => await _fileStorageService.SetInvitationLinkAsync(id, inDto.LinkId, inDto.Title, inDto.Access),
             LinkType.External => await _fileStorageService.SetExternalLinkAsync(id, FileEntryType.Folder, inDto.LinkId, inDto.Title, 
@@ -438,10 +438,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             _ => throw new InvalidOperationException()
         };
 
-        foreach (var fileShareDto in fileShares)
-        {
-            yield return await _fileShareDtoHelper.Get(fileShareDto);
-        }
+        return linkAce != null ? await _fileShareDtoHelper.Get(linkAce) : null;
     }
 
     /// <summary>
@@ -465,7 +462,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             } 
             : ShareFilterType.Link;
 
-        await foreach (var ace in  _fileStorageService.GetRoomSharedInfoByTypeAsync(id, filterType, 0, 100))
+        await foreach (var ace in  _fileStorageService.GetRoomSharedInfoAsync(id, filterType, 0, 100))
         {
             yield return await _fileShareDtoHelper.Get(ace);
         }
