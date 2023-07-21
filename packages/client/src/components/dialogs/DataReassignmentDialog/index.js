@@ -392,7 +392,6 @@ const DataReassignmentDialog = ({
           <div className="button-wrapper">
             {!showProgress && (
               <Button
-                tabIndex={5}
                 label="Reassign"
                 size="normal"
                 primary
@@ -402,14 +401,24 @@ const DataReassignmentDialog = ({
                 isLoading={isLoading}
               />
             )}
-            <Button
-              tabIndex={5}
-              label={t("Common:CancelButton")}
-              size="normal"
-              scale
-              onClick={onClose}
-              isDisabled={isLoading}
-            />
+            {!(showProgress && percent === 100) && (
+              <Button
+                label={t("Common:CancelButton")}
+                size="normal"
+                scale
+                onClick={onClose}
+                isDisabled={isLoading}
+              />
+            )}
+            {percent === 100 && (
+              <Button
+                label="Ok"
+                size="normal"
+                scale
+                onClick={onClose}
+                isDisabled={isLoading}
+              />
+            )}
           </div>
         </StyledFooterWrapper>
       </ModalDialog.Footer>
