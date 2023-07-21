@@ -272,7 +272,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         }
     }
 
-    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, bool excludeShared, int offset, int count)
+    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, EmployeeActivationStatus? status, bool excludeShared, int offset, int count)
     {
         if (entry == null || count == 0)
         {
@@ -283,7 +283,12 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         var tenantId = TenantID;
         var entryId = (await MappingIDAsync(entry.Id)).ToString();
 
-        var q = filesDbContext.Users.AsNoTracking().Where(u => u.TenantId == tenantId && u.ActivationStatus != EmployeeActivationStatus.Pending);
+        var q = filesDbContext.Users.AsNoTracking().Where(u => u.TenantId == tenantId);
+
+        if (status.HasValue)
+        {
+            q = q.Where(u => u.ActivationStatus == status.Value);
+        }
 
         if (!string.IsNullOrEmpty(text))
         {

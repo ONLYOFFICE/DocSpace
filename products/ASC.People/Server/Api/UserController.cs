@@ -1508,7 +1508,7 @@ public class UserControllerAdditional<T> : ApiControllerBase
     }
 
     [HttpGet("room/{id}")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetUsersWithRoomSharedAsync(T id, bool? excludeShared)
+    public async IAsyncEnumerable<EmployeeFullDto> GetUsersWithRoomSharedAsync(T id, EmployeeActivationStatus? activationStatus, bool? excludeShared)
     {
         var offset = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
@@ -1520,7 +1520,7 @@ public class UserControllerAdditional<T> : ApiControllerBase
             throw new ItemNotFoundException();
         }
 
-        await foreach (var u in _fileSecurity.GetUsersWithSharedAsync(room, _apiContext.FilterValue, excludeShared ?? false, offset, count))
+        await foreach (var u in _fileSecurity.GetUsersWithSharedAsync(room, _apiContext.FilterValue, activationStatus, excludeShared ?? false, offset, count))
         {
             yield return await _employeeFullDtoHelper.GetFullAsync(u.User, u.Shared);
         }
