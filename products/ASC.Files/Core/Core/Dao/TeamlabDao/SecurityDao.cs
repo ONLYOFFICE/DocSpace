@@ -197,16 +197,16 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         return InternalGetPureShareRecordsAsync(entry);
     }
 
-    public async IAsyncEnumerable<FileShareRecord> GetRoomSharesAsync(Folder<T> room, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
+    public async IAsyncEnumerable<FileShareRecord> GetPureSharesAsync(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
     {
-        if (room == null || !DocSpaceHelper.IsRoom(room.FolderType) || count == 0)
+        if (entry == null || count == 0)
         {
             yield break;
         }
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = await GetPureSharesQuery(room, filterType, filesDbContext);
+        var q = await GetPureSharesQuery(entry, filterType, filesDbContext);
 
         if (filterType == ShareFilterType.User)
         {
