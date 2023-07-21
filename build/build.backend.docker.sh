@@ -48,12 +48,21 @@ rm -rf $dir/publish
 echo "Build backend services (to "publish/" folder)"
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dockerDir/docker-entrypoint.py"
 
-echo "Run migration and services"
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest
+INSTALLATION_TYPE=ENTERPRISE
+
+if [ "$1" = "--community" ]; then
+    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver:latest
+    INSTALLATION_TYPE=COMMUNITY
+fi
+
+echo "Run migration and services INSTALLATION_TYPE=$INSTALLATION_TYPE"
 ENV_EXTENSION="dev" \
+INSTALLATION_TYPE=$INSTALLATION_TYPE \
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
 Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
-DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+DOCUMENT_SERVER_IMAGE_NAME=$DOCUMENT_SERVER_IMAGE_NAME \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
@@ -63,3 +72,11 @@ SRC_PATH="$dir/publish/services" \
 DATA_DIR="$dir/Data" \
 APP_URL_PORTAL=$portal_url \
 docker-compose -f $dockerDir/docspace.profiles.yml -f $dockerDir/docspace.overcome.yml --profile migration-runner --profile backend-local up -d
+
+echo ""
+echo "APP_URL_PORTAL: $portal_url"
+echo "LOCAL IP: $local_ip"
+echo "SERVICE_DOCEDITOR: $doceditor"
+echo "SERVICE_LOGIN: $login"
+echo "SERVICE_CLIENT: $client"
+echo "INSTALLATION_TYPE=$INSTALLATION_TYPE"

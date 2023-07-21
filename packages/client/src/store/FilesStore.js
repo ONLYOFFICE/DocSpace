@@ -653,6 +653,8 @@ class FilesStore {
       id,
       destFolderId,
     }));
+
+    this.activeFiles = arrayFormation;
   };
 
   setActiveFolders = (activeFolders, destFolderId) => {

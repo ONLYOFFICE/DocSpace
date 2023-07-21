@@ -309,7 +309,6 @@ const InvitePanel = ({
               onClick={onClickSend}
               label={t("SendInvitation")}
               isLoading={isLoading}
-              inputsRef={inputsRef}
             />
             <Button
               className="cancel-button"

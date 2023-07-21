@@ -85,7 +85,7 @@ const MainProfile = (props) => {
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text fontSize="12px">
+    <Text as="div" fontSize="12px">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
@@ -440,8 +440,13 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
-    auth.settingsStore;
+  const {
+    theme,
+    helpLink,
+    culture,
+    currentColorScheme,
+    documentationEmail,
+  } = auth.settingsStore;
 
   const {
     targetUser: profile,
