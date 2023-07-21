@@ -100,13 +100,18 @@ const Scrollbar = React.forwardRef(({ id, onScroll, ...props }, ref) => {
         style: thumbH,
       }}
       trackYProps={{
-        style: { width: thumbV.width, background: "transparent" },
+        style: {
+          width: thumbV.width,
+          background: "transparent",
+          padding: "0.05px",
+        },
       }}
       trackXProps={{
         style: {
           height: thumbH.height,
           background: "transparent",
           direction: "ltr", // Required to make the horizontal thumb work properly
+          padding: "0.05px",
         },
       }}
     />
