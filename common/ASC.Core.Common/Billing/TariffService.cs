@@ -305,7 +305,7 @@ public class TariffService : ITariffService
                     Id = 1000
                 };
 
-                await SetTariffAsync(-1, tariff, new List<TenantQuota> { quota });
+                await SetTariffAsync(Tenant.DefaultTenant, tariff, new List<TenantQuota> { quota });
                 UpdateCache(tariff.Id);
             }
         }
@@ -395,7 +395,7 @@ public class TariffService : ITariffService
         ArgumentNullException.ThrowIfNull(tariff);
 
         if (tariff.Quotas == null ||
-            (quotas  ??= await tariff.Quotas.ToAsyncEnumerable().SelectAwait(async q => await _quotaService.GetTenantQuotaAsync(q.Id)).ToListAsync()).Any(q => q == null))
+            (quotas ??= await tariff.Quotas.ToAsyncEnumerable().SelectAwait(async q => await _quotaService.GetTenantQuotaAsync(q.Id)).ToListAsync()).Any(q => q == null))
         {
             return;
         }
@@ -405,11 +405,14 @@ public class TariffService : ITariffService
         if (quotas.Any(q => q.Trial))
         {
             // reset trial date
-            var tenant = await _tenantService.GetTenantAsync(tenantId);
-            if (tenant != null)
+            if (tenantId != Tenant.DefaultTenant)
             {
-                tenant.VersionChanged = DateTime.UtcNow;
-                await _tenantService.SaveTenantAsync(_coreSettings, tenant);
+                var tenant = await _tenantService.GetTenantAsync(tenantId);
+                if (tenant != null)
+                {
+                    tenant.VersionChanged = DateTime.UtcNow;
+                    await _tenantService.SaveTenantAsync(_coreSettings, tenant);
+                }
             }
         }
     }
@@ -791,12 +794,16 @@ public class TariffService : ITariffService
 
         if (inserted)
         {
-            var t = await _tenantService.GetTenantAsync(tenant);
-            if (t != null)
+            if (tenant != Tenant.DefaultTenant)
             {
-                // update tenant.LastModified to flush cache in documents
-                await _tenantService.SaveTenantAsync(_coreSettings, t);
+                var t = await _tenantService.GetTenantAsync(tenant);
+                if (t != null)
+                {
+                    // update tenant.LastModified to flush cache in documents
+                    await _tenantService.SaveTenantAsync(_coreSettings, t);
+                }
             }
+
             ClearCache(tenant);
 
             await NotifyWebSocketAsync(currentTariff, tariffInfo);
