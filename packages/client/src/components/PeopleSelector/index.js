@@ -162,9 +162,8 @@ const PeopleSelector = ({
           .filter((item) => {
             const excludeUser =
               withAbilityCreateRoomUsers &&
-              !item.isAdmin &&
-              !item.isOwner &&
-              !item.isRoomAdmin;
+              ((!item.isAdmin && !item.isOwner && !item.isRoomAdmin) ||
+                item.status === 2);
 
             if (excludeItems.includes(item.id) || excludeUser) {
               totalDifferent++;
