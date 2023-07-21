@@ -361,7 +361,7 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
         for (var i = 0; i < records.Count; i++)
         {
             var r = records[i];
-            if (r.SubjectType != SubjectType.InvitationLink || r.FileShareOptions is not { IsExpired: true })
+            if (r.SubjectType != SubjectType.InvitationLink || r.Options is not { IsExpired: true })
             {
                 continue;
             }
