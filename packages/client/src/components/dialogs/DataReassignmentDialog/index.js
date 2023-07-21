@@ -233,7 +233,9 @@ const DataReassignmentDialog = ({
       .then(() => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
 
-        timerId = setInterval(() => checkProgress(fromUserIds), 500);
+        if (onlyOneUser) {
+          timerId = setInterval(() => checkProgress(fromUserIds), 500);
+        }
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
@@ -255,7 +257,7 @@ const DataReassignmentDialog = ({
         <ModalDialog.Container>
           <PeopleSelector
             acceptButtonLabel={t("Common:SelectAction")}
-            // excludeItems={[id]}
+            excludeItems={[user[0].id]}
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
