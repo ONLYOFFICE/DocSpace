@@ -197,6 +197,28 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         return InternalGetPureShareRecordsAsync(entry);
     }
 
+    public async Task<int> GetPureSharesCountAsync(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status)
+    {
+        if (entry == null)
+        {
+            return 0;
+        }
+        
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        
+        var q = await GetPureSharesQuery(entry, filterType, filesDbContext);
+
+        if (status.HasValue)
+        {
+            q = q.Join(filesDbContext.Users, s => s.Subject, u => u.Id, 
+                    (s, u) => new SecurityUserRecord { Security = s, User = u })
+                .Where(s => s.User.ActivationStatus == status.Value)
+                .Select(r => r.Security);
+        }
+
+        return await q.CountAsync();
+    }
+
     public async IAsyncEnumerable<FileShareRecord> GetPureSharesAsync(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
     {
         if (entry == null || count == 0)

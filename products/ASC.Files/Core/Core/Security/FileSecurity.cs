@@ -1139,6 +1139,21 @@ public class FileSecurity : IFileSecurity
         return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
     }
 
+    public IAsyncEnumerable<FileShareRecord> GetPureSharesAsync<T>(FileEntry<T> entry, IEnumerable<Guid> subjects)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesAsync(entry, subjects);
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureSharesAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status, int offset = 0, int count = -1)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesAsync(entry, filterType, status, offset, count);
+    }
+
+    public Task<int> GetPureSharesCountAsync<T>(FileEntry<T> entry, ShareFilterType filterType, EmployeeActivationStatus? status)
+    {
+        return _daoFactory.GetSecurityDao<T>().GetPureSharesCountAsync(entry, filterType, status);
+    }
+
     public IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync<T>(FileEntry<T> entry, string text, bool excludeShared, int offset, int count)
     {
         return _daoFactory.GetSecurityDao<T>().GetUsersWithSharedAsync(entry, text, excludeShared, offset, count);
