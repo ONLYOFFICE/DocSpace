@@ -34,6 +34,13 @@ const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 class NewFilesPanel extends React.Component {
   state = { readingFiles: [], inProgress: false };
 
+  componentDidUpdate() {
+    const { readingFiles } = this.state;
+    const { newFiles } = this.props;
+
+    if (newFiles.length === readingFiles.length) this.onClose();
+  }
+
   onClose = () => {
     if (this.state.inProgress) return;
     this.props.setNewFilesPanelVisible(false);
@@ -263,8 +270,16 @@ class NewFilesPanel extends React.Component {
   render() {
     //console.log("NewFiles panel render");
     const { t, visible, isLoading, newFiles, theme } = this.props;
-    const { inProgress } = this.state;
+    const { inProgress, readingFiles } = this.state;
     const zIndex = 310;
+    let listFiles = [];
+
+    newFiles.forEach((file) => {
+      const fileHasRead = readingFiles.find(
+        (readingFile) => readingFile === file.id.toString()
+      );
+      if (!fileHasRead) listFiles.push(file);
+    });
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -292,7 +307,7 @@ class NewFilesPanel extends React.Component {
             {!isLoading ? (
               <StyledBody className="files-operations-body">
                 <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
-                  {newFiles.map((file) => {
+                  {listFiles.map((file) => {
                     const element = this.getItemIcon(file);
 
                     return (
@@ -360,6 +375,7 @@ export default inject(
     selectedFolderStore,
     dialogsStore,
     settingsStore,
+    clientLoadingStore,
   }) => {
     const {
       addFileToRecentlyViewed,
