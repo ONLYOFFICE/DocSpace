@@ -79,7 +79,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
         IQuotaService quotaService,
-        EmailValidationKeyProvider emailValidationKeyProvider
+        EmailValidationKeyProvider emailValidationKeyProvider,
         StorageFactory storageFactory,
         TenantQuotaController tenantQuotaController)
         : base(
@@ -307,8 +307,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var headers = new List<string>
         {
             string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
-                                                     });
-        };
         };
 
         if (!_authContext.IsAuthenticated)
