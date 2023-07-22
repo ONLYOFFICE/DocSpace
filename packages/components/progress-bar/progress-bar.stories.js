@@ -15,11 +15,10 @@ export default {
 };
 
 const Template = (args) => {
-  return <ProgressBar {...args} style={{ marginTop: 16 }} />;
+  return <ProgressBar {...args} />;
 };
 export const Default = Template.bind({});
 Default.args = {
   label: "Uploading files: 20 of 100",
   percent: 20,
-  dropDownContent: "You content here",
 };
