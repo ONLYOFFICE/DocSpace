@@ -42,4 +42,5 @@ public interface ITariffService
     Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
     int GetPaymentDelay();
     Task<Tariff> GetBillingInfoAsync(int? tenant = null, int? id = null);
+    bool IsConfigured();
 }
