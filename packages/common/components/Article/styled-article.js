@@ -115,10 +115,10 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
 
-      padding: 0 20px 0 12px !important;
+      padding: 0 20px !important;
 
       @media ${tablet} {
-        padding: 0 8px 0 0 !important;
+        padding: 0 8px !important;
         height: calc(100% - 60px);
       }
 
