@@ -7,7 +7,7 @@ import StyledScrollbar from "./styled-scrollbar";
 import { useTheme } from "styled-components";
 
 const Scrollbar = React.forwardRef(
-  ({ id, onScroll, autoHide, hideTimeout, ...props }, ref) => {
+  ({ id, onScroll, autoHide, hideTimeout, scrollclass, ...props }, ref) => {
     const [isScrolling, setIsScrolling] = useState();
     const [isMouseOver, setIsMouseOver] = useState();
     const { interfaceDirection } = useTheme();
@@ -163,7 +163,13 @@ const Scrollbar = React.forwardRef(
     const renderScroller = (props) => {
       const { elementRef, ...restProps } = props;
       return (
-        <div {...restProps} id={id} ref={elementRef} onScroll={onScroll} />
+        <div
+          {...restProps}
+          id={id}
+          className={scrollclass}
+          ref={elementRef}
+          onScroll={onScroll}
+        />
       );
     };
 
@@ -183,7 +189,7 @@ const Scrollbar = React.forwardRef(
         contentProps={{
           style: contentStyles,
           tabIndex: -1,
-          className: classNames("scroll-body", props.scrollclass),
+          className: classNames("scroll-body"),
         }}
         thumbYProps={{
           className: "nav-thumb-vertical",
