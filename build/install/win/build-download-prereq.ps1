@@ -83,7 +83,7 @@ $prerequisites = @(
   @{  
     download_allways = $false; 
     name = "psqlodbc_x64.msi"; 
-    link = "http://download.onlyoffice.com/install/windows/redist/psqlodbc_x64.msi"
+    link = "http://download.onlyoffice.com/install/windows/redist/psqlodbc_15_x64.msi"
   }
 
   @{  
@@ -181,7 +181,7 @@ $enterprise_prerequisites = @(
   @{  
     download_allways = $false; 
     name = "psqlodbc_x64.msi"; 
-    link = "http://download.onlyoffice.com/install/windows/redist/psqlodbc_x64.msi"
+    link = "http://download.onlyoffice.com/install/windows/redist/psqlodbc_15_x64.msi"
   }
 
   @{  
