@@ -5,7 +5,7 @@ const StyledSectionBodyContent = styled.div`
   .notification-container {
     display: grid;
     max-width: 660px;
-    grid-template-columns: 1fr 113px;
+    grid-template-columns: 1fr 124px;
     margin-bottom: 21px;
 
     .toggle-btn {

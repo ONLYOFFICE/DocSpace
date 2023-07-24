@@ -17,62 +17,50 @@ import {
 
 const settingsStudioStyles = css`
   ${({ settingsStudio }) =>
-    settingsStudio
-      ? css`
-          ${props =>
-            props.theme.interfaceDirection === "rtl"
-              ? css`
-                  padding: 0 20px 16px 7px;
-                `
-              : css`
-                  padding: 0 7px 16px 20px;
-                `}
+    settingsStudio &&
+    css`
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 0 20px 16px 7px;
+            `
+          : css`
+              padding: 0 7px 16px 20px;
+            `}
 
-          @media ${tablet} {
-            ${props =>
-              props.theme.interfaceDirection === "rtl"
-                ? css`
-                    padding: 0 24px 16px 0;
-                  `
-                : css`
-                    padding: 0 0 16px 24px;
-                  `}
-          }
+      @media ${tablet} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 0 24px 16px 0;
+              `
+            : css`
+                padding: 0 0 16px 24px;
+              `}
+      }
 
-          @media ${smallTablet} {
-            ${props =>
-              props.theme.interfaceDirection === "rtl"
-                ? css`
-                    padding: 8px 24px 16px 0;
-                  `
-                : css`
-                    padding: 8px 0 16px 24px;
-                  `}
-          }
+      @media ${smallTablet} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 8px 24px 16px 0;
+              `
+            : css`
+                padding: 8px 0 16px 24px;
+              `}
+      }
 
-          @media ${mobile} {
-            ${props =>
-              props.theme.interfaceDirection === "rtl"
-                ? css`
-                    padding: 0 24px 16px 0;
-                  `
-                : css`
-                    padding: 0 0 16px 24px;
-                  `}
-          }
-        `
-      : css`
-          @media ${tablet} {
-            ${props =>
-              props.theme.interfaceDirection === "rtl"
-                ? css`
-                    padding: 0 24px 16px 0;
-                  `
-                : css`
-                    padding: 0 0 16px 24px;
-                  `}
-          }
-        `}
+      @media ${mobile} {
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 0 24px 16px 0;
+              `
+            : css`
+                padding: 0 0 16px 24px;
+              `}
+      }
+    `}
 `;
 
 const paddingStyles = css`

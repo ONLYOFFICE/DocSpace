@@ -15,7 +15,7 @@ const tabletProps = css`
   .section-body_header {
     position: sticky;
     top: 0;
-    background: ${(props) => props.theme.section.header.background};
+    background: ${props => props.theme.section.header.background};
     z-index: 202;
 
     ${isMobileOnly &&
@@ -24,11 +24,11 @@ const tabletProps = css`
       margin: 0 0 0 -16px;
     `}
 
-    ${(props) =>
+    ${props =>
       (props.settingsStudio || props.viewAs == "settings") &&
       isMobileOnly &&
       css`
-        background: ${(props) => props.theme.section.header.backgroundColor};
+        background: ${props => props.theme.section.header.backgroundColor};
       `}
   }
   .section-body_filter {
@@ -50,7 +50,14 @@ const StyledSectionContainer = styled.section`
   @media ${tablet} {
     width: 100%;
     max-width: 100vw !important;
-    padding: 0 0 0 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 0 0 0 24px;
+          `
+        : css`
+            padding: 0 0 0 16px;
+          `}
   }
 
   ${isMobile &&
@@ -75,32 +82,32 @@ const StyledSectionContainer = styled.section`
 
   .layout-progress-bar_wrapper {
     position: fixed;
-    right: ${(props) =>
+    right: ${props =>
       props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
   }
 
   .layout-progress-bar {
     position: fixed;
-    right: ${(props) =>
+    right: ${props =>
       props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
     bottom: 24px;
   }
 
   .layout-progress-bar_close-icon {
     position: fixed;
-    right: ${(props) =>
+    right: ${props =>
       props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
     bottom: 36px;
   }
 
   .layout-progress-second-bar {
     position: fixed;
-    right: ${(props) =>
+    right: ${props =>
       props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
     bottom: 96px;
   }
 
-  ${(props) =>
+  ${props =>
     !props.isSectionHeaderAvailable &&
     css`
       width: 100vw !important;
