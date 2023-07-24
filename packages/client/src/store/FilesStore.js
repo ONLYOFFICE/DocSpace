@@ -1097,11 +1097,8 @@ class FilesStore {
     const filterParamsStr = filter.toUrlParams();
 
     const url = getCategoryUrl(this.categoryType, filter.folder);
-    const shareKey = this.publicRoomStore.publicRoomKey
-      ? `key=${this.publicRoomStore.publicRoomKey}&`
-      : "";
 
-    const pathname = `${url}?${shareKey}${filterParamsStr}`;
+    const pathname = `${url}?${filterParamsStr}`;
 
     const currentUrl = window.location.href.replace(window.location.origin, "");
     const newUrl = combineUrl(

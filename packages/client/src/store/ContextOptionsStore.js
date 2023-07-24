@@ -567,8 +567,8 @@ class ContextOptionsStore {
       try {
         const links = await this.publicRoomStore.fetchExternalLinks(item.id);
 
-        for (let item of links) {
-          const { id, title, shareLink, disabled, isExpired } = item.sharedTo;
+        for (let link of links) {
+          const { id, title, shareLink, disabled, isExpired } = link.sharedTo;
 
           if (!disabled && !isExpired) {
             linksArray.push({

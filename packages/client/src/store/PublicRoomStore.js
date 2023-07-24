@@ -1,6 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
+import FilesFilter from "@docspace/common/api/files/filter";
 import { LinkType, ValidationResult } from "../helpers/constants";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 
 class PublicRoomStore {
   externalLinks = [];
@@ -80,6 +83,14 @@ class PublicRoomStore {
     api.rooms
       .validatePublicRoomKey(key)
       .then((res) => {
+        if (res?.shared) {
+          const filter = FilesFilter.getDefault();
+          const url = getCategoryUrl(CategoryType.Shared);
+          filter.folder = res.id;
+
+          return window.location.replace(`${url}?${filter.toUrlParams()}`);
+        }
+
         this.publicRoomKey = key;
         this.setRoomData(res);
       })
