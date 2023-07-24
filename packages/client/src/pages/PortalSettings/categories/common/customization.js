@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./Customization/language-and-time-zone";
@@ -24,13 +24,13 @@ const StyledComponent = styled.div`
   .category-description {
     margin-top: 5px;
     line-height: 20px;
-    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    color: ${props => props.theme.client.settings.common.descriptionColor};
     margin-bottom: 20px;
     max-width: 700px;
   }
 
   .category-item-description {
-    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    color: ${props => props.theme.client.settings.common.descriptionColor};
     font-size: 12px;
     max-width: 1024px;
   }
@@ -45,7 +45,14 @@ const StyledComponent = styled.div`
     font-weight: bold;
     font-size: 16px;
     line-height: 22px;
-    margin-right: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 4px;
+          `
+        : css`
+            margin-right: 4px;
+          `}
   }
 
   .settings-block {
@@ -62,7 +69,7 @@ const StyledComponent = styled.div`
 
 StyledComponent.defaultProps = { theme: Base };
 
-const Customization = (props) => {
+const Customization = props => {
   const {
     t,
     isLoaded,

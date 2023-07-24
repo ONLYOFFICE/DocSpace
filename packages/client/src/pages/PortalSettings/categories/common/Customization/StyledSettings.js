@@ -34,7 +34,14 @@ const StyledScrollbar = styled(Scrollbar)`
 
 const StyledSettingsComponent = styled.div`
   .dns-setting_helpbutton {
-    margin-right: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 4px;
+          `
+        : css`
+            margin-right: 4px;
+          `}
   }
 
   .paid-badge {
@@ -43,7 +50,7 @@ const StyledSettingsComponent = styled.div`
 
   .dns-textarea {
     textarea {
-      color: ${(props) => props.theme.text.disableColor};
+      color: ${props => props.theme.text.disableColor};
     }
   }
 
@@ -65,7 +72,7 @@ const StyledSettingsComponent = styled.div`
 
   .settings-block-description {
     line-height: 20px;
-    color: ${(props) => props.theme.client.settings.security.descriptionColor};
+    color: ${props => props.theme.client.settings.security.descriptionColor};
     padding-bottom: 12px;
   }
 
@@ -80,7 +87,7 @@ const StyledSettingsComponent = styled.div`
   }
 
   @media (max-width: 599px) {
-    ${(props) =>
+    ${props =>
       props.hasScroll &&
       css`
         width: ${isMobileOnly ? "100vw" : "calc(100vw - 52px)"};
@@ -134,7 +141,7 @@ const StyledSettingsComponent = styled.div`
       }
     `}
   }
-  ${(props) => !props.isSettingPaid && UnavailableStyles}
+  ${props => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export { StyledSettingsComponent, StyledScrollbar, StyledArrowRightIcon };
