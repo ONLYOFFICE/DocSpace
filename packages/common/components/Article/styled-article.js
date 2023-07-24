@@ -15,7 +15,7 @@ import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 const StyledArticle = styled.article`
   position: relative;
   overflow: hidden;
-  background: ${(props) => props.theme.catalog.background};
+  background: ${props => props.theme.catalog.background};
 
   min-width: 251px;
   max-width: 251px;
@@ -26,13 +26,13 @@ const StyledArticle = styled.article`
 
   //padding: 0 20px;
 
-  border-right: ${(props) => props.theme.catalog.verticalLine};
+  border-right: ${props => props.theme.catalog.verticalLine};
 
   @media ${tablet} {
-    min-width: ${(props) => (props.showText ? "243px" : "60px")};
-    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+    min-width: ${props => (props.showText ? "243px" : "60px")};
+    max-width: ${props => (props.showText ? "243px" : "60px")};
 
-    height: ${(props) =>
+    height: ${props =>
       props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
 
     //padding: 0 8px;
@@ -40,16 +40,16 @@ const StyledArticle = styled.article`
 
   ${isTablet &&
   css`
-    min-width: ${(props) => (props.showText ? "243px" : "60px")};
-    max-width: ${(props) => (props.showText ? "243px" : "60px")};
+    min-width: ${props => (props.showText ? "243px" : "60px")};
+    max-width: ${props => (props.showText ? "243px" : "60px")};
     //padding: 0 8px;
 
-    height: ${(props) =>
+    height: ${props =>
       props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
   `}
 
   @media ${mobile} {
-    display: ${(props) => (props.articleOpen ? "flex" : "none")};
+    display: ${props => (props.articleOpen ? "flex" : "none")};
     flex-direction: column;
     min-width: 100%;
     width: 100%;
@@ -64,7 +64,7 @@ const StyledArticle = styled.article`
 
   ${isMobileOnly &&
   css`
-    display: ${(props) => (props.articleOpen ? "flex" : "none")} !important;
+    display: ${props => (props.articleOpen ? "flex" : "none")} !important;
     flex-direction: column;
 
     min-width: 100% !important;
@@ -78,11 +78,11 @@ const StyledArticle = styled.article`
     border-right: none;
   `}
 
-  z-index: ${(props) =>
+  z-index: ${props =>
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .article-body__scrollbar {
-    height: ${(props) =>
+    height: ${props =>
       `calc(100% - ${props.$withMainButton ? "190px" : "150px"})`} !important;
 
     ${!isMobileOnly &&
@@ -115,10 +115,10 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
 
-      padding: 0 20px !important;
+      padding: 0 20px 0 12px !important;
 
       @media ${tablet} {
-        padding: 0 8px !important;
+        padding: 0 8px 0 0 !important;
         height: calc(100% - 60px);
       }
 
