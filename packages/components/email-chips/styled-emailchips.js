@@ -30,6 +30,11 @@ const StyledChipGroup = styled.div`
     border-color: ${(props) => props.theme.inputBlock.borderColor};
   }
 
+  .ScrollbarsCustom-Wrapper,
+  .ScrollbarsCustom-Scroller {
+    position: inherit !important;
+  }
+
   .scroll {
     height: fit-content;
     position: inherit !important;

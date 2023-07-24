@@ -430,11 +430,8 @@ class SharingPanelComponent extends React.Component {
   }
 
   onKeyPress = (event) => {
-    const {
-      showAddUsersPanel,
-      showEmbeddingPanel,
-      showChangeOwnerPanel,
-    } = this.state;
+    const { showAddUsersPanel, showEmbeddingPanel, showChangeOwnerPanel } =
+      this.state;
     if (showAddUsersPanel || showEmbeddingPanel || showChangeOwnerPanel) return;
     if (event.key === "Esc" || event.key === "Escape") {
       this.onClose();
@@ -450,7 +447,7 @@ class SharingPanelComponent extends React.Component {
     }
 
     if (this.state.message === prevState.message && this.scrollRef.current) {
-      this.scrollRef.current.view.focus();
+      this.scrollRef.current.contentElement.focus();
     }
   }
 
@@ -833,11 +830,8 @@ const SharingPanel = inject(
       setIsFolderActions,
       isFolderActions,
     } = dialogsStore;
-    const {
-      selectedUploadFile,
-      selectUploadedFile,
-      updateUploadedItem,
-    } = uploadDataStore;
+    const { selectedUploadFile, selectUploadedFile, updateUploadedItem } =
+      uploadDataStore;
 
     const isShared =
       selection.length > 0 && selection[0].shared

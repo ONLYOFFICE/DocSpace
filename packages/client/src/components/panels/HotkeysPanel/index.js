@@ -44,12 +44,12 @@ const HotkeyPanel = ({
   const onKeyPress = (e) =>
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
-    useEffect(() => {
-      scrollRef.current && scrollRef?.current?.view.focus();
-      document.addEventListener("keyup", onKeyPress);
+  useEffect(() => {
+    scrollRef.current && scrollRef?.current?.contentElement.focus();
+    document.addEventListener("keyup", onKeyPress);
 
-      return () => document.removeEventListener("keyup", onKeyPress);
-    });
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
 
   return (
     <StyledHotkeysPanel>
@@ -145,11 +145,8 @@ const HotkeyPanel = ({
 HotkeyPanel.defaultProps = { theme: Base };
 
 export default inject(({ auth }) => {
-  const {
-    hotkeyPanelVisible,
-    setHotkeyPanelVisible,
-    theme,
-  } = auth.settingsStore;
+  const { hotkeyPanelVisible, setHotkeyPanelVisible, theme } =
+    auth.settingsStore;
 
   const { isVisitor } = auth.userStore.user;
 

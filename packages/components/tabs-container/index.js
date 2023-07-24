@@ -75,7 +75,7 @@ class TabContainer extends Component {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const scrollLeft = this.scrollRef.current.scrollLeft; // get scroll position relative to left side
     const staticScroll = this.scrollRef.current.scrollWidth; //get static scroll width
-    const containerWidth = this.scrollRef.current.scrollWidth; //get main container width
+    const containerWidth = this.scrollRef.current.clientWidth; //get main container width
     const currentTabWidth = currentRef.current.offsetWidth;
     const marginRight = 8;
 
@@ -108,13 +108,13 @@ class TabContainer extends Component {
       const difference = containerWidth - widthBlocksInContainer;
       const currentContainerWidth = currentTabWidth;
 
-      this.scrollRef.current?.scrollLeft(
+      this.scrollRef.current?.scrollTo(
         difference * -1 + currentContainerWidth + marginRight
       );
     }
     //Out of range of left side
     else if (rightFullWidth > staticScroll - scrollLeft) {
-      this.scrollRef.current?.scrollTo(this.scrollRef.current.scrollHeight, 0);
+      this.scrollRef.current?.scrollTo(staticScroll - rightFullWidth);
     }
   };
 
@@ -128,7 +128,8 @@ class TabContainer extends Component {
       rightTabs--;
     }
     rightFullWidth -= marginRight;
-    this.scrollRef.current?.scrollTo(this.scrollRef.current.scrollHeight, 0);
+    const staticScroll = this.scrollRef.current?.scrollWidth; //get static scroll width
+    this.scrollRef.current?.scrollTo(staticScroll - rightFullWidth);
   };
 
   onMouseEnter = () => {
@@ -155,7 +156,6 @@ class TabContainer extends Component {
           autoHide={onScrollHide}
           stype="preMediumBlack"
           className="scrollbar"
-          horizontal
           ref={this.scrollRef}
         >
           <NavItem className="className_items">

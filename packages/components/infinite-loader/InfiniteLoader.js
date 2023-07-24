@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import { isMobileOnly } from "react-device-detect";
 import ListComponent from "./List";
 import GridComponent from "./Grid";
-import { isMobile } from "../utils/device";
 import Loader from "../loader";
 import { showLoader, hideLoader } from "./infiniteLoaderUtils";
+import { useTheme } from "styled-components";
 
 const InfiniteLoaderComponent = (props) => {
   const { viewAs, isLoading } = props;
@@ -15,10 +15,6 @@ const InfiniteLoaderComponent = (props) => {
   const scroll = isMobileOnly
     ? document.querySelector("#customScrollBar > .scroll-body")
     : document.querySelector("#sectionScroll > .scroll-body");
-
-  if (scroll) {
-    scroll.style.paddingRight = isMobile() ? "8px" : "17px";
-  }
 
   return isLoading ? (
     <Loader
