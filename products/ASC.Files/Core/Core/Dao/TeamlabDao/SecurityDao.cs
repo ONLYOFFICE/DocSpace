@@ -272,7 +272,8 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         }
     }
 
-    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, EmployeeActivationStatus? status, bool excludeShared, int offset, int count)
+    public async IAsyncEnumerable<UserWithShared> GetUsersWithSharedAsync(FileEntry<T> entry, string text, EmployeeStatus? employeeStatus, EmployeeActivationStatus? activationStatus, 
+        bool excludeShared, int offset, int count)
     {
         if (entry == null || count == 0)
         {
@@ -285,9 +286,14 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
         var q = filesDbContext.Users.AsNoTracking().Where(u => u.TenantId == tenantId);
 
-        if (status.HasValue)
+        if (employeeStatus.HasValue)
         {
-            q = q.Where(u => u.ActivationStatus == status.Value);
+            q = q.Where(u => u.Status == employeeStatus.Value);
+        }
+
+        if (activationStatus.HasValue)
+        {
+            q = q.Where(u => u.ActivationStatus == activationStatus.Value);
         }
 
         if (!string.IsNullOrEmpty(text))
@@ -298,13 +304,14 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         var q1 = excludeShared
             ? q.Where(u => !filesDbContext.Security.Any(s => s.TenantId == tenantId && s.EntryType == entry.FileEntryType && s.EntryId == entryId && s.Subject == u.Id) &&
                            u.Id != entry.CreateBy)
-                .OrderBy(u => u.FirstName)
+                .OrderBy(u => u.ActivationStatus)
+                .ThenBy(u => u.FirstName)
                 .Select(u => new { User = u, Shared = false })
             : from user in q
             join security in filesDbContext.Security.Where(s => s.TenantId == tenantId && s.EntryId == entryId && s.EntryType == entry.FileEntryType) on user.Id equals
                 security.Subject into grouping
             from s in grouping.DefaultIfEmpty()
-            orderby user.FirstName
+            orderby user.ActivationStatus, user.FirstName
             select new { User = user, Shared = s != null || user.Id == entry.CreateBy };
 
         if (offset > 0)
