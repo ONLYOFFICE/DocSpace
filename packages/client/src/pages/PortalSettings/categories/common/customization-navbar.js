@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
@@ -27,6 +27,11 @@ const StyledComponent = styled.div`
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            transform: scaleX(-1);
+          `}
       }
       .category-item_paid {
         .paid-badge {
@@ -34,20 +39,32 @@ const StyledComponent = styled.div`
         }
         display: flex;
         svg {
+          ${props =>
+            props.theme.interfaceDirection === "rtl" &&
+            css`
+              transform: scaleX(-1);
+            `}
           margin-top: auto;
         }
       }
     }
 
     .category-item-description {
-      color: ${(props) => props.theme.client.settings.common.descriptionColor};
+      color: ${props => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
       max-width: 1024px;
       line-height: 20px;
     }
 
     .inherit-title-link {
-      margin-right: 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
+            `
+          : css`
+              margin-right: 4px;
+            `}
       font-size: 16px;
       font-weight: 700;
     }
@@ -79,7 +96,7 @@ const CustomizationNavbar = ({
     if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
   }, [isLoadedSetting]);
 
-  const onClickLink = (e) => {
+  const onClickLink = e => {
     e.preventDefault();
     navigate(e.target.pathname);
   };
@@ -96,8 +113,7 @@ const CustomizationNavbar = ({
             truncate={true}
             href={
               "portal-settings/customization/general/language-and-time-zone"
-            }
-          >
+            }>
             {t("StudioTimeLanguageSettings")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
@@ -111,8 +127,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={languageAndTimeZoneSettingsUrl}
-          >
+            href={languageAndTimeZoneSettingsUrl}>
             {t("Common:LearnMore")}
           </Link>
         </Box>
@@ -125,8 +140,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={
               "/portal-settings/customization/general/welcome-page-settings"
-            }
-          >
+            }>
             {t("CustomTitlesWelcome")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />
@@ -143,8 +157,7 @@ const CustomizationNavbar = ({
               truncate={true}
               className="inherit-title-link header"
               onClick={onClickLink}
-              href={"/portal-settings/customization/general/dns-settings"}
-            >
+              href={"/portal-settings/customization/general/dns-settings"}>
               {t("DNSSettings")}
             </Link>
             {!isSettingPaid && (
@@ -166,8 +179,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={dnsSettingsUrl}
-          >
+            href={dnsSettingsUrl}>
             {t("Common:LearnMore")}
           </Link>
         </Box>
@@ -179,8 +191,7 @@ const CustomizationNavbar = ({
             truncate={true}
             className="inherit-title-link header"
             onClick={onClickLink}
-            href={"/portal-settings/customization/general/portal-renaming"}
-          >
+            href={"/portal-settings/customization/general/portal-renaming"}>
             {t("PortalRenaming")}
           </Link>
           <StyledArrowRightIcon size="small" color="#333333" />

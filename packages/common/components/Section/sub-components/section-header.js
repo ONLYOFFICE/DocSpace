@@ -68,7 +68,14 @@ const StyledSectionHeader = styled.div`
   }
 
   @media ${tablet} {
-    padding-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 24px;
+          `
+        : css`
+            padding-right: 16px;
+          `}
     margin-right: 0px;
   }
 
@@ -89,8 +96,7 @@ const StyledSectionHeader = styled.div`
 
     padding-right: 16px !important;
 
-    margin-bottom: ${(props) =>
-      props.settingsStudio ? "8px !important" : "0"};
+    margin-bottom: ${props => (props.settingsStudio ? "8px !important" : "0")};
   `}
 `;
 
