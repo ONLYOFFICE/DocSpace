@@ -13,12 +13,12 @@ rm -f %{_builddir}/%{sourcename}/config/nginx/onlyoffice-login.conf
 if ! grep -q 'var/www/%{product}' config/nginx/*.conf; then find config/nginx/ -name "*.conf" -exec sed -i "s@\(var/www/\)@\1%{product}/@" {} +; fi
 
 json -I -f %{_builddir}/%{sourcename}/config/appsettings.services.json -e "this.logPath=\"/var/log/onlyoffice/%{product}\"" -e "this.socket={ 'path': '../ASC.Socket.IO/' }" \
--e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.core={ 'products': { 'folder': '%{buildpath}/products', 'subfolder': 'server'} }"
+-e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.logLevel=\"warning\""  -e "this.core={ 'products': { 'folder': '%{buildpath}/products', 'subfolder': 'server'} }"
 
 find %{_builddir}/%{sourcename}/config/ -type f -regex '.*\.\(test\|dev\).*' -delete
-
-json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.notify.postman=\"services\""
+json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.notify.postman=\"services\"" -e "this.Logging.LogLevel.Default=\"Warning\"" -e "this['debug-info'].enabled=\"false\""
 json -I -f %{_builddir}/%{sourcename}/config/apisystem.json -e "this.core.notify.postman=\"services\""
+sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i %{_builddir}/%{sourcename}/config/nlog.config
 
 find %{_builddir}/%{sourcename}/publish/ \
      %{_builddir}/%{sourcename}/ASC.Migration.Runner \
