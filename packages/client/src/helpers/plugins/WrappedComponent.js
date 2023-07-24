@@ -8,11 +8,11 @@ import TextArea from "@docspace/components/textarea";
 import TextInput from "@docspace/components/text-input";
 import Label from "@docspace/components/label";
 import Button from "@docspace/components/button";
+import ToggleButton from "@docspace/components/toggle-button";
 
 import { PluginComponents } from "./constants";
 
 import { messageActions } from "./utils";
-import ToggleButton from "@docspace/components/toggle-button";
 
 const WrappedComponent = ({
   component,
