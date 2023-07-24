@@ -54,7 +54,7 @@ const settingsStudioStyles = css`
         ${props =>
           props.theme.interfaceDirection === "rtl"
             ? css`
-                padding: 0 16px 16px 0;
+                padding: 0 24px 16px 0;
               `
             : css`
                 padding: 0 0 16px 24px;
