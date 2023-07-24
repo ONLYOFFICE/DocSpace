@@ -3637,7 +3637,7 @@ class FilesStore {
         : authorType ||
           roomId ||
           search ||
-          !withSubfolders ||
+          withSubfolders ||
           filterType ||
           searchInContent;
 
