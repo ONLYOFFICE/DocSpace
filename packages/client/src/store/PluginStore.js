@@ -6,8 +6,7 @@ import api from "@docspace/common/api";
 import defaultConfig from "PUBLIC_DIR/scripts/config.json";
 
 import {
-  PluginType,
-  PluginContextMenuItemType,
+  PluginFileType,
   PluginScopes,
 } from "SRC_DIR/helpers/plugins/constants";
 
@@ -156,7 +155,13 @@ class PluginStore {
 
   installPlugin = (plugin, addToList = true) => {
     if (addToList) {
-      this.plugins.push(plugin);
+      const idx = this.plugins.findIndex((p) => p.id === plugin.id);
+
+      if (idx === -1) {
+        this.plugins.push(plugin);
+      } else {
+        this.plugins[idx] = plugin;
+      }
     }
 
     if (plugin.enabled && plugin.onLoadCallback) {
@@ -253,38 +258,34 @@ class PluginStore {
     const keys = [];
 
     switch (type) {
-      case PluginContextMenuItemType.Files:
+      case PluginFileType.Files:
         itemsMap.forEach(([key, item]) => {
-          if (item.type === PluginContextMenuItemType.Files) {
-            if (item.fileExt === "all" || item.fileExt.includes(fileExst)) {
+          if (item.fileType.includes(PluginFileType.Files)) {
+            if (item.fileExt.includes(fileExst)) {
               keys.push(item.key);
             }
           }
         });
-        break;
-      case PluginContextMenuItemType.Folders:
+      case PluginFileType.Folders:
         itemsMap.forEach(([key, item]) => {
-          if (item.type === PluginContextMenuItemType.Folders) {
+          if (item.fileType.includes(PluginFileType.Folders)) {
             keys.push(item.key);
           }
         });
         break;
-      case PluginContextMenuItemType.Rooms:
+      case PluginFileType.Rooms:
         itemsMap.forEach(([key, item]) => {
-          if (item.type === PluginContextMenuItemType.Rooms) {
-            keys.push(item.key);
-          }
-        });
-        break;
-      case PluginContextMenuItemType.All:
-        itemsMap.forEach(([key, item]) => {
-          if (item.type === PluginContextMenuItemType.All) {
+          if (item.fileType.includes(PluginFileType.Rooms)) {
             keys.push(item.key);
           }
         });
         break;
       default:
-        return null;
+        itemsMap.forEach(([key, item]) => {
+          if (item.fileType === PluginFileType.All) {
+            keys.push(item.key);
+          }
+        });
     }
 
     if (keys.length === 0) return null;
@@ -304,9 +305,11 @@ class PluginStore {
     const items = [];
 
     this.plugins.forEach((plugin) => {
-      Array.from(plugin.getContextMenuItems(), ([key, value]) =>
-        items.push({ key, value: { ...value, pluginId: plugin.id } })
-      );
+      if (plugin.scopes.includes(PluginScopes.ContextMenu)) {
+        Array.from(plugin.getContextMenuItems(), ([key, value]) =>
+          items.push({ key, value: { ...value, pluginId: plugin.id } })
+        );
+      }
     });
 
     if (items.length > 0) {
@@ -322,9 +325,11 @@ class PluginStore {
     const items = [];
 
     this.plugins.forEach((plugin) => {
-      Array.from(plugin.getInfoPanelItems(), ([key, value]) =>
-        items.push({ key, value: { ...value, pluginId: plugin.id } })
-      );
+      if (plugin.scopes.includes(PluginScopes.InfoPanel)) {
+        Array.from(plugin.getInfoPanelItems(), ([key, value]) =>
+          items.push({ key, value: { ...value, pluginId: plugin.id } })
+        );
+      }
     });
 
     return items;

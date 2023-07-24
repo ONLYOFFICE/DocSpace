@@ -60,7 +60,7 @@ const PluginPage = ({
         <>
           <Button
             className={"add-button"}
-            label={t("AddPlugin")}
+            label={t("UploadPlugin")}
             primary
             size={"normal"}
             onClick={onAddAction}

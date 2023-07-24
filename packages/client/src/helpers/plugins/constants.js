@@ -1,8 +1,7 @@
-export const PluginContextMenuItemType = Object.freeze({
-  Files: "Files",
-  Folders: "Folders",
-  Rooms: "Rooms",
-  All: "All",
+export const PluginFileType = Object.freeze({
+  Files: "file",
+  Folders: "folder",
+  Rooms: "room",
 });
 
 export const PluginScopes = Object.freeze({
@@ -43,4 +42,15 @@ export const PluginToastType = Object.freeze({
   error: "error",
   warning: "warning",
   info: "info",
+});
+
+export const PluginComponents = Object.freeze({
+  box: "box",
+  button: "button",
+  checkbox: "checkbox",
+  input: "input",
+  label: "label",
+  text: "text",
+  textArea: "textArea",
+  toggleButton: "toggleButton",
 });

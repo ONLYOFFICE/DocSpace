@@ -27,7 +27,7 @@ import {
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 
-import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
 
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
@@ -1633,8 +1633,7 @@ class FilesStore {
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
-      enablePlugins &&
-      this.pluginStore.getContextMenuKeysByType(PluginContextMenuItemType.All);
+      enablePlugins && this.pluginStore.getContextMenuKeysByType();
 
     const canRenameItem = item.security?.Rename;
 
@@ -1842,7 +1841,7 @@ class FilesStore {
 
       if (enablePlugins && !isRecycleBinFolder) {
         const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
-          PluginContextMenuItemType.Files,
+          PluginFileType.Files,
           item.fileExst
         );
 
@@ -1993,7 +1992,7 @@ class FilesStore {
 
         if (enablePlugins) {
           const pluginRoomsKeys = this.pluginStore.getContextMenuKeysByType(
-            PluginContextMenuItemType.Rooms
+            PluginFileType.Rooms
           );
 
           pluginAllKeys &&
@@ -2086,7 +2085,7 @@ class FilesStore {
 
         if (enablePlugins) {
           const pluginFoldersKeys = this.pluginStore.getContextMenuKeysByType(
-            PluginContextMenuItemType.Folders
+            PluginFileType.Folders
           );
 
           pluginAllKeys &&

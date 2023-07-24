@@ -20,7 +20,7 @@ const EmptyScreen = ({ t, onAddAction }) => {
   return (
     <EmptyFolderContainer
       headerText={t("FilesSettings:ConnectEmpty")}
-      descriptionText={t("AddPluginsHere")}
+      descriptionText={t("UploadPluginsHere")}
       style={{ gridColumnGap: "39px" }}
       buttonStyle={{ marginTop: "16px" }}
       imageSrc={EmptyScreenAltSvgUrl}
@@ -35,7 +35,7 @@ const EmptyScreen = ({ t, onAddAction }) => {
             />
             <Box className="flex-wrapper_container">
               <Link {...linkStyles} onClick={onAddAction}>
-                {t("AddPlugin")}
+                {t("UploadPlugin")}
               </Link>
             </Box>
           </div>
