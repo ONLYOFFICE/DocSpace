@@ -386,14 +386,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
             if (counter > count)
             {
-                _apiContext.Next = true;
+                _apiContext.SetCount(count).SetNextPage(true);
                 yield break;
             }
 
             yield return await _fileShareDtoHelper.Get(ace);
         }
 
-        _apiContext.Next = false;
+        _apiContext.SetCount(counter).SetNextPage(false);
     }
 
     /// <summary>
@@ -462,10 +462,16 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             } 
             : ShareFilterType.Link;
 
+        var counter = 0;
+        
         await foreach (var ace in  _fileStorageService.GetRoomSharedInfoAsync(id, filterType, 0, 100))
         {
+            counter++;
+            
             yield return await _fileShareDtoHelper.Get(ace);
         }
+
+        _apiContext.SetCount(counter);
     }
 
     /// <summary>
