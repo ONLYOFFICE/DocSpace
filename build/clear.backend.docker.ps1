@@ -12,6 +12,7 @@ if ($Containers) {
   $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
   $Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
   $Env:SERVICE_CLIENT="localhost:5001"
+  $Env:SERVICE_MANAGEMENT="localhost:5015"
   $Env:BUILD_PATH="/var/www"
   $Env:SRC_PATH="$RootDir\publish\services"
   $Env:ROOT_DIR=$RootDir

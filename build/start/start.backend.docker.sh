@@ -21,10 +21,12 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+management=${local_ip}:5015
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "SERVICE_MANAGEMENT: $management"
 
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
@@ -34,6 +36,7 @@ SRC_PATH="$dir/publish/services" \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+SERVICE_MANAGEMENT=$management \
 ROOT_DIR=$dir \
 DATA_DIR="$dir/Data" \
 ENV_EXTENSION="dev" \

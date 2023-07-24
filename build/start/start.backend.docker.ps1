@@ -13,6 +13,7 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
+$Management = ($LocalIp + ":5015")
 
 Set-Location -Path $DockerDir
 
@@ -25,6 +26,7 @@ $Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login
 $Env:SERVICE_CLIENT=$Client
+$Env:SERVICE_MANAGEMENT=$Management
 $Env:ROOT_DIR=$RootDir
 $Env:BUILD_PATH="/var/www"
 $Env:SRC_PATH="$RootDir\publish\services"

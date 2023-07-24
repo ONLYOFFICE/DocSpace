@@ -170,6 +170,7 @@ services:
     image: ${Baseimage_Proxy_Run}
     environment:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
+      - SERVICE_MANAGEMENT=${SERVICE_MANAGEMENT}
     volumes:
       - ${ROOT_DIR}/public:/var/www/public/
 

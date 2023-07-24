@@ -16,6 +16,7 @@ then
     Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
     Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
     SERVICE_CLIENT="localhost:5001" \
+    SERVICE_MANAGEMENT="localhost:5015" \
     BUILD_PATH="/var/www" \
     SRC_PATH="${RootDir}/publish/services" \
     ROOT_DIR=$RootDir \
