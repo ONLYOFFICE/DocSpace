@@ -22,12 +22,12 @@ const StyledContainer = styled.div`
     min-width: 15px;
 
     @media ${tablet} {
-      display: none;
+      display: ${(props) => (props.isFrame ? "flex" : "none")};
     }
 
     ${isMobile &&
     css`
-      display: none;
+      display: ${(props) => (props.isFrame ? "flex" : "none")};
     `}
   }
 
@@ -105,6 +105,7 @@ const ControlButtons = ({
   titles,
   withMenu,
   onPlusClick,
+  isFrame,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -112,7 +113,7 @@ const ControlButtons = ({
   };
 
   return (
-    <StyledContainer isDropBoxComponent={isDropBoxComponent}>
+    <StyledContainer isDropBoxComponent={isDropBoxComponent} isFrame={isFrame}>
       {!isRootFolder || (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
           {!isMobile && canCreate && (
@@ -121,6 +122,7 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
             />
           )}
 
@@ -153,6 +155,7 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
             />
           )}
           {!isDesktop && (
