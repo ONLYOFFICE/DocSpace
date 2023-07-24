@@ -106,13 +106,13 @@ public class SuccessApiResponse : CommonApiResponse
         }
     }
 
-    public bool? Next
+    public bool? NextPage
     {
         get
         {
-            if (_httpContext.Items.TryGetValue("Next", out var next))
+            if (_httpContext.Items.TryGetValue("NextPage", out var nextPage))
             {
-                return (bool?)next;
+                return (bool?)nextPage;
             }
 
             return null;
