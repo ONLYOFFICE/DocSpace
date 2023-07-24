@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
@@ -34,11 +34,18 @@ const StyledComponent = styled.div`
 
   .checkbox {
     width: max-content;
-    margin-right: 9px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 9px;
+          `
+        : css`
+            margin-right: 9px;
+          `}
   }
 `;
 
-const AdditionalResources = (props) => {
+const AdditionalResources = props => {
   const {
     t,
     tReady,
@@ -121,7 +128,7 @@ const AdditionalResources = (props) => {
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       })
-      .catch((error) => {
+      .catch(error => {
         toastr.error(error);
       });
 
@@ -147,12 +154,12 @@ const AdditionalResources = (props) => {
     setIsLoading(true);
 
     await restoreAdditionalResources()
-      .then((res) => {
+      .then(res => {
         setAdditionalSettings(res);
         saveToSessionStorage("additionalSettings", res);
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       })
-      .catch((error) => {
+      .catch(error => {
         toastr.error(error);
       });
 
