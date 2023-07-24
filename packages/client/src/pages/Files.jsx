@@ -235,7 +235,9 @@ class FilesContent extends React.Component {
         <GlobalEvents />
         <Panels />
         {isFrame ? (
-          showMenu && <FilesArticle history={history} />
+          showMenu && (
+            <FilesArticle history={history} withMainButton={withMainButton} />
+          )
         ) : (
           <FilesArticle history={history} withMainButton={withMainButton} />
         )}
