@@ -664,11 +664,13 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
+            return;
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
+            return;
             notifyAction = Actions.OpensourceAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
         }

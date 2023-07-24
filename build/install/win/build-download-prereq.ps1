@@ -106,22 +106,10 @@ $nuget_packages = @(
 $path_enterprise_prereq = "${pwd}\build\install\win\redist\"
 
 $enterprise_prerequisites = @(
-  @{  
-    download_allways = $false; 
-    name = ".net_framework_4.8.exe"; 
-    link = "https://download.visualstudio.microsoft.com/download/pr/014120d7-d689-4305-befd-3cb711108212/0fd66638cde16859462a6243a4629a50/ndp48-x86-x64-allos-enu.exe"
-  }
-
   @{
     download_allways = $false;
     name = "aspnetcore-runtime-7.0.4-win-x64.exe";
     link = "https://download.visualstudio.microsoft.com/download/pr/1c260404-69d2-4c07-979c-644846ba1f46/7d27639ac67f1e502b83a738406da0ee/aspnetcore-runtime-7.0.4-win-x64.exe";
-  }
-
-  @{
-    download_allways = $false;
-    name = "aspnetcore-runtime-7.0.4-win-x86.exe";
-    link = "https://download.visualstudio.microsoft.com/download/pr/771de8e0-6c27-435f-8471-32e360408e15/4f84ca38b7988cc602d1ca62c0469ad2/aspnetcore-runtime-7.0.4-win-x86.exe";
   }
 
   @{
@@ -132,26 +120,8 @@ $enterprise_prerequisites = @(
 
   @{
     download_allways = $false;
-    name = "dotnet-runtime-7.0.4-win-x86.exe";
-    link = "https://download.visualstudio.microsoft.com/download/pr/a44ad7c4-c079-4299-a5a5-669d53707f76/9a94eeb3cdf9529d40e8020a3b8f6c61/dotnet-runtime-7.0.4-win-x86.exe";
-  }
-
-  @{
-    download_allways = $false;
-    name = "vcredist_2013u5_x86.exe";
-    link = "http://download.microsoft.com/download/C/C/2/CC2DF5F8-4454-44B4-802D-5EA68D086676/vcredist_x86.exe";
-  }
-
-  @{
-    download_allways = $false;
     name = "vcredist_2013u5_x64.exe";
     link = "http://download.microsoft.com/download/C/C/2/CC2DF5F8-4454-44B4-802D-5EA68D086676/vcredist_x64.exe";
-  }
-
-  @{
-    download_allways = $false;
-    name = "VC_redist.x86.exe";
-    link = "https://download.visualstudio.microsoft.com/download/pr/d60aa805-26e9-47df-b4e3-cd6fcc392333/A06AAC66734A618AB33C1522920654DDFC44FC13CAFAA0F0AB85B199C3D51DC0/VC_redist.x86.exe";
   }
 
   @{
