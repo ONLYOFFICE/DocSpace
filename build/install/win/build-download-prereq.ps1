@@ -49,7 +49,7 @@ switch ( $env:DOCUMENT_SERVER_VERSION_CE )
 }
 
 $nginx_version = '1.21.1'
-$psql_version = '12.9'
+$psql_version = '14.0'
 
 $path_prereq = "${pwd}\build\install\win\"
 
@@ -132,14 +132,14 @@ $enterprise_prerequisites = @(
 
   @{  
     download_allways = $false; 
-    name = "mysql-connector-odbc-8.0.32-win32.msi";  
-    link = "https://cdn.mysql.com/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.32-win32.msi";
+    name = "mysql-connector-odbc-8.0.33-win32.msi";
+    link = "https://cdn.mysql.com/Downloads/Connector-ODBC/8.0/mysql-connector-odbc-8.0.33-win32.msi";
   }
 
   @{  
     download_allways = $false; 
-    name = "mysql-installer-community-8.0.32.0.msi"; 
-    link = "https://cdn.mysql.com/Downloads/MySQLInstaller/mysql-installer-community-8.0.32.0.msi";
+    name = "mysql-installer-community-8.0.33.0.msi";
+    link = "https://cdn.mysql.com/Downloads/MySQLInstaller/mysql-installer-community-8.0.33.0.msi";
   }
 
   @{  
@@ -150,20 +150,20 @@ $enterprise_prerequisites = @(
 
   @{  
     download_allways = $false; 
-    name = "elasticsearch-7.16.3.msi"; 
-    link = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3.msi";
+    name = "elasticsearch-7.10.0.msi";
+    link = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0.msi";
   }
 
   @{  
     download_allways = $false; 
-    name = "otp_win64_20.3.exe"; 
-    link = "https://erlang.org/download/otp_win64_20.3.exe";
+    name = "otp_win64_26.0.2.exe";
+    link = "https://github.com/erlang/otp/releases/download/OTP-26.0.2/otp_win64_26.0.2.exe";
   }
 
   @{  
     download_allways = $false; 
-    name = "rabbitmq-server-3.7.4.exe"; 
-    link = "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.7.4/rabbitmq-server-3.7.4.exe";
+    name = "rabbitmq-server-3.12.1.exe";
+    link = "https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.1/rabbitmq-server-3.12.1.exe";
   }
 
   @{  
