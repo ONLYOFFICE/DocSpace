@@ -24,32 +24,36 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModels.ResponseDto;
+namespace ASC.Web.Api.Mapping;
 
-public class WebPluginDto: IMapFrom<DbWebPlugin>
+[Scope]
+public class WebPluginMappingConverter : ITypeConverter<Guid, EmployeeDto>
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Version { get; set; }
-    public string Description { get; set; }
-    public string License { get; set; }
-    public string Author { get; set; }
-    public string HomePage { get; set; }
-    public string PluginName { get; set; }
-    public string Scopes { get; set; }
-    public string Image { get; set; }
-    public EmployeeDto CreateBy { get; set; }
-    public DateTime CreateOn { get; set; }
-    public bool Enabled { get; set; }
-    public bool System { get; set; }
-    public string Url { get; set; }
+    private readonly EmployeeDtoHelper _employeeDtoHelper;
 
-    public void Mapping(Profile profile)
+    public WebPluginMappingConverter(EmployeeDtoHelper employeeDtoHelper)
     {
-        profile.CreateMap<Guid, EmployeeDto>()
-            .ConvertUsing<WebPluginMappingConverter>();
+        _employeeDtoHelper = employeeDtoHelper;
+    }
 
-        profile.CreateMap<DbWebPlugin, WebPluginDto>()
-            .AfterMap<WebPluginMappingAction>();
+    public EmployeeDto Convert(Guid source, EmployeeDto destination, ResolutionContext context)
+    {
+        return _employeeDtoHelper.GetAsync(source).Result;
+    }
+}
+
+[Scope]
+public class WebPluginMappingAction : IMappingAction<DbWebPlugin, WebPluginDto>
+{
+    private readonly EmployeeDtoHelper _employeeDtoHelper;
+
+    public WebPluginMappingAction(EmployeeDtoHelper employeeDtoHelper)
+    {
+        _employeeDtoHelper = employeeDtoHelper;
+    }
+
+    public void Process(DbWebPlugin source, WebPluginDto destination, ResolutionContext context)
+    {
+        destination.CreateBy = _employeeDtoHelper.GetAsync(source.CreateBy).Result;
     }
 }
