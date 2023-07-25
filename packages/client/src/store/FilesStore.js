@@ -314,7 +314,9 @@ class FilesStore {
       this.setFiles(newFiles);
     });
 
-    this.debouncefetchTreeFolders();
+    if (!this.publicRoomStore.isPublicRoom) {
+      this.debouncefetchTreeFolders();
+    }
   };
 
   debouncefetchTreeFolders = debounce(() => {
