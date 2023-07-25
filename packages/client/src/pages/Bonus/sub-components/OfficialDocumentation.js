@@ -3,7 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { observer, inject } from "mobx-react";
 
 import Text from "@docspace/components/text";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import StyledComponent from "../StyledComponent";
 

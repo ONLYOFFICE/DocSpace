@@ -50,7 +50,7 @@ const DataManagementWrapper = (props) => {
           size={12}
           offsetRight={5}
           place="right"
-          className={className}"
+          className={className}
           iconName={HelpReactSvgUrl}
           tooltipContent={
             <Text fontSize="12px">

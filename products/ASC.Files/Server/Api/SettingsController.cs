@@ -150,6 +150,7 @@ public class SettingsController : ApiControllerBase
     /// 
     /// </summary>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("settings")]
     public FilesSettingsHelper GetFilesSettings()
     {

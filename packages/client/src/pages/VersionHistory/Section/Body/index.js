@@ -45,7 +45,7 @@ class SectionBodyContent extends React.Component {
           this.setState({
             isRestoreProcess: restoring,
           }),
-        100
+        100,
       );
     } else {
       clearTimeout(this.timerId);
@@ -114,8 +114,7 @@ class SectionBodyContent extends React.Component {
             itemSize={this.getSize}
             itemCount={versions.length}
             itemData={versions}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
+            outerElementType={CustomScrollbarsVirtualList}>
             {this.renderRow}
           </List>
         </StyledVersionList>
@@ -139,9 +138,17 @@ class SectionBodyContent extends React.Component {
 }
 
 export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
-  const { setFirstLoad, isLoading } = clientLoadingStore;
-  const { versions, fetchFileVersions, fileId, fileSecurity } =
-    versionHistoryStore;
+  const {
+    setFirstLoad,
+    isLoading,
+    setIsSectionBodyLoading,
+  } = clientLoadingStore;
+  const {
+    versions,
+    fetchFileVersions,
+    fileId,
+    fileSecurity,
+  } = versionHistoryStore;
 
   return {
     culture: auth.settingsStore.culture,
@@ -150,7 +157,7 @@ export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
     fileId,
     fileSecurity,
     setFirstLoad,
-    setIsLoading,
+    setIsLoading: setIsSectionBodyLoading,
     fetchFileVersions,
   };
 })(observer(SectionBodyContent));

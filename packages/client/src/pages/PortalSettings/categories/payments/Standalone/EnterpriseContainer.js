@@ -1,10 +1,10 @@
 import React from "react";
-import { withRouter } from "react-router";
+
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
 
 import Text from "@docspace/components/text";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import { StyledEnterpriseComponent } from "./StyledComponent";
 import BenefitsContainer from "SRC_DIR/components/StandaloneComponents/BenefitsContainer";
@@ -57,4 +57,4 @@ export default inject(({ auth, payments }) => {
 
   const { isLicenseDateExpired } = currentTariffStatusStore;
   return { buyUrl, salesEmail, isLicenseDateExpired };
-})(withRouter(observer(EnterpriseContainer)));
+})(observer(EnterpriseContainer));

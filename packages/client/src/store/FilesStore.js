@@ -639,7 +639,8 @@ class FilesStore {
 
   updateActiveFiles = (items) => {
     this.activeFiles = items;
-};
+  };
+
   clearFiles = () => {
     this.setFolders([]);
     this.setFiles([]);
@@ -647,13 +648,14 @@ class FilesStore {
     this.selectedFolderStore.setSelectedFolder(null);
   };
 
-
   setActiveFiles = (activeFiles, destFolderId) => {
     const arrayFormation = activeFiles.map((id) => ({
       id,
       destFolderId,
     }));
 
+    this.activeFiles = arrayFormation;
+  };
 
   setActiveFolders = (activeFolders, destFolderId) => {
     const arrayFormation = activeFolders.map((id) => ({
@@ -1703,6 +1705,7 @@ class FilesStore {
 
     const canCopy = item.security?.Copy;
     const canDuplicate = item.security?.Duplicate;
+    const canDownload = item.security?.Download;
 
     if (isFile) {
       const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
@@ -1761,6 +1764,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        fileOptions = this.removeOptions(fileOptions, ["download"]);
+      }
 
       if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
         fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
@@ -1971,6 +1978,7 @@ class FilesStore {
         "mute-room",
         "unmute-room",
         "separator1",
+        "download",
         "archive-room",
         "unarchive-room",
         "delete",
@@ -1998,8 +2006,11 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["delete"]);
       }
 
-      if (!canArchiveRoom && !canRemoveRoom) {
-        roomOptions = this.removeOptions(roomOptions, ["separator1"]);
+      if (!canDownload) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "separator1",
+          "download",
+        ]);
       }
 
       if (!item.providerKey) {
@@ -2076,6 +2087,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        folderOptions = this.removeOptions(folderOptions, ["download"]);
+      }
 
       if (!canRenameItem) {
         folderOptions = this.removeOptions(folderOptions, ["rename"]);
@@ -2851,12 +2866,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3626,7 +3637,7 @@ class FilesStore {
         : authorType ||
           roomId ||
           search ||
-          !withSubfolders ||
+          withSubfolders ||
           filterType ||
           searchInContent;
 

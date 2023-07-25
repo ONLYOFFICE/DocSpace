@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router";
+
 import { inject, observer } from "mobx-react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -128,4 +128,4 @@ export default inject(({ auth, payments }) => {
   const { helpUrl, salesEmail } = payments;
   const { theme } = settingsStore;
   return { helpUrl, salesEmail, theme, isCommunity };
-})(withRouter(observer(ContactContainer)));
+})(observer(ContactContainer));

@@ -47,7 +47,7 @@ const useFiles = ({
   const fetchDefaultFiles = () => {
     const filter = FilesFilter.getDefault();
 
-    const url = getCategoryUrl(CategoryType.personal);
+    const url = getCategoryUrl(CategoryType.Personal);
 
     navigate(`${url}?${filter.toUrlParams()}`);
   };

@@ -40,14 +40,15 @@ public class MigrationRunner
 
         var migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider);
         migrationContext.Database.Migrate();
-        
+
         var teamlabContext = _dbContextActivator.CreateInstance(typeof(TeamlabSiteContext), teamlabsiteProvider);
         teamlabContext.Database.Migrate();
-                        if (configurationInfo == ConfigurationInfo.Standalone)
-                {
-                    context = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider, ConfigurationInfo.Standalone);
-                    context.Database.Migrate();
-                }
+
+        if (configurationInfo == ConfigurationInfo.Standalone)
+        {
+            migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider, ConfigurationInfo.Standalone);
+            migrationContext.Database.Migrate();
+        }
         Console.WriteLine("Applied migrations");
     }
 }

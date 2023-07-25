@@ -141,14 +141,14 @@ public class SearchSettingsHelper
         return await CanIndexByContentAsync(typeof(T));
     }
 
-    public async Task<bool> CanIndexByContentAsync(Type t)
+    public Task<bool> CanIndexByContentAsync(Type t)
     {
         if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
         {
-            return false;
+            return Task.FromResult(false);
         }
 
-        return true;
+        return Task.FromResult(true);
 
         //if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
         //{

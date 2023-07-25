@@ -109,7 +109,7 @@ public class FilesSettings : ISettings<FilesSettings>
             HideTemplatesSetting = false,
             DownloadTarGzSetting = false,
             AutomaticallyCleanUpSetting = null,
-            DefaultSharingAccessRightsSetting = null
+            DefaultSharingAccessRightsSetting = null,
         };
     }
 
@@ -126,6 +126,8 @@ public class FilesSettingsHelper
     private readonly FileUtility _fileUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly SearchSettingsHelper _searchSettingsHelper;
+    private readonly AuthContext _authContext;
+    private static readonly FilesSettings _emptySettings = new();
 
     public FilesSettingsHelper(
         SettingsManager settingsManager,
@@ -133,7 +135,8 @@ public class FilesSettingsHelper
         SetupInfo setupInfo,
         FileUtility fileUtility,
         FilesLinkUtility filesLinkUtility,
-        SearchSettingsHelper searchSettingsHelper)
+        SearchSettingsHelper searchSettingsHelper,
+        AuthContext authContext)
     {
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
@@ -141,6 +144,7 @@ public class FilesSettingsHelper
         _fileUtility = fileUtility;
         _filesLinkUtility = filesLinkUtility;
         _searchSettingsHelper = searchSettingsHelper;
+        _authContext = authContext;
     }
 
     public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
@@ -403,7 +407,7 @@ public class FilesSettingsHelper
     {
         get
         {
-            return _searchSettingsHelper.CanSearchByContent<DbFile>();
+            return _searchSettingsHelper.CanSearchByContentAsync<DbFile>().Result;
         }
     }
 
@@ -469,21 +473,31 @@ public class FilesSettingsHelper
 
     private FilesSettings Load()
     {
-        return _settingsManager.Load<FilesSettings>();
+        return !_authContext.IsAuthenticated ? _emptySettings : _settingsManager.Load<FilesSettings>();
     }
 
     private void Save(FilesSettings settings)
     {
+        if (!_authContext.IsAuthenticated)
+        {
+            return;
+        }
+        
         _settingsManager.Save(settings);
     }
 
     private FilesSettings LoadForCurrentUser()
     {
-        return _settingsManager.LoadForCurrentUser<FilesSettings>();
+        return !_authContext.IsAuthenticated ? _emptySettings : _settingsManager.LoadForCurrentUser<FilesSettings>();
     }
 
     private void SaveForCurrentUser(FilesSettings settings)
     {
+        if (!_authContext.IsAuthenticated)
+        {
+            return;
+        }
+        
         _settingsManager.SaveForCurrentUser(settings);
     }
 }

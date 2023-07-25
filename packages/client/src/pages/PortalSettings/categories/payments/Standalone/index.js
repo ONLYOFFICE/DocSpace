@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
+
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -53,11 +53,8 @@ const StandalonePage = (props) => {
 export default inject(({ auth, payments }) => {
   const { currentQuotaStore, currentTariffStatusStore } = auth;
 
-  const {
-    standaloneInit,
-    isInitPaymentPage,
-    isUpdatingBasicSettings,
-  } = payments;
+  const { standaloneInit, isInitPaymentPage, isUpdatingBasicSettings } =
+    payments;
   const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
 
@@ -69,4 +66,4 @@ export default inject(({ auth, payments }) => {
     isLoadedCurrentQuota,
     isUpdatingBasicSettings,
   };
-})(withRouter(observer(StandalonePage)));
+})(observer(StandalonePage));

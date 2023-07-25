@@ -50,6 +50,7 @@ public class OperationController : ApiControllerBase
     /// <param name="folderIds">Folder ID list</param>
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
+    [AllowAnonymous]
     [HttpPut("fileops/bulkdownload")]
     public async IAsyncEnumerable<FileOperationDto> BulkDownload(DownloadRequestDto inDto)
     {
@@ -141,6 +142,7 @@ public class OperationController : ApiControllerBase
     /// <short>Get file operations list</short>
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
+    [AllowAnonymous]
     [HttpGet("fileops")]
     public async IAsyncEnumerable<FileOperationDto> GetOperationStatuses()
     {
@@ -218,12 +220,14 @@ public class OperationController : ApiControllerBase
             yield return await GetFileEntryWrapperAsync(e);
         }
     }
+    
     /// <summary>
     ///  Finishes all the active file operations
     /// </summary>
     /// <short>Finish all</short>
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
+    [AllowAnonymous]
     [HttpPut("fileops/terminate")]
     public async IAsyncEnumerable<FileOperationDto> TerminateTasks()
     {

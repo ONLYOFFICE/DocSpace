@@ -87,6 +87,12 @@ public class FileSecurity : IFileSecurity
             {
                 FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
             }
+        },
+        {
+            FolderType.PublicRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None,
+        }
         }
     };
 
@@ -138,6 +144,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.Download,
                     FilesSecurityActions.Convert
                 }
             },
@@ -157,6 +164,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.Download
                 }
             }
     };
@@ -170,6 +178,7 @@ public class FileSecurity : IFileSecurity
     private readonly FileUtility _fileUtility;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly BadgesSettingsHelper _badgesSettingsHelper;
+    private readonly ExternalShare _externalShare;
     private readonly ConcurrentDictionary<string, FileShareRecord> _cachedRecords = new();
     private readonly ConcurrentDictionary<string, bool> _cachedFullAccess = new();
 
@@ -183,7 +192,8 @@ public class FileSecurity : IFileSecurity
         FileSecurityCommon fileSecurityCommon,
         FileUtility fileUtility,
         StudioNotifyHelper studioNotifyHelper,
-        BadgesSettingsHelper badgesSettingsHelper)
+        BadgesSettingsHelper badgesSettingsHelper, 
+        ExternalShare externalShare)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -195,6 +205,7 @@ public class FileSecurity : IFileSecurity
         _fileUtility = fileUtility;
         _studioNotifyHelper = studioNotifyHelper;
         _badgesSettingsHelper = badgesSettingsHelper;
+        _externalShare = externalShare;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -274,7 +285,7 @@ public class FileSecurity : IFileSecurity
 
     public async Task<bool> CanDownloadAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        if (!await CanReadAsync(entry, userId))
+        if (!await CanAsync(entry, userId, FilesSecurityActions.Download))
         {
             return false;
         }
@@ -292,7 +303,6 @@ public class FileSecurity : IFileSecurity
         return CheckDenySharing(entry);
     }
 
-    public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     public Task<bool> CanConvert<T>(FileEntry<T> entry, Guid userId)
     {
         return CanAsync(entry, userId, FilesSecurityActions.Convert);
@@ -644,9 +654,9 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
-        if (entry.Security != null && entry.Security.ContainsKey(action))
+        if (entry.Security != null && entry.Security.TryGetValue(action, out var result))
         {
-            return entry.Security[action];
+            return result;
         }
 
         var user = await _userManager.GetUsersAsync(userId);
@@ -724,7 +734,7 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin, bool isCollaborator)
     {
-        if (!isAuthenticated && userId != FileConstant.ShareLinkId)
+        if (!isAuthenticated && action is not (FilesSecurityActions.Read or FilesSecurityActions.Download))
         {
             return false;
         }
@@ -769,7 +779,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (action == FilesSecurityActions.Copy && isRoom)
+                if (action is FilesSecurityActions.Copy or FilesSecurityActions.Duplicate && isRoom)
                 {
                     return false;
                 }
@@ -801,11 +811,10 @@ public class FileSecurity : IFileSecurity
                     }
                 }
             }
-            else
+            else if (isAuthenticated)
             {
                 if (folder.FolderType == FolderType.VirtualRooms)
                 {
-                    // all can read VirtualRooms folder
                     return true;
                 }
 
@@ -936,6 +945,12 @@ public class FileSecurity : IFileSecurity
             }
         }
 
+        if (ace is { SubjectType: SubjectType.ExternalLink } && ace.Subject != userId && 
+            await _externalShare.ValidateRecordAsync(ace, null) != Status.Ok)
+        {
+            return false;
+        }
+
         var defaultShare = userId == FileConstant.ShareLinkId
                 ? FileShare.Restrict
                 : e.RootFolderType == FolderType.VirtualRooms
@@ -961,8 +976,7 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
-                if (e.Access == FileShare.Comment ||
-                    e.Access == FileShare.Review ||
+                if (e.Access is FileShare.Comment or FileShare.Review ||
                     e.Access == FileShare.CustomFilter ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
@@ -1103,6 +1117,12 @@ public class FileSecurity : IFileSecurity
                     return true;
                 }
                 break;
+            case FilesSecurityActions.Download:
+                if (e.Access != FileShare.Restrict && ace?.Options is not { DenyDownload: true })
+                {
+                    return true;
+        }
+                break;
         }
 
         if (e.Access != FileShare.Restrict &&
@@ -1122,7 +1142,7 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    public async Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions fileShareOptions = null)
+    public async Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions options = null)
     {
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
@@ -1134,7 +1154,7 @@ public class FileSecurity : IFileSecurity
             Owner = _authContext.CurrentAccount.ID,
             Share = share,
             SubjectType = subjectType,
-            FileShareOptions = fileShareOptions,
+            Options = options,
         };
 
         await securityDao.SetShareAsync(r);
@@ -1282,8 +1302,8 @@ public class FileSecurity : IFileSecurity
             _ => new[] { await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory), await _globalFolder.GetFolderArchiveAsync(_daoFactory) }
         };
 
-       var rooms = await folderDao.GetRoomsAsync(roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries, rootFoldersIds)
-            .Where(r => Filter(r, roomsIds)).ToListAsync();
+        var rooms = await folderDao.GetRoomsAsync(roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries, rootFoldersIds)
+             .Where(r => Filter(r, roomsIds)).ToListAsync();
         var thirdPartyRooms = await folderThirdPartyDao.GetFakeRoomsAsync(rootFoldersIds.Select(id => id.ToString()), thirdPartyRoomsIds.Keys, filterType,
                 tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries)
             .Where(r => Filter(r, thirdPartyRoomsIds)).ToListAsync();
@@ -1625,6 +1645,14 @@ public class FileSecurity : IFileSecurity
         // User, Departments, admin, everyone
 
         var result = new List<Guid> { userId };
+
+        var linkId = await _externalShare.GetLinkIdAsync();
+
+        if (linkId != default)
+        {
+            result.Add(linkId);
+        }
+
         if (userId == FileConstant.ShareLinkId)
         {
             return result;
@@ -1762,6 +1790,7 @@ public class FileSecurity : IFileSecurity
         Mute,
         EditAccess,
         Duplicate,
+        Download,
         Convert
     }
 }

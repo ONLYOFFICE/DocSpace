@@ -52,7 +52,8 @@ class FilterStore {
       this.filter.employeeStatus ||
       this.filter.payments ||
       this.filter.search ||
-      this.filter.role
+      this.filter.role ||
+      this.filter.accountLoginType
     );
   }
 }

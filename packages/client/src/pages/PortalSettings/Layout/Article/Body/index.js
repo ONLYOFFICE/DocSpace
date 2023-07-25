@@ -103,7 +103,6 @@ const getTreeItems = (data, path, t) => {
 const ArticleBodyContent = (props) => {
   const {
     t,
-
     tReady,
     setIsLoadedArticleBody,
     toggleArticleOpen,
@@ -111,6 +110,9 @@ const ArticleBodyContent = (props) => {
     isNotPaidPeriod,
     isOwner,
     isLoadedArticleBody,
+    standalone,
+    isEnterprise,
+    isCommunity,
   } = props;
 
   const [selectedKeys, setSelectedKeys] = React.useState([]);
@@ -218,7 +220,6 @@ const ArticleBodyContent = (props) => {
   };
 
   const mapKeys = (tKey) => {
-
     switch (tKey) {
       case "AccessRights":
         return t("Common:AccessRights");

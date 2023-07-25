@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { Base } from "../themes";
 
-const StyledSlider = styled.input.attrs(() => ({
+const StyledSlider = styled.input.attrs((props) => ({
   type: "range",
   disabled: props.isDisabled,
 }))`

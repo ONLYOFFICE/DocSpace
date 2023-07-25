@@ -807,7 +807,6 @@ const SectionHeaderContent = (props) => {
       .catch((err) => toastr.error(err));
   }, [resendInvitesAgain]);
 
-
   const headerMenu = isAccountsPage
     ? getAccountsHeaderMenu(t)
     : getHeaderMenu(t);
@@ -1055,6 +1054,16 @@ export default inject(
     } = headerMenuStore;
 
     const { setSelected: setAccountsSelected } = selectionStore;
+
+    let folderPath = navigationPath;
+
+    if (isFrame && !!pathParts) {
+      folderPath = navigationPath.filter((item) => !item.isRootRoom);
+    }
+
+    const isRoot = isFrame
+      ? pathParts?.length === 1 || pathParts?.length === 2
+      : pathParts?.length === 1;
 
     return {
       isGracePeriod,

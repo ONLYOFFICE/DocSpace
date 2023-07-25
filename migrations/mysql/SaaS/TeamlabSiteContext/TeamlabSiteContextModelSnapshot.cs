@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations
+namespace ASC.Migrations.MySql.SaaS.Migrations
 {
     [DbContext(typeof(TeamlabSiteContext))]
     partial class TeamlabSiteContextModelSnapshot : ModelSnapshot

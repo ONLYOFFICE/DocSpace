@@ -46,6 +46,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly StorageFactory _storageFactory;
     private readonly TenantQuotaController _tenantQuotaController;
     private readonly FileUtility _fileUtility;
@@ -78,6 +79,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
         IQuotaService quotaService,
+        EmailValidationKeyProvider emailValidationKeyProvider,
         StorageFactory storageFactory,
         TenantQuotaController tenantQuotaController)
         : base(
@@ -108,6 +110,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
         _storageFactory = storageFactory;
         _tenantQuotaController = tenantQuotaController;
         _fileUtility = fileUtility;
@@ -265,7 +268,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = GetFilesQueryWithFilters(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext);
+        var q = await GetFilesQueryWithFilters(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext);
 
         q = q.Skip(offset);
 
@@ -287,7 +290,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
-        var storage = _await _globalStore.GetStoreAsync();
+        var storage = await _globalStore.GetStoreAsync();
 
         if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title)
             && (_fileUtility.CanMediaView(file.Title) || _fileUtility.CanImageView(file.Title)))
@@ -300,11 +303,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
                                                      });
         }
 
-        return await storage.GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
-                                                 new List<string>
-                                                     {
-                                                             string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
-                                                     });
+        var path = GetUniqFilePath(file);
+        var headers = new List<string>
+        {
+            string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
+        };
+
+        if (!_authContext.IsAuthenticated)
+        {
+            headers.Add(SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider));
+        }
+
+        return await storage.GetPreSignedUriAsync(string.Empty, path, expires, headers);
     }
 
     public async Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
@@ -497,7 +507,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return await GetFilesQueryWithFilters(parentId, null, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext).CountAsync();
+        return await (await GetFilesQueryWithFilters(parentId, null, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext)).CountAsync();
     }
 
     public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
@@ -696,7 +706,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 var tenantId = _tenantManager.GetCurrentTenant().Id;
                 _tenantQuotaController.Init(tenantId, ThumbnailTitle);
-                var store = _storageFactory.GetStorage(tenantId, FileConstant.StorageModule, _tenantQuotaController);
+                var store = await _storageFactory.GetStorageAsync(tenantId, FileConstant.StorageModule, _tenantQuotaController);
                 await store.DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
             }
 
@@ -1466,7 +1476,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return dbFile;
     }
 
-    private IQueryable<DbFile> GetFilesQueryWithFilters(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent,
+    private async Task<IQueryable<DbFile>> GetFilesQueryWithFilters(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent,
         bool withSubfolders, bool excludeSubject, FilesDbContext filesDbContext)
     {
         var q = GetFileQuery(filesDbContext, r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();

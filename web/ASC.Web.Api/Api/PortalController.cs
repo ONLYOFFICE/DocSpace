@@ -185,10 +185,6 @@ public class PortalController : ControllerBase
             CustomMode = _coreBaseSettings.CustomMode,
             Opensource = _tenantExtra.Opensource,
             Enterprise = _tenantExtra.Enterprise,
-            Tariff = await _tenantExtra.GetCurrentTariffAsync(),
-            Quota = await _tenantManager.GetCurrentTenantQuotaAsync(),
-            NotPaid = await _tenantExtra.IsNotPaidAsync(),
-            LicenseAccept = (await _settingsManager.LoadForCurrentUserAsync<TariffSettings>()).LicenseAcceptSetting,
             EnableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                 (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
                 && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl)
@@ -199,9 +195,9 @@ public class PortalController : ControllerBase
 
         if (_authContext.IsAuthenticated)
         {
-            result.Tariff = _tenantExtra.GetCurrentTariff(refresh);
-            result.Quota = await _quotaHelper.GetCurrentQuota(refresh);
-            result.NotPaid = _tenantExtra.IsNotPaid();
+            result.Tariff = await _tenantExtra.GetCurrentTariffAsync(refresh);
+            result.Quota = await _quotaHelper.GetCurrentQuotaAsync(refresh);
+            result.NotPaid = await _tenantExtra.IsNotPaidAsync();
             result.LicenseAccept = _settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting;
             result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
             result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
@@ -544,7 +540,7 @@ public class PortalController : ControllerBase
         }
 
         _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id));
-        
+
         await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, redirectLink);
 
         return redirectLink;

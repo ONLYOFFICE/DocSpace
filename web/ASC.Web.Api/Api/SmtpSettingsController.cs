@@ -78,7 +78,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [HttpPost("smtp")]
-    public async Task<SmtpSettingsDto> SaveSmtpSettingsAsync( SmtpSettingsDto inDto)
+    public async Task<SmtpSettingsDto> SaveSmtpSettingsAsync(SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 
@@ -123,7 +123,7 @@ public class SmtpSettingsController : ControllerBase
     {
         CheckSmtpPermissions();
 
-        if (!(await _coreConfiguration.GetSmtpSettingsAsync()).IsDefaultSettings)
+        if (!(await _coreConfiguration.GetDefaultSmtpSettingsAsync()).IsDefaultSettings)
         {
             await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
             await _coreConfiguration.SetSmtpSettingsAsync(null);
@@ -138,11 +138,11 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [HttpGet("smtp/test")]
-    public SmtpOperationStatusRequestsDto TestSmtpSettings()
+    public async Task<SmtpOperationStatusRequestsDto> TestSmtpSettings()
     {
         CheckSmtpPermissions();
 
-        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(_coreConfiguration.SmtpSettings);
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(await _coreConfiguration.GetDefaultSmtpSettingsAsync());
 
         var tenant = _tenantManager.GetCurrentTenant();
 

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
 
 import AlertComponent from "../../AlertComponent";
 import Loaders from "../../Loaders";
@@ -25,6 +24,8 @@ const ArticleEnterpriseAlert = ({
 }) => {
   const { t, ready } = useTranslation("Common");
 
+  const navigate = useNavigate();
+
   const [isClose, setIsClose] = useState(
     localStorage.getItem("enterpriseAlertClose")
   );
@@ -39,7 +40,7 @@ const ArticleEnterpriseAlert = ({
       PROXY_BASE_URL,
       "/payments/portal-payments"
     );
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
     toggleArticleOpen();
   };
 
@@ -95,29 +96,24 @@ const ArticleEnterpriseAlert = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const {
-      currentQuotaStore,
-      settingsStore,
-      currentTariffStatusStore,
-      isEnterprise,
-    } = auth;
-    const { isTrial } = currentQuotaStore;
-    const { theme, toggleArticleOpen } = settingsStore;
-    const {
-      isLicenseDateExpired,
-      trialDaysLeft,
-      paymentDate,
-    } = currentTariffStatusStore;
-    return {
-      isEnterprise,
-      isTrial,
-      isLicenseDateExpired,
-      trialDaysLeft,
-      paymentDate,
-      theme,
-      toggleArticleOpen,
-    };
-  })(observer(ArticleEnterpriseAlert))
-);
+export default inject(({ auth }) => {
+  const {
+    currentQuotaStore,
+    settingsStore,
+    currentTariffStatusStore,
+    isEnterprise,
+  } = auth;
+  const { isTrial } = currentQuotaStore;
+  const { theme, toggleArticleOpen } = settingsStore;
+  const { isLicenseDateExpired, trialDaysLeft, paymentDate } =
+    currentTariffStatusStore;
+  return {
+    isEnterprise,
+    isTrial,
+    isLicenseDateExpired,
+    trialDaysLeft,
+    paymentDate,
+    theme,
+    toggleArticleOpen,
+  };
+})(observer(ArticleEnterpriseAlert));

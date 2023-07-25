@@ -104,7 +104,7 @@ const getSearchParams = (filterValues) => {
     "key"
   );
 
-  return searchParams || "true";
+  return searchParams || FilterKeys.excludeSubfolders;
 };
 
 const getType = (filterValues) => {
@@ -366,7 +366,8 @@ const SectionFilterContent = ({
         }
 
         newFilter.withSubfolders =
-          withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
+          withSubfolders === FilterKeys.excludeSubfolders ? null : "true";
+        console.log(data);
         newFilter.searchInContent = withContent === "true" ? "true" : null;
 
         const path = location.pathname.split("/filter")[0];
@@ -783,10 +784,10 @@ const SectionFilterContent = ({
         });
       }
     } else {
-      if (filter.withSubfolders === "false") {
+      if (filter.withSubfolders === "true") {
         filterValues.push({
-          key: FilterKeys.excludeSubfolders,
-          label: t("ExcludeSubfolders"),
+          key: FilterKeys.withSubfolders,
+          label: t("WithSubfolders"),
           group: FilterGroups.filterFolders,
         });
       }
@@ -1418,14 +1419,14 @@ const SectionFilterContent = ({
             withOptions: true,
             options: [
               {
-                id: "filter_folders_with-subfolders",
-                key: FilterKeys.withSubfolders,
-                label: t("WithSubfolders"),
-              },
-              {
                 id: "filter_folders_exclude-subfolders",
                 key: FilterKeys.excludeSubfolders,
                 label: t("ExcludeSubfolders"),
+              },
+              {
+                id: "filter_folders_with-subfolders",
+                key: FilterKeys.withSubfolders,
+                label: t("WithSubfolders"),
               },
             ],
           },
@@ -1933,7 +1934,7 @@ const SectionFilterContent = ({
           newFilter.excludeSubject = null;
         }
         if (group === FilterGroups.filterFolders) {
-          newFilter.withSubfolders = "true";
+          newFilter.withSubfolders = null;
         }
         if (group === FilterGroups.filterContent) {
           newFilter.searchInContent = null;
