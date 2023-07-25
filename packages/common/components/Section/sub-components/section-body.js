@@ -64,14 +64,13 @@ const settingsStudioStyles = css`
 `;
 
 const paddingStyles = css`
-  padding: 19px 3px 16px 20px;
   ${props =>
     props.theme.interfaceDirection === "rtl"
       ? css`
-          padding: 19px 20px 16px 3px;
+          padding: 0px 20px 16px 3px;
         `
       : css`
-          padding: 19px 3px 16px 20px;
+          padding: 0px 3px 16px 20px;
         `}
   outline: none;
 
@@ -132,7 +131,14 @@ const commonStyles = css`
     ${props =>
       props.viewAs == "tile" &&
       css`
-        padding-left: 20px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding-right: 20px;
+              `
+            : css`
+                padding-left: 20px;
+              `}
       `}
 
     ${props =>
@@ -184,16 +190,37 @@ const StyledSectionBody = styled.div`
   ${props =>
     props.withScroll &&
     css`
-      margin-left: -20px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -20px;
+            `
+          : css`
+              margin-left: -20px;
+            `}
 
       @media ${tablet} {
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       }
     `}
 
   ${isMobile &&
   css`
-    margin-left: -24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -24px;
+          `
+        : css`
+            margin-left: -24px;
+          `}
   `}
 
     .additional-scroll-height {
@@ -218,15 +245,36 @@ const StyledDropZoneBody = styled(DragAndDrop)`
   ${props =>
     props.withScroll &&
     css`
-      margin-left: -20px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -20px;
+            `
+          : css`
+              margin-left: -20px;
+            `}
 
       @media ${tablet} {
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       }
 
       ${isMobile &&
       css`
-        margin-left: -24px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: -24px;
+              `
+            : css`
+                margin-left: -24px;
+              `}
       `}
     `}
 `;

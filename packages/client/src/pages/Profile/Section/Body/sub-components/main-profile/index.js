@@ -37,8 +37,9 @@ import { HelpButton, Tooltip } from "@docspace/components";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import { SSO_LABEL } from "SRC_DIR/helpers/constants";
+import { useTheme } from "styled-components";
 
-const MainProfile = (props) => {
+const MainProfile = props => {
   const { t } = useTranslation(["Profile", "Common"]);
 
   const {
@@ -64,7 +65,8 @@ const MainProfile = (props) => {
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
-
+  const { interfaceDirection } = useTheme();
+  const dirTooltip = interfaceDirection === "rtl" ? "left" : "right";
   useEffect(() => {
     checkWidth();
     window.addEventListener("resize", checkWidth);
@@ -99,8 +101,7 @@ const MainProfile = (props) => {
         <Link
           href={`mailto:${documentationEmail}`}
           isHovered={true}
-          color={theme.profileInfo.tooltipLinkColor}
-        >
+          color={theme.profileInfo.tooltipLinkColor}>
           {{ supportEmail: documentationEmail }}
         </Link>
         to take part in the translation and get up to 1 year free of charge."
@@ -109,8 +110,7 @@ const MainProfile = (props) => {
         color={theme.profileInfo.tooltipLinkColor}
         isHovered={true}
         href={`${helpLink}/guides/become-translator.aspx`}
-        target="_blank"
-      >
+        target="_blank">
         {t("Common:LearnMore")}
       </Link>
     </Text>
@@ -121,18 +121,18 @@ const MainProfile = (props) => {
   const { cultureName, currentCulture } = profile;
   const language = convertLanguage(cultureName || currentCulture || culture);
 
-  const selectedLanguage = cultureNames.find((item) => item.key === language) ||
-    cultureNames.find((item) => item.key === culture) || {
+  const selectedLanguage = cultureNames.find(item => item.key === language) ||
+    cultureNames.find(item => item.key === culture) || {
       key: language,
       label: "",
     };
 
-  const onLanguageSelect = (language) => {
+  const onLanguageSelect = language => {
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key)
       .then(() => location.reload())
-      .catch((error) => {
+      .catch(error => {
         toastr.error(error && error.message ? error.message : error);
       });
   };
@@ -166,8 +166,7 @@ const MainProfile = (props) => {
       </StyledAvatarWrapper>
       <StyledInfo
         withActivationBar={withActivationBar}
-        currentColorScheme={currentColorScheme}
-      >
+        currentColorScheme={currentColorScheme}>
         <div className="rows-container">
           <div className="profile-block">
             <StyledLabel as="div">{t("Common:Name")}</StyledLabel>
@@ -178,21 +177,19 @@ const MainProfile = (props) => {
 
             <StyledLabel
               as="div"
-              marginTopProp={withActivationBar ? "34px" : "16px"}
-            >
+              marginTopProp={withActivationBar ? "34px" : "16px"}>
               {t("Common:Password")}
             </StyledLabel>
 
             <StyledLabel
               as="div"
               className="profile-language"
-              marginTopProp="15px"
-            >
+              marginTopProp="15px">
               {t("Common:Language")}
               <HelpButton
                 size={12}
                 offsetRight={0}
-                place="right"
+                place={dirTooltip}
                 tooltipContent={tooltipLanguage}
               />
             </StyledLabel>
@@ -232,14 +229,13 @@ const MainProfile = (props) => {
                   data-tip={t("EmailNotVerified")}
                   as="div"
                   className="email-text-container"
-                  fontWeight={600}
-                >
+                  fontWeight={600}>
                   {profile.email}
                 </Text>
                 {withActivationBar && (
                   <Tooltip
                     id="emailTooltip"
-                    getContent={(dataTip) => (
+                    getContent={dataTip => (
                       <Text fontSize="12px">{dataTip}</Text>
                     )}
                     effect="float"
@@ -258,8 +254,7 @@ const MainProfile = (props) => {
               {withActivationBar && (
                 <div
                   className="send-again-container"
-                  onClick={sendActivationLinkAction}
-                >
+                  onClick={sendActivationLinkAction}>
                   <ReactSVG
                     className="send-again-icon"
                     src={SendClockReactSvgUrl}
@@ -314,8 +309,7 @@ const MainProfile = (props) => {
               <Text
                 className="mobile-profile-label-field"
                 fontWeight={600}
-                truncate
-              >
+                truncate>
                 {profile.displayName}
               </Text>
             </div>
@@ -338,15 +332,14 @@ const MainProfile = (props) => {
                     data-tip={t("EmailNotVerified")}
                     as="div"
                     className="email-text-container"
-                    fontWeight={600}
-                  >
+                    fontWeight={600}>
                     {profile.email}
                   </Text>
                 </div>
                 {withActivationBar && (
                   <Tooltip
                     id="emailTooltip"
-                    getContent={(dataTip) => (
+                    getContent={dataTip => (
                       <Text fontSize="12px">{dataTip}</Text>
                     )}
                     effect="float"
@@ -357,8 +350,7 @@ const MainProfile = (props) => {
               {withActivationBar && (
                 <div
                   className="send-again-container"
-                  onClick={sendActivationLinkAction}
-                >
+                  onClick={sendActivationLinkAction}>
                   <ReactSVG
                     className="send-again-icon"
                     src={SendClockReactSvgUrl}

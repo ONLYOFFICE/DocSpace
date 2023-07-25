@@ -10,9 +10,16 @@ const StyledScrollbar = styled(Scrollbar)`
       box-sizing: border-box;
       & > .scroll-body {
         overflow: hidden !important;
-
-        padding-right: 17px !important;
-        margin-right: 0 !important;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding-left: 17px !important;
+                margin-left: 0 !important;
+              `
+            : css`
+                padding-right: 17px !important;
+                margin-right: 0 !important;
+              `}
 
         padding-bottom: 20px !important;
         margin-bottom: 0 !important;
@@ -27,8 +34,7 @@ const SubInfoPanelBody = ({ children, isInfoPanelScrollLocked }) => {
     <StyledScrollbar
       $isScrollLocked={isInfoPanelScrollLocked}
       scrollclass="section-scroll"
-      stype="mediumBlack"
-    >
+      stype="mediumBlack">
       {content}
     </StyledScrollbar>
   );
