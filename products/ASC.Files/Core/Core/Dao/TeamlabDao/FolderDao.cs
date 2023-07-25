@@ -239,7 +239,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             return 0;
         }
-        
+
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
         if (filterType == FilterType.None && subjectId == default && string.IsNullOrEmpty(searchText) && !withSubfolders && !excludeSubject)
@@ -252,7 +252,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await q.CountAsync();
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, 
+    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false,
         bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType) || count == 0)
@@ -783,29 +783,34 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return moved;
     }
 
-    public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, string to)
+    public Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, string to)
     {
-        return Task.FromResult((IDictionary<int, string>)new Dictionary<int, string>());
+        return Task.FromResult((IDictionary<int, TTo>)new Dictionary<int, TTo>());
     }
 
-    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, int to)
+    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, int to)
     {
-        var result = new Dictionary<int, string>();
+        if (typeof(TTo) == typeof(string))
+        {
+            return new Dictionary<int, TTo>();
+        }
+
+        var result = new Dictionary<int, TTo>();
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
@@ -846,7 +851,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 foreach (var file in files)
                 {
-                    result[file.Id] = file.Title;
+                    result[file.Id] = (TTo)Convert.ChangeType(conflict, typeof(TTo));
                 }
 
                 var childs = await Query(filesDbContext.Folders)
@@ -857,7 +862,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 foreach (var pair in await CanMoveOrCopyAsync(childs, conflict))
                 {
-                    result.Add(pair.Key, pair.Value);
+                    result.Add(pair.Key, (TTo)Convert.ChangeType(pair.Value, typeof(TTo)));
                 }
             }
         }
@@ -1493,7 +1498,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (rootFolderType != FolderType.VirtualRooms && rootFolderType != FolderType.Archive)
         {
-            return (-1,"");
+            return (-1, "");
         }
 
         var rootFolderId = Convert.ToInt32(fileEntry.RootId);
@@ -1510,14 +1515,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             return (entryId, fileEntry.Title);
         }
-        
+
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var parentFolders = await filesDbContext.Tree
             .Join(filesDbContext.Folders, r => r.ParentId, s => s.Id, (t, f) => new { Tree = t, Folders = f })
             .Where(r => r.Tree.FolderId == folderId)
             .OrderByDescending(r => r.Tree.Level)
-            .Select(r => new { r.Tree.ParentId, r.Folders.Title})
+            .Select(r => new { r.Tree.ParentId, r.Folders.Title })
             .ToListAsync();
 
         if (parentFolders.Count > 1)
@@ -1691,7 +1696,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         return _globalStore.GetStore().CreateDataWriteOperator(chunkedUploadSession, sessionHolder);
     }
-    
+
     private IQueryable<DbFolder> GetFoldersQueryWithFilters(int parentId, OrderBy orderBy, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders, bool excludeSubject,
         FilesDbContext filesDbContext)
     {

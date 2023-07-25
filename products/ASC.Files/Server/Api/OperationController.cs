@@ -200,27 +200,45 @@ public class OperationController : ApiControllerBase
     [HttpGet("fileops/move")]
     public async IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        List<object> checkedFiles;
-        List<object> checkedFolders;
+        await foreach (var e in MoveOrCopyBatchCheckFullAsync(inDto))
+        {
+            yield return e.EntryFrom;
+        }
+    }
+
+    /// <visible>false</visible>
+    [HttpGet("fileops/move/full")]
+    public async IAsyncEnumerable<MoveDto> MoveOrCopyBatchCheckFullAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
+    {
+        var checkedFiles = new List<object>();
+        var conflictFiles = new List<object>();
+        var checkedFolders = new List<object>();
+        var conflictFolders = new List<object>();
 
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
-            (checkedFiles, checkedFolders) = await _fileStorageServiceString.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetInt32());
+            ((checkedFiles, conflictFiles), (checkedFolders, conflictFolders)) = await _fileStorageServiceString.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetInt32());
         }
         else
         {
-            (checkedFiles, checkedFolders) = await _fileStorageServiceString.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetString());
+            ((checkedFiles, conflictFiles), (checkedFolders, conflictFolders)) = await _fileStorageServiceString.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetString());
         }
 
         var entries = await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
-
         entries.AddRange(await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-        foreach (var e in entries)
+
+        var conflictEntries = await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
+        conflictEntries.AddRange(await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
+
+        for (var i = 0; i < entries.Count; i++)
         {
-            yield return await GetFileEntryWrapperAsync(e);
+            var entry = entries[i];
+            var conflictEntry = conflictEntries[i];
+            yield return new MoveDto() { EntryFrom = await GetFileEntryWrapperAsync(entry), EntryTo = await GetFileEntryWrapperAsync(conflictEntry) };
         }
     }
+
     /// <summary>
     ///  Finishes all the active file operations
     /// </summary>
