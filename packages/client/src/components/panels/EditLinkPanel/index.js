@@ -9,6 +9,7 @@ import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
+import Portal from "@docspace/components/portal";
 
 import {
   StyledEditLinkPanel,
@@ -21,6 +22,7 @@ import ToggleBlock from "./ToggleBlock";
 import PasswordAccessBlock from "./PasswordAccessBlock";
 import LimitTimeBlock from "./LimitTimeBlock";
 import { LinkType } from "../../../helpers/constants";
+import { isMobileOnly } from "react-device-detect";
 
 const EditLinkPanel = (props) => {
   const {
@@ -160,18 +162,19 @@ const EditLinkPanel = (props) => {
     ? `${t("Files:LinkValidUntil")}:`
     : t("Files:ChooseExpirationDate");
 
-  return (
+  const editLinkPanelComponent = (
     <StyledEditLinkPanel isExpired={isExpired}>
       <Backdrop
         onClick={onClosePanel}
         visible={visible}
         isAside={true}
-        zIndex={210}
+        zIndex={310}
       />
       <Aside
         className="edit-link-panel"
         visible={visible}
         onClose={onClosePanel}
+        zIndex={310}
       >
         <div className="edit-link_header">
           <Heading className="edit-link_heading">
@@ -240,6 +243,20 @@ const EditLinkPanel = (props) => {
       </Aside>
     </StyledEditLinkPanel>
   );
+
+  const renderPortal = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={editLinkPanelComponent}
+        appendTo={rootElement}
+        visible={visible}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortal() : editLinkPanelComponent;
 };
 
 export default inject(({ auth, dialogsStore, publicRoomStore }) => {
