@@ -603,18 +603,19 @@ internal class GoogleDriveStorage : IDisposable
         request.Content = new StreamContent(stream);
         if (googleDriveSession.BytesToTransfer > 0)
         {
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           googleDriveSession.BytesTransfered,
-                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                           googleDriveSession.BytesToTransfer));
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(
+                                                       googleDriveSession.BytesTransfered,
+                                                       googleDriveSession.BytesTransfered + chunkLength - 1,
+                                                       googleDriveSession.BytesToTransfer);
         }
         else
         {
             var bytesToTransfer = lastChunk ? (googleDriveSession.BytesTransfered + chunkLength).ToString() : "*";
-            request.Headers.Add("Content-Range", string.Format("bytes {0}-{1}/{2}",
-                                                           googleDriveSession.BytesTransfered,
-                                                           googleDriveSession.BytesTransfered + chunkLength - 1,
-                                                           bytesToTransfer));
+
+            request.Content.Headers.ContentRange = new ContentRangeHeaderValue(
+                                           googleDriveSession.BytesTransfered,
+                                           googleDriveSession.BytesTransfered + chunkLength - 1,
+                                           Convert.ToInt64(bytesToTransfer));
         }
         var httpClient = _clientFactory.CreateClient();
         HttpResponseMessage response;
