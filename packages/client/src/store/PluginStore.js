@@ -8,7 +8,9 @@ import defaultConfig from "PUBLIC_DIR/scripts/config.json";
 import {
   PluginFileType,
   PluginScopes,
+  PluginUsersType,
 } from "SRC_DIR/helpers/plugins/constants";
+import { getPluginUrl } from "SRC_DIR/helpers/plugins/utils";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
 let { orign: apiOrigin, prefix: apiPrefix } = apiConf;
@@ -28,6 +30,7 @@ class PluginStore {
   infoPanelItems = null;
   mainButtonItems = null;
   profileMenuItems = null;
+  eventListenerItems = null;
 
   pluginFrame = null;
 
@@ -46,6 +49,7 @@ class PluginStore {
     this.infoPanelItems = new Map();
     this.mainButtonItems = new Map();
     this.profileMenuItems = new Map();
+    this.eventListenerItems = new Map();
 
     makeAutoObservable(this);
   }
@@ -164,19 +168,19 @@ class PluginStore {
       }
     }
 
-    if (plugin.enabled && plugin.onLoadCallback) {
+    if (!plugin || !plugin.enabled) return;
+
+    if (plugin.onLoadCallback) {
       plugin.onLoadCallback();
     }
 
-    if (plugin.scopes.includes(PluginScopes.API) && plugin.enabled) {
+    if (plugin.scopes.includes(PluginScopes.API)) {
       plugin.setAPI(origin, proxy, prefix);
     }
 
     if (
-      plugin &&
       plugin.scopes.includes(PluginScopes.ContextMenu) &&
-      plugin.contextMenuItems &&
-      plugin.enabled
+      plugin.contextMenuItems
     ) {
       Array.from(plugin.contextMenuItems).map(([key, value]) => {
         this.contextMenuItems.set(key, value);
@@ -184,13 +188,38 @@ class PluginStore {
     }
 
     if (
-      plugin &&
       plugin.scopes.includes(PluginScopes.InfoPanel) &&
-      plugin.infoPanelItems &&
-      plugin.enabled
+      plugin.infoPanelItems
     ) {
       Array.from(plugin.infoPanelItems).map(([key, value]) => {
         this.infoPanelItems.set(key, value);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.MainButton) &&
+      plugin.mainButtonItems
+    ) {
+      Array.from(plugin.mainButtonItems).map(([key, value]) => {
+        this.mainButtonItems.set(key, value);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.ProfileMenu) &&
+      plugin.profileMenuItems
+    ) {
+      Array.from(plugin.profileMenuItems).map(([key, value]) => {
+        this.profileMenuItems.set(key, value);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.EventListener) &&
+      plugin.eventListenerItems
+    ) {
+      Array.from(plugin.eventListenerItems).map(([key, value]) => {
+        this.eventListenerItems.set(key, value);
       });
     }
   };
@@ -206,10 +235,11 @@ class PluginStore {
   deactivatePlugin = async (id) => {
     const plugin = this.plugins.find((p) => p.id === id);
 
+    if (!plugin) return;
+
     plugin.enabled = false;
 
     if (
-      plugin &&
       plugin.scopes.includes(PluginScopes.ContextMenu) &&
       plugin.contextMenuItems
     ) {
@@ -219,12 +249,38 @@ class PluginStore {
     }
 
     if (
-      plugin &&
       plugin.scopes.includes(PluginScopes.InfoPanel) &&
       plugin.infoPanelItems
     ) {
       Array.from(plugin.infoPanelItems).map(([key, value]) => {
         this.infoPanelItems.delete(key);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.ProfileMenu) &&
+      plugin.profileMenuItems
+    ) {
+      Array.from(plugin.profileMenuItems).map(([key, value]) => {
+        this.profileMenuItems.delete(key);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.MainButton) &&
+      plugin.mainButtonItems
+    ) {
+      Array.from(plugin.mainButtonItems).map(([key, value]) => {
+        this.mainButtonItems.delete(key);
+      });
+    }
+
+    if (
+      plugin.scopes.includes(PluginScopes.EventListener) &&
+      plugin.eventListenerItems
+    ) {
+      Array.from(plugin.eventListenerItems).map(([key, value]) => {
+        this.eventListenerItems.delete(key);
       });
     }
   };
@@ -251,8 +307,28 @@ class PluginStore {
     return plugin;
   };
 
+  getUserRole = () => {
+    const { user } = this.authStore.userStore;
+
+    const { isOwner, isAdmin, isCollaborator, isVisitor } = user;
+
+    const userRole = isOwner
+      ? PluginUsersType.owner
+      : isAdmin
+      ? PluginUsersType.docSpaceAdmin
+      : isCollaborator
+      ? PluginUsersType.collaborator
+      : isVisitor
+      ? PluginUsersType.user
+      : PluginUsersType.roomAdmin;
+
+    return userRole;
+  };
+
   getContextMenuKeysByType = (type, fileExst) => {
     if (!this.contextMenuItems) return;
+
+    const userRole = this.getUserRole();
 
     const itemsMap = Array.from(this.contextMenuItems);
     const keys = [];
@@ -261,28 +337,52 @@ class PluginStore {
       case PluginFileType.Files:
         itemsMap.forEach(([key, item]) => {
           if (item.fileType.includes(PluginFileType.Files)) {
-            if (item.fileExt.includes(fileExst)) {
-              keys.push(item.key);
+            if (item.fileExt) {
+              if (item.fileExt.includes(fileExst)) {
+                if (item.usersType) {
+                  if (item.usersType.includes(userRole)) keys.push(item.key);
+                } else {
+                  keys.push(item.key);
+                }
+              }
+            } else {
+              if (item.usersType) {
+                if (item.usersType.includes(userRole)) keys.push(item.key);
+              } else {
+                keys.push(item.key);
+              }
             }
           }
         });
+        break;
       case PluginFileType.Folders:
         itemsMap.forEach(([key, item]) => {
           if (item.fileType.includes(PluginFileType.Folders)) {
-            keys.push(item.key);
+            if (item.usersType) {
+              if (item.usersType.includes(userRole)) keys.push(item.key);
+            } else {
+              keys.push(item.key);
+            }
           }
         });
         break;
       case PluginFileType.Rooms:
         itemsMap.forEach(([key, item]) => {
           if (item.fileType.includes(PluginFileType.Rooms)) {
-            keys.push(item.key);
+            if (item.usersType) {
+              if (item.usersType.includes(userRole)) keys.push(item.key);
+            } else {
+              keys.push(item.key);
+            }
           }
         });
         break;
       default:
         itemsMap.forEach(([key, item]) => {
-          if (item.fileType === PluginFileType.All) {
+          if (item.fileType) return;
+          if (item.usersType) {
+            if (item.usersType.includes(userRole)) keys.push(item.key);
+          } else {
             keys.push(item.key);
           }
         });
@@ -306,8 +406,17 @@ class PluginStore {
 
     this.plugins.forEach((plugin) => {
       if (plugin.scopes.includes(PluginScopes.ContextMenu)) {
+        const iconUrl = getPluginUrl(plugin.url, "assets");
+
         Array.from(plugin.getContextMenuItems(), ([key, value]) =>
-          items.push({ key, value: { ...value, pluginId: plugin.id } })
+          items.push({
+            key,
+            value: {
+              ...value,
+              pluginId: plugin.id,
+              icon: `${iconUrl}/${value.icon}`,
+            },
+          })
         );
       }
     });
@@ -324,15 +433,110 @@ class PluginStore {
   get infoPanelItemsList() {
     const items = [];
 
+    const userRole = this.getUserRole();
+
     this.plugins.forEach((plugin) => {
       if (plugin.scopes.includes(PluginScopes.InfoPanel)) {
-        Array.from(plugin.getInfoPanelItems(), ([key, value]) =>
-          items.push({ key, value: { ...value, pluginId: plugin.id } })
-        );
+        Array.from(plugin.getInfoPanelItems(), ([key, value]) => {
+          if (value.usersType) {
+            if (value.usersType.includes(userRole))
+              items.push({ key, value: { ...value, pluginId: plugin.id } });
+          } else {
+            items.push({ key, value: { ...value, pluginId: plugin.id } });
+          }
+        });
       }
     });
 
     return items;
+  }
+
+  get profileMenuItemsList() {
+    const items = [];
+
+    const userRole = this.getUserRole();
+
+    this.plugins.forEach((plugin) => {
+      if (plugin.scopes.includes(PluginScopes.ProfileMenu)) {
+        const iconUrl = getPluginUrl(plugin.url, "assets");
+
+        Array.from(plugin.getProfileMenuItems(), ([key, value]) => {
+          if (value.usersType) {
+            if (value.usersType.includes(userRole)) {
+              items.push({
+                key,
+                value: {
+                  ...value,
+                  pluginId: plugin.id,
+                  icon: `${iconUrl}/${value.icon}`,
+                },
+              });
+            }
+          } else {
+            items.push({
+              key,
+              value: {
+                ...value,
+                pluginId: plugin.id,
+                icon: `${iconUrl}/${value.icon}`,
+              },
+            });
+          }
+        });
+      }
+    });
+
+    if (items.length > 0) {
+      items.sort((a, b) => a.value.position < b.value.position);
+
+      return items;
+    }
+
+    return null;
+  }
+
+  get mainButtonItemsList() {
+    const items = [];
+
+    const userRole = this.getUserRole();
+
+    this.plugins.forEach((plugin) => {
+      if (plugin.scopes.includes(PluginScopes.MainButton)) {
+        const iconUrl = getPluginUrl(plugin.url, "assets");
+
+        Array.from(plugin.getMainButtonItems(), ([key, value]) => {
+          if (value.usersType) {
+            if (value.usersType.includes(userRole)) {
+              items.push({
+                key,
+                value: {
+                  ...value,
+                  pluginId: plugin.id,
+                  icon: `${iconUrl}/${value.icon}`,
+                },
+              });
+            }
+          } else {
+            items.push({
+              key,
+              value: {
+                ...value,
+                pluginId: plugin.id,
+                icon: `${iconUrl}/${value.icon}`,
+              },
+            });
+          }
+        });
+      }
+    });
+
+    if (items.length > 0) {
+      items.sort((a, b) => a.value.position < b.value.position);
+
+      return items;
+    }
+
+    return null;
   }
 }
 

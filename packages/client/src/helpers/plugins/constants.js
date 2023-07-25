@@ -9,6 +9,9 @@ export const PluginScopes = Object.freeze({
   Settings: "Settings",
   ContextMenu: "ContextMenu",
   InfoPanel: "InfoPanel",
+  MainButton: "MainButton",
+  ProfileMenu: "ProfileMenu",
+  EventListener: "EventListener",
 });
 
 export const PluginType = Object.freeze({
@@ -53,4 +56,12 @@ export const PluginComponents = Object.freeze({
   text: "text",
   textArea: "textArea",
   toggleButton: "toggleButton",
+});
+
+export const PluginUsersType = Object.freeze({
+  owner: "Owner",
+  docSpaceAdmin: "DocSpaceAdmin",
+  roomAdmin: "RoomAdmin",
+  collaborator: "Collaborator",
+  user: "User",
 });

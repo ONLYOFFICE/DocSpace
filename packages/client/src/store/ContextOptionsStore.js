@@ -1146,10 +1146,16 @@ class ContextOptionsStore {
                 );
               };
 
-              if (
-                value.fileExt.includes(item.fileExst) ||
-                value.fileExt === "all"
-              ) {
+              if (value.fileExt) {
+                if (value.fileExt.includes(item.fileExst)) {
+                  options.splice(value.position, 0, {
+                    key: option.key,
+                    label: value.label,
+                    icon: value.icon,
+                    onClick: onClick,
+                  });
+                }
+              } else {
                 options.splice(value.position, 0, {
                   key: option.key,
                   label: value.label,
