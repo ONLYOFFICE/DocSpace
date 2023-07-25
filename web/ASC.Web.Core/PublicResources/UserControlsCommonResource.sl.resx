@@ -70,4 +70,13 @@
   <data name="UnknownLastName" xml:space="preserve">
     <value>Priimek</value>
   </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Licenca je potekla ali uporabniška kvota ne ustreza licenci</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>Licenčni ključ ni pravilen</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Vnesti morate licenčni ključ</value>
+  </data>
 </root>

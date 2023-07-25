@@ -244,4 +244,16 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Não pode afixar a sala</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador da Sala</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Primeiro nome</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Último nome</value>
+  </data>
+  <data name="AceStatusEnum_Restrict" xml:space="preserve">
+    <value>Negar acesso</value>
+  </data>
 </root>

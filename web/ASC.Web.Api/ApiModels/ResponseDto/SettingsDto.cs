@@ -54,11 +54,13 @@ public class SettingsDto
     public TenantStatus TenantStatus { get; set; }
     public string TenantAlias { get; set; }
     public string HelpLink { get; set; }
+    public string ApiDocsLink { get; set; }
     public TenantDomainValidator DomainValidator { get; set; }
     public string ZendeskKey { get; set; }
     public string BookTrainingEmail { get; set; }
     public string DocumentationEmail { get; set; }
     public string LegalTerms { get; set; }
+    public bool CookieSettingsEnabled { get; set; }
 
     public PluginsDto Plugins { get; set; }
 

@@ -139,6 +139,7 @@ public class SettingsController : BaseSettingsController
     public async Task<SettingsDto> GetSettingsAsync(bool? withpassword)
     {
         var studioAdminMessageSettings = await _settingsManager.LoadAsync<StudioAdminMessageSettings>();
+        var tenantCookieSettings = _settingsManager.Load<TenantCookieSettings>();
 
         var settings = new SettingsDto
         {
@@ -153,6 +154,7 @@ public class SettingsController : BaseSettingsController
             TenantAlias = Tenant.Alias,
             EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync(),
             LegalTerms = _setupInfo.LegalTerms,
+            CookieSettingsEnabled = tenantCookieSettings.Enabled
         };
 
         if (!_authContext.IsAuthenticated && (await _externalShare.GetSessionIdAsync() != default || await _externalShare.GetLinkIdAsync() != default))
@@ -184,7 +186,8 @@ public class SettingsController : BaseSettingsController
                 StorageBucket = _configuration["firebase:storageBucket"] ?? "",
                 MessagingSenderId = _configuration["firebase:messagingSenderId"] ?? "",
                 AppId = _configuration["firebase:appId"] ?? "",
-                MeasurementId = _configuration["firebase:measurementId"] ?? ""
+                MeasurementId = _configuration["firebase:measurementId"] ?? "",
+                DatabaseURL = _configuration["firebase:databaseURL"] ?? ""
             };
 
             settings.DeepLink = new DeepLinkDto
@@ -195,6 +198,7 @@ public class SettingsController : BaseSettingsController
             };
 
             settings.HelpLink = await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.ApiDocsLink = _configuration["web:api-docs"];
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))

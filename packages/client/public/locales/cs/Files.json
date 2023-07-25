@@ -24,6 +24,7 @@
   "DaysRemaining": "Zbývající dny: {{daysRemaining}}",
   "DisableNotifications": "Zakázat oznámení",
   "Document": "Dokument",
+  "DocumentEdited": "Akci nelze provést, protože se dokument upravuje.",
   "EditRoom": "Místnost pro úpravy",
   "EmptyFile": "Prázdný soubor",
   "EmptyFilterDescriptionText": "Tomuto filtru neodpovídají žádné soubory ani složky. Vyzkoušejte jiný nebo vymažte filtr pro zobrazení všech souborů.",

@@ -264,46 +264,44 @@ $GreenButton
 *Piezīme*: šī saite ir derīga 48 stundas. Lūdzu, šajā laikā pabeidziet šo darbību.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
-    <value>h1.Kļūda, pārnesot portālu uz citu apgabalu $RegionName
+    <value>h1.Cita reģiona portāla migrācijas kļūda
 
-Radās kļūda, pārnesot portālu uz apgabalu. Lūdzu, mēģiniet vēlāk vēlreiz.
-Jūsu portāls ir pieejams vecajā adresē "$PortalUrl":"$PortalUrl"
+Migrējot uz $RegionName reģionu, radās kļūda. Mēģiniet vēlreiz vēlāk.
+Your portal is now available at the old address "$PortalUrl":"$PortalUrl"
 
-Ja jums radušies kādi jautājumi vai ir nepieciešama palīdzība, sazinieties ar mums, rakstot uz "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Ja jums ir kādi jautājumi vai nepieciešama palīdzība, sazinieties ar mums tīmekļa vietnē "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 Ar cieņu
 ONLYOFFICE™ atbalsta komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā"${__VirtualRootPath}":"${__VirtualRootPath}". Lai mainītu paziņojuma veidu, lūdzu, pārvaldiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
+^Lai mainītu paziņojuma veidu, pārvaldiet "abonēšanas iestatījumus":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
-    <value>h1.Portāla apgabala maiņas kļūda
+    <value>h1.Cita reģiona portāla migrācijas kļūda
 
-Radās kļūda, pārnesot portālu uz citu apgabalu. Lūdzu, mēģiniet vēlāk vēlreiz.
-Jūsu portāls ir pieejams vecajā adresē "$PortalUrl":"$PortalUrl"
+Migrējot uz citu reģionu, radās kļūda. Mēģiniet vēlreiz vēlāk.
+Your portal is now available at the old address "$PortalUrl":"$PortalUrl"
 
-Ja jums radušies kādi jautājumi vai nepieciešama palīdzība, sazinieties ar mums "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Ja jums ir kādi jautājumi vai nepieciešama palīdzība, sazinieties ar mums tīmekļa vietnē "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 
-Ar cieņu,
+Ar cieņu
 ONLYOFFICE™ atbalsta komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Jūs saņemat šo e-pastu, jo esat reģistrēts portāla "${__VirtualRootPath}":"${__VirtualRootPath}" lietotājs. Lai mainītu paziņojumu veidu, labojiet savus "Abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
+^Lai mainītu paziņojuma veidu, pārvaldiet "abonēšanas iestatījumus":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_start" xml:space="preserve">
-    <value>h1.Uzsākta portāla pārnese uz citu apgabalu
+    <value>h1.Sākta cita reģiona portāla migrācija
 
-Uzsākta portāla pārnese uz apgabalu $RegionName. Atkarībā no datu apjoma, tas var prasīt noteiktu laika daudzumu.
+Tiek sākta portāla migrācija uz $RegionName reģionu. Tas var aizņemt kādu laiku atkarībā no jūsu datu apjoma.
 
-*Piezīme*: pārneses laikā portāls nebūs pieejams. Pēc pārneses pabeigšanas tiks mainīts URL un visi kopīgotie dokumenti būs nepieejami. 
+*Piezīme*: portāls nebūs pieejams migrācijas procesa laikā. Pēc migrācijas pabeigšanas portāla vietrādis URL tiks mainīts, un visām kopīgoto dokumentu saitēm nevarēs piekļūt.
 
-Ja jums ir radušies kādi jautājumi vai ir nepieciešama palīdzība, sazinieties ar mums, rakstot uz "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Ja jums ir kādi jautājumi vai nepieciešama palīdzība, sazinieties ar mums tīmekļa vietnē "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 
-Ar cieņu,
+Ar cieņu
 ONLYOFFICE™ atbalsta komanda
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_portal_deactivate" xml:space="preserve">
     <value>h1.Portāla "${__VirtualRootPath}":"${__VirtualRootPath}" deaktivizācija
@@ -394,11 +392,16 @@ Datu pārneses process no lietotāja "$FromUserName":"$FromUserLink" lietotājam
 Ziņa par kļūdu: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
-    <value>Sveicināti $UserName,
+    <value>Cien. $UserName,
 
-Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" veiksmīgi pabeigta.
+Datu noņemšana no lietotāja "$FromUserName":"$FromUserLink" process ir veiksmīgi pabeigta.
 
-^Jūs saņemat šo ziņu, jo esat reģistrējiet portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Personas datu izdzēšana ļāva atbrīvot:
+
+# Dokumenti - $DocsSpace
+# CRM - $CrmSpace
+# Pasts - $MailSpace
+# Saruna - $TalkSpaces</value>
   </data>
   <data name="pattern_remove_user_data_failed" xml:space="preserve">
     <value>Sveicināti $UserName,
@@ -641,13 +644,6 @@ Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
 
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
-
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
 Jūsu
@@ -663,13 +659,6 @@ Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
 
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
-
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
 Jūsu
@@ -684,13 +673,6 @@ Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlab
 Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
 
 $GreenButton
-
-Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
-
-* 1 administrators, 2 prasmīgie lietotāji
-* Līdz 12 telpām
-* Neierobežots lietotāju skaits katrā telpā
-* 2 GB diska vieta
 
 Izbaudiet jaunu dokumentu sadarbības veidu!
 
@@ -1206,5 +1188,625 @@ Pēc tam, kad noklikšķiniet uz uzaicinājuma saites, iestatiet jaunu paroli sa
 Jūsu
 ONLYOFFICE komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Piekrist</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>PIEKRIST</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Noklikšķiniet šeit, lai aktivizētu savu e-pasta adresi</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Mainīt e-pasta adresi</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Mainīt paroli</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Mainīt mobilā tālruņa numuru</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Konfigurējiet autentificētāja lietotni</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Sadarboties DocSpace</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Apstiprināt</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>APSTIPRINĀT</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Apstiprināt DocSpace uzaicinājumu</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Apstiprināt portāla adreses maiņu</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Apstiprināt portāla īpašnieka atjaunināšanu</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Apstiprināt telpas uzaicinājumu</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Apstiprināt konta darbības izbeigšanu</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Deaktivizēt portālu</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Izdzēst portālu</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Noklikšķiniet šeit, lai pievienotos portālam</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Atstāt atsauksmi</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Izņemt profilu</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Atjaunot tūlīt</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Izmantot atlaidi</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Apmeklēt sadaļu Maksājumi</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Apstipriniet e-pasta adreses maiņu</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Apstipriniet paroles maiņu</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Drošības paziņojums</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Saņemiet bezmaksas ONLYOFFICE lietojumprogrammas</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Saņemiet bezmaksas ONLYOFFICE lietojumprogrammas</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Saņemiet bezmaksas ONLYOFFICE lietojumprogrammas</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Vairāki padomi efektīvam darbam ar dokumentiem</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Atklājiet ONLYOFFICE DocSpace biznesa abonementu</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Atklājiet ONLYOFFICE DocSpace biznesa abonementu</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Atklājiet ONLYOFFICE DocSpace biznesa abonementu</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Atklājiet ONLYOFFICE DocSpace biznesa abonementu</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Pievienoties ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Pievienoties ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Pievienoties ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Vairāki padomi efektīvam darbam ar dokumentiem</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Vairāki padomi efektīvam darbam ar dokumentiem</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Vairāki padomi efektīvam darbam ar dokumentiem</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Pārdošanas nodaļas pieprasījums</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Pievienojieties ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE personīgai lietošanai!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Piesakieties savā ONLYOFFICE Personal kontā</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Aktivizējiet savu e-pasta adresi</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal konta darbības pārtraukšana</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace ir deaktivizēts</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Lietotājs (a-) ir izdzēsis (-usi) savu profilu</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Pastkastes izveide</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Pastkastes paroles maiņa</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Konfigurējiet savu ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Jūsu ONLYOFFICE DocSpace tiks izdzēsts</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Pievienoties ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Pagarinājuma periods jūsu ONLYOFFICE DocSpace ir aktivizēts</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Jūsu ONLYOFFICE DocSpace abonementa derīgums drīz beigsies</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Pagarinājuma periods jūsu ONLYOFFICE DocSpace ir beidzies</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Pagarinājuma periods jūsu ONLYOFFICE DocSpace beidzas rīt</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Jaunumi jūsu portālā par $Date</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Atšifrēšanas process neizdevās</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Sākts atšifrēšanas process</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Atšifrēšanas process ir pabeigts</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Šifrēšanas process neizdevās</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Šifrēšanas process ir sākts</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Šifrēšanas process ir pabeigts</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Jūs esat uzaicināts (-a) pievienoties ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portāla dublējums ir izveidots
+
+Cien. $OwnerName,
+
+Ir izveidots dublējuma fails, kas satur datus no jūsu [${__VirtualRootPath}](${__VirtualRootPath}) portāla.
+
+Lai uzzinātu vairāk par dublēšanas procedūru, skatiet mūsu [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) lietotāja rokasgrāmatu.
+
+Ja tev ir kādi jautājumi vai nepieciešama palīdzība, sazinies ar mums tīmekļa vietnē [support.onlyoffice.com](http://support.onlyoffice.com)
+
+Ar cieņu
+ONLYOFFICE™ atbalsta komanda
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Vai vēlaties mainīt e-pasta adresi savā ${LetterLogoText} kontā?
+
+Noklikšķiniet uz tālāk redzamās pogas un piesakieties* savā mākonī.
+
+$GreenButton
+
+Saite ir derīga septiņas dienas.
+
+*Ja neesat pierakstījies šajā ${LetterLogoText} pārlūkprogrammā, apstiprināšanai jāizmanto vecā e-pasta adrese. Ja neatcerieties, sazinies ar portāla administratoru.
+
+Vai nevēlaties mainīt e-pasta adresi? Vienkārši ignorējiet šo ziņojumu.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Drošības paziņojums
+
+Autentificētāja lietotnes konfigurācija, ko izmantojat, lai ieietu ${LetterLogoText} portālā, ir atiestatīta.
+
+Noklikšķiniet uz tālāk redzamās pogas, lai pārietu uz portāla pieteikšanās lapu un konfigurētu autentificētāja lietojumprogrammu:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Jūs esat uzaicināts pievienoties "${__VirtualRootPath}":"${__VirtualRootPath}" kā viesis. Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Saite ir derīga tikai septiņas dienas.
+
+Jūs saņemsiet vairāk padomu par to, kā izmantot savu tīmekļa biroju. Abonementus jebkurā brīdī varat atcelt savā profila lapā, kā arī atkārtoti iespējot tos.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+$__AuthorName uzaicināja jūs kā viesi "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Saite ir derīga tikai septiņas dienas.
+
+Jūs saņemsiet vairāk padomu par to, kā izmantot savu tīmekļa biroju. Abonementus jebkurā brīdī varat atcelt savā profila lapā, kā arī atkārtoti iespējot tos.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Ziņojums no [${__VirtualRootPath}](${__VirtualRootPath}) portāla
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Cien. $UserName,
+
+Administrators ir izveidojis jums jaunu &lt;b&gt;$Address&lt;/b&gt; pastkasti portālā "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Citiem e-pasta klientiem, izmantojiet šādus iestatījumus:
+Pieteikšanās: &lt;b&gt;$Login&lt;/b&gt;
+      Parole: "&lt;b&gt;Set Password&lt;/b&gt;":"$MyStaffLink"
+
+      Ienākošais pasts (IMAP): 
+      Serveris: &lt;b&gt;$Server&lt;/b&gt;
+      Ports: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Izejošais pasts (SMTP): 
+      Serveris: &lt;b&gt;$Server&lt;/b&gt;
+      Ports: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Nepieciešama autentifikācija: &lt;b&gt;Jā&lt;/b&gt;
+
+Ja šo e-pasta ziņojumu saņēmāt kļūdas dēļ, ignorējiet to vai sazinieties ar savu portāla administratoru, lai uzzinātu sīkāku informāciju.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Cien. $UserName,
+
+      Ir mainīta &lt;b&gt;$Address&lt;/b&gt; pastkastes parole.
+
+      Ja šo e-pasta ziņojumu saņēmāt kļūdas dēļ, ignorējiet to vai sazinieties ar savu portāla administratoru, lai uzzinātu sīkāku informāciju.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Cien. $UserName,
+
+Administrators ir izveidojis jums jaunu &lt;b&gt;$Address&lt;/b&gt; pastkasti portālā "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Ja šo e-pasta ziņojumu saņēmāt kļūdas dēļ, ignorējiet to vai sazinieties ar savu portāla administratoru, lai uzzinātu sīkāku informāciju.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Portāla migrācija
+h1."$PortalUrl":"$PortalUrl"
+
+Jūsu portāls ir migrēts uz jaunu domēnu. Atjaunojiet piekļuvi portālam, norādot paroli, kas tiks izmantota pierakstoties.
+
+Lūdzu, izmantojiet tālāk norādīto saiti, lai iestatītu konta paroli:
+$GreenButton
+
+*Piezīme*: šī saite ir derīga tikai septiņas dienas. Pabeidziet piekļuves atjaunošanas procesu šajā periodā.
+
+Ja šo e-pasta ziņojumu saņēmāt kļūdas dēļ, ignorējiet to vai sazinieties ar savu "$PortalUrl":"$PortalUrl" portāla administratoru, lai uzzinātu sīkāku informāciju.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat uzaicināts pievienoties "${__VirtualRootPath}":"${__VirtualRootPath}" kā viesis. Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Saite ir derīga tikai septiņas dienas.
+
+Jūs saņemsiet vairāk padomu par to, kā izmantot savu tīmekļa biroju. Abonementus jebkurā brīdī varat atcelt savā profila lapā, kā arī atkārtoti iespējot tos.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Sveiki, $UserName
+Jūs veiksmīgi reģistrējāties ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Pievienojiet savu iecienītāko mākoņkrātuvi: Dropbox, Google Drive, OneDrive vai Box, lai izveidotu vienu darbvietu saviem dokumentiem, kuriem var piekļūt no jebkuras vietas.
+
+Uzziniet vairāk par ONLYOFFICE Personal mūsu emuārā:"$TagBlogLink".
+
+Priecājamies, ka esat šeit. Sekojiet līdzi!
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Laipni lūdzam ONLYOFFICE Personal
+
+Jūs tikko izveidojāt savu personīgo biroju mākonī.
+
+h3.Tā ir virtuāla darbvieta, kurā varat rediģēt un glabāt dokumentus, strādāt ar tiem no jebkuras vietas, nodrošinot piekļuvi draugiem vai kolēģiem.
+
+h3.Lūk, ko jūs varat darīt ONLYOFFICE iesākumam:
+
+- Izveidot, skatīt un rediģēt teksta dokumentus, izklājlapas, prezentācijas.
+
+- Strādājiet ar visiem populārajiem formātiem. Augstākā saderība ar MS Office failiem.
+
+- Izveidojiet un koprediģējiet "aizpildīšanai gatavas veidlapas":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Kopīgojiet dokumentus tiešsaistē un sadarbojieties saistībā ar tiem.
+
+- Izmantojiet dažādus spraudņus, lai izmantotu papildu funkcijas.
+
+- Viegli piekļūstiet savam personiskajam mākonim, izmantojot "Chrome paplašinājumu":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Varat arī rediģēt dokumentus bezsaistē, izmantojot mūsu bezmaksas darbvirsmas redaktorus:"https://www.onlyoffice.com/download-desktop.aspx" vai iegūt mobilo rediģēšanas komplektu savai "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" vai "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" ierīcei.
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Vai vēlaties mainīt e-pasta adresi savā ONLYOFFICE kontā?
+
+Noklikšķiniet uz tālāk redzamās pogas un piesakieties* savā mākonī.
+
+$GreenButton
+
+Saite ir derīga septiņas dienas.
+
+*Ja neesat pierakstījies šajā ONLYOFFICE pārlūkprogrammā, apstiprināšanai jāizmanto vecā e-pasta adrese.
+
+Vai nevēlaties mainīt e-pasta adresi? Vienkārši ignorējiet šo ziņojumu.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Sveiki,
+
+Jūs tikko reģistrējāt kontu ONLYOFFICE risinājumā personīgai lietošanai. Noklikšķiniet "šeit":"$InviteLink", lai apstiprinātu reģistrāciju un izveidotu paroli.
+
+Ja nevarat atvērt saiti, nokopējiet šo "$InviteLink":"$InviteLink" un ielīmējiet to pārlūkprogrammas adreses joslā.
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Jūs pieprasījāt pārtraukt konta darbību personal.onlyoffice.com. Lai pabeigtu pieprasījumu, izmantojiet saiti (saite ir aktīva septiņas dienas): 
+
+$GreenButton
+
+*Piezīme*: pēc izdzēšanas jūsu konts un visi ar to saistītie dati tiks neatgriezeniski izdzēsti saskaņā ar mūsu "Paziņojumu par konfidencialitāti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+"Lasīt vairāk par konta darbības izbeigšanu":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Ignorējiet šo e-pasta ziņojumu, ja nevēlaties turpināt. 
+
+Ja jums ir kādi jautājumi, sazinieties ar mums pa e-pastu "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Ar cieņu,
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portāla deaktivizēšana
+
+Cien. $OwnerName,
+
+Jūs pieprasījāt sava [${__VirtualRootPath}](${__VirtualRootPath}) portāla pagaidu deaktivizāciju. Izmantojiet tālāk norādīto saiti, lai apstiprinātu darbību:
+
+$GreenButton
+
+_Note_: šī saite ir derīga tikai septiņas dienas. Pabeidziet portāla deaktivizēšanas procesu šajā periodā.
+
+Jūs varat atkārtoti aktivizēt savu portālu jebkurā laikā, noklikšķinot uz šīs saites:
+[Reactivate Portal]($ActivateUrl) (šai saitei nav laika ierobežojuma)
+
+Ja jums ir kādi jautājumi vai nepieciešama palīdzība, sazinies ar mums tīmekļa vietnē [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Ar cieņu
+ONLYOFFICE™ atbalsta komanda
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portāla dzēšana
+
+Cien. $OwnerName,
+
+Jūs pieprasījāt neatgriezeniski izdzēst savu [${__VirtualRootPath}](${__VirtualRootPath}) portālu.
+
+_Important! Visi jūsu portālā saglabātie dati, kā arī jūsu reģistrācijas dati tiks zaudēti un tos nevarēs atgūt._
+
+#if($AutoRenew == "True")
+Pirms izdzēst portālu, pārliecinieties, vai automātiska norēķināšanās ir izslēgta. You may check the status of automatic billing in your [Avangate account](https://secure.avangate.com/myaccount/").
+#end
+
+Ja joprojām vēlies izdzēst savu [${__VirtualRootPath}](${__VirtualRootPath}) portālu, izmantojiet tālāk norādīto saiti, lai apstiprinātu darbību:
+
+$GreenButton
+
+_Note_: šī saite ir derīga tikai septiņas dienas. Pabeidziet portāla dzēšanas procesu šajā periodā.
+
+Ja jums ir kādi jautājumi vai nepieciešama palīdzība, sazinies ar mums tīmekļa vietnē [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Ar cieņu
+ONLYOFFICE™ atbalsta komanda
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Lietotājs "$FromUserName":"$ FromUserLink" izdzēsa savu profilu, un šis profils tagad ir bloķēts. Visi lietotāja faili joprojām ir piešķirti viņam/viņai un aizņem vietu diskā. 
+
+Varat atkārtoti piešķirt citiem kopīgotos lietotāja dokumentus citam aktīvam lietotājam vai noņemt tos, lai atbrīvotu vietu portāla diskā.
+
+Lūdzu, dodieties uz lietotāja profilu, izmantojot "šo saiti":"$FromUserLink", lai atkārtoti piešķirtu dokumentus citam lietotājam vai noņemtu datus.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Jūsu profils [${__VirtualRootPath}](${__VirtualRootPath}) ir mainīts
+
+Cien. $UserName,
+
+Jūsu lietotāja profila informāciju [${__VirtualRootPath}](${__VirtualRootPath}) ir mainījis [$__ AuthorName]($__AuthorUrl).
+
+Lai skatītu savu profilu, izmanto tālāk norādīto saiti.
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS tarifa pieprasījums "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Vārds
+$UserName
+
+h3.Uzvārds
+$UserLastName
+
+h3.Amats
+$Position
+
+h3.E-pasts
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Tālruņa numurs
+$Phone
+
+h3.Uzņēmuma mājas lapa
+$Website
+
+h3.Uzņēmuma nosaukums
+$CompanyTitle
+
+h3.Uzņēmuma lielums
+$CompanySize
+
+h3.Pieprasīt saturu
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Portāla atjaunošana
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Jūsu portāls ir atjaunots. Lai tai piekļūtu, ir jāiestata jauna parole:
+
+$GreenButton
+
+*Piezīme*: šī saite ir derīga tikai septiņas dienas. 
+
+Ja šo e-pasta ziņojumu saņēmāt kļūdas dēļ, ignorējiet to vai sazinieties ar savu "${__VirtualRootPath}":"${__VirtualRootPath}" portāla administratoru, lai uzzinātu sīkāku informāciju.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat uzaicināts pievienoties "${__VirtualRootPath}":"${__VirtualRootPath}" kā viesis. Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Mēs arī nosūtīsim jums noderīgus padomus un jaunākās ONLYOFFICE ziņas. Abonementus jebkurā brīdī varat atcelt savā profila lapā, kā arī atkārtoti iespējot tos.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) paziņojums par portāla profila maiņu
+
+[$__AuthorName]($__AuthorUrl) ir mainījis savu profila informāciju [${__VirtualRootPath}](${__VirtualRootPath}) portālā.</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Faila atšifrēšanas process jūsu portālā "${PortalUrl}":${PortalUrl}"" neizdevās.
+
+Dažus failus nevarēja atšifrēt. Sīkāku informāciju skatiet "Vadības panelī":"${ControlPanelUrl}/Storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Faila atšifrēšanas process ir sākts jūsu portālā "${PortalUrl}":"${PortalUrl}".
+
+Atšifrēšana var aizņemt kādu laiku, tāpēc portāls īslaicīgi nebūs pieejams. Tiklīdz atšifrēšana būs pabeigta, jūs atkal varēsiet strādāt ar saviem datiem.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Failu atšifrēšanas process jūsu portālā "${PortalUrl}":"${PortalUrl}" ir veiksmīgi pabeigts.
+
+Jūsu portāls atkal ir pieejams.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Faila šifrēšanas process "${PortalUrl}":"${PortalUrl}" portālā neizdevās.
+
+Dažus failus nevarēja šifrēt. Sīkāku informāciju skatiet "Vadības panelī":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Faila šifrēšanas process ir sākts jūsu portālā "${PortalUrl}":"${PortalUrl}".
+
+Šifrēšana var aizņemt kādu laiku, tāpēc portāls īslaicīgi nebūs pieejams. Tiklīdz šifrēšana būs pabeigta, jūs atkal varēsiet strādāt ar saviem datiem.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Failu šifrēšanas process jūsu portālā "${PortalUrl}":"${PortalUrl}" ir veiksmīgi pabeigts.
+
+Jūsu portāls atkal ir pieejams.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portālam ir pievienots jauns lietotājs
+[$__AuthorName]($__ AuthorUrl) pievienojās jūsu portālam [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Cien. $UserName,
+
+Jūs esat uzaicināts pievienoties sava uzņēmuma drošajam tīmekļa birojam, kas uzlabos jūsu sadarbību. Tā adrese ir "${__VirtualRootPath}":"${__VirtualRootPath}". Šīs saites pievienošana grāmatzīmēm ir laba ideja, jūs, visticamāk, to bieži izmantosiet.
+
+Apstipriniet uzaicinājumu, noklikšķinot uz tālāk norādītās saites, un pierakstoties izmantojot uzņēmuma konta lietotājvārdu un paroli. 
+
+$GreenButton
+
+Saite ir derīga tikai septiņas dienas.</value>
   </data>
 </root>

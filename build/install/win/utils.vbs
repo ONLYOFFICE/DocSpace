@@ -180,7 +180,7 @@ Function MySQLConfigure
 
 		If service.Started Then			
 			shell.Run """" & installDir & "bin\mysqladmin"" -u root password " & dbpass, 0, true
-            shell.Run """" & installDir & "bin\mysql"" -u root -p" & dbpass & " -e ""ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY " & "'" & dbpass & "';""", 0, true	
+            shell.Run """" & installDir & "bin\mysql"" -u root -p" & dbpass & " -e ""ALTER USER 'root'@'localhost' IDENTIFIED BY " & "'" & dbpass & "';""", 0, true	
         End If        
 		
         Set filesys = CreateObject("Scripting.FileSystemObject")
@@ -191,7 +191,6 @@ Function MySQLConfigure
         WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "group_concat_max_len", "2048"
         WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "character_set_server", "utf8"
         WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "collation_server", "utf8_general_ci"
-        WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "default-authentication-plugin", "mysql_native_password"
 		
 	    Call WriteToLog("MySQLConfigure: WriteIni Path" & filesys.BuildPath(dataDir, "my.ini"))
 
