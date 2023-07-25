@@ -1,9 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
+import { createRoot } from "react-dom/client";
+import Client from "./Client";
 //import { registerSW } from "@docspace/common/sw/helper";
-const root = document.getElementById("root");
 
-if (root) ReactDOM.render(<App />, root);
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+if (root) root.render(<Client />);
 
 //registerSW();
