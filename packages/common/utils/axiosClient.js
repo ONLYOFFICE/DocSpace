@@ -114,6 +114,9 @@ class AxiosClient {
 
       if (response.request.responseType === "text") return response.data;
 
+      if (options.baseURL === "apisystem" && !response.data.response)
+        return response.data;
+
       return response.data.response;
     };
 
