@@ -1,9 +1,7 @@
 import { request, setWithCredentialsStatus } from "../client";
 import axios from "axios";
 
-const baseURL = "apisystem";
-
-setWithCredentialsStatus(true);
+const baseURL = "/apisystem";
 
 export const deletePortal = (data) => {
   const options = {
@@ -112,11 +110,10 @@ export const createNewPortal = async (data) => {
 };
 
 export const getAllPortals = async () => {
-  const res = await axios.get("/apisystem/portal/get");
-  // const res = await request({
-  //   baseURL,
-  //   method: "get",
-  //   url: `/portal/get`,
-  // });
-  // return res;
+  const res = await request({
+    baseURL,
+    method: "get",
+    url: `/portal/get`,
+  });
+  return res;
 };
