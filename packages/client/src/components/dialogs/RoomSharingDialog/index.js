@@ -13,6 +13,10 @@ const StyledDeleteDialog = styled(ModalDialog)`
   .modal-dialog-content-body {
     display: flex;
     gap: 12px;
+
+    .modal-dialog-content-body_text-input {
+      color: #a3a9ae;
+    }
   }
 
   .modal-dialog-aside-header {
@@ -39,7 +43,13 @@ const RoomSharingDialog = ({ t, tReady, visible, setIsVisible }) => {
       <ModalDialog.Header>{t("Files:ShareRoom")}</ModalDialog.Header>
       <ModalDialog.Body>
         <div className="modal-dialog-content-body">
-          <TextInput value={roomHref} scale isReadOnly isDisabled />
+          <TextInput
+            className="modal-dialog-content-body_text-input"
+            value={roomHref}
+            scale
+            isReadOnly
+            isDisabled
+          />
           <Button
             label={t("Translations:Copy")}
             size="small"
