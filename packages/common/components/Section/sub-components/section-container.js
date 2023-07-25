@@ -146,7 +146,6 @@ const StyledSectionContainer = styled.section`
 
     bottom: 36px;
   }
-
   .layout-progress-second-bar {
     position: fixed;
     ${props =>

@@ -197,14 +197,20 @@ public class LicenseReader
 
         var quota = new TenantQuota(-1000)
         {
-            CountUser = _constants.MaxEveryoneCount,
+            Name = "license",
+            Trial = license.Trial,
+            Audit = true,
+            Ldap = true,
+            Sso = true,
+            WhiteLabel = true,
+            ThirdParty = true,
+            AutoBackupRestore = true,
+            Oauth = true,
+            ContentSearch = true,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
-            Name = "license",
             DocsEdition = true,
-            Customization = license.Customization,
-            Update = true,
-            Trial = license.Trial
+            Customization = license.Customization
         };
 
         await _tenantManager.SaveTenantQuotaAsync(quota);
@@ -215,7 +221,7 @@ public class LicenseReader
             DueDate = license.DueDate,
         };
 
-        await _tariffService.SetTariffAsync(-1, tariff);
+        await _tariffService.SetTariffAsync(Tenant.DefaultTenant, tariff, new List<TenantQuota> { quota });
     }
 
     private void LogError(Exception error)

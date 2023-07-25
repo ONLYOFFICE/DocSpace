@@ -11,6 +11,8 @@ const heightIconStyle = (props) =>
 const widthIconButtonStyle = (props) =>
   props.theme.fileInput.iconButton.width[props.size];
 
+const heightInputStyle = (props) => props.theme.fileInput.height[props.size];
+
 const StyledFileInput = styled.div`
   display: flex;
   position: relative;
@@ -22,6 +24,8 @@ const StyledFileInput = styled.div`
     (props.size === "big" && props.theme.input.width.big) ||
     (props.size === "huge" && props.theme.input.width.huge) ||
     (props.size === "large" && props.theme.input.width.large)};
+
+  max-height: ${(props) => heightInputStyle(props)};
 
   .text-input {
     border-color: ${(props) =>
@@ -81,6 +85,10 @@ const StyledFileInput = styled.div`
       (props.isDisabled && props.theme.input.disabledBorderColor) ||
       props.theme.input.borderColor};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+
+    .loader {
+      padding-top: 5px;
+    }
 
     border-radius: ${({ theme }) =>
       getCorrectBorderRadius(

@@ -13,10 +13,9 @@
   "FrameId": "Rāmja ID",
   "Header": "Galvene",
   "ItemsCount": "Vienumu skaits",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Izvēlne",
   "Page": "Lappuse",
   "SearchTerm": "Meklēšanas vienums",
-  "SortOrder": "Šķirošanas secība",
-  "WindowParameters": "Loga parametri"
+  "SortOrder": "Šķirošanas secība"
 }

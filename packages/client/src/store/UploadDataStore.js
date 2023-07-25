@@ -23,6 +23,7 @@ import {
 } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
+import { getUnexpectedErrorText } from "SRC_DIR/helpers/filesUtils";
 
 const UPLOAD_LIMIT_AT_ONCE = 5;
 
@@ -896,7 +897,7 @@ class UploadDataStore {
         return Promise.reject(res.data.message);
       }
 
-      const { uploaded, id: fileId } = res.data.data;
+      const { uploaded, id: fileId, file: fileInfo } = res.data.data;
 
       let uploadedSize, newPercent;
 
@@ -937,7 +938,6 @@ class UploadDataStore {
       });
 
       if (uploaded) {
-        const fileInfo = await getFileInfo(fileId);
         runInAction(() => {
           this.files[indexOfFile].action = "uploaded";
           this.files[indexOfFile].fileId = fileId;
@@ -1596,6 +1596,10 @@ class UploadDataStore {
       setTimeout(async () => {
         try {
           await getProgress().then((res) => {
+            if (!res || res.length === 0) {
+              reject(getUnexpectedErrorText());
+            }
+
             const currentItem = res.find((x) => x.id === id);
             if (currentItem?.error) {
               reject(currentItem.error);
@@ -1614,9 +1618,11 @@ class UploadDataStore {
     const { activeFiles, activeFolders, setActiveFiles, setActiveFolders } =
       this.filesStore;
 
-    const newActiveFiles = activeFiles.filter((el) => !fileIds?.includes(el));
+    const newActiveFiles = activeFiles.filter(
+      (el) => !fileIds?.includes(el.id)
+    );
     const newActiveFolders = activeFolders.filter(
-      (el) => !folderIds.includes(el)
+      (el) => !folderIds.includes(el.id)
     );
 
     setActiveFiles(newActiveFiles);

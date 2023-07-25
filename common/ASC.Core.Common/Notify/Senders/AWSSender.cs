@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Message = Amazon.SimpleEmail.Model.Message;
-
 namespace ASC.Core.Notify.Senders;
 
 [Singletone]
@@ -69,7 +67,7 @@ public class AWSSender : SmtpSender, IDisposable
                 await tenantManager.SetCurrentTenantAsync(m.TenantId);
 
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
-                if (!(await configuration.GetSmtpSettingsAsync()).IsDefaultSettings)
+                if (!(await configuration.GetDefaultSmtpSettingsAsync()).IsDefaultSettings)
                 {
                     result = await base.SendAsync(m);
                 }

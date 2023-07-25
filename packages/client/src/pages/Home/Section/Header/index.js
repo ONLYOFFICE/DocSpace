@@ -1014,7 +1014,7 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins } = auth.settingsStore;
+    const { enablePlugins, isFrame } = auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
@@ -1055,6 +1055,16 @@ export default inject(
 
     const { setSelected: setAccountsSelected } = selectionStore;
 
+    let folderPath = navigationPath;
+
+    if (isFrame && !!pathParts) {
+      folderPath = navigationPath.filter((item) => !item.isRootRoom);
+    }
+
+    const isRoot = isFrame
+      ? pathParts?.length === 1 || pathParts?.length === 2
+      : pathParts?.length === 1;
+
     return {
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
@@ -1062,13 +1072,13 @@ export default inject(
       isDesktop: auth.settingsStore.isDesktopClient,
       showHeaderLoader,
       isLoading,
-      isRootFolder: pathParts?.length === 1,
+      isRootFolder: isRoot,
       isPersonalRoom,
       title,
       isRoom,
       currentFolderId: id,
       pathParts: pathParts,
-      navigationPath: navigationPath,
+      navigationPath: folderPath,
 
       setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
@@ -1153,6 +1163,7 @@ export default inject(
       clearFiles,
       emptyTrashInProgress,
       categoryType,
+      isFrame,
     };
   }
 )(

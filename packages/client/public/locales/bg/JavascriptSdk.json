@@ -13,10 +13,9 @@
   "FrameId": "Id на рамката",
   "Header": "Заглавие",
   "ItemsCount": "Брой елементи",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Меню",
   "Page": "Страница",
   "SearchTerm": "Термин за търсене",
-  "SortOrder": "Ред на сортиране",
-  "WindowParameters": "Параметри на прозореца"
+  "SortOrder": "Ред на сортиране"
 }

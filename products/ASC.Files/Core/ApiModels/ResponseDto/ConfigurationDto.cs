@@ -36,4 +36,5 @@ public class ConfigurationDto<T>
     public string Token { get; set; }
     public string Type { get; set; }
     public FileDto<T> File { get; set; }
+    public string ErrorMessage { get; set; }
 }

@@ -687,6 +687,14 @@ const Base = {
       large: "550px",
     },
 
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
+    },
+
     paddingRight: {
       base: "37px",
       middle: "48px",
@@ -2073,10 +2081,9 @@ const Base = {
     downloadAppList: {
       color: "#83888d",
       winHoverColor: "#3785D3",
-      macHoverColor: black,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: black,
     },
     thirdPartyList: {
       color: "#818b91",
@@ -2957,6 +2964,10 @@ const Base = {
           iconButton: black,
           iconButtonDisabled: gray,
         },
+
+        smtp: {
+          requirementColor: "#F21C0E",
+        },
       },
 
       backup: {
@@ -2993,7 +3004,13 @@ const Base = {
           iconsColor: "#657077",
         },
 
+        contactContainer: {
+          textColor: "#A3A9AE",
+          linkColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
+        color: "#F97A0B",
       },
     },
 

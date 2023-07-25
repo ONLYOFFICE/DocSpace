@@ -44,7 +44,7 @@ const VersionBadge = ({
     className={className}
     marginProp="0 8px"
     displayProp="flex"
-    isVersion={isVersion}
+    isVersion={true}
     theme={theme}
     index={index}
     {...rest}
