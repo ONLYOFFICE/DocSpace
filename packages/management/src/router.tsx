@@ -6,6 +6,7 @@ import Error404 from "client/Error404";
 
 import App from "./App";
 import Branding from "./categories/branding";
+import Spaces from "./categories/spaces";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/management/spaces" replace /> },
       {
         path: "spaces",
-        element: <h1>Spaces</h1>,
+        element: <Spaces />,
       },
       {
         path: "branding",
