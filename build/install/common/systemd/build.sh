@@ -161,7 +161,7 @@ reassign_values (){
   elif [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
 	SERVICE_TYPE="simple"
 	RESTART="no"
-	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
+	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} standalone=true"
   else
 	SERVICE_TYPE="notify"	
 	RESTART="always"

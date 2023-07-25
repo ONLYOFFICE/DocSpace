@@ -14,6 +14,7 @@ import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
 
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR, TenantStatus } from "../constants";
+import { getPortalTenantExtra } from "../api/portal";
 
 class AuthStore {
   userStore = null;
@@ -32,6 +33,7 @@ class AuthStore {
   isLogout = false;
   isUpdatingTariff = false;
 
+  tenantExtra = {};
   constructor() {
     this.userStore = new UserStore();
 
@@ -76,8 +78,7 @@ class AuthStore {
   updateTariff = async () => {
     this.setIsUpdatingTariff(true);
 
-    await this.currentQuotaStore.setPortalQuota();
-    await this.currentTariffStatusStore.setPortalTariff();
+    await this.getTenantExtra();
     await this.currentTariffStatusStore.setPayerInfo();
 
     this.setIsUpdatingTariff(false);
@@ -103,8 +104,7 @@ class AuthStore {
             this.isQuotaAvailable &&
             this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
           ) {
-            this.currentQuotaStore.init();
-            this.currentTariffStatusStore.init();
+            this.getTenantExtra();
           }
         })
       );
@@ -129,6 +129,33 @@ class AuthStore {
     return Promise.all(requests);
   };
 
+  get isEnterprise() {
+    return this.tenantExtra.enterprise;
+  }
+  get isCommunity() {
+    return this.tenantExtra.opensource;
+  }
+
+  getTenantExtra = async () => {
+    let refresh = false;
+    if (window.location.search === "?complete=true") {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      refresh = true;
+    }
+
+    const result = await getPortalTenantExtra(refresh);
+
+    if (!result) return;
+
+    const { tariff, quota, ...tenantExtra } = result;
+
+    runInAction(() => {
+      this.tenantExtra = { ...tenantExtra };
+    });
+
+    this.currentQuotaStore.setPortalQuotaValue(quota);
+    this.currentTariffStatusStore.setPortalTariffValue(tariff);
+  };
   setLanguage() {
     if (this.userStore.user?.cultureName) {
       getCookie(LANGUAGE) !== this.userStore.user.cultureName &&

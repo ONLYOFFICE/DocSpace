@@ -121,7 +121,7 @@ class VersionHistoryStore {
       .versionRestore(id, version)
       .then((newVersion) => {
         const updatedVersions = this.versions.slice();
-        updatedVersions.splice(1, 0, newVersion);
+        updatedVersions.unshift(newVersion);
         this.setVerHistoryFileVersions(updatedVersions);
       })
       .catch((e) => console.error(e))

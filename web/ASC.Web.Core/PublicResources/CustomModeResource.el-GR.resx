@@ -91,4 +91,108 @@ $GreenButton
 
 Δεν θέλετε να αλλάξετε τον κωδικό πρόσβασής σας; Απλά αγνοήστε αυτό το μήνυμα.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Καλώς ήρθατε στο ONLYOFFICE Personal
+
+Μόλις δημιουργήσατε το προσωπικό σας γραφείο στο cloud.
+
+h3.Είναι ένας εικονικός χώρος εργασίας όπου μπορείτε να επεξεργάζεστε και να αποθηκεύετε έγγραφα, να εργάζεστε με αυτά από οπουδήποτε παρέχοντας πρόσβαση στους φίλους ή τους συναδέλφους σας.
+
+h3.Για να ξεκινήσετε, δείτε τι σας προσφέρει το ONLYOFFICE:
+
+- Δημιουργία, προβολή και επεξεργασία εγγράφων κειμένου, υπολογιστικών φύλλων, παρουσιάσεων.
+
+- Εργαστείτε με όλα τα δημοφιλή μορφότυπα. Υψηλότερη συμβατότητα με τα αρχεία του MS Office.
+
+- Δημιουργία και συνεπεξεργασία "έτοιμων προς συμπλήρωση φορμών":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Κοινή χρήση και συνεργασία σε έγγραφα σε απευθείας σύνδεση.
+
+- Χρήση διάφορων πρόσθετων για εφαρμογή πρόσθετων δυνατοτήτων.
+
+- Εύκολη πρόσβαση στο προσωπικό σας cloud μέσω "επέκτασης Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Μπορείτε επίσης να επεξεργαστείτε έγγραφα εκτός σύνδεσης με τα δωρεάν "προγράμματα επεξεργασίας για υπολογιστές":"https://www.onlyoffice.com/download-desktop.aspx" ή να αποκτήσετε μια σουίτα επεξεργασίας για κινητά για τη συσκευή "iOS σας":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ή "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Θέλετε να αλλάξετε το email στον λογαριασμό σας στο cloud office;
+
+Κάντε κλικ στο παρακάτω κουμπί και συνδεθείτε* στο cloud σας.
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει για 7 ημέρες.
+
+*Αν δεν έχετε συνδεθεί στο cloud office σας σε αυτό το πρόγραμμα περιήγησης, θα πρέπει να χρησιμοποιήσετε το παλιό σας email για επιβεβαίωση.
+
+Δεν θέλετε να αλλάξετε το email σας; Απλώς αγνοήστε αυτό το μήνυμα.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Γεια σας,
+
+μόλις δημιουργήσατε έναν λογαριασμό στο ONLYOFFICE για προσωπική χρήση. Κάντε κλικ εδώ:"$InviteLink" για να επιβεβαιώσετε την εγγραφή και να δημιουργήσετε έναν κωδικό πρόσβασης.
+
+Εάν δεν μπορείτε να ανοίξετε τον σύνδεσμο, αντιγράψτε τον ακόλουθο "$InviteLink":"$InviteLink" και επικολλήστε τον στη γραμμή διεύθυνσης του προγράμματος περιήγησής σας.
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Ζητήσατε τον τερματισμό του λογαριασμού σας στο personal.onlyoffice.com. Ακολουθήστε τον σύνδεσμο για να ολοκληρώσετε το αίτημα (ο σύνδεσμος είναι ενεργός για 7 ημέρες): 
+
+Επιβεβαίωση τερματισμού λογαριασμού
+
+*Σημείωση*: Μετά τη διαγραφή, ο λογαριασμός σας και όλα τα δεδομένα που σχετίζονται με αυτόν θα διαγραφούν οριστικά σύμφωνα με τη "Δήλωση απορρήτου":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Διαβάστε περισσότερα σχετικά με τον τερματισμό λογαριασμού":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Αγνοήστε αυτό το email εάν δεν θέλετε να συνεχίσετε. 
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις, επικοινωνήστε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Η διαδικασία αφαίρεσης δεδομένων από τον χρήστη "$FromUserName":"$FromUserLink" ολοκληρώθηκε με επιτυχία.
+
+Η διαγραφή των προσωπικών δεδομένων επέτρεψε την αποδέσμευση:
+
+# Έγγραφα – $DocsSpace
+# Αλληλογραφία – $MailSpace
+# Ομιλία – $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Η νέα πύλη έχει καταχωρηθεί
+
+# Url πύλης: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Όνομα χρήστη: $UserName
+# Επώνυμο: $UserLastName
+# Email: $UserEmail
+# Τηλέφωνο: $Phone
+# Ημερομηνία δημιουργίας: $Date</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Έχει καταχωρισθεί νέα πύλη</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Τερματισμός προσωπικού λογαριασμού ONLYOFFICE</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Κάντε το ίδιο ως χρήστης|Συνδεθείτε σε Dropbox, Box και άλλους λογαριασμούς στην ενότητα «Κοινά»|Ρυθμίστε τα δικαιώματα πρόσβασης στα έγγραφα και τους φακέλους στην ενότητα "Κοινά»</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Δημιουργήστε και επεξεργαστείτε τα δικά σας έγγραφα καθώς και τα κοινόχρηστα έγγραφα με τα κατάλληλα δικαιώματα πρόσβασης|Δώστε πρόσβαση ανάγνωσης/επεξεργασίας σε άλλους χρήστες στα έγγραφα και τους φακέλους|Συνδεθείτε σε Dropbox, Box και άλλους λογαριασμούς στην ενότητα «Τα έγγραφά μου»</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Παρακαλούμε ενεργοποιήστε τη διεύθυνση email σας</value>
+  </data>
 </root>

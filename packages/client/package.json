@@ -1,6 +1,6 @@
 {
   "name": "@docspace/client",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "homepage": "",
   "scripts": {
@@ -46,6 +46,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^8.10.1",
     "hex-to-rgba": "^2.0.1",
+    "queue-promise": "2.2.1",
     "react-avatar-editor": "^13.0.0",
     "react-colorful": "^5.6.1",
     "react-hotkeys-hook": "^3.4.7",

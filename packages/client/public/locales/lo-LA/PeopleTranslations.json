@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "ປະເພດການເຂົ້າສູ່ລະບົບບັນຊີ",
   "DeleteSelfProfile": "ລຶບ profile",
   "DisabledEmployeeStatus": "ປິດ",
   "DisableUserButton": "ປິດ",
@@ -12,6 +13,7 @@
   "RemoveData": "ລຶບຂໍ້ມູນສ່ວນຕົວ",
   "ResetAuth": "ຣີເຊັດການພິສູດຢືນຢັນ",
   "SendInviteAgain": "ສົ່ງຄໍາເຊີນອີກເທື່ອຫນຶ່ງ",
+  "StandardLogin": "ເຂົ້າສູ່ລະບົບມາດຕະຖານ",
   "SuccessChangeUserStatus": "ຖານະຜູ້ໃຊ້ໄດ້ຖືກປ່ຽນແປງສໍາເລັດ",
   "SuccessDeletePersonalData": "ຂໍ້ມູນສ່ວນຕົວໄດ້ຖືກລຶບອອກສໍາເລັດ",
   "SuccessSentInvitation": "ການເຊື້ອເຊີນໄດ້ຖືກສົ່ງສໍາເລັດ",

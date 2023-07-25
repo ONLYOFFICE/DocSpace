@@ -967,4 +967,28 @@
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
     <value>Активирайте приложението за управление на файлове и папки на Dropbox.</value>
   </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да създавате библиографии в ONLYOFFICE редакторите. {0}Отидете на страницата за регистрация на EasyBib и попълнете формуляра, за да добавите интеграция на ONLYOFFICE. След като получите ключ за приложението, поставете го по-долу:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да получават известия за съобщения дори o офлайн. {0}Отидете в конзолата на Firebase и добавете нов проект за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Свържете Google Cloud Storage услугата, за да архивирате и съхранявате данни от вашия портал. {0}Отидете на Google Cloud Platform Console и създайте нов акаунт за услуги за ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Свържете услугата Rackspace Cloud Storage, за да архивирате и съхранявате данни от вашия портал. {0}В настройките за сигурност на Rackspace Cloud Control Panel щракнете върху Show линка до Rackspace API Key. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Свържете Amazon AWS S3, за да архивирате и съхранявате данни от вашия портал. {0}Отидете до конзолата за управление на AWS и създайте ключове за достъп за ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Свържете услугата Selectel Cloud Storage, за да архивирате и съхранявате данни от вашия портал. {0}Вземете данните за достъп за потребител с права за Четене/Писане за контейнерите, където планирате да съхранявате резервните си копия, и ги поставете по-долу:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Активирайте приложението за лесно публикуване на документи на вашия WordPress уебсайт. {0}На страницата за разработчици на Wordpress създайте ново приложение за интегриране на ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Интеграции на трети страни</value>
+  </data>
 </root>

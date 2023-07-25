@@ -18,7 +18,8 @@ import {
 import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 
 import MediaViewer from "./MediaViewer";
-import SelectionArea from "./SelectionArea";
+import FilesSelectionArea from "./SelectionArea/FilesSelectionArea";
+import AccountsSelectionArea from "./SelectionArea/AccountsSelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import { RoomSearchArea } from "@docspace/common/constants";
 
@@ -111,11 +112,21 @@ const PureHome = (props) => {
     onClickBack,
 
     showFilterLoader,
+
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   } = props;
 
   const location = useLocation();
 
-  const isAccountsPage = location.pathname.includes("/accounts/filter");
+  const isAccountsPage = location.pathname.includes("/accounts");
   const isSettingsPage = location.pathname.includes("settings");
 
   const { onDrop } = useFiles({
@@ -191,6 +202,15 @@ const PureHome = (props) => {
     createRoom,
     refreshFiles,
     setViewAs,
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   });
 
   React.useEffect(() => {
@@ -246,11 +266,14 @@ const PureHome = (props) => {
       {isSettingsPage ? (
         <></>
       ) : isAccountsPage ? (
-        <AccountsDialogs />
+        <>
+          <AccountsDialogs />
+          <AccountsSelectionArea />
+        </>
       ) : (
         <>
           <DragTooltip />
-          <SelectionArea />
+          <FilesSelectionArea />
         </>
       )}
       <MediaViewer />
@@ -310,6 +333,7 @@ export default inject(
     peopleStore,
     filesActionsStore,
     oformsStore,
+    tagsStore,
     selectedFolderStore,
     clientLoadingStore,
   }) => {
@@ -359,7 +383,14 @@ export default inject(
       disableDrag,
       isErrorRoomNotAvailable,
       setIsPreview,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      getRooms,
     } = filesStore;
+
+    const { updateProfileCulture } = peopleStore.targetUserStore;
+
+    const { createTag } = tagsStore;
 
     const { gallerySelected } = oformsStore;
 
@@ -408,8 +439,14 @@ export default inject(
 
     const { setPortalTariff } = currentTariffStatusStore;
 
-    const { setFrameConfig, frameConfig, isFrame, withPaging, showCatalog } =
-      settingsStore;
+    const {
+      setFrameConfig,
+      frameConfig,
+      isFrame,
+      withPaging,
+      showCatalog,
+      getSettings,
+    } = settingsStore;
 
     const {
       usersStore,
@@ -511,6 +548,17 @@ export default inject(
       onClickBack,
 
       showFilterLoader,
+
+      getSettings,
+      logout: auth.logout,
+      login: auth.login,
+
+      createTag,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      loadCurrentUser: auth.userStore.loadCurrentUser,
+      updateProfileCulture,
+      getRooms,
     };
   }
 )(observer(Home));

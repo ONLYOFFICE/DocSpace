@@ -175,7 +175,8 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folders.Where(r => r != null);
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         var selector = _selectorFactory.GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);

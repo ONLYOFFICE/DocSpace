@@ -158,6 +158,7 @@ class IconButton extends React.PureComponent {
         id={id}
         style={style}
         color={this.state.currentIconColor}
+        isFill={isFill}
         {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {

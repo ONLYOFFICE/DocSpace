@@ -8,7 +8,7 @@ import SectionBodyContent from "../Home/Section/Body";
 import FilesPanels from "../../components/FilesPanels";
 
 import { RoomSharingDialog } from "../../components/dialogs";
-import SelectionArea from "../Home/SelectionArea";
+import SelectionArea from "../Home/SelectionArea/FilesSelectionArea";
 import MediaViewer from "../Home/MediaViewer";
 
 import { usePublic } from "../Home/Hooks";

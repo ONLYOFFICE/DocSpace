@@ -130,7 +130,7 @@ export default inject(
       ? selection
       : bufferSelection
       ? [bufferSelection]
-      : [{ id: selectedFolderStore.id }];
+      : [selectedFolderStore];
 
     const hasPublicRoom =
       items.findIndex((i) => i.roomType === RoomsType.PublicRoom) !== -1;

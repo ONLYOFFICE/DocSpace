@@ -37,11 +37,11 @@ public class DbContextActivator
         _serviceProvider = serviceProvider;
     }
 
-    public DbContext CreateInstance(Type contextType, ProviderInfo provider)
+    public DbContext CreateInstance(Type contextType, ProviderInfo provider, ConfigurationInfo configurationInfo = ConfigurationInfo.SaaS)
     {
         var scope = _serviceProvider.CreateScope();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}";
+        configuration["testAssembly"] = $"ASC.Migrations.{provider.Provider}.{configurationInfo}";
         configuration["ConnectionStrings:default:name"] = "default";
         configuration["ConnectionStrings:default:connectionString"] = provider.ConnectionString;
         configuration["ConnectionStrings:default:providerName"] = provider.ProviderFullName;
