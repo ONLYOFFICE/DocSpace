@@ -15,6 +15,7 @@ const HideButton = (props) => {
     value,
     setHideLabel,
     isDisabled,
+    id,
   } = props;
   const marginProp = isAdditionalParameters ? null : "24px 0";
 
@@ -44,6 +45,7 @@ const HideButton = (props) => {
       )}
 
       <Link
+        id={id}
         className="hide-button settings_unavailable"
         isHovered
         {...onClickProp}

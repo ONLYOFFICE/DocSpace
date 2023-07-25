@@ -8,7 +8,6 @@ import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
 
 import {
-  StyledComboBox,
   StyledEditInput,
   StyledEditButton,
   StyledCheckIcon,
@@ -16,8 +15,8 @@ import {
   StyledHelpButton,
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
-import AccessSelector from "./AccessSelector";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import AccessSelector from "./AccessSelector";
 
 const Item = ({
   t,
@@ -130,10 +129,15 @@ const Item = ({
             size={16}
             color="#F21C0E"
           />
-          <StyledDeleteIcon size="medium" onClick={removeItem} />
+          <StyledDeleteIcon
+            className="delete-icon"
+            size="medium"
+            onClick={removeItem}
+          />
         </>
       ) : (
         <AccessSelector
+          className="user-access"
           t={t}
           roomType={roomType}
           defaultAccess={defaultAccess?.access}

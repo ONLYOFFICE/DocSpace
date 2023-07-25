@@ -57,8 +57,14 @@ const getTreeItems = (data, path, t) => {
         return t("DocumentService");
       case "SingleSignOn":
         return t("SingleSignOn");
+      case "SMTPSettings":
+        return t("SMTPSettings");
       case "DeveloperTools":
         return t("DeveloperTools");
+      case "Bonus":
+        return t("Common:Bonus");
+      case "FreeProFeatures":
+        return "Common:FreeProFeatures";
       default:
         throw new Error("Unexpected translation key");
     }
@@ -99,7 +105,6 @@ const getTreeItems = (data, path, t) => {
 const ArticleBodyContent = (props) => {
   const {
     t,
-
     tReady,
     setIsLoadedArticleBody,
     toggleArticleOpen,
@@ -107,6 +112,9 @@ const ArticleBodyContent = (props) => {
     isNotPaidPeriod,
     isOwner,
     isLoadedArticleBody,
+    standalone,
+    isEnterprise,
+    isCommunity,
   } = props;
 
   const [selectedKeys, setSelectedKeys] = React.useState([]);
@@ -186,6 +194,9 @@ const ArticleBodyContent = (props) => {
       if (location.pathname.includes("payments")) {
         setSelectedKeys(["7-0"]);
       }
+      if (this.props.location.pathname.includes("bonus")) {
+        this.setState({ selectedKeys: ["8-0"] });
+      }
     }
   }, [tReady, setIsLoadedArticleBody, location.pathname, selectedKeys]);
 
@@ -246,6 +257,10 @@ const ArticleBodyContent = (props) => {
         return t("PortalDeletion");
       case "DeveloperTools":
         return t("DeveloperTools");
+      case "Common:Bonus":
+        return t("Common:Bonus");
+      case "Common:FreeProFeatures":
+        return "Common:FreeProFeatures";
       default:
         throw new Error("Unexpected translation key");
     }
@@ -266,7 +281,24 @@ const ArticleBodyContent = (props) => {
       });
     }
 
-    if (!isOwner) {
+    if (standalone) {
+      const deletionTKey = isCommunity
+        ? "Common:PaymentsTitle"
+        : "Common:Bonus";
+
+      const index = resultTree.findIndex((el) => el.tKey === deletionTKey);
+
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    } else {
+      const index = resultTree.findIndex((n) => n.tKey === "Common:Bonus");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    }
+
+    if (!isOwner || standalone) {
       const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
       if (index !== -1) {
         resultTree.splice(index, 1);
@@ -287,7 +319,11 @@ const ArticleBodyContent = (props) => {
           isActive={item.key === selectedKeys[0][0]}
           onClick={() => onSelect(item.key)}
           folderId={item.id}
-          style={{ marginTop: `${item.key.includes(7) ? "16px" : "0"}` }}
+          style={{
+            marginTop: `${
+              item.key.includes(7) || item.key.includes(8) ? "16px" : "0"
+            }`,
+          }}
         />
       );
     });
@@ -302,18 +338,28 @@ const ArticleBodyContent = (props) => {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore, userStore } = auth;
+  const {
+    currentTariffStatusStore,
+    userStore,
+    isEnterprise,
+    settingsStore,
+    isCommunity,
+  } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
   const { isOwner } = user;
+  const { standalone, showText, toggleArticleOpen } = settingsStore;
 
   return {
-    showText: auth.settingsStore.showText,
-    toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
+    standalone,
+    isEnterprise,
+    showText,
+    toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
     isOwner,
+    isCommunity,
   };
 })(
   withLoading(

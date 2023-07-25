@@ -232,6 +232,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>File information</short>
     /// <category>Files</category>
     /// <returns>File info</returns>
+    [AllowAnonymous]
     [HttpGet("file/{fileId}")]
     public async Task<FileDto<T>> GetFileInfoAsync(T fileId, int version = -1)
     {
@@ -427,6 +428,7 @@ public class FilesControllerCommon : ApiControllerBase
         return await _filesControllerHelperInternal.CreateTextFileAsync(await _globalFolderHelper.FolderMyAsync, inDto.Title, inDto.Content);
     }
 
+    [AllowAnonymous]
     [HttpPost("thumbnails")]
     public async Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {

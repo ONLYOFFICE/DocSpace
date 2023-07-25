@@ -9,15 +9,14 @@ import { isMobile } from "react-device-detect";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
-import PortalPlugins from "./PortalPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 import DocumentService from "./DocumentService";
+import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, loadBaseInfo, baseDomain, enablePlugins, toDefault } =
-    props;
+  const { t, tReady, loadBaseInfo, baseDomain, toDefault } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -39,24 +38,18 @@ const IntegrationWrapper = (props) => {
       name: t("SingleSignOn"),
       content: <SSO />,
     },
+    {
+      id: "smtp-settings",
+      name: t("SMTPSettings"),
+      content: <SMTPSettings />,
+    },
   ];
-
-  const pluginData = {
-    id: "plugins",
-    name: "Plugins",
-    content: <PortalPlugins />,
-  };
 
   const documentServiceData = {
     id: "document-service",
     name: t("DocumentService"),
     content: <DocumentService />,
   };
-
-  if (!isMobile) {
-    enablePlugins && data.push(pluginData);
-  }
-
   if (baseDomain) data.push(documentServiceData);
 
   const load = async () => {
@@ -91,13 +84,12 @@ const IntegrationWrapper = (props) => {
 export default inject(({ setup, auth, ssoStore }) => {
   const { initSettings } = setup;
   const { load: toDefault } = ssoStore;
-  const { enablePlugins, baseDomain } = auth.settingsStore;
+  const { baseDomain } = auth.settingsStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    enablePlugins,
     baseDomain,
     toDefault,
   };

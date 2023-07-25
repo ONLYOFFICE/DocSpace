@@ -51,6 +51,7 @@ public class ChunkedUploaderHandlerService
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly ChunkedUploadSessionHelper _chunkedUploadSessionHelper;
     private readonly SocketManager _socketManager;
+    private readonly FileDtoHelper _filesWrapperHelper;
     private readonly ILogger<ChunkedUploaderHandlerService> _logger;
 
     public ChunkedUploaderHandlerService(
@@ -64,7 +65,8 @@ public class ChunkedUploaderHandlerService
         InstanceCrypto instanceCrypto,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
         ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-        SocketManager socketManager)
+        SocketManager socketManager,
+        FileDtoHelper filesWrapperHelper)
     {
         _tenantManager = tenantManager;
         _fileUploader = fileUploader;
@@ -76,6 +78,7 @@ public class ChunkedUploaderHandlerService
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
         _chunkedUploadSessionHelper = chunkedUploadSessionHelper;
         _socketManager = socketManager;
+        _filesWrapperHelper = filesWrapperHelper;
         _logger = logger;
     }
 
@@ -137,7 +140,7 @@ public class ChunkedUploaderHandlerService
 
                     if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                     {
-                        await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
+                        await WriteSuccess(context, await ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                         _ = _filesMessageService.SendAsync(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
                         await _socketManager.CreateFileAsync(resumedSession.File);
@@ -216,10 +219,10 @@ public class ChunkedUploaderHandlerService
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
-        return context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
+        return context.Response.WriteAsync(JsonSerializer.Serialize(new { success, data, message }, SocketManager.GetSerializerSettings()));
     }
 
-    private static object ToResponseObject<T>(File<T> file)
+    private async Task<object> ToResponseObject<T>(File<T> file)
     {
         return new
         {
@@ -228,7 +231,8 @@ public class ChunkedUploaderHandlerService
             version = file.Version,
             title = file.Title,
             provider_key = file.ProviderKey,
-            uploaded = true
+            uploaded = true,
+            file = await _filesWrapperHelper.GetAsync(file)
         };
     }
 }

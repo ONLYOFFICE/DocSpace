@@ -26,7 +26,7 @@ const SingleSignOn = (props) => {
   const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   useEffect(() => {
-    load();
+    isSSOAvailable && load();
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
@@ -61,6 +61,7 @@ const SingleSignOn = (props) => {
       <ToggleSSO isSSOAvailable={isSSOAvailable} />
 
       <HideButton
+        id="sp-settings-hide-button"
         text={t("ServiceProviderSettings")}
         label={SERVICE_PROVIDER_SETTINGS}
         value={serviceProviderSettings}
@@ -82,6 +83,7 @@ const SingleSignOn = (props) => {
       <StyledSettingsSeparator />
 
       <HideButton
+        id="sp-metadata-hide-button"
         text={t("SpMetadata")}
         label={SP_METADATA}
         value={spMetadata}

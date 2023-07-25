@@ -66,10 +66,16 @@ const Login: React.FC<ILoginProps> = ({
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings || {
+  const {
+    enabledJoin,
+    greetingSettings,
+    enableAdmMess,
+    cookieSettingsEnabled,
+  } = portalSettings || {
     enabledJoin: false,
     greetingSettings: false,
     enableAdmMess: false,
+    cookieSettingsEnabled: false,
   };
 
   const ssoLabel = capabilities?.ssoLabel || "";
@@ -272,6 +278,7 @@ const Login: React.FC<ILoginProps> = ({
               onRecoverDialogVisible={onRecoverDialogVisible}
               match={match}
               enableAdmMess={enableAdmMess}
+              cookieSettingsEnabled={cookieSettingsEnabled}
             />
           </FormWrapper>
           <Toast />

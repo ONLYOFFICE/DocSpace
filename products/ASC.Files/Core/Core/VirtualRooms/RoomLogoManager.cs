@@ -35,10 +35,10 @@ public class RoomLogoManager
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
 
-    private static (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
-    private static (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
-    private static (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
-    private static (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
+    private static readonly (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
+    private static readonly (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
+    private static readonly (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
+    private static readonly (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
 
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -48,6 +48,8 @@ public class RoomLogoManager
     private IDataStore _dataStore;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly SecurityContext _securityContext;
 
     public RoomLogoManager(
         StorageFactory storageFactory,
@@ -56,7 +58,9 @@ public class RoomLogoManager
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, 
+        EmailValidationKeyProvider emailValidationKeyProvider, 
+        SecurityContext securityContext)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
@@ -65,11 +69,13 @@ public class RoomLogoManager
         _logger = logger;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
+        _securityContext = securityContext;
     }
 
     public bool EnableAudit { get; set; } = true;
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
+    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request.Headers;
 
     private async ValueTask<IDataStore> GetDataStoreAsync()
     {
@@ -178,13 +184,14 @@ public class RoomLogoManager
         var id = GetId(room);
 
         var cacheKey = Math.Abs(room.ModifiedOn.GetHashCode());
+        var secure = !_securityContext.IsAuthenticated;
 
         return new Logo
         {
-            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?hash={cacheKey}",
-            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?hash={cacheKey}",
-            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?hash={cacheKey}",
-            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?hash={cacheKey}"
+            Original = await GetLogoPathAsync(id, SizeName.Original, cacheKey, secure),
+            Large = await GetLogoPathAsync(id, SizeName.Large, cacheKey, secure),
+            Medium = await GetLogoPathAsync(id, SizeName.Medium, cacheKey, secure),
+            Small = await GetLogoPathAsync(id, SizeName.Small, cacheKey, secure)
         };
     }
 
@@ -280,12 +287,16 @@ public class RoomLogoManager
         }
     }
 
-    private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size)
+    private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size, int hash, bool secure = false)
     {
         var fileName = string.Format(LogosPath, ProcessFolderId(id), size.ToStringLowerFast());
-        var uri = await (await GetDataStoreAsync()).GetUriAsync(fileName);
+        var headers = secure ? new[] { SecureHelper.GenerateSecureKeyHeader(fileName, _emailValidationKeyProvider) } : null;
 
-        return uri.ToString();
+        var store = await GetDataStoreAsync();
+        
+        var uri = await store.GetPreSignedUriAsync(string.Empty, fileName, TimeSpan.MaxValue, headers);
+
+        return uri + (secure ? "&" : "?") + $"hash={hash}";
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)

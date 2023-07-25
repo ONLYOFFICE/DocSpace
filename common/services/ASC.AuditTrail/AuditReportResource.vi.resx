@@ -652,4 +652,70 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Đã xóa thẻ: {0}</value>
   </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Đã cập nhật cài đặt chu kỳ kiểm tra</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Đã cập nhật Cài đặt Điều hướng Tùy chỉnh</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Đã cập nhật cài đặt Lưu bắt buộc (Forcesave)</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Đã cập nhật cài đặt lưu bắt buộc cho cửa hàng</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Đăng nhập không thành công. Thử quá nhiều lần</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Đăng nhập không thành công. Recaptcha không hợp lệ</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Đăng nhập qua API &amp; ứng dụng xác thực không thành công</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Đăng nhập qua ứng dụng xác thực không thành công</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Đăng nhập thông qua ứng dụng xã hội thành công</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Đăng nhập qua API &amp; ứng dụng xác thực thành công</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Đăng nhập qua ứng dụng xác thực thành công</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Phòng riêng bị vô hiệu hóa</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Đã bật Phòng riêng</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Bắt đầu giải mã bộ nhớ</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Bắt đầu mã hóa bộ nhớ</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Cài đặt Xác thực hai yếu tố được cập nhật: Xác thực hai yếu tố đã bị tắt</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Cài đặt Xác thực hai yếu tố được cập nhật: Xác nhận SMS đã được bật</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Cài đặt Xác thực hai yếu tố được cập nhật: Ứng dụng xác thực đã được bật</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Dữ liệu người dùng cho {0} đã bị xóa</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Ứng dụng xác thực bị ngắt kết nối: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Đã tạo mã dự phòng mới</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Email được cập nhật</value>
+  </data>
 </root>

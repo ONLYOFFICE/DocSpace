@@ -146,4 +146,10 @@ $Message</value>
  
 $__AuthorName deletando a sala:$RoomTitle</value>
   </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notificação do DocSpace. Mencionado no documento</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notificação do DocSpace. Sala deletada</value>
+  </data>
 </root>

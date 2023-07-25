@@ -188,6 +188,7 @@ const ExternalLinks = ({
           </div>
         )}
         <StyledToggleButton
+          className="invite-via-link"
           isChecked={externalLinksVisible}
           onChange={toggleLinks}
         />
@@ -212,6 +213,7 @@ const ExternalLinks = ({
             />
           </StyledInviteInput>
           <AccessSelector
+            className="invite-via-link-access"
             t={t}
             roomType={roomType}
             defaultAccess={activeLink.access}

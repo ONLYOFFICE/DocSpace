@@ -68,6 +68,8 @@ const Selector = ({
   totalItems,
   isLoading,
 
+  withHeader,
+
   withFooterInput,
   withFooterCheckbox,
   footerInputHeader,
@@ -292,13 +294,16 @@ const Selector = ({
 
   return (
     <StyledSelector id={id} className={className} style={style}>
-      <Header
-        onBackClickAction={onBackClickAction}
-        headerLabel={headerLabel}
-        withoutBackButton={withoutBackButton}
-      />
+      {withHeader && (
+        <Header
+          onBackClickAction={onBackClickAction}
+          headerLabel={headerLabel}
+          withoutBackButton={withoutBackButton}
+        />
+      )}
 
       <Body
+        withHeader={withHeader}
         footerVisible={footerVisible || !!alwaysShowFooter}
         isSearch={isSearch}
         isAllIndeterminate={
@@ -386,6 +391,8 @@ const Selector = ({
 //   /** Accepts css style */
 //   style: PropTypes.object,
 
+/** Add header */
+// withHeader: PropTypes.bool,
 //   /** Selector header text */
 //   headerLabel: PropTypes.string,
 //   /** Hide header back button */
@@ -483,6 +490,7 @@ Selector.defaultProps = {
   withFooterInput: false,
   alwaysShowFooter: false,
   disableAcceptButton: false,
+  withHeader: true,
 
   selectedItems: [],
 };

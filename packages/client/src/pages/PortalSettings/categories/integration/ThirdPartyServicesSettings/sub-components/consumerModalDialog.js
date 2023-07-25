@@ -149,6 +149,7 @@ class ConsumerModalDialog extends React.Component {
     <Trans t={this.props.t} i18nKey="ThirdPartyBodyDescription" ns="Settings">
       Detailed instructions in our{" "}
       <Link
+        id="help-center-link"
         color={this.props.theme.client.settings.integration.linkColor}
         isHovered={false}
         target="_blank"
@@ -169,6 +170,7 @@ class ConsumerModalDialog extends React.Component {
         If you still have some questions on how to connect this service or need
         technical assistance, please feel free to contact our{" "}
         <Link
+          id="support-team-link"
           color={this.props.theme.client.settings.integration.linkColor}
           isHovered={false}
           target="_blank"
@@ -217,6 +219,7 @@ class ConsumerModalDialog extends React.Component {
                   <Box>
                     <TextInput
                       scale
+                      id={prop.name}
                       name={prop.name}
                       placeholder={prop.title}
                       isAutoFocussed={i === 0}
@@ -237,6 +240,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             primary
             size="normal"
+            id="enable-button"
             label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             isLoading={isLoading}
             isDisabled={isLoading}
@@ -246,6 +250,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             size="normal"
             scale
+            id="cancel-button"
             label={t("Common:CancelButton")}
             isLoading={isLoading}
             isDisabled={isLoading}

@@ -33,23 +33,17 @@ public class SettingsController : ApiControllerBase
     private readonly FileStorageService _fileStorageService;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
-    private readonly SettingsManager _settingsManager;
-    private readonly TenantManager _tenantManager;
 
     public SettingsController(
         FileStorageService fileStorageService,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper,
-        SettingsManager settingsManager,
-        TenantManager tenantManager) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
-        _settingsManager = settingsManager;
-        _tenantManager = tenantManager;
     }
 
     /// <summary>
@@ -146,15 +140,17 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("forcesave")]
-    public async Task<bool> ForcesaveAsync(SettingsRequestDto inDto)
+    public bool Forcesave()
     {
-        return await _fileStorageService.ForcesaveAsync(inDto.Set);
+        return true;
+        //return _fileStorageServiceString.Forcesave(inDto.Set);
     }
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
+    [AllowAnonymous]
     [HttpGet("settings")]
     public FilesSettingsHelper GetFilesSettings()
     {
@@ -192,9 +188,10 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("storeforcesave")]
-    public async Task<bool> StoreForcesaveAsync(SettingsRequestDto inDto)
+    public bool StoreForcesave()
     {
-        return await _fileStorageService.StoreForcesaveAsync(inDto.Set);
+        return false;
+        //return _fileStorageServiceString.StoreForcesave(inDto.Set);
     }
 
     /// <summary>

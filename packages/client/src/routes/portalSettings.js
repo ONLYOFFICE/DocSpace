@@ -71,13 +71,17 @@ const Payments = loadable(() =>
   import("../pages/PortalSettings/categories/payments")
 );
 const ThirdParty = loadable(() =>
-  import("../pages/PortalSettings/categories/integration/DocumentService")
+  import(
+    "../pages/PortalSettings/categories/integration/ThirdPartyServicesSettings"
+  )
 );
-const SingleSignOn = loadable(() =>
-  import("../pages/PortalSettings/categories/integration/SingleSignOn")
-);
+
 const DocumentService = loadable(() =>
   import("../pages/PortalSettings/categories/integration/DocumentService")
+);
+
+const SingleSignOn = loadable(() =>
+  import("../pages/PortalSettings/categories/integration/SingleSignOn")
 );
 const DeveloperTools = loadable(() =>
   import("../pages/PortalSettings/categories/developer-tools/index.js")
@@ -103,6 +107,7 @@ const RestoreBackup = loadable(() =>
     "../pages/PortalSettings/categories/data-management/backup/restore-backup/index"
   )
 );
+const Bonus = loadable(() => import("../pages/Bonus"));
 
 const PortalSettingsRoutes = {
   path: "portal-settings/",
@@ -151,10 +156,10 @@ const PortalSettingsRoutes = {
       path: "customization/general/portal-renaming",
       element: <PortalRenaming />,
     },
-    // {
-    //   path: "common/whitelabel",
-    //   element: <WhiteLabel />,
-    // },
+    {
+      path: "common/whitelabel",
+      element: <WhiteLabel />,
+    },
     {
       path: "security",
       element: <Navigate to="security/access-portal" />,
@@ -208,7 +213,15 @@ const PortalSettingsRoutes = {
       element: <Integration />,
     },
     {
+      path: "integration/portal-integration",
+      element: <Integration />,
+    },
+    {
       path: "integration/document-service",
+      element: <Integration />,
+    },
+    {
+      path: "integration/smtp-settings",
       element: <Integration />,
     },
     {
@@ -218,6 +231,10 @@ const PortalSettingsRoutes = {
     {
       path: "developer-tools",
       element: <Navigate to="javascript-sdk" />,
+    },
+    {
+      path: "developer-tools/api",
+      element: <DeveloperTools />,
     },
     {
       path: "developer-tools/javascript-sdk",
@@ -266,6 +283,10 @@ const PortalSettingsRoutes = {
     {
       path: "restore/restore-backup",
       element: <RestoreBackup />,
+    },
+    {
+      path: "bonus",
+      element: <Bonus />,
     },
     ...generalRoutes,
   ],

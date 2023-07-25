@@ -104,7 +104,7 @@ const getSearchParams = (filterValues) => {
     "key"
   );
 
-  return searchParams || "true";
+  return searchParams || FilterKeys.excludeSubfolders;
 };
 
 const getType = (filterValues) => {
@@ -241,6 +241,7 @@ const SectionFilterContent = ({
   setClearSearch,
   setMainButtonMobileVisible,
   isArchiveFolder,
+  canSearchByContent,
   accountsViewAs,
   groups,
 
@@ -365,7 +366,8 @@ const SectionFilterContent = ({
         }
 
         newFilter.withSubfolders =
-          withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
+          withSubfolders === FilterKeys.excludeSubfolders ? null : "true";
+        console.log(data);
         newFilter.searchInContent = withContent === "true" ? "true" : null;
 
         const path = location.pathname.split("/filter")[0];
@@ -782,10 +784,10 @@ const SectionFilterContent = ({
         });
       }
     } else {
-      if (filter.withSubfolders === "false") {
+      if (filter.withSubfolders === "true") {
         filterValues.push({
-          key: FilterKeys.excludeSubfolders,
-          label: t("ExcludeSubfolders"),
+          key: FilterKeys.withSubfolders,
+          label: t("WithSubfolders"),
           group: FilterGroups.filterFolders,
         });
       }
@@ -1417,14 +1419,14 @@ const SectionFilterContent = ({
             withOptions: true,
             options: [
               {
-                id: "filter_folders_with-subfolders",
-                key: FilterKeys.withSubfolders,
-                label: t("WithSubfolders"),
-              },
-              {
                 id: "filter_folders_exclude-subfolders",
                 key: FilterKeys.excludeSubfolders,
                 label: t("ExcludeSubfolders"),
+              },
+              {
+                id: "filter_folders_with-subfolders",
+                key: FilterKeys.withSubfolders,
+                label: t("WithSubfolders"),
               },
             ],
           },
@@ -1437,14 +1439,16 @@ const SectionFilterContent = ({
             isHeader: true,
             withoutHeader: true,
           },
-          {
+        ];
+        canSearchByContent &&
+          contentOptions.push({
             id: "filter_search-by-file-contents",
             key: "true",
             group: FilterGroups.filterContent,
             label: t("SearchByContent"),
             isCheckbox: true,
-          },
-        ];
+          });
+
         filterOptions.push(...foldersOptions);
         filterOptions.push(...contentOptions);
       }
@@ -1702,7 +1706,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(room);
+          // !hide && commonOptions.push(room);
         }
         if (availableSort?.includes("AuthorTrash")) {
           const idx = availableSort.findIndex((x) => x === "AuthorTrash");
@@ -1711,7 +1715,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(authorOption);
+          // !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("CreatedTrash")) {
           const idx = availableSort.findIndex((x) => x === "CreatedTrash");
@@ -1720,7 +1724,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(creationDate);
+          // !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Erasure")) {
           const idx = availableSort.findIndex((x) => x === "Erasure");
@@ -1747,7 +1751,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(type);
+          // !hide && commonOptions.push(type);
         }
       } else {
         const availableSort = localStorage
@@ -1765,7 +1769,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(authorOption);
+          // !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("Created")) {
           const idx = availableSort.findIndex((x) => x === "Created");
@@ -1774,7 +1778,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(creationDate);
+          // !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Modified")) {
           const idx = availableSort.findIndex((x) => x === "Modified");
@@ -1801,7 +1805,7 @@ const SectionFilterContent = ({
             infoPanelColumnsSize &&
             infoPanelColumnsSize[idx] === "0px";
 
-          !hide && commonOptions.push(type);
+          // !hide && commonOptions.push(type);
         }
       }
     } else {
@@ -1811,17 +1815,17 @@ const SectionFilterContent = ({
         commonOptions.push(owner);
         commonOptions.push(modifiedDate);
       } else if (isTrash) {
-        commonOptions.push(authorOption);
-        commonOptions.push(creationDate);
+        // commonOptions.push(authorOption);
+        // commonOptions.push(creationDate);
         commonOptions.push(erasure);
         commonOptions.push(size);
-        commonOptions.push(type);
+        // commonOptions.push(type);
       } else {
-        commonOptions.push(authorOption);
-        commonOptions.push(creationDate);
+        // commonOptions.push(authorOption);
+        // commonOptions.push(creationDate);
         commonOptions.push(modifiedDate);
         commonOptions.push(size);
-        commonOptions.push(type);
+        // commonOptions.push(type);
       }
     }
 
@@ -1930,7 +1934,7 @@ const SectionFilterContent = ({
           newFilter.excludeSubject = null;
         }
         if (group === FilterGroups.filterFolders) {
-          newFilter.withSubfolders = "true";
+          newFilter.withSubfolders = null;
         }
         if (group === FilterGroups.filterContent) {
           newFilter.searchInContent = null;
@@ -2042,6 +2046,7 @@ export default inject(
       clearSearch,
       setClearSearch,
       isLoadedEmptyPage,
+      filesSettingsStore,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2073,6 +2078,8 @@ export default inject(
     const { groups } = groupsStore;
 
     const { filter: accountsFilter } = filterStore;
+
+    const { canSearchByContent } = filesSettingsStore;
 
     return {
       user,
@@ -2108,6 +2115,8 @@ export default inject(
       setClearSearch,
 
       setMainButtonMobileVisible,
+
+      canSearchByContent,
 
       user,
 

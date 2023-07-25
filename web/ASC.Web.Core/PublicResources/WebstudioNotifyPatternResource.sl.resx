@@ -135,13 +135,6 @@ Prosimo potrdite vaš e-mail (povezava velja 7 dni):
 
 $GreenButton
 
-Vaš trenutni naročniški paket je STARTUP. Je popolnoma brezplačen in vključuje:
-
-* 1 skrbnik, 2 napredna uporabnika
-* Do 12 sob
-* Neomejeno število uporabnikov v vsaki sobi
-* 2 GB prostora na disku
-
 Uživajte v novem načinu sodelovanja pri dokumentih!
 
 S spoštovanjem, 
@@ -156,13 +149,6 @@ Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko o
 Prosimo potrdite vaš e-mail (povezava velja 7 dni):
 
 $GreenButton
-
-Vaš trenutni paket je STARTUP. Je popolnoma brezplačen in vključuje:
-
-* 1 skrbnik, 2 napredna uporabnika
-* Do 12 sob
-* Neomejeno število uporabnikov v vsaki sobi
-* 2 GB prostora na disku
 
 Uživajte v novem načinu sodelovanja pri dokumentih!
 
@@ -200,13 +186,6 @@ Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko o
 Prosimo potrdite vaš e-mail (povezava velja 7 dni):
 
 $GreenButton
-
-Vaš trenutni paket je STARTUP. Je popolnoma brezplačen in vključuje:
-
-* 1 skrbnik, 2 napredna uporabnika
-* Do 12 sob
-* Neomejeno število uporabnikov v vsaki sobi
-* 2 GB prostora na disku
 
 Uživajte v novem načinu sodelovanja pri dokumentih!
 
@@ -724,5 +703,1155 @@ Ekipa ONLYOFFICE
   </data>
   <data name="ButtonVisitPaymentsSection" xml:space="preserve">
     <value>Obiščite razdelek za plačila</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je ustvaril nov dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v sobi: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je uredil dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v sobi: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je naložil nov dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v sobi: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je dodal nov komentar na verzijo dokumenta: &lt;a href={1}&gt;{2}&lt;/a&gt; v sobi: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je premaknil sobo: &lt;a href={1}&gt;{2}&lt;/a&gt; v arhiv - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je ustvaril novo sobo: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je izbrisal sobo: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je preimenoval sobo: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je bila dodeljena vloga &lt;b&gt;{1}&lt;/b&gt; v sobi: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je bil dodan sobi: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Dodan je bil nov uporabnik DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je bil odstranjen iz sobe: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; je spremenil nivo dostopa za uporabnike &lt;b&gt;{1}&lt;/b&gt; na &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace uporabnik osvežen: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Dostop do nadzorne plošče</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Dostop do vašega portala</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Dostop do vaše spletne pisarne</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Kliknite tukaj za aktivacijo svojega email naslova</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Spremenite email naslov</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Spremenite geslo</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Spremenite številko mobilnega telefona</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Konfigurirajte aplikacijo za avtentikacijo</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Konfigurirajte zdaj</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Potrdite spremembo naslova portala</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Potrdite posodobitev lastnika portala</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Potrdite ukinitev računa</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Deaktivirajte portal</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Izbrišite portal</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Povabite zdaj</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Kliknite tukaj, da se pridružite portalu</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Pustite povratne informacije</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Odstranite profil</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Obnovite zdaj</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Zahtevajte klic</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Izberite cenovne načrte zdaj</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Začnite brezplačni preizkus</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Izkoristite popust</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. Aktivirajte svoj email naslov</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Potrdite spremembo emaila</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} ustvarjena varnostna kopija portala</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} asistenca pri geslu</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Potrdite spremembo gesla</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. Zahteva za spremembo številke mobilnega telefona</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Varnostno obvestilo</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Sprememba lastnika portala</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}. Sprememba naslova portala</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Dobite brezplačne ONLYOFFICE aplikacije</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Dobite brezplačne ONLYOFFICE aplikacije</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Dobite brezplačne ONLYOFFICE aplikacije</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Nekaj nasvetov za učinkovito delo na vaših dokumentih</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Nekaj nasvetov za učinkovito delo na vaših dokumentih</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Nekaj nasvetov za učinkovito delo na vaših dokumentih</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Nekaj nasvetov za učinkovito delo na vaših dokumentih</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Odkrijte poslovno naročnino na ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Odkrijte poslovno naročnino na ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Odkrijte poslovno naročnino na ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Odkrijte poslovno naročnino na ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Pridružite se ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Pridružite se ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Pridružite se ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Pridružite se ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Pridružite se ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>Sporočilo uporabnika administratorjem</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Zahteva prodajnega oddelka</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>Povabilo za pridružitev na ${__VirtualRootPath} portalu</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Ustvarjanje poštnega predala</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Sprememba gesla poštnega predala</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. Napaka pri selitvi na portal druge regije</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}. Migracija na portal druge regije se je začela</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Selitev na portal druge regije je bila uspešno zaključena</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE za osebno rabo!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE osebno</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Prijavite se v vaš ONLYOFFICE osebni račun</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Osebno. Aktivirajte svoj email naslov</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Ukinitev osebnega računa ONLYOFFICE</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>Deaktivacija portala ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>Brisanje portala ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace je deaktiviran</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}. Sprememba naslova portala</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>Brisanje vašega profila iz ${__VirtualRootPath} portala</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Uporabnik je izbrisal svoj profil</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>Vaš profil na ${__VirtualRootPath} je bil izbrisan</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Prerazporeditev uporabniških podatkov je zaključena</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Prerazporeditev uporabniških podatkov ni uspela</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranjevanje uporabniških podatkov je končano</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranjevanje uporabniških podatkov ni uspelo</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Zahteva za licenco podjetja</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>Zahteva cenovnega načrta SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Obnovitev končana</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. Obnovitev se je začela</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Konfigurirajte vaš ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Vaš ONLYOFFICE DocSpace bo izbrisan</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Aktivirano je podaljšano obdobje za vaš ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Preteklo je podaljšano obdobje za vaš ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Preteklo je podaljšano obdobje za vaš ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Podaljšano obdobje za vaš ONLYOFFICE DocSpace preteče jutri</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Dobrodošli v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} obvestilo o spremembi profila portala</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Kaj je novega na vašem portalu $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>SMTP testno sporočilo</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek dešifriranja ni uspel</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek dešifriranja se je začel</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek šifriranja je končan</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek šifriranja ni uspel</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek šifriranja se je začel</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Postopek šifriranja je končan</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>Novi uporabniki dodani na portal ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Povabljeni, da se pridružite ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1.Aktivirajte vaš email za "${__VirtualRootPath}":"$InviteLink" portal.
+
+Pozdravljeni!
+
+Za začetek sodelovanja na "${__VirtualRootPath}":"$InviteLink" portalu morate aktivirati svoj mail naslov. To je potrebno iz varnostnih razlogov.
+
+$GreenButton
+
+Ta povezava velja samo 7 dni. Prosimo, dokončajte svojo email aktivacijo v tem obdobju.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" ustvarjena varnostna kopija portala
+
+Spoštovani $OwnerName,
+
+Datoteka varnostne kopije, ki vsebuje podatke iz vašega "${__VirtualRootPath}":"${__VirtualRootPath}" portala, je bila ustvarjena.
+
+Če želite izvedeti več o postopku varnostnega kopiranja, si oglejte uporabniški priročnik "Varnostno kopiranje podatkov":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
+
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+Lep pozdrav,
+ONLYOFFICE™ Ekipa za podporo
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) ustvarjena varnostna kopija portala
+
+Dragi $OwnerName,
+
+Datoteka varnostne kopije, ki vsebuje podatke iz vašega [${__VirtualRootPath}](${__VirtualRootPath}) portala, je bila ustvarjena.
+
+Če želite izvedeti več o postopku varnostnega kopiranja, si oglejte naš [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) uporabniški priročnik.
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na [support.onlyoffice.com](http://support.onlyoffice.com)
+
+Lep pozdrav,
+ONLYOFFICE™ Ekipa za podporo
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Želite spremeniti email naslov na svojem ${LetterLogoText} računu?
+
+Kliknite spodnji gumb in se prijavite* v svoj oblak.
+
+$GreenButton
+
+Povezava je veljavna 7 dni.
+
+*Če v tem brskalniku niste prijavljeni v ${LetterLogoText}, boste morali za potrditev uporabiti svoj stari email naslov. Če se ga ne spomnite, se obrnite na skrbnika portala.
+
+Ne želite spremeniti emaila? Prezrite to sporočilo.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Zahteva za spremembo mobilne telefonske številke
+
+Zahtevali ste spremembo mobilne telefonske številke, s katero ste vstopili na portal ${LetterLogoText}.
+
+Za zamenjavo številke mobilnega telefona sledite spodnji povezavi:
+
+$GreenButton
+
+Če ne želite zamenjati številke svojega mobilnega telefona ali ste ta email prejeli pomotoma, ga prezrite ali se obrnite na skrbnika portala, da dobite podrobne informacije.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Varnostno obvestilo
+
+Konfiguracija aplikacije za avtentikacijo, ki jo uporabljate za vstop na portal ${LetterLogoText}, je bila ponastavljena.
+
+Kliknite spodnji gumb, da odprete stran za prijavo v portal in konfigurirate aplikacijo za avtentikacijo:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1.Sprememba "${__VirtualRootPath}":"${__VirtualRootPath}" lastnika portala
+
+Dragi $OwnerName,
+
+Pojavila se je zahteva za spremembo "${__VirtualRootPath}":"${__VirtualRootPath}" lastnika portala na $UserName.
+
+Za potrditev operacije sledite spodnji povezavi:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. Prosimo, dokončajte postopek zamenjave lastnika portala v tem obdobju.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1.Sprememba naslova portala
+
+Dragi $OwnerName,
+
+Pojavila se je zahteva za spremembo "${__VirtualRootPath}":"${__VirtualRootPath}" naslova portala na "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Za potrditev operacije sledite spodnji povezavi:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. Prosimo, dokončajte postopek zamenjave lastnika portala v tem obdobju.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Povabljeni ste, da se pridružite "${__VirtualRootPath}":"${__VirtualRootPath}" kot gostujoči uporabnik. Povabilo sprejmete s klikom na povezavo:
+
+$GreenButton
+
+Povezava velja le 7 dni.
+
+Dobili boste več nasvetov glede uporabe vaše spletne pisarne. Naročnine lahko kadar koli prekličete na strani svojega profila ali jih znova omogočite.</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni: * sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen *.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje katere koli shrambe v oblaku* in delo brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+Če potrebujete pomoč, pobrskajte po našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo “ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+$__AuthorName vas je kot gosta povabil v "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+Povezava velja le 7 dni.
+
+Dobili boste več nasvetov glede uporabe vaše spletne pisarne. Naročnine lahko kadar koli prekličete na strani svojega profila in jih znova omogočite.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni: * sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje katere koli shrambe v oblaku* in delo brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+Če potrebujete pomoč, pobrskajte po našem "Centru za podporo":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1.Sporočilo iz portala "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Sporočilo iz portala [${__VirtualRootPath}](${__VirtualRootPath})
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1.Povabilo na portal "${__VirtualRootPath}":"$InviteLink"
+
+Pozdravljeni,
+
+Zahtevali ste pridružitev portalu "${__VirtualRootPath}":"$InviteLink" na ${LetterLogoText} - platformi za upravljanje dokumentov in projektov. Pridružite se portalu in takoj začnite sodelovati s svojimi sodelavci in prijatelji.
+
+Če želite sprejeti povabilo, vnesite svoje ime in geslo na tej povezavi:
+
+$GreenButton
+
+*Opomba*: ta povezava velja le 48 ur. Prosimo, dokončajte operacijo v tem roku.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Dragi $UserName,
+
+     Administrator je ustvaril nov &lt;b&gt;$Address&lt;/b&gt; nabiralnik za vas na "${__VirtualRootPath}":"${__VirtualRootPath}" portalu.
+
+      Uporabite naslednje nastavitve za druge email odjemalce:
+      Prijava: &lt;b&gt;$Login&lt;/b&gt;
+      Geslo: "&lt;b&gt;nastavi geslo&lt;/b&gt;":"$MyStaffLink"
+
+      Prejeta pošta (IMAP): 
+      Strežnik: &lt;b&gt;$Server&lt;/b&gt;
+      Vrata: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+     Izhodna pošta (SMTP): 
+      Strežnik: &lt;b&gt;$Server&lt;/b&gt;
+      Vrata: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Zahteva avtentikacijo: &lt;b&gt;Da&lt;/b&gt;
+
+      Če ste ta email prejeli pomotoma, ga prezrite ali se obrnite na skrbnika portala, da izveste podrobnosti.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Dragi $UserName,
+
+      Geslo za nabiralnik &lt;b&gt;$Address&lt;/b&gt; je bilo spremenjeno.
+
+      Če ste ta email prejeli pomotoma, ga prezrite ali se obrnite na skrbnika portala, da izveste podrobnosti.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Dragi $UserName,
+
+      Administrator je za vas ustvaril nov nabiralnik&lt;b&gt;$Address&lt;/b&gt; na portalu "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Če ste ta email prejeli pomotoma, ga prezrite ali se obrnite na skrbnika portala, da izveste podrobnosti.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1.Napaka pri migraciji na portal druge regije
+
+Med selitvijo v regijo $RegionName je prišlo do napake. Prosimo, poskusite znova pozneje.
+Vaš portal je zdaj na voljo na starem naslovu "$PortalUrl":"$PortalUrl"
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+S spoštovanjem,
+ekipa ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Če želite spremeniti vrsto obvestil, jih upravljajte v "nastavitvah naročnine":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.Napaka pri migraciji na portal druge regije
+
+Med selitvijo v drugo regijo je prišlo do napake. Prosimo, poskusite znova pozneje.
+Vaš portal je zdaj na voljo na starem naslovu "$PortalUrl":"$PortalUrl"
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S spoštovanjem,
+ekipa ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Če želite spremeniti vrsto obvestil, jih upravljajte v "nastavitvah naročnine":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1.Začela se je selitev portala v drugo regijo
+
+Začela se je selitev portala v regijo $RegionName. Morda bo trajalo nekaj časa, odvisno od količine podatkov.
+
+*Opomba*: portal med postopkom selitve ne bo na voljo. Po končani selitvi bo URL portala spremenjen in vse povezave dokumentov v skupni rabi bodo nedostopne.
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S spoštovanjem,
+podporna ekipa ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Migracija portala
+h1."$PortalUrl":"$PortalUrl"
+
+Vaš portal je bil preseljen na novo domeno. Obnovite dostop do portala tako, da navedete geslo, ki se bo uporabljalo za prijavo.
+
+Za nastavitev gesla za račun sledite spodnji povezavi:
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. V tem obdobju dokončajte postopek obnovitve dostopa.
+
+Če ste ta email prejeli pomotoma, ga prezrite ali se obrnite na svojega "$PortalUrl":"$PortalUrl" skrbnika portala, da izveste podrobnosti.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Vabimo vas, da se pridružite "${__VirtualRootPath}":"${__VirtualRootPath}" kot gostujoči uporabnik. Sprejmite povabilo s klikom na povezavo:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Povezava velja le 7 dni.
+
+Dobili boste več nasvetov o uporabi vaše spletne pisarne. Naročnine lahko kadar koli prekličete na strani svojega profila ali jih znova omogočite.</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj lahko:
+
+* Sodelujete z drugimi uporabniki v sobi, v katero ste povabljeni: * sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen *.
+
+* *Delate z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelujete pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici.
+
+* *Povežete katero koli shrambo v oblaku* in delate brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+Če potrebujete pomoč, pobrskajte po našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Pozdravljeni, $UserName
+Uspešno ste bili registrirani v ONLYOFFICE Osebno "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Povežite svojo najljubšo shrambo v oblaku: Dropbox, Google Drive, OneDrive ali Box in ustvarite enotni delovni prostor za svoje dokumente, dostopne od koder koli.
+
+Izvedite več o ONLYOFFICE Osebno v "našem spletnem dnevniku": "$TagBlogLink".
+
+Veseli nas, da ste tukaj. Ostanite na zvezi!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Dobrodošli v ONLYOFFICE Osebno
+
+Pravkar ste ustvarili svojo osebno pisarno v oblaku.
+
+h3.To je navidezni delovni prostor, kjer lahko urejate in shranjujete dokumente, delate z njimi od koder koli in omogočate dostop vašim prijateljem ali sodelavcem.
+
+h3. Za hiter začetek nekaj opravil, ki jih lahko opravljate v ONLYOFFICE:
+
+- Ustvarite, preglejte in uredite besedilne dokumente, preglednice, predstavitve.
+
+- Delajte z vsemi priljubljenimi formati. Najvišja združljivost z datotekami MS Office.
+
+- Ustvarite in souredite "obrazce, pripravljene za izpolnjevanje":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Delite dokumente in sodelujte pri njih preko spleta.
+
+- Za uporabo dodatnih funkcij uporabite različne vtičnike.
+
+- Enostavno dostopajte do osebnega oblaka prek "Chrome razširitve":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Dokumente lahko urejate tudi brez povezave z našimi brezplačnimi "desktop urejevalniki":"https://www.onlyoffice.com/download-desktop.aspx" ali pridobite program za mobilno urejanje za vašo "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ali "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" napravo.
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Želite spremeniti email naslov na svojem računu ONLYOFFICE?
+
+Kliknite spodnji gumb in se prijavite* v svoj oblak.
+
+$GreenButton
+
+Povezava velja 7 dni.
+
+*Če v tem brskalniku niste prijavljeni v ONLYOFFICE, boste morali za potrditev uporabiti svoj stari email naslov.
+
+Ne želite spremeniti emaila? Prezrite to sporočilo.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Pozdravljeni,
+
+Pravkar ste registrirali račun pri ONLYOFFICE za osebno uporabo. Kliknite "tukaj":"$InviteLink", da potrdite registracijo in ustvarite geslo.
+
+Če ne morete odpreti povezave, kopirajte povezavo "$InviteLink":"$InviteLink" in jo prilepite v naslovno vrstico brskalnika.
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Zahtevali ste ukinitev vašega računa na personal.onlyoffice.com. Sledite povezavi za dokončanje zahteve (povezava je aktivna 7 dni): 
+
+$GreenButton
+
+*Opomba*: Po izbrisu bodo vaš račun in vsi podatki, povezani z njim, trajno izbrisani v skladu z našo "Izjavo o zasebnosti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Preberite več o ukinitvi računa":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Prezrite ta email, če ne želite nadaljevati.
+
+Če imate kakršna koli vprašanja, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1.Deaktivacija portala "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Dragi $OwnerName,
+
+Zahtevali ste začasno deaktivacijo vašega "${__VirtualRootPath}":"${__VirtualRootPath}" portala. Za potrditev operacije sledite spodnji povezavi:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. Prosimo, da dokončate postopek deaktivacije portala v tem roku.
+
+Svoj portal lahko kadar koli znova aktivirate s klikom na naslednjo povezavo:
+p=. "Reactivacija Portala":"$ActivateUrl" (ta povezava nima časovne omejitve)
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Z najlepšimi pozdravi,
+Podporna ekipa ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Deactivacija portala [${__VirtualRootPath}](${__VirtualRootPath})
+
+Dragi $OwnerName,
+
+Zahtevali ste začasno deaktivacijo vašega portala [${__VirtualRootPath}](${__VirtualRootPath}). Za potrditev operacije sledite spodnji povezavi:
+
+$GreenButton
+
+_Opomba_: ta povezava velja samo 7 dni. Prosimo, da dokončate postopek deaktivacije portala v tem roku.
+
+Svoj portal lahko kadar koli znova aktivirate s klikom na naslednjo povezavo:
+[Reaktivacija portala]]($ActivateUrl) (ta povezava nima časovne omejitve)
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Z najlepšimi pozdravi,
+Podporna ekipa ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1.Izbris prostora "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Dragi $OwnerName,
+
+Zahtevali ste trajni izbris svojega prostora "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Pomembno! Vsi podatki, shranjeni v vašem prostoru, kot tudi vaši registracijski podatki, bodo izgubljeni in jih ni mogoče obnoviti.*
+
+#if($AutoRenew == "True")
+Preden izbrišete prostor, se prepričajte, da je samodejno obračunavanje izklopljeno. Stanje samodejnega zaračunavanja lahko preverite na vašem "Avangate računu":"https://secure.avangate.com/myaccount/".
+#end
+
+Če še vedno želite izbrisati svoj prostor "${__VirtualRootPath}":"${__VirtualRootPath}", sledite spodnji povezavi, da potrdite operacijo:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. Prosimo, da dokončate postopek izbrisa portala v tem roku.
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Z najlepšimi pozdravi,
+Podporna ekipa ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Brisanje portala [${__VirtualRootPath}](${__VirtualRootPath}) portal
+
+Dragi $OwnerName,
+
+Zahtevali ste trajni izbris portala [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Pomembno! Vsi podatki, shranjeni na vašem portalu, kot tudi vaši podatki o registraciji, bodo izgubljeni in jih ni mogoče obnoviti._
+
+#if($AutoRenew == "True")
+Preden izbrišete portal, se prepričajte, da je samodejno zaračunavanje izklopljeno. Stanje samodejnega zaračunavanja lahko preverite v svojem [Avangate račun](https://secure.avangate.com/myaccount/").
+#end
+
+Če še vedno želite izbrisati svoj portal [${__VirtualRootPath}](${__VirtualRootPath}), sledite spodnji povezavi, da potrdite operacijo:
+
+$GreenButton
+
+_Opomba_: ta povezava velja samo 7 dni. Prosimo, dokončajte postopek izbrisa portala v tem roku.
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Z najlepšimi pozdravi,
+Podporna ekipa ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1.Sprememba naslova portala
+
+Dragi $UserDisplayName,
+
+Vaš naslov portala $PortalUrl je bil spremenjen v novi naslov "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Opomba*: nastavitve DNS in možnosti enotne prijave prenehajo delovati, dokler jih ne spremenite.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1.Odstranitev profila s portala "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Zahtevali ste trajni izbris svojega profila s portala "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Če še vedno želite izbrisati svoj profil, sledite spodnji povezavi, da potrdite operacijo:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni. Prosimo, dokončajte postopek izbrisa profila v tem roku.</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Uporabnik "$FromUserName":"$FromUserLink" je izbrisal svoj profil in ta profil je zdaj blokiran. Vse datoteke uporabnika so še vedno dodeljene njemu in zasedajo prostor na disku.
+
+Dokumente uporabnika, ki so v skupni rabi z drugimi, lahko dodelite drugemu aktivnemu uporabniku ali jih odstranite, da sprostite prostor na disku portala.
+
+Pojdite na uporabniški profil s "to povezavo":"$FromUserLink" za dodelitev dokumentov drugemu uporabniku ali odstranitev podatkov.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1.Vaš profil na "$__VirtualRootPath":"$__VirtualRootPath" je bil spremenjen
+
+Dragi $UserName,
+
+Podrobnosti vašega uporabniškega profila na "$__VirtualRootPath":"$__VirtualRootPath" je spremenil "$__AuthorName":"$__AuthorUrl".
+
+Za ogled svojega profila sledite spodnji povezavi:
+"$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Vaš profil na [${__VirtualRootPath}](${__VirtualRootPath}) je bil spremenjen
+
+Dragi $UserName,
+
+Podrobnosti vašega uporabniškega profila na [${__VirtualRootPath}](${__VirtualRootPath}) so se spremenile [$__AuthorName]($__AuthorUrl).
+
+Za ogled svojega profila sledite spodnji povezavi:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Postopek prerazporejanja podatkov od uporabnika "$FromUserName":"$FromUserLink" k uporabniku "$ToUserName":"$ToUserLink" je bil uspešno zaključen.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Postopek prerazporejanja podatkov uporabnika "$FromUserName":"$FromUserLink" k uporabniku "$ToUserName":"$ToUserLink" ni uspel.
+
+Sporočilo o napaki: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Postopek odstranitve podatkov uporabnika "$FromUserName":"$FromUserLink" je uspešno zaključen.
+
+Izbris osebnih podatkov dovoljen za:
+
+# Documenti - $DocsSpace
+# CRM - $CrmSpace
+# Mail - $MailSpace
+# Pogovor - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Postopek odstranitve podatkov za uporabnika "$FromUserName":"$FromUserLink" ni uspel.
+
+Sporočilo o napaki: $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1.Zahteva za licenco podjetja
+
+h3.Ime
+$UserName
+
+h3.Priimek
+$UserLastName
+
+h3.Pozicija
+$Position
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefon
+$Phone
+
+h3.Spletna stran podjetja
+$Website
+
+h3.Ime podjetja
+$CompanyTitle
+
+h3.Velikost podjetja
+$CompanySize
+
+h3.Vsebina zahteve
+$Body
+
+h3.Naslov portala
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS Zahteva za tarifo za "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Ime
+$UserName
+
+h3.Priimek
+$UserLastName
+
+h3.Pozicija
+$Position
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefon
+$Phone
+
+h3.Spletna stran podjetja
+$Website
+
+h3.Ime podjetja
+$CompanyTitle
+
+h3.Velikost podjetja
+$CompanySize
+
+h3.Vsebina zahteve
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Obnova portala
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Vaš portal je bil obnovljen. Za dostop morate nastaviti novo geslo:
+
+$GreenButton
+
+*Opomba*: ta povezava velja samo 7 dni.
+
+Če ste to email sporočilo prejeli po pomoti, ga prezrite ali se obrnite na skrbnika portala "${__VirtualRootPath}":"${__VirtualRootPath}", da izveste podrobnosti.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1.Obnova portala se je pričela
+
+Začela se je obnova portala. Morda bo trajalo nekaj časa, odvisno od količine podatkov.
+
+*Opomba*: portal med postopkom obnove ne bo na voljo.
+
+Če imate kakršna koli vprašanja ali potrebujete pomoč, nas kontaktirajte na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+S spoštovanjem,
+Ekipa za podporo ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Če želite spremeniti vrsto obvestila, uredite svoje "naročniške nastavitve":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Vabimo vas, da se pridružite "${__VirtualRootPath}":"${__VirtualRootPath}" kot gostujoči uporabnik. Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+Občasno vam bomo pošiljali tudi uporabne nasvete in zadnje novice ONLYOFFICE. Naročnine lahko kadar koli prekličete na strani svojega profila in jih znova omogočite.
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj lahko:
+
+*Sodelujete z drugimi uporabniki v sobi, v katero ste povabljeni: *sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delate z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelujete pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povežete katero koli shrambo v oblaku* in delate brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+Če potrebujete pomoč, prebrskajte naš "Center za podporo":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "ekipo za pomoč":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" obvestilo o spremembi profila portala
+
+"$__AuthorName":"$__AuthorUrl" je spremenil/a podatke o svojem profilu na "${__VirtualRootPath}":"${__VirtualRootPath}" portalu.
+
+
+^Če ne želite prejemati obvestil o posodobitvah profila, uredite to v "nastavitvah naročnine":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) obvestilo o spremembi profila portala
+
+[$__AuthorName]($__AuthorUrl) je spremenil/a podatke o svojem profilu na [${__VirtualRootPath}](${__VirtualRootPath}) portalu.</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Tukaj so novosti o vašem DocSpace na $Date
+
+#foreach($activity v $Activities)
+$activity
+
+#end</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>SMTP testno sporočilo
+
+To sporočilo je bilo ustvarjeno samodejno za test vaših nastavitev SMTP. Če ga vidite, to pomeni, da so nastavitve pravilne in jih lahko uporabljate na svojem portalu.
+
+
+S spoštovanjem,
+ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek dešifriranja datoteke na vašem portalu "${PortalUrl}":"${PortalUrl}" ni uspel.
+
+Nekaterih datotek ni bilo mogoče dešifrirati. Več podrobnosti najdete na "Nadzorni plošči":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek dešifriranja datoteke se je začel na vašem portalu "${PortalUrl}":"${PortalUrl}".
+
+Dešifriranje lahko traja nekaj časa, zato portal začasno ne bo na voljo. Takoj ko bo dešifriranje končano, boste lahko znova delali s svojimi podatki.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek dešifriranja datoteke na vašem portalu "${PortalUrl}":"${PortalUrl}" je bil uspešno zaključen.
+
+Vaš portal je ponovno na voljo.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek šifriranja datoteke na portalu "${PortalUrl}":"${PortalUrl}" ni uspel.
+
+Nekaterih datotek ni bilo mogoče šifrirati. Več podrobnosti najdete na "Nadzorni plošči":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek šifriranja datoteke se je začel na vašem portalu "${PortalUrl}":"${PortalUrl}".
+
+Šifriranje lahko traja nekaj časa, zato portal začasno ne bo na voljo. Takoj ko bo šifriranje končano, boste lahko znova delali s svojimi podatki.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Postopek šifriranja datoteke na vašem portalu "${PortalUrl}":"${PortalUrl}" je bil uspešno zaključen.
+
+Vaš portal je spet na voljo.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.Nov uporabnik je dodan v portal "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+"$__AuthorName":"$__AuthorUrl" se je pridružil vašemu portalu na "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^Če ne želite prejemati obvestil o novih uporabnikih, uredite svoje "naročniške nastavitve":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Nov uporabnik je dodan v portal [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) se je pridružil vašemu portalu na [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Dragi $UserName,
+
+Vabljeni ste, da se pridružite varni in zaščiteni spletni pisarni vašega podjetja, ki bo izboljšala vaše sodelovanje. Njen naslov je "${__VirtualRootPath}":"${__VirtualRootPath}". Dodajanje te povezave med zaznamke je dobra ideja, verjetno jo boste pogosto uporabljali.
+
+Sprejmite povabilo tako, da sledite spodnji povezavi in za prijavo uporabite svojo prijavo in geslo iz računa podjetja. 
+
+$GreenButton
+
+Povezava velja le 7 dni.</value>
   </data>
 </root>

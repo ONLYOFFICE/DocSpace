@@ -1,7 +1,7 @@
 ﻿import PrivacySvgUrl from "PUBLIC_DIR/images/privacy.svg?url";
 import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
-import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
+import RoomsReactSvgUrl from "PUBLIC_DIR/images/rooms.react.svg?url";
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
@@ -12,7 +12,8 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
-
+import IconButton from "@docspace/components/icon-button";
+import Loaders from "@docspace/common/components/Loaders";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import FilesFilter from "@docspace/common/api/files/filter";
 
@@ -248,23 +249,43 @@ const RootFolderContainer = (props) => {
     <span>
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-document empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
 
         <Box className="flex-wrapper_container">
-          <Link data-format="docx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="document"
+            data-format="docx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Document")},
           </Link>
-          <Link data-format="xlsx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="spreadsheet"
+            data-format="xlsx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Spreadsheet")},
           </Link>
-          <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="presentation"
+            data-format="pptx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Presentation")},
           </Link>
-          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="form-template"
+            data-format="docxf"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Translations:NewForm")}
           </Link>
         </Box>
@@ -272,11 +293,11 @@ const RootFolderContainer = (props) => {
 
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-folder empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
-        <Link {...linkStyles} onClick={onCreate}>
+        <Link id="folder" {...linkStyles} onClick={onCreate}>
           {t("Folder")}
         </Link>
       </div>
@@ -313,11 +334,12 @@ const RootFolderContainer = (props) => {
 
   const archiveButtons = !isVisitor && (
     <div className="empty-folder_container-links">
-      <img
-        className="empty-folder_container-image"
-        src={EmptyFolderImageSvgUrl}
+      <IconButton
+        className="empty-folder_container-icon"
+        size="12"
         onClick={onGoToShared}
-        alt="folder_icon"
+        iconName={RoomsReactSvgUrl}
+        isFill
       />
       <Link onClick={onGoToShared} {...linkStyles}>
         {t("GoToMyRooms")}
@@ -373,8 +395,12 @@ export default inject(
     selectedFolderStore,
     clientLoadingStore,
   }) => {
-    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
-      auth.settingsStore;
+    const {
+      isDesktopClient,
+      isEncryptionSupport,
+      organizationName,
+      theme,
+    } = auth.settingsStore;
 
     const { setIsSectionFilterLoading } = clientLoadingStore;
 

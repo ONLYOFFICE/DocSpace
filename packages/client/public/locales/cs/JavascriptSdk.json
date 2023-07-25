@@ -13,10 +13,9 @@
   "FrameId": "Id rámu",
   "Header": "Záhlaví",
   "ItemsCount": "Počet položek",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Menu",
   "Page": "Stránka",
   "SearchTerm": "Hledaný termín",
-  "SortOrder": "Pořadí řazení",
-  "WindowParameters": "Parametry okna"
+  "SortOrder": "Pořadí řazení"
 }

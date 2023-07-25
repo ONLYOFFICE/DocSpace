@@ -132,6 +132,7 @@ const Dialog = ({
         {isCreateDialog && extension && (
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">
             <Checkbox
+              className="dont-ask-again"
               label={t("Common:DontAskAgain")}
               isChecked={isChecked}
               onChange={onChangeCheckbox}
@@ -150,6 +151,7 @@ const Dialog = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="submit"
           key="GlobalSendBtn"
           label={isCreateDialog ? t("Common:Create") : t("Common:SaveButton")}
           size="normal"
@@ -160,6 +162,7 @@ const Dialog = ({
           onClick={onSaveAction}
         />
         <Button
+          className="cancel-button"
           key="CloseBtn"
           label={t("Common:CancelButton")}
           size="normal"

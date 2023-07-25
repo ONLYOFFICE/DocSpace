@@ -254,10 +254,11 @@ class AmazonSettings extends React.Component {
     } = this.props;
     const { region } = this.state;
 
-    const renderTooltip = (helpInfo) => {
+    const renderTooltip = (helpInfo, className) => {
       return (
         <>
           <HelpButton
+            className={className}
             offsetRight={0}
             iconName={HelpReactSvgUrl}
             tooltipContent={
@@ -291,9 +292,10 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.bucketPlaceholder}</Text>
-            {renderTooltip(t("AmazonBucketTip"))}
+            {renderTooltip(t("AmazonBucketTip"), "bucket-tooltip")}
           </div>
           <TextInput
+            id="bucket-input"
             name={bucket}
             className="backup_text-input"
             scale
@@ -307,10 +309,10 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.regionPlaceholder}</Text>
-            {renderTooltip(t("AmazonRegionTip"))}
+            {renderTooltip(t("AmazonRegionTip"), "region-tooltip")}
           </div>
           <ComboBox
-            className="backup_text-input"
+            className="region-combo-box backup_text-input"
             options={this.regions}
             selectedOption={{
               key: 0,
@@ -330,9 +332,10 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.serviceUrlPlaceholder}</Text>
-            {renderTooltip(t("AmazonServiceTip"))}
+            {renderTooltip(t("AmazonServiceTip"), "service-tooltip")}
           </div>
           <TextInput
+            id="service-url-input"
             name={serviceurl}
             className="backup_text-input"
             scale
@@ -346,6 +349,7 @@ class AmazonSettings extends React.Component {
 
         <StyledBody theme={theme}>
           <Checkbox
+            id="force-path-style"
             name={forcepathstyle}
             label={this.forcePathStylePlaceholder}
             isChecked={formSettings[forcepathstyle] === "false" ? false : true}
@@ -355,13 +359,17 @@ class AmazonSettings extends React.Component {
             tabIndex={4}
             helpButton={
               <div className="backup_storage-tooltip">
-                {renderTooltip(t("AmazonForcePathStyleTip"))}
+                {renderTooltip(
+                  t("AmazonForcePathStyleTip"),
+                  "force-path-style-tooltip"
+                )}
               </div>
             }
           />
         </StyledBody>
         <StyledBody theme={theme}>
           <Checkbox
+            id="use-http"
             className="backup_checkbox"
             name={usehttp}
             label={this.useHttpPlaceholder}
@@ -372,7 +380,7 @@ class AmazonSettings extends React.Component {
             tabIndex={5}
             helpButton={
               <div className="backup_storage-tooltip">
-                {renderTooltip(t("AmazonHTTPTip"))}
+                {renderTooltip(t("AmazonHTTPTip"), "http-tooltip")}
               </div>
             }
           />
@@ -380,10 +388,10 @@ class AmazonSettings extends React.Component {
         <StyledBody>
           <div className="backup_storage-tooltip">
             <Text isBold>{this.SSEPlaceholder}</Text>
-            {renderTooltip(t("AmazonSSETip"))}
+            {renderTooltip(t("AmazonSSETip"), "sse-method-tooltip")}
           </div>
           <ComboBox
-            className="backup_text-input"
+            className="sse-method-combo-box backup_text-input"
             options={this.availableEncryptions}
             selectedOption={{
               key: 0,
@@ -403,6 +411,7 @@ class AmazonSettings extends React.Component {
         {selectedEncryption === this.serverSideEncryption && (
           <>
             <RadioButton
+              id="sse-s3"
               className="backup_radio-button-settings"
               value=""
               label={this.sse_s3}
@@ -413,6 +422,7 @@ class AmazonSettings extends React.Component {
             />
 
             <RadioButton
+              id="sse-kms"
               className="backup_radio-button-settings"
               value=""
               label={this.sse_kms}
@@ -426,7 +436,7 @@ class AmazonSettings extends React.Component {
               <>
                 <Text isBold>{"Managed CMK"}</Text>
                 <ComboBox
-                  className="backup_text-input"
+                  className="managed-cmk-combo-box backup_text-input"
                   options={this.managedKeys}
                   selectedOption={{
                     key: 0,
@@ -447,6 +457,7 @@ class AmazonSettings extends React.Component {
                   <>
                     <Text isBold>{"KMS Key Id:"}</Text>
                     <TextInput
+                      id="customer-manager-kms-key-id"
                       name={sse_key}
                       className="backup_text-input"
                       scale
@@ -467,6 +478,7 @@ class AmazonSettings extends React.Component {
           <>
             <Text isBold>{"KMS Key Id:"}</Text>
             <TextInput
+              id="client-side-encryption-kms-key-id"
               name={sse_key}
               className="backup_text-input"
               scale
@@ -481,6 +493,7 @@ class AmazonSettings extends React.Component {
 
         {isNeedFilePath && (
           <TextInput
+            id="file-path-input"
             name="filePath"
             className="backup_text-input"
             scale

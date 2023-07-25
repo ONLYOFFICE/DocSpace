@@ -30,12 +30,24 @@ namespace ASC.Web.Core.Quota;
 
 public class CountPaidUserChecker : TenantQuotaFeatureCheckerCount<CountPaidUserFeature>
 {
+    private readonly ITariffService _tariffService;
+
     public override string Exception => Resource.TariffsFeature_manager_exception;
 
-    public CountPaidUserChecker(ITenantQuotaFeatureStat<CountPaidUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public CountPaidUserChecker(ITenantQuotaFeatureStat<CountPaidUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager, ITariffService tariffService) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+        _tariffService = tariffService;
     }
 
+    public override async Task CheckAddAsync(int tenantId, int newValue)
+    {
+        if ((await _tariffService.GetTariffAsync(tenantId)).State > TariffState.Paid)
+        {
+            throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "paid users");
+        }
+
+        await base.CheckAddAsync(tenantId, newValue);
+    }
 }
 
 public class CountPaidUserStatistic : ITenantQuotaFeatureStat<CountPaidUserFeature, int>
@@ -52,7 +64,7 @@ public class CountPaidUserStatistic : ITenantQuotaFeatureStat<CountPaidUserFeatu
         var userManager = _serviceProvider.GetService<UserManager>();
         var adminsCount = (await userManager.GetUsersByGroupAsync(ASC.Core.Users.Constants.GroupManager.ID)).Length;
         var collaboratorsCount = (await userManager.GetUsersByGroupAsync(ASC.Core.Users.Constants.GroupCollaborator.ID)).Length;
-        
+
         return adminsCount + collaboratorsCount;
     }
 }
