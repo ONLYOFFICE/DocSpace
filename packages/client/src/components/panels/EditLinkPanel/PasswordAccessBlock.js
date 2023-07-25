@@ -31,8 +31,11 @@ const PasswordAccessBlock = (props) => {
   };
 
   const onCopyClick = () => {
-    copy(passwordValue);
-    toastr.success(t("Files:PasswordSuccessfullyCopied"));
+    const isPasswordValid = !!passwordValue.trim();
+    if (isPasswordValid) {
+      copy(passwordValue);
+      toastr.success(t("Files:PasswordSuccessfullyCopied"));
+    }
   };
 
   const onChangePassword = (e) => {
