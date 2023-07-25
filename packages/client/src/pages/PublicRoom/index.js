@@ -25,8 +25,8 @@ const PublicRoom = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const lastKeySymbol = location.search.indexOf("&");
 
+  const lastKeySymbol = location.search.indexOf("&");
   const lastIndex =
     lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
   const key = location.search.substring(5, lastIndex);
