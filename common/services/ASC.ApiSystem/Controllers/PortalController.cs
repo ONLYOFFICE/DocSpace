@@ -46,6 +46,9 @@ public class PortalController : ControllerBase
     private readonly TimeZonesProvider _timeZonesProvider;
     private readonly TimeZoneConverter _timeZoneConverter;
     private readonly PasswordHasher _passwordHasher;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly AuthContext _authContext;
+    private readonly UserManager _userManager;
     private readonly ILogger<PortalController> _log;
 
     public PortalController(
@@ -64,7 +67,10 @@ public class PortalController : ControllerBase
         ILogger<PortalController> option,
         TimeZonesProvider timeZonesProvider,
         TimeZoneConverter timeZoneConverter,
-        PasswordHasher passwordHasher)
+        PasswordHasher passwordHasher,
+        CoreBaseSettings coreBaseSettings,
+        AuthContext authContext,
+        UserManager userManager)
     {
         _configuration = configuration;
         _securityContext = securityContext;
@@ -81,6 +87,9 @@ public class PortalController : ControllerBase
         _timeZonesProvider = timeZonesProvider;
         _timeZoneConverter = timeZoneConverter;
         _passwordHasher = passwordHasher;
+        _coreBaseSettings = coreBaseSettings;
+        _authContext = authContext;
+        _userManager = userManager;
         _log = option;
     }
 
@@ -101,7 +110,7 @@ public class PortalController : ControllerBase
 
     [HttpPost("register")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal,auth:portal")]
     public async ValueTask<IActionResult> RegisterAsync(TenantModel model)
     {
         if (model == null)
@@ -319,7 +328,7 @@ public class PortalController : ControllerBase
 
     [HttpDelete("remove")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> RemoveAsync([FromQuery] TenantModel model)
     {
         (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
@@ -355,7 +364,7 @@ public class PortalController : ControllerBase
 
     [HttpPut("status")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> ChangeStatusAsync(TenantModel model)
     {
         (var succ, var tenant) = await _commonMethods.TryGetTenantAsync(model);
@@ -426,7 +435,7 @@ public class PortalController : ControllerBase
 
     [HttpGet("get")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> GetPortalsAsync([FromQuery] TenantModel model)
     {
         try
@@ -471,7 +480,8 @@ public class PortalController : ControllerBase
                 .Distinct()
                 .Where(t => t.Status == TenantStatus.Active)
                 .OrderBy(t => t.Id)
-                .Select(_commonMethods.ToTenantWrapper);
+                .Select(_commonMethods.ToTenantWrapper)
+                .ToList();
 
             return Ok(new
             {

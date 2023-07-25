@@ -61,7 +61,7 @@ public class SettingsController : ControllerBase
     #region API methods
 
     [HttpGet("get")]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> GetSettingsAsync([FromQuery] SettingsModel model)
     {
         (var succ, var tenantId, var error) = await GetTenantAsync(model);
@@ -88,7 +88,7 @@ public class SettingsController : ControllerBase
     }
 
     [HttpPost("save")]
-    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
     public async Task<IActionResult> SaveSettingsAsync([FromBody] SettingsModel model)
     {
         (var succ, var tenantId, var error) = await GetTenantAsync(model);
