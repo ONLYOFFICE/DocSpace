@@ -5,8 +5,9 @@ import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 import { Base } from "@docspace/components/themes";
 import { StyledCategoryWrapper, StyledTooltip } from "../StyledSecurity";
+import { useTheme } from "styled-components";
 
-const CategoryWrapper = (props) => {
+const CategoryWrapper = props => {
   const {
     t,
     title,
@@ -16,7 +17,8 @@ const CategoryWrapper = (props) => {
     currentColorScheme,
     classNameTooltip,
   } = props;
-
+  const { interfaceDirection } = useTheme();
+  const dirTooltip = interfaceDirection === "rtl" ? "left" : "right";
   const tooltip = () => (
     <StyledTooltip>
       <Text className={tooltipUrl ? "subtitle" : ""} fontSize="12px">
@@ -29,8 +31,7 @@ const CategoryWrapper = (props) => {
           target="_blank"
           isHovered
           href={tooltipUrl}
-          color={currentColorScheme.main.accent}
-        >
+          color={currentColorScheme.main.accent}>
           {t("Common:LearnMore")}
         </Link>
       )}
@@ -46,7 +47,7 @@ const CategoryWrapper = (props) => {
         className={classNameTooltip}
         iconName={InfoReactSvgUrl}
         displayType="dropdown"
-        place="right"
+        place={dirTooltip}
         offsetRight={0}
         getContent={tooltip}
         tooltipColor={theme.client.settings.security.owner.tooltipColor}
