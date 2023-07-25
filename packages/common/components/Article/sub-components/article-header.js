@@ -35,11 +35,11 @@ const ArticleHeader = ({
   };
 
   const burgerLogo = !theme.isBase
-    ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
-    : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
+    ? getLogoFromPath(whiteLabelLogoUrls[5]?.path?.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[5]?.path?.light);
   const logo = !theme.isBase
-    ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
-    : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
+    ? getLogoFromPath(whiteLabelLogoUrls[0]?.path?.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[0]?.path?.light);
 
   if (isMobileOnly || isMobile()) return <></>;
 

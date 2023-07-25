@@ -33,6 +33,7 @@ const Article = ({
   withMainButton,
 
   hideProfileBlock,
+  hideAppsBlock,
 
   currentColorScheme,
   setArticleOpen,
@@ -48,8 +49,10 @@ const Article = ({
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
-  const [articleMainButtonContent, setArticleMainButtonContent] =
-    React.useState(null);
+  const [
+    articleMainButtonContent,
+    setArticleMainButtonContent,
+  ] = React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
   const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
@@ -193,7 +196,7 @@ const Article = ({
           )}
 
           <ArticleAlerts />
-          <ArticleApps showText={showText} theme={theme} />
+          {!hideAppsBlock && <ArticleApps showText={showText} theme={theme} />}
           {!isMobile && isLiveChatAvailable && (
             <ArticleLiveChat
               currentColorScheme={currentColorScheme}
