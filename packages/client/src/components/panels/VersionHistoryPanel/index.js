@@ -75,7 +75,7 @@ class PureVersionHistoryPanel extends React.Component {
             </StyledHeaderContent>
 
             <StyledBody className="version-history-panel-body">
-              <SectionBodyContent />
+              <SectionBodyContent onClose={this.onClose} />
             </StyledBody>
             {showProgressBar && (
               <FloatingButton

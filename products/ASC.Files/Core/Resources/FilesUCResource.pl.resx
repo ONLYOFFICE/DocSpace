@@ -82,4 +82,19 @@
   <data name="Personal" xml:space="preserve">
     <value>Osobiste</value>
   </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Najnowsze</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Pliki zostaną skompresowane do pliku {0}.tar.gz {1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Pliki zostaną skompresowane do pliku {0}.zip {1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Prywatny pokój</value>
+  </data>
 </root>

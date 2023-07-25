@@ -303,7 +303,8 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
 
     if (canConvert) {
       setConvertItem({ ...item, isOpen: true });
@@ -850,6 +851,8 @@ class ContextOptionsStore {
       t
     );
 
+    const withOpen = item.id !== this.selectedFolderStore.id;
+
     const optionsModel = [
       {
         id: "option_select",
@@ -859,7 +862,7 @@ class ContextOptionsStore {
         onClick: () => this.onSelect(item),
         disabled: false,
       },
-      {
+      withOpen && {
         id: "option_open",
         key: "open",
         label: t("Open"),

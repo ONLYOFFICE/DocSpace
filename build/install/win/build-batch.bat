@@ -2,7 +2,7 @@ REM echo ######## Set variables ########
 set "publisher="Ascensio System SIA""
 set "nuget="%cd%\thirdparty\SimpleRestServices\src\.nuget\NuGet.exe""
 set "nginx_version=1.21.1"
-set "environment=test"
+set "environment=production"
 
 REM echo ######## Extracting and preparing files to build ########
 %sevenzip% x build\install\win\nginx-%nginx_version%.zip -o"build\install\win\Files" -y
@@ -37,6 +37,14 @@ copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml"
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
 
+REM echo ######## Delete test and dev configs ########
+del /f /q build\install\win\Files\config\*.test.json
+del /f /q build\install\win\Files\config\*.dev.json
+
+REM echo ######## Remove AWSTarget from nlog.config ########
+%sed% -i "/<target type=\"AWSTarget\" name=\"aws\"/,/<\/target>/d; /<target type=\"AWSTarget\" name=\"aws_sql\"/,/<\/target>/d" build\install\win\Files\config\nlog.config
+del /q build\install\win\Files\config\sed*
+
 ::edit environment
 %sed% -i "s/\(\W\)PRODUCT.ENVIRONMENT.SUB\(\W\)/\1%environment%\2/g" build\install\win\DocSpace.aip
 
@@ -62,8 +70,18 @@ REM echo ######## Build DocSpace package ########
 %AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
 
 IF "%SignBuild%"=="true" (
-:%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetSig
-:%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
+%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetSig
+%AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
 )
 
 %AdvancedInstaller% /rebuild build\install\win\DocSpace.aip
+
+REM echo ######## Build DocSpace Enterprise package ########
+%AdvancedInstaller% /edit build\install\win\DocSpace.Enterprise.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%
+
+IF "%SignBuild%"=="true" (
+%AdvancedInstaller% /edit build\install\win\DocSpace.Enterprise.aip /SetSig
+%AdvancedInstaller% /edit build\install\win\DocSpace.Enterprise.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
+)
+
+%AdvancedInstaller% /rebuild build\install\win\DocSpace.Enterprise.aip

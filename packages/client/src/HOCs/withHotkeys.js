@@ -100,7 +100,7 @@ const withHotkeys = (Component) => {
     };
 
     const onCreateRoom = () => {
-      if (!isVisitor && isRoomsFolder) {
+      if (!isVisitor && isRoomsFolder && security?.Create) {
         if (isGracePeriod) {
           setInviteUsersWarningDialogVisible(true);
           return;

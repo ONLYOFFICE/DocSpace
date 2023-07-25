@@ -937,4 +937,28 @@
   <data name="ConsumersTelegram" xml:space="preserve">
     <value>Telegram</value>
   </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Publizieren Sie Ihre Dokumente einfach auf Ihrer WordPress-Website. {0}Erstellen Sie eine neue App für die Integration mit ONLYOFFICE auf der Seite Wordpress Developers und fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Erlauben Sie dieser App, Bibliografien in ONLYOFFICE zu erstellen. {0}Öffnen Sie die EasyBib-Anmeldeseite und füllen Sie das Formular aus, um die Integration mit ONLYOFFICE zu ermöglichen. Nachdem Sie den Schlüssel erhalten haben, geben Sie diesen unten ein:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Erlauben Sie dieser App, die Erhaltung von Benachrichtigungen über die neuen Nachrichten auch offline zu ermöglichen. {0}Öffnen Sie die Firebase-Konsole und fügen Sie ein neues Projekt für die Integration mit ONLYOFFICE hinzu. Fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Stellen Sie eine Verbindung mit dem Google Cloud Platform, um Daten Ihres Portals zu sichern und zu speichern. {0}Öffnen Sie Google Cloud Platform-Verwaltungskonsole, erstellen Sie ein neues Konto für ONLYOFFICE und fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Stellen Sie eine Verbindung mit Rackspace Cloud, um Daten Ihres Portals zu sichern und zu speichern. {0}Klicken Sie auf Link anzeigen neben dem Rackspace API-Schlüssel in Sicherheitseinstellungen von Rackspace Cloud Control Panel und fügen Sie die erhaltenen Daten unten ein:</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Verbinden Sie diese App, damit die Benutzer sich über das Microsoft-Konto bei ONLYOFFICE anmelden können. {0}Öffnen Sie Microsoft Azure und erstellen Sie die neue ONLYOFFICE-Integration. Geben Sie die unten stehenden Daten ein:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Stellen Sie eine Verbindung mit dem Amazon AWS S3, um Daten Ihres Portals zu sichern und zu speichern. {0}Öffnen Sie AWS-Managementkonsole, erstellen Sie Zugriffsschlüssel für ONLYOFFICE und fügen Sie diese unten ein:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Stellen Sie eine Verbindung mit Selectel Cloud Platform, um Daten Ihres Portals zu sichern und zu speichern. {0}Erhalten Sie die Zugriffsdaten (Read/Write) für die Kontainer, in denen Sie Ihre Backups speichern möchten und fügen Sie diese unten ein:</value>
+  </data>
 </root>

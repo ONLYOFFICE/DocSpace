@@ -11,6 +11,7 @@ import EsMXReactSvgUrl from "PUBLIC_DIR/images/flags/es-MX.react.svg?url";
 import EsReactSvgUrl from "PUBLIC_DIR/images/flags/es.react.svg?url";
 import FiReactSvgUrl from "PUBLIC_DIR/images/flags/fi.react.svg?url";
 import FrReactSvgUrl from "PUBLIC_DIR/images/flags/fr.react.svg?url";
+import HyAMReactSvgUrl from "PUBLIC_DIR/images/flags/hy-AM.react.svg?url";
 import ItReactSvgUrl from "PUBLIC_DIR/images/flags/it.react.svg?url";
 import JaJPReactSvgUrl from "PUBLIC_DIR/images/flags/ja-JP.react.svg?url";
 import KoKRReactSvgUrl from "PUBLIC_DIR/images/flags/ko-KR.react.svg?url";
@@ -604,6 +605,7 @@ export const flagsIcons = new Map([
   ["es.react.svg", EsReactSvgUrl],
   ["fi.react.svg", FiReactSvgUrl],
   ["fr.react.svg", FrReactSvgUrl],
+  ["hy-AM.react.svg", HyAMReactSvgUrl],
   ["it.react.svg", ItReactSvgUrl],
   ["ja-JP.react.svg", JaJPReactSvgUrl],
   ["ko-KR.react.svg", KoKRReactSvgUrl],

@@ -51,6 +51,14 @@ const Auth = loadable(() => import("../pages/Confirm/sub-components/auth"));
 
 const confirmRoutes = [
   {
+    path: "EmpInvite",
+    element: (
+      <ConfirmRoute forUnauthorized>
+        <CreateUserForm />
+      </ConfirmRoute>
+    ),
+  },
+  {
     path: "LinkInvite",
     element: (
       <ConfirmRoute forUnauthorized>

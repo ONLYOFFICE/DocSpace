@@ -48,7 +48,7 @@ const IdpSettings = (props) => {
         name="spLoginLabel"
         placeholder={t("Settings:SingleSignOn")}
         tabIndex={4}
-        tooltipContent={t("CustomEntryTooltip")}
+        tooltipContent={<Text fontSize="12px">{t("CustomEntryTooltip")}</Text>}
         tooltipClass="custom-entry-tooltip icon-button"
         value={spLoginLabel}
         hasError={spLoginLabelHasError}
@@ -59,7 +59,7 @@ const IdpSettings = (props) => {
         name="entityId"
         placeholder={PROVIDER_URL}
         tabIndex={5}
-        tooltipContent={t("ProviderURLTooltip")}
+        tooltipContent={<Text fontSize="12px">{t("ProviderURLTooltip")}</Text>}
         tooltipClass="provider-url-tooltip icon-button"
         value={entityId}
         hasError={entityIdHasError}
@@ -74,7 +74,9 @@ const IdpSettings = (props) => {
             : "https://idpservice/SSO/REDIRECT"
         }
         tabIndex={7}
-        tooltipContent={t("SignOnEndpointUrlTooltip")}
+        tooltipContent={
+          <Text fontSize="12px">{t("SignOnEndpointUrlTooltip")}</Text>
+        }
         tooltipClass="sign-on-endpoint-url-tooltip icon-button"
         value={ssoBinding?.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
         hasError={
@@ -115,7 +117,9 @@ const IdpSettings = (props) => {
             : "https://idpservice/SLO/REDIRECT"
         }
         tabIndex={9}
-        tooltipContent={t("LogoutEndpointUrlTooltip")}
+        tooltipContent={
+          <Text fontSize="12px">{t("LogoutEndpointUrlTooltip")}</Text>
+        }
         tooltipClass="logout-endpoint-url-tooltip icon-button"
         value={sloBinding?.includes("POST") ? sloUrlPost : sloUrlRedirect}
         hasError={

@@ -26,7 +26,7 @@ const SingleSignOn = (props) => {
   const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   useEffect(() => {
-    load();
+    isSSOAvailable && load();
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
