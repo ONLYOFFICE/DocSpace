@@ -1,4 +1,4 @@
-import json, sys, os, netifaces
+import json, sys, os, netifaces, re
 from jsonpath_ng import jsonpath, parse
 from os import environ
 from multipledispatch import dispatch
@@ -28,6 +28,7 @@ APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CO
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
 INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "ENTERPRISE"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
+OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDIRECT_URL") else "https://service.onlyoffice.com/oauth2.aspx"
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
@@ -176,6 +177,17 @@ jsonData = openJsonFile(filePath)
 updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false;AllowPublicKeyRetrieval=true",)
 updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
+writeJsonFile(filePath, jsonData)
+
+filePath = "/app/onlyoffice/config/autofac.consumers.json"
+jsonData = openJsonFile(filePath)
+
+for component in jsonData['components']:
+  if 'parameters' in component and 'additional' in component['parameters']:
+    for key, value in component['parameters']['additional'].items():
+      if re.search(r'.*RedirectUrl$', key) and value:
+        component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
+
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"

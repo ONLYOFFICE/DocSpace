@@ -20,6 +20,8 @@ json -I -f %{_builddir}/%{sourcename}/config/appsettings.json -e "this.core.noti
 json -I -f %{_builddir}/%{sourcename}/config/apisystem.json -e "this.core.notify.postman=\"services\""
 sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i %{_builddir}/%{sourcename}/config/nlog.config
 
+sed 's/teamlab.info/onlyoffice.com/g' -i %{_builddir}/%{sourcename}/config/autofac.consumers.json
+
 find %{_builddir}/%{sourcename}/publish/ \
      %{_builddir}/%{sourcename}/ASC.Migration.Runner \
      -depth -type f -regex '.*\(dll\|dylib\|so\)$' -exec chmod 755 {} \;
