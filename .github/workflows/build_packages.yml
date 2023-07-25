@@ -57,10 +57,6 @@ jobs:
       - name: Prepare build
         id: get_vars
         run: |
-          (while true; do 
-          df -h
-          sleep 15
-          done) &
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | \
           sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
@@ -78,10 +74,6 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          (while true; do 
-          df -h
-          sleep 15
-          done) &
           cd build/install/deb/ 
           rename -f -v "s/product([^\/]*)$/${{ env.PRODUCT_LOW }}\$1/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT_LOW }}/g" {} ';'
@@ -136,10 +128,6 @@ jobs:
       - name: Prepare build
         id: get_vars
         run: |     
-          (while true; do 
-          df -h
-          sleep 15
-          done) &
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring \
           gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
@@ -157,10 +145,6 @@ jobs:
           
       - name: Build
         run: |
-          (while true; do 
-          df -h
-          sleep 15
-          done) &
           cd build/install/rpm/SPECS
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.PRODUCT_LOW }}.rpmlintrc
           wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz \
