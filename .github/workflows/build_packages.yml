@@ -11,7 +11,11 @@ on:
     - build/install/rpm**
     - build/install/common**
   workflow_dispatch:
-  
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
   PRODUCT_LOW: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
