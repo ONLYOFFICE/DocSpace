@@ -161,7 +161,7 @@ class FilesTableHeader extends React.Component {
             enable: this.props.authorColumnIsEnabled,
             resizable: true,
             sortBy: SortByFieldName.Author,
-            onClick: this.onFilter,
+            // onClick: this.onFilter,
             onChange: this.onColumnChange,
           }
         : {};
@@ -178,15 +178,6 @@ class FilesTableHeader extends React.Component {
           onClick: this.onFilter,
         },
         { ...authorBlock },
-        {
-          key: "Author",
-          title: t("ByAuthor"),
-          enable: this.props.authorColumnIsEnabled,
-          resizable: true,
-          sortBy: SortByFieldName.Author,
-          // onClick: this.onFilter,
-          onChange: this.onColumnChange,
-        },
         {
           key: "Created",
           title: t("ByCreation"),
