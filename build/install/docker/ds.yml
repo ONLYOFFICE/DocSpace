@@ -9,6 +9,8 @@ services:
       - JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET}
       - JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER}
       - JWT_IN_BODY=true
+    volumes:
+      - app_data:/var/www/onlyoffice/Data
     expose:
       - '80'
     stdin_open: true
@@ -17,5 +19,8 @@ services:
 
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true
+
+volumes:
+  app_data:

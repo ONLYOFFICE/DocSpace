@@ -371,4 +371,49 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrador de la sala</value>
   </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Este proveedor ya está conectado a la sala</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Proveedor no válido</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>No es posible utilizar esta carpeta para almacenar la sala</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nueva versión no puede ser la misma que la actual</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>El enlace de invitación no es válido o su validez ha expirado</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>El rol no está disponible para este tipo de usuario</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>No tiene permisos para editar la sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>No tiene permisos suficientes para archivar la sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>No tiene permisos para copiar algo a esta carpeta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar la carpeta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar el archivo</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar la carpeta</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>No tiene permisos suficientes para desarchivar la sala</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>No puede anclar una sala</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>No puede editar salas archivadas</value>
+  </data>
 </root>

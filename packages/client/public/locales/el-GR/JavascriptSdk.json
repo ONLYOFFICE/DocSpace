@@ -13,10 +13,9 @@
   "FrameId": "Αναγνωριστικό πλαισίου",
   "Header": "Κεφαλίδα",
   "ItemsCount": "Αριθμός στοιχείων",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Μενού",
   "Page": "Σελίδα",
   "SearchTerm": "Όρος αναζήτησης",
-  "SortOrder": "Σειρά ταξινόμησης",
-  "WindowParameters": "Παράμετροι παραθύρου"
+  "SortOrder": "Σειρά ταξινόμησης"
 }

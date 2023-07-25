@@ -65,25 +65,25 @@ const SectionBodyContent = ({ isErrorSettings, user }) => {
     [setting, navigate]
   );
 
-  const showAdminSettings = user.isAdmin || user.isOwner;
+  //const showAdminSettings = user.isAdmin || user.isOwner;
 
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {!showAdminSettings ? (
-        <PersonalSettings
-          t={t}
-          showTitle={true}
-          showAdminSettings={showAdminSettings}
-        />
-      ) : (
-        <Submenu
-          data={data}
-          startSelect={setting === "personal" ? commonSettings : adminSettings}
-          onSelect={onSelect}
-        />
-      )}
+      {/* {!showAdminSettings ? ( */}
+      <PersonalSettings
+        t={t}
+        showTitle={true}
+        showAdminSettings={false} //showAdminSettings
+      />
+      {/* ) : (
+         <Submenu
+           data={data}
+           startSelect={setting === "common" ? commonSettings : adminSettings}
+           onSelect={onSelect}
+         />
+       )} */}
     </StyledContainer>
   );
 };

@@ -64,4 +64,10 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>월</value>
   </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>성</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>이름</value>
+  </data>
 </root>

@@ -133,7 +133,7 @@ const ActiveSessions = ({
           offsetRight={0}
           iconName={InfoReactSvgUrl}
           tooltipContent={
-            <Text fontSize="13px">
+            <Text fontSize="12px">
               {t("Profile:LogoutAllActiveSessionsDescription")}
             </Text>
           }

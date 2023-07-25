@@ -17,6 +17,7 @@ import {
   mapSupplied,
   mediaTypes,
 } from "./helpers";
+import { getFileExtension } from "@docspace/common/utils";
 
 import {
   getDesktopMediaContextModel,
@@ -219,15 +220,6 @@ function MediaViewer({
     },
     [props.extsMediaPreviewed]
   );
-
-  const getFileExtension = useCallback((fileTitle: string) => {
-    if (!fileTitle) {
-      return "";
-    }
-    fileTitle = fileTitle.trim();
-    const posExt = fileTitle.lastIndexOf(".");
-    return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
-  }, []);
 
   let lastRemovedFileId: null | number = null;
 

@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>Արտաքին պորտալ</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Մեկնաբանություն</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Համագործակցող</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Պատվերով զտիչ</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Խմբագրիչ</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Ձևաթղթերի լրացում</value>
+  </data>
+  <data name="AceStatusEnum_Read" xml:space="preserve">
+    <value>Միայն կարդալու</value>
+  </data>
+  <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
+    <value>Լրիվ մատչում</value>
+  </data>
+  <data name="AceStatusEnum_Restrict" xml:space="preserve">
+    <value>Արգելել մատչումը</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>Վերանայել</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Սենյակի վարիչ</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Վարիչ</value>
+  </data>
+  <data name="AppAccessDenied" xml:space="preserve">
+    <value>Ֆայլի հետ աշխատելու համար դուք պետք է թույլ տաք դրա մուտք</value>
+  </data>
+  <data name="Author_Me" xml:space="preserve">
+    <value>Ինձ</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Ինքնապահված</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Փոխվել է սեփականատերը</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>Փոխարկվել է՝{0}</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>Պատճենված</value>
+  </data>
+  <data name="CommentCreate" xml:space="preserve">
+    <value>Ստեղծված</value>
+  </data>
+  <data name="CommentCreateByDocuSign" xml:space="preserve">
+    <value>Ստեղծվել է DocuSign-ի կողմից</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Ստեղծվել է ձևը լրացնելու համար</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>Խմբագրված</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Խմբագրված է գաղտնագրով</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Գաղտնագրված</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Պահված է</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Վերագրված</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>Վերականգնվել է վերանայումից՝{0}</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>Վերականգնվել է փաստաթղթի փոփոխությունից ՝{0}</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Ներկայացված՝</value>
+  </data>
+  <data name="CommentUpload" xml:space="preserve">
+    <value>Վերբեռնվել է</value>
+  </data>
+  <data name="DocuSignStatusDeclined" xml:space="preserve">
+    <value>Մերժված</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>Ուղարկման գործողության ընթացքում սխալ է տեղի ունեցել</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>Փաստաթղթի ուղարկումը DocuSign-ի միջոցով չեղարկվել է</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>Փաստաթուղթն ուղարկվել է ստորագրման DocuSign-ի միջոցով</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>Չեղյալ է հայտարարվել</value>
+  </data>
+  <data name="ErrorMassage_BadRequest" xml:space="preserve">
+    <value>Սխալ հայցում.</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>Դուք չեք կարող ընտրել այս օգտվողին</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>Փոխակերպումը չափազանց շատ ժամանակ է պահանջում.</value>
+  </data>
+  <data name="ErrorMassage_DocServiceException" xml:space="preserve">
+    <value>Փաստաթղթերի ծառայությունում սխալ է տեղի ունեցել</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>Ֆայլը բացվում է խմբագրման համար՝{0}. Ներկայումս համատեղ խմբագրման գործառույթը չի աջակցվում այս ֆայլի ձևաչափի համար.</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>Ֆայլը բաց է բջջային հավելվածում խմբագրելու համար{0}</value>
+  </data>
+  <data name="ErrorMassage_EmptyFile" xml:space="preserve">
+    <value>Դատարկ ֆայլ</value>
+  </data>
+  <data name="ErrorMassage_FileNotFound" xml:space="preserve">
+    <value>Պահանջվող ֆայլը չի գտնվել</value>
+  </data>
+  <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
+    <value>{0}-ից մեծ ֆայլը չի փոխարկվի</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>{0}-ից մեծ ֆայլը չի պատճենվի</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>{0}-ից մեծ ֆայլը չի խմբագրվի</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>{0}-ից մեծ ֆայլը չի տեղափոխվի</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Նոր տարբերակը չի կարող նույնը լինել, ինչ ներկայիս</value>
+  </data>
+  <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
+    <value>Դուք չեք կարող պատճենել թղթապանակն իր ենթաթղթապանակում</value>
+  </data>
+  <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
+    <value>Պահանջվող թղթապանակը չի գտնվել</value>
+  </data>
+  <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
+    <value>Սխալ վերնագիր</value>
+  </data>
+  <data name="ErrorMassage_LockedFile" xml:space="preserve">
+    <value>Ֆայլը ներկայումս կողպված է մեկ այլ օգտվողի կողմից</value>
+  </data>
+  <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
+    <value>Առնվազն {0} փոստ հաղորդագրություն չհաջողվեց ուղարկել: Խնդրում ենք այցելել Փոստի մոդուլը՝ տեսնելու, թե որն է ձախողման պատճառը.</value>
+  </data>
+  <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
+    <value>Չափից շատ ներբեռնումներ.</value>
+  </data>
+  <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
+    <value>Ներողություն, այս ֆայլի ձևաչափը չի աջակցվում</value>
+  </data>
+  <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
+    <value>Պահպանման հեղինակն անհայտ է</value>
+  </data>
+  <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
+    <value>Ֆայլը վնասվել է, երբ դուք փորձել եք այն պահել</value>
+  </data>
+  <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
+    <value>Չհաջողվեց ֆայլը պահպանել</value>
+  </data>
+  <data name="ErrorMassage_SecurityException" xml:space="preserve">
+    <value>Դուք չունեք բավարար թույլտվություն՝ գործողությունը կատարելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
+    <value>Հնարավոր չէ հավաստագրել{0} մատակարարի մոտ՝ տրված հավատարմագրերով.</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք ֆայլը պատճենելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք թղթապանակը պատճենելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
+    <value>Ստեղծելու համար բավարար թույլտվություն չունեք</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
+    <value>Հնարավոր չէ ջնջել ֆայլը, քանի որ այն բացված է խմբագրման համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
+    <value>Հնարավոր չէ ջնջել պանակը, քանի որ ֆայլերից մեկը բացված է խմբագրման համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք ֆայլը ջնջելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք թղթապանակը ջնջելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
+    <value>Դուք չունեք բավարար թույլտվություններ ֆայլը խմբագրելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
+    <value>Այս փաստաթուղթը խմբագրվում է ձեր կողմից մեկ այլ ներդիրում</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք ֆայլը տեղափոխելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Դուք չունեք բավարար թույլտվություն՝ թղթապանակը տեղափոխելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք ֆայլը դիտելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք թղթապանակի բովանդակությունը դիտելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք ֆայլը վերանվանելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք պանակը վերանվանելու համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
+    <value>Հնարավոր չէ թարմացնել ֆայլը, քանի որ այն բացված է խմբագրման համար</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք թղթապանակի բովանդակությունը դիտելու համար</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>Երրորդ կողմի թղթապանակի բովանդակությունը հասանելի չէ: Փորձեք նորից միացնել հաշիվը.</value>
+  </data>
+  <data name="ErrorMassage_StartEditing" xml:space="preserve">
+    <value>Ֆայլի խմբագրման մեկնարկի սխալ</value>
+  </data>
+  <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
+    <value>Դուք չեք կարող թարմացնել ֆայլը, որը բացված է խմբագրման համար</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Օգտատերը չհաջողվեց գտնել</value>
+  </data>
+  <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
+    <value>Ձեզ թույլ չի տրվում նախադիտել աղբարկղի տարրերը</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Անվավեր մատակարար</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Հնարավոր չէ օգտագործել այս թղթապանակը սենյակը պահեստավորել համար</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Հրավերի հղումն անվավեր է կամ դրա վավերականության ժամկետը սպառվել է</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Դերը հասանելի չէ այս օգտատիրոջ տեսակի համար</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Այս մատակարարն արդեն միացված է սենյակին</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Դուք բավարար թույլտվություն չունեք արխիվացնելու սենյակը</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Դուք այս պանակում պատճենելու թույլտվություն չունեք</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Դուք սենյակը խմբագրելու թույլտվություն չունեք</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Դուք այս պանակ տեղափոխվելու թույլտվություն չունեք</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Սենյակը արխիվացնելու համար բավարար թույլտվություն չունեք</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Դուք չեք կարող խմբագրել արխիվացված սենյակները</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Դուք չեք կարող ամրացնել սենյակը</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Բոլորը</value>
+  </data>
+  <data name="Guest" xml:space="preserve">
+    <value>Անանուն</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Որոնել փաստաթղթերի բովանդակության մեջ</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Թղթապանակում ստեղծված ֆայլ"{0}"</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Լրացվող OFORM փաստաթուղթը պատրաստ է: Այն պահվում է {0}-ում</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORM-ի պատճենը ստեղծվում է {0} պանակում: Խնդրում ենք լրացնել ձևը և ներբեռնել արդյունքը որպես PDF կամ DOCX ֆայլ.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Ֆայլն այլևս ձևանմուշ չէ ձևը լրացնելու համար.</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>Արեք նույնը, ինչ օգտատերը|Կապեք Dropbox-ը, Box-ը և այլ հաշիվները «Ընդհանուր» բաժնում|Սահմանեք մուտքի իրավունքներ դեպի փաստաթղթեր և թղթապանակներ «Ընդհանուր» բաժնում</value>
+  </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Ստեղծեք, խմբագրեք և համօգտագործեք գրասենյակային փաստաթղթեր: Համագործակցեք դրանց շուրջ իրական ժամանակում: Ամենաբարձր համատեղելիությունը docx, xlsx, pptx-ի հետ երաշխավորված է.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Խմբագրել, տարածել և համագործակցել գրասենյակային փաստաթղթերի վրա իրական ժամանակում: Ստեղծեք և կառավարեք ընդհանուր փաստաթղթեր, որոնք հասանելի կլինեն ամբողջ թիմին:
+Ամենաբարձր համատեղելիությունը docx, xlsx, pptx-ի հետ.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Դիտեք և ներբեռնեք ընդհանուր փաստաթղթերը: Վերբեռնեք ֆայլերը ընդհանուր պանակներում: Ամենաբարձր համատեղելիությունը docx, xlsx, pptx-ի հետ երաշխավորված է.</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Փաստաթղթեր</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Ստեղծեք և խմբագրեք ձեր սեփական փաստաթղթերը, ինչպես նաև համօգտագործվող փաստաթղթերը՝ համապատասխան մուտքի իրավունքով|Տրամադրեք այլ օգտատերերին կարդալու/խմբագրելու հնարավորություն փաստաթղթեր և թղթապանակներ|Կցել Dropbox-ը, Box-ը և այլ հաշիվները «Իմ փաստաթղթերը» բաժնում</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Համագործակցող</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Մեկնաբան</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace ադմինիստրատոր</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Խմբագրիչ</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Ձևի լցոնիչ</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Դիտող</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Վերանայող</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Սենյակի վարիչ</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Օգտատեր</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Անուն</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Ազգանուն</value>
+  </data>
+  <data name="UnlockComment" xml:space="preserve">
+    <value>Ֆայլն ապակողպված է</value>
+  </data>
+</root>

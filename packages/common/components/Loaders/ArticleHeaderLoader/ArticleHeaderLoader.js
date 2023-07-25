@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+
 import StyledContainer from "./StyledArticleHeader";
 import RectangleLoader from "../RectangleLoader";
 
-const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
+const ArticleHeaderLoader = ({ id, className, style, showText, ...rest }) => {
   const {
     title,
     width,
@@ -17,7 +19,12 @@ const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
     animate,
   } = rest;
   return (
-    <StyledContainer id={id} className={className} style={style}>
+    <StyledContainer
+      id={id}
+      className={className}
+      style={style}
+      showText={showText}
+    >
       <RectangleLoader
         title={title}
         width={width}
@@ -46,4 +53,8 @@ ArticleHeaderLoader.defaultProps = {
   style: undefined,
 };
 
-export default ArticleHeaderLoader;
+export default inject(({ auth }) => {
+  return {
+    showText: auth.settingsStore.showText,
+  };
+})(observer(ArticleHeaderLoader));

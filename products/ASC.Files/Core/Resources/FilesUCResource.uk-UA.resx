@@ -82,4 +82,19 @@
   <data name="Personal" xml:space="preserve">
     <value>Особисте</value>
   </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Вибране</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Файли буде стиснуто до {0}файлу .tar.gz{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Файли буде стиснуто до {0}файлу .zip{1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Приватна кім</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Останні</value>
+  </data>
 </root>

@@ -83,9 +83,10 @@ const Content = styled.div.attrs((props) => ({
 
           @media ${smallTablet} {
             transform: translateY(${(props) => (props.visible ? "0" : "100%")});
-            height: calc(100% - 64px);
+            height: 100%;
             width: 100%;
             left: 0;
+            top: ${(props) => (props.embedded ? "0" : "auto")};
             right: 0;
             top: auto;
             bottom: 0;

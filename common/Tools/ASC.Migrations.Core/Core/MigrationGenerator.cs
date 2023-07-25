@@ -57,7 +57,7 @@ public class MigrationGenerator
 
         var name = GenerateMigrationName();
 
-        var migration = scaffolder.ScaffoldMigration(name, $"ASC.Migrations.{_providerName}");
+        var migration = scaffolder.ScaffoldMigration(name, $"ASC.Migrations.{_providerName}.SaaS");
 
         SaveMigration(migration);
     }

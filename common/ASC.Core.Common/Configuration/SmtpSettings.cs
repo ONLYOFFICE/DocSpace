@@ -40,6 +40,8 @@ public class SmtpSettings
     public bool EnableSSL { get; set; }
     public bool EnableAuth { get; set; }
     public bool IsDefaultSettings { get; internal set; }
+    public bool UseNtlm { get; set; }
+
     public static readonly SmtpSettings Empty = new SmtpSettings();
 
     private SmtpSettings() { }
@@ -132,10 +134,12 @@ public class SmtpSettings
         {
             settings.SetCredentials(credentialsUserName, credentialsUserPassword, credentialsDomain);
             settings.EnableAuth = true;
+            settings.UseNtlm = 8 < props.Length && !string.IsNullOrEmpty(props[8]) && Convert.ToBoolean(props[8]);
         }
         else
         {
             settings.EnableAuth = false;
+            settings.UseNtlm = false;
         }
 
         return settings;
@@ -151,6 +155,7 @@ public class SmtpSettings
                            Port.ToString(),
                            HttpUtility.UrlEncode(SenderAddress),
                            HttpUtility.UrlEncode(SenderDisplayName),
-                           EnableSSL.ToString());
+                           EnableSSL.ToString(),
+                           UseNtlm.ToString());
     }
 }

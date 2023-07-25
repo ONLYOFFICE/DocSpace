@@ -17,6 +17,7 @@ export type SelectorProps = {
   id?: string;
   className?: string;
   style?: React.CSSProperties;
+  withHeader?: boolean;
   headerLabel: string;
   withoutBackButton?: boolean;
   onBackClick?: () => void;
