@@ -529,7 +529,6 @@ setup_docs() {
 }
 
 setup_enterprise() {
-	[ ! -d /var/www/$PACKAGE_SYSNAME/Data/ ] && mkdir -p /var/www/$PACKAGE_SYSNAME/Data/
 	$JSON $APP_DIR/appsettings.json -e "this.license.file={'path': \"/var/www/$PACKAGE_SYSNAME/Data/license.lic\"}" >/dev/null 2>&1
 }
 
