@@ -31,7 +31,7 @@ const EmbeddingBody = ({ t, embeddingLink }) => {
   const onChangeHeight = (e) => setHeightValue(e.target.value);
   const onCopyLink = () => {
     copy(link);
-    toastr.success(t("CodeCopySuccess"));
+    toastr.success(t("EmbeddingPanel:CodeCopySuccess"));
   };
 
   const getSizes = (size) => {
@@ -118,13 +118,13 @@ const EmbeddingBody = ({ t, embeddingLink }) => {
               onChange={onChangeHeight}
             />
           </div>
-          <Button
+          {/* <Button
             className="embedding-panel_preview-button"
             primary
             size="small"
             label={t("Common:Preview")}
             onClick={onPreviewClick}
-          />
+          /> */}
         </div>
         <div className="embedding-panel_code-container">
           <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>

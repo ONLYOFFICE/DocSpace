@@ -60,4 +60,8 @@ export default inject(({ dialogsStore }) => {
     setEmbeddingPanelIsVisible,
     link: linkParams?.link?.sharedTo?.shareLink,
   };
-})(withTranslation(["Files"])(observer(EmbeddingPanelComponent)));
+})(
+  withTranslation(["Files", "EmbeddingPanel"])(
+    observer(EmbeddingPanelComponent)
+  )
+);
