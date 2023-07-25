@@ -116,6 +116,7 @@ export const openDocEditor = async (
   tab = null,
   url = null,
   isPrivacy,
+  isPreview = false,
   shareKey = null
 ) => {
   if (!providerKey && id && !isPrivacy && !shareKey) {
@@ -123,12 +124,13 @@ export const openDocEditor = async (
   }
 
   const share = shareKey ? `&share=${shareKey}` : "";
+  const preview = isPreview ? "&action=view" : "";
 
   if (!url && id) {
     url = combineUrl(
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
-      `/doceditor?fileId=${encodeURIComponent(id)}${share}`
+      `/doceditor?fileId=${encodeURIComponent(id)}${preview}${share}`
     );
   }
 

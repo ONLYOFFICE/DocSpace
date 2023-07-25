@@ -2101,7 +2101,7 @@ class FilesActionStore {
               )
             : null;
 
-        return openDocEditor(id, providerKey, tab, null, !canWebEdit);
+        return openDocEditor(id, providerKey, tab, null, !item.security.Edit);
       }
 
       if (isMediaOrImage) {

@@ -3322,6 +3322,7 @@ class FilesStore {
       tab,
       url,
       isPrivacy,
+      preview,
       this.publicRoomStore.publicRoomKey
     );
   };
