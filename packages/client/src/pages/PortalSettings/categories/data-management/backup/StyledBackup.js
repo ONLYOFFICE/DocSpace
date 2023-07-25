@@ -17,7 +17,14 @@ const linkColor = globalColors.black;
 const INPUT_LENGTH = "350px";
 const TEXT_LENGTH = "700px";
 const commonStyles = css`
-  margin-right: 16px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 16px;
+        `
+      : css`
+          margin-right: 16px;
+        `}
   .backup_modules-description {
     margin-bottom: 24px;
     margin-top: 8px;
@@ -29,11 +36,25 @@ const commonStyles = css`
   .backup_modules-header_wrapper {
     display: flex;
     svg {
-      margin: 5px 0 0 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin: 5px 4px 0px 0px;
+            `
+          : css`
+              margin: 5px 0px 0px 4px;
+            `}
     }
   }
   .radio-button_text {
-    margin-right: 7px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 7px;
+          `
+        : css`
+            margin-right: 7px;
+          `}
     font-size: 13px;
     font-weight: 600;
   }
@@ -76,14 +97,28 @@ const StyledManualBackup = styled.div`
   ${commonStyles}
   .manual-backup_buttons {
     margin-top: 16px;
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
     display: flex;
     align-items: center;
     justify-content: flex-start;
 
     button:first-child {
       max-width: 124px;
-      margin-right: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
     }
     button:last-child {
       max-width: 153px;
@@ -108,17 +143,45 @@ const StyledManualBackup = styled.div`
     }
   }
   .manual-backup_storages-module {
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
     .manual-backup_buttons {
-      margin-left: 0px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 0;
+            `
+          : css`
+              margin-left: 0;
+            `}
     }
   }
   .manual-backup_third-party-module {
     margin-top: 16px;
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
   }
   .manual-backup_folder-input {
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
     margin-top: 16px;
   }
 `;
@@ -127,7 +190,14 @@ const StyledAutoBackup = styled.div`
   ${commonStyles}
   .auto-backup_third-party-module {
     margin-top: 16px;
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
     button {
       margin-bottom: 16px;
     }
@@ -142,7 +212,15 @@ const StyledAutoBackup = styled.div`
     position: static;
   }
   .backup_toggle-btn-description {
-    margin-left: 37px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 37px;
+          `
+        : css`
+            margin-left: 37px;
+          `}
+
     max-width: 1024px;
   }
   .toggle-button-text {
@@ -156,15 +234,43 @@ const StyledAutoBackup = styled.div`
     max-width: ${INPUT_LENGTH};
   }
   .save-button {
-    margin-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
   }
   .backup_modules {
-    margin-left: 37px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 37px;
+          `
+        : css`
+            margin-left: 37px;
+          `}
   }
   .auto-backup_storages-module {
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
     .backup_schedule-component {
-      margin-left: 0;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 0;
+            `
+          : css`
+              margin-left: 0;
+            `}
     }
   }
   .auto-backup_folder-input {
@@ -173,7 +279,7 @@ const StyledAutoBackup = styled.div`
   }
   .backup_toggle-wrapper {
     margin-bottom: 16px;
-    background-color: ${(props) =>
+    background-color: ${props =>
       props.theme.client.settings.backup.rectangleBackgroundColor};
     padding: 12px;
     max-width: 724px;
@@ -187,10 +293,17 @@ const StyledAutoBackup = styled.div`
 
   .auto-backup_badge {
     height: 16px;
-    margin-left: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 8px;
+          `
+        : css`
+            margin-left: 8px;
+          `}
     cursor: auto;
   }
-  ${(props) => !props.isEnableAuto && UnavailableStyles}
+  ${props => !props.isEnableAuto && UnavailableStyles}
 `;
 const StyledStoragesModule = styled.div`
   .backup_storages-buttons {
@@ -217,7 +330,7 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: ${(props) => props.theme.client.settings.backup.warningColor};
+    color: ${props => props.theme.client.settings.backup.warningColor};
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -239,7 +352,7 @@ const StyledRestoreBackup = styled.div`
 
   .restore-backup_list {
     text-decoration: underline dotted;
-    cursor: ${(props) => (props.isEnableRestore ? "pointer" : "cursor")};
+    cursor: ${props => (props.isEnableRestore ? "pointer" : "cursor")};
     font-weight: 600;
   }
   .restore-backup_input {
@@ -264,12 +377,12 @@ const StyledRestoreBackup = styled.div`
       width: 100%;
     }
   }
-  ${(props) => !props.isEnableRestore && UnavailableStyles}
+  ${props => !props.isEnableRestore && UnavailableStyles}
 `;
 const StyledModules = styled.div`
   margin-bottom: 24px;
   .backup-description {
-    ${(props) => props.isDisabled && `color: #A3A9AE`};
+    ${props => props.isDisabled && `color: #A3A9AE`};
     margin-left: 25px;
     max-width: 700px;
   }
@@ -280,7 +393,7 @@ const StyledScheduleComponent = styled.div`
   .days_option {
     grid-area: days;
     width: 100%;
-    ${(props) =>
+    ${props =>
       (props.weeklySchedule || props.monthlySchedule) &&
       css`
         max-width: 138px;
@@ -289,7 +402,7 @@ const StyledScheduleComponent = styled.div`
   .additional_options {
     max-width: ${INPUT_LENGTH};
     display: grid;
-    grid-template-columns: ${(props) =>
+    grid-template-columns: ${props =>
       props.weeklySchedule || props.monthlySchedule ? "1fr 1fr" : "1fr"};
     grid-gap: 8px;
   }
@@ -297,7 +410,7 @@ const StyledScheduleComponent = styled.div`
   .month_options {
     grid-area: weekly-monthly;
     width: 100%;
-    max-width: ${(props) => (!props.isMobileOnly ? "124px" : INPUT_LENGTH)};
+    max-width: ${props => (!props.isMobileOnly ? "124px" : INPUT_LENGTH)};
   }
   .schedule-backup_combobox {
     display: inline-block;
@@ -311,7 +424,7 @@ const StyledScheduleComponent = styled.div`
         .main_options {
           max-width: ${INPUT_LENGTH};
           display: grid;
-          ${(props) =>
+          ${props =>
             props.weeklySchedule || props.monthlySchedule
               ? css`
                   grid-template-areas: "days weekly-monthly time";
@@ -367,7 +480,7 @@ const StyledBackup = styled.div`
     margin-bottom: 12px;
     display: grid;
 
-    ${(props) =>
+    ${props =>
       props.isConnectedAccount
         ? "grid-template-columns:minmax(100px,  310px) 32px"
         : "grid-template-columns:minmax(100px,  350px) 32px"};
@@ -376,7 +489,7 @@ const StyledBackup = styled.div`
 
   .backup_modules-separation {
     margin-bottom: 28px;
-    border-bottom: ${(props) =>
+    border-bottom: ${props =>
       props.theme.client.settings.backup.separatorBorder};
   }
   .backup_modules-header {
@@ -468,10 +581,10 @@ const StyledBackupList = styled.div`
     height: 48px;
     grid-template-areas: "trash icon-name full-name  radiobutton";
     grid-template-columns: 25px 32px auto 32px;
-    ${(props) =>
+    ${props =>
       props.isChecked &&
       css`
-        background: ${(props) =>
+        background: ${props =>
           props.theme.client.settings.backup.backupCheckedListItemBackground};
       `}
     padding-left: 16px;
@@ -488,7 +601,7 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
     margin-left: 16px;
     margin-right: 16px;
-    color: ${(props) => props.theme.client.settings.backup.textColor};
+    color: ${props => props.theme.client.settings.backup.textColor};
   }
 
   .backup-list_content {
@@ -500,7 +613,7 @@ const StyledBackupList = styled.div`
 const StyledSettingsHeader = styled.div`
   display: flex;
   position: fixed;
-  top: ${(props) => (props.isVisible ? "48px" : "-48px")};
+  top: ${props => (props.isVisible ? "48px" : "-48px")};
   transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
   -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
   -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);

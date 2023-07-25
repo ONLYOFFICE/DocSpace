@@ -125,7 +125,14 @@ const StyledInviteInput = styled.div`
 `;
 
 const StyledAccessSelector = styled.div`
-  margin-right: 16px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 16px;
+        `
+      : css`
+          margin-right: 16px;
+        `}
 `;
 
 const StyledEditInput = styled(TextInput)`
