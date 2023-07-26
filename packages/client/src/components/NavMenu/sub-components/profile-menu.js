@@ -27,10 +27,17 @@ const StyledDropDown = styled(DropDown)`
 
   top: ${(props) =>
     props.isBannerVisible && props.withPortal ? "134px" : "54px"} !important;
-  right: 20px !important;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `left: 20px !important;`
+      : `right: 20px !important;`}
 
   @media ${tablet} {
-    right: 16px !important;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `left: 16px !important;`
+        : `right: 16px !important;`}
   }
 
   @media (max-width: 428px) {
@@ -53,7 +60,8 @@ const StyledControlContainer = styled.div`
   height: 24px;
   position: absolute;
   top: -34px;
-  right: 10px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left: 10px;` : `right: 10px;`}
   border-radius: 100px;
   cursor: pointer;
   display: none;
