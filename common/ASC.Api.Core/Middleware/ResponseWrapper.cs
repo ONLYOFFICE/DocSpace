@@ -28,6 +28,13 @@ namespace ASC.Api.Core.Middleware;
 
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
+    private readonly ILogger<CustomExceptionFilterAttribute> _logger;
+
+    public CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribute> logger)
+    {
+        _logger = logger;
+    }
+
     public override void OnException(ExceptionContext context)
     {
         var status = (HttpStatusCode)context.HttpContext.Response.StatusCode;
@@ -68,6 +75,9 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.PaymentRequired;
                 break;
         }
+
+        _logger.LogCritical(exception,
+    $"error during executing {context.HttpContext.Request?.Method}: {context.HttpContext.Request?.Path.Value}");
 
         var result = new ObjectResult(new ErrorApiResponse(status, exception, message, withStackTrace))
         {

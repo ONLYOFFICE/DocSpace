@@ -109,9 +109,9 @@ public class ClearEventsService : IHostedService, IDisposable
                 })
                 .Where(r => r.Date < DateTime.UtcNow.AddDays(-Convert.ToDouble(
                     ef.WebstudioSettings
-                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
-                        .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
+                    .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
+                    .Select(r => DbFunctionsExtension.JsonValue(nameof(r.Data).ToLower(), settings))
+                    .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
                 .Take(1000);
 
             ids = await ae.Select(r => r.ef).ToListAsync();

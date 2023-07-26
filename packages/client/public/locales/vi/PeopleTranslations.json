@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Loại đăng nhập tài khoản",
   "DeleteSelfProfile": "Xóa hồ sơ",
   "DisabledEmployeeStatus": "Đã vô hiệu hóa",
   "DisableUserButton": "Vô hiệu hóa",
@@ -12,6 +13,7 @@
   "RemoveData": "Xóa dữ liệu cá nhân",
   "ResetAuth": "Đặt lại xác thực",
   "SendInviteAgain": "Gửi lại lời mời",
+  "StandardLogin": "Đăng nhập chuẩn",
   "SuccessChangeUserStatus": "Trạng thái người dùng đã được thay đổi thành công",
   "SuccessDeletePersonalData": "Dữ liệu cá nhân đã được xóa thành công",
   "SuccessSentInvitation": "Lời mời đã được gửi thành công",

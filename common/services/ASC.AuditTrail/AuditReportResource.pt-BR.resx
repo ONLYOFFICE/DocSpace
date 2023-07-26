@@ -670,4 +670,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Lixo esvaziado</value>
   </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag criada: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tags excluídas: {0}</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Tags adicionadas: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Tags excluídas: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Sala arquivada</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Usuário adicionado: {0}. Função: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Sala deletada</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link criado. Função: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link deletado</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link atualizado. Função: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo criado</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo excluído</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Usuário excluído: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Quarto renomeado: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Sala desarquivada</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} nomeado: {1}</value>
+  </data>
 </root>

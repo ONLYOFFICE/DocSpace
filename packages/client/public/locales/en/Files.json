@@ -24,6 +24,7 @@
   "DaysRemaining": "Days remaining: {{daysRemaining}}",
   "DisableNotifications": "Disable notifications",
   "Document": "Document",
+  "DocumentEdited": "Cannot perform the action because the document is being edited.",
   "EditRoom": "Edit room",
   "EmptyFile": "Empty file",
   "EmptyFilterDescriptionText": "No files or folders match this filter. Try a different one or clear filter to view all files. ",

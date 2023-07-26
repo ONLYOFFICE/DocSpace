@@ -34,6 +34,8 @@ function getAndSaveAppsettings(){
         redis.port = redis.Hosts[0].Port; 
         redis.connect_timeout = redis.ConnectTimeout;
         redis.db = redis.Database;
+        redis.user = redis.User;
+        redis.password = redis.Password;
         nconf.set("Redis", redis);
     }
 }

@@ -192,4 +192,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Bu e-posta otomatik olarak oluşturulmuştur, lütfen yanıtlamayın.&lt;br /&gt;Bu e-postayı almanızın sebebi &lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt; kayıtlı kullanıcısı olmanızdır.
+&lt;br /&gt;DocSpace bildirim e-postaları aboneliğinden çıkmak için tıklayın: &lt;a href="{1}"  target="_blank"&gt;Abonelikten Çık&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

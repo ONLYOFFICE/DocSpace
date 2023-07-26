@@ -939,6 +939,15 @@ public class UserController : PeopleControllerBase
     [HttpPost("password")]
     public async Task<object> SendUserPasswordAsync(MemberRequestDto inDto)
     {
+        if (_authContext.IsAuthenticated)
+        {
+            var currentUser = await _userManager.GetUserByEmailAsync(inDto.Email);
+            if (currentUser.Id != _authContext.CurrentAccount.ID && !(await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID)))
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+        }
+
         var error = await _userManagerWrapper.SendUserPasswordAsync(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {

@@ -640,4 +640,82 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Теги видалено: {0}</value>
   </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>Ідентифікатор дії</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Параметри тривалості аудиту оновлено</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Параметри настроюваної навігації оновлено</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Параметри примусового збереження оновлено</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Параметри примусового збереження магазину оновлено</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Не вдалося увійти. Забагато спроб</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Не вдалося увійти. Recaptcha недійсна</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Не вдалося увійти через застосунок для аутентифікації</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Успішний вхід через застосунок соціальної мережі</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Успішний вхід через API й застосунок для аутентифікації</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Успішний вхід через застосунок для аутентифікації</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Приватну кімнату увімкнено</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Перепризначення</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Почати дешифрування сховища</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Почати шифрування сховища</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Цільовий ідентифікатор</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Параметри двофакторної аутентифікації оновлено: двофакторну аутентифікацію вимкнено</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Параметри двофакторної аутентифікації оновлено: SMS-підтвердження увімкнено</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Параметри двофакторної аутентифікації оновлено: застосунок для аутентифікації увімкнено</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>Дані перепризначено: від користувача {0} користувачу {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Дані користувача {0} видалено</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Застосунок для аутентифікації від’єднано: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Створюються нові коди резервного копіювання</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Електронна пошта оновлена</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Приватну кімнату вимкнено</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Не вдалося увійти через API й застосунок для аутентифікації</value>
+  </data>
 </root>

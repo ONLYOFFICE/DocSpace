@@ -180,4 +180,17 @@ Distinti saluti,
 Team di ONLYOFFICE
 "www.onlyoffice.com":http://onlyoffice.com/it</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Vuoi cambiare l'e-mail del tuo account dell'ufficio nel cloud?
+
+Fai clic sul pulsante in basso e accedi* al tuo cloud.
+
+$GreenButton
+
+Il collegamento è valido per 7 giorni.
+
+*Se non hai effettuato l'accesso al tuo ufficio cloud in questo browser, dovrai utilizzare la tua vecchia e-mail per la conferma.
+
+Non vuoi cambiare la tua email? Ignora questo messaggio.</value>
+  </data>
 </root>

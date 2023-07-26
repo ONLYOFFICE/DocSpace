@@ -91,4 +91,10 @@
   <data name="Personal" xml:space="preserve">
     <value>個人</value>
   </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>ファイルは{0}.tar.gzファイル{1}に圧縮されます</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>ファイルは{0}.zipファイル{1}に圧縮されます</value>
+  </data>
 </root>

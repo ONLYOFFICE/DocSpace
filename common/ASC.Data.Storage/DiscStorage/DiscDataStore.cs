@@ -428,7 +428,15 @@ public class DiscDataStore : BaseStorage
         }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
-        var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
+        var size = entries.Where(r =>
+        {
+            if (QuotaController == null || string.IsNullOrEmpty(QuotaController.ExcludePattern))
+            {
+                return true;
+            }
+            return !Path.GetFileName(r).StartsWith(QuotaController.ExcludePattern);
+        }
+        ).Select(_crypt.GetFileSize).Sum();
 
         var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
         subDirs.Reverse();

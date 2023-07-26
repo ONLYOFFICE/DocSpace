@@ -1,0 +1,1880 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ԸՆԴՈՒՆԵԼ</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ստեղծել է նոր փաստաթուղթ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; խմբագրել է փաստաթուղթը՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ավելացրել է նոր մեկնաբանություն փաստաթղթի տարբերակում՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; վերբեռնել է նոր փաստաթուղթ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; սենյակում՝ &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; տեղափոխեց սենյակը՝ &lt;a href={1}&gt;{2}&lt;/a&gt; արխիվացնելու համար - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ստեղծել է նոր սենյակ՝ &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; սենյակը՝ &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; վերանվանեց սենյակը՝ &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; նշանակվել է &lt;b&gt;{1}&lt;/b&gt; սենյակում՝ &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ավելացվել է սենյակ՝ &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>DocSpace-ի նոր օգտատեր է ավելացվել՝ &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; հեռացվել է սենյակից՝ &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; փոխել է օգտատերերի մուտքի մակարդակը &lt;b&gt;{1}&lt;/b&gt; դեպի &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace օգտվողը թարմացվել է՝ &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Ընդունել</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Մուտքի կառավարման վահանակ</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Մուտք գործեք ձեր պորտալը</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Մուտք գործեք ձեր Web-Office</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Սեղմեք այստեղ՝ ձեր էլփոստի հասցեն ակտիվացնելու համար</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Փոխել էլ. փոստի հասցեն</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Փոխել գաղտնաբառը</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Փոխել բջջային հեռախոսահամարը</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Փոխել բջջային հեռախոսահամարը</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Համագործակցեք DocSpace-ում</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Կարգավորել հենց հիմա</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Հաստատել</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Հաստատեք DocSpace Հրավերը</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ՀԱՍՏԱՏԵԼ</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Հաստատեք պորտալի հասցեի փոփոխությունը</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Հաստատեք պորտալի սեփականատիրոջ թարմացում</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Հաստատեք սենյակի հրավերը</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Հաստատեք հաշվի դադարեցումը</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Ապաակտիվացնել պորտալը</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Ջնջել պորտալը</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Հրավիրեք հենց հիմա</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Կտտացրեք այստեղ՝ պորտալին միանալու համար</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Թողնել կարծիք</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Հեռացնել պրոֆիլը</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Թարմացրեք հիմա</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Պահանջել զանգ</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Ընտրեք գնագոյացման պլանները հենց հիմա</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Սկսեք անվճար փորձաշրջան</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Օգտագործեք զեղչ</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Այցելեք վճարումների բաժինը</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}: Խնդրում ենք ակտիվացնել ձեր էլ. հասցեն</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}: Ստեղծվել է ${__VirtualRootPath} պորտալի կրկնօրինակում</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Հաստատեք ձեր էլ.փոստի փոփոխությունը</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Հաստատեք ձեր գաղտնաբառը փոխելը</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}: Բջջային հեռախոսի փոփոխության հարցում</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}: Անվտանգության ծանուցում</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի սեփականատիրոջ փոփոխություն</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի հասցեի փոփոխություն</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE DocSpace:</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ստացեք անվճար ONLYOFFICE հավելվածներ</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Մի քանի խորհուրդ ձեր փաստաթղթերի վրա արդյունավետ աշխատանքի համար</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>Օգտատիրոջ հաղորդագրություն ադմինիստրատորներին</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Բացահայտեք ONLYOFFICE DocSpace-ի բիզնես բաժանորդագրությունը</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Միացեք ONLYOFFICE DocSpace-ին</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Վաճառքի բաժնի հարցում</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալին միանալու հրավեր</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}: Փոստարկղի ստեղծում</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}: Փոստարկղի գաղտնաբառի փոփոխություն</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիայի սխալ</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիա սկսվեց</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}: Մեկ այլ տարածաշրջանային պորտալի միգրացիա հաջողությամբ ավարտվեց</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE անձնական օգտագործման համար:</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Մուտք գործեք ձեր ONLYOFFICE անձնական հաշիվ</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Անձնական. Խնդրում ենք ակտիվացնել ձեր էլփոստի հասցեն</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Անձնական հաշվի դադարեցում</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի ապաակտիվացում</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի ջնջում</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace-ն ապաակտիվացված է</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}: Պորտալի հասցեի փոփոխություն</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>Ձեր պրոֆիլի ջնջում ${__VirtualRootPath} պորտալից</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Օգտատերը ջնջել է իր պրոֆիլը</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>Ձեր պրոֆիլը ${__VirtualRootPath}-ում փոխվել է</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների վերաբաշխումն ավարտված է</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների վերահանձնումը ձախողվեց</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների հեռացումն ավարտված է</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}: Օգտատիրոջ տվյալների հեռացումը ձախողվեց</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Ձեռնարկության լիցենզիայի հարցում</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>SaaS գնագոյացման պլանի հարցում</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}: Վերականգնումն ավարտված է</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}: Վերականգնումը սկսվեց</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Կարգավորեք ձեր ONLYOFFICE DocSpace-ը</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ը կջնջվի</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Միացեք ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի համար արտոնյալ ժամանակահատվածն ակտիվացված է</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace բաժանորդագրության ժամկետը շուտով կլրանա</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի արտոնյալ ժամկետը սպառվել է</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ի արտոնյալ ժամկետը լրանում է վաղը</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} պորտալի պրոֆիլի փոփոխության ծանուցում</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Ինչ նորություններ կան ձեր պորտալում $Date-ի համար</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>SMTP թեստային հաղորդագրություն</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}: Ապակոդավորման գործընթացը ձախողվեց</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}: Սկսվել է վերծանման գործընթացը</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}: Ապակոդավորման գործընթացն ավարտված է</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացը ձախողվեց</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացը սկսվել է</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}: Կոդավորման գործընթացն ավարտված է</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>որ օգտվող է ավելացվել ${LetterLogoText} պորտալում</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Դուք հրավիրված եք միանալու ${__VirtualRootPath}-ին</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1. Ակտիվացրեք ձեր էլ.փոստը "${__VirtualRootPath}":"$InviteLink" պորտալի համար:
+
+Բարեւ Ձեզ!
+
+"${__VirtualRootPath}":"$InviteLink" պորտալի կյանքին մասնակցելու համար դուք պետք է ակտիվացնեք ձեր էլ. հասցեն: Սա արվում է անվտանգության նկատառումներով:
+
+$GreenButton
+
+Այս հղումը գործում է միայն 7 օր։ Խնդրում ենք լրացնել ձեր էլփոստի ակտիվացումը այդ ժամանակահատվածում.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի կրկնօրինակը ստեղծվել է
+
+Հարգելի $OwnerName,
+
+Ստեղծվել է պահուստային ֆայլ, որը պարունակում է տվյալներ ձեր "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալից:
+
+Պահուստավորման ընթացակարգի մասին ավելին իմանալու համար այցելեք մեր "Տվյալների կրկնօրինակում":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" օգտատիրոջ ուղեցույցը:
+
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք կապվել մեզ հետ "support.onlyoffice.com":"http://support.onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) պորտալի կրկնօրինակը ստեղծվել է
+
+Հարգելի $OwnerName,
+
+Ստեղծվել է ձեր [${__VirtualRootPath}](${__VirtualRootPath}) պորտալի տվյալները պարունակող կրկնօրինակ ֆայլ:
+
+Պահուստավորման ընթացակարգի մասին ավելին իմանալու համար այցելեք մեր [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) օգտատիրոջ ուղեցույցը:
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք կապվել մեզ հետ [support.onlyoffice.com](http://support.onlyoffice.com) հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել նամակը ձեր ${LetterLogoText} հաշվի վրա:
+
+Սեղմեք ստորև նշված կոճակը և մուտք գործեք* ձեր ամպ:
+
+$GreenButton
+
+Հղումը գործում է 7 օր։
+
+*Եթե այս դիտարկիչով մուտք չեք գործել ${LetterLogoText}, ապա հաստատման համար պետք է օգտագործեք ձեր հին էլ. Եթե չեք հիշում դա, դիմեք ձեր պորտալի ադմինիստրատորին:
+
+Չե՞ք ուզում փոխել ձեր էլ. Պարզապես անտեսեք այս հաղորդագրությունը.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Անվտանգության ծանուցում
+
+Authenticator հավելվածի կազմաձևումը, որն օգտագործում եք ${LetterLogoText} պորտալ մուտք գործելու համար, վերակայվել է:
+
+Խնդրում ենք սեղմել ստորև բերված կոճակը՝ պորտալի մուտքի էջ գնալու և իսկորոշիչի հավելվածը կարգավորելու համար.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել ձեր ONLYOFFICE հաշվի գաղտնաբառը: Հաստատելու համար սեղմեք ստորև բերված կոճակը:
+
+$GreenButton
+
+Հղումը գործում է 7 օր։
+
+Չե՞ք ուզում փոխել ձեր գաղտնաբառը: Պարզապես անտեսեք այս հաղորդագրությունը</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Բջջային հեռախոսի փոփոխության հարցում
+
+Դուք խնդրել եք փոխել ձեր բջջային հեռախոսը, որն օգտագործվում էր ${LetterLogoText} պորտալ մուտք գործելու համար:
+
+Բջջային հեռախոսը փոխելու համար խնդրում ենք հետևել հետևյալ հղմանը.
+
+$GreenButton
+
+Եթե դուք չեք ցանկանում փոխել ձեր բջջային հեռախոսը կամ սխալմամբ ստացել եք այս էլ.</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի սեփականատիրոջ փոփոխություն
+
+Հարգելի $OwnerName,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի սեփականատիրոջը փոխելու հարցում է եղել $UserName-ի:
+
+Գործողությունը հաստատելու համար խնդրում ենք հետևել ստորև նշված հղմանը.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք լրացնել պորտալի սեփականատիրոջ փոփոխության գործընթացը այդ ժամանակահատվածում.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1. Պորտալի հասցեի փոփոխություն
+
+Հարգելի $OwnerName,
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի հասցեն փոխելու հարցում է եղել "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Գործողությունը հաստատելու համար խնդրում ենք հետևել ստորև նշված հղմանը.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք լրացնել պորտալի հասցեի փոփոխման գործընթացը այդ ժամանակահատվածում.</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Դուք հենց նոր ստեղծեցիք ONLYOFFICE DocSpace-ը՝ փաստաթղթերի կենտրոն, որտեղ կարող եք խթանել համագործակցությունը ձեր թիմի, հաճախորդների, գործընկերների և այլնի հետ: Դրա հասցեն է "${__VirtualRootPath}":"${__VirtualRootPath}":
+
+Խնդրում ենք հաստատել ձեր էլ.փոստը (հղումը վավեր է 7 օր).
+
+$GreenButton
+
+Ձեր ընթացիկ սակագնային պլանը ՄԵԿՆԱՐԿ է: Այն բացարձակապես անվճար է և ներառում է.
+
+* 1 ադմին, 2 հզոր օգտագործող
+* Մինչև 12 սենյակ
+* Յուրաքանչյուր սենյակում անսահմանափակ թվով օգտվողներ
+* 2 ԳԲ սկավառակի տարածություն
+
+Վայելեք փաստաթղթերի համագործակցության նոր եղանակը:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ստացեք անվճար ONLYOFFICE հավելվածներ՝ ձեր ցանկացած սարքից փաստաթղթերի վրա աշխատելու համար:
+
+# Windows-ում, Linux-ում և Mac-ում փաստաթղթերի վրա օֆլայն աշխատելու համար ներբեռնեք "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx":
+
+#Բջջային սարքերում փաստաթղթերը խմբագրելու համար ձեռք բերեք ONLYOFFICE Documents հավելվածը "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972"-ի համար կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents":
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Հուսով ենք, որ դուք վայելում եք ձեր ONLYOFFICE DocSpace-ի օգտագործումը: Ահա մի քանի խորհուրդ, թե ինչպես կարելի է ավելի արդյունավետ դարձնել փաստաթղթերի վրա աշխատանքը:
+
+*#1. Ընտրեք ձեր աշխատանքի ձևը։* Կազմակերպեք ձեր աշխատանքային հոսքը ըստ ձեզ՝ ստեղծելով համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով։
+
+*#2. Աշխատեք ձեր ցանկացած բովանդակության հետ:* Պահպանեք և աշխատեք տարբեր ձևաչափերի ֆայլերի հետ ձեր սենյակներում՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևաթղթեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+*#3. Արդյունավետ համահեղինակ:* Համագործակցեք փաստաթղթերի վրա երկու համատեղ խմբագրման եղանակներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+*#4. Միացրեք 3-րդ կողմի ամպերը։* Միացրեք ցանկացած ամպային պահեստ և աշխատեք առանց հավելվածների միջև անցնելու։
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ահա երեք պարզ հարցեր ձեզ համար, որոնք կարող են օգնել մեզ ավելի հարմարավետ դարձնել ձեր օգտատերերի փորձը:
+
+* Ունե՞ք մեծ թիմ կամ շատ հաճախորդներ և գործընկերներ, որոնց հետ կարող եք համագործակցել ձեր ONLYOFFICE DocSpace-ում:
+
+* Ցանկանու՞մ եք ստեղծել մի շարք սենյակներ բազմաթիվ փաստաթղթերի հետ աշխատելու համար:
+
+* Ցանկանու՞մ եք օգտագործել ONLYOFFICE DocSpace-ը ձեր սեփական ապրանքանիշի ներքո:
+
+Եթե ունեք առնվազն մեկ «այո» պատասխան, ընտրեք ԲԻԶՆԵՍ սակագնային պլանը, որը թույլ է տալիս ձեր ONLYOFFICE DocSpace-ում ավելացնել ցանկացած մենեջեր, ինչպես նաև կիրառել բրենդինգի տարբերակներ:
+
+Դա անելու համար խնդրում ենք խորհրդակցել ձեր ONLYOFFICE DocSpace-ի "Վճարումների բաժին":"$PricingPage": Այնտեղ դուք կգտնեք Stripe Customer Portal-ի անհատական հղում, որտեղ հեշտությամբ կարող եք կարգավորել վճարման բոլոր մանրամասները:
+
+_Խնդրում ենք նկատի ունենալ՝ վճարողը դառնում է այն անձը, ով վճարում է բաժանորդագրությունը: Միայն վճարողը կարող է փոփոխություններ կատարել բաժանորդագրության մեջ (կարգավորել կառավարիչների թիվը): Օգտատերերը մուտք չունեն վճարումների մանրամասներին: ONLYOFFICE DocSpace հաշվի սեփականատերը ցանկացած ժամանակ կարող է վերահանձնարարել վճարողին: _
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Դուք հրավիրված եք միանալու "${__VirtualRootPath}":"${__VirtualRootPath}"-ին որպես հյուր օգտատեր: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Հղումը գործում է ընդամենը 7 օր։
+
+Դուք կստանաք ավելի շատ խորհուրդներ, թե ինչպես օգտագործել ձեր վեբ-գրասենյակը: Դուք կարող եք ցանկացած պահի չեղարկել ձեր պրոֆիլի էջի բաժանորդագրությունները, ինչպես նաև նորից միացնել դրանք.</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու ONLYOFFICE DocSpace-ին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում:`Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Դուք հենց նոր ստեղծեցիք ONLYOFFICE DocSpace-ը՝ փաստաթղթերի կենտրոն, որտեղ կարող եք խթանել համագործակցությունը ձեր թիմի, հաճախորդների, գործընկերների և այլնի հետ: Դրա հասցեն է "${__VirtualRootPath}":"${__VirtualRootPath}":
+
+Խնդրում ենք հաստատել ձեր էլ.փոստը (հղումը վավեր է 7 օր).
+
+$GreenButton
+
+Ձեր ընթացիկ սակագնային պլանը ՄԵԿՆԱՐԿ է: Այն բացարձակապես անվճար է և ներառում է.
+
+* 1 ադմին, 2 հզոր օգտագործող
+* Մինչև 12 սենյակ
+* Յուրաքանչյուր սենյակում անսահմանափակ թվով օգտվողներ
+* 2 ԳԲ սկավառակի տարածություն
+
+Վայելեք փաստաթղթերի համագործակցության նոր եղանակը:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ահա երեք պարզ հարցեր ձեզ համար, որոնք կարող են օգնել մեզ ավելի հարմարավետ դարձնել ձեր օգտատերերի փորձը:
+
+* Ունե՞ք մեծ թիմ կամ շատ հաճախորդներ և գործընկերներ, որոնց հետ կարող եք համագործակցել ձեր ONLYOFFICE DocSpace-ում:
+
+* Ցանկանու՞մ եք ստեղծել մի շարք սենյակներ բազմաթիվ փաստաթղթերի հետ աշխատելու համար:
+
+* Ցանկանու՞մ եք օգտագործել ONLYOFFICE DocSpace-ը ձեր սեփական ապրանքանիշի ներքո:
+
+Եթե ունեք առնվազն մեկ «այո» պատասխան, ընտրեք ԲԻԶՆԵՍ սակագնային պլանը, որը թույլ է տալիս ձեր ONLYOFFICE DocSpace-ում ավելացնել ցանկացած մենեջեր, ինչպես նաև կիրառել բրենդինգի տարբերակներ:
+
+Դա անելու համար խնդրում ենք խորհրդակցել ձեր ONLYOFFICE DocSpace-ի "Վճարումների բաժին":"$PricingPage": Այնտեղ դուք կգտնեք Stripe Customer Portal-ի անհատական հղում, որտեղ հեշտությամբ կարող եք կարգավորել վճարման բոլոր մանրամասները:
+
+_Խնդրում ենք նկատի ունենալ՝ վճարողը դառնում է այն անձը, ով վճարում է բաժանորդագրությունը: Միայն վճարողը կարող է փոփոխություններ կատարել բաժանորդագրության մեջ (կարգավորել կառավարիչների թիվը): Օգտատերերը մուտք չունեն վճարումների մանրամասներին: ONLYOFFICE DocSpace հաշվի սեփականատերը ցանկացած ժամանակ կարող է վերահանձնարարել վճարողին: _
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+$__AuthorName-ը ձեզ հրավիրել է որպես հյուր օգտատեր "${__VirtualRootPath}":"${__VirtualRootPath}": Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Հղումը գործում է ընդամենը 7 օր։
+
+Դուք կստանաք ավելի շատ խորհուրդներ, թե ինչպես օգտագործել ձեր վեբ-գրասենյակը: Դուք կարող եք ցանկացած պահի չեղարկել ձեր պրոֆիլի էջի բաժանորդագրությունները, ինչպես նաև նորից միացնել դրանք.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու ONLYOFFICE DocSpace-ին "${__VirtualRootPath}":"${__VirtualRootPath}" o: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1. Հաղորդագրություն "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալից
+
+փոստ՝ $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Հաղորդագրություն [${__VirtualRootPath}](${__VirtualRootPath}) պորտալից
+
+փոստ՝ $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1. Հաղորդագրություն "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալից
+
+Անուն՝ $UserName
+
+փոստ՝ $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1. "${__VirtualRootPath}":"$InviteLink"-ին միանալու հրավեր պորտալին
+
+Բարեւ Ձեզ,
+
+Դուք խնդրել եք միանալ "${__VirtualRootPath}":"$InviteLink" պորտալին ${LetterLogoText}-ում՝ փաստաթղթերի և նախագծերի կառավարման հարթակ: Միացեք պորտալին և անմիջապես սկսեք համագործակցել ձեր գործընկերների կամ ընկերների հետ:
+
+Հրավերն ընդունելու համար խնդրում ենք մուտքագրել ձեր անունը և գաղտնաբառը հետևյալ հղումով.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 48 ժամ: Խնդրում ենք ավարտել գործողությունը այդ ժամկետում.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+      Ադմինիստրատորը ստեղծել է նոր &lt;b&gt;$Address&lt;/b&gt; փոստարկղ ձեզ համար "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալում:
+
+      Այլ էլփոստի հաճախորդների համար օգտագործեք հետևյալ կարգավորումները.
+      Մուտք՝ &lt;b&gt;$Login&lt;/b&gt;
+      Գաղտնաբառ՝ "&lt;b&gt;սահմանել գաղտնաբառը&lt;/b&gt;":"$MyStaffLink"
+
+      Մուտքային փոստ (IMAP):
+      Սերվեր՝ &lt;b&gt;$Server&lt;/b&gt;
+      Նավահանգիստ՝ &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS՝ &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Ելքային փոստ (SMTP):
+      Սերվեր՝ &lt;b&gt;$Server&lt;/b&gt;
+      Նավահանգիստ՝ &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS՝ &lt;b&gt;$Encryption&lt;/b&gt;
+      Պահանջում է նույնականացում՝ &lt;b&gt;Այո&lt;/b&gt;
+
+      Եթե սխալմամբ եք ստացել այս նամակը, խնդրում ենք անտեսել այն կամ կապվել ձեր պորտալի ադմինիստրատորի հետ՝ մանրամասները պարզելու համար.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+      Գաղտնաբառը &lt;b&gt;$Address&lt;/b&gt; փոստարկղը փոխված է։
+
+      Եթե սխալմամբ եք ստացել այս նամակը, խնդրում ենք անտեսել այն կամ կապվել ձեր պորտալի ադմինիստրատորի հետ՝ մանրամասները պարզելու համար.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+      Ադմինիստրատորը ստեղծել է նոր &lt;b&gt;$Address&lt;/b&gt; փոստարկղ ձեզ համար "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալում:
+
+      Եթե սխալմամբ եք ստացել այս նամակը, խնդրում ենք անտեսել այն կամ կապվել ձեր պորտալի ադմինիստրատորի հետ՝ մանրամասները պարզելու համար.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1. Տարածաշրջանի պորտալի միգրացիայի մեկ այլ սխալ
+
+$RegionName տարածաշրջան տեղափոխելիս սխալ է տեղի ունեցել: Խնդրում եմ, մի անգամ էլ ավելի ուշ փորձեք:
+Ձեր պորտալն այժմ հասանելի է "$PortalUrl":"$PortalUrl" հին հասցեով 
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Ծանուցման տեսակը փոխելու համար խնդրում ենք կառավարել ձեր "բաժանորդագրման կարգավորումները":"$RecipientSubscriptionConfigURL":^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.Տարածաշրջանի պորտալի միգրացիայի մեկ այլ սխալ
+
+Մեկ այլ տարածաշրջան տեղափոխելիս սխալ է տեղի ունեցել: Խնդրում եմ, մի անգամ էլ ավելի ուշ փորձեք:
+Ձեր պորտալն այժմ հասանելի է "$PortalUrl":"$PortalUrl" հին հասցեով
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/":
+
+^Ծանուցման տեսակը փոխելու համար խնդրում ենք կառավարել ձեր "բաժանորդագրման կարգավորումները":"$RecipientSubscriptionConfigURL":^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1.Մեկ այլ տարածաշրջանային պորտալի միգրացիա սկսվեց
+
+Պորտալի տեղափոխումը $RegionName տարածաշրջան սկսված է: Դա կարող է որոշ ժամանակ տևել՝ կախված ձեր տվյալների քանակից:
+
+*Նշում*. պորտալը հասանելի չի լինի միգրացիայի գործընթացում: Միգրացիայի ավարտից հետո պորտալի URL-ը կփոխվի, և բոլոր ընդհանուր փաստաթղթերի հղումներն անհասանելի կլինեն:
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Պորտալի միգրացիա
+h1."$PortalUrl":"$PortalUrl"
+
+Ձեր պորտալը տեղափոխվել է նոր տիրույթ: Խնդրում ենք վերականգնել ձեր մուտքը դեպի պորտալ՝ նշելով գաղտնաբառը, որը կօգտագործվի մուտք գործելու համար:
+
+Խնդրում ենք հետևել ստորև բերված հղմանը` ձեր հաշվի գաղտնաբառը սահմանելու համար.
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել մուտքի վերականգնման գործընթացը այդ ժամանակահատվածում:
+
+Եթե սխալմամբ եք ստացել այս նամակը, խնդրում ենք անտեսել այն կամ կապվել ձեր "$PortalUrl":"$PortalUrl" պորտալի ադմինիստրատորի հետ՝ մանրամասները պարզելու համար.</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Դուք հենց նոր ստեղծեցիք ONLYOFFICE DocSpace-ը՝ փաստաթղթերի կենտրոն, որտեղ կարող եք խթանել համագործակցությունը ձեր թիմի, հաճախորդների, գործընկերների և այլնի հետ: Դրա հասցեն է "${__VirtualRootPath}":"${__VirtualRootPath}":
+
+Խնդրում ենք հաստատել ձեր էլ.փոստը (հղումը վավեր է 7 օր).
+
+$GreenButton
+
+Ձեր ընթացիկ սակագնային պլանը ՄԵԿՆԱՐԿ է: Այն բացարձակապես անվճար է և ներառում է.
+
+* 1 ադմին, 2 հզոր օգտագործող
+* Մինչև 12 սենյակ
+* Յուրաքանչյուր սենյակում անսահմանափակ թվով օգտվողներ
+* 2 ԳԲ սկավառակի տարածություն
+
+Վայելեք փաստաթղթերի համագործակցության նոր եղանակը:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Հուսով ենք, որ դուք վայելում եք ձեր ONLYOFFICE DocSpace-ի օգտագործումը: Ահա մի քանի խորհուրդ, թե ինչպես կարելի է ավելի արդյունավետ դարձնել փաստաթղթերի վրա աշխատանքը:
+
+*#1. Ընտրեք ձեր աշխատանքի ձևը։* Կազմակերպեք ձեր աշխատանքային հոսքը ըստ ձեզ՝ ստեղծելով համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով։
+
+*#2. Աշխատեք ձեր ցանկացած բովանդակության հետ:* Պահպանեք և աշխատեք տարբեր ձևաչափերի ֆայլերի հետ ձեր սենյակներում՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևաթղթեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+*#3. Արդյունավետ համահեղինակ:* Համագործակցեք փաստաթղթերի վրա երկու համատեղ խմբագրման եղանակներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+*#4. Միացրեք 3-րդ կողմի ամպերը։* Միացրեք ցանկացած ամպային պահեստ և աշխատեք առանց հավելվածների միջև անցնելու։
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ահա երեք պարզ հարցեր ձեզ համար, որոնք կարող են օգնել մեզ ավելի հարմարավետ դարձնել ձեր օգտատերերի փորձը:
+
+* Ունե՞ք մեծ թիմ կամ շատ հաճախորդներ և գործընկերներ, որոնց հետ կարող եք համագործակցել ձեր ONLYOFFICE DocSpace-ում:
+
+* Ցանկանու՞մ եք ստեղծել մի շարք սենյակներ բազմաթիվ փաստաթղթերի հետ աշխատելու համար:
+
+* Ցանկանու՞մ եք օգտագործել ONLYOFFICE DocSpace-ը ձեր սեփական ապրանքանիշի ներքո:
+
+Եթե ունեք առնվազն մեկ «այո» պատասխան, ընտրեք ԲԻԶՆԵՍ սակագնային պլանը, որը թույլ է տալիս ձեր ONLYOFFICE DocSpace-ում ավելացնել ցանկացած մենեջեր, ինչպես նաև կիրառել բրենդինգի տարբերակներ:
+
+Դա անելու համար խնդրում ենք խորհրդակցել ձեր ONLYOFFICE DocSpace-ի "Վճարումների բաժին":"$PricingPage": Այնտեղ դուք կգտնեք Stripe Customer Portal-ի անհատական հղում, որտեղ հեշտությամբ կարող եք կարգավորել վճարման բոլոր մանրամասները:
+
+_Խնդրում ենք նկատի ունենալ՝ վճարողը դառնում է այն անձը, ով վճարում է բաժանորդագրությունը: Միայն վճարողը կարող է փոփոխություններ կատարել բաժանորդագրության մեջ (կարգավորել կառավարիչների թիվը): Օգտատերերը մուտք չունեն վճարումների մանրամասներին: ONLYOFFICE DocSpace հաշվի սեփականատերը ցանկացած ժամանակ կարող է վերահանձնարարել վճարողին: _
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու "${__VirtualRootPath}":"${__VirtualRootPath}"-ին որպես հյուր օգտատեր: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+"$ActivateUrl":"$ActivateUrl"
+
+Հղումը գործում է ընդամենը 7 օր։
+
+Դուք կստանաք ավելի շատ խորհուրդներ, թե ինչպես օգտագործել ձեր վեբ-գրասենյակը: Դուք կարող եք ցանկացած պահի չեղարկել ձեր պրոֆիլի էջի բաժանորդագրությունները, ինչպես նաև նորից միացնել դրանք.</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու ONLYOFFICE DocSpace-ին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Հուսով ենք, որ դուք վայելում եք ձեր ONLYOFFICE DocSpace-ի օգտագործումը: Ահա մի քանի խորհուրդ, թե ինչպես կարելի է ավելի արդյունավետ դարձնել փաստաթղթերի վրա աշխատանքը:
+
+*#1. Ընտրեք ձեր աշխատանքի ձևը։* Կազմակերպեք ձեր աշխատանքային հոսքը ըստ ձեզ՝ ստեղծելով համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով։
+
+*#2. Աշխատեք ձեր ցանկացած բովանդակության հետ:* Պահպանեք և աշխատեք տարբեր ձևաչափերի ֆայլերի հետ ձեր սենյակներում՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևաթղթեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+*#3. Արդյունավետ համահեղինակ:* Համագործակցեք փաստաթղթերի վրա երկու համատեղ խմբագրման եղանակներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+*#4. Միացրեք 3-րդ կողմի ամպերը։* Միացրեք ցանկացած ամպային պահեստ և աշխատեք առանց հավելվածների միջև անցնելու։
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Բարև, $UserName
+Դուք հաջողությամբ գրանցվել եք ONLYOFFICE Personal-ում "${__VirtualRootPath}":"${__VirtualRootPath}":
+
+Միացրեք ձեր սիրած ամպային պահեստը՝ Dropbox, Google Drive, OneDrive կամ Box՝ ձեր փաստաթղթերի համար մեկ աշխատանքային տարածք ստեղծելու համար, որը հասանելի է ցանկացած վայրից:
+
+Իմացեք ավելին ONLYOFFICE Personal-ի մասին "մեր բլոգում":"$TagBlogLink":
+
+Մենք ուրախ ենք, որ դուք այստեղ եք: Մնացեք մեզ հետ!
+
+Հարգանքներով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Բարի գալուստ ONLYOFFICE Personal
+
+Դուք հենց նոր եք ստեղծել ձեր անձնական գրասենյակը ամպի մեջ:
+
+h3.Դա վիրտուալ աշխատանքային տարածք է, որտեղ դուք կարող եք խմբագրել և պահել փաստաթղթերը, աշխատել դրանց հետ ցանկացած վայրից՝ ապահովելով ձեր ընկերներին կամ գործընկերներին հասանելիություն:
+
+h3.Արագ սկսելու համար ահա թե ինչ կարող եք անել ONLYOFFICE-ում.
+
+- Ստեղծեք, դիտեք և խմբագրեք տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ:
+
+- Աշխատեք բոլոր հայտնի ձևաչափերով: Ամենաբարձր համատեղելիությունը MS Office ֆայլերի հետ:
+
+- Ստեղծեք և համատեղ խմբագրեք "լրացնելու պատրաստ ձևեր":"https://www.onlyoffice.com/form-creator.aspx":
+
+- Համօգտագործեք և համագործակցեք փաստաթղթերի վրա առցանց:
+
+- Օգտագործեք տարբեր պլագիններ՝ լրացուցիչ հնարավորություններ կիրառելու համար:
+
+- Հեշտությամբ մուտք գործեք ձեր անձնական ամպը "Chrome ընդլայնման":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US միջոցով":
+
+Դուք կարող եք նաև փաստաթղթերը օֆլայն խմբագրել մեր անվճար "աշխատասեղանի խմբագրիչների":"https://www.onlyoffice.com/download-desktop.aspx" միջոցով կամ ձեռք բերել բջջային խմբագրման փաթեթ ձեր "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" -ի համար կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" սարք:
+
+Հարգանքներով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ստացեք անվճար ONLYOFFICE հավելվածներ՝ ձեր ցանկացած սարքից փաստաթղթերի վրա աշխատելու համար:
+
+# Windows-ում, Linux-ում և Mac-ում փաստաթղթերի վրա օֆլայն աշխատելու համար ներբեռնեք "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx":
+
+#Բջջային սարքերում փաստաթղթերը խմբագրելու համար ձեռք բերեք ONLYOFFICE Documents հավելվածը "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972"-ի համար կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents":
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Ողջույն!
+Այս էլ.փոստի միջոցով փորձ է արվել գրանցել նոր "ONLYOFFICE Personal":"$PortalUrl" հաշիվ: Եթե դուք էիք, մենք ուզում ենք ձեզ տեղեկացնել, որ հաշիվն արդեն գոյություն ունի — անցեք ONLYOFFICE Personal և մուտք գործեք:
+Եթե կորցրել եք ձեր գաղտնաբառը, կարող եք վերականգնել այն "գաղտնաբառի վերականգնման էջում":"$LinkToRecovery":
+Եթե դուք չեք փորձել գրանցել նոր հաշիվ, հավանաբար ինչ-որ մեկը դա սխալմամբ է արել: Այս դեպքում խնդրում ենք անտեսել այս էլ.
+
+Հաճելի օր!
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել ձեր ONLYOFFICE հաշվի էլ.
+
+Սեղմեք ստորև նշված կոճակը և մուտք գործեք* ձեր ամպ:
+
+$GreenButton
+
+Հղումը գործում է 7 օր։
+
+*Եթե այս դիտարկիչով մուտք չեք գործել ONLYOFFICE, հաստատման համար պետք է օգտագործեք ձեր հին էլ.
+
+Չե՞ք ուզում փոխել ձեր էլ. Պարզապես անտեսեք այս հաղորդագրությունը.</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել ձեր ONLYOFFICE անձնական հաշվի գաղտնաբառը: Հաստատելու համար սեղմեք ստորև բերված կոճակը:
+
+$GreenButton
+
+Հղումը գործում է 7 օր։
+
+Չե՞ք ուզում փոխել ձեր գաղտնաբառը: Պարզապես անտեսեք այս հաղորդագրությունը.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Բարեւ Ձեզ,
+
+Դուք հենց նոր հաշիվ եք գրանցել ONLYOFFICE լուծումում՝ անձնական օգտագործման համար: Սեղմեք "այստեղ":"$InviteLink" գրանցումը հաստատելու և գաղտնաբառ ստեղծելու համար:
+
+Եթե չեք կարող բացել հղումը, խնդրում ենք պատճենեք հետևյալ "$InviteLink":"$InviteLink" և տեղադրեք այն ձեր դիտարկիչի հասցեագոտում:
+
+Հարգանքներով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Դուք խնդրել եք դադարեցնել ձեր հաշիվը personal.onlyoffice.com կայքում: Հարցումը լրացնելու համար հետևեք հղմանը (հղումը ակտիվ է 7-օրյա ժամկետով).
+
+$GreenButton
+
+*Նշում*. Ջնջումից հետո ձեր հաշիվը և դրա հետ կապված բոլոր տվյալները ընդմիշտ կջնջվեն՝ համաձայն մեր "Գաղտնիության հայտարարության":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0":
+
+"Կարդացեք ավելին հաշվի դադարեցման մասին":"https://helpcenter.onlyoffice.com/administration/configuration.aspx":
+
+Անտեսեք այս նամակը, եթե չեք ցանկանում շարունակել:
+
+Եթե ունեք հարցեր, դիմեք մեզ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով
+
+Հարգանքներով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի ապաակտիվացում
+
+Հարգելի $OwnerName,
+
+Դուք խնդրել եք ձեր "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի ժամանակավոր ապաակտիվացում: Գործողությունը հաստատելու համար խնդրում ենք հետևել ստորև նշված հղմանը.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել պորտալի ապաակտիվացման գործընթացը այդ ժամանակահատվածում:
+
+Ցանկացած ժամանակ կարող եք վերակտիվացնել ձեր պորտալը՝ սեղմելով հետևյալ հղումը.
+p=. "Reactivate Portal":"$ActivateUrl" (այս հղումը չունի ժամանակի սահմանափակում)
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) պորտալի ապաակտիվացում
+
+Հարգելի $OwnerName,
+
+Դուք խնդրել եք ձեր [${__VirtualRootPath}](${__VirtualRootPath}) պորտալի ժամանակավոր ապաակտիվացում: Գործողությունը հաստատելու համար խնդրում ենք հետևել ստորև նշված հղմանը.
+
+$GreenButton
+
+_Նշում_. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել պորտալի ապաակտիվացման գործընթացը այդ ժամանակահատվածում:
+
+Ցանկացած ժամանակ կարող եք վերակտիվացնել ձեր պորտալը՝
+սեղմելով հետևյալ հղումը.
+[Reactivate Portal]($ActivateUrl) (այս հղումը չունի ժամանակի սահմանափակում)
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք կապվել մեզ հետ [support@onlyoffice.com](mailto:support@onlyoffice.com) հասցեով
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի ջնջում
+
+Հարգելի $OwnerName,
+
+Դուք խնդրել եք ընդմիշտ ջնջել ձեր "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալը:
+
+* Կարևոր! Ձեր պորտալում պահվող բոլոր տվյալները, ինչպես նաև գրանցման տվյալները կկորչեն և չեն կարող վերականգնվել:*
+
+#if ($AutoRenew == "Ճիշտ է")
+Նախքան պորտալը ջնջելը, համոզվեք, որ ավտոմատ վճարումն անջատված է: Դուք կարող եք ստուգել ավտոմատ վճարման կարգավիճակը ձեր "Avangate հաշվում":"https://secure.avangate.com/myaccount/":
+#end
+
+Եթե դեռ ցանկանում եք ջնջել ձեր "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալը, խնդրում ենք հետևել ստորև բերված հղմանը` հաստատելու գործողությունը.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել պորտալի ջնջման գործընթացը այդ ժամանակահատվածում:
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Ձեր ONLYOFFICE DocSpace-ը հաջողությամբ ապաակտիվացվել է: Խնդրում ենք նկատի ունենալ, որ ձեր բոլոր տվյալները կջնջվեն մեր "Գաղտնիության քաղաքականության":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" համաձայն:
+
+Ինչո՞ւ եք որոշել հեռանալ: Կիսվեք ձեր փորձով մեզ հետ:
+
+$GreenButton
+
+Շնորհակալություն և հաջողություն:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի պրոֆիլի փոփոխության ծանուցում
+
+"$__AuthorName":"$__AuthorUrl"-ը փոխել է իր պրոֆիլի տվյալները "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալում:
+
+
+^Եթե չեք ցանկանում ստանալ պրոֆիլի թարմացումների մասին ծանուցումներ, խնդրում ենք կառավարել ձեր "բաժանորդագրման կարգավորումները":"$RecipientSubscriptionConfigURL":^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) պորտալի պրոֆիլի փոփոխության ծանուցում
+
+[$__AuthorName]($__AuthorUrl) փոխել է իր պրոֆիլի տվյալները [${__VirtualRootPath}](${__VirtualRootPath}) պորտալում.</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Ահա, թե ինչ նորություն կա ձեր DocSpace-ում $Date-ին
+
+#foreach ($activity $Activities-ում)
+$activity
+
+#end</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ձեր "${PortalUrl}":"${PortalUrl}" պորտալի ֆայլերի վերծանման գործընթացը ձախողվել է:
+
+Որոշ ֆայլեր չհաջողվեց վերծանել: Գտեք ավելի շատ մանրամասներ "Կառավարման վահանակում":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>SMTP թեստային հաղորդագրություն
+
+Այս հաղորդագրությունը ստեղծվել է ավտոմատ կերպով՝ ձեր SMTP կարգավորումները ստուգելու համար: Եթե դուք դիտում եք այն, դա նշանակում է, որ կարգավորումները ճիշտ են, և դուք կարող եք դրանք օգտագործել ձեր պորտալում:
+
+
+Հարգանքներով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ֆայլերի վերծանման գործընթացը սկսվել է ձեր "${PortalUrl}":"${PortalUrl}" պորտալում:
+
+Ապակոդավորումը կարող է որոշ ժամանակ տևել, ուստի պորտալը ժամանակավորապես անհասանելի կլինի: Հենց որ վերծանումն ավարտվի, դուք նորից կկարողանաք աշխատել ձեր տվյալների հետ.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ձեր "${PortalUrl}":"${PortalUrl}" պորտալի ֆայլերի վերծանման գործընթացը հաջողությամբ ավարտվել է:
+
+Ձեր պորտալը կրկին հասանելի է.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+"${PortalUrl}":"${PortalUrl}" պորտալում ֆայլերի գաղտնագրման գործընթացը ձախողվել է:
+
+Որոշ ֆայլեր չհաջողվեց գաղտնագրել: Գտեք ավելի շատ մանրամասներ "Կառավարման վահանակում":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ֆայլի գաղտնագրման գործընթացը սկսվել է ձեր "${PortalUrl}":"${PortalUrl}" պորտալում:
+
+Գաղտնագրումը կարող է որոշ ժամանակ տևել, ուստի պորտալը ժամանակավորապես անհասանելի կլինի: Հենց գաղտնագրումն ավարտվի, դուք նորից կկարողանաք աշխատել ձեր տվյալների հետ.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ձեր "${PortalUrl}":"${PortalUrl}" պորտալի ֆայլերի գաղտնագրման գործընթացը հաջողությամբ ավարտվել է:
+
+Ձեր պորտալը կրկին հասանելի է.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.Նոր օգտվող է ավելացվել "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալում
+
+"$__AuthorName":"$__AuthorUrl"-ը միացել է ձեր պորտալին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում:
+
+
+^Եթե չեք ցանկանում ստանալ նոր օգտատերերի մասին ծանուցումներ, խնդրում ենք կառավարել ձեր "բաժանորդագրման կարգավորումները":"$RecipientSubscriptionConfigURL":^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Նոր օգտվող ավելացվեց [${__VirtualRootPath}](${__VirtualRootPath}) պորտալում
+[$__AuthorName]($__AuthorUrl) միացել է ձեր պորտալին՝ [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+Դուք հրավիրվել եք միանալու ձեր ընկերության անվտանգ և ապահով վեբ-գրասենյակին, որը կխթանի ձեր համագործակցությունը: Դրա հասցեն է "${__VirtualRootPath}":"${__VirtualRootPath}": Այս հղումը ձեր էջանիշներին ավելացնելը լավ գաղափար է, հավանաբար այն շատ կօգտագործեք:
+
+Ընդունեք հրավերը՝ հետևելով ստորև նշված հղմանը և մուտք գործելու համար օգտագործեք ձեր մուտքն ու գաղտնաբառը կորպորատիվ հաշվից:
+
+$GreenButton
+
+Հղումը գործում է միայն 7 օր.</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ստացեք անվճար ONLYOFFICE հավելվածներ՝ ձեր ցանկացած սարքից փաստաթղթերի վրա աշխատելու համար:
+
+# Windows-ում, Linux-ում և Mac-ում փաստաթղթերի վրա օֆլայն աշխատելու համար ներբեռնեք "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx":
+
+#Բջջային սարքերում փաստաթղթերը խմբագրելու համար ձեռք բերեք ONLYOFFICE Documents հավելվածը "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972"-ի համար՝ կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents":
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Դուք հենց նոր ստեղծեցիք ONLYOFFICE DocSpace-ը՝ փաստաթղթերի կենտրոն, որտեղ կարող եք խթանել համագործակցությունը ձեր թիմի, հաճախորդների, գործընկերների և այլնի հետ: Դրա հասցեն է "${__VirtualRootPath}":"${__VirtualRootPath}":
+
+Խնդրում ենք հաստատել ձեր էլ.փոստը (հղումը վավեր է 7 օր).
+
+$GreenButton
+
+Ձեր ընթացիկ սակագնային պլանը ՄԵԿՆԱՐԿ է: Այն բացարձակապես անվճար է և ներառում է.
+
+* 1 ադմին, 2 հզոր օգտագործող
+* Մինչև 12 սենյակ
+* Յուրաքանչյուր սենյակում անսահմանափակ թվով օգտվողներ
+* 2 ԳԲ սկավառակի տարածություն
+
+Վայելեք փաստաթղթերի համագործակցության նոր եղանակը:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Կարգավորեք ձեր ONLYOFFICE DocSpace-ի անվտանգության կարգավորումները՝ այն ավելի անվտանգ դարձնելու համար.
+
+* Սահմանեք գաղտնաբառի ուժը:
+
+* Միացնել երկգործոն նույնականացումը և միայնակ մուտքը:
+
+* Որոշեք վստահելի փոստային տիրույթները և նստաշրջանի տևողությունը:
+
+* Սահմանափակել մուտքը հատուկ IP հասցեներից:
+
+* Թույլատրել կամ սահմանափակել ադմինիստրատորի հաղորդագրությունները:
+
+* Կառավարեք ադմինիստրատորի մուտքի իրավունքները:
+
+* Կատարեք տվյալների կրկնօրինակում:
+
+$GreenButton
+
+Այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" ձեր ONLYOFFICE DocSpace-ի կազմաձևման և կառավարման մասին ավելին իմանալու համար: Դուք կարող եք նաև խորհրդակցել այն, երբ ֆունկցիոնալության վերաբերյալ հարցեր ունեք:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Դուք չեք մտել ձեր ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" կես տարուց ավելի:
+
+Քանի որ որոշել եք այլևս չօգտագործել այն, ձեր ONLYOFFICE DocSpace-ը և բոլոր տվյալները կջնջվեն մեր "Գաղտնիության քաղաքականության":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" համաձայն:
+
+Մենք կգնահատենք ձեր կարծիքը: Ինչո՞ւ որոշեցիք դադարեցնել ONLYOFFICE DocSpace-ի օգտագործումը:
+
+$GreenButton
+
+Եթե կարծում եք, որ սա սխալ է և ցանկանում եք շարունակել օգտագործել ONLYOFFICE DocSpace-ը, դիմեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx":
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) պորտալի ջնջում
+
+Հարգելի $OwnerName,
+
+Դուք խնդրել եք ընդմիշտ ջնջել ձեր [${__VirtualRootPath}](${__VirtualRootPath}) պորտալը:
+
+_Կարևոր! Ձեր պորտալում պահվող բոլոր տվյալները, ինչպես նաև գրանցման տվյալները կկորչեն և չեն կարող վերականգնվել:_
+
+#if($AutoRenew == "Ճիշտ է")
+Նախքան պորտալը ջնջելը, համոզվեք, որ ավտոմատ վճարումն անջատված է: Դուք կարող եք ստուգել ավտոմատ վճարման կարգավիճակը ձեր [Avangate հաշվում] (https://secure.avangate.com/myaccount/"):
+#end
+
+Եթե դուք դեռ ցանկանում եք ջնջել ձեր [${__VirtualRootPath}](${__VirtualRootPath}) պորտալը, խնդրում ենք հետևել ստորև նշված հղմանը` գործողությունը հաստատելու համար.
+
+$GreenButton
+
+_Նշում_. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել պորտալի ջնջման գործընթացը այդ ժամանակահատվածում:
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք կապվել մեզ հետ [support@onlyoffice.com](mailto:support@onlyoffice.com) հասցեով
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1. Պորտալի հասցեի փոփոխություն
+
+Հարգելի $UserDisplayName,
+
+Ձեր $PortalUrl պորտալի հասցեն փոխվել է նոր "${__VirtualRootPath}":"${__VirtualRootPath}" հասցեի:
+
+*Նշում*. DNS-ի կարգավորումները և մեկ մուտքի ընտրանքները դադարում են աշխատել, քանի դեռ չեք փոխել դրանք.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1.Պրոֆիլի հեռացում "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալից
+
+Դուք խնդրել եք ընդմիշտ ջնջել ձեր պրոֆիլը "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալից:
+
+Եթե դուք դեռ ցանկանում եք ջնջել ձեր պրոֆիլը, ապա հետևեք ստորև նշված հղմանը, որպեսզի հաստատեք գործողությունը.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր: Խնդրում ենք ավարտել պրոֆիլի ջնջման գործընթացը այդ ժամանակահատվածում.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1.Ձեր պրոֆիլը "$__VirtualRootPath":"$__VirtualRootPath"-ում փոխվել է
+
+Հարգելի $UserName,
+
+Ձեր օգտատիրոջ պրոֆիլի մանրամասները "$__VirtualRootPath":"$__VirtualRootPath"-ում փոխվել են "$__AuthorName":"$__AuthorUrl"-ի կողմից:
+
+Ձեր պրոֆիլը դիտելու համար հետևեք հետևյալ հղմանը.
+"$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Ձեր պրոֆիլը [${__VirtualRootPath}](${__VirtualRootPath})-ում փոխվել է
+
+Հարգելի $UserName,
+
+Ձեր օգտատիրոջ պրոֆիլի տվյալները [${__VirtualRootPath}](${__VirtualRootPath})-ում փոխվել են [$__AuthorName]-ի կողմից ($__AuthorUrl):
+
+Ձեր պրոֆիլը դիտելու համար հետևեք հետևյալ հղմանը.
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+"$FromUserName":"$FromUserLink" օգտվողից "$ToUserName":"$ToUserLink" օգտատիրոջ տվյալների վերաբաշխման գործընթացը հաջողությամբ ավարտվել է.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+"$FromUserName":"$FromUserLink" օգտվողից "$ToUserName":"$ToUserLink" օգտատիրոջ տվյալների վերաբաշխման գործընթացը ձախողվեց:
+
+Բացառության հաղորդագրություն՝ $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+"$FromUserName":"$FromUserLink" օգտվողից տվյալների հեռացման գործընթացը հաջողությամբ ավարտվել է:
+
+Անձնական տվյալների ջնջումը թույլատրվում է անվճար.
+
+# Փաստաթղթեր - $DocsSpace
+# CRM - $CrmSpace
+# Փոստ - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+"$FromUserName":"$FromUserLink"օգտատիրոջ տվյալների հեռացման գործընթացը ձախողվեց:
+
+Բացառության հաղորդագրություն՝ $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1.Ձեռնարկությունների լիցենզիայի հարցում
+
+h3.Անուն
+$UserName
+
+h3.Ազգանուն
+$UserLastName
+
+h3.Պաշտոն
+$Position
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Հեռախոս
+$Phone
+
+h3.Ընկերության կայք
+$Website
+
+h3. Ընկերության անվանումը
+$CompanyTitle
+
+h3. Ընկերության չափը
+$CompanySize
+
+h3. Հարցման բովանդակություն
+$Body
+
+h3.Պորտալի հասցեն
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.SAAS սակագնի հարցում "${__VirtualRootPath}":"${__VirtualRootPath}"-ի համար
+
+h3.Անուն
+$UserName
+
+h3.Ազգանուն
+$UserLastName
+
+h3.Պաշտոն
+$Position
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Հեռախոս
+$Phone
+
+h3.Ընկերության կայք
+$Website
+
+h3. Ընկերության անվանումը
+$CompanyTitle
+
+h3. Ընկերության չափը
+$CompanySize
+
+h3. Հարցման բովանդակություն
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Պորտալի վերականգնում
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ձեր պորտալը վերականգնվել է: Այն մուտք գործելու համար դուք պետք է սահմանեք նոր գաղտնաբառ.
+
+$GreenButton
+
+*Նշում*. այս հղումը գործում է միայն 7 օր:
+
+Եթե սխալմամբ եք ստացել այս նամակը, խնդրում ենք անտեսել այն կամ կապվեք ձեր "${__VirtualRootPath}":"${__VirtualRootPath}" պորտալի ադմինիստրատորին` մանրամասները պարզելու համար.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1. Սկսվել է պորտալի վերականգնումը
+
+Պորտալի վերականգնումը սկսված է։ Դա կարող է որոշ ժամանակ տևել՝ կախված ձեր տվյալների քանակից:
+
+*Նշում*. պորտալը հասանելի չի լինի վերականգնման գործընթացում:
+
+Եթե ունեք հարցեր կամ օգնության կարիք ունեք, խնդրում ենք ազատ զգալ կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com" հասցեով:
+
+Հարգանքներով՝
+ONLYOFFICE™ աջակցման թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/":
+
+^Ծանուցման տեսակը փոխելու համար խնդրում ենք կառավարել ձեր "բաժանորդագրման կարգավորումները":"$RecipientSubscriptionConfigURL":^</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Հուսով ենք, որ դուք վայելում եք ձեր ONLYOFFICE DocSpace-ի օգտագործումը: Ահա մի քանի խորհուրդ, թե ինչպես կարելի է ավելի արդյունավետ դարձնել փաստաթղթերի վրա աշխատանքը:
+
+*#1. Ընտրեք ձեր աշխատանքի ձևը։* Կազմակերպեք ձեր աշխատանքային հոսքը ըստ ձեզ՝ ստեղծելով համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով։
+
+*#2. Աշխատեք ձեր ցանկացած բովանդակության հետ:* Պահպանեք և աշխատեք տարբեր ձևաչափերի ֆայլերի հետ ձեր սենյակներում՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևաթղթեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+*#3. Արդյունավետ համահեղինակ:* Համագործակցեք փաստաթղթերի վրա երկու համատեղ խմբագրման եղանակներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+*#4. Միացրեք 3-րդ կողմի ամպերը։* Միացրեք ցանկացած ամպային պահեստ և աշխատեք առանց հավելվածների միջև անցնելու։
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Ահա երեք պարզ հարցեր ձեզ համար, որոնք կարող են օգնել մեզ ավելի հարմարավետ դարձնել ձեր օգտատերերի փորձը:
+
+* Ունե՞ք մեծ թիմ կամ շատ հաճախորդներ և գործընկերներ, որոնց հետ կարող եք համագործակցել ձեր ONLYOFFICE DocSpace-ում:
+
+* Ցանկանու՞մ եք ստեղծել մի շարք սենյակներ բազմաթիվ փաստաթղթերի հետ աշխատելու համար:
+
+* Ցանկանու՞մ եք օգտագործել ONLYOFFICE DocSpace-ը ձեր սեփական ապրանքանիշի ներքո:
+
+Եթե ունեք առնվազն մեկ «այո» պատասխան, ընտրեք ԲԻԶՆԵՍ սակագնային պլանը, որը թույլ է տալիս ձեր ONLYOFFICE DocSpace-ում ավելացնել ցանկացած մենեջեր, ինչպես նաև կիրառել բրենդինգի տարբերակներ:
+
+Դա անելու համար խնդրում ենք խորհրդակցել ձեր ONLYOFFICE DocSpace-ի "Վճարումների բաժին":"$PricingPage": Այնտեղ դուք կգտնեք Stripe Customer Portal-ի անհատական հղում, որտեղ հեշտությամբ կարող եք կարգավորել վճարման բոլոր մանրամասները:
+
+_Խնդրում ենք նկատի ունենալ՝ վճարողը դառնում է այն անձը, ով վճարում է բաժանորդագրությունը: Միայն վճարողը կարող է փոփոխություններ կատարել բաժանորդագրության մեջ (կարգավորել կառավարիչների թիվը): Օգտատերերը մուտք չունեն վճարումների մանրամասներին: ONLYOFFICE DocSpace հաշվի սեփականատերը ցանկացած ժամանակ կարող է վերահանձնարարել վճարողին: _
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու ONLYOFFICE DocSpace-ին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Հրավերի հղումը սեղմելուց հետո խնդրում ենք նոր գաղտնաբառ սահմանել ձեր հաշվի համար:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու "${__VirtualRootPath}":"${__VirtualRootPath}"-ին որպես հյուր օգտատեր: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Մենք նաև ձեզ ժամանակ առ ժամանակ կուղարկենք օգտակար խորհուրդներ և ONLYOFFICE-ի վերջին նորությունները: Դուք կարող եք ցանկացած պահի չեղարկել ձեր պրոֆիլի էջի բաժանորդագրությունները, ինչպես նաև նորից միացնել դրանք:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ դուք հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Խնդրում ենք նկատի ունենալ, որ ձեր ONLYOFFICE DocSpace-ի համար $PaymentDelay‎ օրերի արտոնյալ ժամկետն ակտիվացված է:
+
+Համոզվեք, որ վճարեք ձեր բիզնեսի բաժանորդագրությունը մինչև արտոնյալ ժամկետի ավարտը: Այսպիսով, դուք կկարողանաք հետագայում օգտագործել ձեր ONLYOFFICE DocSpace-ի բոլոր առավելությունները:
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Խնդրում ենք հաշվի առնել, որ ձեր ONLYOFFICE DocSpace բաժանորդագրության ժամկետը լրանում է երեք օրից: Դրանից հետո կակտիվանա $PaymentDelay օրերի արտոնյալ ժամկետը։
+
+Մենք խորհուրդ ենք տալիս վճարել ձեր Business բաժանորդագրությունը հիմա և շարունակել օգտագործել ձեր ONLYOFFICE DocSpace-ի բոլոր առավելությունները:
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Խնդրում ենք նկատի ունենալ, որ ձեր ONLYOFFICE DocSpace-ի համար $PaymentDelay օրերի արտոնյալ ժամկետն ավարտվել է:
+
+Համոզվեք, որ որքան հնարավոր է շուտ վճարեք ձեր Բիզնեսի բաժանորդագրությունը: Այսպիսով, դուք նախկինի պես կկարողանաք օգտագործել ձեր ONLYOFFICE DocSpace-ի բոլոր առավելությունները:
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Խնդրում ենք նկատի ունենալ, որ ձեր ONLYOFFICE DocSpace-ի $PaymentDelay օրերի արտոնյալ ժամկետը կլրանա վաղը:
+
+Համոզվեք, որ այսօր վճարեք ձեր Business բաժանորդագրությունը: Այսպիսով, դուք կկարողանաք հետագայում օգտագործել ձեր ONLYOFFICE DocSpace-ի բոլոր առավելությունները:
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու $Message սենյակին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Հրավերի հղումը սեղմելուց հետո խնդրում ենք նոր գաղտնաբառ սահմանել ձեր հաշվի համար:
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Բարեւ Ձեզ!
+
+Դուք հրավիրված եք միանալու ONLYOFFICE DocSpace-ին "${__VirtualRootPath}":"${__VirtualRootPath}"-ում: Ընդունեք հրավերը՝ սեղմելով հղումը.
+
+$GreenButton
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Բարև, $UserName:
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտատիրոջ պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}": Այժմ դուք կարող եք.
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք*. համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*:
+
+* *Աշխատեք տարբեր ձևաչափի ֆայլերի հետ*՝ տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա:
+
+* *Համագործակցեք փաստաթղթերի վրա* երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերությունների կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու:
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոն":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցության թիմին":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Իսկապես քոնը,
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Օգտատերը "$FromUserName":"$FromUserLink" ջնջել է իր պրոֆիլը, և այս պրոֆիլն այժմ արգելափակված է: Օգտատիրոջ բոլոր ֆայլերը դեռ վերագրված են նրան և զբաղեցնում են սկավառակի տարածք:
+
+Դուք կարող եք փոխանակել  օգտատիրոջ փաստաթղթերը, որոնք համօգտագործվում են ուրիշների հետ, մեկ այլ ակտիվ օգտատիրոջը վերագրել կամ հեռացնել դրանք՝ պորտալի սկավառակի տարածքն ազատելու համար:
+
+Խնդրում ենք գնալ օգտվողի պրոֆիլ՝ օգտագործելով "այս հղումը":"$FromUserLink"՝ փաստաթղթերը մեկ այլ օգտատիրոջ վերահանձնելու կամ տվյալները հեռացնելու համար.</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} գաղտնաբառի օգնություն</value>
+  </data>
+</root>

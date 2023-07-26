@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\common\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\Tools\ASC.Migrations.Core\ASC.Migrations.Core.csproj" />
+  </ItemGroup>
+
+</Project>

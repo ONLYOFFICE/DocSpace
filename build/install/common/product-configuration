@@ -219,27 +219,25 @@ set_core_machinekey () {
 		if [ "$DIST" = "RedHat" ]; then
 			echo $CORE_MACHINEKEY > $APP_DIR/.private/machinekey
 			chmod o-rwx $APP_DIR/.private/machinekey
-		elif [ "$DIST" = "Debian" ]; then
-			db_set ${PRODUCT}/machinekey $CORE_MACHINEKEY || true
-			echo ${PRODUCT} ${PRODUCT}/machinekey select $CORE_MACHINEKEY | debconf-set-selections || true
 		fi
 	fi
 
-	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
+	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
 install_json() {
-	if [ ! -e /usr/bin/json ]; then
+	if ! command -v json; then
 		echo -n "Install json package... "
-		npm i json -g >/dev/null 2>&1
+		curl -L https://github.com/trentm/json/raw/master/lib/json.js > /usr/bin/json
+		chmod 755 /usr/bin/json
 		echo "OK"
 	fi
 }
 
 restart_services() {
-	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR
+	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR /var/www/$PACKAGE_SYSNAME/Data
 
 	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
@@ -313,7 +311,7 @@ Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 
-	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//&/\\&}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
+	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//_/\\_}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 	change_mysql_config
 
 	#Enable database migration
@@ -400,10 +398,13 @@ change_mysql_config(){
 		sed "s/collation_server.*/collation_server = utf8_general_ci/" -i ${CNF_PATH} || true # ignore errors
 	fi
 	
+	MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}')
+	MYSQL_AUTHENTICATION_PLUGIN=${MYSQL_AUTHENTICATION_PLUGIN:-caching_sha2_password}
+
 	if ! grep -q "^default-authentication-plugin"  ${CNF_PATH}; then
-		sed '/\[mysqld\]/a default-authentication-plugin = mysql_native_password' -i ${CNF_PATH}
+		sed "/\[mysqld\]/a default-authentication-plugin = ${MYSQL_AUTHENTICATION_PLUGIN}" -i ${CNF_PATH}
 	else
-		sed "s/default-authentication-plugin.*/default-authentication-plugin = mysql_native_password/" -i ${CNF_PATH} || true # ignore errors
+		sed "s/default-authentication-plugin.*/default-authentication-plugin = ${MYSQL_AUTHENTICATION_PLUGIN}/" -i ${CNF_PATH} || true # ignore errors
 	fi
 
 	if [ -e ${CNF_SERVICE_PATH} ]; then
@@ -431,7 +432,7 @@ setup_nginx(){
 	echo -n "Configuring nginx... "
 	
 	# Remove default nginx website
-	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
+	rm -f $NGINX_CONF/default.conf $NGINX_DIR/sites-enabled/default 
     sed -i "s_\(listen\).*;_\1 $APP_PORT;_" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
 	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
@@ -522,9 +523,13 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"/ds-vpath/\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	echo "OK"
+}
+
+setup_enterprise() {
+	$JSON $APP_DIR/appsettings.json -e "this.license.file={'path': \"/var/www/$PACKAGE_SYSNAME/Data/license.lic\"}" >/dev/null 2>&1
 }
 
 change_elasticsearch_config(){
@@ -652,7 +657,7 @@ if command -v yum >/dev/null 2>&1; then
 	REDIS_PACKAGE="redis"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
-	PACKAGE_MANAGER="dpkg -l"
+	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
 fi
@@ -667,9 +672,12 @@ fi
 
 if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs
+	if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
+		setup_enterprise
+	fi
 fi
 
-if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
+if $PACKAGE_MANAGER nginx >/dev/null 2>&1 || $PACKAGE_MANAGER nginx-extras >/dev/null 2>&1; then
     setup_nginx
 fi
 
