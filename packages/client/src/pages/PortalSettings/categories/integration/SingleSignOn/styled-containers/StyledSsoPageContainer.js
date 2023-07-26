@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 
 const StyledSsoPage = styled.div`
@@ -10,7 +10,7 @@ const StyledSsoPage = styled.div`
   .intro-text {
     margin-bottom: 18px;
     max-width: 700px;
-    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    color: ${props => props.theme.client.settings.common.descriptionColor};
   }
 
   .toggle {
@@ -25,7 +25,14 @@ const StyledSsoPage = styled.div`
     .toggle-caption_title {
       display: flex;
       .toggle-caption_title_badge {
-        margin-left: 4px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 4px;
+              `
+            : css`
+                margin-left: 4px;
+              `}
         cursor: auto;
       }
     }
@@ -37,7 +44,14 @@ const StyledSsoPage = styled.div`
   }
 
   .hide-button {
-    margin-left: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 12px;
+          `
+        : css`
+            margin-left: 12px;
+          `}
   }
 
   .field-input {
@@ -79,7 +93,14 @@ const StyledSsoPage = styled.div`
   }
 
   .radio-button-group {
-    margin-left: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 24px;
+          `
+        : css`
+            margin-left: 24px;
+          `}
   }
 
   .combo-button-label {
@@ -87,18 +108,39 @@ const StyledSsoPage = styled.div`
   }
 
   .checkbox-input {
-    margin: 10px 8px 6px 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 10px 0 6px 8px;
+          `
+        : css`
+            margin: 10px 8px 6px 0;
+          `}
   }
 
   .upload-button {
     height: 32px;
     width: 45px;
-    margin-left: 9px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 9px;
+          `
+        : css`
+            margin-left: 9px;
+          `}
     overflow: inherit;
   }
 
   .save-button {
-    margin-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
   }
 
   .download-button {
@@ -116,11 +158,11 @@ const StyledSsoPage = styled.div`
   }
 
   .service-provider-settings {
-    display: ${(props) => (!props.hideSettings ? "none" : "block")};
+    display: ${props => (!props.hideSettings ? "none" : "block")};
   }
 
   .sp-metadata {
-    display: ${(props) => (!props.hideMetadata ? "none" : "block")};
+    display: ${props => (!props.hideMetadata ? "none" : "block")};
   }
 
   .advanced-block {
@@ -145,11 +187,18 @@ const StyledSsoPage = styled.div`
 
     .label > div {
       display: inline-flex;
-      margin-left: 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 4px;
+            `
+          : css`
+              margin-left: 4px;
+            `}
     }
   }
 
-  ${(props) => !props.isSettingPaid && UnavailableStyles}
+  ${props => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export default StyledSsoPage;

@@ -433,7 +433,7 @@ class AutomaticBackup extends React.PureComponent {
     ) : isInitialLoading ? (
       <AutoBackupLoader />
     ) : (
-      <StyledAutoBackup theme={theme} isEnableAuto={isEnableAuto}>
+      <StyledAutoBackup isEnableAuto={isEnableAuto}>
         <div className="backup_modules-header_wrapper">
           <Text isBold fontSize="16px">
             {t("AutoBackup")}
