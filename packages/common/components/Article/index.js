@@ -46,6 +46,8 @@ const Article = ({
   onLogoClickAction,
   theme,
 
+  withCustomArticleHeader,
+
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -171,6 +173,7 @@ const Article = ({
         <SubArticleHeader
           showText={showText}
           onLogoClickAction={onLogoClickAction}
+          withCustomArticleHeader={withCustomArticleHeader}
         >
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>

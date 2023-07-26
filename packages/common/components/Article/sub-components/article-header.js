@@ -22,6 +22,7 @@ const ArticleHeader = ({
   isBurgerLoading,
   whiteLabelLogoUrls,
   theme,
+  withCustomArticleHeader,
   ...rest
 }) => {
   const navigate = useNavigate();
@@ -70,7 +71,11 @@ const ArticleHeader = ({
 
   return (
     <StyledArticleHeader showText={showText} {...rest}>
-      {isBurgerLoading ? isLoadingComponent : mainComponent}
+      {withCustomArticleHeader && children
+        ? children
+        : isBurgerLoading
+        ? isLoadingComponent
+        : mainComponent}
     </StyledArticleHeader>
   );
 };
