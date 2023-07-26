@@ -206,7 +206,7 @@ const EditLinkPanel = (props) => {
             />
             <ToggleBlock
               isLoading={isLoading}
-              headerText={t("Files:DenyDownload")}
+              headerText={t("Files:DisableDownload")}
               bodyText={t("Files:PreventDownloadFilesAndFolders")}
               isChecked={denyDownload}
               onChange={onDenyDownloadChange}
