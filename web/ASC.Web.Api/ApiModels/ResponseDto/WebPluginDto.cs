@@ -46,10 +46,7 @@ public class WebPluginDto: IMapFrom<DbWebPlugin>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Guid, EmployeeDto>()
-            .ConvertUsing<WebPluginMappingConverter>();
-
-        profile.CreateMap<DbWebPlugin, WebPluginDto>()
-            .AfterMap<WebPluginMappingAction>();
+        profile.CreateMap<Guid, EmployeeDto>().ConvertUsing<WebPluginMappingConverter>();
+        profile.CreateMap<DbWebPlugin, WebPluginDto>();
     }
 }

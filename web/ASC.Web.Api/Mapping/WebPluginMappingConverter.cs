@@ -41,19 +41,3 @@ public class WebPluginMappingConverter : ITypeConverter<Guid, EmployeeDto>
         return _employeeDtoHelper.GetAsync(source).Result;
     }
 }
-
-[Scope]
-public class WebPluginMappingAction : IMappingAction<DbWebPlugin, WebPluginDto>
-{
-    private readonly EmployeeDtoHelper _employeeDtoHelper;
-
-    public WebPluginMappingAction(EmployeeDtoHelper employeeDtoHelper)
-    {
-        _employeeDtoHelper = employeeDtoHelper;
-    }
-
-    public void Process(DbWebPlugin source, WebPluginDto destination, ResolutionContext context)
-    {
-        destination.CreateBy = _employeeDtoHelper.GetAsync(source.CreateBy).Result;
-    }
-}
