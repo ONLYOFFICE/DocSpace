@@ -157,6 +157,9 @@ export const StyledInfo = styled.div`
   .email-edit-container {
     display: flex;
     align-items: center;
+    ${props => {
+      console.log(props.theme.interfaceDirection);
+    }}
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
