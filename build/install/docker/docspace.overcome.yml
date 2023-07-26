@@ -183,3 +183,5 @@ services:
     <<: *x-profiles-local
     volumes:
       - ${DATA_DIR}:/var/www/onlyoffice/Data
+    ports:
+      - 8085:80
