@@ -103,8 +103,8 @@ const InfoPanelHeaderContent = (props) => {
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   if (enablePlugins && infoPanelItemsList.length > 0) {
-    const isRoom = !!selection.roomType;
-    const isFile = !!selection.fileExst;
+    const isRoom = !!selection?.roomType;
+    const isFile = !!selection?.fileExst;
     infoPanelItemsList.forEach((item) => {
       const onClick = () => {
         setView(`info_plugin-${item.key}`);

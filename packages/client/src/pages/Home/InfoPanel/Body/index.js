@@ -70,8 +70,6 @@ const InfoPanelBodyContent = ({
     if (isGallery) return viewHelper.GalleryView();
     if (isAccounts) return viewHelper.AccountsView();
 
-    if (currentView.indexOf("info_plugin") > -1) return viewHelper.PluginView();
-
     switch (currentView) {
       case "info_members":
         return viewHelper.MembersView();
@@ -80,6 +78,8 @@ const InfoPanelBodyContent = ({
       case "info_details":
         return viewHelper.DetailsView();
     }
+
+    if (currentView.indexOf("info_plugin") > -1) return viewHelper.PluginView();
   };
 
   //////////////////////////////////////////////////////////
