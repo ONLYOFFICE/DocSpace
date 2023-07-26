@@ -1,6 +1,7 @@
-import { ContextMenuModel, PlaylistType } from "../../types";
+import type { ContextMenuModel, IFile, PlaylistType } from "../../types";
 
 interface ViewerWrapperProps {
+  targetFile?: IFile;
   userAccess: boolean;
   visible: boolean;
   title: string;
