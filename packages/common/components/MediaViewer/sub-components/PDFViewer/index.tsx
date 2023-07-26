@@ -99,8 +99,7 @@ function PDFViewer({
       loadScript(
         combineUrl(origin, path),
         pdfViewerId,
-        (event) => {
-          console.log({ event });
+        () => {
           // initViewer();
           setIsLoadedViewerScript(true);
           setIsLoadingScript(false);
