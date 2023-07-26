@@ -6,17 +6,16 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
 import { useNavigate } from "react-router-dom";
-
 import JavascriptSDK from "./JavascriptSDK";
 import Webhooks from "./Webhooks";
 import PluginPage from "./Plugins";
-
-import AppLoader from "@docspace/common/components/AppLoader";
-import SSOLoader from "./sub-components/ssoLoader";
-import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
+import Api from "./Api";
 
 import { useTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import AppLoader from "@docspace/common/components/AppLoader";
+import SSOLoader from "./sub-components/ssoLoader";
+import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 const StyledSubmenu = styled(Submenu)`
   .sticky {
@@ -34,14 +33,22 @@ const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { t, ready } = useTranslation([
     "JavascriptSdk",
     "Webhooks",
+    "Settings",
     "PluginsSettings",
   ]);
   const [isPending, startTransition] = useTransition();
 
   const data = [
+    {
+      id: "api",
+      name: t("Settings:Api"),
+      content: <Api />,
+    },
     {
       id: "javascript-sdk",
       name: t("JavascriptSdk"),

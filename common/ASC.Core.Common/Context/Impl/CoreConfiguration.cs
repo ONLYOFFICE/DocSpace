@@ -334,7 +334,7 @@ public class CoreConfiguration
         return _personalMaxSpace.Value;
     }
 
-    public async Task<SmtpSettings> GetSmtpSettingsAsync()
+    public async Task<SmtpSettings> GetDefaultSmtpSettingsAsync()
     {
         var isDefaultSettings = false;
         var tenant = await _tenantManager.GetCurrentTenantAsync(false);

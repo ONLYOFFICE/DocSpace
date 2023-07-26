@@ -135,13 +135,6 @@ $GreenButton
 
 $GreenButton
 
-현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
-
-* 관리자 1명, 고급 사용자 2명
-* 최대 방 12개
-* 각 방의 사용자 수 무제한
-* 디스크 공간2 GB
-
 새로운 방식의 공동 문서 작업을 즐기세요!
 
 감사합니다,
@@ -156,13 +149,6 @@ ONLYOFFICE 팀
 이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
 
 $GreenButton
-
-현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
-
-* 관리자 1명, 고급 사용자 2명
-* 최대 방 12개
-* 각 방의 사용자 수 무제한
-* 디스크 공간2 GB
 
 새로운 방식의 공동 문서 작업을 즐기세요!
 
@@ -200,13 +186,6 @@ ONLYOFFICE 팀
 이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
 
 $GreenButton
-
-현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
-
-* 관리자 1명, 고급 사용자 2명
-* 최대 방 12개
-* 각 방의 사용자 수 무제한
-* 디스크 공간2 GB
 
 새로운 방식의 공동 문서 작업을 즐기세요!
 
@@ -702,6 +681,48 @@ ONLYOFFICE 팀
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="ButtonAccept" xml:space="preserve">
+    <value>수락</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 &lt;a href={3}&gt;{4}&lt;/a&gt; 방에 새로운 &lt;a href={1}&gt;{2}&lt;/a&gt; 문서를 생성했습니다 - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 &lt;a href={3}&gt;{4}&lt;/a&gt; 방에서 &lt;a href={1}&gt;{2}&lt;/a&gt; 문서를 편집했습니다</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 &lt;a href={3}&gt;{4}&lt;/a&gt; 방에 새로운 &lt;a href={1}&gt;{2}&lt;/a&gt; 문서를 업로드했습니다</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 &lt;a href={3}&gt;{4}&lt;/a&gt; 방에서 &lt;a href={1}&gt;{2}&lt;/a&gt; 문서 버전에 새로운 주석을 추가했습니다 - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방을 이동했습니다: &lt;a href={1}&gt;{2}&lt;/a&gt; 아카이브 목적 - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 새로운 방을 생성했습니다: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방에서 제거되었습니다: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방의 이름을 변경했습니다: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방에서 &lt;b&gt;{1}&lt;/b&gt; 역할을 할당 받았습니다: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방에 추가되었습니다: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 방에서 제거되었습니다: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 님이 사용자 액세스 수준을 변경했습니다: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace 사용자가 업데이트되었습니다: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
     <value>수락</value>
   </data>
 </root>

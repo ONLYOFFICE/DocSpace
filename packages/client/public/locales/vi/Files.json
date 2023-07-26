@@ -24,6 +24,7 @@
   "DaysRemaining": "Số ngày còn lại: {{daysRemaining}}",
   "DisableNotifications": "Tắt thông báo",
   "Document": "Tài liệu",
+  "DocumentEdited": "Không thể thực hiện hành động này vì tài liệu đang được chỉnh sửa.",
   "EditRoom": "Chỉnh sửa phòng",
   "EmptyFile": "Tệp trống",
   "EmptyFilterDescriptionText": "Không có tệp hoặc thư mục nào phù hợp với bộ lọc này. Hãy thử bộ lọc khác hoặc xóa bộ lọc để xem tất cả các tệp. ",

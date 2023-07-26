@@ -192,4 +192,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Tämä on automaattisesti luotu sähköposti ja sinun ei tarvitse vastata siihen. &lt;br /&gt; Sait tämän sähköpostin, koska olet &lt;a href="{0}" target="_blank"&gt; DocSpacen&lt;/a&gt; rekisteröity käyttäjä.
+&lt;br /&gt; Klikkaa tästä lopettaaksesi DocSpacen ilmoitussähköpostit: &lt;a href="{1}"  target="_blank"&gt;Lopeta tilaus&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

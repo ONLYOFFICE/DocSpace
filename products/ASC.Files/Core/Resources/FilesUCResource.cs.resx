@@ -88,4 +88,13 @@
   <data name="Favorites" xml:space="preserve">
     <value>Oblíbené</value>
   </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Soubory budou zkomprimovány do souboru {0}.tar.gz{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Soubory budou zkomprimovány do souboru {0}.zip{1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Soukromá místnost</value>
+  </data>
 </root>

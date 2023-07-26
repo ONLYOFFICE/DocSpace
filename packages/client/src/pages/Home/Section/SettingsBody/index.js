@@ -40,7 +40,7 @@ const SectionBodyContent = ({
     ? "personal"
     : window.location.pathname.endsWith("/settings/plugins")
     ? "plugins"
-    : "general";
+    : "";
 
   const commonSettings = {
     id: "personal",
@@ -66,11 +66,11 @@ const SectionBodyContent = ({
     data.push(pluginsSettings);
   }
 
-  const showAdminSettings = user.isAdmin || user.isOwner;
+  // const showAdminSettings = user.isAdmin || user.isOwner;
 
-  if (showAdminSettings) {
-    data.unshift(adminSettings);
-  }
+  // if (showAdminSettings) {
+  //   data.unshift(adminSettings);
+  // }
 
   const onSelect = useCallback(
     (e) => {
@@ -89,25 +89,23 @@ const SectionBodyContent = ({
     [setting, navigate]
   );
 
+  //const showAdminSettings = user.isAdmin || user.isOwner;
+
   return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
-      {!showAdminSettings && !enablePlugins ? (
+      {!enablePlugins ? (
         <PersonalSettings
           t={t}
           showTitle={true}
-          showAdminSettings={showAdminSettings}
+          showAdminSettings={false} //showAdminSettings
         />
       ) : (
         <Submenu
           data={data}
           startSelect={
-            setting === "personal"
-              ? commonSettings
-              : setting === "plugins"
-              ? pluginsSettings
-              : adminSettings
+            setting === "personal" ? commonSettings : pluginsSettings
           }
           onSelect={onSelect}
         />

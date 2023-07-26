@@ -274,4 +274,13 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>방을 고정할 수 없습니다</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>방 관리자</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>성</value>
+  </data>
 </root>

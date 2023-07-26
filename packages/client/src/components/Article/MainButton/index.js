@@ -126,9 +126,8 @@ const ArticleMainButtonContent = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isAccountsPage = location.pathname.includes("/accounts/filter");
-
-  const isSettingsPage = location.pathname.includes("/settings");
+  const isAccountsPage = location.pathname.includes("/accounts");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
