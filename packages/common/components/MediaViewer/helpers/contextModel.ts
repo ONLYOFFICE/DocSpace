@@ -10,8 +10,9 @@ import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 
-import {
+import type {
   ContextMenuAction,
+  ContextMenuModel,
   IFile,
   OmitSecondArg,
   TranslationType,
@@ -36,7 +37,7 @@ export const getPDFContextModel = (
   item: IFile,
   funcs: Omit<Functions, "onShowInfoPanel">
 ) => {
-  const options = [
+  const options: ContextMenuModel[] = [
     {
       id: "option_edit",
       key: "edit",
@@ -56,6 +57,7 @@ export const getPDFContextModel = (
     {
       key: "separator0",
       isSeparator: true,
+      disabled: false,
     },
     {
       id: "option_link-for-room-members",
@@ -107,6 +109,7 @@ export const getPDFContextModel = (
     {
       key: "separator1",
       isSeparator: true,
+      disabled: false,
     },
     {
       key: "delete",
