@@ -19,7 +19,7 @@ import { Events } from "@docspace/common/constants";
 const selectedViewIcon = css`
   svg {
     path {
-      fill: ${(props) => props.theme.filterInput.sort.selectedViewIcon};
+      fill: ${props => props.theme.filterInput.sort.selectedViewIcon};
     }
   }
 `;
@@ -27,15 +27,14 @@ const selectedViewIcon = css`
 const notSelectedViewIcon = css`
   svg {
     path {
-      fill: ${(props) => props.theme.filterInput.sort.viewIcon};
+      fill: ${props => props.theme.filterInput.sort.viewIcon};
     }
   }
 `;
 
 const StyledSortButton = styled.div`
   .combo-button {
-    background: ${(props) =>
-      props.theme.filterInput.sort.background} !important;
+    background: ${props => props.theme.filterInput.sort.background} !important;
 
     .icon-button_svg {
       cursor: pointer;
@@ -46,7 +45,14 @@ const StyledSortButton = styled.div`
     width: 32px;
     height: 32px;
 
-    margin-left: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 8px;
+          `
+        : css`
+            margin-left: 8px;
+          `}
 
     .dropdown-container {
       top: 102%;
@@ -83,12 +89,12 @@ const StyledSortButton = styled.div`
           }
 
           .view-selector-icon:nth-child(1) {
-            ${(props) =>
+            ${props =>
               props.viewAs === "row" ? selectedViewIcon : notSelectedViewIcon};
           }
 
           .view-selector-icon:nth-child(2) {
-            ${(props) =>
+            ${props =>
               props.viewAs !== "row" ? selectedViewIcon : notSelectedViewIcon};
           }
         }
@@ -110,14 +116,14 @@ const StyledSortButton = styled.div`
           display: flex;
           visibility: hidden;
           cursor: pointer;
-          ${(props) =>
+          ${props =>
             props.isDesc &&
             css`
               transform: rotate(180deg);
             `}
 
           path {
-            fill: ${(props) => props.theme.filterInput.sort.sortFill};
+            fill: ${props => props.theme.filterInput.sort.sortFill};
           }
         }
 
@@ -129,7 +135,7 @@ const StyledSortButton = styled.div`
       }
 
       .selected-option-item {
-        background: ${(props) => props.theme.filterInput.sort.hoverBackground};
+        background: ${props => props.theme.filterInput.sort.hoverBackground};
         cursor: auto;
 
         .selected-option-item__icon {
@@ -143,7 +149,14 @@ const StyledSortButton = styled.div`
       align-items: center;
       justify-content: center;
 
-      margin-right: 0;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 0;
+            `
+          : css`
+              margin-right: 0;
+            `}
     }
 
     .combo-buttons_arrow-icon {
@@ -186,7 +199,7 @@ const SortButton = ({
     const value = getSortData && getSortData();
     const selectedValue = getSelectedSortData && getSelectedSortData();
 
-    const data = value.map((item) => {
+    const data = value.map(item => {
       item.className = "option-item";
       item.isSelected = false;
       if (selectedValue.sortId === item.key) {
@@ -214,7 +227,7 @@ const SortButton = ({
   }, [getSortDataAction]);
 
   const toggleCombobox = React.useCallback(() => {
-    setIsOpen((val) => !val);
+    setIsOpen(val => !val);
   }, []);
 
   React.useEffect(() => {
@@ -222,7 +235,7 @@ const SortButton = ({
   }, [isOpen]);
 
   const onOptionClick = React.useCallback(
-    (e) => {
+    e => {
       const key = e.target.closest(".option-item").dataset.value;
 
       let sortDirection = selectedSortData.sortDirection;
@@ -231,9 +244,9 @@ const SortButton = ({
         sortDirection = sortDirection === "desc" ? "asc" : "desc";
       }
 
-      let data = sortData.map((item) => ({ ...item }));
+      let data = sortData.map(item => ({ ...item }));
 
-      data = data.map((item) => {
+      data = data.map(item => {
         item.className = "option-item";
         item.isSelected = false;
         if (key === item.key) {
@@ -275,14 +288,13 @@ const SortButton = ({
           <DropDownItem isSeparator={true}></DropDownItem>
         </>
       )}
-      {sortData?.map((item) => (
+      {sortData?.map(item => (
         <DropDownItem
           id={item.id}
           onClick={onOptionClick}
           className={item.className}
           key={item.key}
-          data-value={item.key}
-        >
+          data-value={item.key}>
           <Text fontWeight={600}>{item.label}</Text>
           <SortDesc
             className={`option-item__icon${
@@ -313,8 +325,7 @@ const SortButton = ({
         isDesc={selectedSortData.sortDirection === "desc"}
         onClick={toggleCombobox}
         id={id}
-        title={title}
-      >
+        title={title}>
         <ComboBox
           opened={isOpen}
           onToggle={toggleCombobox}
@@ -330,8 +341,7 @@ const SortButton = ({
           disableItemClick={true}
           isDefaultMode={false}
           manualY={"102%"}
-          advancedOptionsCount={advancedOptionsCount}
-        >
+          advancedOptionsCount={advancedOptionsCount}>
           <IconButton iconName={SortReactSvgUrl} size={16} />
         </ComboBox>
       </StyledSortButton>

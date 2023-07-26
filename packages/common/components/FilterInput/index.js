@@ -12,7 +12,7 @@ import Link from "@docspace/components/link";
 import FilterButton from "./sub-components/FilterButton";
 import SortButton from "./sub-components/SortButton";
 import SelectedItem from "@docspace/components/selected-item";
-
+import { useTheme } from "styled-components";
 import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 
 const FilterInput = React.memo(
@@ -58,7 +58,11 @@ const FilterInput = React.memo(
     const [selectedItems, setSelectedItems] = React.useState(null);
 
     const mountRef = React.useRef(true);
-
+    const { interfaceDirection } = useTheme();
+    const styleViewSelector =
+      interfaceDirection === "rtl"
+        ? { marginRight: "8px" }
+        : { marginLeft: "8px" };
     React.useEffect(() => {
       const value = getViewSettingsData && getViewSettingsData();
 
@@ -91,9 +95,9 @@ const FilterInput = React.memo(
 
       const newSelectedItems = [];
 
-      value.forEach((item) => {
+      value.forEach(item => {
         if (item.isMultiSelect) {
-          const newKeys = item.key.map((oldKey) => ({
+          const newKeys = item.key.map(oldKey => ({
             key: oldKey.key ? oldKey.key : oldKey,
             group: item.group,
             label: oldKey.label ? oldKey.label : oldKey,
@@ -115,14 +119,14 @@ const FilterInput = React.memo(
     const removeSelectedItemAction = React.useCallback(
       (key, label, group) => {
         const newItems = selectedItems
-          .map((item) => ({ ...item }))
-          .filter((item) => item.key != key);
+          .map(item => ({ ...item }))
+          .filter(item => item.key != key);
 
         setSelectedItems(newItems);
 
         removeSelectedItem({ key, group });
       },
-      [selectedItems, removeSelectedItem],
+      [selectedItems, removeSelectedItem]
     );
 
     React.useEffect(() => {
@@ -174,6 +178,7 @@ const FilterInput = React.memo(
               title={sortByTitle}
             />
           )}
+
           {((viewSettings &&
             !isMobile &&
             viewSelectorVisible &&
@@ -182,7 +187,7 @@ const FilterInput = React.memo(
             isRecentFolder) && (
             <ViewSelector
               id={viewAs === "tile" ? "view-switch--row" : "view-switch--tile"}
-              style={{ marginLeft: "8px" }}
+              style={styleViewSelector}
               viewAs={viewAs === "table" ? "row" : viewAs}
               viewSettings={viewSettings}
               onChangeView={onChangeViewAs}
@@ -192,7 +197,7 @@ const FilterInput = React.memo(
         </div>
         {selectedItems && selectedItems.length > 0 && (
           <div className="filter-input_selected-row">
-            {selectedItems.map((item) => (
+            {selectedItems.map(item => (
               <SelectedItem
                 key={`${item.key}_${item.group}`}
                 propKey={item.key}
@@ -202,7 +207,7 @@ const FilterInput = React.memo(
                 onClick={removeSelectedItemAction}
               />
             ))}
-            {selectedItems.filter((item) => item.label).length > 1 && (
+            {selectedItems.filter(item => item.label).length > 1 && (
               <Link
                 className={"clear-all-link"}
                 isHovered
@@ -217,7 +222,7 @@ const FilterInput = React.memo(
         )}
       </StyledFilterInput>
     );
-  },
+  }
 );
 
 FilterInput.defaultProps = {

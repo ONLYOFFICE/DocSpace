@@ -1,9 +1,16 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 
 const StyledText = styled(Text)`
   display: inline-block;
-  margin-right: 12px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 12px;
+        `
+      : css`
+          margin-right: 12px;
+        `}
 `;
 
 const StyledAuthorCell = styled.div`
