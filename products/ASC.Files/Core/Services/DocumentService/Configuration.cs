@@ -162,6 +162,7 @@ public class DocumentConfig<T>
     }
 
     public PermissionsConfig Permissions { get; set; }
+    public string SharedLinkParam { get; set; }
     public string SharedLinkKey { get; set; }
     public FileReferenceData<T> ReferenceData
     {
@@ -197,7 +198,7 @@ public class DocumentConfig<T>
             }
 
             var last = Permissions.Edit || Permissions.Review || Permissions.Comment;
-            _fileUri = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(Info.GetFile(), SharedLinkKey, last));
+            _fileUri = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(Info.GetFile(), SharedLinkKey, SharedLinkParam, last));
 
             return _fileUri;
         }

@@ -192,4 +192,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Dana wiadomość e-mail jest generowana automatycznie – nie musisz na nią odpowiadać.&lt;br /&gt;Została do Ciebie wysłana, ponieważ jesteś zarejestrowanym użytkownikiem&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
+&lt;br /&gt; Kliknij tutaj, aby anulować subskrypcję powiadomień e-mail od DocSpace: &lt;a href="{1}"  target="_blank"&gt;Anuluj subskrypcję&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

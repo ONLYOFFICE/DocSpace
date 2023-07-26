@@ -32,12 +32,26 @@ const PluginPage = ({
   openSettingsDialog,
   uninstallPlugin,
   updatePluginStatus,
+  addPlugin,
 }) => {
   const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
 
+  const pluginInputRef = React.useRef(null);
+
   const onAddAction = () => {
-    const event = new Event(Events.ADD_PLUGIN);
-    window.dispatchEvent(event);
+    pluginInputRef.current.click();
+  };
+
+  const onInputClick = (e) => {
+    e.target.value = null;
+  };
+
+  const onFileChange = (e) => {
+    let formData = new FormData();
+
+    formData.append("file", e.target.files[0]);
+
+    addPlugin(formData);
   };
 
   return (
@@ -46,7 +60,7 @@ const PluginPage = ({
         <>
           <Button
             className={"add-button"}
-            label={t("AddPlugin")}
+            label={t("UploadPlugin")}
             primary
             size={"normal"}
             onClick={onAddAction}
@@ -67,8 +81,18 @@ const PluginPage = ({
           </StyledPluginList>
         </>
       ) : (
-        <EmptyScreen t={t} withUpload={true} />
+        <EmptyScreen t={t} onAddAction={onAddAction} />
       )}
+      <input
+        id="customPluginInput"
+        className="custom-file-input"
+        type="file"
+        accept=".zip"
+        onChange={onFileChange}
+        onClick={onInputClick}
+        ref={pluginInputRef}
+        style={{ display: "none" }}
+      />
     </StyledPluginsSettings>
   );
 };
@@ -87,6 +111,7 @@ export default inject(({ auth, pluginStore }) => {
     setIsAdminSettingsDialog,
     uninstallPlugin,
     updatePluginStatus,
+    addPlugin,
   } = pluginStore;
 
   const openSettingsDialog = (pluginId) => {
@@ -104,5 +129,6 @@ export default inject(({ auth, pluginStore }) => {
     openSettingsDialog,
     uninstallPlugin,
     updatePluginStatus,
+    addPlugin,
   };
 })(observer(PluginPage));

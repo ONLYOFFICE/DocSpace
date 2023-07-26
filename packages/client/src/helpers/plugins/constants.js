@@ -1,8 +1,17 @@
-export const PluginContextMenuItemType = Object.freeze({
-  Files: "Files",
-  Folders: "Folders",
-  Rooms: "Rooms",
-  All: "All",
+export const PluginFileType = Object.freeze({
+  Files: "file",
+  Folders: "folder",
+  Rooms: "room",
+});
+
+export const PluginScopes = Object.freeze({
+  API: "API",
+  Settings: "Settings",
+  ContextMenu: "ContextMenu",
+  InfoPanel: "InfoPanel",
+  MainButton: "MainButton",
+  ProfileMenu: "ProfileMenu",
+  EventListener: "EventListener",
 });
 
 export const PluginType = Object.freeze({
@@ -26,11 +35,9 @@ export const PluginSettingsType = Object.freeze({
 export const PluginActions = Object.freeze({
   updateProps: "update-props",
   updateAcceptButtonProps: "update-accept-button-props",
-  updateLoading: "update-loading",
   updateStatus: "update-status",
   showToast: "show-toast",
   showSettingsModal: "show-settings-modal",
-  closeModal: "close-modal",
 });
 
 export const PluginToastType = Object.freeze({
@@ -38,4 +45,23 @@ export const PluginToastType = Object.freeze({
   error: "error",
   warning: "warning",
   info: "info",
+});
+
+export const PluginComponents = Object.freeze({
+  box: "box",
+  button: "button",
+  checkbox: "checkbox",
+  input: "input",
+  label: "label",
+  text: "text",
+  textArea: "textArea",
+  toggleButton: "toggleButton",
+});
+
+export const PluginUsersType = Object.freeze({
+  owner: "Owner",
+  docSpaceAdmin: "DocSpaceAdmin",
+  roomAdmin: "RoomAdmin",
+  collaborator: "Collaborator",
+  user: "User",
 });

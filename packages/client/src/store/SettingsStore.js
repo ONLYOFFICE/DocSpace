@@ -59,6 +59,7 @@ class SettingsStore {
   extsDocument = [];
   internalFormats = {};
   masterFormExtension = "";
+  canSearchByContent = false;
 
   html = [".htm", ".mht", ".html"];
   ebook = [".fb2", ".ibk", ".prc", ".epub"];

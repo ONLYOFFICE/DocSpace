@@ -85,6 +85,12 @@ public static class DbFolderExtension
             entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parent_id");
 
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_parent_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_parent_id_modified_on");
+
             entity.Property(e => e.Id).HasColumnName("id");
 
             entity.Property(e => e.CreateBy)
@@ -152,6 +158,12 @@ public static class DbFolderExtension
 
             entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parent_id");
+            
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_parent_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_parent_id_modified_on");
 
             entity.Property(e => e.Id).HasColumnName("id");
 

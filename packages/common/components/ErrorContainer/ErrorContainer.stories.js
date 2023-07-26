@@ -16,6 +16,6 @@ storiesOf("Components| ErrorContainer", module)
         "This page was removed, renamed or doesn’t exist anymore."
       )}
       buttonText={text("buttonText", "Return to homepage")}
-      buttonUrl={text("buttonUrl", "/")}
+      onClickButton={() => console.log("click")}
     />
   ));

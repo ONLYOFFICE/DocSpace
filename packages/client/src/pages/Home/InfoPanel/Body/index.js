@@ -59,15 +59,18 @@ const InfoPanelBodyContent = ({
     historyProps: { selectedFolder },
     accountsProps: {},
     galleryProps: {},
+    pluginProps: { isRooms, roomsView, fileView },
   });
 
   const getView = () => {
+    const currentView = isRooms ? roomsView : fileView;
+
     if (isNoItem) return viewHelper.NoItemView();
     if (isSeveralItems) return viewHelper.SeveralItemsView();
     if (isGallery) return viewHelper.GalleryView();
     if (isAccounts) return viewHelper.AccountsView();
 
-    switch (isRooms ? roomsView : fileView) {
+    switch (currentView) {
       case "info_members":
         return viewHelper.MembersView();
       case "info_history":
@@ -75,6 +78,8 @@ const InfoPanelBodyContent = ({
       case "info_details":
         return viewHelper.DetailsView();
     }
+
+    if (currentView.indexOf("info_plugin") > -1) return viewHelper.PluginView();
   };
 
   //////////////////////////////////////////////////////////

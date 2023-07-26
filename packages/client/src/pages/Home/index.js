@@ -18,7 +18,8 @@ import {
 import AccountsDialogs from "./Section/AccountsBody/Dialogs";
 
 import MediaViewer from "./MediaViewer";
-import SelectionArea from "./SelectionArea";
+import FilesSelectionArea from "./SelectionArea/FilesSelectionArea";
+import AccountsSelectionArea from "./SelectionArea/AccountsSelectionArea";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 import {
@@ -112,16 +113,25 @@ const PureHome = (props) => {
     showFilterLoader,
 
     enablePlugins,
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   } = props;
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isAccountsPage = location.pathname.includes("/accounts/filter");
   const isSettingsPage =
-    location.pathname.includes("/settings") &&
+    location.pathname.includes("settings") &&
     !location.pathname.includes("settings/plugins");
   const isPluginsSettingsPage = location.pathname.includes("settings/plugins");
+  const isAccountsPage = location.pathname.includes("/accounts");
 
   const { onDrop } = useFiles({
     t,
@@ -203,6 +213,15 @@ const PureHome = (props) => {
     createRoom,
     refreshFiles,
     setViewAs,
+    getSettings,
+    logout,
+    login,
+    addTagsToRoom,
+    createTag,
+    removeTagsFromRoom,
+    loadCurrentUser,
+    updateProfileCulture,
+    getRooms,
   });
 
   React.useEffect(() => {
@@ -258,11 +277,14 @@ const PureHome = (props) => {
       {isSettingsPage ? (
         <></>
       ) : isAccountsPage ? (
-        <AccountsDialogs />
+        <>
+          <AccountsDialogs />
+          <AccountsSelectionArea />
+        </>
       ) : (
         <>
           <DragTooltip />
-          <SelectionArea />
+          <FilesSelectionArea />
         </>
       )}
       <MediaViewer />
@@ -326,6 +348,7 @@ export default inject(
     peopleStore,
     filesActionsStore,
     oformsStore,
+    tagsStore,
     selectedFolderStore,
     clientLoadingStore,
   }) => {
@@ -375,7 +398,14 @@ export default inject(
       disableDrag,
       isErrorRoomNotAvailable,
       setIsPreview,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      getRooms,
     } = filesStore;
+
+    const { updateProfileCulture } = peopleStore.targetUserStore;
+
+    const { createTag } = tagsStore;
 
     const { gallerySelected } = oformsStore;
 
@@ -431,6 +461,7 @@ export default inject(
       withPaging,
       showCatalog,
       enablePlugins,
+      getSettings,
     } = settingsStore;
 
     const {
@@ -535,6 +566,17 @@ export default inject(
       onClickBack,
 
       showFilterLoader,
+
+      getSettings,
+      logout: auth.logout,
+      login: auth.login,
+
+      createTag,
+      addTagsToRoom,
+      removeTagsFromRoom,
+      loadCurrentUser: auth.userStore.loadCurrentUser,
+      updateProfileCulture,
+      getRooms,
     };
   }
 )(observer(Home));

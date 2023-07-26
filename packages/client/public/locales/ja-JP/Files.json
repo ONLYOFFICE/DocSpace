@@ -24,6 +24,7 @@
   "DaysRemaining": "残りの日数：{{daysRemaining}}",
   "DisableNotifications": "通知をオフする",
   "Document": "ドキュメント",
+  "DocumentEdited": "ドキュメントが編集中のため、アクションを実行できません。",
   "EditRoom": "ルームを編集する",
   "EmptyFile": "空きファイル",
   "EmptyFilterDescriptionText": "このフィルターに一致するファイルやフォルダーはありません。別のフィルタを試すか、フィルタを解除してすべてのファイルを表示してください。 ",

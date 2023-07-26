@@ -30,6 +30,7 @@ import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 
 import { resendInvitesAgain } from "@docspace/common/api/people";
+import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 const StyledButton = styled(Button)`
   font-weight: 700;
@@ -118,14 +119,15 @@ const ArticleMainButtonContent = (props) => {
     security,
     isGracePeriod,
     setInviteUsersWarningDialogVisible,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
   } = props;
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isAccountsPage = location.pathname.includes("/accounts/filter");
-
-  const isSettingsPage = location.pathname.includes("/settings");
+  const isAccountsPage = location.pathname.includes("/accounts");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -415,10 +417,31 @@ const ArticleMainButtonContent = (props) => {
 
     if (mainButtonItemsList && enablePlugins) {
       mainButtonItemsList.forEach((option) => {
-        menuModel.splice(option.value.position, 0, {
-          key: option.key,
-          ...option.value,
-        });
+        if (option.value.onClick) {
+          const onClick = async () => {
+            const message = await option.value.onClick();
+
+            messageActions(
+              message,
+              null,
+              null,
+              option.value.pluginId,
+              setSettingsPluginDialogVisible,
+              setCurrentSettingsDialogPlugin
+            );
+          };
+
+          menuModel.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+            onClick,
+          });
+        } else {
+          menuModel.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        }
       });
     }
 
@@ -435,6 +458,8 @@ const ArticleMainButtonContent = (props) => {
     isRoomsFolder,
     isOwner,
     isAdmin,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -566,7 +591,11 @@ export default inject(
     const { isAdmin, isOwner } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const { mainButtonItemsList } = pluginStore;
+    const {
+      mainButtonItemsList,
+      setSettingsPluginDialogVisible,
+      setCurrentSettingsDialogPlugin,
+    } = pluginStore;
 
     return {
       isGracePeriod,
@@ -601,6 +630,8 @@ export default inject(
 
       mainButtonMobileVisible,
       security,
+      setSettingsPluginDialogVisible,
+      setCurrentSettingsDialogPlugin,
     };
   }
 )(

@@ -1,6 +1,7 @@
 ﻿import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
+import CatalogRoomsReactSvgUrl from "PUBLIC_DIR/images/catalog.rooms.react.svg?url";
 import CatalogArchiveReactSvgUrl from "PUBLIC_DIR/images/catalog.archive.react.svg?url";
 import CatalogSharedReactSvgUrl from "PUBLIC_DIR/images/catalog.shared.react.svg?url";
 import CatalogPortfolioReactSvgUrl from "PUBLIC_DIR/images/catalog.portfolio.react.svg?url";
@@ -23,6 +24,7 @@ import DragAndDrop from "@docspace/components/drag-and-drop";
 import { isMobile } from "react-device-detect";
 import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
+import BonusItem from "./BonusItem";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
@@ -181,7 +183,9 @@ const Items = ({
 
   activeItemId,
   emptyTrashInProgress,
-  enablePlugins,
+
+  isCommunity,
+  isPaymentPageAvailable,
 }) => {
   const getEndOfBlock = React.useCallback(
     (item) => {
@@ -205,7 +209,7 @@ const Items = ({
         iconUrl = CatalogUserReactSvgUrl;
         break;
       case FolderType.Rooms:
-        iconUrl = CatalogFolderReactSvgUrl;
+        iconUrl = CatalogRoomsReactSvgUrl;
         break;
       case FolderType.Archive:
         iconUrl = CatalogArchiveReactSvgUrl;
@@ -372,6 +376,9 @@ const Items = ({
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
+      if (isCommunity && isPaymentPageAvailable)
+        items.push(<BonusItem key="bonus-item" />);
+
       return items;
     },
     [
@@ -418,6 +425,9 @@ export default inject(
     dialogsStore,
     clientLoadingStore,
   }) => {
+    const { settingsStore, isCommunity, isPaymentPageAvailable } = auth;
+    const { showText, docSpace } = settingsStore;
+
     const {
       selection,
       bufferSelection,
@@ -452,9 +462,8 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       currentId: id,
-      showText: auth.settingsStore.showText,
-      docSpace: auth.settingsStore.docSpace,
-      enablePlugins: auth.settingsStore.enablePlugins,
+      showText,
+      docSpace,
 
       data: treeFolders,
 
@@ -475,6 +484,8 @@ export default inject(
       firstLoad,
       startDrag,
       emptyTrashInProgress,
+      isCommunity,
+      isPaymentPageAvailable,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

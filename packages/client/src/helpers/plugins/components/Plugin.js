@@ -7,6 +7,9 @@ import PluginSettings from "./PluginSettings";
 
 import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
 
+import ToggleButton from "@docspace/components/toggle-button";
+import { PluginScopes } from "../constants";
+
 const StyledPlugin = styled.div`
   display: flex;
 
@@ -26,20 +29,24 @@ const Plugin = ({
   id,
   name,
   image,
-  isActive,
+  enabled,
   version,
   author,
-  uploader,
   status,
   description,
+  createBy,
+  createOn,
+  homePage,
+  license,
+  system,
+  url,
 
   userPluginSettings,
   getUserPluginSettings,
-
   adminPluginSettings,
   getAdminPluginSettings,
 
-  settingsScope,
+  scopes,
 
   changePluginStatus,
 
@@ -57,6 +64,8 @@ const Plugin = ({
 
   ...rest
 }) => {
+  const withSettings = scopes.includes(PluginScopes.Settings);
+
   const pluginSettings = isUserSettings
     ? userPluginSettings
     : adminPluginSettings;
@@ -64,21 +73,22 @@ const Plugin = ({
     ? getUserPluginSettings
     : getAdminPluginSettings;
 
-  const showPluginSettings =
-    settingsScope &&
+  const showPluginSettingsPage =
+    withSettings &&
     pluginSettings &&
     (pluginSettings.type === PluginSettingsType.both ||
       pluginSettings.type === PluginSettingsType.settingsPage);
 
   const showModalPluginSettings =
-    settingsScope && pluginSettings && !showPluginSettings;
+    withSettings && pluginSettings?.type && !showPluginSettingsPage;
 
   return (
     <StyledPlugin>
       <PluginHeader
         id={id}
         name={name}
-        isActive={isActive}
+        enabled={enabled}
+        system={system}
         changePluginStatus={changePluginStatus}
         isUserSettings={isUserSettings}
         withDelete={withDelete}
@@ -90,11 +100,14 @@ const Plugin = ({
         image={image}
         version={version}
         author={author}
-        uploader={uploader}
         status={status}
         description={description}
+        createBy={createBy}
+        createOn={createOn}
+        homePage={homePage}
+        url={url}
       />
-      {showPluginSettings && (
+      {showPluginSettingsPage && (
         <PluginSettings
           {...pluginSettings}
           id={id}

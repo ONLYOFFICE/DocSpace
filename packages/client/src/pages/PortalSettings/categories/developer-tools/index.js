@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition, Suspense } from "react";
 import styled, { css } from "styled-components";
 import Submenu from "@docspace/components/submenu";
 import { inject, observer } from "mobx-react";
@@ -6,17 +6,16 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
 import { useNavigate } from "react-router-dom";
-
 import JavascriptSDK from "./JavascriptSDK";
 import Webhooks from "./Webhooks";
 import PluginPage from "./Plugins";
-
-import AppLoader from "@docspace/common/components/AppLoader";
-import SSOLoader from "./sub-components/ssoLoader";
-import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
+import Api from "./Api";
 
 import { useTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import AppLoader from "@docspace/common/components/AppLoader";
+import SSOLoader from "./sub-components/ssoLoader";
+import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
 
 const StyledSubmenu = styled(Submenu)`
   .sticky {
@@ -31,18 +30,25 @@ const StyledSubmenu = styled(Submenu)`
 `;
 
 const DeveloperToolsWrapper = (props) => {
-  const { loadBaseInfo, developerToolsTab, setTab } = props;
-  const [currentTab, setCurrentTab] = useState(developerToolsTab);
-  const [isLoading, setIsLoading] = useState(false);
+  const { loadBaseInfo } = props;
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { t, ready } = useTranslation([
     "JavascriptSdk",
     "Webhooks",
+    "Settings",
     "PluginsSettings",
   ]);
+  const [isPending, startTransition] = useTransition();
 
   const data = [
+    {
+      id: "api",
+      name: t("Settings:Api"),
+      content: <Api />,
+    },
     {
       id: "javascript-sdk",
       name: t("JavascriptSdk"),
@@ -60,9 +66,12 @@ const DeveloperToolsWrapper = (props) => {
     },
   ];
 
+  const [currentTab, setCurrentTab] = useState(
+    data.findIndex((item) => location.pathname.includes(item.id))
+  );
+
   const load = async () => {
     await loadBaseInfo();
-    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -70,11 +79,12 @@ const DeveloperToolsWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) {
       setCurrentTab(currentTab);
-      setTab(currentTab);
     }
-
-    load();
   }, []);
+
+  useEffect(() => {
+    ready && startTransition(load);
+  }, [ready]);
 
   const onSelect = (e) => {
     navigate(
@@ -86,29 +96,21 @@ const DeveloperToolsWrapper = (props) => {
     );
   };
 
-  if (!isLoading && !ready)
-    return currentTab === 0 ? (
-      <SSOLoader />
-    ) : currentTab === 1 ? (
-      <WebhookConfigsLoader />
-    ) : (
-      <AppLoader />
-    );
+  const loaders = [<SSOLoader />, <AppLoader />];
 
   return (
-    <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />
+    <Suspense fallback={loaders[currentTab] || <AppLoader />}>
+      <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />
+    </Suspense>
   );
 };
 
-export default inject(({ setup, webhooksStore }) => {
+export default inject(({ setup }) => {
   const { initSettings } = setup;
-  const { developerToolsTab, setTab } = webhooksStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    developerToolsTab,
-    setTab,
   };
 })(observer(DeveloperToolsWrapper));

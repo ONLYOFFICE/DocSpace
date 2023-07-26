@@ -19,6 +19,7 @@ import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -35,6 +36,8 @@ const InfoPanelHeaderContent = (props) => {
     isRootFolder,
     // rootFolderType,
     // selectionParentRoom,
+    infoPanelItemsList,
+    enablePlugins,
   } = props;
 
   const [isTablet, setIsTablet] = useState(false);
@@ -99,6 +102,43 @@ const InfoPanelHeaderContent = (props) => {
 
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
+  if (enablePlugins && infoPanelItemsList.length > 0) {
+    const isRoom = !!selection?.roomType;
+    const isFile = !!selection?.fileExst;
+    infoPanelItemsList.forEach((item) => {
+      const onClick = () => {
+        setView(`info_plugin-${item.key}`);
+
+        item.value.subMenu.onClick && item.value.subMenu.onClick();
+      };
+
+      const submenuItem = {
+        id: `info_plugin-${item.key}`,
+        name: item.value.subMenu.name,
+        onClick,
+        content: null,
+      };
+
+      if (isRoom && item.value.filesType.includes(PluginFileType.Rooms)) {
+        roomsSubmenu.push(submenuItem);
+        personalSubmenu.push(submenuItem);
+        return;
+      }
+
+      if (isFile && item.value.filesType.includes(PluginFileType.Files)) {
+        roomsSubmenu.push(submenuItem);
+        personalSubmenu.push(submenuItem);
+        return;
+      }
+
+      if (item.value.filesType.includes(PluginFileType.Folders)) {
+        roomsSubmenu.push(submenuItem);
+        personalSubmenu.push(submenuItem);
+        return;
+      }
+    });
+  }
+
   return (
     <StyledInfoPanelHeader isTablet={isTablet} withSubmenu={withSubmenu}>
       <div className="main">
@@ -142,7 +182,9 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore }) => {
+export default inject(({ auth, selectedFolderStore, pluginStore }) => {
+  const { infoPanelItemsList } = pluginStore;
+
   const {
     selection,
     setIsVisible,
@@ -156,6 +198,9 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsTrash,
     //selectionParentRoom,
   } = auth.infoPanelStore;
+
+  const { enablePlugins } = auth.settingsStore;
+
   const {
     isRootFolder,
     // rootFolderType
@@ -174,6 +219,9 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsTrash,
 
     isRootFolder,
+
+    infoPanelItemsList,
+    enablePlugins,
     //  rootFolderType,
 
     //selectionParentRoom,

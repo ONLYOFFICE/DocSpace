@@ -40,7 +40,7 @@ import ClientLoadingStore from "./ClientLoadingStore";
 
 import PluginStore from "./PluginStore";
 
-const pluginStore = new PluginStore();
+const pluginStore = new PluginStore(authStore);
 
 const oformsStore = new OformsStore(authStore);
 

@@ -670,4 +670,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Papelera vaciada</value>
   </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} appointed: {1} {0} designado: {1}</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Etiquetas añadidas: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Etiquetas eliminadas: [{1}]</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Etiquetas eliminadas: {0}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Etiqueta creada: {0}</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Enlace creado. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Enlace actualizado. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>El enlace se ha eliminado</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>El logotipo se ha creado</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>El logotipo se ha eliminado</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>La sala se ha desarchivado</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Sala renombrada: {0}</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>La sala se ha archivado</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>La sala se ha eliminado</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Usuario añadido: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Usuario eliminado: {0}</value>
+  </data>
 </root>

@@ -62,7 +62,7 @@ export const PlayerTimelineWrapper = styled.div`
   display: flex;
   align-items: center;
 
-  margin-top: 92px;
+  margin-top: 12px;
 
   height: 4px;
   width: 100%;

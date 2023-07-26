@@ -46,11 +46,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly IQuotaService _quotaService;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly StorageFactory _storageFactory;
+    private readonly TenantQuotaController _tenantQuotaController;
+    private readonly FileUtility _fileUtility;
 
     public FileDao(
         ILogger<FileDao> logger,
         FactoryIndexerFile factoryIndexer,
         UserManager userManager,
+        FileUtility fileUtility,
         IDbContextFactory<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
@@ -73,7 +78,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Settings settings,
         IMapper mapper,
         ThumbnailSettings thumbnailSettings,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        StorageFactory storageFactory,
+        TenantQuotaController tenantQuotaController)
         : base(
               dbContextManager,
               userManager,
@@ -102,6 +110,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
         _quotaService = quotaService;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
+        _storageFactory = storageFactory;
+        _tenantQuotaController = tenantQuotaController;
+        _fileUtility = fileUtility;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -246,87 +258,23 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false,
+        int offset = 0, int count = -1)
     {
-        if (filterType == FilterType.FoldersOnly)
+        if (filterType == FilterType.FoldersOnly || count == 0)
         {
             yield break;
         }
 
-        if (orderBy == null)
-        {
-            orderBy = new OrderBy(SortedByType.DateAndTime, false);
-        }
-
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var q = GetFileQuery(filesDbContext, r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();
 
-        if (withSubfolders)
+        var q = await GetFilesQueryWithFilters(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext);
+
+        q = q.Skip(offset);
+
+        if (count > 0)
         {
-            q = GetFileQuery(filesDbContext, r => r.CurrentVersion)
-                .AsNoTracking()
-                .Join(filesDbContext.Tree, r => r.ParentId, a => a.FolderId, (file, tree) => new { file, tree })
-                .Where(r => r.tree.ParentId == parentId)
-                .Select(r => r.file);
-        }
-
-        if (!string.IsNullOrEmpty(searchText))
-        {
-            var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
-
-            Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
-
-            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(expression);
-            if (succ)
-            {
-                q = q.Where(r => searchIds.Contains(r.Id));
-            }
-            else
-            {
-                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
-            }
-        }
-
-        q = orderBy.SortedBy switch
-        {
-            SortedByType.Author => orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy),
-            SortedByType.Size => orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength),
-            SortedByType.AZ => orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title),
-            SortedByType.DateAndTime => orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn),
-            SortedByType.DateAndTimeCreation => orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn),
-            _ => q.OrderBy(r => r.Title),
-        };
-        if (subjectID != Guid.Empty)
-        {
-            if (subjectGroup)
-            {
-                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
-                q = q.Where(r => users.Contains(r.CreateBy));
-            }
-            else
-            {
-                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
-            }
-        }
-
-        switch (filterType)
-        {
-            case FilterType.OFormOnly:
-            case FilterType.OFormTemplateOnly:
-            case FilterType.DocumentsOnly:
-            case FilterType.ImagesOnly:
-            case FilterType.PresentationsOnly:
-            case FilterType.SpreadsheetsOnly:
-            case FilterType.ArchiveOnly:
-            case FilterType.MediaOnly:
-                q = q.Where(r => r.Category == (int)filterType);
-                break;
-            case FilterType.ByExtension:
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
-                }
-                break;
+            q = q.Take(count);
         }
 
         await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
@@ -342,11 +290,31 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
     {
-        return await (await _globalStore.GetStoreAsync()).GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
+        var storage = await _globalStore.GetStoreAsync();
+
+        if (storage.IsSupportCdnUri && !_fileUtility.CanWebEdit(file.Title)
+            && (_fileUtility.CanMediaView(file.Title) || _fileUtility.CanImageView(file.Title)))
+        {
+            return await storage.GetCdnPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                  new List<string>
                                                      {
-                                                             string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
+                                                             $"Content-Disposition:{ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true)}",
+                                                             $"Custom-Cache-Key:{file.ModifiedOn.Ticks}"
                                                      });
+        }
+
+        var path = GetUniqFilePath(file);
+        var headers = new List<string>
+        {
+            string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
+        };
+
+        if (!_authContext.IsAuthenticated)
+        {
+            headers.Add(SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider));
+        }
+
+        return await storage.GetPreSignedUriAsync(string.Empty, path, expires, headers);
     }
 
     public async Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
@@ -528,6 +496,18 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert));
 
         return await GetFileAsync(file.Id);
+    }
+
+    public async Task<int> GetFilesCountAsync(int parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
+    {
+        if (filterType == FilterType.FoldersOnly)
+        {
+            return 0;
+        }
+
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        return await (await GetFilesQueryWithFilters(parentId, null, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesDbContext)).CountAsync();
     }
 
     public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
@@ -724,7 +704,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (deleteFolder)
             {
-                await DeleteFolderAsync(fileId);
+                var tenantId = _tenantManager.GetCurrentTenant().Id;
+                _tenantQuotaController.Init(tenantId, ThumbnailTitle);
+                var store = await _storageFactory.GetStorageAsync(tenantId, FileConstant.StorageModule, _tenantQuotaController);
+                await store.DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
             }
 
             if (toDeleteFile != null)
@@ -830,7 +813,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 toUpdateFile.Folders = await Queries.DbFolderTreesAsync(filesDbContext, toFolderId).ToListAsync();
 
-                _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+                _ = _factoryIndexer.UpdateAsync(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
         });
 
@@ -1062,6 +1045,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (!uploadSession.KeepVersion)
             {
                 file.Version++;
+                file.VersionGroup++;
             }
             file.ContentLength = uploadSession.BytesTotal;
             file.ConvertedType = null;
@@ -1199,11 +1183,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 yield return file;
             }
         }
-    }
-
-    private async Task DeleteFolderAsync(int fileId)
-    {
-        await (await _globalStore.GetStoreAsync()).DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
     }
 
     public async Task<bool> IsExistOnStorageAsync(File<int> file)
@@ -1495,6 +1474,90 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         return dbFile;
+    }
+
+    private async Task<IQueryable<DbFile>> GetFilesQueryWithFilters(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent,
+        bool withSubfolders, bool excludeSubject, FilesDbContext filesDbContext)
+    {
+        var q = GetFileQuery(filesDbContext, r => r.ParentId == parentId && r.CurrentVersion).AsNoTracking();
+
+        if (withSubfolders)
+        {
+            q = GetFileQuery(filesDbContext, r => r.CurrentVersion)
+                .AsNoTracking()
+                .Join(filesDbContext.Tree, r => r.ParentId, a => a.FolderId, (file, tree) => new { file, tree })
+                .Where(r => r.tree.ParentId == parentId)
+                .Select(r => r.file);
+        }
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
+
+            Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
+
+            (var succ, var searchIds) = await _factoryIndexer.TrySelectIdsAsync(expression);
+            if (succ)
+            {
+                q = q.Where(r => searchIds.Contains(r.Id));
+            }
+            else
+            {
+                q = BuildSearch(q, searchText, SearhTypeEnum.Any);
+            }
+        }
+
+        q = orderBy == null
+            ? q
+            : orderBy.SortedBy switch
+            {
+                SortedByType.Author => orderBy.IsAsc ? q.OrderBy(r => r.CreateBy) : q.OrderByDescending(r => r.CreateBy),
+                SortedByType.Size => orderBy.IsAsc ? q.OrderBy(r => r.ContentLength) : q.OrderByDescending(r => r.ContentLength),
+                SortedByType.AZ => orderBy.IsAsc ? q.OrderBy(r => r.Title) : q.OrderByDescending(r => r.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? q.OrderBy(r => r.ModifiedOn) : q.OrderByDescending(r => r.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? q.OrderBy(r => r.CreateOn) : q.OrderByDescending(r => r.CreateOn),
+                SortedByType.Type => orderBy.IsAsc
+                    ? q.OrderBy(r => DbFunctionsExtension.SubstringIndex(r.Title, '.', -1))
+                    : q.OrderByDescending(r => DbFunctionsExtension.SubstringIndex(r.Title, '.', -1)),
+                _ => q.OrderBy(r => r.Title)
+            };
+
+        if (subjectID != Guid.Empty)
+        {
+
+            if (subjectGroup)
+            {
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
+                q = q.Where(r => users.Contains(r.CreateBy));
+            }
+            else
+            {
+                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
+            }
+        }
+
+        switch (filterType)
+        {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
+            case FilterType.DocumentsOnly:
+            case FilterType.ImagesOnly:
+            case FilterType.PresentationsOnly:
+            case FilterType.SpreadsheetsOnly:
+            case FilterType.ArchiveOnly:
+            case FilterType.MediaOnly:
+                q = q.Where(r => r.Category == (int)filterType);
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    q = BuildSearch(q, searchText, SearhTypeEnum.End);
+                }
+
+                break;
+        }
+
+        return q;
     }
 }
 

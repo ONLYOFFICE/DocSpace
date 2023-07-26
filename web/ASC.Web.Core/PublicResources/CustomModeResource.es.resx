@@ -174,4 +174,25 @@ El enlace es válido durante 7 días.
 
 ¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
   </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+ 
+¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario se ha añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
+ 
+* Trabajar con otros usuarios en la sala a la que se le invite: *salas de colaboración para coautoría en tiempo real o salas personalizadas con configuración flexible para cualquier propósito*.
+ 
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, archivos PDF, e-books, archivos multimedia.
+ 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o haciendo llamadas de audio y vídeo. 
+ 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación.
+ 
+$GreenButton
+ 
+Si necesita ayuda, consulte nuestro "Centro de Ayuda":"https://helpcenter.onlyoffice.com/" o pregunte a nuestro "equipo de soporte”:"https://www.onlyoffice.com/es/support-contact-form.aspx".
+ 
+Cordialmente,
+Equipo de ONLYOFFICE 
+"www.onlyoffice.com/es/":"https://www.onlyoffice.com/es/"</value>
+  </data>
 </root>

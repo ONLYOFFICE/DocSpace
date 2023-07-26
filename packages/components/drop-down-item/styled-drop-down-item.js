@@ -196,6 +196,7 @@ const IconWrapper = styled.div`
     max-width: 16px;
     height: 100%;
     max-height: 16px;
+    margin-top: 12px;
   }
 `;
 IconWrapper.defaultProps = { theme: Base };

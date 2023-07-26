@@ -2,12 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 import Text from "@docspace/components/text";
+import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 
 import { PluginStatus } from "SRC_DIR/helpers/plugins/constants";
+import Link from "@docspace/components/link";
+import { getPluginUrl } from "../utils";
 
 const StyledInfo = styled.div`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 400px 1fr;
   grid-template-rows: 1fr;
 
   gap: 24px;
@@ -37,9 +40,13 @@ const PluginInfo = ({
   image,
   version,
   author,
-  uploader,
   status,
   description,
+  createBy,
+  createOn,
+  homePage,
+
+  url,
 }) => {
   const getPluginStatusDesc = () => {
     switch (status) {
@@ -53,18 +60,28 @@ const PluginInfo = ({
 
   const pluginStatusDesc = getPluginStatusDesc();
 
+  const uploadDate = getCorrectDate("en", createOn);
+
+  const imgSrc = getPluginUrl(url, `/assets/${image}`);
+
   return (
     <StyledInfo>
-      <img className="plugin-info-image" src={`/static/plugins/${image}`} />
+      {image ? <img className="plugin-info-image" src={imgSrc} /> : <div></div>}
       <div className="plugin-info-container">
         <Text className="row-name">Version</Text>
         <Text>{version}</Text>
         <Text className="row-name">Author</Text>
         <Text>{author}</Text>
         <Text className="row-name">Uploader </Text>
-        <Text>{uploader}</Text>
+        <Text>{createBy}</Text>
+        <Text className="row-name">Upload date </Text>
+        <Text>{uploadDate}</Text>
         <Text className="row-name">Status </Text>
         <Text>{pluginStatusDesc}</Text>
+        <Text className="row-name">Homepage </Text>
+        <Link target="_blank" href={homePage}>
+          {homePage}
+        </Link>
         <Text className="row-name">Description </Text>
         <Text>{description}</Text>
       </div>

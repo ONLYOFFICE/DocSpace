@@ -29,6 +29,7 @@ using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
+using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Web.Files;
 
@@ -82,6 +83,8 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly ExternalLinkHelper _externalLinkHelper;
+    private readonly ExternalShare _externalShare;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -112,7 +115,9 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        ExternalLinkHelper externalLinkHelper, 
+        ExternalShare externalShare)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -143,6 +148,8 @@ public class FileHandlerService
         _logger = logger;
         _clientFactory = clientFactory;
         _thumbnailSettings = thumbnailSettings;
+        _externalLinkHelper = externalLinkHelper;
+        _externalShare = externalShare;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -207,13 +214,14 @@ public class FileHandlerService
 
     private async ValueTask BulkDownloadFile(HttpContext context)
     {
-        if (!_securityContext.IsAuthenticated)
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+        var sessionKey = context.Request.Query["session"].FirstOrDefault();
+
+        if (!_securityContext.IsAuthenticated && string.IsNullOrEmpty(sessionKey))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return;
         }
-
-        var filename = context.Request.Query["filename"].FirstOrDefault();
 
         if (String.IsNullOrEmpty(filename))
         {
@@ -225,7 +233,29 @@ public class FileHandlerService
             filename = _instanceCrypto.Decrypt(Uri.UnescapeDataString(filename));
         }
 
-        var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        string path;
+
+        if (!string.IsNullOrEmpty(sessionKey))
+        {
+            var session = await _externalShare.ParseDownloadSessionKeyAsync(sessionKey);
+            var sessionId = await _externalShare.GetSessionIdAsync();
+
+            if (session != null && sessionId != default && session.Id == sessionId &&
+                (await _externalShare.ValidateAsync(session.LinkId)) == Status.Ok)
+            {
+                path = string.Format(@"{0}\{1}\{2}", session.LinkId, session.Id, filename);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+        }
+        else
+        {
+            path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        }
+        
         var store = await _globalStore.GetStoreAsync();
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
@@ -237,7 +267,9 @@ public class FileHandlerService
 
         if (store.IsSupportedPreSignedUri)
         {
-            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
+            var headers = _securityContext.IsAuthenticated ? null : new[] { SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider) };
+
+            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), headers);
             var url = tmp.ToString();
             context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
@@ -315,8 +347,13 @@ public class FileHandlerService
 
             if (!readLink && !await _fileSecurity.CanDownloadAsync(file))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                var linkId = await _externalShare.GetLinkIdAsync();
+
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title)) || linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return;
+                }
             }
 
             if (readLink && (linkShare == FileShare.Comment || linkShare == FileShare.Read) && file.DenyDownload)
@@ -620,10 +657,34 @@ public class FileHandlerService
                 version = 0;
             }
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
+            var share = context.Request.Query[FilesLinkUtility.FolderShareKey];
 
             await fileDao.InvalidateCacheAsync(id);
 
-            var (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            var linkRight = FileShare.Restrict;
+            File<T> file = null;
+
+            if (!string.IsNullOrEmpty(share))
+            {
+                var result = await _externalLinkHelper.ValidateAsync(share);
+
+                if (result.Access != FileShare.Restrict)
+                {
+                    file = version > 0
+                        ? await fileDao.GetFileAsync(id, version)
+                        : await fileDao.GetFileAsync(id);
+
+                    if (file != null && await _fileSecurity.CanDownloadAsync(file))
+                    {
+                        linkRight = result.Access;
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(doc))
+            {
+                (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            }
+            
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey];

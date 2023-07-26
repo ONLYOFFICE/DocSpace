@@ -17,6 +17,7 @@ import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
+import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/profile");
@@ -184,8 +185,9 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const { enablePlugins } = this.authStore.settingsStore;
+    const { enablePlugins, standalone } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+    const isCommunity = this.authStore.isCommunity;
 
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -257,12 +259,13 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
-      isAdmin && {
-        key: "user-menu-payments",
-        icon: PaymentsReactSvgUrl,
-        label: t("Common:PaymentsTitle"),
-        onClick: this.onPaymentsClick,
-      },
+      isAdmin &&
+        !isCommunity && {
+          key: "user-menu-payments",
+          icon: PaymentsReactSvgUrl,
+          label: t("Common:PaymentsTitle"),
+          onClick: this.onPaymentsClick,
+        },
       {
         isSeparator: true,
         key: "separator1",
@@ -321,11 +324,39 @@ class ProfileActionsStore {
     }
 
     if (this.pluginStore.profileMenuItemsList && enablePlugins) {
+      const {
+        setSettingsPluginDialogVisible,
+        setCurrentSettingsDialogPlugin,
+        updatePluginStatus,
+      } = this.pluginStore;
+
       this.pluginStore.profileMenuItemsList.forEach((option) => {
-        actions.splice(option.value.position, 0, {
-          key: option.key,
-          ...option.value,
-        });
+        if (option.value.onClick) {
+          const onClick = async () => {
+            const message = await option.value.onClick();
+
+            messageActions(
+              message,
+              null,
+              null,
+              option.value.pluginId,
+              setSettingsPluginDialogVisible,
+              setCurrentSettingsDialogPlugin,
+              updatePluginStatus
+            );
+          };
+
+          actions.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+            onClick,
+          });
+        } else {
+          actions.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        }
       });
     }
 

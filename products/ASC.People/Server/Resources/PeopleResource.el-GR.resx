@@ -79,4 +79,7 @@
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Το αρχείο δεν βρέθηκε</value>
   </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Προσθέστε νέους χρήστες, προσκαλέστε ή εισάγετέ τους. Διαχειριστείτε τους χρήστες και δείτε λεπτομέρειες για αυτούς.</value>
+  </data>
 </root>

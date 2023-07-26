@@ -1,212 +1,372 @@
-FROM ubuntu:18.04
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
 
-ARG RELEASE_DATE="2016-06-21"
-ARG RELEASE_DATE_SIGN=""
-ARG VERSION="8.9.0.190"
-ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
+FROM $DOTNET_SDK AS base
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG BUILD_DOTNET_CORE_ARGS
+ENV BUILD_DOTNET_CORE_ARGS=${BUILD_DOTNET_CORE_ARGS}
+ARG PROPERTY_BUILD="all"
+ARG BACKEND_NODEJS_SERVICES
+ENV BACKEND_NODEJS_SERVICES=${BACKEND_NODEJS_SERVICES}
+ARG BACKEND_DOTNETCORE_SERVICES
+ENV BACKEND_DOTNETCORE_SERVICES=${BACKEND_DOTNETCORE_SERVICES}
+ARG SELF_CONTAINED=""
+ARG PUBLISH_BACKEND_ARGS
+ENV PUBLISH_BACKEND_ARGS=${PUBLISH_BACKEND_ARGS}
+ARG PUBLISH_CNF="Release"
+ARG FRONTEND_BUILD_ARGS="build"
+ARG FRONTEND_DEPLOY_ARGS="deploy"
+ARG DEBUG_INFO_CHECK="true"
+ARG MIGRATION_CHECK="true"
+ARG GIT_BRANCH="master"
+ARG RELEASE_DATE="2016-06-22"
 ARG DEBIAN_FRONTEND=noninteractive
-ARG GIT_BRANCH="develop"
+ARG PRODUCT_VERSION=0.0.0
+ARG BUILD_NUMBER=0
 
-LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
-      onlyoffice.community.version="${VERSION}" \
+LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
 
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
 
+WORKDIR ${SRC_PATH}
+
+COPY . .
+
 RUN apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y dist-upgrade && \
-    apt-get -yq install gnupg2 ca-certificates && \
-    apt-get install -yq sudo locales && \
+    apt-get install -yq \
+        sudo \
+        locales \
+        git \
+        npm  && \
+    locale-gen en_US.UTF-8 && \
+    npm install --global yarn && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+RUN git clone -b main/community-server https://github.com/ONLYOFFICE/document-templates ${SRC_PATH}/ASC.Files/Server/DocStore
+
+RUN mkdir -p /app/onlyoffice/ && \
+    find config/ -maxdepth 1 -name "*.json" | grep -v test | grep -v dev | xargs tar -cvf config.tar && \
+    tar -C "/app/onlyoffice/" -xvf config.tar && \
+    cp config/*.config /app/onlyoffice/config/ && \
+    mkdir -p ${SRC_PATH}/build/deploy/client && \
+    mkdir -p ${SRC_PATH}/build/deploy/public && \
+    mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
+    sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
+    sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
+    cd ${SRC_PATH}/build/install/common/ && \
+    bash build-services.sh \
+    -sp "${SRC_PATH}" \
+    -bp "${BUILD_PATH}" \
+    -pb "${PROPERTY_BUILD}" \
+    -sc "${SELF_CONTAINED}" \
+    -pc "${PUBLISH_CNF}" \
+    -yb "${FRONTEND_BUILD_ARGS}" \
+    -yd "${FRONTEND_DEPLOY_ARGS}" \
+    -dc "${DEBUG_INFO_CHECK}" \
+    -mc "${MIGRATION_CHECK}" &&\
+    rm -rf ${SRC_PATH}/common/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Core/* && \
+    rm -rf ${SRC_PATH}/web/ASC.Web.Studio/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Service/* && \
+    rm -rf ${SRC_PATH}/products/ASC.Files/Server/* && \
+    rm -rf ${SRC_PATH}/products/ASC.People/Server/* 
+  
+FROM $DOTNET_RUN as dotnetrun
+ARG BUILD_PATH
+ARG SRC_PATH
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+# add defualt user and group for no-root run
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
-    addgroup --system --gid 104 elasticsearch && \
-    adduser -uid 103 --quiet --home /nonexistent --system --gid 104 elasticsearch && \
-    locale-gen en_US.UTF-8 && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R && \
+    chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get install -yq software-properties-common wget curl cron rsyslog && \
-    curl -OL http://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb && \
-    echo "mysql-apt-config mysql-apt-config/repo-codename select bionic" | sudo debconf-set-selections && \
-    echo "mysql-apt-config mysql-apt-config/repo-distro select ubuntu" | sudo debconf-set-selections && \
-    echo "mysql-apt-config mysql-apt-config/select-server select mysql-8.0" | sudo debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.15-1_all.deb && \
-    rm -f mysql-apt-config_0.8.15-1_all.deb && \
-    wget http://nginx.org/keys/nginx_signing.key && \
-    apt-key add nginx_signing.key && \
-    echo "deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list.d/nginx.list && \
-    echo "deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx" >> /etc/apt/sources.list.d/nginx.list && \
-    apt-get install -yq openjdk-8-jre-headless && \
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
-    apt-get install -yq apt-transport-https && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official.list && \
-    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-7.x.list && \
+    apt-get install -yq \
+        python3-pip \
+        nano \
+        curl \
+        vim \
+        libgdiplus && \
+    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
+        
+#USER onlyoffice
+EXPOSE 5050
+ENTRYPOINT ["python3", "docker-entrypoint.py"]
+
+FROM node:18.12.1-slim as noderun
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R  && \
+    chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get install -yq elasticsearch=7.4.0 && \
-    add-apt-repository -y ppa:certbot/certbot && \
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
-    apt-get install -y nodejs && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    apt-get -y update && \
-    apt-get install -yq nginx && \
-    cd ~ && \
-    wget https://downloads.apache.org/kafka/2.5.0/kafka_2.12-2.5.0.tgz && \
-    tar xzf kafka_2.12-2.5.0.tgz && \
-    rm kafka_2.12-2.5.0.tgz && \
-    echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-get install -yq libgdiplus \
-                        python-certbot-nginx \
-                        htop \
-                        nano \
-                        dnsutils \
-                        python3-pip \
-                        multiarch-support \ 
-                        iproute2 \
-                        ffmpeg \
-                        jq \ 
-                        git \ 
-                        yarn \
-                        dotnet-sdk-3.1 \
-                        supervisor \
-                        mysql-client \
-                        mysql-server
+    apt-get install -yq \ 
+            nano \
+            curl \
+            vim \
+            python3-pip && \
+    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/ && \
-    cd /app/onlyoffice/src/ && \
-    git checkout ${GIT_BRANCH} && \
-    git pull
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
 
-RUN cd /app/onlyoffice/src/ && \
-    yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
-    yarn pack --cwd web/ASC.Web.Components
-	
-RUN cd /app/onlyoffice/src/ && \
-    component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-    yarn remove asc-web-components --cwd web/ASC.Web.Common --peer && \
-    yarn add file:../../$component --cwd web/ASC.Web.Common --cache-folder ../../yarn --peer && \
-    yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build/ASC.Web.Common.log && \
-    yarn pack --cwd web/ASC.Web.Common
+EXPOSE 5050
+ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-RUN cd /app/onlyoffice/src/ && \
-    npm run build:storybook --prefix web/ASC.Web.Components && \
-    mkdir -p /var/www/story/ && \
-    cp -Rf web/ASC.Web.Components/storybook-static/* /var/www/story/
+## Nginx image ##
+FROM nginx AS proxy
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG COUNT_WORKER_CONNECTIONS=1024
+ENV DNS_NAMESERVER=127.0.0.11 \
+    COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
+    MAP_HASH_BUCKET_SIZE=""
 
-RUN cd /app/onlyoffice/src/ && \
-    component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
-    yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client && \
-    yarn add ../../$component --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
-    yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
-    yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Client && npm i && cd ../../) && \
-    npm run build --prefix web/ASC.Web.Client && \
-    rm -rf /var/www/studio/client/* && \
-    mkdir -p /var/www/studio/client && \
-    cp -rf web/ASC.Web.Client/build/* /var/www/studio/client
+RUN apt-get -y update && \
+    apt-get install -yq vim && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/share/nginx/html/* 
 
-RUN cd /app/onlyoffice/src/ && \
-    component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
-    yarn remove asc-web-components asc-web-common --cwd products/ASC.Files/Client && \
-    yarn add ../../../$component --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
-    yarn add ../../../$common --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
-    yarn install --cwd products/ASC.Files/Client --frozen-lockfile || (cd products/ASC.Files/Client && npm i && cd ../../../) && \
-    npm run build --prefix products/ASC.Files/Client && \
-    mkdir -p /var/www/products/ASC.Files/client && \
-    cp -Rf products/ASC.Files/Client/build/* /var/www/products/ASC.Files/client && \
-    mkdir -p /var/www/products/ASC.Files/client/products/files
+# copy static services files and config values 
+COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+COPY --from=base /etc/nginx/includes /etc/nginx/includes
+COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
+COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
+COPY --from=base ${SRC_PATH}/build/install/docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
+COPY --from=base ${SRC_PATH}/build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY --from=base ${SRC_PATH}/build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 
-RUN cd /app/onlyoffice/src/ && \
-    component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
-    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
-    yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client && \
-    yarn add ../../../$component --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
-    yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
-    yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/ASC.People/Client && npm i && cd ../../../) && \
-    npm run build --prefix products/ASC.People/Client && \
-    mkdir -p /var/www/products/ASC.People/client && \
-    cp -Rf products/ASC.People/Client/build/* /var/www/products/ASC.People/client && \
-    mkdir -p /var/www/products/ASC.People/client/products/people
+# add defualt user and group for no-root run
+RUN chown nginx:nginx /etc/nginx/* -R && \
+    chown nginx:nginx /docker-entrypoint.d/* && \
+    # changes for upstream configure
+    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
+    if [[ -z "${SERVICE_CLIENT}" ]] ; then sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf; fi && \
+    sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
-RUN cd /app/onlyoffice/src/ && \
-    rm -f /etc/nginx/conf.d/* && \
-    mkdir -p /var/www/public/ && cp -f public/* /var/www/public/ && \
-    mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
-    cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
-    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
-    sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
-    dotnet restore ASC.Web.slnf && \
-    dotnet build -r linux-x64 ASC.Web.slnf && \
-    cd products/ASC.People/Server && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && \
-    cd ../../../ && \
-    cd products/ASC.Files/Server && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/server && \
-    cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
-    cd ../../../ && \
-    cd products/ASC.Files/Service && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/service && \
-    cd ../../../ && \
-    cd web/ASC.Web.Api && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/api && \
-    cd ../../ && \
-    cd web/ASC.Web.Studio && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/server && \
-    cd ../../ && \
-    cd common/services/ASC.Data.Backup && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/backup && \
-    cd ../../../ && \
-    cd common/services/ASC.Notify && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/notify && \
-    cd ../../../ && \
-    cd common/services/ASC.ApiSystem && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/apisystem && \
-    cd ../../../ && \
-    cd common/services/ASC.Thumbnails.Svc && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/thumb/service && \
-    cd ../../../ && \
-    yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
-    mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
-    cd common/services/ASC.UrlShortener.Svc && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/urlshortener/service && \
-    cd ../../../ && \
-    yarn install --cwd common/ASC.UrlShortener --frozen-lockfile && \
-    mkdir -p /var/www/services/urlshortener/client && cp -Rf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && \
-    cd common/services/ASC.Studio.Notify && \
-    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/studio.notify
+## Doceditor ##
+FROM noderun as doceditor
+WORKDIR ${BUILD_PATH}/services/ASC.Editors/editor
 
-COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
-COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
 
-COPY config/createdb.sql /app/onlyoffice/createdb.sql
-COPY config/onlyoffice.sql /app/onlyoffice/onlyoffice.sql
-COPY config/onlyoffice.data.sql /app/onlyoffice/onlyoffice.data.sql
-COPY config/onlyoffice.resources.sql /app/onlyoffice/onlyoffice.resources.sql
+CMD ["server.js", "ASC.Editors"]
 
-RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
+## Login ##
+FROM noderun as login
+WORKDIR ${BUILD_PATH}/services/ASC.Login/login
 
-RUN mkdir -p /var/mysqld/ && \
-    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /var/mysqld/ && \
-    sudo -u mysql bash -c "/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe --pid-file=/var/mysqld/mysqld.pid &" && \
-    sleep 5s && \
-    mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
-    mysql -D "onlyoffice" < /app/onlyoffice/createdb.sql && \
-    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.sql && \
-    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.data.sql && \
-    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.resources.sql && \
-    mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
-    mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
-    killall -u mysql -n mysql
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
 
-RUN rm -rf /var/lib/apt/lists/*
+CMD ["server.js", "ASC.Login"]
 
-VOLUME /var/lib/mysql
+## ASC.Data.Backup.BackgroundTasks ##
+FROM dotnetrun AS backup_background
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/
 
-EXPOSE 80 443 8092 8081
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
-ENTRYPOINT ["/usr/bin/supervisord", "--"]
+CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks", "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue"]
+
+# ASC.ApiSystem ##
+FROM dotnetrun AS api_system
+WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/  .
+
+CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+
+## ASC.ClearEvents ##
+FROM dotnetrun AS clear-events
+WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/service/  .
+
+CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
+
+## ASC.Data.Backup ##
+FROM dotnetrun AS backup
+WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup/service/ .
+
+CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup"]
+
+## ASC.Files ##
+FROM dotnetrun AS files
+WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files/service/ .
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/ASC.Files/Server/DocStore .
+
+CMD ["ASC.Files.dll", "ASC.Files"]
+
+## ASC.Files.Service ##
+FROM dotnetrun AS files_services
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64
+WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
+COPY --from=linuxserver/ffmpeg:latest --chown=onlyoffice:onlyoffice /usr/local/bin/ /usr/local/bin/
+
+CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"]
+
+## ASC.Notify ##
+FROM dotnetrun AS notify
+WORKDIR ${BUILD_PATH}/services/ASC.Notify/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
+
+CMD ["ASC.Notify.dll", "ASC.Notify", "core:eventBus:subscriptionClientName=asc_event_bus_notify_queue"]
+
+## ASC.People ##
+FROM dotnetrun AS people_server
+WORKDIR ${BUILD_PATH}/products/ASC.People/server/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.People/service/ .
+
+CMD ["ASC.People.dll", "ASC.People"]
+
+## ASC.Socket.IO ##
+FROM noderun AS socket
+WORKDIR ${BUILD_PATH}/services/ASC.Socket.IO/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket.IO/service/ .
+
+CMD  ["server.js", "ASC.Socket.IO"]
+
+## ASC.SsoAuth ##
+FROM noderun AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
+
+CMD ["app.js", "ASC.SsoAuth"]
+
+## ASC.Studio.Notify ##
+FROM dotnetrun AS studio_notify
+WORKDIR ${BUILD_PATH}/services/ASC.Studio.Notify/service/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio.Notify/service/ .
+
+CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify"]
+
+## ASC.Web.Api ##
+FROM dotnetrun AS api
+WORKDIR ${BUILD_PATH}/studio/ASC.Web.Api/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
+
+CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
+
+## ASC.Web.Studio ##
+FROM dotnetrun AS studio
+WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-entrypoint.py .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Studio/service/ .
+
+CMD ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+
+## ASC.Web.HealthChecks.UI ##
+FROM dotnetrun AS healthchecks
+WORKDIR ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-healthchecks-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.HealthChecks.UI/service/ .
+
+ENTRYPOINT ["./docker-healthchecks-entrypoint.sh"]
+CMD ["ASC.Web.HealthChecks.UI.dll", "ASC.Web.HealthChecks.UI"]
+
+## ASC.Migration.Runner ##
+FROM $DOTNET_RUN AS onlyoffice-migration-runner
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/docker-migration-entrypoint.sh .
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration.Runner/service/ .
+
+ENTRYPOINT ["./docker-migration-entrypoint.sh"]
+
+## image for k8s bin-share ##
+FROM busybox:latest AS bin_share
+ARG BUILD_PATH
+ARG SRC_PATH
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+RUN mkdir -p /app/appserver/ASC.Files/server && \
+    mkdir -p /app/appserver/ASC.People/server/ && \
+    mkdir -p /app/appserver/ASC.CRM/server/ && \
+    mkdir -p /app/appserver/ASC.Projects/server/ && \
+    mkdir -p /app/appserver/ASC.Calendar/server/ && \
+    mkdir -p /app/appserver/ASC.Mail/server/ && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY --from=base /var/www/services/ASC.Files/service/ /app/appserver/ASC.Files/server/
+COPY --from=base /var/www/services/ASC.People/service/ /app/appserver/ASC.People/server/
+ENTRYPOINT ["./app/docker-entrypoint.sh"]
+
+## image for k8s wait-bin-share ##
+FROM busybox:latest AS wait_bin_share
+ARG BUILD_PATH
+ARG SRC_PATH
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+RUN mkdir /app
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/install/docker/wait-bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
+ENTRYPOINT ["./app/docker-entrypoint.sh"]

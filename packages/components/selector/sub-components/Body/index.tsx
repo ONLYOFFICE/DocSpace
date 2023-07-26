@@ -62,6 +62,7 @@ const Body = ({
   withFooterInput,
   withFooterCheckbox,
   descriptionText,
+  withHeader,
 }: BodyProps) => {
   const [bodyHeight, setBodyHeight] = React.useState(0);
 
@@ -127,6 +128,7 @@ const Body = ({
       }
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
+      withHeader={withHeader}
     >
       {withBreadCrumbs ? (
         isBreadCrumbsLoading ? (

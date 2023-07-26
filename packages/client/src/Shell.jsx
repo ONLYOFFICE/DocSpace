@@ -50,6 +50,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    standalone,
     userId,
   } = rest;
 
@@ -90,10 +91,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
-    socketHelper.emit({
-      command: "subscribe",
-      data: { roomParts: "quota" },
-    });
+
+    !standalone && // unlimited quota (standalone)
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: "quota" },
+      });
+
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });
@@ -193,7 +197,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
-        productName: "ONLYOFFICE Personal",
+        productName: "ONLYOFFICE DocSpace",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
       onAction: () => {
@@ -340,7 +344,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     <Layout>
       {toast}
       <ReactSmartBanner t={t} ready={ready} />
-      <GlobalEvents />
       {isEditor ? <></> : <NavMenu />}
       {isMobileOnly && <MainBar />}
       <IndicatorLoader />
@@ -371,10 +374,19 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
+    standalone,
   } = settingsStore;
 
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
+
+  const userTheme = isDesktopClient
+    ? auth?.userStore?.user?.theme
+      ? auth?.userStore?.user?.theme
+      : window.RendererProcessVariable?.theme?.type === "dark"
+      ? "Dark"
+      : "Base"
+    : auth?.userStore?.user?.theme;
 
   return {
     loadBaseInfo: async () => {
@@ -401,13 +413,10 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: isDesktopClient
-      ? window.RendererProcessVariable?.theme?.type === "dark"
-        ? "Dark"
-        : "Base"
-      : auth?.userStore?.user?.theme,
+    userTheme: userTheme,
     userId: auth?.userStore?.user?.id,
     whiteLabelLogoUrls,
+    standalone,
   };
 })(observer(Shell));
 

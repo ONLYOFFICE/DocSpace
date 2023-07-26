@@ -13,7 +13,6 @@ import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import AccountsFilter from "@docspace/common/api/people/filter";
 
-import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 
 import Loaders from "@docspace/common/components/Loaders";
@@ -246,7 +245,6 @@ const ArticleBodyContent = (props) => {
 
       {/* {!isDesktopClient && showText && (
         <StyledBlock showText={showText}>
-          <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) && !firstLoad && campaigns.length > 0 && (
             <Banner FirebaseHelper={FirebaseHelper} />
           )}

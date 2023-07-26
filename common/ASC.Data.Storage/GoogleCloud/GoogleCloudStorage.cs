@@ -452,7 +452,15 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            await QuotaUsedDeleteAsync(domain, Convert.ToInt64(obj.Size));
+
+            if (QuotaController != null)
+            {
+                if (string.IsNullOrEmpty(QuotaController.ExcludePattern) ||
+                    !Path.GetFileName(obj.Name).StartsWith(QuotaController.ExcludePattern))
+                {
+                    await QuotaUsedDeleteAsync(domain, Convert.ToInt64(obj.Size));
+                }
+            }
         }
     }
 

@@ -135,6 +135,7 @@ const ClientContent = (props) => {
   return (
     <>
       <FilesPanels />
+      <GlobalEvents />
       {!isFormGallery ? (
         isFrame ? (
           showMenu && <ClientArticle />

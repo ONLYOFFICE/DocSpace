@@ -1,46 +1,43 @@
 import { request } from "../client";
 
-export const getPlugins = async () => {
+export const getPlugins = async (enabled) => {
+  const url = enabled
+    ? `/settings/webplugins?enabled=${enabled}`
+    : `/settings/webplugins`;
+
   return request({
     method: "GET",
-    url: `/plugins`,
+    url,
   });
 };
 
-export const activatePlugin = async (id) => {
-  return request({
-    method: "PUT",
-    url: `/plugins/activate/${id}`,
-  });
-};
-
-export const addPlugin = async (plugin) => {
+export const addPlugin = async (data) => {
   return request({
     method: "POST",
-    url: `/plugins/add`,
-    data: plugin,
+    url: `/settings/webplugins`,
+    data,
   });
 };
 
-export const uploadImage = async (id, formData) => {
+export const getPlugin = async (id) => {
   return request({
-    method: "PUT",
-    url: `/plugins/upload/image/${id}`,
-    data: formData,
+    method: "GET",
+    url: `/settings/webplugins/${id}`,
   });
 };
 
-export const uploadPlugin = async (id, formData) => {
+export const activatePlugin = async (id, enabled) => {
+  console.log(id, enabled);
   return request({
     method: "PUT",
-    url: `/plugins/upload/plugin/${id}`,
-    data: formData,
+    url: `/settings/webplugins/${id}`,
+    data: { enabled },
   });
 };
 
 export const deletePlugin = async (id) => {
   request({
     method: "DELETE",
-    url: `/plugins/delete/${id}`,
+    url: `/settings/webplugins/${id}`,
   });
 };
