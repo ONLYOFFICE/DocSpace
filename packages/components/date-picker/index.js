@@ -10,13 +10,12 @@ import Calendar from "@docspace/components/calendar";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { useTranslation } from "react-i18next";
-
 import CalendarIconUrl from "PUBLIC_DIR/images/calendar.react.svg?url";
 import CalendarIcon from "PUBLIC_DIR/images/calendar.react.svg";
 
 const Wrapper = styled.div`
   .selectedItem {
+    cursor: pointer;
     .calendarIcon {
       width: 12px;
       height: 12px;
@@ -64,8 +63,7 @@ const StyledCalendar = styled(Calendar)`
 
 const DatePicker = (props) => {
   const {
-    date,
-    setDate,
+    initialDate,
     onChange,
     selectDateText,
     className,
@@ -74,24 +72,29 @@ const DatePicker = (props) => {
     maxDate,
     locale,
     showCalendarIcon,
+    outerDate,
+    openDate,
   } = props;
-  const { t } = useTranslation(["Webhooks"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
+  const selectedItemRef = useRef();
+
+  const [date, setDate] = useState(initialDate ? moment(initialDate) : null);
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-
-  const handleChange = (date) => {
-    onChange && onChange(date);
-    setDate(date);
-  };
 
   const toggleCalendar = () =>
     setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
 
   const closeCalendar = () => {
     setIsCalendarOpen(false);
+  };
+
+  const handleChange = (date) => {
+    onChange && onChange(date);
+    setDate(date);
+    closeCalendar();
   };
 
   const deleteSelectedDate = (propKey, label, group, e) => {
@@ -110,12 +113,14 @@ const DatePicker = (props) => {
       minDate={minDate}
       maxDate={maxDate}
       locale={locale}
+      initialDate={openDate}
     />
   );
 
   const handleClick = (e) => {
     !selectorRef?.current?.contains(e.target) &&
       !calendarRef?.current?.contains(e.target) &&
+      !selectedItemRef?.current?.contains(e.target) &&
       setIsCalendarOpen(false);
   };
 
@@ -125,13 +130,23 @@ const DatePicker = (props) => {
       document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
+  useEffect(() => {
+    if (
+      outerDate &&
+      moment(outerDate).format("YYYY-MM-D HH:mm") !==
+        moment(date).format("YYYY-MM-D HH:mm")
+    ) {
+      setDate(outerDate);
+    }
+  }, [outerDate]);
+
   return (
     <Wrapper className={className} id={id}>
-      {date === null ? (
+      {!date ? (
         <>
           <DateSelector onClick={toggleCalendar} ref={selectorRef}>
             <SelectorAddButton
-              title={t("Select")}
+              title={selectDateText}
               className="mr-8 add-delivery-date-button"
               iconName={CalendarIconUrl}
             />
@@ -139,7 +154,6 @@ const DatePicker = (props) => {
               {selectDateText}
             </Text>
           </DateSelector>
-          {isCalendarOpen && <CalendarElement />}
         </>
       ) : (
         <SelectedItem
@@ -155,8 +169,12 @@ const DatePicker = (props) => {
               date.format("DD MMM YYYY")
             )
           }
+          onClick={toggleCalendar}
+          forwardedRef={selectedItemRef}
         />
       )}
+
+      {isCalendarOpen && <CalendarElement />}
     </Wrapper>
   );
 };
@@ -164,8 +182,12 @@ const DatePicker = (props) => {
 DatePicker.propTypes = {
   /** Allows to change select date text */
   selectDateText: PropTypes.string,
-  /** Date object */
-  date: PropTypes.object,
+  /** Selected date */
+  initialDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func.isRequired,
   /** Allows to set classname */
@@ -173,15 +195,29 @@ DatePicker.propTypes = {
   /** Allows to set id */
   id: PropTypes.string,
   /** Specifies min choosable calendar date */
-  minDate: PropTypes.object,
+  minDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Specifies max choosable calendar date */
-  maxDate: PropTypes.object,
+  maxDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Specifies calendar locale */
   locale: PropTypes.string,
   /** Shows calendar icon in selected item */
   showCalendarIcon: PropTypes.bool,
-  /** Sets date */
-  setDate: PropTypes.func,
+  /** Allows to track date outside the component */
+  outerDate: PropTypes.object,
+  /** Allows to set first shown date in calendar */
+  openDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 
 DatePicker.defaultProps = {

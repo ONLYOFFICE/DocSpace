@@ -19,6 +19,10 @@ export const PublicRoute = ({ children, ...rest }) => {
     //   return <AppLoader />;
     // }
 
+    if (location.pathname === "/rooms/share") {
+      return children;
+    }
+
     if (isAuthenticated && !isPortalRestoring) {
       return <Navigate replace to={"/"} />;
     }

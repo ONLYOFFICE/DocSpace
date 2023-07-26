@@ -360,6 +360,7 @@ export default inject(
     selectedFolderStore,
     dialogsStore,
     settingsStore,
+    clientLoadingStore,
   }) => {
     const {
       addFileToRecentlyViewed,

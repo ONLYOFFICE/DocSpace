@@ -3140,6 +3140,13 @@ const Dark = {
     borderColor: "#858585",
     dashedBorder: "1px dashed #fff",
   },
+
+  editLink: {
+    text: {
+      color: "#A3A9AE",
+      errorColor: "#F21C0E",
+    },
+  },
 };
 
 export default Dark;

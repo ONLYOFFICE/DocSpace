@@ -20,6 +20,7 @@ import ItemsList from "./sub-components/ItemsList";
 import InviteInput from "./sub-components/InviteInput";
 import ExternalLinks from "./sub-components/ExternalLinks";
 import Scrollbar from "@docspace/components/scrollbar";
+import { LinkType } from "../../../helpers/constants";
 const InvitePanel = ({
   folders,
   getFolderInfo,
@@ -81,9 +82,9 @@ const InvitePanel = ({
       let links = [];
 
       users.map((user) => {
-        const { shareLink, id, title, expirationDate } = user.sharedTo;
+        const { shareLink, id, title, expirationDate, linkType } = user.sharedTo;
 
-        if (!!shareLink) {
+        if (!!shareLink && linkType === LinkType.Invite) {
           links.push({
             id,
             title,
