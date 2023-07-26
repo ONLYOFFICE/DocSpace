@@ -7,9 +7,10 @@ import {
   FolderType,
   FileStatus,
   RoomsType,
+  RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
-import history from "@docspace/common/history";
+
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -18,15 +19,18 @@ import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
 import { getDaysRemaining } from "@docspace/common/utils";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+
 import {
   getCategoryType,
+  getCategoryUrl,
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
+import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -48,11 +52,9 @@ class FilesStore {
   treeFoldersStore;
   filesSettingsStore;
   thirdPartyStore;
+  clientLoadingStore;
 
   accessRightsStore;
-
-  isLoaded = false;
-  isLoading = false;
 
   viewAs =
     isMobile && storageViewAs !== "tile" ? "row" : storageViewAs || "table";
@@ -68,7 +70,6 @@ class FilesStore {
   tooltipPageY = 0;
   startDrag = false;
 
-  firstLoad = true;
   alreadyFetchingRooms = false;
 
   files = [];
@@ -127,6 +128,12 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
+  createNewFilesQueue = new Queue({
+    concurrent: 5,
+    interval: 500,
+    start: true,
+  });
 
   constructor(
     authStore,
@@ -134,7 +141,8 @@ class FilesStore {
     treeFoldersStore,
     filesSettingsStore,
     thirdPartyStore,
-    accessRightsStore
+    accessRightsStore,
+    clientLoadingStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -147,6 +155,7 @@ class FilesStore {
     this.filesSettingsStore = filesSettingsStore;
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
+    this.clientLoadingStore = clientLoadingStore;
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
@@ -155,7 +164,7 @@ class FilesStore {
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
 
-      if (!(this.isLoading || this.operationAction))
+      if (!(this.clientLoadingStore.isLoading || this.operationAction))
         switch (opt?.cmd) {
           case "create":
             this.wsModifyFolderCreate(opt);
@@ -168,23 +177,27 @@ class FilesStore {
             break;
         }
 
-      if (opt?.cmd === "create") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount++;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount++;
-        this.authStore.infoPanelStore.reloadSelection();
-      } else if (opt?.cmd === "delete") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount--;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount--;
-        this.authStore.infoPanelStore.reloadSelection();
+      if (
+        opt?.cmd &&
+        opt.id &&
+        (opt.type === "file" || opt.type === "folder") &&
+        (opt.cmd === "create" || opt.cmd === "delete")
+      ) {
+        runInAction(() => {
+          if (opt.cmd === "create") {
+            this.selectedFolderStore[opt.type + "sCount"]++;
+          } else if (opt.cmd === "delete") {
+            this.selectedFolderStore[opt.type + "sCount"]--;
+          }
+          this.authStore.infoPanelStore.reloadSelection();
+        });
       }
+
+      this.treeFoldersStore.updateTreeFoldersItem(opt);
     });
 
     socketHelper.on("refresh-folder", (id) => {
-      if (!id || this.isLoading) return;
+      if (!id || this.clientLoadingStore.isLoading) return;
 
       //console.log(
       //  `selected folder id ${this.selectedFolderStore.id} an changed folder id ${id}`
@@ -268,7 +281,42 @@ class FilesStore {
 
       this.createThumbnail(this.files[foundIndex]);
     });
+
+    this.createNewFilesQueue.on("resolve", this.onResolveNewFile);
   }
+
+  onResolveNewFile = (fileInfo) => {
+    if (!fileInfo) return;
+
+    //console.log("onResolveNewFiles", { fileInfo });
+
+    if (this.files.findIndex((x) => x.id === fileInfo.id) > -1) return;
+
+    console.log("[WS] create new file", { fileInfo });
+
+    const newFiles = [fileInfo, ...this.files];
+
+    if (
+      newFiles.length > this.filter.pageCount &&
+      this.authStore.settingsStore.withPaging
+    ) {
+      newFiles.pop(); // Remove last
+    }
+
+    const newFilter = this.filter;
+    newFilter.total += 1;
+
+    runInAction(() => {
+      this.setFilter(newFilter);
+      this.setFiles(newFiles);
+    });
+
+    this.debouncefetchTreeFolders();
+  };
+
+  debouncefetchTreeFolders = debounce(() => {
+    this.treeFoldersStore.fetchTreeFolders();
+  }, 1000);
 
   debounceRemoveFiles = debounce(() => {
     this.removeFiles(this.tempActionFilesIds);
@@ -292,34 +340,35 @@ class FilesStore {
 
       //To update a file version
       if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
-        this.getFileInfo(file.id);
+        if (
+          this.files[foundIndex].version !== file.version ||
+          this.files[foundIndex].versionGroup !== file.versionGroup
+        ) {
+          this.files[foundIndex].version = file.version;
+          this.files[foundIndex].versionGroup = file.versionGroup;
+        }
         this.checkSelection(file);
       }
 
       if (foundIndex > -1) return;
 
-      const fileInfo = await api.files.getFileInfo(file.id);
+      setTimeout(() => {
+        const foundIndex = this.files.findIndex((x) => x.id === file.id);
+        if (foundIndex > -1) {
+          //console.log("Skip in timeout");
+          return null;
+        }
 
-      if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
-      console.log("[WS] create new file", fileInfo.id, fileInfo.title);
+        this.createNewFilesQueue.enqueue(() => {
+          const foundIndex = this.files.findIndex((x) => x.id === file.id);
+          if (foundIndex > -1) {
+            //console.log("Skip in queue");
+            return null;
+          }
 
-      const newFiles = [fileInfo, ...this.files];
-
-      if (
-        newFiles.length > this.filter.pageCount &&
-        this.authStore.settingsStore.withPaging
-      ) {
-        newFiles.pop(); // Remove last
-      }
-
-      const newFilter = this.filter;
-      newFilter.total += 1;
-
-      runInAction(() => {
-        this.setFilter(newFilter);
-        this.setFiles(newFiles);
-        this.treeFoldersStore.fetchTreeFolders();
-      });
+          return api.files.getFileInfo(file.id);
+        });
+      }, 300);
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
 
@@ -376,10 +425,16 @@ class FilesStore {
       const folder = JSON.parse(opt?.data);
       if (!folder || !folder.id) return;
 
-      this.getFolderInfo(folder.id);
+      api.files
+        .getFolderInfo(folder.id)
+        .then(() => this.setFolder(folderInfo))
+        .catch(() => {
+          // console.log("Folder deleted")
+        });
+
       console.log("[WS] update folder", folder.id, folder.title);
 
-      if (this.selection) {
+      if (this.selection?.length) {
         const foundIndex = this.selection?.findIndex((x) => x.id === folder.id);
         if (foundIndex > -1) {
           runInAction(() => {
@@ -428,6 +483,7 @@ class FilesStore {
       tempActionFilesIds.push(this.files[foundIndex].id);
 
       this.setTempActionFilesIds(tempActionFilesIds);
+
       this.debounceRemoveFiles();
 
       // Hide pagination when deleting files
@@ -502,8 +558,8 @@ class FilesStore {
     this.isPreview = predicate;
   };
 
-  setTempFilter = (filser) => {
-    this.tempFilter = filser;
+  setTempFilter = (filter) => {
+    this.tempFilter = filter;
   };
 
   setHighlightFile = (highlightFile) => {
@@ -561,36 +617,54 @@ class FilesStore {
     }
   };
 
-  addActiveItems = (files, folders) => {
+  addActiveItems = (files, folders, destFolderId) => {
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
-        this.setActiveFolders(folders);
+        this.setActiveFolders(folders, destFolderId);
       } else {
-        folders.map((item) => this.activeFolders.push(item));
+        folders.map((item) =>
+          this.activeFolders.push({ id: item, destFolderId })
+        );
       }
     }
 
     if (files && files.length) {
       if (!this.activeFiles.length) {
-        this.setActiveFiles(files);
+        this.setActiveFiles(files, destFolderId);
       } else {
-        files.map((item) => this.activeFiles.push(item));
+        files.map((item) => this.activeFiles.push({ id: item, destFolderId }));
       }
     }
   };
 
-  setActiveFiles = (activeFiles) => {
-    this.activeFiles = activeFiles;
+  updateActiveFiles = (items) => {
+    this.activeFiles = items;
   };
 
-  setActiveFolders = (activeFolders) => {
-    this.activeFolders = activeFolders;
+  clearFiles = () => {
+    this.setFolders([]);
+    this.setFiles([]);
+
+    this.selectedFolderStore.setSelectedFolder(null);
   };
 
-  setIsLoaded = (isLoaded) => {
-    this.isLoaded = isLoaded;
+  setActiveFiles = (activeFiles, destFolderId) => {
+    const arrayFormation = activeFiles.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFiles = arrayFormation;
   };
 
+  setActiveFolders = (activeFolders, destFolderId) => {
+    const arrayFormation = activeFolders.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFolders = arrayFormation;
+  };
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
     localStorage.setItem("viewAs", viewAs);
@@ -603,10 +677,6 @@ class FilesStore {
 
   setDragging = (dragging) => {
     this.dragging = dragging;
-  };
-
-  setIsLoading = (isLoading) => {
-    this.isLoading = isLoading;
   };
 
   setTooltipPosition = (tooltipPageX, tooltipPageY) => {
@@ -674,7 +744,7 @@ class FilesStore {
 
     updateTempContent();
     if (!isAuthenticated) {
-      return this.setIsLoaded(true);
+      return this.clientLoadingStore.setIsLoaded(true);
     } else {
       updateTempContent(isAuthenticated);
     }
@@ -703,7 +773,12 @@ class FilesStore {
     }
     requests.push(getFilesSettings());
 
-    return Promise.all(requests).then(() => this.setIsInit(true));
+    return Promise.all(requests).then(() => {
+      this.clientLoadingStore.setIsArticleLoading(false);
+      this.clientLoadingStore.setFirstLoad(false);
+
+      this.setIsInit(true);
+    });
   };
 
   setIsInit = (isInit) => {
@@ -712,9 +787,12 @@ class FilesStore {
 
   reset = () => {
     this.isInit = false;
-    this.isLoaded = false;
-    this.isLoading = false;
-    this.firstLoad = true;
+    this.clientLoadingStore.setIsLoaded(false);
+    this.clientLoadingStore.setIsSectionHeaderLoading(true);
+    this.clientLoadingStore.setIsSectionFilterLoading(true);
+    this.clientLoadingStore.setIsSectionBodyLoading(true);
+    this.clientLoadingStore.setIsArticleLoading(true);
+    this.clientLoadingStore.setFirstLoad(true);
 
     this.alreadyFetchingRooms = false;
 
@@ -724,9 +802,6 @@ class FilesStore {
     this.selection = [];
     this.bufferSelection = null;
     this.selected = "close";
-  };
-  setFirstLoad = (firstLoad) => {
-    this.firstLoad = firstLoad;
   };
 
   setFiles = (files) => {
@@ -767,25 +842,29 @@ class FilesStore {
     if (folders.length === 0 && this.folders.length === 0) return;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "unsubscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "unsubscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
 
     this.folders = folders;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "subscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "subscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
   };
 
@@ -849,9 +928,9 @@ class FilesStore {
 
   getFilesChecked = (file, selected) => {
     if (!file.parentId) {
-      if (this.activeFiles.includes(file.id)) return false;
+      if (this.activeFiles.find((elem) => elem.id === file.id)) return false;
     } else {
-      if (this.activeFolders.includes(file.id)) return false;
+      if (this.activeFolders.find((elem) => elem.id === file.id)) return false;
     }
 
     const type = file.fileType;
@@ -902,9 +981,9 @@ class FilesStore {
     return newSelection;
   };
 
-  setSelected = (selected) => {
+  setSelected = (selected, clearBuffer = true) => {
     if (selected === "close" || selected === "none") {
-      this.setBufferSelection(null);
+      clearBuffer && this.setBufferSelection(null);
       this.setHotkeyCaretStart(null);
       this.setHotkeyCaret(null);
     }
@@ -955,13 +1034,13 @@ class FilesStore {
         const isFound =
           this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
 
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           isFound &&
             newSelections.push(
               this.filesList.find((f) => f.id == id && !f.isFolder)
             );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         const isFound =
           this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
 
@@ -990,12 +1069,12 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           newSelections = newSelections.filter(
             (f) => !(f.id == id && !f.isFolder)
           );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         newSelections = newSelections.filter(
           (f) => !(f.id == id && f.isFolder)
         );
@@ -1019,7 +1098,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    this.setFilterUrl(filter);
+    // this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -1046,7 +1125,7 @@ class FilesStore {
 
     if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
 
-    this.setFilterUrl(filter, true);
+    // this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
 
     runInAction(() => {
@@ -1087,7 +1166,14 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(newUrl);
+    // window.DocSpace.navigate(newUrl, {
+    //   state: {
+    //     fromAccounts:
+    //       window.DocSpace.location.pathname.includes("accounts/filter"),
+    //     fromSettings: window.DocSpace.location.pathname.includes("settings"),
+    //   },
+    //   replace: !location.search,
+    // });
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -1122,8 +1208,9 @@ class FilesStore {
     return newFilter;
   };
 
-  refreshFiles = () => {
-    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  refreshFiles = async () => {
+    const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
+    return res;
   };
 
   fetchFiles = (
@@ -1134,19 +1221,20 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-
-    if (this.isLoading) {
+    if (this.clientLoadingStore.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
     }
 
-    this.scrollToTop();
-
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
-      return this.fetchRooms();
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor) {
+      const url = getCategoryUrl(CategoryType.Shared);
+      return window.DocSpace.navigate(
+        `${url}?${RoomsFilter.getDefault().toUrlParams()}`
+      );
+    }
 
     this.setIsErrorRoomNotAvailable(false);
     this.setIsLoadedFetchFiles(false);
@@ -1208,6 +1296,33 @@ class FilesStore {
           data.current.rootFolderType === FolderType.Privacy;
 
         runInAction(() => {
+          const isEmptyList = [...data.folders, ...data.files].length === 0;
+
+          if (filter && isEmptyList) {
+            const {
+              authorType,
+              roomId,
+              search,
+              withSubfolders,
+              filterType,
+              searchInContent,
+            } = filter;
+            const isFiltered =
+              authorType ||
+              roomId ||
+              search ||
+              !withSubfolders ||
+              filterType ||
+              searchInContent;
+
+            if (isFiltered) {
+              this.setIsEmptyPage(false);
+            } else {
+              this.setIsEmptyPage(isEmptyList);
+            }
+          } else {
+            this.setIsEmptyPage(isEmptyList);
+          }
           this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
           this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
         });
@@ -1278,6 +1393,8 @@ class FilesStore {
           ...{ new: data.new },
         });
 
+        this.clientLoadingStore.setIsSectionHeaderLoading(false);
+
         const selectedFolder = {
           selectedFolder: { ...this.selectedFolderStore },
         };
@@ -1330,6 +1447,13 @@ class FilesStore {
       })
       .finally(() => {
         this.setIsLoadedFetchFiles(true);
+
+        if (window?.DocSpace?.location?.state?.highlightFileId) {
+          this.setHighlightFile({
+            highlightFileId: window.DocSpace.location.state.highlightFileId,
+            isFileHasExst: window.DocSpace.location.state.isFileHasExst,
+          });
+        }
       });
   };
 
@@ -1342,7 +1466,7 @@ class FilesStore {
   ) => {
     const { setSelectedNode, roomsFolderId } = this.treeFoldersStore;
 
-    if (this.isLoading) {
+    if (this.clientLoadingStore.isLoading) {
       this.filesController.abort();
       this.filesController = new AbortController();
     }
@@ -1396,6 +1520,36 @@ class FilesStore {
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
+            const isEmptyList = data.folders.length === 0;
+            if (filter && isEmptyList) {
+              const {
+                subjectId,
+                filterValue,
+                type,
+                withSubfolders: withRoomsSubfolders,
+                searchInContent: searchInContentRooms,
+                tags,
+                withoutTags,
+              } = filter;
+
+              const isFiltered =
+                subjectId ||
+                filterValue ||
+                type ||
+                withRoomsSubfolders ||
+                searchInContentRooms ||
+                tags ||
+                withoutTags;
+
+              if (isFiltered) {
+                this.setIsEmptyPage(false);
+              } else {
+                this.setIsEmptyPage(isEmptyList);
+              }
+            } else {
+              this.setIsEmptyPage(isEmptyList);
+            }
+
             this.setFolders(data.folders);
             this.setFiles([]);
           });
@@ -1413,6 +1567,8 @@ class FilesStore {
             navigationPath: [],
             ...{ new: data.new },
           });
+
+          this.clientLoadingStore.setIsSectionHeaderLoading(false);
 
           const selectedFolder = {
             selectedFolder: { ...this.selectedFolderStore },
@@ -1522,10 +1678,7 @@ class FilesStore {
     const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing =
-      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    // const isFileOwner =
-    //   item.createdBy?.id === this.authStore.userStore.user?.id;
+    const isEditing = false; // (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
@@ -1552,6 +1705,7 @@ class FilesStore {
 
     const canCopy = item.security?.Copy;
     const canDuplicate = item.security?.Duplicate;
+    const canDownload = item.security?.Download;
 
     if (isFile) {
       const shouldFillForm = item.viewAccessability.WebRestrictedEditing;
@@ -1568,6 +1722,7 @@ class FilesStore {
       const canViewFile = item.viewAccessability.WebView;
 
       const isMasterForm = item.fileExst === ".docxf";
+      const isPdf = item.fileExst === ".pdf";
 
       let fileOptions = [
         //"open",
@@ -1576,6 +1731,7 @@ class FilesStore {
         "edit",
         "preview",
         "view",
+        "pdf-view",
         "make-form",
         "separator0",
         "link-for-room-members",
@@ -1586,7 +1742,7 @@ class FilesStore {
         "send-by-email",
         "docu-sign",
         "version", //category
-        "finalize-version",
+        //   "finalize-version",
         "show-version-history",
         "show-info",
         "block-unblock-version", //need split
@@ -1608,6 +1764,14 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        fileOptions = this.removeOptions(fileOptions, ["download"]);
+      }
+
+      if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
+        fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
+      }
 
       if (!canLockFile) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -1814,6 +1978,7 @@ class FilesStore {
         "mute-room",
         "unmute-room",
         "separator1",
+        "download",
         "archive-room",
         "unarchive-room",
         "delete",
@@ -1841,8 +2006,11 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["delete"]);
       }
 
-      if (!canArchiveRoom && !canRemoveRoom) {
-        roomOptions = this.removeOptions(roomOptions, ["separator1"]);
+      if (!canDownload) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "separator1",
+          "download",
+        ]);
       }
 
       if (!item.providerKey) {
@@ -1919,6 +2087,10 @@ class FilesStore {
         // "unsubscribe",
         "delete",
       ];
+
+      if (!canDownload) {
+        folderOptions = this.removeOptions(folderOptions, ["download"]);
+      }
 
       if (!canRenameItem) {
         folderOptions = this.removeOptions(folderOptions, ["rename"]);
@@ -2124,8 +2296,8 @@ class FilesStore {
     return api.rooms.updateRoomMemberRole(id, data);
   }
 
-  getHistory(module, id) {
-    return api.rooms.getHistory(module, id);
+  getHistory(module, id, signal = null) {
+    return api.rooms.getHistory(module, id, signal);
   }
 
   getRoomHistory(id) {
@@ -2220,9 +2392,11 @@ class FilesStore {
     this.scrollToTop();
   };
 
-  removeFiles = (fileIds, folderIds, showToast) => {
+  removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
+    if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
 
     if (newFilter.total <= newFilter.pageCount) {
       const files = fileIds
@@ -2498,6 +2672,11 @@ class FilesStore {
     });
 
     const items = [...newFolders, ...this.files];
+
+    if (items.length > 0 && this.isEmptyPage) {
+      this.setIsEmptyPage(false);
+    }
+
     const newItem = items.map((item) => {
       const {
         access,
@@ -2687,36 +2866,18 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
 
     if (this.folders.length) {
       for (const item of this.folders) {
-        switch (item.roomType) {
-          case RoomsType.FillingFormsRoom:
-            cbMenu.push(`room-${RoomsType.FillingFormsRoom}`);
-            break;
-          case RoomsType.CustomRoom:
-            cbMenu.push(`room-${RoomsType.CustomRoom}`);
-            break;
-          case RoomsType.EditingRoom:
-            cbMenu.push(`room-${RoomsType.EditingRoom}`);
-            break;
-          case RoomsType.ReviewRoom:
-            cbMenu.push(`room-${RoomsType.ReviewRoom}`);
-            break;
-          case RoomsType.ReadOnlyRoom:
-            cbMenu.push(`room-${RoomsType.ReadOnlyRoom}`);
-            break;
-          default:
-            cbMenu.push(FilterType.FoldersOnly);
+        if (item.roomType && RoomsTypeValues[item.roomType]) {
+          cbMenu.push(`room-${RoomsTypeValues[item.roomType]}`);
+        } else {
+          cbMenu.push(FilterType.FoldersOnly);
         }
       }
     }
@@ -3126,10 +3287,12 @@ class FilesStore {
     return openEditor(id, providerKey, tab, url, isPrivacy);
   };
 
-  createThumbnails = async () => {
-    if (this.viewAs !== "tile" || !this.files) return;
+  createThumbnails = async (files = null) => {
+    if ((this.viewAs !== "tile" || !this.files) && !files) return;
 
-    const newFiles = this.files.filter((f) => {
+    const currentFiles = files || this.files;
+
+    const newFiles = currentFiles.filter((f) => {
       return (
         typeof f.id !== "string" &&
         f?.thumbnailStatus === thumbnailStatuses.WAITING &&
@@ -3219,6 +3382,10 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
+  };
+
   setMainButtonMobileVisible = (visible) => {
     this.mainButtonMobileVisible = visible;
   };
@@ -3237,7 +3404,7 @@ class FilesStore {
     const isRooms = isRoomsFolder || isArchiveFolder;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    if (this.isLoading) return false;
+    if (this.clientLoadingStore.isLoading) return false;
     return this.filesList.length < filterTotal;
   }
 
@@ -3246,7 +3413,12 @@ class FilesStore {
   };
 
   fetchMoreFiles = async () => {
-    if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
+    if (
+      !this.hasMoreFiles ||
+      this.filesIsLoading ||
+      this.clientLoadingStore.isLoading
+    )
+      return;
 
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
@@ -3422,6 +3594,54 @@ class FilesStore {
 
   get roomsForDelete() {
     return this.folders.filter((f) => f.security.Delete);
+  }
+
+  getRooms = async (filter) => {
+    let newFilter = RoomsFilter.getDefault();
+    Object.assign(newFilter, filter);
+
+    return await api.rooms.getRooms(newFilter);
+  };
+
+  get isFiltered() {
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const {
+      subjectId,
+      filterValue,
+      type,
+      withSubfolders: withRoomsSubfolders,
+      searchInContent: searchInContentRooms,
+      tags,
+      withoutTags,
+    } = this.roomsFilter;
+
+    const {
+      authorType,
+      roomId,
+      search,
+      withSubfolders,
+      filterType,
+      searchInContent,
+    } = this.filter;
+
+    const isFiltered =
+      isRoomsFolder || isArchiveFolder
+        ? filterValue ||
+          type ||
+          withRoomsSubfolders ||
+          searchInContentRooms ||
+          subjectId ||
+          tags ||
+          withoutTags
+        : authorType ||
+          roomId ||
+          search ||
+          withSubfolders ||
+          filterType ||
+          searchInContent;
+
+    return isFiltered;
   }
 }
 

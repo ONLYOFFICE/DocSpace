@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Archive" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Documentos comuns</value>
   </data>
@@ -65,10 +68,10 @@
     <value>Favoritos</value>
   </data>
   <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
-    <value>Os arquivos serão compactados no arquivo {0}.tar.gz{1}.</value>
+    <value>Os arquivos serão compactados no arquivo {0}.tar.gz{1}</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value>Os arquivos serão compactados no arquivo {0}.zip{1}.</value>
+    <value>Os arquivos serão compactados no arquivo {0}.zip{1}</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Meus Documentos</value>
@@ -87,5 +90,11 @@
   </data>
   <data name="Trash" xml:space="preserve">
     <value>Lixeira</value>
+  </data>
+  <data name="VirtualRooms" xml:space="preserve">
+    <value>Salas</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Pessoal</value>
   </data>
 </root>

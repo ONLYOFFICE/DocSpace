@@ -42,88 +42,93 @@ class DirectSubscriptionProvider : ISubscriptionProvider
     }
 
 
-    public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+    public async Task<object> GetSubscriptionRecordAsync(INotifyAction action, IRecipient recipient, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        return _subscriptionManager.GetSubscriptionRecord(_sourceId, action.ID, recipient.ID, objectID);
+        return await _subscriptionManager.GetSubscriptionRecordAsync(_sourceId, action.ID, recipient.ID, objectID);
     }
 
-    public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
+    public async Task<string[]> GetSubscriptionsAsync(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        return _subscriptionManager.GetSubscriptions(_sourceId, action.ID, recipient.ID, checkSubscribe);
+        return await _subscriptionManager.GetSubscriptionsAsync(_sourceId, action.ID, recipient.ID, checkSubscribe);
     }
 
-    public IRecipient[] GetRecipients(INotifyAction action, string objectID)
+    public async Task<IRecipient[]> GetRecipientsAsync(INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        return _subscriptionManager.GetRecipients(_sourceId, action.ID, objectID)
-            .Select(r => _recipientProvider.GetRecipient(r))
+        return await (await _subscriptionManager.GetRecipientsAsync(_sourceId, action.ID, objectID)).ToAsyncEnumerable()
+            .SelectAwait(GetRecipientAsync)
             .Where(r => r != null)
-            .ToArray();
+            .ToArrayAsync();
     }
 
-    public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+    private async ValueTask<IRecipient> GetRecipientAsync(string value)
+    {
+        return await _recipientProvider.GetRecipientAsync(value);
+    }
+
+    public async Task<string[]> GetSubscriptionMethodAsync(INotifyAction action, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        return _subscriptionManager.GetSubscriptionMethod(_sourceId, action.ID, recipient.ID);
+        return await _subscriptionManager.GetSubscriptionMethodAsync(_sourceId, action.ID, recipient.ID);
     }
 
-    public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
+    public async Task UpdateSubscriptionMethodAsync(INotifyAction action, IRecipient recipient, params string[] senderNames)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        _subscriptionManager.UpdateSubscriptionMethod(_sourceId, action.ID, recipient.ID, senderNames);
+        await _subscriptionManager.UpdateSubscriptionMethodAsync(_sourceId, action.ID, recipient.ID, senderNames);
     }
 
-    public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
+    public async Task<bool> IsUnsubscribeAsync(IDirectRecipient recipient, INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.ThrowIfNull(action);
 
-        return _subscriptionManager.IsUnsubscribe(_sourceId, recipient.ID, action.ID, objectID);
+        return await _subscriptionManager.IsUnsubscribeAsync(_sourceId, recipient.ID, action.ID, objectID);
     }
 
-    public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
+    public async Task SubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        _subscriptionManager.Subscribe(_sourceId, action.ID, objectID, recipient.ID);
+        await _subscriptionManager.SubscribeAsync(_sourceId, action.ID, objectID, recipient.ID);
     }
 
-    public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
+    public async Task UnSubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        _subscriptionManager.Unsubscribe(_sourceId, action.ID, objectID, recipient.ID);
+        await _subscriptionManager.UnsubscribeAsync(_sourceId, action.ID, objectID, recipient.ID);
     }
 
-    public void UnSubscribe(INotifyAction action)
+    public async Task UnSubscribeAsync(INotifyAction action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        _subscriptionManager.UnsubscribeAll(_sourceId, action.ID);
+        await _subscriptionManager.UnsubscribeAllAsync(_sourceId, action.ID);
     }
 
-    public void UnSubscribe(INotifyAction action, string objectID)
+    public async Task UnSubscribeAsync(INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        _subscriptionManager.UnsubscribeAll(_sourceId, action.ID, objectID);
+        await _subscriptionManager.UnsubscribeAllAsync(_sourceId, action.ID, objectID);
     }
 
     [Obsolete("Use UnSubscribe(INotifyAction, string, IRecipient)", true)]
-    public void UnSubscribe(INotifyAction action, IRecipient recipient)
+    public Task UnSubscribeAsync(INotifyAction action, IRecipient recipient)
     {
         throw new NotSupportedException("use UnSubscribe(INotifyAction, string, IRecipient )");
     }

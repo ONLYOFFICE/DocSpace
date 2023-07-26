@@ -48,17 +48,17 @@ public class PortalControllerHelper
         {
             TenantAlias = tenant.ToLowerInvariant()
         };
-        var context = _teamlabSiteContext.CreateDbContext();
+
+        await using var context = _teamlabSiteContext.CreateDbContext();
         await context.Cache.AddAsync(cache);
         await context.SaveChangesAsync();
-
     }
 
     public async Task RemoveTenantFromCacheAsync(string domain)
     {
         domain = domain.ToLowerInvariant();
-        var context = _teamlabSiteContext.CreateDbContext();
-        var cache = await context.Cache.SingleOrDefaultAsync(q => q.TenantAlias == domain);
+        await using var context = _teamlabSiteContext.CreateDbContext();
+        var cache = await Queries.DbCacheAsync(context, domain);
         context.Cache.Remove(cache);
         await context.SaveChangesAsync();
     }
@@ -71,8 +71,8 @@ public class PortalControllerHelper
         portalName = (portalName ?? "").Trim().ToLowerInvariant();
 
         // forbidden or exists
-        var context = _teamlabSiteContext.CreateDbContext();
-        var exists = await context.Cache.Where(q => q.TenantAlias.Equals(portalName)).AnyAsync();
+        await using var context = _teamlabSiteContext.CreateDbContext();
+        var exists = await Queries.AnyDbCacheAsync(context, portalName);
 
         if (exists)
         {
@@ -89,8 +89,29 @@ public class PortalControllerHelper
                 }
             }
 
-            return await context.Cache.Select(q => q.TenantAlias).Where(q => q.StartsWith(portalName)).ToListAsync();
+            return await Queries.TenantAliasesAsync(context, portalName).ToListAsync();
         }
         return null;
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<TeamlabSiteContext, string, Task<DbCache>> DbCacheAsync =
+        EF.CompileAsyncQuery(
+            (TeamlabSiteContext ctx, string portalName) =>
+                ctx.Cache.SingleOrDefault(q => q.TenantAlias == portalName));
+
+    public static readonly Func<TeamlabSiteContext, string, Task<bool>> AnyDbCacheAsync =
+        EF.CompileAsyncQuery(
+            (TeamlabSiteContext ctx, string portalName) =>
+                ctx.Cache
+                    .Any(q => q.TenantAlias.Equals(portalName)));
+
+    public static readonly Func<TeamlabSiteContext, string, IAsyncEnumerable<string>> TenantAliasesAsync =
+        EF.CompileAsyncQuery(
+            (TeamlabSiteContext ctx, string portalName) =>
+                ctx.Cache
+                    .Select(q => q.TenantAlias)
+                    .Where(q => q.StartsWith(portalName)));
 }

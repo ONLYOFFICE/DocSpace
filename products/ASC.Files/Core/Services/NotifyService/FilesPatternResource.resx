@@ -71,7 +71,7 @@ Sign in to your DocuSign account for more information.</value>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. $__AuthorName mentioned you in the document comment
 
-$__AuthorName mentioned you in the comment to the "$DocumentTitle":"$DocumentURL" documen in the room "$RoomTitle":"$RoomURL":
+$__AuthorName mentioned you in the comment to the "$DocumentTitle":"$DocumentURL" document in the room "$RoomTitle":"$RoomURL":
 
 $Message</value>
   </data>
@@ -143,7 +143,7 @@ $Message</value>
     <value>Mailing is complete.</value>
   </data>
   <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
-    <value>Access granted to the encrypted document: $DocumentTitle</value>
+    <value>Access granted to document: $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder_push" xml:space="preserve">
     <value>Access granted to folder: $DocumentTitle</value>

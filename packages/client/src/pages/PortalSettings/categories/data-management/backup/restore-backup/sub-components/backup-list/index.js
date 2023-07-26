@@ -1,6 +1,7 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -56,246 +57,238 @@ const StyledModalDialog = styled(ModalDialog)`
   }
 `;
 
-class BackupListModalDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      filesList: [],
-      selectedFileIndex: null,
-      selectedFileId: null,
-      isChecked: false,
-    };
-  }
-  componentDidMount() {
+const BackupListModalDialog = (props) => {
+  const [state, setState] = React.useState({
+    isLoading: true,
+    filesList: [],
+    selectedFileIndex: null,
+    selectedFileId: null,
+    isChecked: false,
+  });
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
     getBackupHistory()
       .then((filesList) =>
-        this.setState({
-          filesList,
-          isLoading: false,
-        })
+        setState((val) => ({ ...val, filesList, isLoading: false }))
       )
-      .catch(() => this.setState({ isLoading: false }));
-  }
+      .catch(() => setState((val) => ({ ...val, isLoading: false })));
+  }, []);
 
-  onSelectFile = (e) => {
+  const onSelectFile = (e) => {
     const fileInfo = e.target.name;
     const fileArray = fileInfo.split("_");
     const id = fileArray.pop();
     const index = fileArray.shift();
 
-    this.setState({
+    setState((val) => ({
+      ...val,
       selectedFileIndex: +index,
       selectedFileId: id,
-    });
+    }));
   };
 
-  onCleanBackupList = () => {
-    this.setState({ isLoading: true }, function () {
-      deleteBackupHistory()
-        .then(() => getBackupHistory())
-        .then((filesList) => this.setState({ filesList, isLoading: false }))
-        .catch((error) => {
-          toastr.error(error);
-          this.setState({ isLoading: false });
-        });
-    });
+  const onCleanBackupList = () => {
+    setState((val) => ({ ...val, isLoading: true }));
+    deleteBackupHistory()
+      .then(() => getBackupHistory())
+      .then((filesList) =>
+        setState((val) => ({ ...val, filesList, isLoading: false }))
+      )
+      .catch((error) => {
+        toastr.error(error);
+        setState((val) => ({ ...val, isLoading: false }));
+      });
   };
-  onDeleteBackup = (backupId) => {
+  const onDeleteBackup = (backupId) => {
     if (!backupId) return;
 
-    this.setState({ isLoading: true }, function () {
-      deleteBackup(backupId)
-        .then(() => getBackupHistory())
-        .then((filesList) =>
-          this.setState({
-            filesList,
-            isLoading: false,
-            selectedFileIndex: null,
-            selectedFileId: null,
-          })
-        )
-        .catch((error) => {
-          toastr.error(error);
-          this.setState({ isLoading: false });
-        });
-    });
+    setState((val) => ({ ...val, isLoading: true }));
+    deleteBackup(backupId)
+      .then(() => getBackupHistory())
+      .then((filesList) =>
+        setState((val) => ({
+          ...val,
+          filesList,
+          isLoading: false,
+          selectedFileIndex: null,
+          selectedFileId: null,
+        }))
+      )
+      .catch((error) => {
+        toastr.error(error);
+        setState((val) => ({ ...val, isLoading: false }));
+      });
   };
-  onRestorePortal = () => {
-    const { selectedFileId } = this.state;
-    const { isNotify, history, socketHelper, t, setTenantStatus } = this.props;
+  const onRestorePortal = () => {
+    const { selectedFileId } = state;
+    const { isNotify, socketHelper, t, setTenantStatus } = props;
 
     if (!selectedFileId) {
       toastr.error(t("RecoveryFileNotSelected"));
       return;
     }
-    this.setState({ isLoading: true }, function () {
-      const backupId = selectedFileId;
-      const storageType = "0";
-      const storageParams = [
-        {
-          key: "fileId",
-          value: backupId,
-        },
-      ];
+    setState((val) => ({ ...val, isLoading: true }));
+    const backupId = selectedFileId;
+    const storageType = "0";
+    const storageParams = [
+      {
+        key: "fileId",
+        value: backupId,
+      },
+    ];
 
-      startRestore(backupId, storageType, storageParams, isNotify)
-        .then(() => setTenantStatus(TenantStatus.PortalRestore))
-        .then(() => {
-          socketHelper.emit({
-            command: "restore-backup",
-          });
-        })
-        .then(() =>
-          history.push(
-            combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              config.homepage,
-              "/preparation-portal"
-            )
+    startRestore(backupId, storageType, storageParams, isNotify)
+      .then(() => setTenantStatus(TenantStatus.PortalRestore))
+      .then(() => {
+        socketHelper.emit({
+          command: "restore-backup",
+        });
+      })
+      .then(() =>
+        navigate(
+          combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            config.homepage,
+            "/preparation-portal"
           )
         )
-        .catch((error) => toastr.error(error))
-        .finally(() =>
-          this.setState({
-            isLoading: false,
-            selectedFileIndex: null,
-            selectedFileId: null,
-          })
-        );
-    });
+      )
+      .catch((error) => toastr.error(error))
+      .finally(() =>
+        setState((val) => ({
+          ...val,
+          isLoading: false,
+          selectedFileIndex: null,
+          selectedFileId: null,
+        }))
+      );
   };
 
-  onChangeCheckbox = () => {
-    this.setState({
-      isChecked: !this.state.isChecked,
-    });
+  const onChangeCheckbox = () => {
+    setState((val) => ({ ...val, isChecked: !val.isChecked }));
   };
 
-  render() {
-    const {
-      onModalClose,
-      isVisibleDialog,
-      t,
-      isCopyingToLocal,
-      theme,
-    } = this.props;
-    const { filesList, isLoading, selectedFileIndex, isChecked } = this.state;
+  const { onModalClose, isVisibleDialog, t, isCopyingToLocal, theme } = props;
+  const { filesList, isLoading, selectedFileIndex, isChecked } = state;
 
-    const helpContent = () => (
-      <>
-        <Text className="restore-backup_warning-description">
-          {t("RestoreBackupWarningText")}{" "}
-          <Text as="span" className="restore-backup_warning-link">
-            {t("RestoreBackupResetInfoWarningText")}
-          </Text>
+  const helpContent = () => (
+    <>
+      <Text className="restore-backup_warning-description">
+        {t("RestoreBackupWarningText")}{" "}
+        <Text as="span" className="restore-backup_warning-link">
+          {t("RestoreBackupResetInfoWarningText")}
         </Text>
-      </>
-    );
+      </Text>
+    </>
+  );
 
-    return (
-      <StyledModalDialog
-        displayType="aside"
-        visible={isVisibleDialog}
-        onClose={onModalClose}
-        withFooterBorder
-      >
-        <ModalDialog.Header>
-          <Text fontSize="21px" fontWeight={700}>
-            {t("BackupList")}
-          </Text>
-        </ModalDialog.Header>
-        <ModalDialog.Body>
-          <StyledBackupList
-            isCopyingToLocal={isCopyingToLocal}
-            isEmpty={filesList?.length === 0}
-            theme={theme}
-          >
-            <div className="backup-list_content">
-              {filesList.length > 0 && (
-                <div className="backup-restore_dialog-header">
-                  <Text fontSize="12px" style={{ marginBottom: "10px" }}>
-                    {t("BackupListWarningText")}
-                  </Text>
-                  <Link
-                    onClick={this.onCleanBackupList}
-                    fontWeight={600}
-                    style={{ textDecoration: "underline dotted" }}
+  return (
+    <StyledModalDialog
+      displayType="aside"
+      visible={isVisibleDialog}
+      onClose={onModalClose}
+      withFooterBorder
+    >
+      <ModalDialog.Header>
+        <Text fontSize="21px" fontWeight={700}>
+          {t("BackupList")}
+        </Text>
+      </ModalDialog.Header>
+      <ModalDialog.Body>
+        <StyledBackupList
+          isCopyingToLocal={isCopyingToLocal}
+          isEmpty={filesList?.length === 0}
+          theme={theme}
+        >
+          <div className="backup-list_content">
+            {filesList.length > 0 && (
+              <div className="backup-restore_dialog-header">
+                <Text fontSize="12px" style={{ marginBottom: "10px" }}>
+                  {t("BackupListWarningText")}
+                </Text>
+                <Link
+                  id="delete-backups"
+                  onClick={this.onCleanBackupList}
+                  fontWeight={600}
+                  style={{ textDecoration: "underline dotted" }}
+                >
+                  {t("ClearBackupList")}
+                </Link>
+              </div>
+            )}
+
+            <div className="backup-restore_dialog-scroll-body">
+              {!isLoading ? (
+                filesList.length > 0 ? (
+                  <BackupListBody
+                    filesList={filesList}
+                    onDeleteBackup={this.onDeleteBackup}
+                    onSelectFile={this.onSelectFile}
+                    selectedFileIndex={selectedFileIndex}
+                  />
+                ) : (
+                  <Text
+                    fontSize="12px"
+                    textAlign="center"
+                    className="backup-restore_empty-list"
                   >
-                    {t("ClearBackupList")}
-                  </Link>
+                    {t("EmptyBackupList")}
+                  </Text>
+                )
+              ) : (
+                <div className="loader" key="loader">
+                  <Loaders.ListLoader count={7} />
                 </div>
               )}
-
-              <div className="backup-restore_dialog-scroll-body">
-                {!isLoading ? (
-                  filesList.length > 0 ? (
-                    <BackupListBody
-                      filesList={filesList}
-                      onDeleteBackup={this.onDeleteBackup}
-                      onSelectFile={this.onSelectFile}
-                      selectedFileIndex={selectedFileIndex}
-                    />
-                  ) : (
-                    <Text
-                      fontSize="12px"
-                      textAlign="center"
-                      className="backup-restore_empty-list"
-                    >
-                      {t("EmptyBackupList")}
-                    </Text>
-                  )
-                ) : (
-                  <div className="loader" key="loader">
-                    <Loaders.ListLoader count={7} />
-                  </div>
-                )}
-              </div>
-            </div>
-          </StyledBackupList>
-        </ModalDialog.Body>
-
-        <ModalDialog.Footer>
-          <div className="restore_footer">
-            <div id="backup-list_help">
-              <Checkbox
-                truncate
-                className="backup-list_checkbox"
-                onChange={this.onChangeCheckbox}
-                isChecked={isChecked}
-              />
-              <Text as="span" className="backup-list_agreement-text">
-                {t("UserAgreement")}
-                <HelpButton
-                  className="backup-list_tooltip"
-                  offsetLeft={100}
-                  iconName={HelpReactSvgUrl}
-                  getContent={helpContent}
-                  tooltipMaxWidth={"286px"}
-                />
-              </Text>
-            </div>
-
-            <div className="restore_dialog-button">
-              <Button
-                primary
-                size="normal"
-                label={t("Common:Restore")}
-                onClick={this.onRestorePortal}
-                isDisabled={isCopyingToLocal || !isChecked}
-              />
-              <Button
-                size="normal"
-                label={t("Common:CloseButton")}
-                onClick={onModalClose}
-              />
             </div>
           </div>
-        </ModalDialog.Footer>
-      </StyledModalDialog>
-    );
-  }
-}
+        </StyledBackupList>
+      </ModalDialog.Body>
+
+      <ModalDialog.Footer>
+        <div className="restore_footer">
+          <div id="backup-list_help">
+            <Checkbox
+              truncate
+              className="backup-list_checkbox"
+              onChange={this.onChangeCheckbox}
+              isChecked={isChecked}
+            />
+            <Text as="span" className="backup-list_agreement-text">
+              {t("UserAgreement")}
+              <HelpButton
+                className="backup-list_tooltip"
+                offsetLeft={100}
+                iconName={HelpReactSvgUrl}
+                getContent={helpContent}
+                tooltipMaxWidth={"286px"}
+              />
+            </Text>
+          </div>
+
+          <div className="restore_dialog-button">
+            <Button
+              className="restore"
+              primary
+              size="normal"
+              label={t("Common:Restore")}
+              onClick={this.onRestorePortal}
+              isDisabled={isCopyingToLocal || !isChecked}
+            />
+            <Button
+              className="close"
+              size="normal"
+              label={t("Common:CloseButton")}
+              onClick={onModalClose}
+            />
+          </div>
+        </div>
+      </ModalDialog.Footer>
+    </StyledModalDialog>
+  );
+};
 
 BackupListModalDialog.propTypes = {
   onModalClose: PropTypes.func.isRequired,

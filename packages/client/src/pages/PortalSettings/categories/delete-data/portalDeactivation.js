@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -11,15 +10,11 @@ import { setDocumentTitle } from "../../../../helpers/utils";
 import { sendSuspendPortalEmail } from "@docspace/common/api/portal";
 import { isDesktop } from "@docspace/components/utils/device";
 import { EmployeeActivationStatus } from "@docspace/common/constants";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PortalDeactivation = (props) => {
-  const {
-    t,
-    getPortalOwner,
-    owner,
-    currentColorScheme,
-    sendActivationLink,
-  } = props;
+  const { t, getPortalOwner, owner, currentColorScheme, sendActivationLink } =
+    props;
   const [isDesktopView, setIsDesktopView] = useState(false);
 
   const fetchData = async () => {
@@ -51,7 +46,7 @@ const PortalDeactivation = (props) => {
   };
 
   const requestAgain = () => {
-    sendActivationLink && sendActivationLink(t);
+    sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
   const notActivatedEmail =
@@ -68,7 +63,7 @@ const PortalDeactivation = (props) => {
       <Text className="helper">{t("PortalDeactivationHelper")}</Text>
       <ButtonWrapper>
         <Button
-          className="button"
+          className="deactivate-button button"
           label={t("Deactivate")}
           primary
           size={isDesktopView ? "small" : "normal"}
@@ -104,8 +99,4 @@ export default inject(({ auth }) => {
     currentColorScheme,
     sendActivationLink,
   };
-})(
-  withTranslation(["Settings", "MainBar", "People"])(
-    withRouter(PortalDeactivation)
-  )
-);
+})(withTranslation("Settings", "MainBar", "People")(PortalDeactivation));

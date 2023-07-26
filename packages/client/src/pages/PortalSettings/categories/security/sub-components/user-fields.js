@@ -20,6 +20,9 @@ StyledPlusIcon.defaultProps = { theme: Base };
 const StyledTrashIcon = styled(TrashIcon)`
   ${commonIconsStyles}
   cursor: pointer;
+  path {
+    fill: ${(props) => props.theme.client.settings.trashIcon};
+  }
 `;
 
 const StyledInputWrapper = styled.div`
@@ -61,6 +64,7 @@ const UserFields = (props) => {
     onClickAdd,
     inputs,
     regexp,
+    classNameAdditional,
   } = props;
 
   const [errors, setErrors] = useState(new Array(inputs.length).fill(false));
@@ -97,13 +101,13 @@ const UserFields = (props) => {
           let newInput1;
           let newInput2;
 
-          if (input.includes("-")) {
+          if (input?.includes("-")) {
             newInput1 = input.split("-")[0];
             newInput2 = input.split("-")[1];
           }
 
           const error = newInput2
-            ? input.split("-").length - 1 > 1 ||
+            ? input?.split("-").length - 1 > 1 ||
               !regexp.test(newInput1) ||
               !regexp.test(newInput2)
             : !regexp.test(input);
@@ -111,6 +115,7 @@ const UserFields = (props) => {
           return (
             <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
+                className={`${classNameAdditional}-input`}
                 id={`user-input-${index}`}
                 isAutoFocussed={false}
                 value={input}
@@ -119,7 +124,11 @@ const UserFields = (props) => {
                 onFocus={() => onFocus(index)}
                 hasError={errors[index] && error}
               />
-              <StyledTrashIcon size="medium" onClick={() => onDelete(index)} />
+              <StyledTrashIcon
+                className={`${classNameAdditional}-delete-icon`}
+                size="medium"
+                onClick={() => onDelete(index)}
+              />
             </StyledInputWrapper>
           );
         })
@@ -127,7 +136,11 @@ const UserFields = (props) => {
         <></>
       )}
 
-      <StyledAddWrapper onClick={onClickAdd} inputsLength={inputs.length}>
+      <StyledAddWrapper
+        className={classNameAdditional}
+        onClick={onClickAdd}
+        inputsLength={inputs.length}
+      >
         <StyledPlusIcon size="small" />
         <Link type="action" isHovered={true} fontWeight={600}>
           {buttonLabel}

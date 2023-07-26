@@ -6,56 +6,53 @@ export default {
   title: "Components/MainButton",
   component: MainButton,
   parameters: { docs: { description: { component: "Components/MainButton" } } },
-  clickAction: { action: "clickAction" },
-  clickActionSecondary: { action: "clickActionSecondary" },
+  onAction: { action: "onAction" },
   clickItem: { action: "clickItem", table: { disable: true } },
 };
 
-const Template = ({
-  clickAction,
-  clickActionSecondary,
-  clickItem,
-  ...args
-}) => {
-  const clickMainButtonHandler = (e, credentials) => {
-    clickAction(e, credentials);
-  };
-
-  const clickSecondaryButtonHandler = (e, credentials) => {
-    clickActionSecondary(e, credentials);
-  };
-
+const Template = ({ onAction, clickItem, ...args }) => {
   const itemsModel = [
     {
+      key: 0,
       label: "New document",
       icon: CatalogFolderReactSvgUrl,
     },
     {
+      key: 1,
       label: "New spreadsheet",
       icon: CatalogFolderReactSvgUrl,
     },
     {
+      key: 2,
       label: "New presentation",
       icon: CatalogFolderReactSvgUrl,
     },
     {
+      key: 3,
       label: "Master form",
       icon: CatalogFolderReactSvgUrl,
       items: [
         {
+          key: 4,
           label: "From blank",
         },
         {
+          key: 5,
           label: "From an existing text file",
         },
       ],
     },
     {
+      key: 6,
       label: "New folder",
       icon: CatalogFolderReactSvgUrl,
     },
-    { separator: true },
     {
+      key: 7,
+      separator: true,
+    },
+    {
+      key: 8,
       label: "Upload",
       icon: CatalogFolderReactSvgUrl,
     },
@@ -63,13 +60,7 @@ const Template = ({
 
   return (
     <div style={{ width: "280px" }}>
-      <MainButton
-        {...args}
-        clickAction={clickMainButtonHandler}
-        clickActionSecondary={clickSecondaryButtonHandler}
-        model={itemsModel}
-        iconName
-      ></MainButton>
+      <MainButton {...args} model={itemsModel}></MainButton>
     </div>
   );
 };
@@ -79,5 +70,4 @@ Default.args = {
   isDisabled: false,
   isDropdown: true,
   text: "Actions",
-  iconName: CatalogFolderReactSvgUrl,
 };

@@ -28,9 +28,9 @@ namespace ASC.Data.Backup.Storage;
 
 public interface IBackupStorage
 {
-    Task<bool> IsExists(string storagePath);
-    Task<string> GetPublicLink(string storagePath);
-    Task<string> Upload(string storageBasePath, string localPath, Guid userId);
-    Task Delete(string storagePath);
-    Task Download(string storagePath, string targetLocalPath);
+    Task<bool> IsExistsAsync(string storagePath);
+    Task<string> GetPublicLinkAsync(string storagePath);
+    Task<string> UploadAsync(string storageBasePath, string localPath, Guid userId);
+    Task DeleteAsync(string storagePath);
+    Task DownloadAsync(string storagePath, string targetLocalPath);
 }

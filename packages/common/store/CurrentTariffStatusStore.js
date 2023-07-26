@@ -1,29 +1,20 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import moment from "moment";
+
+import { getDaysLeft, getDaysRemaining } from "@docspace/common/utils";
+
 import api from "../api";
 import { TariffState } from "../constants";
 import { getUserByEmail } from "../api/people";
-import moment from "moment";
-import { getDaysRemaining } from "@docspace/common/utils";
+import authStore from "./AuthStore";
 class CurrentTariffStatusStore {
   portalTariffStatus = {};
   isLoaded = false;
   payerInfo = null;
 
-  paymentDate = "";
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
-
   constructor() {
     makeAutoObservable(this);
   }
-
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalTariff();
-
-    this.setIsLoaded(true);
-  };
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
@@ -57,6 +48,10 @@ class CurrentTariffStatusStore {
     return this.portalTariffStatus.portalStatus;
   }
 
+  get licenseDate() {
+    return this.portalTariffStatus.licenseDate;
+  }
+
   setPayerInfo = async () => {
     try {
       if (!this.customerId || !this.customerId?.length) {
@@ -76,18 +71,57 @@ class CurrentTariffStatusStore {
       console.error(e);
     }
   };
-  setTariffDates = () => {
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(this.delayDueDate);
 
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
+  get paymentDate() {
+    moment.locale(authStore.language);
+    if (this.dueDate === null) return "";
+    return moment(this.dueDate).format("LL");
+  }
 
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
+  isValidDate = (date) => {
+    return moment(date).year() !== 9999;
+  };
+  get isPaymentDateValid() {
+    if (this.dueDate === null) return false;
 
-    this.paymentDate = moment(this.dueDate).format("LL");
+    return this.isValidDate(this.dueDate);
+  }
+  get isLicenseDateExpired() {
+    if (!this.isPaymentDateValid) return;
 
-    (this.isGracePeriod || this.isNotPaidPeriod) && setGracePeriodDays();
+    return moment() > moment(this.dueDate);
+  }
+  get gracePeriodEndDate() {
+    moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
+    return moment(this.delayDueDate).format("LL");
+  }
+
+  get delayDaysCount() {
+    moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
+    return getDaysRemaining(this.delayDueDate);
+  }
+
+  get isLicenseExpiring() {
+    if (!this.dueDate || !authStore.isEnterprise) return;
+
+    const days = getDaysLeft(this.dueDate);
+
+    if (days <= 7) return true;
+
+    return false;
+  }
+  get trialDaysLeft() {
+    if (!this.dueDate) return;
+
+    return getDaysLeft(this.dueDate);
+  }
+
+  setPortalTariffValue = async (res) => {
+    this.portalTariffStatus = res;
+
+    this.setIsLoaded(true);
   };
 
   setPortalTariff = async () => {
@@ -97,8 +131,6 @@ class CurrentTariffStatusStore {
 
     runInAction(() => {
       this.portalTariffStatus = res;
-
-      this.setTariffDates();
     });
   };
 }

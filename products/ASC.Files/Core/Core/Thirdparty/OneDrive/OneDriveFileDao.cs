@@ -42,24 +42,20 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
         IFileDao<int> fileDao,
         IDaoBase<Item, Item, Item> dao,
         SetupInfo setupInfo,
-        TempPath tempPath) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
+        TempPath tempPath,
+        TenantManager tenantManager) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, tenantManager)
     {
         _setupInfo = setupInfo;
         _tempPath = tempPath;
     }
 
-    public override Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+    public override async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
         if (_setupInfo.ChunkUploadSize > contentLength && contentLength != -1)
         {
-            return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
+            return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
         }
 
-        return InternalCreateUploadSessionAsync(file, contentLength);
-    }
-
-    private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
-    {
         var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
         Item onedriveFile;
@@ -113,7 +109,7 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-            using var fs = new FileStream(tempPath, FileMode.Append);
+            await using var fs = new FileStream(tempPath, FileMode.Append);
             await stream.CopyToAsync(fs);
         }
 
@@ -147,7 +143,7 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
             return Dao.ToFile(await Dao.GetFileAsync(oneDriveSession.FileId));
         }
 
-        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+        await using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
         return await SaveFileAsync(uploadSession.File, fs);
     }

@@ -27,7 +27,7 @@ const Template = (args) => {
     args.onDrop(items);
     for (let file of items) {
       if (file) {
-        args.targetFile(file.name);
+        return args.targetFile(file.name);
       }
     }
   };

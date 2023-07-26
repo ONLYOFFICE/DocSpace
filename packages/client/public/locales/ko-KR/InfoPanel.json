@@ -26,6 +26,7 @@
   "FeedUpdateUser": "님에게 {{role}} 역할이 할당되었습니다",
   "FileExtension": "파일 확장 프로그램",
   "FilesEmptyScreenText": "여기에서 파일 및 폴더 세부 정보 보기",
+  "HistoryEmptyScreenText": "활동 내역이 여기에 표시됩니다",
   "ItemsSelected": "선택된 항목",
   "LastModifiedBy": "최종 편집자",
   "PendingInvitations": "보류 중인 초대장",

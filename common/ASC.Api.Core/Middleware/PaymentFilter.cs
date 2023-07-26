@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
-public class PaymentFilter : IResourceFilter
+public class PaymentFilter : IAsyncResourceFilter
 {
     private readonly TenantExtra _tenantExtra;
     private readonly ILogger<PaymentFilter> _logger;
@@ -40,24 +40,26 @@ public class PaymentFilter : IResourceFilter
 
     public void OnResourceExecuted(ResourceExecutedContext context) { }
 
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
     {
         if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor
             && controllerActionDescriptor.EndpointMetadata.OfType<AllowNotPaymentAttribute>().Any())
         {
             _logger.DebugPaymentIsNotRequired();
-
+            await next();
             return;
         }
 
         var header = context.HttpContext.Request.Headers["Payment-Info"];
         if (string.IsNullOrEmpty(header) || (bool.TryParse(header, out var flag) && flag))
         {
-            if (_tenantExtra.IsNotPaid(false))
+            if (await _tenantExtra.IsNotPaidAsync(false))
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
                 _logger.WarningPaymentRequired(context.HttpContext.Request.Url());
+                return;
             }
         }
+        await next();
     }
 }

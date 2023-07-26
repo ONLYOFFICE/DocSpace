@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -19,22 +19,26 @@ const Details = ({
   getInfoPanelItemIcon,
   openUser,
   isVisitor,
+  isCollaborator,
+  selectTag,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const detailsHelper = new DetailsHelper({
+    isCollaborator,
     isVisitor,
     t,
     item: selection,
     openUser,
-    history,
+    navigate,
     personal,
     culture,
+    selectTag,
   });
 
   const createThumbnailAction = useCallback(async () => {
@@ -119,14 +123,17 @@ const Details = ({
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { userStore } = auth;
   const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
   const { user } = userStore;
 
+  const { selectTag } = filesActionsStore;
+
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -136,5 +143,7 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
     isVisitor,
+    isCollaborator,
+    selectTag,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

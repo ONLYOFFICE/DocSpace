@@ -40,7 +40,7 @@ public class JabberSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public Task<NoticeSendResult> Send(NotifyMessage m)
+    public Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         var text = m.Content;
         if (!string.IsNullOrEmpty(text))

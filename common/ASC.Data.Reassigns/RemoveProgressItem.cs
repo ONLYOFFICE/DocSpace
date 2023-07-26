@@ -71,7 +71,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
-        tenantManager.SetCurrentTenant(_tenantId);
+        await tenantManager.SetCurrentTenantAsync(_tenantId);
         var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
         try
@@ -79,7 +79,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             Percentage = 0;
             Status = DistributedTaskStatus.Running;
 
-            securityContext.AuthenticateMeWithoutCookie(_currentUserId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
             long crmSpace;
             var wrapper = await GetUsageSpace(webItemManagerSecurity);
@@ -123,7 +123,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             Percentage = 99;
             PublishChanges();
 
-            SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, wrapper.DocsSpace, crmSpace, wrapper.MailSpace, wrapper.TalkSpace);
+            await SendSuccessNotifyAsync(studioNotifyService, messageService, messageTarget, userName, wrapper.DocsSpace, crmSpace, wrapper.MailSpace, wrapper.TalkSpace);
 
             Percentage = 100;
             Status = DistributedTaskStatus.Completed;
@@ -133,7 +133,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             logger.ErrorRemoveProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
-            SendErrorNotify(studioNotifyService, ex.Message, userName);
+            await SendErrorNotifyAsync(studioNotifyService, ex.Message, userName);
         }
         finally
         {
@@ -208,7 +208,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         var md5Hash = sBuilder.ToString();
 
-        var storage = storageFactory.GetStorage(_tenantId, "talk");
+        var storage = await storageFactory.GetStorageAsync(_tenantId, "talk");
 
         if (storage != null && await storage.IsDirectoryAsync(md5Hash))
         {
@@ -216,32 +216,32 @@ public class RemoveProgressItem : DistributedTaskProgress
         }
     }
 
-    private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+    private async Task SendSuccessNotifyAsync(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
     {
         if (_notify)
         {
-            studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
+            await studioNotifyService.SendMsgRemoveUserDataCompletedAsync(_currentUserId, User, userName,
                                                                         docsSpace, crmSpace, mailSpace, talkSpace);
         }
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
+            await messageService.SendAsync(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
         }
     }
 
-    private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
+    private async Task SendErrorNotifyAsync(StudioNotifyService studioNotifyService, string errorMessage, string userName)
     {
         if (!_notify)
         {
             return;
         }
 
-        studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+        await studioNotifyService.SendMsgRemoveUserDataFailedAsync(_currentUserId, User, userName, errorMessage);
     }
 }
 

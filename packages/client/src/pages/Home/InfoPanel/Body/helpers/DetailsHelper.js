@@ -35,10 +35,15 @@ const link = (text, onClick) => (
   </Link>
 );
 
-const tagList = (tags) => (
+const tagList = (tags, selectTag) => (
   <div className="property-tag_list">
     {tags.map((tag, i) => (
-      <Tag key={i} className="property-tag" label={tag} />
+      <Tag
+        key={i}
+        className="property-tag"
+        label={tag}
+        onClick={() => selectTag(tag)}
+      />
     ))}
   </div>
 );
@@ -64,11 +69,13 @@ class DetailsHelper {
   constructor(props) {
     this.t = props.t;
     this.item = props.item;
-    this.history = props.history;
+    this.navigate = props.navigate;
     this.openUser = props.openUser;
     this.personal = props.personal;
     this.culture = props.culture;
     this.isVisitor = props.isVisitor;
+    this.isCollaborator = props.isCollaborator;
+    this.selectTag = props.selectTag;
   }
 
   getPropertyList = () => {
@@ -225,9 +232,9 @@ class DetailsHelper {
   /// Property  //
 
   getItemOwner = () => {
-    const onOpenUser = () => this.openUser(this.item.createdBy, this.history);
+    const onOpenUser = () => this.openUser(this.item.createdBy, this.navigate);
 
-    return this.personal || this.isVisitor
+    return this.personal || this.isVisitor || this.isCollaborator
       ? text(decode(this.item.createdBy?.displayName))
       : link(decode(this.item.createdBy?.displayName), onOpenUser);
   };
@@ -240,7 +247,7 @@ class DetailsHelper {
     return text(
       this.item.isRoom
         ? getDefaultRoomName(this.item.roomType, this.t)
-        : getFileTypeName(this.item.fileType, this.t)
+        : getFileTypeName(this.item.fileType)
     );
   };
 
@@ -277,9 +284,9 @@ class DetailsHelper {
   };
 
   getItemLastModifiedBy = () => {
-    const onOpenUser = () => this.openUser(this.item.updatedBy, this.history);
+    const onOpenUser = () => this.openUser(this.item.updatedBy, this.navigate);
 
-    return this.personal || this.isVisitor
+    return this.personal || this.isVisitor || this.isCollaborator
       ? text(decode(this.item.updatedBy?.displayName))
       : link(decode(this.item.updatedBy?.displayName), onOpenUser);
   };
@@ -299,7 +306,7 @@ class DetailsHelper {
   };
 
   getItemTags = () => {
-    return tagList(this.item.tags);
+    return tagList(this.item.tags, this.selectTag);
   };
 }
 

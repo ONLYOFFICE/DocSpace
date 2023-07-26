@@ -12,7 +12,7 @@ import { Dark, Base } from "@docspace/components/themes";
 import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-import LoginContainer from "@docspace/common/components/LoginContainer";
+import LoginContainer from "@docspace/components/ColorTheme/styled/sub-components/LoginContainer";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 
 interface ILoginProps extends IInitialState {
@@ -113,7 +113,7 @@ const Form: React.FC<ILoginProps> = ({ theme, setTheme, logoUrls }) => {
         <CodeInput
           theme={theme}
           onSubmit={onSubmit}
-          handleChange={handleChange}
+          onChange={handleChange}
           isDisabled={isLoading}
         />
         {(expiredCode || invalidCode) && <Bar t={t} expired={expiredCode} />}

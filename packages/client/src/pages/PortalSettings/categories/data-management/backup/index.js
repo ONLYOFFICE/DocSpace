@@ -1,6 +1,7 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
@@ -9,16 +10,16 @@ import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
-import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
-  helpUrlCreatingBackup,
+  automaticBackupUrl,
   buttonSize,
   t,
-  history,
+
   isNotPaidPeriod,
-  currentColorScheme,
 }) => {
+  const navigate = useNavigate();
+
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -32,10 +33,12 @@ const Backup = ({
               </Trans>
               <div>
                 <Link
+                  id="link-tooltip"
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={automaticBackupUrl}
                   target="_blank"
-                  color={currentColorScheme.main.accent}
+                  fontSize="13px"
+                  color="#333333"
                   isBold
                   isHovered
                 >
@@ -67,7 +70,7 @@ const Backup = ({
   ];
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -87,16 +90,13 @@ export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
-  const {
-    helpUrlCreatingBackup,
-    isTabletView,
-    currentColorScheme,
-  } = settingsStore;
+  const { automaticBackupUrl, isTabletView, currentColorScheme } =
+    settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,

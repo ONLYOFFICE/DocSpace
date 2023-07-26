@@ -123,7 +123,7 @@ public class WorkContext
             INotifySender emailSender = _notifyServiceSender;
             INotifySender telegramSender = _telegramSender;
             INotifySender pushSender = _pushSender;
-            
+
 
             var postman = _configuration["core:notify:postman"];
 
@@ -161,15 +161,14 @@ public class WorkContext
         }
     }
 
-    public void RegisterSendMethod(Action<DateTime> method, string cron)
+    public void RegisterSendMethod(Func<DateTime, Task> method, string cron)
     {
         NotifyEngine.RegisterSendMethod(method, cron);
     }
 
-    public void UnregisterSendMethod(Action<DateTime> method)
+    public void UnregisterSendMethod(Func<DateTime, Task> method)
     {
         NotifyEngine.UnregisterSendMethod(method);
-
     }
 }
 
@@ -191,9 +190,9 @@ public class NotifyTransferRequest : INotifyEngineAction
         }
     }
 
-    public void BeforeTransferRequest(NotifyRequest request)
+    public async Task BeforeTransferRequestAsync(NotifyRequest request)
     {
-        request.Properties.Add("Tenant", _tenantManager.GetCurrentTenant(false));
+        request.Properties.Add("Tenant", await _tenantManager.GetCurrentTenantAsync(false));
     }
 }
 

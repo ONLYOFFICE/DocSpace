@@ -63,11 +63,19 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+    
     ///<summary>
     /// Supporting generate uri to the file
     ///</summary>
     ///<returns></returns>
     bool IsSupportInternalUri { get; }
+
+    ///<summary>
+    /// Supporting generate uri to the file
+    ///</summary>
+    ///<returns></returns>
+    bool IsSupportCdnUri { get; }
+
 
     /// <summary>
     /// Get absolute Uri for html links
@@ -78,6 +86,16 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+
+    /// <summary>
+    /// Get absolute Uri via CDN for html links
+    /// </summary>
+    /// <param name="domain"></param>
+    /// <param name="path"></param>
+    /// <param name="expire"></param>
+    /// <param name="headers"></param>
+    /// <returns></returns>
+    Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
 
     ///<summary>
     /// A stream of read-only. In the case of the C3 stream NetworkStream general, and with him we have to work
@@ -218,7 +236,7 @@ public interface IDataStore
     ///<param name="assignedPath"></param>
     ///<param name="stream"></param>
     ///<returns></returns>
-    Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream);
+    Task<(Uri, string)> SaveTempAsync(string domain, Stream stream);
 
     /// <summary>
     ///  Returns a list of links to all subfolders
@@ -288,7 +306,7 @@ public interface IDataStore
     Task DeleteAsync(string path);
     Task DeleteFilesAsync(string folderPath, string pattern, bool recursive);
     Task<Uri> MoveAsync(string srcpath, string newdomain, string newpath);
-    Task<Uri> SaveTempAsync(out string assignedPath, Stream stream);
+    Task<(Uri, string)> SaveTempAsync(Stream stream);
     IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string path, bool recursive);
     IAsyncEnumerable<Uri> ListFilesAsync(string path, string pattern, bool recursive);
     Task<bool> IsFileAsync(string path);

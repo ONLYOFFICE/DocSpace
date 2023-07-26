@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 import {
   getBackupStorage,
@@ -48,7 +47,6 @@ const RestoreBackup = (props) => {
     isEnableRestore,
     setRestoreResource,
     buttonSize,
-    history,
   } = props;
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
@@ -61,6 +59,7 @@ const RestoreBackup = (props) => {
     useState(false);
   const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] =
     useState(false);
+  const [path, setPath] = useState("");
 
   const startRestoreBackup = useCallback(async () => {
     try {
@@ -143,10 +142,18 @@ const RestoreBackup = (props) => {
         fontWeight="400"
         className="backup_radio-button"
         options={[
-          { value: LOCAL_FILE, label: t("LocalFile") },
-          { value: BACKUP_ROOM, label: t("RoomsModule") },
-          { value: DISK_SPACE, label: t("ThirdPartyResource") },
-          { value: STORAGE_SPACE, label: t("ThirdPartyStorage") },
+          { id: "local-file", value: LOCAL_FILE, label: t("LocalFile") },
+          { id: "backup-room", value: BACKUP_ROOM, label: t("RoomsModule") },
+          {
+            id: "third-party-resource",
+            value: DISK_SPACE,
+            label: t("ThirdPartyResource"),
+          },
+          {
+            id: "third-party-storage",
+            value: STORAGE_SPACE,
+            label: t("Common:ThirdPartyStorage"),
+          },
         ]}
         onClick={onChangeRadioButton}
         selected={radioButtonState}
@@ -164,10 +171,17 @@ const RestoreBackup = (props) => {
         <RoomsModule
           isDisabled={!isEnableRestore}
           t={t}
+          fileName={path}
           isPanelVisible={isVisibleSelectFileDialog}
           onClose={onModalClose}
           onClickInput={onClickInput}
-          onSelectFile={(file) => setRestoreResource(file.id)}
+          onSelectFile={(file) => {
+            if (file && file.path) {
+              const newPath = file.path.join("/");
+              setPath(`${newPath}/${file.title}`);
+            }
+            setRestoreResource(file.id);
+          }}
         />
       )}
       {radioButtonState === DISK_SPACE && (
@@ -236,7 +250,6 @@ const RestoreBackup = (props) => {
           isVisibleDialog={isVisibleBackupListDialog}
           onModalClose={onModalClose}
           isNotify={checkboxState.notification}
-          history={history}
         />
       )}
       <Checkbox
@@ -265,7 +278,6 @@ const RestoreBackup = (props) => {
         radioButtonState={radioButtonState}
         isCheckedThirdPartyStorage={radioButtonState === STORAGE_SPACE}
         isCheckedLocalFile={radioButtonState === LOCAL_FILE}
-        history={history}
         t={t}
         buttonSize={buttonSize}
       />

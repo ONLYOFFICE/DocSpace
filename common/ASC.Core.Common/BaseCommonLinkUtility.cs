@@ -69,7 +69,7 @@ public class BaseCommonLinkUtility
 
             if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext.Request.Url();
 
                 ArgumentNullException.ThrowIfNull(u);
 
@@ -77,7 +77,16 @@ public class BaseCommonLinkUtility
             }
             else if (_serverRoot == null)
             {
-                _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                var serverRoot = coreBaseSettings.ServerRoot;
+
+                if (string.IsNullOrEmpty(serverRoot))
+                {
+                    _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                }
+                else
+                {
+                    ServerUri = serverRoot;
+                }
             }
         }
         catch (Exception error)
@@ -96,21 +105,15 @@ public class BaseCommonLinkUtility
     private readonly CoreSettings _coreSettings;
     protected TenantManager _tenantManager;
 
-    private string _serverRootPath;
     public string ServerRootPath
     {
         get
         {
-            if (!string.IsNullOrEmpty(_serverRootPath))
-            {
-                return _serverRootPath;
-            }
-
             UriBuilder result;
             // first, take from current request
             if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = _httpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext?.Request.Url();
 
                 ArgumentNullException.ThrowIfNull(u);
 
@@ -153,7 +156,7 @@ public class BaseCommonLinkUtility
                 }
             }
 
-            return _serverRootPath = result.Uri.ToString().TrimEnd('/');
+            return result.Uri.ToString().TrimEnd('/');
         }
     }
 

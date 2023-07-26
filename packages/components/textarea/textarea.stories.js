@@ -32,6 +32,12 @@ const Template = ({ value, onChange, ...args }) => {
 };
 
 export const Default = Template.bind({});
+Default.parameters = {
+  design: {
+    type: "figma",
+    url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=3399-102679&mode=design&t=TBNCKMQKQMxr44IZ-0",
+  },
+};
 Default.args = {
   placeholder: "Add comment",
   isDisabled: false,
@@ -46,6 +52,9 @@ Default.args = {
   value:
     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae",
   isJSONField: false,
+  enableCopy: false,
+  hasNumeration: false,
+  isFullHeight: false,
 };
 
 export const JsonViewer = Template.bind({});
@@ -63,4 +72,7 @@ JsonViewer.args = {
   value:
     '{"menu": {"id": "file","value": "File","popup": {"menuitem": [{"value": "New", "onclick": "CreateNewDoc()"},{"value": "Open", "onclick": "OpenDoc()"},{"value": "Close", "onclick": "CloseDoc()"}]}}}',
   isJSONField: true,
+  enableCopy: true,
+  hasNumeration: true,
+  isFullHeight: true,
 };

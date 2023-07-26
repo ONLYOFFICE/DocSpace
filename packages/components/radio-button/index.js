@@ -40,6 +40,12 @@ class RadioButton extends React.Component {
   }
 
   render() {
+    const setClassNameInput = this.props.classNameInput
+      ? {
+          className: this.props.classNameInput,
+        }
+      : {};
+
     return (
       <Label
         theme={this.props.theme}
@@ -65,6 +71,7 @@ class RadioButton extends React.Component {
                 }
           }
           disabled={this.props.isDisabled}
+          {...setClassNameInput}
         />
         <RadiobuttonIcon {...this.props} />
         <Text
@@ -86,22 +93,23 @@ RadioButton.propTypes = {
   isChecked: PropTypes.bool,
   /** Used as HTML `disabled` property for each `<input>` tag */
   isDisabled: PropTypes.bool,
-  /** Name of the radiobutton. If missed, `value` will be used  */
+  /** Radiobutton name. In case the name is not stated, `value` is used */
   label: PropTypes.oneOfType([PropTypes.any, PropTypes.string]),
-  /** Font size of link  */
+  /** Link font size */
   fontSize: PropTypes.string,
-  /** Font weight of link  */
+  /** Link font weight */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Used as HTML `name` property for `<input>` tag. */
   name: PropTypes.string.isRequired,
+  /** Allows handling the changing events of the component  */
   onChange: PropTypes.func,
-  /** Allow you to handle clicking events on component */
+  /** Allows handling component clicking events */
   onClick: PropTypes.func,
-  /** Used as HTML `value` property for `<input>` tag. Used for identification each radiobutton */
+  /** Used as HTML `value` property for `<input>` tag. Facilitates identification of each radiobutton  */
   value: PropTypes.string.isRequired,
-  /** Margin between radiobutton. If orientation `horizontal`,
-   * it is `margin-left`(apply for all radiobuttons, except first),
-   * if orientation `vertical`, it is `margin-bottom`(apply for all radiobuttons, except last) */
+  /** Sets margin between radiobuttons. In case the orientation is `horizontal`,
+   * `margin-left` is applied for all radiobuttons, except the first one.
+   * In case the orientation is `vertical`, `margin-bottom` is applied for all radiobuttons, except the last one */
   spacing: PropTypes.string,
   /** Accepts class  */
   className: PropTypes.string,

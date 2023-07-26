@@ -42,6 +42,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     private readonly SetupInfo _setupInfo;
     private readonly IDaoBase<TFile, TFolder, TItem> _dao;
     private IProviderInfo<TFile, TFolder, TItem> _providerInfo;
+    private readonly int _tenantId;
 
     public ThirdPartyFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory,
         UserManager userManager,
@@ -51,7 +52,8 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         IFolderDao<int> folderDao,
         TempStream tempStream,
         SetupInfo setupInfo,
-        IDaoBase<TFile, TFolder, TItem> dao)
+        IDaoBase<TFile, TFolder, TItem> dao,
+        TenantManager tenantManager)
     {
         _dbContextFactory = dbContextFactory;
         _userManager = userManager;
@@ -62,6 +64,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         _tempStream = tempStream;
         _setupInfo = setupInfo;
         _dao = dao;
+        _tenantId = tenantManager.GetCurrentTenant().Id;
     }
 
     public void Init(string pathPrefix, IProviderInfo<TFile, TFolder, TItem> providerInfo)
@@ -123,7 +126,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (_dao.CheckInvalidFilter(filterType))
         {
@@ -209,15 +212,10 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         }
     }
 
-    public Task<string> SaveFolderAsync(Folder<string> folder)
+    public async Task<string> SaveFolderAsync(Folder<string> folder)
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return InternalSaveFolderAsync(folder);
-    }
-
-    private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
-    {
         if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title);
@@ -257,45 +255,31 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         var folder = await _dao.GetFolderAsync(folderId);
         var id = _dao.MakeId(folder);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync())
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = await _dao.Query(filesDbContext.ThirdpartyIdMapping)
-               .Where(r => r.Id.StartsWith(id))
-               .Select(r => r.HashId)
-               .ToListAsync()
-               ;
-
-                var link = await _dao.Query(filesDbContext.TagLink)
-                .Where(r => hashIDs.Any(h => h == r.EntryId))
-                .ToListAsync()
-                ;
+                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
 
                 filesDbContext.TagLink.RemoveRange(link);
                 await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in filesDbContext.Tag
-                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
+                var tagsToRemove = await Queries.DbFilesTag(filesDbContext).ToListAsync();
 
-                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var securityToDelete = _dao.Query(filesDbContext.Security)
-                .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = _dao.Query(filesDbContext.ThirdpartyIdMapping)
-                .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await filesDbContext.SaveChangesAsync();
 
                 await tx.CommitAsync();
@@ -521,12 +505,12 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+        return Task.FromResult<IDataWriteOperator>(new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder));
     }
 
-    public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
+    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }
@@ -683,6 +667,11 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     {
         throw new NotImplementedException();
     }
+
+    public Task<int> GetFoldersCountAsync(string parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal abstract class BaseFolderDao
@@ -761,6 +750,7 @@ internal abstract class BaseFolderDao
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PublicRooms => FolderType.PublicRoom,
             _ => FolderType.DEFAULT,
         };
 
@@ -798,4 +788,47 @@ internal abstract class BaseFolderDao
         return rooms.Where(x => x.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) != -1);
     }
 
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> TagLinksAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(t => t.TenantId == tenantId)
+                        .Where(t => t.Id.StartsWith(idStart))
+                        .Select(t => t.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync =
+            Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, string idStart) =>
+                    ctx.ThirdpartyIdMapping
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(t => t.Id.StartsWith(idStart)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(t => t.TenantId == tenantId)
+                        .Where(t => t.Id.StartsWith(idStart))
+                        .Select(t => t.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> DbFilesTag =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                from ft in ctx.Tag
+                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                {
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
+                }
+                where ftl == null
+                select ft);
 }

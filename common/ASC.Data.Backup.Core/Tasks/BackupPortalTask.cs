@@ -74,7 +74,7 @@ public class BackupPortalTask : PortalTaskBase
     public override async Task RunJob()
     {
         _logger.DebugBeginBackup(TenantId);
-        _tenantManager.SetCurrentTenant(TenantId);
+        await _tenantManager.SetCurrentTenantAsync(TenantId);
 
         await using (WriteOperator)
         {
@@ -97,7 +97,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
                 if (ProcessStorage)
                 {
-                    await DoBackupStorage(WriteOperator, fileGroups);
+                    await DoBackupStorageAsync(WriteOperator, fileGroups);
                 }
             }
         }
@@ -127,7 +127,7 @@ public class BackupPortalTask : PortalTaskBase
 
         try
         {
-            using (var connection = DbFactory.OpenConnection())
+            await using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
                 command.CommandText = "select id, connection_string from mail_server_server";
@@ -147,7 +147,7 @@ public class BackupPortalTask : PortalTaskBase
             _logger.ErrorWithException(e);
         }
 
-        using (var connection = DbFactory.OpenConnection())
+        await using (var connection = DbFactory.OpenConnection())
         {
             var command = connection.CreateCommand();
             command.CommandText = "show tables";
@@ -170,7 +170,7 @@ public class BackupPortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+            var tenants = (await _tenantManager.GetTenantsAsync(false)).Select(r => r.Id);
             foreach (var t in tenants)
             {
                 files.AddRange(await GetFiles(t));
@@ -260,9 +260,10 @@ public class BackupPortalTask : PortalTaskBase
 
     private async Task<IEnumerable<BackupFileInfo>> GetFiles(int tenantId)
     {
+        await using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = await Queries.BackupRecordsAsync(backupRecordContext, tenantId).ToListAsync();
+
         var files = (await GetFilesToProcess(tenantId)).ToList();
-        using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -544,7 +545,7 @@ public class BackupPortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < files.Count; j++)
             {
                 var t = files[i + j];
-                tasks.Add(Task.Run(() => DoDumpFile(t, storageDir)));
+                tasks.Add(Task.Run(() => DoDumpFileAsync(t, storageDir)));
             }
 
             Task.WaitAll(tasks.ToArray());
@@ -559,7 +560,7 @@ public class BackupPortalTask : PortalTaskBase
         var tmpPath = CrossPlatform.PathCombine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
         Directory.CreateDirectory(Path.GetDirectoryName(tmpPath));
 
-        using (var tmpFile = new FileStream(tmpPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))
+        await using (var tmpFile = new FileStream(tmpPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))
         {
             restoreInfoXml.WriteTo(tmpFile);
             await writer.WriteEntryAsync(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
@@ -572,9 +573,9 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndBackupStorage();
     }
 
-    private async Task DoDumpFile(BackupFileInfo file, string dir)
+    private async Task DoDumpFileAsync(BackupFileInfo file, string dir)
     {
-        var storage = StorageFactory.GetStorage(file.Tenant, file.Module);
+        var storage = await StorageFactory.GetStorageAsync(file.Tenant, file.Module);
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
@@ -590,8 +591,8 @@ public class BackupPortalTask : PortalTaskBase
             filePath = @"\\?\" + filePath;
         }
 
-        using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
-        using (var tmpFile = File.OpenWrite(filePath))
+        await using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
+        await using (var tmpFile = File.OpenWrite(filePath))
         {
             await fileStream.CopyToAsync(tmpFile);
         }
@@ -610,7 +611,7 @@ public class BackupPortalTask : PortalTaskBase
                 f = @"\\?\" + f;
             }
 
-            using (var tmpFile = new FileStream(f, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))
+            await using (var tmpFile = new FileStream(f, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))
             {
                 await writer.WriteEntryAsync(enumerateFile.Substring(subDir.Length), tmpFile);
             }
@@ -625,8 +626,8 @@ public class BackupPortalTask : PortalTaskBase
     {
         var files = (await GetFilesToProcess(TenantId)).ToList();
 
-        using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        await using var backupRecordContext = _dbContextFactory.CreateDbContext();
+        var exclude = await Queries.BackupRecordsAsync(backupRecordContext, TenantId).ToListAsync();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -640,7 +641,7 @@ public class BackupPortalTask : PortalTaskBase
         var tablesCount = tablesToProcess.Count;
         var tablesProcessed = 0;
 
-        using (var connection = DbFactory.OpenConnection())
+        await using (var connection = DbFactory.OpenConnection())
         {
             foreach (var table in tablesToProcess)
             {
@@ -679,7 +680,7 @@ public class BackupPortalTask : PortalTaskBase
 
                     _logger.DebugBeginSavingTable(table.Name);
 
-                    using (var file = _tempStream.Create())
+                    await using (var file = _tempStream.Create())
                     {
                         data.WriteXml(file, XmlWriteMode.WriteSchema);
                         data.Clear();
@@ -697,7 +698,7 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndSavingDataForModule(module.ModuleName);
     }
 
-    private async Task DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
+    private async Task DoBackupStorageAsync(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
     {
         _logger.DebugBeginBackupStorage();
 
@@ -708,7 +709,7 @@ public class BackupPortalTask : PortalTaskBase
 
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(TenantId, group.Key);
+                var storage = await StorageFactory.GetStorageAsync(TenantId, group.Key);
                 var file1 = file;
                 Stream fileStream = null;
                 await ActionInvoker.Try(async state =>
@@ -731,7 +732,7 @@ public class BackupPortalTask : PortalTaskBase
                 .SelectMany(group => group.Select(file => (object)file.ToXElement()))
                 .ToArray());
 
-        using (var tmpFile = _tempStream.Create())
+        await using (var tmpFile = _tempStream.Create())
         {
             restoreInfoXml.WriteTo(tmpFile);
             await writer.WriteEntryAsync(KeyHelper.GetStorageRestoreInfoZipKey(), tmpFile);
@@ -739,5 +740,13 @@ public class BackupPortalTask : PortalTaskBase
 
         _logger.DebugEndBackupStorage();
     }
+}
 
+static file class Queries
+{
+    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> BackupRecordsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (BackupsContext ctx, int tenantId) =>
+        ctx.Backups.Where(b => b.TenantId == tenantId 
+            && b.StorageType == 0
+            && b.StoragePath != null));
 }

@@ -28,6 +28,8 @@ import InviteUsersWarningDialog from "./InviteUsersWarningDialog";
 import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
+import PortalRenamingDialog from "./PortalRenamingDialog";
+import ReportDialog from "./ReportDialog";
 
 export {
   EmptyTrashDialog,
@@ -60,4 +62,6 @@ export {
   LogoutConnectionDialog,
   InviteUsersWarningDialog,
   LogoutAllConnectionDialog,
+  PortalRenamingDialog,
+  ReportDialog,
 };

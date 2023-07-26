@@ -36,7 +36,7 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
         _dbContextFactory = dbContextFactory;
     }
 
-    public void RegisterInstall(string userEmail, MobileAppType appType)
+    public async Task RegisterInstallAsync(string userEmail, MobileAppType appType)
     {
         var mai = new MobileAppInstall
         {
@@ -46,21 +46,25 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
             LastSign = DateTime.UtcNow
         };
 
-        using var dbContext = _dbContextFactory.CreateDbContext();
-        dbContext.MobileAppInstall.Add(mai);
-        dbContext.SaveChanges();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+        await dbContext.MobileAppInstall.AddAsync(mai);
+        await dbContext.SaveChangesAsync();
     }
 
-    public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
+    public async Task<bool> IsInstallRegisteredAsync(string userEmail, MobileAppType? appType)
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
-        var q = dbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
-
-        if (appType.HasValue)
-        {
-            q = q.Where(r => r.AppType == (int)appType.Value);
-        }
-
-        return q.Any();
+        await using var dbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.AnyMobileAppInstallAsync(dbContext, userEmail, appType);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<CustomDbContext, string, MobileAppType?, Task<bool>> AnyMobileAppInstallAsync =
+        EF.CompileAsyncQuery(
+            (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
+                ctx.MobileAppInstall
+                    .Where(r => r.UserEmail == userEmail)
+                    .Where(r => !appType.HasValue || r.AppType == (int)appType.Value)
+                    .Any());
 }

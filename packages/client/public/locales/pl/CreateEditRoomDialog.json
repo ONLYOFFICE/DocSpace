@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Najpierw jednak musisz podłączyć odpowiednią usługę w sekcji „Integracja”. W przeciwnym razie połączenie będzie niemożliwe.",
   "ThirdPartyStoragePermanentSettingDescription": "Pliki są przechowywane w pamięci zewnętrznej {{thirdpartyTitle}}, w katalogu \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Aby podłączyć pamięć podmiotu trzeciego, musisz dodać odpowiednią usługę w sekcji Integracja, w ustawieniach DosSpace. Skontaktuj się z właścicielem DocSpace lub administratorem, aby włączyć integrację.",
-  "ThirdPartyStorageTitle": "Pamięć podmiotu trzeciego",
   "ViewOnlyRoomDescription": "Udostępniaj do wglądu gotowe dokumenty, raporty, dokumentacje oraz inne pliki.",
   "ViewOnlyRoomTitle": "Pokój tylko do odczytu"
 }

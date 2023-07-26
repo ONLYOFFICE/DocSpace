@@ -1,22 +1,25 @@
 ﻿import PrivacySvgUrl from "PUBLIC_DIR/images/privacy.svg?url";
 import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
-import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
+import RoomsReactSvgUrl from "PUBLIC_DIR/images/rooms.react.svg?url";
 import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { FolderType } from "@docspace/common/constants";
+import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
+import IconButton from "@docspace/components/icon-button";
 import Loaders from "@docspace/common/components/Loaders";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { combineUrl } from "@docspace/common/utils";
+import FilesFilter from "@docspace/common/api/files/filter";
+
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import history from "@docspace/common/history";
-import config from "PACKAGE_FILE";
+import { CategoryType } from "SRC_DIR/helpers/constants";
+
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
 import EmptyScreenPersonalDarkUrl from "PUBLIC_DIR/images/empty_screen_personal_dark.svg?url";
@@ -54,25 +57,26 @@ const RootFolderContainer = (props) => {
     onCreate,
     onCreateRoom,
     myFolderId,
-    filter,
-    fetchFiles,
+
     setIsLoading,
     rootFolderType,
     linkStyles,
-    isLoading,
-    viewAs,
-    fetchRooms,
-    setAlreadyFetchingRooms,
-    categoryType,
+
     isEmptyPage,
-    setIsEmptyPage,
+
     isVisitor,
     isCollaborator,
     sectionWidth,
-    setIsLoadedEmptyPage,
+
     security,
+
+    myFolder,
+    roomsFolder,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
@@ -99,60 +103,46 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
-  const roomHeader = "Welcome to DocSpace";
-
-  useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
-
-    return () => {
-      setIsEmptyPage(false);
-      setIsLoadedEmptyPage(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    setIsLoadedEmptyPage(!isLoading);
-  }, [isLoading]);
+  const roomHeader = t("EmptyRootRoomHeader");
 
   const onGoToPersonal = () => {
-    const newFilter = filter.clone();
+    const newFilter = FilesFilter.getDefault();
+
+    newFilter.folder = myFolderId;
+
+    const state = {
+      title: myFolder.title,
+      isRoot: true,
+      rootFolderType: myFolder.rootFolderType,
+    };
+
+    const path = getCategoryUrl(CategoryType.Personal);
+
     setIsLoading(true);
-    fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
+
+    navigate(`${path}?${newFilter.toUrlParams()}`, { state });
   };
 
   const onGoToShared = () => {
+    const newFilter = RoomsFilter.getDefault();
+
+    newFilter.searchArea = RoomSearchArea.Active;
+
+    const state = {
+      title: roomsFolder.title,
+      isRoot: true,
+      rootFolderType: roomsFolder.rootFolderType,
+    };
+
     setIsLoading(true);
 
-    setAlreadyFetchingRooms(true);
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const path = getCategoryUrl(CategoryType.Shared);
 
-        const filterParamsStr = filter.toUrlParams();
-
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage,
-            pathname
-          )
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    navigate(`${path}?${newFilter.toUrlParams()}`, { state });
   };
 
   const getEmptyFolderProps = () => {
-    switch (rootFolderType) {
+    switch (rootFolderType || location?.state?.rootFolderType) {
       case FolderType.USER:
         return {
           headerText: emptyScreenHeader,
@@ -259,23 +249,43 @@ const RootFolderContainer = (props) => {
     <span>
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-document empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
 
         <Box className="flex-wrapper_container">
-          <Link data-format="docx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="document"
+            data-format="docx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Document")},
           </Link>
-          <Link data-format="xlsx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="spreadsheet"
+            data-format="xlsx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Spreadsheet")},
           </Link>
-          <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="presentation"
+            data-format="pptx"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Presentation")},
           </Link>
-          <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
+          <Link
+            id="form-template"
+            data-format="docxf"
+            onClick={onCreate}
+            {...linkStyles}
+          >
             {t("Translations:NewForm")}
           </Link>
         </Box>
@@ -283,11 +293,11 @@ const RootFolderContainer = (props) => {
 
       <div className="empty-folder_container-links">
         <StyledPlusIcon
-          className="empty-folder_container-image"
+          className="plus-folder empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
-        <Link {...linkStyles} onClick={onCreate}>
+        <Link id="folder" {...linkStyles} onClick={onCreate}>
           {t("Folder")}
         </Link>
       </div>
@@ -324,11 +334,12 @@ const RootFolderContainer = (props) => {
 
   const archiveButtons = !isVisitor && (
     <div className="empty-folder_container-links">
-      <img
-        className="empty-folder_container-image"
-        src={EmptyFolderImageSvgUrl}
+      <IconButton
+        className="empty-folder_container-icon"
+        size="12"
         onClick={onGoToShared}
-        alt="folder_icon"
+        iconName={RoomsReactSvgUrl}
+        isFill
       />
       <Link onClick={onGoToShared} {...linkStyles}>
         {t("GoToMyRooms")}
@@ -353,31 +364,37 @@ const RootFolderContainer = (props) => {
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
 
-  useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
-
-  if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Loaders.EmptyContainerLoader
+  //       style={{ display: "none", marginTop: 32 }}
+  //       id="empty-container-loader"
+  //       viewAs={viewAs}
+  //     />
+  //   );
+  // }
 
   return (
-    <EmptyContainer
-      headerText={headerText}
-      isEmptyPage={isEmptyPage}
-      sectionWidth={sectionWidth}
-      style={{ marginTop: 32 }}
-      {...emptyFolderProps}
-    />
+    emptyFolderProps && (
+      <EmptyContainer
+        headerText={headerText}
+        isEmptyPage={isEmptyPage}
+        sectionWidth={sectionWidth}
+        style={{ marginTop: 32 }}
+        {...emptyFolderProps}
+      />
+    )
   );
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    clientLoadingStore,
+  }) => {
     const {
       isDesktopClient,
       isEncryptionSupport,
@@ -385,22 +402,22 @@ export default inject(
       theme,
     } = auth.settingsStore;
 
+    const { setIsSectionFilterLoading } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     const {
       filter,
-      fetchFiles,
+
       privacyInstructions,
-      isLoading,
-      setIsLoading,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
+
       isEmptyPage,
-      setIsEmptyPage,
-      setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
-    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+    const { isPrivacyFolder, myFolderId, myFolder, roomsFolder } =
+      treeFoldersStore;
 
     return {
       theme,
@@ -414,18 +431,16 @@ export default inject(
       title,
       myFolderId,
       filter,
-      fetchFiles,
-      isLoading,
+
       setIsLoading,
       rootFolderType,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
+
       isEmptyPage,
-      setIsEmptyPage,
-      setIsLoadedEmptyPage,
+
       security,
+
+      myFolder,
+      roomsFolder,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));

@@ -48,17 +48,3 @@ public class AdditionalSenderTag : TagValue
     {
     }
 }
-
-public class TagActionValue : ITagValue
-{
-    private readonly Func<string> _action;
-
-    public string Tag { get; private set; }
-    public object Value => _action();
-
-    public TagActionValue(string name, Func<string> action)
-    {
-        Tag = name;
-        _action = action;
-    }
-}

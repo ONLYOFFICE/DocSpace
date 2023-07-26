@@ -320,7 +320,7 @@ public static class DocumentService
 
         string dataResponse;
         using (var response = await httpClient.SendAsync(request, cancellationTokenSource.Token))
-        using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
+        await using (var stream = await response.Content.ReadAsStreamAsync(cancellationTokenSource.Token))
         {
             if (stream == null)
             {
@@ -334,7 +334,11 @@ public static class DocumentService
 
         try
         {
-            var commandResponse = JsonConvert.DeserializeObject<CommandResponse>(dataResponse);
+            var commandResponse = JsonSerializer.Deserialize<CommandResponse>(dataResponse, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            });
             return commandResponse;
         }
         catch (Exception ex)
@@ -417,7 +421,7 @@ public static class DocumentService
         string dataResponse = null;
 
         using (var response = await httpClient.SendAsync(request))
-        using (var responseStream = await response.Content.ReadAsStreamAsync())
+        await using (var responseStream = await response.Content.ReadAsStreamAsync())
         {
             if (responseStream != null)
             {
@@ -474,7 +478,7 @@ public static class DocumentService
         httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
         using var response = await httpClient.SendAsync(request);
-        using var responseStream = await response.Content.ReadAsStreamAsync();
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
         if (responseStream == null)
         {
             throw new Exception("Empty response");
@@ -616,7 +620,7 @@ public static class DocumentService
         [JsonPropertyName("callback")]
         public string Callback { get; set; }
 
-        [JsonProperty(PropertyName = "key", Required = Required.Always)]
+        [JsonProperty(PropertyName = "key", Required = Required.AllowNull)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
@@ -807,7 +811,7 @@ public static class DocumentService
         public string Url { get; set; }
 
         [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
-[JsonPropertyName("token")]
+        [JsonPropertyName("token")]
         public string Token { get; set; }
     }
 
@@ -858,7 +862,7 @@ public static class DocumentService
 
         public static void ProcessResponseError(string errorCode)
         {
-            if (!ErrorCodeExtensions.TryParse(errorCode, true, out ErrorCode code))
+            if (!ErrorCodeExtensions.TryParse(errorCode, true, out var code))
             {
                 code = ErrorCode.Unknown;
             }

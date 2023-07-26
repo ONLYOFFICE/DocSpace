@@ -55,7 +55,7 @@ public partial class BaseSettingsController : ControllerBase
 
     internal void CheckCache(string basekey)
     {
-        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        var key = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString() + basekey;
         if (MemoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)

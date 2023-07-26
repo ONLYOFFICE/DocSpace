@@ -76,13 +76,8 @@ class IconButton extends React.PureComponent {
     onMouseDown && onMouseDown(e);
   }
   onMouseUp(e) {
-    const {
-      isDisabled,
-      iconHoverName,
-      iconName,
-      color,
-      onMouseUp,
-    } = this.props;
+    const { isDisabled, iconHoverName, iconName, color, onMouseUp } =
+      this.props;
 
     if (isDisabled) return;
 
@@ -162,6 +157,7 @@ class IconButton extends React.PureComponent {
         id={id}
         style={style}
         color={this.state.currentIconColor}
+        isFill={isFill}
         {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {
@@ -184,7 +180,7 @@ class IconButton extends React.PureComponent {
 }
 
 IconButton.propTypes = {
-  /** Set component class */
+  /** Sets component class */
   className: PropTypes.string,
   /** Icon color */
   color: PropTypes.string,
@@ -196,9 +192,9 @@ IconButton.propTypes = {
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Determines if icon fill is needed */
   isFill: PropTypes.bool,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to present a disabled state */
   isDisabled: PropTypes.bool,
-  /** Set cursor value */
+  /** Sets cursor value */
   isClickable: PropTypes.bool,
   /** Icon node */
   iconNode: PropTypes.node,
@@ -208,20 +204,21 @@ IconButton.propTypes = {
   iconHoverName: PropTypes.string,
   /** Icon name on click action */
   iconClickName: PropTypes.string,
-  /** What the button will trigger when clicked  */
+  /** Sets a button callback function triggered when the button is clicked */
   onClick: PropTypes.func,
-  /** What the button will trigger when cursor enter */
+  /** Sets a button callback function triggered when the cursor enters the area */
   onMouseEnter: PropTypes.func,
-  /**  What the button will trigger when cursor down */
+  /** Sets a button callback function triggered when the cursor moves down */
   onMouseDown: PropTypes.func,
-  /** What the button will trigger when cursor up */
+  /** Sets a button callback function triggered when the cursor moves up */
   onMouseUp: PropTypes.func,
-  /** What the button will trigger when cursor leave icon */
+  /** Sets a button callback function triggered when the cursor leaves the icon */
   onMouseLeave: PropTypes.func,
-  /** Set component id */
+  /** Sets component id */
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** The data-* attribute is used to store custom data private to the page or application. Required to display a tip over the hovered element */
   dataTip: PropTypes.string,
 };
 

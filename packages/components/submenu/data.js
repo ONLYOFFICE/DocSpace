@@ -8,9 +8,6 @@ export const data = [
   {
     id: "Overview",
     name: "Overview",
-    onClick: function () {
-      alert("Overview");
-    },
     content: (
       <FileInput
         accept=".doc, .docx"
@@ -24,22 +21,11 @@ export const data = [
   {
     id: "Documents",
     name: "Documents",
-    onClick: function () {
-      alert("Documents");
-    },
-    content: (
-      <Textarea
-        onChange={() => {}}
-        value="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae"
-      />
-    ),
+    content: <p>Documents</p>,
   },
   {
     id: "Milestones",
     name: "Milestones",
-    onClick: function () {
-      alert("Milestones");
-    },
     content: (
       <Row
         key="1"
@@ -59,7 +45,15 @@ export const data = [
         onRowClick={function noRefCheck() {}}
         onSelect={function noRefCheck() {}}
       >
-        <Text truncate>Sample text</Text>
+        <div
+          style={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            display: "flex",
+          }}
+        >
+          <Text truncate>Sample text</Text>
+        </div>
       </Row>
     ),
   },

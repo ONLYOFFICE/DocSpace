@@ -3,7 +3,7 @@ import { request } from "../client";
 export function getShortenedLink(link) {
   return request({
     method: "put",
-    url: "/portal/getshortenlink.json",
+    url: "/portal/getshortenlink",
     data: { link },
   });
 }
@@ -33,7 +33,7 @@ export function getInvitationLink(type) {
     ? Promise.resolve(link)
     : request({
         method: "get",
-        url: `/portal/users/invite/${type}.json`,
+        url: `/portal/users/invite/${type}`,
       }).then((link) => {
         if (type !== 3 && type !== 4) {
           localStorage.setItem(
@@ -174,7 +174,7 @@ export function enableAutoBackup() {
 export function setPortalRename(alias) {
   return request({
     method: "put",
-    url: "/portal/portalrename.json",
+    url: "/portal/portalrename",
     data: { alias },
   });
 }
@@ -182,21 +182,21 @@ export function setPortalRename(alias) {
 export function sendSuspendPortalEmail() {
   return request({
     method: "post",
-    url: "/portal/suspend.json",
+    url: "/portal/suspend",
   });
 }
 
 export function sendDeletePortalEmail() {
   return request({
     method: "post",
-    url: "/portal/delete.json",
+    url: "/portal/delete",
   });
 }
 
 export function suspendPortal(confirmKey = null) {
   const options = {
     method: "put",
-    url: "/portal/suspend.json",
+    url: "/portal/suspend",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -207,7 +207,7 @@ export function suspendPortal(confirmKey = null) {
 export function continuePortal(confirmKey = null) {
   const options = {
     method: "put",
-    url: "/portal/continue.json",
+    url: "/portal/continue",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -218,7 +218,7 @@ export function continuePortal(confirmKey = null) {
 export function deletePortal(confirmKey = null) {
   const options = {
     method: "delete",
-    url: "/portal/delete.json",
+    url: "/portal/delete",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -230,21 +230,26 @@ export function getPortalPaymentQuotas() {
   return request({ method: "get", url: "/portal/payment/quotas" });
 }
 
+export function getPortalTenantExtra(refresh) {
+  const params = refresh ? { refresh: true } : {};
+  return request({ method: "get", url: "/portal/tenantextra", params });
+}
 export function getPortalQuota(refresh = false) {
   const params = refresh ? { refresh: true } : {};
   console.log("getPortalQuota", { params });
   return request({ method: "get", url: "/portal/payment/quota", params });
 }
 
-export function getPortalTariff() {
-  return request({ method: "get", url: "/portal/tariff" });
+export function getPortalTariff(refresh = false) {
+  const params = refresh ? { refresh: true } : {};
+  return request({ method: "get", url: "/portal/tariff", params });
 }
 
 export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
 
-export function getPaymentLink(adminCount, backUrl, cancelToken) {
+export function getPaymentLink(adminCount, backUrl, signal) {
   return request({
     method: "put",
     url: `/portal/payment/url`,
@@ -252,7 +257,7 @@ export function getPaymentLink(adminCount, backUrl, cancelToken) {
       quantity: { admin: adminCount },
       backUrl,
     },
-    cancelToken,
+    signal,
   });
 }
 
@@ -284,4 +289,12 @@ export function sendPaymentRequest(email, userName, message) {
       message,
     },
   });
+}
+
+export function getPortal() {
+  const options = {
+    method: "get",
+    url: "/portal",
+  };
+  return request(options);
 }

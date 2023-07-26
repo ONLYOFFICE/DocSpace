@@ -164,14 +164,14 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         }
     }
 
-    public Task<List<DriveFile>> GetItemsAsync(string folderId)
+    public async Task<List<DriveFile>> GetItemsAsync(string folderId)
     {
-        return GetItemsInternalAsync(folderId);
+        return await GetItemsInternalAsync(folderId);
     }
 
-    public Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folders)
+    public async Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folders)
     {
-        return GetItemsInternalAsync(folderId, folders);
+        return await GetItemsInternalAsync(folderId, folders);
     }
 
     private async Task<List<DriveFile>> GetItemsInternalAsync(string folderId, bool? folders = null)
@@ -209,15 +209,10 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return files;
     }
 
-    public Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
+    public async Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalDownloadStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(DriveFile file, int offset = 0)
-    {
         var downloadArg = $"{file.Id}?alt=media";
 
         var ext = MimeMapping.GetExtention(file.MimeType);
@@ -245,7 +240,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         }
 
         var tempBuffer = _tempStream.Create();
-        using (var str = await response.Content.ReadAsStreamAsync())
+        await using (var str = await response.Content.ReadAsStreamAsync())
         {
             if (str != null)
             {
@@ -293,33 +288,6 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return _driveService.Files.Delete(entry.Id).ExecuteAsync();
     }
 
-    public DriveFile InsertEntryIntoFolder(DriveFile entry, string folderId)
-    {
-        var request = _driveService.Files.Update(FileConstructor(), entry.Id);
-        request.AddParents = folderId;
-        request.Fields = GoogleLoginProvider.FilesFields;
-
-        return request.Execute();
-    }
-
-    public Task<DriveFile> InsertEntryIntoFolderAsync(DriveFile entry, string folderId)
-    {
-        var request = _driveService.Files.Update(FileConstructor(), entry.Id);
-        request.AddParents = folderId;
-        request.Fields = GoogleLoginProvider.FilesFields;
-
-        return request.ExecuteAsync();
-    }
-
-    public Task<DriveFile> RemoveEntryFromFolderAsync(DriveFile entry, string folderId)
-    {
-        var request = _driveService.Files.Update(FileConstructor(), entry.Id);
-        request.RemoveParents = folderId;
-        request.Fields = GoogleLoginProvider.FilesFields;
-
-        return request.ExecuteAsync();
-    }
-
     public async Task<DriveFile> CopyEntryAsync(string toFolderId, string originEntryId, string newTitle)
     {
         var body = FileConstructor(folderId: toFolderId, title: newTitle);
@@ -340,12 +308,12 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         }
     }
 
-    public Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
+    public async Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
     {
         var request = _driveService.Files.Update(FileConstructor(newTitle), fileId);
         request.Fields = GoogleLoginProvider.FilesFields;
 
-        return request.ExecuteAsync();
+        return await request.ExecuteAsync();
     }
 
     public async Task<DriveFile> SaveStreamAsync(string fileId, Stream fileStream, string fileTitle)
@@ -391,15 +359,10 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return file;
     }
 
-    public Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
+    public async ValueTask<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
     {
         ArgumentNullException.ThrowIfNull(driveFile);
 
-        return InternalCreateResumableSessionAsync(driveFile, contentLength);
-    }
-
-    private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(DriveFile driveFile, long contentLength)
-    {
         var fileId = string.Empty;
         var method = "POST";
         var body = string.Empty;
@@ -440,7 +403,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return uploadSession;
     }
 
-    public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
+    public async ValueTask TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -449,11 +412,6 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        return InternalTransferAsync(googleDriveSession, stream, chunkLength, lastChunk);
-    }
-
-    private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
-    {
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(googleDriveSession.Location),
@@ -519,7 +477,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         {
             googleDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             if (responseStream == null)
             {
                 return;
@@ -595,7 +553,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
     {
         var file = await GetFileAsync(fileId);
         var newFile = await CopyEntryAsync(toFolderId, fileId, newFileName);
-        
+
         await DeleteItemAsync(file);
         return newFile;
     }

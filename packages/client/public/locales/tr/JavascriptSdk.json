@@ -1,9 +1,9 @@
 {
   "Ascending": "Artan",
-  "CopyWindowCode": "Pencere yerleştirme kodunu kopyala",
+  "CopyWindowCode": "Pencere gömülü kodunu kopyala",
   "DataDisplay": "Veri görüntüleme ayarları",
   "Descending": "Azalan",
-  "Destroy": "Yıkmak",
+  "Destroy": "İmha et",
   "EnterCount": "Sayı girin",
   "EnterHeight": "Yüksekliği girin",
   "EnterId": "Kimliği girin",
@@ -11,12 +11,11 @@
   "EnterWidth": "Genişliği girin",
   "FolderId": "Klasör kimliği",
   "FrameId": "Çerçeve kimliği",
-  "Header": "Başlık",
+  "Header": "Üst Bilgi",
   "ItemsCount": "Ürün sayısı",
   "JavascriptSdk": "Javascript SDK'sı",
   "Menu": "Menü",
   "Page": "Sayfa",
   "SearchTerm": "Arama terimi",
-  "SortOrder": "Sıralama düzeni",
-  "WindowParameters": "Pencere parametreleri"
+  "SortOrder": "Sıralama düzeni"
 }

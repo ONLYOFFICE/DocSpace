@@ -56,9 +56,9 @@ public class NCMigratingGroups : MigratingGroup
         Module = new MigrationModules(ModuleName, MigrationResource.OnlyofficeModuleNamePeople);
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
-        var existingGroups = _userManager.GetGroups().ToList();
+        var existingGroups = (await _userManager.GetGroupsAsync()).ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
         if (oldGroup != null)
         {
@@ -66,21 +66,21 @@ public class NCMigratingGroups : MigratingGroup
         }
         else
         {
-            _groupinfo = _userManager.SaveGroupInfo(_groupinfo);
+            _groupinfo = await _userManager.SaveGroupInfoAsync(_groupinfo);
         }
         foreach (var userGuid in UsersGuidList)
         {
             UserInfo user;
             try
             {
-                user = _userManager.GetUsers(userGuid.Value);
+                user = await _userManager.GetUsersAsync(userGuid.Value);
                 if (user == Constants.LostUser)
                 {
                     throw new ArgumentNullException();
                 }
-                if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
+                if (!await _userManager.IsUserInGroupAsync(user.Id, _groupinfo.ID))
                 {
-                    await _userManager.AddUserIntoGroup(user.Id, _groupinfo.ID);
+                    await _userManager.AddUserIntoGroupAsync(user.Id, _groupinfo.ID);
                 }
             }
             catch (Exception ex)

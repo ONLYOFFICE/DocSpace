@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Tilin kirjautumistyyppi",
   "DeleteSelfProfile": "Poista profiili",
-  "DisableUserButton": "Poisteta käytöstä",
   "DisabledEmployeeStatus": "Poistettu käytöstä",
+  "DisableUserButton": "Poisteta käytöstä",
   "EmailChangeButton": "Vaihda sähköposti",
   "EnableUserButton": "Käytössä",
   "InviteLinkTitle": "Kutsulinkki",
@@ -12,6 +13,7 @@
   "RemoveData": "Poista henkilökohtaiset tiedot",
   "ResetAuth": "Nollaa todennus",
   "SendInviteAgain": "Lähetä kutsu uudelleen",
+  "StandardLogin": "Standardi kirjautuminen",
   "SuccessChangeUserStatus": "Käyttäjän tilan muuttaminen onnistui",
   "SuccessDeletePersonalData": "Henkilötietojen poistaminen onnistui",
   "SuccessSentInvitation": "Kutsu lähetettiin onnistuneesti",

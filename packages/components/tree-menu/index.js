@@ -6,6 +6,7 @@ import Tree from "rc-tree";
 import "rc-tree/assets/index.css";
 import Badge from "../badge";
 import Base from "../themes/base";
+import NoUserSelect from "../utils/commonStyles";
 
 const StyledTree = styled(Tree)`
   span.rc-tree-node-content-wrapper,
@@ -68,14 +69,25 @@ const StyledTree = styled(Tree)`
         min-width: 8px;
         max-width: 9px;
         margin-top: -5px;
+        svg {
+          path {
+            fill: ${(props) => props.theme.treeNode.icon.color};
+          }
+        }
       }
       span.rc-tree-node-content-wrapper {
         width: 83%;
         span.rc-tree-iconEle {
           margin-right: 8px;
           vertical-align: 5px;
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.icon.color};
+            }
+          }
         }
         span.rc-tree-title {
+          ${NoUserSelect}
           width: calc(100% - 32px);
           font-weight: 600;
           overflow: hidden;
@@ -254,51 +266,54 @@ const TreeMenu = React.forwardRef((props, ref) => {
 });
 
 TreeMenu.propTypes = {
-  /** Whether support checked  */
+  /** Incorporates a checkbox into the TreeMenu */
   checkable: PropTypes.bool,
-  /** Whether can drag treeNode */
+  /** Specifies whether the treeNode can be dragged */
   draggable: PropTypes.bool,
-  /** Whether disabled the tree */
+  /** Disables the tree */
   disabled: PropTypes.bool,
-  /** Whether multiple select */
+  /** Enables multiple select  */
   multiple: PropTypes.bool,
-  /** Whether show icon  */
+  /** Allows showing the icon  */
   showIcon: PropTypes.bool,
-  /** Whether show line */
+  /** Allows showing the line */
   showLine: PropTypes.bool,
-  /** Expand all treeNodes */
+  /** Expands all the treeNodes */
   defaultExpandAll: PropTypes.bool,
-  /** Auto expand parent treeNodes when init  */
+  /** Automatically expands the parent treeNodes when initialized */
   defaultExpandParent: PropTypes.bool,
 
+  /** Click the treeNode/checkbox to fire */
+  onCheck: PropTypes.func,
+  /** Customize icon. When you pass component, whose render will receive full TreeNode props as component props */
   icon: PropTypes.func,
-  /** it execs when fire the tree's dragend event */
+  /** It execs when fire the tree's dragend event */
   onDragEnd: PropTypes.func,
-  /** it execs when fire the tree's dragenter event  */
+  /** It execs when fire the tree's dragenter event  */
   onDragEnter: PropTypes.func,
-  /** it execs when fire the tree's dragleave event */
+  /** It execs when fire the tree's dragleave event */
   onDragLeave: PropTypes.func,
-  /** it execs when fire the tree's dragover event  */
+  /** It execs when fire the tree's dragover event  */
   onDragOver: PropTypes.func,
-  /** it execs when fire the tree's dragstart event */
+  /** It execs when fire the tree's dragstart event */
   onDragStart: PropTypes.func,
-  /** it execs when fire the tree's drop event  */
+  /** It execs when fire the tree's drop event  */
   onDrop: PropTypes.func,
-  /** fire on treeNode expand or not */
+  /** Fire on treeNode expand or not */
   onExpand: PropTypes.func,
   /** Trigger when a node is loaded. If you set the loadedKeys, you must handle onLoad to avoid infinity loop */
   onLoad: PropTypes.func,
-  /** call when mouse enter a treeNode */
+  /** Call when mouse enter a treeNode */
   onMouseEnter: PropTypes.func,
-  /** call when mouse leave a treeNode */
+  /** Call when mouse leave a treeNode */
   onMouseLeave: PropTypes.func,
-  /** select current treeNode and show customized contextmenu */
+  /** Select current treeNode and show customized contextmenu */
   onRightClick: PropTypes.func,
-  /** click the treeNode to fire  */
+  /** Click the treeNode to fire  */
   onSelect: PropTypes.func,
-  /** load data asynchronously and the return value should be a promise  */
+  /** Load data asynchronously and the return value should be a promise  */
   loadData: PropTypes.func,
-  /** child elements */
+  /** Child elements */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -311,13 +326,13 @@ TreeMenu.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   disableSwitch: PropTypes.bool,
-  /** to select the selection style of the active node */
+  /** Selection style of the active node */
   isFullFillSelection: PropTypes.bool,
-  /** for setting the spacing between nodes */
+  /** Facilitates setting the spacing between nodes */
   gapBetweenNodes: PropTypes.string,
-  /** to set spacing between nodes on tablets and phones (if necessary) */
+  /** Facilitates setting the spacing between nodes on tablets and phones (if necessary) */
   gapBetweenNodesTablet: PropTypes.string,
-  /** swipe the root node to the left if there are no nested elements */
+  /** Allows swiping the root node to the left in case there are no nested elements */
   isEmptyRootNode: PropTypes.bool,
 };
 

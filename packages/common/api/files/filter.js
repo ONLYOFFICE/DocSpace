@@ -1,3 +1,4 @@
+import { ApplyFilterOption } from "../../constants";
 import { getObjectByLocation, toUrlParams } from "../../utils";
 import queryString from "query-string";
 
@@ -8,17 +9,20 @@ const DEFAULT_SORT_BY = "DateAndTime";
 const DEFAULT_SORT_ORDER = "descending";
 const DEFAULT_VIEW = "row";
 const DEFAULT_FILTER_TYPE = null;
-const DEFAULT_SEARCH_TYPE = true; //withSubfolders
+const DEFAULT_SEARCH_TYPE = null; //withSubfolders
 const DEFAULT_SEARCH = null;
 const DEFAULT_AUTHOR_TYPE = null;
+const DEFAULT_ROOM_ID = null;
 const DEFAULT_SELECTED_ITEM = {};
 const DEFAULT_FOLDER = "@my";
 const DEFAULT_SEARCH_IN_CONTENT = null;
 const DEFAULT_EXCLUDE_SUBJECT = null;
+const DEFAULT_APPLY_FILTER_OPTION = null;
 
 const SEARCH_TYPE = "withSubfolders";
 const AUTHOR_TYPE = "authorType";
 const FILTER_TYPE = "filterType";
+const ROOM_ID = "roomId";
 const SEARCH = "search";
 const SORT_BY = "sortby";
 const SORT_ORDER = "sortorder";
@@ -29,6 +33,7 @@ const FOLDER = "folder";
 const PREVIEW = "preview";
 const SEARCH_IN_CONTENT = "searchInContent";
 const EXCLUDE_SUBJECT = "excludeSubject";
+const APPLY_FILTER_OPTION = "applyFilterOption";
 
 // TODO: add next params
 // subjectGroup bool
@@ -51,11 +56,13 @@ class FilesFilter {
     const filterType =
       (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
       defaultFilter.filterType;
+
     const authorType =
       (urlFilter[AUTHOR_TYPE] &&
         urlFilter[AUTHOR_TYPE].includes("_") &&
         urlFilter[AUTHOR_TYPE]) ||
       defaultFilter.authorType;
+    const roomId = urlFilter[ROOM_ID] || defaultFilter.roomId;
     const withSubfolders =
       (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
       defaultFilter.withSubfolders;
@@ -73,6 +80,8 @@ class FilesFilter {
       urlFilter[SEARCH_IN_CONTENT] || defaultFilter.searchInContent;
     const excludeSubject =
       urlFilter[EXCLUDE_SUBJECT] || defaultFilter.excludeSubject;
+    const applyFilterOption =
+      urlFilter[APPLY_FILTER_OPTION] || defaultFilter.applyFilterOption;
 
     const newFilter = new FilesFilter(
       page,
@@ -84,11 +93,13 @@ class FilesFilter {
       filterType,
       withSubfolders,
       search,
+      roomId,
       authorType,
       defaultFilter.selectedItem,
       folder,
       searchInContent,
-      excludeSubject
+      excludeSubject,
+      applyFilterOption
     );
 
     return newFilter;
@@ -104,11 +115,13 @@ class FilesFilter {
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
+    roomId = DEFAULT_ROOM_ID,
     authorType = DEFAULT_AUTHOR_TYPE,
     selectedItem = DEFAULT_SELECTED_ITEM,
     folder = DEFAULT_FOLDER,
     searchInContent = DEFAULT_SEARCH_IN_CONTENT,
-    excludeSubject = DEFAULT_EXCLUDE_SUBJECT
+    excludeSubject = DEFAULT_EXCLUDE_SUBJECT,
+    applyFilterOption = DEFAULT_APPLY_FILTER_OPTION
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -118,12 +131,14 @@ class FilesFilter {
     this.filterType = filterType;
     this.withSubfolders = withSubfolders;
     this.search = search;
-    this.total = total;
+    this.roomId = roomId;
     this.authorType = authorType;
+    this.total = total;
     this.selectedItem = selectedItem;
     this.folder = folder;
     this.searchInContent = searchInContent;
     this.excludeSubject = excludeSubject;
+    this.applyFilterOption = applyFilterOption;
   }
 
   getStartIndex = () => {
@@ -146,17 +161,23 @@ class FilesFilter {
       pageCount,
       search,
       sortBy,
+      roomId,
       sortOrder,
       withSubfolders,
       startIndex,
       searchInContent,
       excludeSubject,
+      applyFilterOption,
     } = this;
 
     const isFilterSet =
-      filterType || (search ?? "").trim() || authorType
+      filterType ||
+      (search ?? "").trim() ||
+      authorType ||
+      applyFilterOption !== ApplyFilterOption.All
         ? withSubfolders
         : false;
+
     const userIdOrGroupId =
       authorType && authorType.includes("_")
         ? authorType.slice(authorType.indexOf("_") + 1)
@@ -171,9 +192,11 @@ class FilesFilter {
       filterType: filterType,
       filterValue: (search ?? "").trim(),
       withSubfolders: isFilterSet,
+      roomId: roomId,
       userIdOrGroupId,
       searchInContent,
       excludeSubject,
+      applyFilterOption,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -191,47 +214,27 @@ class FilesFilter {
       sortBy,
       sortOrder,
       withSubfolders,
+      roomId,
       searchInContent,
       excludeSubject,
+      applyFilterOption,
     } = this;
 
     const dtoFilter = {};
 
     const URLParams = queryString.parse(window.location.href);
 
-    if (filterType) {
-      dtoFilter[FILTER_TYPE] = filterType;
-    }
-
-    if (withSubfolders) {
-      dtoFilter[SEARCH_TYPE] = withSubfolders;
-    }
-
-    if (search) {
-      dtoFilter[SEARCH] = search.trim();
-    }
-    if (authorType) {
-      dtoFilter[AUTHOR_TYPE] = authorType;
-    }
-    if (folder) {
-      dtoFilter[FOLDER] = folder;
-    }
-
-    if (pageCount !== DEFAULT_PAGE_COUNT) {
-      dtoFilter[PAGE_COUNT] = pageCount;
-    }
-
-    if (URLParams.preview) {
-      dtoFilter[PREVIEW] = URLParams.preview;
-    }
-
-    if (searchInContent) {
-      dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
-    }
-
-    if (excludeSubject) {
-      dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
-    }
+    if (filterType) dtoFilter[FILTER_TYPE] = filterType;
+    if (withSubfolders) dtoFilter[SEARCH_TYPE] = withSubfolders;
+    if (search) dtoFilter[SEARCH] = search.trim();
+    if (roomId) dtoFilter[ROOM_ID] = roomId;
+    if (authorType) dtoFilter[AUTHOR_TYPE] = authorType;
+    if (folder) dtoFilter[FOLDER] = folder;
+    if (pageCount !== DEFAULT_PAGE_COUNT) dtoFilter[PAGE_COUNT] = pageCount;
+    if (URLParams.preview) dtoFilter[PREVIEW] = URLParams.preview;
+    if (searchInContent) dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
+    if (excludeSubject) dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
+    if (applyFilterOption) dtoFilter[APPLY_FILTER_OPTION] = applyFilterOption;
 
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
@@ -256,20 +259,23 @@ class FilesFilter {
       this.filterType,
       this.withSubfolders,
       this.search,
+      this.roomId,
       this.authorType,
       this.selectedItem,
       this.folder,
       this.searchInContent,
-      this.excludeSubject
+      this.excludeSubject,
+      this.applyFilterOption
     );
   }
 
   equals(filter) {
     const equals =
       this.filterType === filter.filterType &&
-      this.authorType === filter.authorType &&
       this.withSubfolders === filter.withSubfolders &&
       this.search === filter.search &&
+      this.roomId === filter.roomId &&
+      this.authorType === filter.authorType &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.viewAs === filter.viewAs &&
@@ -278,7 +284,8 @@ class FilesFilter {
       this.folder === filter.folder &&
       this.pageCount === filter.pageCount &&
       this.searchInContent === filter.searchInContent &&
-      this.excludeSubject === filter.excludeSubject;
+      this.excludeSubject === filter.excludeSubject &&
+      this.applyFilterOption === filter.applyFilterOption;
 
     return equals;
   }

@@ -16,7 +16,6 @@
   "LogoutBtn": "Çıxış",
   "LogoutDescription": "Qeyd. Bundan başqa bütün aktiv bağlantılar hazırda istifadə edildiyi üçün sistemdən çıxacaq.",
   "LogoutFrom": "{{platform}} {{browser}} çıxılsın?",
-  "MessageEmailActivationInstuctionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir.",
   "MyProfile": "Mənim profilim",
   "ProviderSuccessfullyConnected": "Provayder müvəffəqiyyətlə qoşuldu",
   "ProviderSuccessfullyDisconnected": "Provayderin əlaqəsi müvəffəqiyyətlə kəsildi",

@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>A l'extérieur du portail </value>
+    <value>A l'extérieur du portail</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
     <value>Commentaire</value>
@@ -128,7 +128,7 @@
     <value>Remplacé</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restauré(e) à partir de la révision de</value>
+    <value>Restauré(e) à partir de la révision de {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restaurée à partir de la modification du document de {0}</value>
@@ -164,7 +164,7 @@
     <value>Conversion prend trop de temps.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Une erreur s'est produite dans le service de documents </value>
+    <value>Une erreur s'est produite dans le service de documents</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Le fichier est ouvert pour l'édition par {0}. Actuellement, la coédition n'est pas prise en charge pour ce type de fichier.</value>
@@ -311,10 +311,11 @@
     <value>Faire la même chose qu'un utilisateur|Lier Dropbox, Box et d'autres comptes dans la section 'Documents communs'|Définir les droits d'accès aux documents et aux dossiers dans la section 'Documents communs'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. Compatibilité maximale garantie avec les fichiers docx, xlsx et pptx. </value>
+    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. Compatibilité maximale garantie avec les fichiers docx, xlsx et pptx.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Éditez, partagez et collaborez sur les documents bureautiques en temps réel. Créez et gérez les documents communs accessibles à toute l'équipe. Compatibilité maximale avec docx, xlsx, pptx. </value>
+    <value>Éditez, partagez et collaborez sur les documents bureautiques en temps réel. Créez et gérez les documents communs accessibles à toute l'équipe.
+Compatibilité maximale avec docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Affichez et téléchargez les documents partagés. Téléchargez les fichiers vers les dossiers partagés. Compatibilité maximale garantie avec les fichiers docx, xlsx, pptx.</value>
@@ -333,5 +334,86 @@
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>Le fichier est déverrouillé</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Administrateur de DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrateur de la salle</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Utilisateur</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Lecteur</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Commentateur</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Remplisseur de formulaires</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Réviseur</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collaborateur</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborateur</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrateur de la salle</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nouvelle version ne peut pas être identique à la version actuelle</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier le fichier</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier le dossier</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Fournisseur non valide</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Il n'est pas possible d'utiliser ce dossier pour stocker la salle</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Le lien d'invitation n'est pas valide ou sa validité a expiré</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Ce fournisseur est déjà connecté à la salle</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Le rôle n'est pas disponible pour ce type d'utilisateur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation d'archiver la salle</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de copier dans ce dossier</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Vous n'avez pas la permission d'éditer la salle</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de déplacer vers ce dossier</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Vous n'avez pas suffisamment d'autorisation pour désarchiver la salle</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Vous ne pouvez pas modifier les salles archivées</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Vous ne pouvez pas épingler une salle</value>
   </data>
 </root>

@@ -8,7 +8,13 @@ import toastr from "@docspace/components/toast/toastr";
 
 import copy from "copy-to-clipboard";
 
-const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
+const MetadataUrlField = ({
+  labelText,
+  name,
+  placeholder,
+  tooltipContent,
+  tooltipClass,
+}) => {
   const { t } = useTranslation("Translations");
 
   const onCopyClick = () => {
@@ -20,10 +26,16 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
     <div className="metadata-field">
       <Text className="label" fontSize="13px" as="div" fontWeight={600}>
         {labelText}
-        <HelpButton tooltipContent={tooltipContent} />
+        <HelpButton
+          place="right"
+          offsetRight={0}
+          tooltipContent={tooltipContent}
+          className={tooltipClass}
+        />
       </Text>
       <InputBlock
         className="input"
+        iconButtonClassName={name}
         isDisabled
         name={name}
         placeholder={placeholder}

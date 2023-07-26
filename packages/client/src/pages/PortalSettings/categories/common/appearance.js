@@ -1,7 +1,6 @@
 ﻿import CheckWhiteSvgUrl from "PUBLIC_DIR/images/check.white.svg?url";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
@@ -16,7 +15,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import DropDownContainer from "@docspace/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isDesktop } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
@@ -50,19 +49,16 @@ const Appearance = (props) => {
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
-  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
-    headerEditTheme
-  );
+  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] =
+    useState(headerEditTheme);
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
   const [currentColorButtons, setCurrentColorButtons] = useState(null);
 
-  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] = useState(
-    false
-  );
-  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] = useState(
-    false
-  );
+  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] =
+    useState(false);
+  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] =
+    useState(false);
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
     defaultAppliedColorAccent
@@ -71,14 +67,12 @@ const Appearance = (props) => {
     defaultAppliedColorButtons
   );
 
-  const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
-    false
-  );
-  const [changeCurrentColorButtons, setChangeCurrentColorButtons] = useState(
-    false
-  );
+  const [changeCurrentColorAccent, setChangeCurrentColorAccent] =
+    useState(false);
+  const [changeCurrentColorButtons, setChangeCurrentColorButtons] =
+    useState(false);
 
-  const [viewMobile, setViewMobile] = useState(false);
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
 
@@ -113,6 +107,7 @@ const Appearance = (props) => {
   const array_items = useMemo(
     () => [
       {
+        id: "light-theme",
         key: "0",
         title: t("Profile:LightTheme"),
         content: (
@@ -126,6 +121,7 @@ const Appearance = (props) => {
         ),
       },
       {
+        id: "dark-theme",
         key: "1",
         title: t("Profile:DarkTheme"),
         content: (
@@ -172,7 +168,7 @@ const Appearance = (props) => {
 
   useEffect(() => {
     if (!currentColorScheme) return;
-    
+
     setAppliedColorButtons(defaultAppliedColorButtons);
     setAppliedColorAccent(defaultAppliedColorAccent);
   }, [
@@ -291,10 +287,10 @@ const Appearance = (props) => {
   );
 
   const onCheckView = () => {
-    if (isMobileOnly || window.innerWidth < 600) {
-      setViewMobile(true);
+    if (isDesktop && window.innerWidth < 600) {
+      setIsSmallWindow(true);
     } else {
-      setViewMobile(false);
+      setIsSmallWindow(false);
     }
   };
 
@@ -468,6 +464,7 @@ const Appearance = (props) => {
     }
 
     setCurrentColorAccent(appliedColorAccent);
+    saveToSessionStorage("selectColorAccent", appliedColorAccent);
 
     setOpenHexColorPickerAccent(false);
   }, [
@@ -593,7 +590,6 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorButtons}
           color={appliedColorButtons}
           setColor={setAppliedColorButtons}
-          viewMobile={viewMobile}
         />
       </DropDownItem>
     </DropDownContainer>
@@ -607,7 +603,6 @@ const Appearance = (props) => {
       isDefaultMode={false}
       open={openHexColorPickerAccent}
       clickOutsideAction={onCloseHexColorPickerAccent}
-      viewMobile={viewMobile}
     >
       <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
@@ -616,7 +611,6 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorAccent}
           color={appliedColorAccent}
           setColor={setAppliedColorAccent}
-          viewMobile={viewMobile}
         />
       </DropDownItem>
     </DropDownContainer>
@@ -630,9 +624,14 @@ const Appearance = (props) => {
     );
   };
 
-  return viewMobile ? (
-    <BreakpointWarning sectionName={t("Settings:Appearance")} />
-  ) : !tReady ? (
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning sectionName={t("Settings:Appearance")} isSmallWindow />
+    );
+  if (isMobileOnly)
+    return <BreakpointWarning sectionName={t("Settings:Appearance")} />;
+
+  return !tReady ? (
     <Loader />
   ) : (
     <>
@@ -725,7 +724,7 @@ const Appearance = (props) => {
           visible={showColorSchemeDialog}
           onClose={onCloseColorSchemeDialog}
           header={headerColorSchemeDialog}
-          viewMobile={viewMobile}
+          viewMobile={isMobileOnly}
           openHexColorPickerButtons={openHexColorPickerButtons}
           openHexColorPickerAccent={openHexColorPickerAccent}
           showSaveButtonDialog={showSaveButtonDialog}
@@ -736,7 +735,7 @@ const Appearance = (props) => {
 
         <div className="buttons-container">
           <Button
-            className="button"
+            className="save button"
             label={t("Common:SaveButton")}
             onClick={onSave}
             primary
@@ -745,7 +744,7 @@ const Appearance = (props) => {
           />
 
           <Button
-            className="button"
+            className="edit-current-theme button"
             label={t("Settings:EditCurrentTheme")}
             onClick={onClickEdit}
             size="small"
@@ -753,7 +752,7 @@ const Appearance = (props) => {
           />
           {isShowDeleteButton && (
             <Button
-              className="button"
+              className="delete-theme button"
               label={t("Settings:DeleteTheme")}
               onClick={onOpenDialogDelete}
               size="small"
@@ -787,8 +786,4 @@ export default inject(({ auth }) => {
     deleteAppearanceTheme,
     theme,
   };
-})(
-  withTranslation(["Profile", "Common", "Settings"])(
-    withRouter(observer(Appearance))
-  )
-);
+})(withTranslation(["Profile", "Common", "Settings"])(observer(Appearance)));

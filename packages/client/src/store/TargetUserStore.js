@@ -51,6 +51,11 @@ class TargetUserStore {
     );
   }
 
+  setHasAvatar = (value) => {
+    this.targetUser.hasAvatar = value;
+    this.peopleStore.authStore.userStore.user.hasAvatar = value;
+  };
+
   getTargetUser = async (userName) => {
     /*if (this.peopleStore.authStore.userStore.user.userName === userName) {
       return this.setTargetUser(this.peopleStore.authStore.userStore.user);
@@ -122,14 +127,23 @@ class TargetUserStore {
     this.isEditTargetUser = isEditTargetUser;
   };
 
-  setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
+  setChangeEmailVisible = (visible) => {
+    //console.log("setChangeEmailVisible", { visible });
+    this.changeEmailVisible = visible;
+  };
 
   setChangePasswordVisible = (visible) =>
     (this.changePasswordVisible = visible);
 
-  setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
+  setChangeNameVisible = (visible) => {
+    //console.log("setChangeNameVisible", { visible });
+    this.changeNameVisible = visible;
+  };
 
-  setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
+  setChangeAvatarVisible = (visible) => {
+    //console.log("setChangeAvatarVisible", { visible });
+    this.changeAvatarVisible = visible;
+  };
 
   setSubscriptions = (
     isEnableBadges,

@@ -83,14 +83,20 @@ public class InvitationLinkHelper
             return validationResult;
         }
 
-        var commonLinkResult = _emailValidationKeyProvider.ValidateEmailKey(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType,
+        var commonLinkResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType,
             key, _emailValidationKeyProvider.ValidEmailKeyInterval);
+
+        if (commonLinkResult == ValidationResult.Invalid)
+        {
+            commonLinkResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.EmpInvite.ToStringFast() + (int)employeeType,
+                key, _emailValidationKeyProvider.ValidEmailKeyInterval);
+        }
 
         if (commonLinkResult != ValidationResult.Invalid)
         {
             validationResult.Result = commonLinkResult;
             validationResult.LinkType = InvitationLinkType.Common;
-            
+
             return validationResult;
         }
 
@@ -99,7 +105,7 @@ public class InvitationLinkHelper
             return validationResult;
         }
 
-        var individualLinkResult = await ValidateIndividualLink(email, key, employeeType);
+        var individualLinkResult = await ValidateIndividualLinkAsync(email, key, employeeType);
 
         validationResult.Result = individualLinkResult;
         validationResult.LinkType = InvitationLinkType.Individual;
@@ -107,14 +113,9 @@ public class InvitationLinkHelper
         return validationResult;
     }
 
-    public LinkValidationResult Validate(string key, string email, EmployeeType employeeType)
+    private async Task<ValidationResult> ValidateIndividualLinkAsync(string email, string key, EmployeeType employeeType)
     {
-        return ValidateAsync(key, email, employeeType).Result;
-    }
-
-    private async Task<ValidationResult> ValidateIndividualLink(string email, string key, EmployeeType employeeType)
-    {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(), 
+        var result = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(),
             key, IndividualLinkExpirationInterval);
 
         if (result != ValidationResult.Ok)
@@ -122,18 +123,18 @@ public class InvitationLinkHelper
             return result;
         }
 
-        var user = _userManager.GetUserByEmail(email);
+        var user = await _userManager.GetUserByEmailAsync(email);
 
-        if (user.Equals(Constants.LostUser) || _authManager.GetUserPasswordStamp(user.Id) != DateTime.MinValue)
+        if (user.Equals(Constants.LostUser) || await _authManager.GetUserPasswordStampAsync(user.Id) != DateTime.MinValue)
         {
             return ValidationResult.Invalid;
         }
-        
+
         var visitMessage = await GetLinkVisitMessageAsync(email, key);
 
         if (visitMessage == null)
         {
-            SaveLinkVisitMessage(email, key);
+            await SaveLinkVisitMessageAsync(email, key);
         }
         else if (visitMessage.Date + _emailValidationKeyProvider.ValidVisitLinkInterval < DateTime.UtcNow)
         {
@@ -152,22 +153,22 @@ public class InvitationLinkHelper
 
     private async Task<AuditEvent> GetLinkVisitMessageAsync(string email, string key)
     {
-        using var context = _dbContextFactory.CreateDbContext();
-        
+        await using var context = _dbContextFactory.CreateDbContext();
+
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key });
-        
-        var message = await context.AuditEvents.FirstOrDefaultAsync(a => a.Target == target.ToString() && a.DescriptionRaw == description);
+
+        var message = await Queries.AuditEventsAsync(context, target.ToString(), description);
 
         return message;
     }
 
-    private void SaveLinkVisitMessage(string email, string key)
+    private async Task SaveLinkVisitMessageAsync(string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request.Headers;
         var target = _messageTarget.Create(email);
 
-        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
+        await _messageService.SendAsync(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
 }
 
@@ -183,4 +184,12 @@ public class LinkValidationResult
     public ValidationResult Result { get; set; }
     public InvitationLinkType LinkType { get; set; }
     public Guid LinkId { get; set; }
+}
+
+static file class Queries
+{
+    public static readonly Func<MessagesContext, string, string, Task<AuditEvent>> AuditEventsAsync =
+        EF.CompileAsyncQuery(
+            (MessagesContext ctx, string target, string description) =>
+                ctx.AuditEvents.FirstOrDefault(a => a.Target == target && a.DescriptionRaw == description));
 }

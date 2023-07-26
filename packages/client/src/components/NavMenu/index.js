@@ -1,6 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import {
+  isMobileOnly,
+  isDesktop as isDesktopDevice,
+} from "react-device-detect";
+import { isMobile as isMobileUtils } from "@docspace/components/utils/device";
 import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 
@@ -8,11 +13,11 @@ import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Loaders from "@docspace/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
-import { isMobileOnly } from "react-device-detect";
+
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
@@ -55,144 +60,140 @@ const StyledContainer = styled.header`
 
 StyledContainer.defaultProps = { theme: Base };
 
-class NavMenu extends React.Component {
-  constructor(props) {
-    super(props);
-    this.timeout = null;
+const NavMenu = (props) => {
+  const timeout = React.useRef(null);
 
-    const {
-      isBackdropVisible,
-      isNavHoverEnabled,
-      isNavOpened,
-      isAsideVisible,
-    } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    this.state = {
-      isBackdropVisible,
-      isNavOpened,
-      isAsideVisible,
-      isNavHoverEnabled,
-    };
-  }
+  const [showNavMenu, setShowNavMenu] = React.useState(
+    isMobileOnly || isMobileUtils()
+  );
 
-  backdropClick = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isNavOpened: false,
-      isAsideVisible: false,
-      isNavHoverEnabled: !this.state.isNavHoverEnabled,
-    });
+  const [isBackdropVisible, setIsBackdropVisible] = React.useState(
+    props.isBackdropVisible
+  );
+  const [isNavOpened, setIsNavOpened] = React.useState(props.isNavHoverEnabled);
+  const [isAsideVisible, setIsAsideVisible] = React.useState(props.isNavOpened);
+  const [isNavHoverEnabled, setIsNavHoverEnabled] = React.useState(
+    props.isAsideVisible
+  );
+
+  const backdropClick = () => {
+    setIsBackdropVisible(false);
+    setIsNavOpened(false);
+    setIsAsideVisible(false);
+    setIsNavHoverEnabled((val) => !val);
   };
 
-  showNav = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isNavOpened: true,
-      isAsideVisible: false,
-      isNavHoverEnabled: false,
-    });
+  const showNav = () => {
+    setIsBackdropVisible(true);
+    setIsNavOpened(true);
+    setIsAsideVisible(false);
+    setIsNavHoverEnabled(false);
   };
 
-  clearNavTimeout = () => {
-    if (this.timeout == null) return;
-    clearTimeout(this.timeout);
-    this.timeout = null;
+  const clearNavTimeout = () => {
+    if (timeout.current === null) return;
+    clearTimeout(timeout.current);
+    timeout.current = null;
   };
 
-  handleNavMouseEnter = () => {
-    if (!this.state.isNavHoverEnabled) return;
-    this.timeout = setTimeout(() => {
-      this.setState({
-        isBackdropVisible: false,
-        isNavOpened: true,
-        isAsideVisible: false,
-      });
+  const handleNavMouseEnter = () => {
+    if (!isNavHoverEnabled) return;
+    timeout.current = setTimeout(() => {
+      setIsBackdropVisible(false);
+      setIsNavOpened(true);
+      setIsAsideVisible(false);
     }, 1000);
   };
 
-  handleNavMouseLeave = () => {
-    if (!this.state.isNavHoverEnabled) return;
-    this.clearNavTimeout();
-    this.setState({
-      isBackdropVisible: false,
-      isNavOpened: false,
-      isAsideVisible: false,
-    });
+  const handleNavMouseLeave = () => {
+    if (!isNavHoverEnabled) return;
+    clearNavTimeout();
+    setIsBackdropVisible(false);
+    setIsNavOpened(false);
+    setIsAsideVisible(false);
   };
 
-  toggleAside = () => {
-    this.clearNavTimeout();
-    this.setState({
-      isBackdropVisible: true,
-      isNavOpened: false,
-      isAsideVisible: true,
-      isNavHoverEnabled: false,
-    });
+  const toggleAside = () => {
+    clearNavTimeout();
+    setIsBackdropVisible(true);
+    setIsNavOpened(false);
+    setIsAsideVisible(true);
+    setIsNavHoverEnabled(false);
   };
 
-  render() {
-    const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
+  const onResize = React.useCallback(() => {
+    setShowNavMenu(isMobileUtils() || isMobileOnly);
+  }, []);
 
-    const {
-      isAuthenticated,
-      isLoaded,
-      asideContent,
-      history,
-      isDesktop,
-      isFrame,
-      showHeader,
-    } = this.props;
+  React.useEffect(() => {
+    if (isDesktopDevice) window.addEventListener("resize", onResize);
 
-    const isAsideAvailable = !!asideContent;
-    const hideHeader = isDesktop || (!showHeader && isFrame);
-    //console.log("NavMenu render", this.state, this.props);
-    const isPreparationPortal =
-      history.location.pathname === "/preparation-portal";
-    return (
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledContainer
-            isLoaded={isLoaded}
-            isVisible={value.isVisible}
-            isDesktop={hideHeader}
-          >
-            <Backdrop
-              visible={isBackdropVisible}
-              onClick={this.backdropClick}
-              withBackground={true}
-            />
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-            {!hideHeader &&
-              (isLoaded && isAuthenticated ? (
-                <>
-                  {!isPreparationPortal && <HeaderNav />}
-                  <Header
-                    isPreparationPortal={isPreparationPortal}
-                    isNavOpened={isNavOpened}
-                    onClick={this.showNav}
-                    onNavMouseEnter={this.handleNavMouseEnter}
-                    onNavMouseLeave={this.handleNavMouseLeave}
-                    toggleAside={this.toggleAside}
-                    backdropClick={this.backdropClick}
-                  />
-                </>
-              ) : !isLoaded && isAuthenticated ? (
-                <Loaders.Header />
-              ) : (
-                <HeaderUnAuth />
-              ))}
+  const {
+    isAuthenticated,
+    isLoaded,
+    asideContent,
 
-            {isAsideAvailable && (
-              <Aside visible={isAsideVisible} onClick={this.backdropClick}>
-                {asideContent}
-              </Aside>
-            )}
-          </StyledContainer>
-        )}
-      </LayoutContextConsumer>
-    );
-  }
-}
+    isDesktop,
+    isFrame,
+    showHeader,
+  } = props;
+
+  const isAsideAvailable = !!asideContent;
+  const hideHeader = isDesktop || (!showHeader && isFrame);
+
+  if (!showNavMenu) return <></>;
+
+  const isPreparationPortal = location.pathname === "/preparation-portal";
+  return (
+    <LayoutContextConsumer>
+      {(value) => (
+        <StyledContainer
+          isLoaded={isLoaded}
+          isVisible={value.isVisible}
+          isDesktop={hideHeader}
+        >
+          <Backdrop
+            visible={isBackdropVisible}
+            onClick={backdropClick}
+            withBackground={true}
+          />
+
+          {!hideHeader &&
+            (isLoaded && isAuthenticated ? (
+              <>
+                {!isPreparationPortal && <HeaderNav />}
+                <Header
+                  isPreparationPortal={isPreparationPortal}
+                  isNavOpened={isNavOpened}
+                  onClick={showNav}
+                  onNavMouseEnter={handleNavMouseEnter}
+                  onNavMouseLeave={handleNavMouseLeave}
+                  toggleAside={toggleAside}
+                  backdropClick={backdropClick}
+                />
+              </>
+            ) : !isLoaded && isAuthenticated ? (
+              <Loaders.Header />
+            ) : (
+              <HeaderUnAuth />
+            ))}
+
+          {isAsideAvailable && (
+            <Aside visible={isAsideVisible} onClick={backdropClick}>
+              {asideContent}
+            </Aside>
+          )}
+        </StyledContainer>
+      )}
+    </LayoutContextConsumer>
+  );
+};
 
 NavMenu.propTypes = {
   isBackdropVisible: PropTypes.bool,
@@ -231,7 +232,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     showHeader: frameConfig?.showHeader,
     isFrame,
   };
-})(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
+})(observer(withTranslation(["NavMenu", "Common"])(NavMenu)));
 
 export default () => (
   <I18nextProvider i18n={i18n}>

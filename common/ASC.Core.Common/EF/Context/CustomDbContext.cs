@@ -29,7 +29,7 @@ namespace ASC.Core.Common.EF.Context;
 public class CustomDbContext : DbContext
 {
     public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbipLocation> DbipLocation { get; set; }
+    public DbSet<DbIPLookup> DbIPLookup { get; set; }
     public DbSet<Regions> Regions { get; set; }
 
     public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
@@ -39,7 +39,7 @@ public class CustomDbContext : DbContext
         ModelBuilderWrapper
                .From(modelBuilder, Database)
                .AddMobileAppInstall()
-               .AddDbipLocation()
+               .AddDbIPLookup()
                .AddRegions();
     }
 }

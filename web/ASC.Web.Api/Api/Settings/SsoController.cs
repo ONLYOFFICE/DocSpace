@@ -64,11 +64,11 @@ public class SsoController : BaseSettingsController
     /// <category>SSO</category>
     /// <returns>SSO settings</returns>
     [HttpGet("ssov2")]
-    public SsoSettingsV2 GetSsoSettingsV2()
+    public async Task<SsoSettingsV2> GetSsoSettingsV2()
     {
-        CheckSsoPermissions();
+        await CheckSsoPermissionsAsync();
 
-        var settings = _settingsManager.Load<SsoSettingsV2>();
+        var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
         if (string.IsNullOrEmpty(settings.SpLoginLabel))
         {
@@ -87,9 +87,9 @@ public class SsoController : BaseSettingsController
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
     [HttpGet("ssov2/default")]
-    public SsoSettingsV2 GetDefaultSsoSettingsV2()
+    public async Task<SsoSettingsV2> GetDefaultSsoSettingsV2Async()
     {
-        CheckSsoPermissions();
+        await CheckSsoPermissionsAsync();
         return _settingsManager.GetDefault<SsoSettingsV2>();
     }
 
@@ -125,9 +125,9 @@ public class SsoController : BaseSettingsController
     /// <param name="serializeSettings">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
     [HttpPost("ssov2")]
-    public async Task<SsoSettingsV2> SaveSsoSettingsV2(SsoSettingsRequestsDto model)
+    public async Task<SsoSettingsV2> SaveSsoSettingsV2Async(SsoSettingsRequestsDto model)
     {
-        CheckSsoPermissions();
+        await CheckSsoPermissionsAsync();
 
         var serializeSettings = model.SerializeSettings;
 
@@ -180,19 +180,19 @@ public class SsoController : BaseSettingsController
             settings.SpLoginLabel = settings.SpLoginLabel.Substring(0, 100);
         }
 
-        if (!_settingsManager.Save(settings))
+        if (!await _settingsManager.SaveAsync(settings))
         {
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
         if (!settings.EnableSso)
         {
-            await ConverSsoUsersToOrdinary();
+            await ConverSsoUsersToOrdinaryAsync();
         }
 
         var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
 
-        _messageService.Send(messageAction);
+        await _messageService.SendAsync(messageAction);
 
         return settings;
     }
@@ -206,27 +206,27 @@ public class SsoController : BaseSettingsController
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
     [HttpDelete("ssov2")]
-    public async Task<SsoSettingsV2> ResetSsoSettingsV2()
+    public async Task<SsoSettingsV2> ResetSsoSettingsV2Async()
     {
-        CheckSsoPermissions();
+        await CheckSsoPermissionsAsync();
 
         var defaultSettings = _settingsManager.GetDefault<SsoSettingsV2>();
 
-        if (!_settingsManager.Save(defaultSettings))
+        if (!await _settingsManager.SaveAsync(defaultSettings))
         {
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
-        await ConverSsoUsersToOrdinary();
+        await ConverSsoUsersToOrdinaryAsync();
 
-        _messageService.Send(MessageAction.SSODisabled);
+        await _messageService.SendAsync(MessageAction.SSODisabled);
 
         return defaultSettings;
     }
 
-    private async Task ConverSsoUsersToOrdinary()
+    private async Task ConverSsoUsersToOrdinaryAsync()
     {
-        var ssoUsers = _userManager.GetUsers().Where(u => u.IsSSO()).ToList();
+        var ssoUsers = (await _userManager.GetUsersAsync()).Where(u => u.IsSSO()).ToList();
 
         if (!ssoUsers.Any())
         {
@@ -240,7 +240,7 @@ public class SsoController : BaseSettingsController
 
             existingSsoUser.ConvertExternalContactsToOrdinary();
 
-            await _userManager.UpdateUserInfo(existingSsoUser);
+            await _userManager.UpdateUserInfoAsync(existingSsoUser);
         }
     }
 
@@ -249,13 +249,13 @@ public class SsoController : BaseSettingsController
         return Uri.TryCreate(uriName, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 
-    private void CheckSsoPermissions()
+    private async Task CheckSsoPermissionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                || !_tenantManager.GetCurrentTenantQuota().Sso))
+                || !(await _tenantManager.GetCurrentTenantQuotaAsync()).Sso))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Sso");
         }

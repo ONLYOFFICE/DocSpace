@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { StyledDownloadDialog } from "./StyledDownloadDialog";
@@ -12,13 +11,8 @@ import DownloadContent from "./DownloadContent";
 class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      documents,
-      spreadsheets,
-      presentations,
-      masterForms,
-      other,
-    } = this.props.sortedFiles;
+    const { documents, spreadsheets, presentations, masterForms, other } =
+      this.props.sortedFiles;
 
     this.state = {
       documents: {
@@ -372,6 +366,7 @@ class DownloadDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="DownloadButton"
+            className="download-button"
             label={t("Common:Download")}
             size="normal"
             primary
@@ -381,6 +376,7 @@ class DownloadDialogComponent extends React.Component {
           />
           <Button
             key="CancelButton"
+            className="cancel-button"
             label={t("Common:CancelButton")}
             size="normal"
             onClick={this.onClose}
@@ -404,10 +400,8 @@ export default inject(
     const { extsConvertible } = settingsStore;
     const { theme } = auth.settingsStore;
 
-    const {
-      downloadDialogVisible: visible,
-      setDownloadDialogVisible,
-    } = dialogsStore;
+    const { downloadDialogVisible: visible, setDownloadDialogVisible } =
+      dialogsStore;
 
     const { downloadFiles } = filesActionsStore;
 
@@ -422,4 +416,4 @@ export default inject(
       theme,
     };
   }
-)(withRouter(observer(DownloadDialog)));
+)(observer(DownloadDialog));

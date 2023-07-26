@@ -59,6 +59,10 @@ public class Settings
         set => _httpCompression = value;
     }
 
+    public Authentication Authentication { get; set; }
+
+    public ApiKey ApiKey { get; set; }
+
     private int? _period;
     private long? _maxContentLength;
     private long? _maxFileSize;
@@ -70,3 +74,16 @@ public class Settings
         configuration.GetSetting("elastic", this);
     }
 }
+
+public class Authentication
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+}
+
+public class ApiKey
+{
+    public string Id { get; set; }
+    public string Value { get; set; }
+}
+

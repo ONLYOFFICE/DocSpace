@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Message = Amazon.SimpleEmail.Model.Message;
-
 namespace ASC.Core.Notify.Senders;
 
 [Singletone]
@@ -56,7 +54,7 @@ public class AWSSender : SmtpSender, IDisposable
         _lastRefresh = DateTime.UtcNow - _refreshTimeout; //set to refresh on first send
     }
 
-    public override async Task<NoticeSendResult> Send(NotifyMessage m)
+    public override async Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         NoticeSendResult result;
         try
@@ -66,12 +64,12 @@ public class AWSSender : SmtpSender, IDisposable
                 _logger.DebugSendTo(m.TenantId, m.Reciever);
                 await using var scope = _serviceProvider.CreateAsyncScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                tenantManager.SetCurrentTenant(m.TenantId);
+                await tenantManager.SetCurrentTenantAsync(m.TenantId);
 
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
-                if (!configuration.SmtpSettings.IsDefaultSettings)
+                if (!(await configuration.GetDefaultSmtpSettingsAsync()).IsDefaultSettings)
                 {
-                    result = await base.Send(m);
+                    result = await base.SendAsync(m);
                 }
                 else
                 {
@@ -106,7 +104,7 @@ public class AWSSender : SmtpSender, IDisposable
         if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
         {
             _logger.DebugAmazonSendingFailed(result);
-            result = await base.Send(m);
+            result = await base.SendAsync(m);
         }
 
         return result;
@@ -130,36 +128,17 @@ public class AWSSender : SmtpSender, IDisposable
             _semaphore.Release();
         }
 
-        var dest = new Destination
-        {
-            ToAddresses = m.Reciever.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(a => MailAddressUtils.Create(a).Address).ToList(),
-        };
+        var message = BuildMailMessage(m);
 
-        var subject = new Content(MimeHeaderUtils.EncodeMime(m.Subject)) { Charset = Encoding.UTF8.WebName, };
+        using var ms = new MemoryStream();
+        message.WriteTo(ms);
 
-        Body body;
-        if (m.ContentType == Pattern.HtmlContentType)
-        {
-            body = new Body(new Content(HtmlUtil.GetText(m.Content)) { Charset = Encoding.UTF8.WebName })
-            {
-                Html = new Content(GetHtmlView(m.Content)) { Charset = Encoding.UTF8.WebName }
-            };
-        }
-        else
-        {
-            body = new Body(new Content(m.Content) { Charset = Encoding.UTF8.WebName });
-        }
-
-        var from = MailAddressUtils.Create(m.Sender).ToEncodedString();
-        var request = new SendEmailRequest { Source = from, Destination = dest, Message = new Message(subject, body) };
-        if (!string.IsNullOrEmpty(m.ReplyTo))
-        {
-            request.ReplyToAddresses.Add(MailAddressUtils.Create(m.ReplyTo).Address);
-        }
+        var request = new SendRawEmailRequest(new RawMessage(ms));
 
         ThrottleIfNeeded();
 
-        var response = await _amazonEmailServiceClient.SendEmailAsync(request);
+        var response = await _amazonEmailServiceClient.SendRawEmailAsync(request);
+
         _lastSend = DateTime.UtcNow;
 
         return response != null ? NoticeSendResult.OK : NoticeSendResult.TryOnceAgain;

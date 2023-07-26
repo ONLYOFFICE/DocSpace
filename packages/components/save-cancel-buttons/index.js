@@ -53,6 +53,8 @@ class SaveCancelButtons extends React.Component {
       cancelEnable,
       tabIndex,
       saveButtonDisabled,
+      additionalClassSaveButton,
+      additionalClassCancelButton,
     } = this.props;
 
     const cancelButtonDisabled = cancelEnable
@@ -63,6 +65,14 @@ class SaveCancelButtons extends React.Component {
 
     const tabIndexSaveButton = tabIndex ? tabIndex : -1;
     const tabIndexCancelButton = tabIndex ? tabIndex + 1 : -1;
+
+    const classNameSave = additionalClassSaveButton
+      ? `save-button ` + additionalClassSaveButton
+      : `save-button`;
+
+    const classNameCancel = additionalClassCancelButton
+      ? `cancel-button ` + additionalClassCancelButton
+      : `cancel-button`;
 
     return (
       <StyledSaveCancelButtons
@@ -75,7 +85,7 @@ class SaveCancelButtons extends React.Component {
         <div className="buttons-flex">
           <Button
             tabIndex={tabIndexSaveButton}
-            className="save-button"
+            className={classNameSave}
             size="normal"
             isDisabled={!showReminder || saveButtonDisabled}
             primary
@@ -86,7 +96,7 @@ class SaveCancelButtons extends React.Component {
           />
           <Button
             tabIndex={tabIndexCancelButton}
-            className="cancel-button"
+            className={classNameCancel}
             size="normal"
             isDisabled={cancelButtonDisabled || isSaving}
             onClick={onCancelClick}
@@ -107,25 +117,31 @@ SaveCancelButtons.propTypes = {
   id: PropTypes.string,
   /** Accepts css class */
   className: PropTypes.string,
-  /** Text reminding of unsaved changes */
+  /** Message text that notifies of the unsaved changes */
   reminderTest: PropTypes.string,
   /** Save button label */
   saveButtonLabel: PropTypes.string,
   /** Cancel button label  */
   cancelButtonLabel: PropTypes.string,
-  /** What the save button will trigger when clicked */
+  /** Sets a callback function that is triggered when the save button is clicked */
   onSaveClick: PropTypes.func,
-  /** What the cancel button will trigger when clicked */
+  /** Sets a callback function that is triggered when the cancel button is clicked */
   onCancelClick: PropTypes.func,
-  /** Show message about unsaved changes (Only shown on desktops) */
+  /** Reminder message that notifies of the unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
-  /** Tells when the button should present a disabled state */
+  /** Sets save and cancel buttons block to 'position: static' instead of absolute */
   displaySettings: PropTypes.bool,
+  /** Displays the scrollbar */
   hasScroll: PropTypes.bool,
+  /** Sets the min width of the button */
   minwidth: PropTypes.string,
+  /** Sets the Cancel button disabled by default */
   disableRestoreToDefault: PropTypes.bool,
+  /** Sets the button to present a disabled state while executing an operation after clicking the save button */
   isSaving: PropTypes.bool,
+  /** Activates the disabled button */
   cancelEnable: PropTypes.bool,
+  /** Accepts css tab-index */
   tabIndex: PropTypes.number,
 };
 

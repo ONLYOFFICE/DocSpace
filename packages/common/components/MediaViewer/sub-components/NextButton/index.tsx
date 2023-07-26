@@ -8,11 +8,12 @@ import MediaNextIcon from "PUBLIC_DIR/images/viewer.next.react.svg";
 
 type NextButtonProps = {
   nextClick: VoidFunction;
+  isPdfFIle: boolean;
 };
 
-function NextButton({ nextClick }: NextButtonProps) {
+function NextButton({ nextClick, isPdfFIle }: NextButtonProps) {
   return (
-    <StyledSwitchToolbar onClick={nextClick}>
+    <StyledSwitchToolbar onClick={nextClick} isPdfFIle={isPdfFIle}>
       <StyledButtonScroll orientation="right">
         <MediaNextIcon />
       </StyledButtonScroll>

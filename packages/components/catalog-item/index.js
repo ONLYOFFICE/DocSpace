@@ -16,7 +16,7 @@ import {
   StyledCatalogItemInitialText,
   StyledCatalogItemHeaderContainer,
 } from "./styled-catalog-item";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
@@ -41,6 +41,7 @@ const CatalogItem = (props) => {
     isHeader,
     isFirstHeader,
     folderId,
+    badgeTitle,
   } = props;
 
   const onClickAction = () => {
@@ -48,7 +49,6 @@ const CatalogItem = (props) => {
   };
 
   const onClickBadgeAction = (e) => {
-    console.log("PRO", onClickBadge);
     e.stopPropagation();
     onClickBadge && onClickBadge(id);
   };
@@ -118,6 +118,7 @@ const CatalogItem = (props) => {
           <StyledCatalogItemBadgeWrapper
             showText={showText}
             onClick={onClickBadgeAction}
+            title={badgeTitle}
           >
             {!iconBadge ? (
               <Badge className="catalog-item__badge" label={labelBadge} />
@@ -144,34 +145,35 @@ CatalogItem.propTypes = {
   icon: PropTypes.string,
   /** Catalog item text */
   text: PropTypes.string,
-  /** Tells when the catalog item should display text */
+  /** Sets the catalog item to display text */
   showText: PropTypes.bool,
-  /** Call function when user clicked on catalog item */
+  /** Invokes a function upon clicking on a catalog item */
   onClick: PropTypes.func,
-  /** Call function when user mouse up on catalog item with dragging */
+  /** Invokes a function upon dragging and dropping a catalog item */
   onDrop: PropTypes.func,
   /** Tells when the catalog item should display initial on icon, text should be hidden */
   showInitial: PropTypes.bool,
-  /** Tells when the catalog item should be end of block */
+  /** Sets the catalog item as end of block */
   isEndOfBlock: PropTypes.bool,
-  /** Tells when the catalog item should be active */
+  /** Sets catalog item active */
   isActive: PropTypes.bool,
-  /** Tells when the catalog item available for drag`n`drop */
+  /** Sets the catalog item available for drag`n`drop */
   isDragging: PropTypes.bool,
-  /** Tells when the catalog item active for drag`n`drop */
+  /** Sets the catalog item active for drag`n`drop */
   isDragActive: PropTypes.bool,
-  /** Tells when the catalog item should display badge */
+  /** Sets the catalog item to display badge */
   showBadge: PropTypes.bool,
   /** Label in catalog item badge */
   labelBadge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  /** Special icon for badge, change default badge */
+  /** Sets custom badge icon */
   iconBadge: PropTypes.string,
-  /** Call function when user clicked on catalog item badge */
+  /** Invokes a function upon clicking on the catalog item badge */
   onClickBadge: PropTypes.func,
-  /** Call when catalog item show as header */
+  /** Sets the catalog item to be displayed as a header */
   isHeader: PropTypes.bool,
-  /** Disable margin top for catalog item header */
+  /** Disables margin top for catalog item header */
   isFirstHeader: PropTypes.bool,
+  /** Accepts folder id */
   folderId: PropTypes.string,
 };
 

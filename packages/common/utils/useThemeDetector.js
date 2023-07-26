@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
+import { getSystemTheme } from "../utils";
 
 export const useThemeDetector = () => {
   const isDesktopClient = window["AscDesktopEditor"] !== undefined;
-  const [systemTheme, setSystemTheme] = useState(
-    isDesktopClient
-      ? window?.RendererProcessVariable?.theme?.type === "dark"
-        ? "Dark"
-        : "Base"
-      : window?.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "Dark"
-      : "Base"
-  );
+  const [systemTheme, setSystemTheme] = useState(getSystemTheme());
 
   const systemThemeListener = (e) => {
     setSystemTheme(e.matches ? "Dark" : "Base");
@@ -20,12 +13,12 @@ export const useThemeDetector = () => {
     if (isDesktopClient) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addListener(systemThemeListener);
+    mediaQuery.addEventListener("change", systemThemeListener);
 
     return () => {
       if (isDesktopClient) return;
 
-      mediaQuery.removeListener(systemThemeListener);
+      mediaQuery.removeEventListener("change", systemThemeListener);
     };
   }, []);
 

@@ -51,6 +51,7 @@ public class ChunkedUploaderHandlerService
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
     private readonly ChunkedUploadSessionHelper _chunkedUploadSessionHelper;
     private readonly SocketManager _socketManager;
+    private readonly FileDtoHelper _filesWrapperHelper;
     private readonly ILogger<ChunkedUploaderHandlerService> _logger;
 
     public ChunkedUploaderHandlerService(
@@ -64,7 +65,8 @@ public class ChunkedUploaderHandlerService
         InstanceCrypto instanceCrypto,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
         ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-        SocketManager socketManager)
+        SocketManager socketManager,
+        FileDtoHelper filesWrapperHelper)
     {
         _tenantManager = tenantManager;
         _fileUploader = fileUploader;
@@ -76,6 +78,7 @@ public class ChunkedUploaderHandlerService
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
         _chunkedUploadSessionHelper = chunkedUploadSessionHelper;
         _socketManager = socketManager;
+        _filesWrapperHelper = filesWrapperHelper;
         _logger = logger;
     }
 
@@ -111,7 +114,7 @@ public class ChunkedUploaderHandlerService
                 return;
             }
 
-            if (_tenantManager.GetCurrentTenant().Status != TenantStatus.Active)
+            if ((await _tenantManager.GetCurrentTenantAsync()).Status != TenantStatus.Active)
             {
                 await WriteError(context, "Can't perform upload for deleted or transfering portals");
 
@@ -137,8 +140,8 @@ public class ChunkedUploaderHandlerService
 
                     if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                     {
-                        await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
-                        _ = _filesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+                        await WriteSuccess(context, await ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
+                        _ = _filesMessageService.SendAsync(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
                         await _socketManager.CreateFileAsync(resumedSession.File);
                     }
@@ -170,12 +173,12 @@ public class ChunkedUploaderHandlerService
     {
         if (request.Type(_instanceCrypto) == ChunkedRequestType.Initiate)
         {
-            _tenantManager.SetCurrentTenant(request.TenantId);
-            _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, request.AuthKey(_instanceCrypto)));
+            await _tenantManager.SetCurrentTenantAsync(request.TenantId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), request.AuthKey(_instanceCrypto)));
             var cultureInfo = request.CultureInfo(_setupInfo);
             if (cultureInfo != null)
             {
-                Thread.CurrentThread.CurrentUICulture = cultureInfo;
+                CultureInfo.CurrentUICulture = cultureInfo;
             }
 
             return true;
@@ -186,12 +189,12 @@ public class ChunkedUploaderHandlerService
             var uploadSession = await _chunkedUploadSessionHolder.GetSessionAsync<T>(request.UploadId);
             if (uploadSession != null)
             {
-                _tenantManager.SetCurrentTenant(uploadSession.TenantId);
-                _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, uploadSession.UserId));
+                await _tenantManager.SetCurrentTenantAsync(uploadSession.TenantId);
+                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), uploadSession.UserId));
                 var culture = _setupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                 if (culture != null)
                 {
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
                 }
 
                 return true;
@@ -216,10 +219,10 @@ public class ChunkedUploaderHandlerService
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
 
-        return context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
+        return context.Response.WriteAsync(JsonSerializer.Serialize(new { success, data, message }, SocketManager.GetSerializerSettings()));
     }
 
-    private static object ToResponseObject<T>(File<T> file)
+    private async Task<object> ToResponseObject<T>(File<T> file)
     {
         return new
         {
@@ -228,7 +231,8 @@ public class ChunkedUploaderHandlerService
             version = file.Version,
             title = file.Title,
             provider_key = file.ProviderKey,
-            uploaded = true
+            uploaded = true,
+            file = await _filesWrapperHelper.GetAsync(file)
         };
     }
 }

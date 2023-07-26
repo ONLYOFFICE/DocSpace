@@ -49,8 +49,8 @@ public class Worker
 
         await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
-            using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
-            activeTenantsUsers = GetTenantsUsers(dbContext);
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
+            activeTenantsUsers = await GetTenantsUsersAsync(dbContext);
         }
 
         if (!activeTenantsUsers.Any())
@@ -60,10 +60,12 @@ public class Worker
 
         _logger.InfoFoundUsers(activeTenantsUsers.Count);
 
-        await Parallel.ForEachAsync(activeTenantsUsers, cancellationToken, DeleteFilesAndFolders);
+        await Parallel.ForEachAsync(activeTenantsUsers,
+                                    new ParallelOptions { MaxDegreeOfParallelism = 3, CancellationToken = cancellationToken }, //System.Environment.ProcessorCount
+                                    DeleteFilesAndFoldersAsync);
     }
 
-    private async ValueTask DeleteFilesAndFolders(TenantUserSettings tenantUser, CancellationToken cancellationToken)
+    private async ValueTask DeleteFilesAndFoldersAsync(TenantUserSettings tenantUser, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {
@@ -75,7 +77,7 @@ public class Worker
             await using (var scope = _serviceScopeFactory.CreateAsyncScope())
             {
                 var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
-                tenantManager.SetCurrentTenant(tenantUser.TenantId);
+                await tenantManager.SetCurrentTenantAsync(tenantUser.TenantId);
 
                 var authManager = scope.ServiceProvider.GetRequiredService<AuthManager>();
                 var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
@@ -83,14 +85,14 @@ public class Worker
                 var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService>();
                 var fileDateTime = scope.ServiceProvider.GetRequiredService<FileDateTime>();
 
-                var userAccount = authManager.GetAccountByID(tenantUser.TenantId, tenantUser.UserId);
+                var userAccount = await authManager.GetAccountByIDAsync(tenantUser.TenantId, tenantUser.UserId);
 
                 if (userAccount == ASC.Core.Configuration.Constants.Guest)
                 {
                     return;
                 }
 
-                securityContext.AuthenticateMeWithoutCookie(userAccount);
+                await securityContext.AuthenticateMeWithoutCookieAsync(userAccount);
 
                 var fileDao = daoFactory.GetFileDao<int>();
                 var folderDao = daoFactory.GetFolderDao<int>();
@@ -101,17 +103,22 @@ public class Worker
 
                 var trashId = await folderDao.GetFolderIDTrashAsync(false, tenantUser.UserId);
 
-                foldersList.AddRange((await folderDao.GetFoldersAsync(trashId).ToListAsync())
+                foldersList.AddRange((await folderDao.GetFoldersAsync(trashId).ToListAsync(cancellationToken: cancellationToken))
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
                     .Select(f => f.Id));
 
-                filesList.AddRange((await fileDao.GetFilesAsync(trashId, null, default(FilterType), false, Guid.Empty, string.Empty, false).ToListAsync())
+                filesList.AddRange((await fileDao.GetFilesAsync(trashId, null, default(FilterType), false, Guid.Empty, string.Empty, false).ToListAsync(cancellationToken: cancellationToken))
                     .Where(x => fileDateTime.GetModifiedOnWithAutoCleanUp(x.ModifiedOn, tenantUser.Setting, true) < now)
                     .Select(y => y.Id));
 
+                if (foldersList.Count == 0 && filesList.Count == 0)
+                {
+                    return;
+                }
+
                 _logger.InfoCleanUp(tenantUser.TenantId, trashId);
 
-                fileStorageService.DeleteItems("delete", filesList, foldersList, true, false, true);
+                await fileStorageService.DeleteItemsAsync("delete", filesList, foldersList, true, false, true);
 
                 _logger.InfoCleanUpWait(tenantUser.TenantId, trashId);
 
@@ -124,7 +131,7 @@ public class Worker
                         break;
                     }
 
-                    await Task.Delay(100);
+                    await Task.Delay(100, cancellationToken);
                 }
 
                 _logger.InfoCleanUpFinish(tenantUser.TenantId, trashId);
@@ -137,20 +144,30 @@ public class Worker
         }
     }
 
-    private List<TenantUserSettings> GetTenantsUsers(WebstudioDbContext dbContext)
+    private async Task<List<TenantUserSettings>> GetTenantsUsersAsync(WebstudioDbContext dbContext)
     {
         var filesSettingsId = new FilesSettings().ID;
-        return dbContext.Tenants
-            .Join(dbContext.WebstudioSettings, a => a.Id, b => b.TenantId, (tenants, settings) => new { tenants, settings })
-            .Where(x => x.tenants.Status == TenantStatus.Active &&
-                        x.settings.Id == filesSettingsId &&
-                        Convert.ToBoolean(JsonExtensions.JsonValue(nameof(x.settings.Data).ToLower(), "AutomaticallyCleanUp.IsAutoCleanUp")) == true)
-            .Select(r => new TenantUserSettings()
-            {
-                TenantId = r.tenants.Id,
-                UserId = r.settings.UserId,
-                Setting = (DateToAutoCleanUp)Convert.ToInt32(JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), "AutomaticallyCleanUp.Gap"))
-            })
-            .ToList();
+        return await Queries.TenantUserSettingsAsync(dbContext, filesSettingsId).ToListAsync();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<WebstudioDbContext, Guid, IAsyncEnumerable<TenantUserSettings>>
+        TenantUserSettingsAsync = EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, Guid filesSettingsId) =>
+                ctx.Tenants
+                    .Join(ctx.WebstudioSettings, a => a.Id, b => b.TenantId,
+                        (tenants, settings) => new { tenants, settings })
+                    .Where(x => x.tenants.Status == TenantStatus.Active &&
+                                x.settings.Id == filesSettingsId &&
+                                Convert.ToBoolean(DbFunctionsExtension.JsonValue(nameof(x.settings.Data).ToLower(),
+                                    "AutomaticallyCleanUp.IsAutoCleanUp")) == true)
+                    .Select(r => new TenantUserSettings()
+                    {
+                        TenantId = r.tenants.Id,
+                        UserId = r.settings.UserId,
+                        Setting = (DateToAutoCleanUp)Convert.ToInt32(
+                            DbFunctionsExtension.JsonValue(nameof(r.settings.Data).ToLower(), "AutomaticallyCleanUp.Gap"))
+                    }));
 }

@@ -16,6 +16,9 @@ import Portal from "@docspace/components/portal";
 import FilterBlockItem from "./FilterBlockItem";
 
 import PeopleSelector from "client/PeopleSelector";
+import RoomSelector from "@docspace/client/src/components/RoomSelector";
+
+import { FilterGroups } from "../../../constants";
 
 import {
   StyledFilterBlock,
@@ -24,6 +27,7 @@ import {
   StyledControlContainer,
   StyledCrossIcon,
 } from "./StyledFilterBlock";
+import { FilterSelectorTypes } from "../../../constants";
 
 //TODO: fix translate
 const FilterBlock = ({
@@ -40,21 +44,39 @@ const FilterBlock = ({
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
-    isAuthor: false,
+    type: null,
     group: "",
   });
+
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const changeShowSelector = React.useCallback((isAuthor, group) => {
-    setShowSelector((val) => {
-      return {
-        show: !val.show,
-        isAuthor: isAuthor,
-        group: group,
-      };
-    });
+  const setFilterDataFn = (data) => {
+    const filterSubject = data.find(
+      (f) => f.group === FilterGroups.roomFilterSubject
+    );
+
+    if (filterSubject) {
+      const filterOwner = data.find(
+        (f) => f.group === FilterGroups.roomFilterOwner
+      );
+
+      const isSelected =
+        filterSubject.groupItem.findIndex((i) => i.isSelected) > -1;
+
+      filterOwner.groupItem[0].isDisabled = !isSelected;
+    }
+
+    setFilterData(data);
+  };
+
+  const changeShowSelector = React.useCallback((selectorType, group) => {
+    setShowSelector((val) => ({
+      show: !val.show,
+      type: selectorType,
+      group: group,
+    }));
   }, []);
 
   const changeSelectedItems = React.useCallback(
@@ -100,7 +122,7 @@ const FilterBlock = ({
         }
       });
 
-      setFilterData(data);
+      setFilterDataFn(data);
     },
     [filterData]
   );
@@ -109,8 +131,11 @@ const FilterBlock = ({
     changeSelectedItems([]);
     setFilterValues([]);
 
-    selectedFilterValue.length > 0 && onFilter && onFilter([]);
-  }, [changeSelectedItems, selectedFilterValue.length]);
+    selectedFilterValue &&
+      selectedFilterValue.length > 0 &&
+      onFilter &&
+      onFilter([]);
+  }, [changeSelectedItems, selectedFilterValue?.length]);
 
   const changeFilterValue = React.useCallback(
     (group, key, isSelected, label, isMultiSelect, withOptions) => {
@@ -133,9 +158,8 @@ const FilterBlock = ({
 
           value[groupIdx].key.splice(itemIdx, 1);
 
-          if (value[groupIdx].key.length === 0) {
+          if (value[groupIdx].key.length === 0)
             value = value.filter((item) => item.group !== group);
-          }
         } else {
           value = value.filter((item) => item.group !== group);
         }
@@ -256,7 +280,7 @@ const FilterBlock = ({
       };
     });
 
-    setFilterData(items);
+    setFilterDataFn(items);
     setFilterValues(newFilterValues);
 
     setTimeout(() => {
@@ -348,15 +372,24 @@ const FilterBlock = ({
       {showSelector.show ? (
         <>
           <StyledFilterBlock>
-            <PeopleSelector
-              withOutCurrentAuthorizedUser
-              className="people-selector"
-              isMultiSelect={false}
-              onAccept={selectOption}
-              onBackClick={onArrowClick}
-              headerLabel={selectorLabel}
-            />
-
+            {showSelector.type === FilterSelectorTypes.people ? (
+              <PeopleSelector
+                withOutCurrentAuthorizedUser
+                className="people-selector"
+                isMultiSelect={false}
+                onAccept={selectOption}
+                onBackClick={onArrowClick}
+                headerLabel={selectorLabel}
+              />
+            ) : (
+              <RoomSelector
+                className="people-selector"
+                isMultiSelect={false}
+                onAccept={selectOption}
+                onBackClick={onArrowClick}
+                headerLabel={selectorLabel}
+              />
+            )}
             <StyledControlContainer onClick={hideFilterBlock}>
               <StyledCrossIcon />
             </StyledControlContainer>
@@ -408,14 +441,14 @@ const FilterBlock = ({
                 id="filter_apply-button"
                 size="normal"
                 primary={true}
-                label={t("ApplyButton")}
+                label={t("Common:ApplyButton")}
                 scale={true}
                 onClick={onFilterAction}
               />
               <Button
                 id="filter_cancel-button"
                 size="normal"
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
                 scale={true}
                 onClick={hideFilterBlock}
               />

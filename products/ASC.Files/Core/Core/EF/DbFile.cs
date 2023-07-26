@@ -62,6 +62,8 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
     public ForcesaveType Forcesave { get; set; }
     public Thumbnail ThumbnailStatus { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
 
     [Nested]
     public List<DbFolderTree> Folders { get; set; }
@@ -73,7 +75,7 @@ public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument
 
     public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
     {
-        if (searchSettings.CanSearchByContent(GetType()))
+        if (searchSettings.CanSearchByContentAsync(GetType()).Result)
         {
             return (a) => new[] { Title, Comment, Changes, Document.Attachment.Content };
         }
@@ -91,6 +93,8 @@ public static class DbFileExtension
 {
     public static ModelBuilderWrapper AddDbFiles(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFile>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFiles, Provider.MySql)
             .Add(PgSqlAddDbFiles, Provider.PostgreSql);
@@ -119,6 +123,15 @@ public static class DbFileExtension
 
             entity.HasIndex(e => e.ModifiedOn)
                 .HasDatabaseName("modified_on");
+            
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_folder_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_folder_id_modified_on");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ContentLength })
+                .HasDatabaseName("tenant_id_folder_id_content_length");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -234,6 +247,15 @@ public static class DbFileExtension
 
             entity.HasIndex(e => e.ModifiedOn)
                 .HasDatabaseName("modified_on_files_file");
+            
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_folder_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_folder_id_modified_on");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ContentLength })
+                .HasDatabaseName("tenant_id_folder_id_content_length");
 
             entity.Property(e => e.Id).HasColumnName("id");
 

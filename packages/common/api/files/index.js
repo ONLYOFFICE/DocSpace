@@ -3,7 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { decodeDisplayName } from "../../utils";
+import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
@@ -62,14 +62,17 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter, signal) {
+  let params = folderId;
+
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
 
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
+  if (filter) {
+    checkFilterInstance(filter, FilesFilter);
+
+    params = `${folderId}?${filter.toApiUrlParams()}`;
+  }
 
   const options = {
     method: "get",
@@ -549,7 +552,7 @@ export function startUploadSession(
   const data = { fileName, fileSize, relativePath, encrypted, createOn };
   return request({
     method: "post",
-    url: `/files/${folderId}/upload/create_session.json`,
+    url: `/files/${folderId}/upload/create_session`,
     data,
   });
 }
@@ -575,7 +578,7 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
 
   return request({
     method: "get",
-    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+    url: `/files/fileops/move?destFolderId=${destFolderId}${paramsString}`,
   });
 }
 
@@ -879,7 +882,7 @@ export function setRecentSetting(set) {
 export function hideConfirmConvert(save) {
   return request({
     method: "put",
-    url: "/files/hideconfirmconvert.json",
+    url: "/files/hideconfirmconvert",
     data: { save },
   });
 }
@@ -966,6 +969,16 @@ export function getSharedUsers(fileId) {
 
   return request(options);
 }
+
+export function getProtectUsers(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}/protectusers`,
+  };
+
+  return request(options);
+}
+
 export function sendEditorNotify(fileId, actionLink, emails, message) {
   return request({
     method: "post",

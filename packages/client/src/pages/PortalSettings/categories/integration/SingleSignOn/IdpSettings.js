@@ -9,7 +9,13 @@ import Text from "@docspace/components/text";
 import SsoComboBox from "./sub-components/SsoComboBox";
 import SsoFormField from "./sub-components/SsoFormField";
 import UploadXML from "./sub-components/UploadXML";
-import { bindingOptions, nameIdOptions } from "./sub-components/constants";
+import {
+  ssoBindingOptions,
+  sloBindingOptions,
+  nameIdOptions,
+} from "./sub-components/constants";
+
+const PROVIDER_URL = "https://idpservice/idp";
 
 const IdpSettings = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
@@ -42,7 +48,8 @@ const IdpSettings = (props) => {
         name="spLoginLabel"
         placeholder={t("Settings:SingleSignOn")}
         tabIndex={4}
-        tooltipContent={t("CustomEntryTooltip")}
+        tooltipContent={<Text fontSize="12px">{t("CustomEntryTooltip")}</Text>}
+        tooltipClass="custom-entry-tooltip icon-button"
         value={spLoginLabel}
         hasError={spLoginLabelHasError}
       />
@@ -50,26 +57,30 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("ProviderURL")}
         name="entityId"
-        placeholder="https://idpservice/idp"
+        placeholder={PROVIDER_URL}
         tabIndex={5}
-        tooltipContent={t("ProviderURLTooltip")}
+        tooltipContent={<Text fontSize="12px">{t("ProviderURLTooltip")}</Text>}
+        tooltipClass="provider-url-tooltip icon-button"
         value={entityId}
         hasError={entityIdHasError}
       />
 
       <SsoFormField
         labelText={t("SignOnEndpointUrl")}
-        name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
+        name={ssoBinding?.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
         placeholder={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? "https://idpservice/SSO/POST"
             : "https://idpservice/SSO/REDIRECT"
         }
         tabIndex={7}
-        tooltipContent={t("SignOnEndpointUrlTooltip")}
-        value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
+        tooltipContent={
+          <Text fontSize="12px">{t("SignOnEndpointUrlTooltip")}</Text>
+        }
+        tooltipClass="sign-on-endpoint-url-tooltip icon-button"
+        value={ssoBinding?.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? ssoUrlPostHasError
             : ssoUrlRedirectHasError
         }
@@ -89,7 +100,7 @@ const IdpSettings = (props) => {
             isDisabled={!enableSso}
             name="ssoBinding"
             onClick={setInput}
-            options={bindingOptions}
+            options={ssoBindingOptions}
             selected={ssoBinding}
             spacing="20px"
             tabIndex={6}
@@ -99,17 +110,20 @@ const IdpSettings = (props) => {
 
       <SsoFormField
         labelText={t("LogoutEndpointUrl")}
-        name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
+        name={sloBinding?.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
         placeholder={
-          sloBinding.includes("POST")
+          sloBinding?.includes("POST")
             ? "https://idpservice/SLO/POST"
             : "https://idpservice/SLO/REDIRECT"
         }
         tabIndex={9}
-        tooltipContent={t("LogoutEndpointUrlTooltip")}
-        value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
+        tooltipContent={
+          <Text fontSize="12px">{t("LogoutEndpointUrlTooltip")}</Text>
+        }
+        tooltipClass="logout-endpoint-url-tooltip icon-button"
+        value={sloBinding?.includes("POST") ? sloUrlPost : sloUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? sloUrlPostHasError
             : sloUrlRedirectHasError
         }
@@ -129,7 +143,7 @@ const IdpSettings = (props) => {
             isDisabled={!enableSso}
             name="sloBinding"
             onClick={setInput}
-            options={bindingOptions}
+            options={sloBindingOptions}
             selected={sloBinding}
             spacing="20px"
             tabIndex={8}

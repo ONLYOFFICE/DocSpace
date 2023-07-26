@@ -75,8 +75,7 @@ public class EditorControllerThirdparty : EditorController<string>
     {
         fileId = "app-" + fileId;
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
-        bool editable;
-        var file = app.GetFile(fileId?.ToString(), out editable);
+        (var file, var editable) = await app.GetFileAsync(fileId?.ToString());
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
         var configuration = docParams.Configuration;
         configuration.Document.Url = app.GetFileStreamUrl(file);
@@ -84,9 +83,9 @@ public class EditorControllerThirdparty : EditorController<string>
         configuration.EditorConfig.Customization.GobackUrl = string.Empty;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
+        if (file.RootFolderType == FolderType.Privacy && await PrivacyRoomSettings.GetEnabledAsync(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
-            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)
             {
                 configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
@@ -158,7 +157,7 @@ public abstract class EditorController<T> : ApiControllerBase
     [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        using var stream = _httpContextAccessor.HttpContext.Request.Body;
+        await using var stream = _httpContextAccessor.HttpContext.Request.Body;
 
         return await _fileDtoHelper.GetAsync(await _fileStorageService.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave));
     }
@@ -188,9 +187,9 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [HttpGet("file/{fileId}/trackeditfile")]
-    public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
+    public async Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
-        return _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        return await _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
     }
 
     /// <summary>
@@ -211,9 +210,9 @@ public abstract class EditorController<T> : ApiControllerBase
         var file = docParams.File;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
+        if (file.RootFolderType == FolderType.Privacy && await PrivacyRoomSettings.GetEnabledAsync(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
-            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)
             {
                 configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
@@ -238,22 +237,27 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     [HttpGet("file/{fileId}/presigned")]
-    public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
+    public async Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
-        return _fileStorageService.GetPresignedUriAsync(fileId);
+        return await _fileStorageService.GetPresignedUriAsync(fileId);
     }
 
     [HttpGet("file/{fileId}/sharedusers")]
-    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    public async Task<List<MentionWrapper>> SharedUsers(T fileId)
     {
-        return _fileStorageService.SharedUsersAsync(fileId);
+        return await _fileStorageService.SharedUsersAsync(fileId);
     }
 
     [HttpPost("file/referencedata")]
-    public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
+    public async Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
+        return await _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
+    }
 
-        return _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
+    [HttpGet("file/{fileId}/protectusers")]
+    public async Task<List<MentionWrapper>> ProtectUsers(T fileId)
+    {
+        return await _fileStorageService.ProtectUsersAsync(fileId);
     }
 }
 
@@ -287,13 +291,13 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
     [HttpPut("docservice")]
-    public Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
+    public async Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
     {
         _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
         _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
         _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
 
-        _messageService.Send(MessageAction.DocumentServiceLocationSetting);
+        await _messageService.SendAsync(MessageAction.DocumentServiceLocationSetting);
 
         var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
         var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
@@ -302,40 +306,33 @@ public class EditorController : ApiControllerBase
             throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
         }
 
-        return InternalCheckDocServiceUrlAsync();
+        await _documentServiceConnector.CheckDocServiceUrlAsync();
+
+        return new[]
+        {
+            _filesLinkUtility.DocServiceUrl,
+            _filesLinkUtility.DocServiceUrlInternal,
+            _filesLinkUtility.DocServicePortalUrl
+        };
     }
 
     /// <visible>false</visible>
     [AllowAnonymous]
     [HttpGet("docservice")]
-    public Task<object> GetDocServiceUrlAsync(bool version)
+    public async Task<object> GetDocServiceUrlAsync(bool version)
     {
         var url = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
         if (!version)
         {
-            return Task.FromResult<object>(url);
+            return url;
         }
 
-        return InternalGetDocServiceUrlAsync(url);
-    }
-
-    private async Task<object> InternalGetDocServiceUrlAsync(string url)
-    {
         var dsVersion = await _documentServiceConnector.GetVersionAsync();
 
         return new
         {
             version = dsVersion,
             docServiceUrlApi = url,
-        };
-    }
-
-    private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()
-    {
-        await _documentServiceConnector.CheckDocServiceUrlAsync();
-
-        return new[]
-        {
             _filesLinkUtility.DocServiceUrl,
             _filesLinkUtility.DocServiceUrlInternal,
             _filesLinkUtility.DocServicePortalUrl

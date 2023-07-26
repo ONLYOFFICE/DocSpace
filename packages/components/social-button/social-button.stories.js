@@ -18,19 +18,23 @@ export default {
     iconName: {
       control: {
         type: "select",
-        options: [
-          ShareGoogleReactSvgUrl,
-          //"ShareFacebookIcon",
-          //"ShareTwitterIcon",
-          ShareLinkedinReactSvgUrl,
-        ],
       },
+      options: [
+        ShareGoogleReactSvgUrl,
+        //"ShareFacebookIcon",
+        //"ShareTwitterIcon",
+        ShareLinkedinReactSvgUrl,
+      ],
     },
   },
 };
 
 const Template = ({ onClick, ...args }) => {
-  return <SocialButton {...args} onClick={() => onClick("clicked")} />;
+  return (
+    <div style={{ width: "200px", margin: "7px" }}>
+      <SocialButton {...args} onClick={() => onClick("clicked")} />
+    </div>
+  );
 };
 
 export const Default = Template.bind({});

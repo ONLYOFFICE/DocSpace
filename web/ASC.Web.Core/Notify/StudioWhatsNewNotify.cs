@@ -45,7 +45,7 @@ public class StudioWhatsNewNotify
     private readonly WorkContext _workContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
-    public readonly static List<MessageAction?> DailyActions = new List<MessageAction?>()
+    public static readonly List<MessageAction?> DailyActions = new List<MessageAction?>()
     {
         MessageAction.FileCreated,
         MessageAction.FileUpdatedRevisionComment,
@@ -57,7 +57,7 @@ public class StudioWhatsNewNotify
         MessageAction.UserUpdated
     };
 
-    public readonly static List<MessageAction?> RoomsActivityActions = new List<MessageAction?>()
+    public static readonly List<MessageAction?> RoomsActivityActions = new List<MessageAction?>()
     {
          MessageAction.FileUploaded,
          MessageAction.UserFileUpdated,
@@ -101,7 +101,7 @@ public class StudioWhatsNewNotify
 
     }
 
-    public void SendMsgWhatsNew(DateTime scheduleDate, WhatsNewType whatsNewType)
+    public async Task SendMsgWhatsNewAsync(DateTime scheduleDate, WhatsNewType whatsNewType)
     {
         var products = _webItemManager.GetItemsAll<IProduct>();
 
@@ -113,36 +113,36 @@ public class StudioWhatsNewNotify
 
         _log.InformationStartSendWhatsNew();
 
-        var tenants = GetChangedTenants(scheduleDate, whatsNewType);
+        var tenants = await GetChangedTenantsAsync(scheduleDate, whatsNewType);
 
         foreach (var tenantid in tenants)
         {
-            SendMsgWhatsNew(tenantid, scheduleDate, whatsNewType, products);
+            await SendMsgWhatsNewAsync(tenantid, scheduleDate, whatsNewType, products);
         }
     }
 
-    private IEnumerable<int> GetChangedTenants(DateTime date, WhatsNewType whatsNewType)
+    private async Task<IEnumerable<int>> GetChangedTenantsAsync(DateTime date, WhatsNewType whatsNewType)
     {
         switch (whatsNewType)
         {
             case WhatsNewType.DailyFeed:
-                return _auditEventsRepository.GetTenants(date.Date.AddDays(-1), date.Date.AddSeconds(-1));
+                return await _auditEventsRepository.GetTenantsAsync(date.Date.AddDays(-1), date.Date.AddSeconds(-1));
             case WhatsNewType.RoomsActivity:
-                return _auditEventsRepository.GetTenants(date.AddHours(-1), date.AddSeconds(-1));
+                return await _auditEventsRepository.GetTenantsAsync(date.AddHours(-1), date.AddSeconds(-1));
             default:
                 return Enumerable.Empty<int>();
         }
     }
 
-    private void SendMsgWhatsNew(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
+    private async Task SendMsgWhatsNewAsync(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
     {
         try
         {
-            var tenant = _tenantManager.GetTenant(tenantid);
+            var tenant = await _tenantManager.GetTenantAsync(tenantid);
             if (tenant == null ||
                 tenant.Status != TenantStatus.Active ||
                 !TimeToSendWhatsNew(_tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate), whatsNewType) || //ToDo
-                TariffState.NotPaid <= _tariffService.GetTariff(tenantid).State)
+                TariffState.NotPaid <= (await _tariffService.GetTariffAsync(tenantid)).State)
             {
                 return;
             }
@@ -151,26 +151,32 @@ public class StudioWhatsNewNotify
             var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
             _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
-            foreach (var user in _userManager.GetUsers())
+            foreach (var user in await _userManager.GetUsersAsync())
             {
-                if (!CheckSubscription(user, whatsNewType))
+                _log.Debug($"SendMsgWhatsNew start checking subscription: {user.Email}");//temp
+
+                if (!await CheckSubscriptionAsync(user, whatsNewType))
                 {
                     continue;
                 }
 
-                _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
+                _log.Debug($"SendMsgWhatsNew checking subscription complete: {user.Email}");//temp
+
+                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(tenant.Id, user.Id));
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
 
                 var auditEvents = new List<ActivityInfo>();
 
                 foreach (var p in products)
                 {
-                    auditEvents.AddRange(p.GetAuditEventsAsync(scheduleDate, user.Id, tenant, whatsNewType).Result);
+                    auditEvents.AddRange(await p.GetAuditEventsAsync(scheduleDate, user.Id, tenant, whatsNewType));
                 }
+
+                _log.Debug($"SendMsgWhatsNew auditEvents count : {auditEvents.Count}");//temp
 
                 var userActivities = new List<string>();
 
@@ -182,10 +188,12 @@ public class StudioWhatsNewNotify
                     }
                 }
 
+                _log.Debug($"SendMsgWhatsNew userActivities count : {userActivities.Count}");//temp
+
                 if (userActivities.Any())
                 {
                     _log.InformationSendWhatsNewTo(user.Email);
-                    client.SendNoticeAsync(
+                    await client.SendNoticeAsync(
                         Actions.SendWhatsNew, null, user,
                         new TagValue(Tags.Activities, userActivities),
                         new TagValue(Tags.Date, DateToString(scheduleDate, whatsNewType, culture)),
@@ -218,6 +226,7 @@ public class StudioWhatsNewNotify
         var oldRoomTitle = activityInfo.RoomOldTitle;
 
         var targetUserNames = "";
+        var targetUserEmail = "";
 
         if (action == MessageAction.UsersUpdatedType)
         {
@@ -228,6 +237,7 @@ public class StudioWhatsNewNotify
         else if (activityInfo.TargetUsers != null)
         {
             var targetUser = _userManager.GetUsers(activityInfo.TargetUsers.FirstOrDefault());
+            targetUserEmail = targetUser.Email;
             targetUserNames = targetUser.DisplayUserName(_displayUserSettingsHelper);
         }
 
@@ -261,12 +271,12 @@ public class StudioWhatsNewNotify
         else if (action == MessageAction.UserCreated)
         {
             userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserCreated,
-                userName, userEmail, date);
+                targetUserNames, targetUserEmail, date);
         }
         else if (action == MessageAction.UserUpdated)
         {
             userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserUpdated,
-                userName, userEmail, date);
+                targetUserNames, targetUserEmail, date);
         }
         else if (action == MessageAction.FileUploaded)
         {
@@ -311,15 +321,15 @@ public class StudioWhatsNewNotify
         return true;
     }
 
-    private bool CheckSubscription(UserInfo user, WhatsNewType whatsNewType)
+    private async Task<bool> CheckSubscriptionAsync(UserInfo user, WhatsNewType whatsNewType)
     {
         if (whatsNewType == WhatsNewType.DailyFeed &&
-            _studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
+            await _studioNotifyHelper.IsSubscribedToNotifyAsync(user, Actions.SendWhatsNew))
         {
             return true;
         }
         else if (whatsNewType == WhatsNewType.RoomsActivity &&
-            _studioNotifyHelper.IsSubscribedToNotify(user, Actions.RoomsActivity))
+            await _studioNotifyHelper.IsSubscribedToNotifyAsync(user, Actions.RoomsActivity))
         {
             return true;
         }

@@ -57,22 +57,22 @@ public class BaseStorageSettingsListener
 
             _subscribed = true;
 
-            _cacheNotify.Subscribe((i) =>
+            _cacheNotify.Subscribe(async (i) =>
             {
                 using var scope = _serviceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
                 var (storageSettingsHelper, settingsManager) = scopeClass;
-                var settings = settingsManager.Load<StorageSettings>(i.TenantId);
+                var settings = await settingsManager.LoadAsync<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
-                    storageSettingsHelper.Clear(settings);
+                    await storageSettingsHelper.ClearAsync(settings);
                 }
 
-                var cdnSettings = settingsManager.Load<CdnStorageSettings>(i.TenantId);
+                var cdnSettings = await settingsManager.LoadAsync<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
-                    storageSettingsHelper.Clear(cdnSettings);
+                    await storageSettingsHelper.ClearAsync(cdnSettings);
                 }
             }, CacheNotifyAction.Remove);
         }
@@ -150,18 +150,18 @@ public class StorageSettingsHelper
         _serviceProvider = serviceProvider;
     }
 
-    public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
+    public async Task<bool> SaveAsync<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
-        ClearDataStoreCache();
+        await ClearDataStoreCacheAsync();
 
-        return _settingsManager.Save(baseStorageSettings);
+        return await _settingsManager.SaveAsync(baseStorageSettings);
     }
 
-    public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
+    public async Task ClearAsync<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         baseStorageSettings.Module = null;
         baseStorageSettings.Props = null;
-        Save(baseStorageSettings);
+        await SaveAsync(baseStorageSettings);
     }
 
     public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
@@ -188,7 +188,7 @@ public class StorageSettingsHelper
         return _dataStoreConsumer;
     }
 
-    public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
+    public async Task<IDataStore> DataStoreAsync<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         if (_dataStore != null)
         {
@@ -201,12 +201,12 @@ public class StorageSettingsHelper
         }
 
         return _dataStore = ((IDataStore)_serviceProvider.GetService(DataStoreConsumer(baseStorageSettings).HandlerType))
-            .Configure(_tenantManager.GetCurrentTenant().Id.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+            .Configure((await _tenantManager.GetCurrentTenantIdAsync()).ToString(), null, null, DataStoreConsumer(baseStorageSettings));
     }
 
-    internal void ClearDataStoreCache()
+    internal async Task ClearDataStoreCacheAsync()
     {
-        var path = TenantPath.CreatePath(_tenantManager.GetCurrentTenant().Id);
+        var path = TenantPath.CreatePath(await _tenantManager.GetCurrentTenantIdAsync());
 
         foreach (var module in _storageFactoryConfig.GetModuleList("", true))
         {

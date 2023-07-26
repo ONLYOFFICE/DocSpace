@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { decode } from "he";
 
 import Link from "@docspace/components/link";
@@ -13,10 +13,10 @@ const HistoryBlockUser = ({
   isCollaborator,
 }) => {
   const username = user.displayName;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onUserClick = () => {
-    openUser(user, history);
+    openUser(user, navigate);
   };
 
   return (

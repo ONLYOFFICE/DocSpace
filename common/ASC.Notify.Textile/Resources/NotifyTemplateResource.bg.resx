@@ -158,4 +158,43 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
+  <data name="SocialNetworksFooterV10" xml:space="preserve">
+    <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;"&gt;
+              &lt;a href="https://www.facebook.com/pages/OnlyOffice/833032526736775" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-fb-40.png" alt="Facebook" style="width: 40px; height: 40px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://twitter.com/ONLY_OFFICE" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-tw-40.png" alt="Twitter" style="width: 40px; height: 40px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://www.onlyoffice.com/blog" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-blog-40.png" alt="ONLYOFFICE" style="width: 40px; height: 40px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://www.youtube.com/user/onlyofficeTV" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-youtube-40.png" alt="YouTube" style="width: 40px; height: 40x;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
+              &lt;a href="https://vk.com/onlyoffice" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-vk-40.png" alt="VK" style="width: 40px; height: 40px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+          &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 155px 0 5px;"&gt;
+              &lt;a href="https://www.instagram.com/the_onlyoffice" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
+                  &lt;img src="%IMAGEPATH%/social-inst-40.png" alt="Instagram" style="width: 40px; height: 40px;" /&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;</value>
+  </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Този имейл се генерира автоматично и не е необходимо да му отговаряте.&lt;br /&gt;Получихте този имейл, защото сте регистриран потребител на &lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
+&lt;br /&gt; Кликнете тук, за да се отпишете от имейлите с известия на DocSpace : &lt;a href="{1}" target="_blank"&gt;Отписване&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

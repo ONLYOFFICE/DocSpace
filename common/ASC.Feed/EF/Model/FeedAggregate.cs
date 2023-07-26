@@ -29,7 +29,7 @@ namespace ASC.Feed.Model;
 public class FeedAggregate : BaseEntity, IMapFrom<FeedRow>
 {
     public string Id { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string Product { get; set; }
     public string Module { get; set; }
     public Guid Author { get; set; }
@@ -42,6 +42,8 @@ public class FeedAggregate : BaseEntity, IMapFrom<FeedRow>
     public string Keywords { get; set; }
     public string ContextId { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -51,6 +53,8 @@ public static class FeedAggregateExtension
 {
     public static ModelBuilderWrapper AddFeedAggregate(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<FeedAggregate>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddFeedAggregate, Provider.MySql)
             .Add(PgSqlAddFeedAggregate, Provider.PostgreSql);
@@ -63,13 +67,13 @@ public static class FeedAggregateExtension
             entity.ToTable("feed_aggregate")
                 .HasCharSet("utf8");
 
-            entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
+            entity.HasIndex(e => new { e.TenantId, e.AggregateDate })
                 .HasDatabaseName("aggregated_date");
 
-            entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
+            entity.HasIndex(e => new { e.TenantId, e.ModifiedDate })
                 .HasDatabaseName("modified_date");
 
-            entity.HasIndex(e => new { e.Tenant, e.Product })
+            entity.HasIndex(e => new { e.TenantId, e.Product })
                 .HasDatabaseName("product");
 
             entity.Property(e => e.Id)
@@ -137,7 +141,7 @@ public static class FeedAggregateExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.ContextId)
                 .HasColumnName("context_id")
@@ -152,13 +156,13 @@ public static class FeedAggregateExtension
         {
             entity.ToTable("feed_aggregate", "onlyoffice");
 
-            entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
+            entity.HasIndex(e => new { e.TenantId, e.AggregateDate })
                 .HasDatabaseName("aggregated_date");
 
-            entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
+            entity.HasIndex(e => new { e.TenantId, e.ModifiedDate })
                 .HasDatabaseName("modified_date");
 
-            entity.HasIndex(e => new { e.Tenant, e.Product })
+            entity.HasIndex(e => new { e.TenantId, e.Product })
                 .HasDatabaseName("product");
 
             entity.Property(e => e.Id)
@@ -204,7 +208,7 @@ public static class FeedAggregateExtension
                 .HasColumnName("product")
                 .HasMaxLength(50);
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.ContextId).HasColumnName("context_id");
         });

@@ -135,15 +135,15 @@ public class StorageFactory
         _coreBaseSettings = coreBaseSettings;
     }
 
-    public IDataStore GetStorage(int? tenant, string module, string region = "current")
+    public async Task<IDataStore> GetStorageAsync(int tenant, string module, string region = "current")
     {
         var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
-        tenantQuotaController.Init(tenant.GetValueOrDefault());
+        tenantQuotaController.Init(tenant);
 
-        return GetStorage(tenant, module, tenantQuotaController, region);
+        return await GetStorageAsync(tenant, module, tenantQuotaController, region);
     }
 
-    public IDataStore GetStorage(int? tenant, string module, IQuotaController controller, string region = "current")
+    public async Task<IDataStore> GetStorageAsync(int? tenant, string module, IQuotaController controller, string region = "current")
     {
         var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
@@ -155,7 +155,7 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        var settings = _settingsManager.Load<StorageSettings>(tenant.Value);
+        var settings = await _settingsManager.LoadAsync<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
         return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller, region);
     }

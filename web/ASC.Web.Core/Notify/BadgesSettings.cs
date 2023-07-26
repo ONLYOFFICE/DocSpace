@@ -54,16 +54,16 @@ public class BadgesSettingsHelper
         _settingsManager = settingsManager;
     }
 
-    public bool GetEnabledForCurrentUser()
+    public async Task<bool> GetEnabledForCurrentUserAsync()
     {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
+        var settings = await _settingsManager.LoadForCurrentUserAsync<BadgesSettings>();
         return settings.EnableBadges;
     }
 
-    public void SetEnabledForCurrentUser(bool isEnabled)
+    public async Task SetEnabledForCurrentUserAsync(bool isEnabled)
     {
-        var settings = _settingsManager.LoadForCurrentUser<BadgesSettings>();
+        var settings = await _settingsManager.LoadForCurrentUserAsync<BadgesSettings>();
         settings.EnableBadges = isEnabled;
-        _settingsManager.SaveForCurrentUser(settings);
+        await _settingsManager.SaveForCurrentUserAsync(settings);
     }
 }

@@ -132,14 +132,14 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     #region user profile link
 
-    public string GetUserProfile(Guid userID)
+    public async Task<string> GetUserProfileAsync(Guid userID)
     {
-        if (!_userManager.UserExists(userID))
+        if (!await _userManager.UserExistsAsync(userID))
         {
             return GetEmployees();
         }
 
-        return GetUserProfile(userID.ToString());
+        return await GetUserProfileAsync(userID.ToString());
     }
 
     public string GetUserProfile(UserInfo user)
@@ -152,7 +152,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return GetUserProfile(user, true);
     }
 
-    public string GetUserProfile(string user, bool absolute = true)
+    public async Task<string> GetUserProfileAsync(string user, bool absolute = true)
     {
         var queryParams = "";
 
@@ -170,7 +170,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
                 }
             }
 
-            queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
+            queryParams = guid != Guid.Empty ? await GetUserParamsPairAsync(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
         }
 
         var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
@@ -190,9 +190,10 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         return url;
     }
-    public string GetUserProfile(Guid user, bool absolute = true)
+
+    public async Task<string> GetUserProfileAsync(Guid user, bool absolute = true)
     {
-        var queryParams = GetUserParamsPair(user);
+        var queryParams = await GetUserParamsPairAsync(user);
 
         var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
@@ -251,7 +252,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         var currentURL = string.Empty;
         if (_httpContextAccessor?.HttpContext?.Request != null)
         {
-            currentURL = _httpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+            currentURL = _httpContextAccessor.HttpContext.Request.Url().AbsoluteUri;
 
             //TODO ?
             // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx
@@ -477,9 +478,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return result;
     }
 
-    public string GetUserParamsPair(Guid userID)
+    public async Task<string> GetUserParamsPairAsync(Guid userID)
     {
-        return GetUserParamsPair(_userManager.GetUsers(userID));
+        return GetUserParamsPair(await _userManager.GetUsersAsync(userID));
     }
 
     public string GetUserParamsPair(UserInfo user)
@@ -493,6 +494,23 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     }
 
     #region Help Centr
+
+    public async Task<string> GetHelpLinkAsync(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
+    {
+        if (!(await settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>()).HelpCenterEnabled)
+        {
+            return string.Empty;
+        }
+
+        var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;
+
+        if (string.IsNullOrEmpty(url))
+        {
+            return string.Empty;
+        }
+
+        return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
+    }
 
     public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
     {
@@ -538,9 +556,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     #region confirm links
 
-    public string GetConfirmationEmailUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+    public async Task<string> GetConfirmationEmailUrlAsync(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
-        return GetFullAbsolutePath(GetConfirmationUrlRelative(email, confirmType, postfix, userId));
+        return GetFullAbsolutePath(await GetConfirmationUrlRelativeAsync(email, confirmType, postfix, userId));
     }
 
     public string GetConfirmationUrl(string key, ConfirmType confirmType, Guid userId = default)
@@ -548,9 +566,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return GetFullAbsolutePath(GetConfirmationUrlRelative(key, confirmType, userId));
     }
 
-    public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+    public async Task<string> GetConfirmationUrlRelativeAsync(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
-        return GetConfirmationUrlRelative(_tenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
+        return GetConfirmationUrlRelative(await _tenantManager.GetCurrentTenantIdAsync(), email, confirmType, postfix, userId);
     }
 
     public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

@@ -56,13 +56,13 @@ public class EncryptionKeyPairDtoHelper
         _daoFactory = daoFactory;
     }
 
-    public void SetKeyPair(string publicKey, string privateKeyEnc)
+    public async Task SetKeyPairAsync(string publicKey, string privateKeyEnc)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(publicKey);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (!_authContext.IsAuthenticated || _userManager.IsUser(user))
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+        if (!_authContext.IsAuthenticated || await _userManager.IsUserAsync(user))
         {
             throw new SecurityException();
         }
@@ -75,12 +75,12 @@ public class EncryptionKeyPairDtoHelper
         };
 
         var keyPairString = JsonSerializer.Serialize(keyPair);
-        _encryptionLoginProvider.SetKeys(user.Id, keyPairString);
+        await _encryptionLoginProvider.SetKeysAsync(user.Id, keyPairString);
     }
 
-    public EncryptionKeyPairDto GetKeyPair()
+    public async Task<EncryptionKeyPairDto> GetKeyPairAsync()
     {
-        var currentAddressString = _encryptionLoginProvider.GetKeys();
+        var currentAddressString = await _encryptionLoginProvider.GetKeysAsync();
         if (string.IsNullOrEmpty(currentAddressString))
         {
             return null;
@@ -132,9 +132,9 @@ public class EncryptionKeyPairDtoHelper
                                         && !share.Id.Equals(FileConstant.ShareLinkId)
                                         && share.Access == FileShare.ReadWrite).ToList();
 
-        var fileKeysPair = fileShares.Select(share =>
+        var tasks = fileShares.Select(async share =>
         {
-            var fileKeyPairString = _encryptionLoginProvider.GetKeys(share.Id);
+            var fileKeyPairString = await _encryptionLoginProvider.GetKeysAsync(share.Id);
             if (string.IsNullOrEmpty(fileKeyPairString))
             {
                 return null;
@@ -154,7 +154,9 @@ public class EncryptionKeyPairDtoHelper
             fileKeyPair.PrivateKeyEnc = null;
 
             return fileKeyPair;
-        })
+        });
+
+        var fileKeysPair = (await Task.WhenAll(tasks))
             .Where(keyPair => keyPair != null);
 
         return fileKeysPair;

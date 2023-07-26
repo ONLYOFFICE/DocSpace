@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Rodzaj logowania na konto",
   "DeleteSelfProfile": "Usuń profil",
-  "DisableUserButton": "Dezaktywuj",
   "DisabledEmployeeStatus": "Nieaktywny",
+  "DisableUserButton": "Dezaktywuj",
   "EmailChangeButton": "Zmień adres e-mail",
   "EnableUserButton": "Aktywuj",
   "InviteLinkTitle": "Link z zaproszeniem",
@@ -12,6 +13,7 @@
   "RemoveData": "Usuń dane osobowe",
   "ResetAuth": "Zresetuj uwierzytelnianie",
   "SendInviteAgain": "Ponownie wyślij zaproszenie",
+  "StandardLogin": "Logowanie standardowe",
   "SuccessChangeUserStatus": "Status użytkownika został pomyślnie zmieniony",
   "SuccessDeletePersonalData": "Dane osobowe zostały pomyślnie usunięte",
   "SuccessSentInvitation": "Zaproszenie zostało pomyślnie wysłane",

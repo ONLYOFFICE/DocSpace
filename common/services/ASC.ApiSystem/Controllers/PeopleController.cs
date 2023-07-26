@@ -74,21 +74,21 @@ public class PeopleController : ControllerBase
 
     [HttpPost("find")]
     [AllowCrossSiteJson]
-    public IActionResult Find(FindPeopleModel model)
+    public async Task<IActionResult> FindAsync(FindPeopleModel model)
     {
         var sw = Stopwatch.StartNew();
         var userIds = model.UserIds ?? new List<Guid>();
 
-        var users = _hostedSolution.FindUsers(userIds);
+        var users = await _hostedSolution.FindUsersAsync(userIds);
 
-        var result = users.Select(user => new
+        var result = await users.ToAsyncEnumerable().SelectAwait(async user => new
         {
             id = user.Id,
             name = _userFormatter.GetUserName(user),
             email = user.Email,
 
-            link = GetUserProfileLink(user)
-        });
+            link = await GetUserProfileLinkAsync(user)
+        }).ToListAsync();
 
         _log.LogDebug("People find {0} / {1}; Elapsed {2} ms", result.Count(), userIds.Count(), sw.ElapsedMilliseconds);
         sw.Stop();
@@ -103,21 +103,21 @@ public class PeopleController : ControllerBase
 
     #region private methods
 
-    private string GetTenantDomain(int tenantId)
+    private async Task<string> GetTenantDomainAsync(int tenantId)
     {
         var domain = _cache.Get<string>(tenantId.ToString());
         if (string.IsNullOrEmpty(domain))
         {
-            var tenant = _hostedSolution.GetTenant(tenantId);
+            var tenant = await _hostedSolution.GetTenantAsync(tenantId);
             domain = tenant.GetTenantDomain(_coreSettings);
             _cache.Insert(tenantId.ToString(), domain, TimeSpan.FromMinutes(10));
         }
         return domain;
     }
 
-    private string GetUserProfileLink(UserInfo user)
+    private async Task<string> GetUserProfileLinkAsync(UserInfo user)
     {
-        var tenantDomain = GetTenantDomain(user.Tenant);
+        var tenantDomain = await GetTenantDomainAsync(user.TenantId);
         return string.Format("{0}{1}{2}/{3}",
                              _httpContextAccessor.HttpContext.Request.Scheme,
                              Uri.SchemeDelimiter,

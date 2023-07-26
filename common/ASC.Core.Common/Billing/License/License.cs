@@ -97,15 +97,23 @@ public class LicenseConverter : System.Text.Json.Serialization.JsonConverter<obj
 
     public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (typeToConvert == typeof(int) && reader.TokenType == JsonTokenType.String)
+        if (typeToConvert == typeof(int))
         {
-            var i = reader.GetString();
-            if (!int.TryParse(i, out var result))
+            if (reader.TokenType == JsonTokenType.String)
             {
-                return 0;
+                var i = reader.GetString();
+                if (!int.TryParse(i, out var result))
+                {
+                    return 0;
+                }
+                return result;
+            }
+            else if (reader.TokenType == JsonTokenType.Number)
+            {
+                return reader.GetInt32();
             }
 
-            return result;
+
         }
 
         if (typeToConvert == typeof(bool))

@@ -34,13 +34,16 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      rowContextClick,
       rowContextClose,
       sectionWidth,
       getContextModel,
       isRoom,
       withoutBorder,
+      contextTitle,
     } = this.props;
+
+    const { onRowClick, inProgress, mode, onContextClick, ...rest } =
+      this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -70,12 +73,12 @@ class Row extends React.Component {
     };
 
     const getOptions = () => {
-      rowContextClick && rowContextClick();
+      onContextClick && onContextClick();
       return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
-      rowContextClick && rowContextClick(e.button === 2);
+      onContextClick && onContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.row.current.click(e); //TODO: need fix context menu to global
       }
@@ -92,8 +95,6 @@ class Row extends React.Component {
           : children.props.item.displayName,
       };
     }
-
-    const { onRowClick, inProgress, mode, ...rest } = this.props;
 
     const onElementClick = () => {
       if (!isMobile) return;
@@ -166,8 +167,9 @@ class Row extends React.Component {
               className="expandButton"
               getData={getOptions}
               directionX="right"
-              isNew={true}
+              displayType="toggle"
               onClick={onContextMenu}
+              title={contextTitle}
             />
           ) : (
             <div className="expandButton"> </div>
@@ -188,38 +190,46 @@ class Row extends React.Component {
 }
 
 Row.propTypes = {
-  /** Required to host the Checkbox component. Its location is fixed and it is always the first.
+  /** Required for hosting the Checkbox component. Its location is always fixed in the first position.
    * If there is no value, the occupied space is distributed among the other child elements. */
   checked: PropTypes.bool,
+  /** Displays the child elements */
   children: PropTypes.element,
   /** Accepts class */
   className: PropTypes.string,
+  /** Required for displaying a certain element in the row */
   contentElement: PropTypes.any,
-  /** Required for the width task of the ContextMenuButton component. */
+  /** Sets the width of the ContextMenuButton component. */
   contextButtonSpacerWidth: PropTypes.string,
-  /** Required to host the ContextMenuButton component. It is always located near the right border of the container,
+  /** Required for hosting the ContextMenuButton component. It is always located near the right border of the container,
    * regardless of the contents of the child elements. If there is no value, the occupied space is distributed among the other child elements. */
   contextOptions: PropTypes.array,
   /** Current row item information. */
   data: PropTypes.object,
-  /** Required to host some component. It has a fixed order of location, if the Checkbox component is specified,
-   * then it follows, otherwise it occupies the first position. If there is no value, the occupied space is distributed among the other child elements. */
+  /** In case Checkbox component is specified, it is located in a fixed order,
+   * otherwise it is located in the first position. If there is no value, the occupied space is distributed among the other child elements. */
   element: PropTypes.element,
   /** Accepts id  */
   id: PropTypes.string,
   /** If true, this state is shown as a rectangle in the checkbox */
   indeterminate: PropTypes.bool,
-  /** when selecting row element. Returns data value. */
+  /** Sets a callback function that is triggered when a row element is selected. Returns data value. */
   onSelect: PropTypes.func,
-  /** On click anywhere in the row, except the checkbox and context menu */
+  /** Sets a callback function that is triggered when any element except the checkbox and context menu is clicked. */
   onRowClick: PropTypes.func,
-  rowContextClick: PropTypes.func,
+  /** Function that is invoked on clicking the icon button in the context-menu */
+  onContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Width section */
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Displays the loader*/
   inProgress: PropTypes.bool,
+  /** Function that returns an object containing the elements of the context menu */
   getContextModel: PropTypes.func,
+  /** Changes the row mode */
   mode: PropTypes.string,
+  /** Removes the borders */
   withoutBorder: PropTypes.bool,
 };
 

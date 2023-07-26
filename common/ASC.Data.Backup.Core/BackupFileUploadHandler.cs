@@ -45,21 +45,21 @@ public class BackupFileUploadHandler
                 result = Error("No files.");
             }
 
-            if (!permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
+            if (!await permissionContext.CheckPermissionsAsync(SecutiryConstants.EditPortalSettings))
             {
                 result = Error("Access denied.");
             }
 
             var file = context.Request.Form.Files[0];
 
-            var filePath = backupAjaxHandler.GetTmpFilePath();
+            var filePath = await backupAjaxHandler.GetTmpFilePathAsync();
 
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
 
-            using (var fileStream = File.Create(filePath))
+            await using (var fileStream = File.Create(filePath))
             {
                 await file.CopyToAsync(fileStream);
             }

@@ -35,7 +35,12 @@ import AccessRightsStore from "./AccessRightsStore";
 import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
 
+import WebhooksStore from "./WebhooksStore";
+import ClientLoadingStore from "./ClientLoadingStore";
+
 const oformsStore = new OformsStore(authStore);
+
+const clientLoadingStore = new ClientLoadingStore();
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
@@ -50,7 +55,7 @@ const ssoStore = new SsoFormStore();
 
 const tagsStore = new TagsStore();
 
-const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
+const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
@@ -61,7 +66,8 @@ const filesStore = new FilesStore(
   treeFoldersStore,
   settingsStore,
   thirdPartyStore,
-  accessRightsStore
+  accessRightsStore,
+  clientLoadingStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -107,7 +113,8 @@ const filesActionsStore = new FilesActionsStore(
   settingsStore,
   dialogsStore,
   mediaViewerDataStore,
-  accessRightsStore
+  accessRightsStore,
+  clientLoadingStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -140,6 +147,8 @@ const profileActionsStore = new ProfileActionsStore(
   selectedFolderStore
 );
 
+peopleStore.profileActionsStore = profileActionsStore;
+
 const tableStore = new TableStore(authStore, treeFoldersStore);
 
 authStore.infoPanelStore.authStore = authStore;
@@ -157,8 +166,11 @@ const createEditRoomStore = new CreateEditRoomStore(
   thirdPartyStore,
   authStore.settingsStore,
   authStore.infoPanelStore,
-  authStore.currentQuotaStore
+  authStore.currentQuotaStore,
+  clientLoadingStore
 );
+
+const webhooksStore = new WebhooksStore();
 
 const store = {
   auth: authStore,
@@ -195,6 +207,9 @@ const store = {
 
   accessRightsStore,
   createEditRoomStore,
+
+  webhooksStore,
+  clientLoadingStore,
 };
 
 export default store;

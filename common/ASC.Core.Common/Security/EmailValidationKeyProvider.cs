@@ -68,6 +68,11 @@ public class EmailValidationKeyProvider
         _logger = logger;
     }
 
+    public async Task<string> GetEmailKeyAsync(string email)
+    {
+        return GetEmailKey(await _tenantManager.GetCurrentTenantIdAsync(), email);
+    }
+
     public string GetEmailKey(string email)
     {
         return GetEmailKey(_tenantManager.GetCurrentTenant().Id, email);
@@ -101,25 +106,25 @@ public class EmailValidationKeyProvider
         }
     }
 
-    public ValidationResult ValidateEmailKey(string email, string key)
+    public async Task<ValidationResult> ValidateEmailKeyAsync(string email, string key)
     {
-        return ValidateEmailKey(email, key, TimeSpan.MaxValue);
+        return await ValidateEmailKeyAsync(email, key, TimeSpan.MaxValue);
     }
 
-    public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
+    public async Task<ValidationResult> ValidateEmailKeyAsync(string email, string key, TimeSpan validInterval)
     {
-        var result = ValidateEmailKeyInternal(email, key, validInterval);
-        _logger.DebugValidationResult(result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
+        var result = await ValidateEmailKeyInternalAsync(email, key, validInterval);
+        _logger.DebugValidationResult(result, email, key, validInterval, await _tenantManager.GetCurrentTenantIdAsync());
 
         return result;
     }
 
-    private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
+    private async Task<ValidationResult> ValidateEmailKeyInternalAsync(string email, string key, TimeSpan validInterval)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(email);
         ArgumentNullException.ThrowIfNull(key);
 
-        email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
+        email = FormatEmail(await _tenantManager.GetCurrentTenantIdAsync(), email);
         var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length != 2)
         {

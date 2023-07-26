@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF;
 
 public class DbGroup : BaseEntity, IMapFrom<Group>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public Guid Id { get; set; }
     public string Name { get; set; }
     public Guid? CategoryId { get; set; }
@@ -36,6 +36,8 @@ public class DbGroup : BaseEntity, IMapFrom<Group>
     public string Sid { get; set; }
     public bool Removed { get; set; }
     public DateTime LastModified { get; set; }
+
+    public DbTenant Tenant { get; set; }
 
     public override object[] GetKeys()
     {
@@ -47,6 +49,8 @@ public static class DbGroupExtension
 {
     public static ModelBuilderWrapper AddDbGroup(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbGroup>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbGroup, Provider.MySql)
             .Add(PgSqlAddDbGroup, Provider.PostgreSql);
@@ -64,7 +68,7 @@ public static class DbGroupExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
 
-            entity.HasIndex(e => new { e.Tenant, e.ParentId })
+            entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parentid");
 
             entity.Property(e => e.Id)
@@ -107,7 +111,7 @@ public static class DbGroupExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
     private static void PgSqlAddDbGroup(this ModelBuilder modelBuilder)
@@ -119,7 +123,7 @@ public static class DbGroupExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
 
-            entity.HasIndex(e => new { e.Tenant, e.ParentId })
+            entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parentid");
 
             entity.Property(e => e.Id)
@@ -152,7 +156,7 @@ public static class DbGroupExtension
                 .HasMaxLength(512)
                 .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
         });
     }
 }

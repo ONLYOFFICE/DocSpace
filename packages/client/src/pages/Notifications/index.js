@@ -8,7 +8,7 @@ import SectionBodyContent from "./Section/Body/index";
 import SectionHeaderContent from "./Section/Header/index";
 
 const NotificationComponent = (props) => {
-  const { history, setSelectedNode } = props;
+  const { setSelectedNode } = props;
   const { t, ready } = useTranslation("Notifications");
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const NotificationComponent = (props) => {
   return (
     <Section>
       <Section.SectionHeader>
-        <SectionHeaderContent history={history} t={t} />
+        <SectionHeaderContent t={t} />
       </Section.SectionHeader>
 
       <Section.SectionBody>
@@ -28,7 +28,7 @@ const NotificationComponent = (props) => {
   );
 };
 
-export default inject(({ treeFoldersStore }) => {
+export default inject(({ treeFoldersStore, clientLoadingStore }) => {
   const { setSelectedNode } = treeFoldersStore;
 
   return {

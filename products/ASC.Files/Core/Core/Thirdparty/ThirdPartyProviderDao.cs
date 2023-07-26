@@ -30,7 +30,7 @@ internal abstract class ThirdPartyProviderDao
 {
     #region FileDao
 
-    public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
+    public Task ReassignFilesAsync(Guid oldOwner, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }
@@ -125,7 +125,7 @@ internal abstract class ThirdPartyProviderDao
     #endregion
     #region FolderDao
 
-    public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
+    public Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId)
     {
         return Task.CompletedTask;
     }
@@ -252,6 +252,17 @@ internal abstract class ThirdPartyProviderDao
     {
         throw new NotImplementedException();
     }
+    
+    public Task<int> GetFilesCountAsync(string parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders = false,
+        bool excludeSubject = false)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public Task<int> GetFoldersCountAsync(string parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    {
+        throw new NotImplementedException();
+    }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
@@ -289,9 +300,8 @@ internal abstract class ThirdPartyProviderDao
     {
         if (withoutTags)
         {
-            return rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
-                    .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+            return rooms.Join(Queries.AllThirdpartyIdMappingsAsync(filesDbContext), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await Queries.AnyTagLinksAsync(filesDbContext, r.HashId))
                 .Select(r => r.folder);
         }
 
@@ -300,16 +310,16 @@ internal abstract class ThirdPartyProviderDao
             return rooms;
         }
 
-        var filtered = rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+        var filtered = rooms.Join(Queries.AllThirdpartyIdMappingsAsync(filesDbContext), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(Queries.AllTagLinksAsync(filesDbContext), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(Queries.AllTagsAsync(filesDbContext), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
             .Where(r => tags.Contains(r.Name))
             .Select(r => r.folder);
 
         return filtered;
     }
 
-    protected static IAsyncEnumerable<Folder<string>> FilterByProvidersAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter providerFilter)
+    private static IAsyncEnumerable<Folder<string>> FilterByProvidersAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter providerFilter)
     {
         if (providerFilter == ProviderFilter.None)
         {
@@ -346,6 +356,7 @@ internal abstract class ThirdPartyProviderDao
             FilterType.ReviewRooms => FolderType.ReviewRoom,
             FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
             FilterType.CustomRooms => FolderType.CustomRoom,
+            FilterType.PublicRooms => FolderType.PublicRoom,
             _ => FolderType.DEFAULT,
         };
 
@@ -391,7 +402,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
     where TFolder : class, TItem
     where TItem : class
 {
-    public int TenantID { get; private set; }
+    protected readonly int _tenantId;
     protected readonly IServiceProvider _serviceProvider;
     protected readonly UserManager _userManager;
     protected readonly TenantUtil _tenantUtil;
@@ -425,29 +436,19 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
         _setupInfo = setupInfo;
         _fileUtility = fileUtility;
         _tempPath = tempPath;
-        TenantID = tenantManager.GetCurrentTenant().Id;
+        _tenantId = tenantManager.GetCurrentTenant().Id;
         _authContext = authContext;
         DaoSelector = regexDaoSelectorBase;
     }
 
-    public IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
-    {
-        return set.Where(r => r.TenantId == TenantID);
-    }
-
-    public Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
+    public async Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
     {
         if (id == null)
         {
             return null;
         }
 
-        return InternalMappingIDAsync(id, saveIfNotExist);
-    }
-
-    private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
-    {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         string result;
         if (id.StartsWith(Id))
@@ -456,10 +457,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
         }
         else
         {
-            result = await filesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.HashId == id)
-                    .Select(r => r.Id)
-                    .FirstOrDefaultAsync();
+            result = await Queries.IdAsync(filesDbContext, id);
         }
         if (saveIfNotExist)
         {
@@ -467,7 +465,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPart
             {
                 Id = id,
                 HashId = result,
-                TenantId = TenantID
+                TenantId = _tenantId
             };
 
             await filesDbContext.ThirdpartyIdMapping.AddAsync(newMapping);
@@ -613,4 +611,37 @@ public class TagLinkComparer : IEqualityComparer<TagLink>
     {
         return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        AllThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.ThirdpartyIdMapping.AsQueryable());
+
+    public static readonly Func<FilesDbContext, string, Task<bool>>
+        AnyTagLinksAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string entryId) =>
+                ctx.TagLink
+                    .Join(ctx.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                    .Where(r => r.tag.Type == TagType.Custom).Any(t => t.EntryId == entryId));
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTagLink>>
+        AllTagLinksAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.TagLink.AsQueryable());
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>>
+        AllTagsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.Tag.AsQueryable());
+
+    public static readonly Func<FilesDbContext, string, Task<string>>
+        IdAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.HashId == hashId)
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
 }

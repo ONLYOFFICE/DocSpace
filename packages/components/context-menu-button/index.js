@@ -86,7 +86,7 @@ class ContextMenuButton extends React.Component {
   }
 
   onIconButtonClick = (e) => {
-    if (this.props.isDisabled || this.props.isNew) {
+    if (this.props.isDisabled || this.state.displayType === "toggle") {
       this.stopAction;
       return;
     }
@@ -114,7 +114,7 @@ class ContextMenuButton extends React.Component {
 
   onDropDownItemClick = (item, e) => {
     const open = this.state.displayType === "dropdown";
-    item.onClick && item.onClick(e, open);
+    item.onClick && item.onClick(e, open, item);
     this.toggle(!this.state.isOpen);
   };
 
@@ -131,7 +131,7 @@ class ContextMenuButton extends React.Component {
   }
 
   callNewMenu = (e) => {
-    if (this.props.isDisabled || !this.props.isNew) {
+    if (this.props.isDisabled || this.state.displayType !== "toggle") {
       this.stopAction;
       return;
     }
@@ -168,7 +168,6 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
-      isNew,
       title,
       zIndex,
       usePortal,
@@ -233,48 +232,50 @@ class ContextMenuButton extends React.Component {
             )}
           </DropDown>
         ) : (
-          <>
-            <Backdrop
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <Aside
-              visible={isOpen}
-              scale={false}
-              zIndex={310}
-              onClose={this.onClose}
-            >
-              <StyledContent>
-                <StyledHeaderContent>
-                  <Heading className="header" size="medium" truncate={true}>
-                    {asideHeader}
-                  </Heading>
-                </StyledHeaderContent>
-                <StyledBodyContent>
-                  {this.state.data.map(
-                    (item, index) =>
-                      item &&
-                      (item.label || item.icon || item.key) && (
-                        <Link
-                          className={`context-menu-button_link${
-                            item.isHeader ? "-header" : ""
-                          }`}
-                          key={item.key || index}
-                          fontSize={item.isHeader ? "15px" : "13px"}
-                          noHover={item.isHeader}
-                          fontWeight={600}
-                          onClick={this.onDropDownItemClick.bind(this, item)}
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                  )}
-                </StyledBodyContent>
-              </StyledContent>
-            </Aside>
-          </>
+          displayType === "aside" && (
+            <>
+              <Backdrop
+                onClick={this.onClose}
+                visible={isOpen}
+                zIndex={310}
+                isAside={true}
+              />
+              <Aside
+                visible={isOpen}
+                scale={false}
+                zIndex={310}
+                onClose={this.onClose}
+              >
+                <StyledContent>
+                  <StyledHeaderContent>
+                    <Heading className="header" size="medium" truncate={true}>
+                      {asideHeader}
+                    </Heading>
+                  </StyledHeaderContent>
+                  <StyledBodyContent>
+                    {this.state.data.map(
+                      (item, index) =>
+                        item &&
+                        (item.label || item.icon || item.key) && (
+                          <Link
+                            className={`context-menu-button_link${
+                              item.isHeader ? "-header" : ""
+                            }`}
+                            key={item.key || index}
+                            fontSize={item.isHeader ? "15px" : "13px"}
+                            noHover={item.isHeader}
+                            fontWeight={600}
+                            onClick={this.onDropDownItemClick.bind(this, item)}
+                          >
+                            {item.label}
+                          </Link>
+                        )
+                    )}
+                  </StyledBodyContent>
+                </StyledContent>
+              </Aside>
+            </>
+          )
         )}
       </StyledOuter>
     );
@@ -282,7 +283,7 @@ class ContextMenuButton extends React.Component {
 }
 
 ContextMenuButton.propTypes = {
-  /** Tells when the button should present a opened state */
+  /** Sets the button to present an opened state */
   opened: PropTypes.bool,
   /** Array of options for display */
   data: PropTypes.array,
@@ -296,7 +297,7 @@ ContextMenuButton.propTypes = {
   size: PropTypes.number,
   /** Specifies the icon color */
   color: PropTypes.string,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to present a disabled state */
   isDisabled: PropTypes.bool,
   /** Specifies the icon hover color */
   hoverColor: PropTypes.string,
@@ -308,13 +309,13 @@ ContextMenuButton.propTypes = {
   iconClickName: PropTypes.string,
   /** Specifies the icon open name */
   iconOpenName: PropTypes.string,
-  /** What the button will trigger when mouse hovered */
+  /** Triggers a callback function when the mouse enters the button borders */
   onMouseEnter: PropTypes.func,
-  /** What the button will trigger when mouse leave */
+  /** Triggers a callback function when the mouse leaves the button borders */
   onMouseLeave: PropTypes.func,
-  /** What the button will trigger when mouse over button */
+  /** Triggers a callback function when the mouse moves over the button borders */
   onMouseOver: PropTypes.func,
-  /** What the button will trigger when mouse out of button */
+  /** Triggers a callback function when the mouse moves out of the button borders */
   onMouseOut: PropTypes.func,
   /** Direction X */
   directionX: PropTypes.string,
@@ -326,15 +327,19 @@ ContextMenuButton.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Set the number of columns */
+  /** Sets the number of columns */
   columnCount: PropTypes.number,
-  /** Set the display type */
-  displayType: PropTypes.string,
-  isNew: PropTypes.bool,
+  /** Sets the display type */
+  displayType: PropTypes.oneOf(["dropdown", "toggle", "aside", "auto"]),
+  /** Closing event */
   onClose: PropTypes.func,
+  /** Sets the drop down open with the portal */
   usePortal: PropTypes.bool,
+  /** Sets the class of the drop down element */
   dropDownClassName: PropTypes.string,
+  /** Sets the class of the icon button */
   iconClassName: PropTypes.string,
+  /** Enables displaying the icon borders  */
   displayIconBorder: PropTypes.bool,
 };
 
@@ -348,7 +353,6 @@ ContextMenuButton.defaultProps = {
   directionX: "left",
   isFill: false,
   displayType: "dropdown",
-  isNew: false,
   usePortal: true,
   displayIconBorder: false,
 };

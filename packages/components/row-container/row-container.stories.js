@@ -16,6 +16,29 @@ export default {
   },
 };
 
+const fakeNames = [
+  "Ella Green",
+  "Kenneth Sandoval",
+  "Charles Douglas",
+  "Shirley Hall",
+  "Donna Thompson",
+  "Brenda Carter",
+  "Janet Scott",
+  "Gina Atkins",
+  "Lillie Taylor",
+  "Robert Ferguson",
+  "Ralph Fields",
+  "Richard Williams",
+  "Eric Hawkins",
+  "Michael Mills",
+  "Matthew Simpson",
+  "Judy Owen",
+  "Miguel Morrison",
+  "Jacob Knight",
+  "Holly Walker",
+  "Albert Clark",
+];
+
 const getRndString = (n) =>
   Math.random()
     .toString(36)
@@ -31,10 +54,7 @@ const fillFakeData = (n) => {
   for (let i = 0; i < n; i++) {
     data.push({
       id: getRndString(6),
-      userName:
-        getRndString(getRndNumber(2, 6)) +
-        " " +
-        getRndString(getRndNumber(2, 10)),
+      userName: fakeNames[i],
       avatar: "",
       role: getRndBool()
         ? "user"
@@ -49,12 +69,10 @@ const fillFakeData = (n) => {
       mobilePhone: "+" + getRndNumber(10000000000, 99999999999),
       email: getRndString(12) + "@yahoo.com",
       contextOptions: [
-        { key: 1, label: getRndString(6) },
-        { key: 2, label: getRndString(5) },
-        { key: 3, label: getRndString(4) },
-        { key: 4, label: getRndString(3) },
-        { key: 5, label: getRndString(2) },
-        { key: 6, label: getRndString(1) },
+        { key: 1, label: "Profile" },
+        { key: 2, label: "Room list" },
+        { key: 3, label: "Change name" },
+        { key: 4, label: "Change email" },
       ],
     });
   }
@@ -66,7 +84,11 @@ const fakeData = fillFakeData(20);
 
 const Template = (args) => {
   return (
-    <RowContainer {...args} manualHeight="500px">
+    <RowContainer
+      {...args}
+      manualHeight="500px"
+      style={{ width: "95%", padding: "0px 10px" }}
+    >
       {fakeData.map((user) => {
         const element = (
           <Avatar
@@ -76,7 +98,7 @@ const Template = (args) => {
             source={user.avatar}
           />
         );
-        const nameColor = user.status === "pending" ? "#A3A9AE" : "#333333";
+        const nameColor = user.status === "pending" && "#A3A9AE";
         const sideInfoColor = user.status === "pending" ? "#D0D5DA" : "#A3A9AE";
 
         return (
@@ -94,24 +116,16 @@ const Template = (args) => {
                 title={user.userName}
                 isBold={true}
                 fontSize="15px"
-                color={nameColor}
+                color={nameColor ? nameColor : ""}
               >
                 {user.userName}
               </Link>
               <>
                 {user.status === "pending" && (
-                  <SendClockReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <SendClockReactSvg size="small" color="#3B72A7" />
                 )}
                 {user.status === "disabled" && (
-                  <CatalogSpamReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <CatalogSpamReactSvg size="small" color="#3B72A7" />
                 )}
               </>
               {user.isHead ? (
@@ -162,3 +176,6 @@ const Template = (args) => {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  useReactWindow: false,
+};

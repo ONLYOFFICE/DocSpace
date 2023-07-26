@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import Button from "@docspace/components/button";
@@ -63,6 +62,7 @@ const ConflictResolveDialog = (props) => {
     itemOperationToFolder,
     activeFiles,
     setActiveFiles,
+    updateActiveFiles,
     setMoveToPanelVisible,
     setCopyPanelVisible,
     setRestoreAllPanelVisible,
@@ -121,11 +121,11 @@ const ConflictResolveDialog = (props) => {
     if (conflictResolveType === ConflictResolveType.Skip) {
       for (let item of items) {
         newFileIds = newFileIds.filter((x) => x !== item.id);
-        newActiveFiles = newActiveFiles.filter((f) => f !== item.id);
+        newActiveFiles = newActiveFiles.filter((f) => f.id !== item.id);
       }
     }
 
-    setActiveFiles(newActiveFiles);
+    updateActiveFiles(newActiveFiles);
     if (!folderIds.length && !newFileIds.length) return onClosePanels();
 
     const data = {
@@ -140,6 +140,7 @@ const ConflictResolveDialog = (props) => {
 
     onClosePanels();
     try {
+      sessionStorage.setItem("filesSelectorPath", `${destFolderId}`);
       await itemOperationToFolder(data);
     } catch (error) {
       toastr.error(error.message ? error.message : error);
@@ -190,6 +191,8 @@ const ConflictResolveDialog = (props) => {
   const singleFile = filesCount === 1;
   const file = items[0].title;
 
+  const obj = { file, folder: folderTitle };
+
   return (
     <StyledModalDialog
       isLoading={!tReady}
@@ -206,17 +209,15 @@ const ConflictResolveDialog = (props) => {
               t={t}
               i18nKey="ConflictResolveDescription"
               ns="ConflictResolveDialog"
-            >
-              {{ file, folder: folderTitle }}
-            </Trans>
+              values={obj}
+            ></Trans>
           ) : (
             <Trans
               t={t}
               i18nKey="ConflictResolveDescriptionFiles"
               ns="ConflictResolveDialog"
-            >
-              {{ filesCount, folder: folderTitle }}
-            </Trans>
+              values={{ filesCount, folder: folderTitle }}
+            ></Trans>
           )}
         </Text>
         <Text className="select-action">
@@ -264,7 +265,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
-  const { activeFiles, setActiveFiles } = filesStore;
+  const { activeFiles, setActiveFiles, updateActiveFiles } = filesStore;
   const { settingsStore } = auth;
   const { theme } = settingsStore;
   return {
@@ -276,14 +277,13 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     itemOperationToFolder,
     activeFiles,
     setActiveFiles,
+    updateActiveFiles,
     setMoveToPanelVisible,
     setRestoreAllPanelVisible,
     setCopyPanelVisible,
   };
 })(
-  withRouter(
-    withTranslation(["ConflictResolveDialog", "Common"])(
-      observer(ConflictResolveDialog)
-    )
+  withTranslation(["ConflictResolveDialog", "Common"])(
+    observer(ConflictResolveDialog)
   )
 );

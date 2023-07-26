@@ -70,7 +70,6 @@ public class CommonMethods
         _tenantManager = tenantManager;
         _clientFactory = clientFactory;
         _hostedSolution = hostedSolution;
-        _hostedSolution.Init(CommonConstants.BaseDbConnKeyString);
     }
 
     public object ToTenantWrapper(Tenant t)
@@ -92,7 +91,7 @@ public class CommonMethods
         };
     }
 
-    public string CreateReference(int tenantId,string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
+    public string CreateReference(int tenantId, string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
     {
         var url = _commonLinkUtility.GetConfirmationUrlRelative(tenantId, email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : ""));
         return $"{requestUriScheme}{Uri.SchemeDelimiter}{tenantDomain}/{url}{(first ? "&first=true" : "")}{(string.IsNullOrEmpty(module) ? "" : "&module=" + module)}{(sms ? "&sms=true" : "")}";
@@ -149,28 +148,28 @@ public class CommonMethods
         return true;
     }
 
-    public bool GetTenant(IModel model, out Tenant tenant)
+    public async Task<(bool, Tenant)> TryGetTenantAsync(IModel model)
     {
+        Tenant tenant = null;
         if (_coreBaseSettings.Standalone && model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
         {
-            tenant = _tenantManager.GetTenant((model.PortalName ?? "").Trim());
-            return true;
+            tenant = await _tenantManager.GetTenantAsync((model.PortalName ?? "").Trim());
+            return (true, tenant);
         }
 
         if (model != null && model.TenantId.HasValue)
         {
-            tenant = _hostedSolution.GetTenant(model.TenantId.Value);
-            return true;
+            tenant = await _hostedSolution.GetTenantAsync(model.TenantId.Value);
+            return (true, tenant);
         }
 
         if (model != null && !string.IsNullOrWhiteSpace((model.PortalName ?? "")))
         {
-            tenant = _hostedSolution.GetTenant((model.PortalName ?? "").Trim());
-            return true;
+            tenant = (await _hostedSolution.GetTenantAsync((model.PortalName ?? "").Trim()));
+            return (true, tenant);
         }
 
-        tenant = null;
-        return false;
+        return (false, tenant);
     }
 
     public bool IsTestEmail(string email)
@@ -310,3 +309,4 @@ public class CommonMethods
         return false;
     }
 }
+

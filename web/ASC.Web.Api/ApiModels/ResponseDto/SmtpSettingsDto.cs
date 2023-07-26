@@ -36,6 +36,8 @@ public class SmtpSettingsDto : IMapFrom<SmtpSettings>
     public string CredentialsUserPassword { get; set; }
     public bool EnableSSL { get; set; }
     public bool EnableAuth { get; set; }
+    public bool UseNtlm { get; set; }
+    public bool IsDefaultSettings { get; set; }
 
     public static SmtpSettingsDto GetSample()
     {

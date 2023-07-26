@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
@@ -25,12 +25,11 @@ const MainContainer = styled.div`
 const TwoFactorAuth = (props) => {
   const {
     t,
-    history,
     initSettings,
     isInit,
     setIsInit,
-    helpLink,
     currentColorScheme,
+    tfaSettingsUrl,
   } = props;
   const [type, setType] = useState("none");
 
@@ -39,6 +38,9 @@ const TwoFactorAuth = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
@@ -86,8 +88,8 @@ const TwoFactorAuth = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("tfa") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("tfa") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSelectTfaType = (e) => {
@@ -97,7 +99,7 @@ const TwoFactorAuth = (props) => {
   };
 
   const onSaveClick = async () => {
-    const { t, setTfaSettings, getTfaConfirmLink, history } = props;
+    const { t, setTfaSettings, getTfaConfirmLink } = props;
 
     setIsSaving(true);
 
@@ -111,7 +113,7 @@ const TwoFactorAuth = (props) => {
 
       if (res) {
         setIsInit(false);
-        history.push(res.replace(window.location.origin, ""));
+        navigate(res.replace(window.location.origin, ""));
       }
     } catch (error) {
       toastr.error(error);
@@ -136,7 +138,7 @@ const TwoFactorAuth = (props) => {
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/two-factor-authentication.aspx`}
+          href={tfaSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -151,15 +153,18 @@ const TwoFactorAuth = (props) => {
         spacing="8px"
         options={[
           {
+            id: "tfa-disabled",
             label: t("Disabled"),
             value: "none",
           },
           {
+            id: "by-sms",
             label: t("BySms"),
             value: "sms",
             disabled: !smsDisabled,
           },
           {
+            id: "by-app",
             label: t("ByApp"),
             value: "app",
             disabled: !appDisabled,
@@ -180,6 +185,8 @@ const TwoFactorAuth = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="two-factor-auth-save"
+        additionalClassCancelButton="two-factor-auth-cancel"
       />
     </MainContainer>
   );
@@ -195,7 +202,7 @@ export default inject(({ auth, setup }) => {
   } = auth.tfaStore;
 
   const { isInit, initSettings, setIsInit } = setup;
-  const { helpLink, currentColorScheme } = auth.settingsStore;
+  const { currentColorScheme, tfaSettingsUrl } = auth.settingsStore;
 
   return {
     setTfaSettings,
@@ -206,9 +213,7 @@ export default inject(({ auth, setup }) => {
     isInit,
     initSettings,
     setIsInit,
-    helpLink,
     currentColorScheme,
+    tfaSettingsUrl,
   };
-})(
-  withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
-);
+})(withTranslation(["Settings", "Common"])(observer(TwoFactorAuth)));

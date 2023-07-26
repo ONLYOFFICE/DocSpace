@@ -2,12 +2,11 @@ import React, { useState } from "react";
 
 import DropDown from "./";
 import DropDownItem from "../drop-down-item";
-import GroupButton from "../group-button";
 
 export default {
   title: "Components/DropDown",
   component: DropDown,
-  subcomponents: { DropDownItem, GroupButton },
+  subcomponents: { DropDownItem },
   argTypes: {
     onClick: { action: "onClickItem", table: { disable: true } },
   },
@@ -29,17 +28,14 @@ When using component, it should be noted that parent must have CSS property _pos
 const Template = (args) => {
   const [isOpen, setIsOpen] = useState(args.open);
 
-  const clickOutsideAction = (e) => {
-    setIsOpen(!isOpen);
-  };
-
   return (
-    <div style={{ height: "200px", position: "relative" }}>
+    <div style={{ height: "200px", position: "relative", padding: "20px" }}>
       <DropDown
         {...args}
         open={isOpen}
-        clickOutsideAction={clickOutsideAction}
-        style={{ top: 0, left: 0 }}
+        isDefaultMode={false}
+        clickOutsideAction={() => {}}
+        style={{ top: "20px", left: "20px" }}
         onClick={() => {}}
       >
         <DropDownItem isHeader label="Category 1" />
@@ -75,38 +71,6 @@ const Template = (args) => {
   );
 };
 
-const WithButtonTemplate = (args) => {
-  return (
-    <div style={{ height: "200px", position: "relative" }}>
-      <GroupButton
-        label="Dropdown demo"
-        style={{ top: 0, left: 0 }}
-        isDropdown={true}
-        opened={args.open}
-      >
-        <DropDownItem
-          label="Button 1"
-          onClick={() => args.onClick("Button 2 clicked")}
-        />
-        <DropDownItem
-          label="Button 2"
-          onClick={() => args.onClick("Button 2 clicked")}
-        />
-        <DropDownItem
-          label="Button 3"
-          onClick={() => args.onClick("Button 3 clicked")}
-        />
-      </GroupButton>
-    </div>
-  );
-};
-
 export const Default = Template.bind({});
 
-export const WithButton = WithButtonTemplate.bind({});
-
 Default.args = { open: true };
-
-WithButton.args = {
-  open: true,
-};

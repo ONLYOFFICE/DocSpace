@@ -46,6 +46,8 @@ public class DbFolder : IDbFile, IDbSearch, ISearchItem
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     [Ignore]
     public string IndexName => Tables.Folder;
 
@@ -59,6 +61,8 @@ public static class DbFolderExtension
 {
     public static ModelBuilderWrapper AddDbFolder(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbFolder>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddDbFolder, Provider.MySql)
                 .Add(PgSqlAddDbFolder, Provider.PostgreSql);
@@ -80,6 +84,12 @@ public static class DbFolderExtension
 
             entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parent_id");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_parent_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_parent_id_modified_on");
 
             entity.Property(e => e.Id).HasColumnName("id");
 
@@ -148,6 +158,12 @@ public static class DbFolderExtension
 
             entity.HasIndex(e => new { e.TenantId, e.ParentId })
                 .HasDatabaseName("parent_id");
+            
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.Title })
+                .HasDatabaseName("tenant_id_parent_id_title");
+
+            entity.HasIndex(e => new { e.TenantId, e.ParentId, e.ModifiedOn })
+                .HasDatabaseName("tenant_id_parent_id_modified_on");
 
             entity.Property(e => e.Id).HasColumnName("id");
 

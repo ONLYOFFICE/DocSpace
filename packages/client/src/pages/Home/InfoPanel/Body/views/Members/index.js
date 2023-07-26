@@ -28,7 +28,7 @@ const Members = ({
 
   selectionParentRoom,
   setSelectionParentRoom,
-  isScrollLocked,
+
   setIsScrollLocked,
 
   getRoomMembers,
@@ -201,7 +201,6 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
-            isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
           />
         ))}
@@ -239,7 +238,6 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
-            isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
           />
         ))}
@@ -267,15 +265,20 @@ export default inject(
 
       updateRoomMembers,
       setUpdateRoomMembers,
-      isScrollLocked,
+
       setIsScrollLocked,
     } = auth.infoPanelStore;
-    const { getRoomMembers, updateRoomMemberRole, resendEmailInvitations } =
-      filesStore;
+    const {
+      getRoomMembers,
+      updateRoomMemberRole,
+      resendEmailInvitations,
+    } = filesStore;
     const { id: selfId } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
-    const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
-      dialogsStore;
+    const {
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
 
@@ -285,7 +288,7 @@ export default inject(
       setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
-      isScrollLocked,
+
       setIsScrollLocked,
 
       getRoomMembers,

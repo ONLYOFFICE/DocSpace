@@ -65,7 +65,7 @@ public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
     public string Notes { get; set; }
     public bool Removed { get; set; }
     public DateTime LastModified { get; set; }
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public bool IsActive => ActivationStatus.HasFlag(EmployeeActivationStatus.Activated);
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }

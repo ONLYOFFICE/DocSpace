@@ -1,8 +1,9 @@
 import { makeAutoObservable } from "mobx";
+import toastr from "@docspace/components/toast/toastr";
 
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
-import toastr from "@docspace/components/toast/toastr";
+import authStore from "./AuthStore";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -24,18 +25,16 @@ class QuotasStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalQuota();
-  };
-
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
   };
 
   get isFreeTariff() {
     return this.currentPortalQuota.free;
+  }
+
+  get isTrial() {
+    return this.currentPortalQuota.trial;
   }
 
   get currentPlanCost() {
@@ -214,6 +213,8 @@ class QuotasStore {
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
+
+    this.setIsLoaded(true);
   };
 
   updateQuotaUsedValue = (featureId, value) => {
@@ -228,17 +229,7 @@ class QuotasStore {
   };
   setPortalQuota = async () => {
     try {
-      let refresh = false;
-      if (window.location.search === "?complete=true") {
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname
-        );
-        refresh = true;
-      }
-
-      const res = await api.portal.getPortalQuota(refresh);
+      const res = await api.portal.getPortalQuota();
 
       if (!res) return;
 
