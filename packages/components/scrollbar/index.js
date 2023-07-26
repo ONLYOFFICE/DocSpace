@@ -118,17 +118,22 @@ const Scrollbar = React.forwardRef((props, ref) => {
 
   const thumbVStyles = scrollbarType ? scrollbarType.thumbV : {};
   const thumbHStyles = scrollbarType ? scrollbarType.thumbH : {};
-  const trackCommonStyles = {
-    padding: "0.05px",
+
+  // Add 1px margin to vertical track to avoid scrollbar lib crashing when event.clientX equals 0
+  const trackVCommonStyles = {
+    marginLeft: isRtl ? "1px" : "0",
+    marginRight: isRtl ? "0" : "1px",
+  };
+  const tracksCommonStyles = {
     opacity: autoHide && !isScrolling ? 0 : 1,
     transition: "opacity 0.4s ease-in-out",
   };
   const trackVStyles = scrollbarType
-    ? { ...scrollbarType.trackV, ...trackCommonStyles }
-    : { ...trackCommonStyles };
+    ? { ...scrollbarType.trackV, ...tracksCommonStyles, ...trackVCommonStyles }
+    : { ...tracksCommonStyles, ...trackVCommonStyles };
   const trackHStyles = scrollbarType
-    ? { ...scrollbarType.trackH, ...trackCommonStyles }
-    : { ...trackCommonStyles };
+    ? { ...scrollbarType.trackH, ...tracksCommonStyles }
+    : { ...tracksCommonStyles };
   const contentStyles = scrollbarType ? scrollbarType.content : {};
 
   const showTrack = useCallback(() => {
