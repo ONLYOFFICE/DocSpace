@@ -14,7 +14,7 @@ $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
 $PortalUrl = ("http://" + $LocalIp + ":8092")
-
+$DotnetVersion="v1.0.0"
 
 # Stop all backend services"
 & "$PSScriptRoot\start\stop.backend.docker.ps1"
@@ -35,11 +35,26 @@ if ($args[0] -eq "--community" ) {
   $Env:INSTALLATION_TYPE = "COMMUNITY"
 }
 
-Set-Location -Path $DockerDir
+Set-Location -Path $RootDir
+
+if ($args[0] -eq "--build_dotnet") {
+  $DotnetVersion="v9.9.9"
+
+  $Exists= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
+
+  if (!$Exists) {
+    Write-Host "Build dotnet base image from source (apply new configs)" -ForegroundColor Green
+    docker build -t "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"  -f "$DockerDir\Dockerfile.runtime" --target dotnetrun .
+  } else { 
+    Write-Host "SKIP build dotnet base image (already exists)" -ForegroundColor Green
+  }
+}
+
+# Set-Location -Path $DockerDir
 
 Write-Host "Run migration and services" -ForegroundColor Green
 $Env:ENV_EXTENSION="dev"
-$Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
+$Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
 $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
 $Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
 $Env:SERVICE_DOCEDITOR=$Doceditor
@@ -50,7 +65,7 @@ $Env:BUILD_PATH="/var/www"
 $Env:SRC_PATH="$RootDir\publish\services"
 $Env:DATA_DIR="$RootDir\Data"
 $Env:APP_URL_PORTAL=$PortalUrl
-docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner --profile backend-local up -d
+docker compose -f "$DockerDir\docspace.profiles.yml" -f "$DockerDir\docspace.overcome.yml" --profile migration-runner --profile backend-local up -d
 
 Write-Host "== Build params ==" -ForegroundColor Green
 Write-Host "APP_URL_PORTAL: $PortalUrl" -ForegroundColor Blue
