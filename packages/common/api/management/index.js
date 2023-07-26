@@ -1,5 +1,4 @@
-import { request, setWithCredentialsStatus } from "../client";
-import axios from "axios";
+import { request } from "../client";
 
 const baseURL = "/apisystem";
 
@@ -37,15 +36,6 @@ export const getDomainName = async () => {
     return res;
   });
 
-  // const res = await axios
-  //   .get("/apisystem/settings/get?tenantId=-1&key=baseDomain", {
-  //     withCredentials: true,
-  //     headers: {
-  //       "Access-Control-Allow-Credentials": true,
-  //     },
-  //   })
-  //   .then((res) => res);
-
   return res;
 };
 
@@ -69,7 +59,7 @@ export const setDomainName = async (domainName) => {
 export const setPortalName = (portalName) => {
   const data = {
     key: "portalName",
-    tenantId: -1,
+    tenantId: 1,
     value: portalName,
   };
 
