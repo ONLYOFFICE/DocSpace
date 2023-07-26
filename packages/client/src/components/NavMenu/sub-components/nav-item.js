@@ -10,6 +10,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { tablet } from "@docspace/components/utils/device";
 import MenuIcon from "PUBLIC_DIR/images/menu.react.svg";
 import { Base } from "@docspace/components/themes";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const NavItemSeparator = styled.div`
   border-bottom: 1px ${(props) => (props.dashed ? "dashed" : "solid")}
@@ -24,7 +25,8 @@ const NavItemWrapper = styled(Link)`
   min-width: 48px;
   min-height: 50px;
   align-items: center;
-  padding: 0 16px 0 20px;
+  padding: ${({ theme }) =>
+    getCorrectFourValuesStyle("0 16px 0 20px", theme.interfaceDirection)};
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
@@ -62,14 +64,17 @@ const NavItemWrapper = styled(Link)`
     `}
 
   @media ${tablet} {
-    padding: 0 16px 0 16px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 16px 0 16px", theme.interfaceDirection)};
   }
 `;
 
 NavItemWrapper.defaultProps = { theme: Base };
 
 const NavItemLabel = styled(Text)`
-  margin: 0 auto 0 16px;
+  margin: ${({ theme }) =>
+    getCorrectFourValuesStyle("0 auto 0 16px", theme.interfaceDirection)};
+
   display: ${(props) => (props.opened ? "block" : "none")};
   color: ${(props) =>
     props.active
@@ -82,7 +87,9 @@ NavItemLabel.defaultProps = { theme: Base };
 const badgeCss = css`
   position: absolute;
   top: 2px;
-  right: 4px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left: 4px;` : `right: 4px;`}
   overflow: inherit;
 `;
 
@@ -100,7 +107,9 @@ const VersionBadge = styled.div`
   padding: 3px 6px;
   position: absolute;
   top: -5px;
-  left: 10px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 10px;` : `left: 10px;`}
 `;
 
 const StyledMenuIcon = styled(MenuIcon)`

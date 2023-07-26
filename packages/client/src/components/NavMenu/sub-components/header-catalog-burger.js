@@ -13,7 +13,10 @@ const StyledIconBox = styled.div`
   display: ${isMobileOnly ? "flex" : "none"};
   align-items: center;
 
-  padding-left: 16px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `padding-right: 16px;`
+      : `padding-left: 16px;`}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
