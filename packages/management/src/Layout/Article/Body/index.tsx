@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import CatalogItem from "@docspace/components/catalog-item";
-import { settingsTree } from "./settingsTree";
 
+import { settingsTree } from "SRC_DIR/utils/settingsTree";
+import { getItemByLink } from "SRC_DIR/utils";
 import { TSettingsTreeItem } from "SRC_DIR/types/index";
 
 const ArticleBodyContent = () => {
@@ -13,18 +14,9 @@ const ArticleBodyContent = () => {
   const [selectedKey, setSelectedKey] = useState("0");
 
   useEffect(() => {
-    console.log(location);
     const path = location.pathname;
-    const resultPath = path.split("/")[2];
-
-    switch (resultPath) {
-      case "spaces":
-        setSelectedKey("0");
-        break;
-      case "branding":
-        setSelectedKey("1");
-        break;
-    }
+    const item = getItemByLink(path);
+    setSelectedKey(item.key);
   }, []);
 
   const onClickItem = (item: TSettingsTreeItem) => {
