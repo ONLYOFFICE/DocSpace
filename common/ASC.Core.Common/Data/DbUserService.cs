@@ -263,7 +263,7 @@ public class EFUserService : IUserService
 
         q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
 
-        var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
+        var orderedQuery = q.OrderBy(r => r.ActivationStatus);
         q = orderedQuery;
 
         if (!string.IsNullOrEmpty(sortBy))
@@ -275,7 +275,7 @@ public class EFUserService : IUserService
                         !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID ||
                                        g.UserGroupId == Users.Constants.GroupCollaborator.ID)) on user.Id equals userGroup.Userid into joinedGroup
                     from @group in joinedGroup.DefaultIfEmpty()
-                    select new UserWithGroup { User = user, Group = @group }).OrderBy(r => r.User.ActivationStatus == EmployeeActivationStatus.Pending);
+                    select new UserWithGroup { User = user, Group = @group }).OrderBy(r => r.User.ActivationStatus);
 
                 q = (sortOrderAsc ? q1.ThenBy(_orderByUserType) : q1.ThenByDescending(_orderByUserType)).Select(r => r.User);
             }
