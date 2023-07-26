@@ -9,6 +9,8 @@ import BookTrainingReactSvgUrl from "PUBLIC_DIR/images/book.training.react.svg?u
 //import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
+import SpacesReactSvgUrl from "PUBLIC_DIR/images/spaces.react.svg?url";
+
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 
@@ -28,6 +30,8 @@ const PAYMENTS_URL = combineUrl(
 );
 
 //const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
+
+const SPACES_URL = combineUrl(PROXY_HOMEPAGE_URL, "/management");
 
 class ProfileActionsStore {
   authStore = null;
@@ -118,6 +122,11 @@ class ProfileActionsStore {
     window.DocSpace.navigate(settingsUrl);
   };
 
+  onSpacesClick = () => {
+    this.selectedFolderStore.setSelectedFolder(null);
+    window.location = SPACES_URL;
+  };
+
   onPaymentsClick = () => {
     this.selectedFolderStore.setSelectedFolder(null);
     window.DocSpace.navigate(PAYMENTS_URL);
@@ -140,9 +149,8 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportUrl;
+    const supportUrl = this.authStore.settingsStore.additionalResourcesData
+      ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -184,6 +192,7 @@ class ProfileActionsStore {
     const { enablePlugins, standalone } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
     const isCommunity = this.authStore.isCommunity;
+    const { isOwner } = this.authStore.userStore.user;
 
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -202,6 +211,15 @@ class ProfileActionsStore {
           icon: CatalogSettingsReactSvgUrl,
           label: t("Common:SettingsDocSpace"),
           onClick: () => this.onSettingsClick(settingsUrl),
+        }
+      : null;
+
+    const management = isOwner
+      ? {
+          key: "spaces-management-settings",
+          icon: SpacesReactSvgUrl,
+          label: t("Common:Spaces"),
+          onClick: this.onSpacesClick,
         }
       : null;
 
@@ -255,6 +273,7 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
+      management,
       isAdmin &&
         !isCommunity && {
           key: "user-menu-payments",
@@ -342,13 +361,12 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(
