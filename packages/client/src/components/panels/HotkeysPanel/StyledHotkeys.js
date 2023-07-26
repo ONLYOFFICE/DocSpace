@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Scrollbar from "@docspace/components/scrollbar";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
@@ -6,13 +6,20 @@ import { tablet } from "@docspace/components/utils/device";
 const StyledHotkeysPanel = styled.div`
   .hotkeys-panel {
     .scroll-body {
-      padding-right: 0 !important;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-left: 0 !important;
+            `
+          : css`
+              padding-right: 0 !important;
+            `}
     }
   }
 
   .hotkeys_header {
     padding: 0 16px;
-    border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+    border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
 
     .hotkeys_heading {
       font-weight: 700;
@@ -23,7 +30,14 @@ const StyledHotkeysPanel = styled.div`
   .hotkeys_sub-header {
     font-weight: 700;
     font-size: 16px;
-    padding-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+          `
+        : css`
+            padding-left: 16px;
+          `}
     margin: 20px 0 6px 0;
   }
 
@@ -55,7 +69,14 @@ const StyledHotkeysPanel = styled.div`
   }
 
   .hotkeys-key {
-    margin: 0 auto 0 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0 0 0 auto;
+          `
+        : css`
+            margin: 0 auto 0 0;
+          `}
 
     @media (max-width: 550px) {
       margin: 0 0 0 auto;
