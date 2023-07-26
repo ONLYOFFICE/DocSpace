@@ -44,8 +44,6 @@ public class Startup : BaseStartup
             services.AddHostedService<LdapNotifyService>();
             DIHelper.TryAdd<LdapNotifyService>();
         }
-        services.AddBaseDbContextPool<FilesDbContext>();
-        services.AddBaseDbContextPool<BackupsContext>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
         services.AddScoped<CountRoomChecker>();
