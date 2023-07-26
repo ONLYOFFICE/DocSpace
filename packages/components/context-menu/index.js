@@ -6,6 +6,7 @@ import { CSSTransition } from "react-transition-group";
 import Portal from "../portal";
 import StyledContextMenu from "./styled-context-menu";
 import SubMenu from "./sub-components/sub-menu";
+import MobileSubMenu from "./sub-components/mobile-sub-menu";
 
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
@@ -16,6 +17,8 @@ import {
 import Backdrop from "../backdrop";
 import Text from "../text";
 import Avatar from "../avatar";
+import IconButton from "../icon-button";
+import ArrowLeftReactUrl from "PUBLIC_DIR/images/arrow-left.react.svg?url";
 
 class ContextMenu extends Component {
   constructor(props) {
@@ -27,6 +30,8 @@ class ContextMenu extends Component {
       resetMenu: false,
       model: null,
       changeView: false,
+      showMobileMenu: false,
+      onLoad: null,
     };
 
     this.menuRef = React.createRef();
@@ -89,6 +94,7 @@ class ContextMenu extends Component {
       visible: false,
       reshow: false,
       changeView: false,
+      showMobileMenu: false,
     });
   };
 
@@ -285,6 +291,21 @@ class ContextMenu extends Component {
     DomHelpers.revertZIndex();
   }
 
+  onMobileItemClick = (e, onLoad) => {
+    e.stopPropagation();
+    this.setState({
+      showMobileMenu: true,
+      onLoad,
+    });
+  };
+
+  onBackClick = (e) => {
+    e.stopPropagation();
+    this.setState({
+      showMobileMenu: false,
+    });
+  };
+
   renderContextMenu = () => {
     const className = classNames(
       "p-contextmenu p-component",
@@ -327,15 +348,23 @@ class ContextMenu extends Component {
             >
               {changeView && withHeader && (
                 <div className="contextmenu-header">
-                  {isIconExist && (
-                    <div className="icon-wrapper">
-                      <img
-                        src={this.props.header.icon}
-                        className="drop-down-item_icon"
-                        alt="drop-down_icon"
+                  {isIconExist &&
+                    (this.state.showMobileMenu ? (
+                      <IconButton
+                        className="edit_icon"
+                        iconName={ArrowLeftReactUrl}
+                        onClick={this.onBackClick}
+                        size={16}
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <div className="icon-wrapper">
+                        <img
+                          src={this.props.header.icon}
+                          className="drop-down-item_icon"
+                          alt="drop-down_icon"
+                        />
+                      </div>
+                    ))}
                   {isAvatarExist && (
                     <div className="avatar-wrapper">
                       <Avatar
@@ -350,17 +379,29 @@ class ContextMenu extends Component {
                   </Text>
                 </div>
               )}
-              <SubMenu
-                model={
-                  this.props.getContextModel
-                    ? this.state.model
-                    : this.props.model
-                }
-                root
-                resetMenu={this.state.resetMenu}
-                onLeafClick={this.onLeafClick}
-                changeView={changeView}
-              />
+
+              {this.state.showMobileMenu ? (
+                <MobileSubMenu
+                  root
+                  resetMenu={this.state.resetMenu}
+                  onLeafClick={this.onLeafClick}
+                  changeView={true}
+                  onLoad={this.state.onLoad}
+                />
+              ) : (
+                <SubMenu
+                  model={
+                    this.props.getContextModel
+                      ? this.state.model
+                      : this.props.model
+                  }
+                  root
+                  resetMenu={this.state.resetMenu}
+                  onLeafClick={this.onLeafClick}
+                  changeView={changeView}
+                  onMobileItemClick={this.onMobileItemClick}
+                />
+              )}
             </div>
           </CSSTransition>
         </StyledContextMenu>

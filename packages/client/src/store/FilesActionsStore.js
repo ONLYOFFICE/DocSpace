@@ -62,6 +62,7 @@ class FilesActionStore {
   mediaViewerDataStore;
   accessRightsStore;
   clientLoadingStore;
+  publicRoomStore;
 
   isBulkDownload = false;
   isLoadedSearchFiles = false;
@@ -78,7 +79,8 @@ class FilesActionStore {
     dialogsStore,
     mediaViewerDataStore,
     accessRightsStore,
-    clientLoadingStore
+    clientLoadingStore,
+    publicRoomStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -91,6 +93,7 @@ class FilesActionStore {
     this.mediaViewerDataStore = mediaViewerDataStore;
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -550,40 +553,44 @@ class FilesActionStore {
     const fileIds = fileConvertIds.map((f) => f.key || f);
     addActiveItems(fileIds, folderIds);
 
+    const shareKey = this.publicRoomStore.publicRoomKey;
+
     try {
-      await downloadFiles(fileConvertIds, folderIds).then(async (res) => {
-        const data = res[0] ? res[0] : null;
-        const pbData = {
-          icon: "file",
-          label,
-          operationId,
-        };
-
-        const item =
-          data?.finished && data?.url
-            ? data
-            : await this.uploadDataStore.loopFilesOperations(
-                data,
-                pbData,
-                true
-              );
-
-        clearActiveOperations(fileIds, folderIds);
-        this.setIsBulkDownload(false);
-
-        if (item.url) {
-          window.location.href = item.url;
-        } else {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
+      await downloadFiles(fileConvertIds, folderIds, shareKey).then(
+        async (res) => {
+          const data = res[0] ? res[0] : null;
+          const pbData = {
+            icon: "file",
+            label,
             operationId,
-          });
-        }
+          };
 
-        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
-        !item.url && toastr.error(translations.error, null, 0, true);
-      });
+          const item =
+            data?.finished && data?.url
+              ? data
+              : await this.uploadDataStore.loopFilesOperations(
+                  data,
+                  pbData,
+                  true
+                );
+
+          clearActiveOperations(fileIds, folderIds);
+          this.setIsBulkDownload(false);
+
+          if (item.url) {
+            window.location.href = item.url;
+          } else {
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+              operationId,
+            });
+          }
+
+          setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
+          !item.url && toastr.error(translations.error, null, 0, true);
+        }
+      );
     } catch (err) {
       this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);
@@ -1304,6 +1311,9 @@ class FilesActionStore {
   };
 
   openLocationAction = async (item) => {
+    if (this.publicRoomStore.isPublicRoom)
+      return this.moveToPublicRoom(item.id);
+
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
     const { id, isRoom, title, rootFolderType } = item;
@@ -1531,9 +1541,11 @@ class FilesActionStore {
         return hasSelection && canCopy;
       case "showInfo":
       case "download":
-        return hasSelection;
+        const canDownload = selection.every((s) => s.security?.Download);
+
+        return hasSelection && canDownload;
       case "downloadAs":
-        return canConvertSelected;
+        return canConvertSelected && !this.publicRoomStore.isPublicRoom;
       case "moveTo":
         const canMove = selection.every((s) => s.security?.Move);
 
@@ -2031,6 +2043,9 @@ class FilesActionStore {
 
     const { setIsSectionFilterLoading } = this.clientLoadingStore;
 
+    if (this.publicRoomStore.isPublicRoom && item.isFolder)
+      return this.moveToPublicRoom(item.id);
+
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);
     };
@@ -2086,7 +2101,7 @@ class FilesActionStore {
               )
             : null;
 
-        return openDocEditor(id, providerKey, tab, null, !canWebEdit);
+        return openDocEditor(id, providerKey, tab, null, !item.security.Edit);
       }
 
       if (isMediaOrImage) {
@@ -2098,6 +2113,9 @@ class FilesActionStore {
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
+
+        if (this.publicRoomStore.isPublicRoom) return;
+
         window.DocSpace.navigate(url);
         return;
       }
@@ -2118,6 +2136,10 @@ class FilesActionStore {
     const urlFilter = getObjectByLocation(window.DocSpace.location);
 
     const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
+
+    if (this.publicRoomStore.isPublicRoom) {
+      return this.backToParentFolder();
+    }
 
     if (categoryType === CategoryType.SharedRoom || isArchivedRoom) {
       if (isRoom) {
@@ -2190,7 +2212,38 @@ class FilesActionStore {
     });
   };
 
+  moveToPublicRoom = (folderId) => {
+    const { navigationPath, rootFolderType } = this.selectedFolderStore;
+    const { publicRoomKey } = this.publicRoomStore;
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const id = folderId ? folderId : this.selectedFolderStore.parentId;
+    const path = getCategoryUrl(CategoryType.PublicRoom);
+    const filter = FilesFilter.getDefault();
+    filter.folder = id;
+
+    const state = {
+      title: navigationPath[0]?.title || "",
+      isRoot: navigationPath.length === 1,
+      rootFolderType: rootFolderType,
+    };
+
+    setIsSectionFilterLoading(true);
+    window.DocSpace.navigate(
+      `${path}?key=${publicRoomKey}&${filter.toUrlParams()}`,
+      { state }
+    );
+  };
+
   backToParentFolder = () => {
+    if (this.publicRoomStore.isPublicRoom) return this.moveToPublicRoom();
+
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     let id = this.selectedFolderStore.parentId;
 
     const { navigationPath, rootFolderType } = this.selectedFolderStore;

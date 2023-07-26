@@ -184,7 +184,7 @@ export default inject(({ auth, peopleStore, clientLoadingStore }) => {
     filter,
 
     setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
-    userId: auth.userStore.user.id,
+    userId: auth.userStore.user?.id,
     infoPanelVisible,
     withPaging,
   };

@@ -1,5 +1,5 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights } from "@docspace/common/constants";
 import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/common/constants";
 
@@ -11,6 +11,7 @@ class DialogsStore {
   versionHistoryStore;
 
   sharingPanelVisible = false;
+  roomSharingPanelVisible = false;
   ownerPanelVisible = false;
   moveToPanelVisible = false;
   copyPanelVisible = false;
@@ -26,6 +27,9 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   inviteUsersWarningDialogVisible = false;
+  unsavedChangesDialogVisible = false;
+  moveToPublicRoomVisible = false;
+  moveToPublicRoomData = null;
 
   isFolderActions = false;
   roomCreation = false;
@@ -38,6 +42,7 @@ class DialogsStore {
   archiveDialogVisible = false;
   restoreRoomDialogVisible = false;
   eventDialogVisible = false;
+  deleteLinkDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -59,6 +64,9 @@ class DialogsStore {
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
+  editLinkPanelIsVisible = false;
+  embeddingPanelIsVisible = false;
+  linkParams = null;
 
   constructor(
     authStore,
@@ -94,6 +102,10 @@ class DialogsStore {
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
+  };
+
+  setRoomSharingPanelVisible = (roomSharingPanelVisible) => {
+    this.roomSharingPanelVisible = roomSharingPanelVisible;
   };
 
   setIsFolderActions = (isFolderActions) => {
@@ -313,6 +325,31 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
+  setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
+    this.editLinkPanelIsVisible = editLinkPanelIsVisible;
+  };
+
+  setLinkParams = (linkParams) => {
+    this.linkParams = linkParams;
+  };
+
+  setUnsavedChangesDialog = (unsavedChangesDialogVisible) => {
+    this.unsavedChangesDialogVisible = unsavedChangesDialogVisible;
+  };
+
+  setDeleteLinkDialogVisible = (visible) => {
+    this.deleteLinkDialogVisible = visible;
+  };
+
+  setEmbeddingPanelIsVisible = (embeddingPanelIsVisible) => {
+    this.embeddingPanelIsVisible = embeddingPanelIsVisible;
+  };
+
+  setMoveToPublicRoomVisible = (visible, data = null) => {
+    this.moveToPublicRoomVisible = visible;
+    this.moveToPublicRoomData = data;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -339,7 +376,12 @@ class DialogsStore {
       this.inviteUsersWarningDialogVisible ||
       this.createRoomDialogVisible ||
       this.createRoomConfirmDialogVisible ||
-      this.changeUserTypeDialogVisible
+      this.changeUserTypeDialogVisible ||
+      this.editLinkPanelIsVisible ||
+      this.unsavedChangesDialogVisible ||
+      this.deleteLinkDialogVisible ||
+      this.embeddingPanelIsVisible ||
+      this.moveToPublicRoomVisible
     );
   }
 
