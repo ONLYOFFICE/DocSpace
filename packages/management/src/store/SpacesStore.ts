@@ -9,15 +9,24 @@ import {
 } from "@docspace/common/api/management";
 
 class SpacesStore {
-  authStore = null;
+  isInit = false;
 
   portals = [];
   domain: string | null = null;
-  settings = null;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  initStore = async () => {
+    if (this.isInit) return;
+    this.isInit = true;
+
+    const requests = [];
+    requests.push(this.getPortalDomain(), this.getAllPortals());
+
+    return Promise.all(requests);
+  };
 
   deletePortal = async (portalName: string) => {
     const data = {
@@ -30,19 +39,15 @@ class SpacesStore {
   };
 
   getPortalDomain = async () => {
-    //  debugger;
     const res = await getDomainName();
     const { settings } = res;
 
     this.domain = settings;
     // const status = await getPortalStatus(settings);
-    // console.log(status);
-    // this.settings = res;
   };
 
   get isConnected() {
-    // return !!this.domain;
-    return true;
+    return !!this.domain;
   }
 
   setPortalSettings = async (domain: string, portalName: string) => {

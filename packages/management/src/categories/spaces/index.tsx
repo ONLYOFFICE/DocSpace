@@ -7,16 +7,22 @@ import { observer } from "mobx-react";
 import { useStore } from "SRC_DIR/store";
 
 const Spaces = () => {
-  const [data, setData] = React.useState<Array<object>>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const { spacesStore, authStore } = useStore();
 
-  const { getAllPortals, getPortalDomain, isConnected, portals } = spacesStore;
+  const { initStore, isConnected, portals } = spacesStore;
 
   React.useEffect(() => {
-    getPortalDomain();
-    getAllPortals();
+    const fetchData = async () => {
+      await initStore();
+      setIsLoading(false);
+    };
+
+    fetchData();
   }, []);
+
+  if (isLoading) return <h1>Loading</h1>;
 
   return (
     <SpaceContainer>
@@ -29,7 +35,7 @@ const Spaces = () => {
       {isConnected && portals.length > 0 ? (
         <MultipleSpaces portals={portals} />
       ) : (
-        <ConfigurationSection setData={setData} />
+        <ConfigurationSection />
       )}
     </SpaceContainer>
   );
