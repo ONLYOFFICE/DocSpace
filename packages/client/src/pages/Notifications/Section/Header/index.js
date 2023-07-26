@@ -1,21 +1,20 @@
 import React from "react";
-import config from "PACKAGE_FILE";
 
+import { useNavigate, useLocation } from "react-router-dom";
 import IconButton from "@docspace/components/icon-button";
-import { combineUrl } from "@docspace/common/utils";
+
 import Headline from "@docspace/common/components/Headline";
 
 import { StyledSectionHeader } from "../../StyledComponent";
 
-const SectionHeaderContent = ({ history, t }) => {
+const SectionHeaderContent = ({ t }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const onClickBack = () => {
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/accounts/view/@self"
-      )
-    );
+    const url = location.pathname.replace("/notification", "");
+
+    navigate(url);
   };
   return (
     <StyledSectionHeader>

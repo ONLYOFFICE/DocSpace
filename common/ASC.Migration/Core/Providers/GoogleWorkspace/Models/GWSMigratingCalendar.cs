@@ -48,7 +48,7 @@ public class GwsMigratingCalendar : MigratingCalendar
         //}
     }
 
-    public override Task Migrate()
+    public override Task MigrateAsync()
     {
         if (!ShouldImport)
         {

@@ -160,7 +160,7 @@ A exclusão de dados pessoais permitida para liberar:
     <value>Faça o mesmo como um usuário|Conecte ao Dropbox, Box e outras contas na seção "Documentos comuns"|Configure o acesso direto aos documentos e pastas na seção "Documentos comuns"</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
-    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos".</value>
+    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos"</value>
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bem vindo ao ONLYOFFICE Pessoal</value>
@@ -179,5 +179,35 @@ A exclusão de dados pessoais permitida para liberar:
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Novo portal foi registrado</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Quer mudar a senha em sua conta de escritório na nuvem? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+ 
+Bem vindo ao ONLYOFFICE DocSpace! Seu perfil de usuário foi adicionado com sucesso a "${__VirtualRootPath}":"${__VirtualRootPath}". Agora você pode:
+ 
+* Trabalhe com outros usuários na sala para a qual você foi convidado*: salas de colaboração para coautoria em tempo real ou salas personalizadas com configurações flexíveis para qualquer finalidade*.
+ 
+* *Trabalhe com arquivos de diferentes formatos*: documentos de texto, planilhas, apresentações, formulários digitais, PDFs, e-books, multimídia.
+ 
+* *Colabore em documentos* com dois modos de coedição: em tempo real ou bloqueio de parágrafo. Acompanhe as alterações, comunique-se em tempo real usando o bate-papo integrado ou fazendo chamadas de áudio e vídeo. 
+ 
+* *Conecte qualquer armazenamento em nuvem* e trabalhe sem alternar entre aplicativos. 
+ 
+$GreenButton
+ 
+Se precisar de ajuda, navegue em nosso "Help Center":"https://helpcenter.onlyoffice.com/" ou pergunte à nossa "equipe de suporte":"https://www.onlyoffice.com/pt/support-contact-form.aspx".
+ 
+Atenciosamente,
+Equipe ONLYOFFICE
+"www.onlyoffice.com":"http://www.onlyoffice.com/pt"</value>
   </data>
 </root>

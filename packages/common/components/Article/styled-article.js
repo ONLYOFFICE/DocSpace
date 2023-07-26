@@ -94,6 +94,7 @@ const StyledArticle = styled.article`
 
     @media ${mobile} {
       height: 100% !important;
+      margin-top: 32px;
     }
 
     @media ${hugeMobile} {
@@ -112,9 +113,13 @@ const StyledArticle = styled.article`
     `}
 
     .scroll-body {
+      display: flex;
+      flex-direction: column;
+
       overflow-x: hidden !important;
 
       padding: 0 20px !important;
+      margin-bottom: 0px !important;
 
       @media ${tablet} {
         padding: 0 8px !important;
@@ -128,12 +133,14 @@ const StyledArticle = styled.article`
       `}
 
       @media ${mobile} {
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       }
 
       ${isMobileOnly &&
       css`
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       `}
@@ -145,7 +152,7 @@ StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
   height: 24px;
-  padding: 24px 21px 21px 20px;
+  padding: 22px 21px 23px 20px;
   margin: 0;
   display: flex;
   justify-content: flex-start;
@@ -396,10 +403,15 @@ const StyledProfileWrapper = styled.div`
 const StyledArticleAlertsComponent = styled.div`
   margin: 32px 0;
 
-  div:last-child {
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+
+  &:empty {
+    display: none;
   }
 `;
+
 export {
   StyledArticle,
   StyledArticleHeader,

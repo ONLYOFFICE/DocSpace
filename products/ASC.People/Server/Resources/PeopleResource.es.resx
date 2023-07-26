@@ -65,7 +65,7 @@
     <value>El tamaño de la imagen es demasiado grande</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>El tamaño del archivo de la imagen es demasiado grande </value>
+    <value>El tamaño del archivo de la imagen es demasiado grande</value>
   </data>
   <data name="ErrorUnknownFileImageType" xml:space="preserve">
     <value>El tipo de archivo desconocido</value>

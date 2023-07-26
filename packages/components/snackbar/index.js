@@ -42,7 +42,7 @@ class SnackBar extends React.Component {
   }
 
   onActionClick = (e) => {
-    this.props.clickAction && this.props.clickAction(e);
+    this.props.onAction && this.props.onAction(e);
   };
 
   componentDidMount() {
@@ -104,6 +104,7 @@ class SnackBar extends React.Component {
       style,
       countDownTime,
       isCampaigns,
+      onAction,
       ...rest
     } = this.props;
 
@@ -187,24 +188,44 @@ class SnackBar extends React.Component {
 }
 
 SnackBar.propTypes = {
+  /** Specifies the Snackbar text */
   text: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  /** Specifies the header text */
   headerText: PropTypes.string,
+  /** Specifies the button text */
   btnText: PropTypes.string,
+  /** Specifies the source of the image used as the Snackbar background  */
   backgroundImg: PropTypes.string,
+  /** Specifies the background color */
   backgroundColor: PropTypes.string,
+  /** Specifies the text color */
   textColor: PropTypes.string,
+  /** Displays the icon */
   showIcon: PropTypes.bool,
-  clickAction: PropTypes.func,
+  /** Sets a callback function that is triggered when the Snackbar is clicked */
+  onAction: PropTypes.func,
+  /** Sets the font size  */
   fontSize: PropTypes.string,
+  /** Sets the font weight */
   fontWeight: PropTypes.string,
+  /** Specifies the text alignment */
   textAlign: PropTypes.string,
+  /** Allows displaying content in HTML format */
   htmlContent: PropTypes.string,
+  /** Accepts css */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Sets the countdown time */
   countDownTime: PropType.number,
+  /** Sets the section width */
   sectionWidth: PropTypes.number,
+  /** Required in case the snackbar is a campaign banner */
   isCampaigns: PropTypes.bool,
+  /** Used as an indicator that a web page has fully loaded, including its content, images, style files, and external scripts */
   onLoad: PropTypes.func,
+  /** Required in case the snackbar is a notification banner */
   isMaintenance: PropTypes.bool,
+  /** Sets opacity */
+  opacity: PropTypes.number,
 };
 
 SnackBar.defaultProps = {

@@ -31,6 +31,8 @@ public class FeedUsers : BaseEntity
     public string FeedId { get; set; }
     public Guid UserId { get; set; }
 
+    public FeedAggregate Feed { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { FeedId, UserId };
@@ -41,6 +43,8 @@ public static class FeedUsersExtension
 {
     public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<FeedUsers>().Navigation(e => e.Feed).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddFeedUsers, Provider.MySql)
             .Add(PgSqlAddFeedUsers, Provider.PostgreSql);

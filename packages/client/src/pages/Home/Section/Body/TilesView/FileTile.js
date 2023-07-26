@@ -6,7 +6,6 @@ import DragAndDrop from "@docspace/components/drag-and-drop";
 
 import Tile from "./sub-components/Tile";
 import FilesTileContent from "./FilesTileContent";
-import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -76,7 +75,9 @@ const FileTile = (props) => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
-      defaultRoomIcon={item.defaultRoomIcon}
+      defaultRoomIcon={
+        item.isRoom && item.icon ? item.icon : item.defaultRoomIcon
+      }
     />
   );
 
@@ -148,12 +149,8 @@ const FileTile = (props) => {
 export default inject(
   ({ settingsStore, filesStore, treeFoldersStore }, { item }) => {
     const { getIcon, thumbnails1280x720 } = settingsStore;
-    const {
-      setSelection,
-      withCtrlSelect,
-      withShiftSelect,
-      highlightFile,
-    } = filesStore;
+    const { setSelection, withCtrlSelect, withShiftSelect, highlightFile } =
+      filesStore;
 
     const isHighlight =
       highlightFile.id == item?.id && highlightFile.isExst === !item?.fileExst;
@@ -174,8 +171,6 @@ export default inject(
   }
 )(
   withTranslation(["Files", "InfoPanel"])(
-    withRouter(
-      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
-    )
+    withFileActions(withBadges(withQuickButtons(observer(FileTile))))
   )
 );

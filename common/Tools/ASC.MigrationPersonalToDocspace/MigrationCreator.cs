@@ -97,7 +97,7 @@ public class MigrationCreator
         await using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             await DoMigrationDb(id, writer);
-            DoMigrationStorage(id, writer);
+            await DoMigrationStorage(id, writer);
         }
         return fileName;
     }
@@ -135,17 +135,17 @@ public class MigrationCreator
             {
                 if (string.IsNullOrEmpty(_userName))
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.Email == _mail);
+                    user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.Email == _mail);
                     _userName = user.UserName;
                 }
                 else
                 {
-                    user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName);
+                    user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName);
                 }
             }
             else
             {
-                user = userDbContext.Users.FirstOrDefault(q => q.Tenant == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
+                user = userDbContext.Users.FirstOrDefault(q => q.TenantId == _fromTenantId && q.Status == EmployeeStatus.Active && q.UserName == _userName && q.Email == _mail);
             }
             if (!string.IsNullOrEmpty(_toAlias))
             {
@@ -158,7 +158,7 @@ public class MigrationCreator
                 }
                 else
                 {
-                    if (userDbContextToregion.Users.Any(q => q.Tenant == tenant.Id && q.UserName == _userName || q.Email == _mail))
+                    if (userDbContextToregion.Users.Any(q => q.TenantId == tenant.Id && q.UserName == _userName || q.Email == _mail))
                     {
                         throw new ArgumentException("username already exist in the portal");
                     }
@@ -185,14 +185,14 @@ public class MigrationCreator
 
             using var coreDbContext = _creatorDbContext.CreateDbContext<CoreDbContext>(_toRegion);
             var qouta = coreDbContext.Quotas
-                 .Where(r => r.Tenant == tenant.Id)
+                 .Where(r => r.TenantId == tenant.Id)
                  .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                  .SingleOrDefault();
 
             using var userDbContextToregion = _creatorDbContext.CreateDbContext<UserDbContext>(_toRegion);
             var usersCount = userDbContextToregion.Users
                 .Join(userDbContextToregion.UserGroups, u => u.Id, ug => ug.Userid, (u, ug) => new { u, ug })
-                .Where(q => q.u.Tenant == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
+                .Where(q => q.u.TenantId == tenant.Id && q.ug.UserGroupId == Common.Security.Authorizing.Constants.DocSpaceAdmin.ID).Count();
             if (usersCount > qouta.CountRoomAdmin)
             {
                 throw new ArgumentException("user count exceed");
@@ -370,18 +370,18 @@ public class MigrationCreator
     private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         Console.WriteLine($"start backup storage");
-        var fileGroups = GetFilesGroup(id);
+        var fileGroups = await GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
             Console.WriteLine($"start backup fileGroup: {group.Key}");
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_fromTenantId, group.Key);
+                var storage = await _storageFactory.GetStorageAsync(_fromTenantId, group.Key);
                 var file1 = file;
                 await ActionInvoker.Try(async state =>
                 {
                     var f = (BackupFileInfo)state;
-                    using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
+                    using var fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);
                     await writer.WriteEntryAsync(file1.GetZipKey(), fileStream);
                 }, file, 5);
             }
@@ -402,14 +402,14 @@ public class MigrationCreator
         Console.WriteLine($"end backup storage");
     }
 
-    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
+    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)
     {
-        var files = GetFilesToProcess(id).ToList();
+        var files = (await GetFilesToProcess(id)).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
 
-    private IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
+    private async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
 
@@ -417,7 +417,7 @@ public class MigrationCreator
 
         var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
 
-        var store = _storageFactory.GetStorage(_fromTenantId, module);
+        var store = await _storageFactory.GetStorageAsync(_fromTenantId, module);
 
         var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _fromTenantId).ToList();
 

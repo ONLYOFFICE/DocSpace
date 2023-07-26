@@ -56,6 +56,14 @@ class HotkeyStore {
   };
 
   activateHotkeys = (e) => {
+    const infiniteLoaderComponent = document.getElementsByClassName(
+      "ReactVirtualized__List"
+    )[0];
+
+    if (infiniteLoaderComponent) {
+      infiniteLoaderComponent.tabIndex = -1;
+    }
+
     if (
       this.dialogsStore.someDialogIsOpen ||
       (e.target?.tagName === "INPUT" && e.target.type !== "checkbox") ||
@@ -152,12 +160,8 @@ class HotkeyStore {
   };
 
   selectFile = () => {
-    const {
-      selection,
-      setSelection,
-      hotkeyCaret,
-      setHotkeyCaretStart,
-    } = this.filesStore;
+    const { selection, setSelection, hotkeyCaret, setHotkeyCaretStart } =
+      this.filesStore;
 
     const index = selection.findIndex(
       (f) => f.id === hotkeyCaret?.id && f.isFolder === hotkeyCaret?.isFolder
@@ -198,13 +202,8 @@ class HotkeyStore {
   };
 
   selectLeft = () => {
-    const {
-      hotkeyCaret,
-      filesList,
-      setHotkeyCaretStart,
-      selection,
-      viewAs,
-    } = this.filesStore;
+    const { hotkeyCaret, filesList, setHotkeyCaretStart, selection, viewAs } =
+      this.filesStore;
     if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
@@ -217,13 +216,8 @@ class HotkeyStore {
   };
 
   selectRight = () => {
-    const {
-      hotkeyCaret,
-      filesList,
-      setHotkeyCaretStart,
-      selection,
-      viewAs,
-    } = this.filesStore;
+    const { hotkeyCaret, filesList, setHotkeyCaretStart, selection, viewAs } =
+      this.filesStore;
     if (viewAs !== "tile") return;
 
     if (!hotkeyCaret && !selection.length) {
@@ -479,12 +473,8 @@ class HotkeyStore {
   };
 
   selectAll = () => {
-    const {
-      filesList,
-      hotkeyCaret,
-      setHotkeyCaretStart,
-      setSelected,
-    } = this.filesStore;
+    const { filesList, hotkeyCaret, setHotkeyCaretStart, setSelected } =
+      this.filesStore;
 
     setSelected("all");
     if (!hotkeyCaret) {
@@ -493,14 +483,14 @@ class HotkeyStore {
     }
   };
 
-  goToHomePage = (history) => {
+  goToHomePage = (navigate) => {
     const { filter, categoryType } = this.filesStore;
 
     const filterParamsStr = filter.toUrlParams();
 
     const url = getCategoryUrl(categoryType, filter.folder);
 
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -509,7 +499,7 @@ class HotkeyStore {
     );
   };
 
-  uploadFile = (isFolder, history, t) => {
+  uploadFile = (isFolder, navigate, t) => {
     if (isFolder) {
       if (this.treeFoldersStore.isPrivacyFolder) return;
       const folderInput = document.getElementById("customFolderInput");
@@ -518,7 +508,7 @@ class HotkeyStore {
       if (this.treeFoldersStore.isPrivacyFolder) {
         encryptionUploadDialog((encryptedFile, encrypted) => {
           encryptedFile.encrypted = encrypted;
-          this.goToHomePage(history);
+          this.goToHomePage(navigate);
           this.uploadDataStore.startUpload([encryptedFile], null, t);
         });
       } else {

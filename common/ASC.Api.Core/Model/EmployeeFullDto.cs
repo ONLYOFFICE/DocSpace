@@ -47,6 +47,7 @@ public class EmployeeFullDto : EmployeeDto
     public string AvatarMedium { get; set; }
     public string Avatar { get; set; }
     public bool IsAdmin { get; set; }
+    public bool IsRoomAdmin { get; set; }
     public bool IsLDAP { get; set; }
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
@@ -113,8 +114,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         ApiDateTimeHelper apiDateTimeHelper,
         WebItemManager webItemManager,
         SettingsManager settingsManager,
-        IQuotaService quotaService)
-    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
+        IQuotaService quotaService,
+        ILogger<EmployeeDtoHelper> logger)
+    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager, logger)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
@@ -166,7 +168,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             LastName = userInfo.LastName,
         };
 
-        FillGroups(result, userInfo);
+        await FillGroupsAsync(result, userInfo);
 
         var photoData = await _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
 
@@ -175,11 +177,15 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             result.Avatar = "data:image/png;base64," + Convert.ToBase64String(photoData);
         }
 
+        result.HasAvatar = await _userPhotoManager.UserHasAvatar(userInfo.Id);
+
         return result;
     }
 
-    public async Task<EmployeeFullDto> GetFull(UserInfo userInfo)
+    public async Task<EmployeeFullDto> GetFullAsync(UserInfo userInfo)
     {
+        var currentType = await _userManager.GetUserTypeAsync(userInfo.Id);
+
         var result = new EmployeeFullDto
         {
             UserName = userInfo.UserName,
@@ -191,22 +197,23 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = _userManager.IsUser(userInfo),
-            IsAdmin = _userManager.IsDocSpaceAdmin(userInfo),
+            IsVisitor = await _userManager.IsUserAsync(userInfo),
+            IsAdmin = currentType is EmployeeType.DocSpaceAdmin,
+            IsRoomAdmin = currentType is EmployeeType.RoomAdmin,
             IsOwner = userInfo.IsOwner(_context.Tenant),
-            IsCollaborator = _userManager.IsCollaborator(userInfo),
+            IsCollaborator = currentType is EmployeeType.Collaborator,
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
         };
 
-        await Init(result, userInfo);
+        await InitAsync(result, userInfo);
 
-        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
 
         if (quotaSettings.EnableUserQuota)
         {
-            result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
-            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(userInfo);
+            result.UsedSpace = Math.Max(0, (await _quotaService.FindUserQuotaRowsAsync(_context.Tenant.Id, userInfo.Id)).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+            var userQuotaSettings = await _settingsManager.LoadAsync<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 
@@ -238,7 +245,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         }
 
         FillConacts(result, userInfo);
-        FillGroups(result, userInfo);
+        await FillGroupsAsync(result, userInfo);
 
         var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
 
@@ -260,7 +267,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("listAdminModules"))
         {
-            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity, _webItemManager);
+            var listAdminModules = await userInfo.GetListAdminModulesAsync(_webItemSecurity, _webItemManager);
             if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
@@ -269,14 +276,14 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         return result;
     }
-    private void FillGroups(EmployeeFullDto result, UserInfo userInfo)
+    private async Task FillGroupsAsync(EmployeeFullDto result, UserInfo userInfo)
     {
         if (!_context.Check("groups") && !_context.Check("department"))
         {
             return;
         }
 
-        var groups = _userManager.GetUserGroups(userInfo.Id)
+        var groups = (await _userManager.GetUserGroupsAsync(userInfo.Id))
             .Select(x => new GroupSummaryDto(x, _userManager))
             .ToList();
 

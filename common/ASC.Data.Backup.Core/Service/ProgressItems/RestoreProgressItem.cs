@@ -117,22 +117,22 @@ public class RestoreProgressItem : BaseBackupProgressItem
             _backupStorageFactory = scope.ServiceProvider.GetService<BackupStorageFactory>();
             _backupRepository = scope.ServiceProvider.GetService<BackupRepository>();
 
-            tenant = _tenantManager.GetTenant(TenantId);
+            tenant = await _tenantManager.GetTenantAsync(TenantId);
             _tenantManager.SetCurrentTenant(tenant);
-            _notifyHelper.SendAboutRestoreStarted(tenant, Notify);
+            await _notifyHelper.SendAboutRestoreStartedAsync(tenant, Notify);
             tenant.SetStatus(TenantStatus.Restoring);
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
 
             _restorePortalTask = scope.ServiceProvider.GetService<RestorePortalTask>();
 
-            var storage = _backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
+            var storage = await _backupStorageFactory.GetBackupStorageAsync(StorageType, TenantId, StorageParams);
 
-            await storage.Download(StoragePath, tempFile);
+            await storage.DownloadAsync(StoragePath, tempFile);
 
             if (!_coreBaseSettings.Standalone)
             {
                 var backupHash = BackupWorker.GetBackupHash(tempFile);
-                var record = _backupRepository.GetBackupRecord(backupHash, TenantId);
+                var record = await _backupRepository.GetBackupRecordAsync(backupHash, TenantId);
 
                 if (record == null)
                 {
@@ -164,32 +164,32 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
                 if (Notify)
                 {
-                    var tenants = _tenantManager.GetTenants();
+                    var tenants = await _tenantManager.GetTenantsAsync();
                     foreach (var t in tenants)
                     {
-                        _notifyHelper.SendAboutRestoreCompleted(t, Notify);
+                        await _notifyHelper.SendAboutRestoreCompletedAsync(t, Notify);
                     }
                 }
             }
             else
             {
-                _tenantManager.RemoveTenant(tenant.Id);
+                await _tenantManager.RemoveTenantAsync(tenant.Id);
 
-                restoredTenant = _tenantManager.GetTenant(columnMapper.GetTenantMapping());
+                restoredTenant = await _tenantManager.GetTenantAsync(columnMapper.GetTenantMapping());
                 restoredTenant.SetStatus(TenantStatus.Active);
                 restoredTenant.Alias = tenant.Alias;
-                restoredTenant.PaymentId = string.IsNullOrEmpty(restoredTenant.PaymentId) ? _configuration["core:payment-region"] + TenantId : restoredTenant.PaymentId;
+                restoredTenant.PaymentId = string.IsNullOrEmpty(restoredTenant.PaymentId) ? _configuration["core:payment:region"] + TenantId : restoredTenant.PaymentId;
 
                 if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
                 {
                     restoredTenant.MappedDomain = tenant.MappedDomain;
                 }
 
-                _tenantManager.SaveTenant(restoredTenant);
+                await _tenantManager.SaveTenantAsync(restoredTenant);
                 _tenantManager.SetCurrentTenant(restoredTenant);
                 TenantId = restoredTenant.Id;
 
-                _notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
+                await _notifyHelper.SendAboutRestoreCompletedAsync(restoredTenant, Notify);
             }
 
             Percentage = 75;
@@ -210,7 +210,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             if (tenant != null)
             {
                 tenant.SetStatus(TenantStatus.Active);
-                _tenantManager.SaveTenant(tenant);
+                await _tenantManager.SaveTenantAsync(tenant);
             }
         }
         finally

@@ -36,31 +36,16 @@ builder.Configuration.AddJsonFile($"appsettings.runner.json", true)
                 .AddCommandLine(args);
 
 builder.Services.AddScoped<EFLoggerFactory>();
-builder.Services.AddBaseDbContext<AccountLinkContext>();
-builder.Services.AddBaseDbContext<CoreDbContext>();
-builder.Services.AddBaseDbContext<TenantDbContext>();
-builder.Services.AddBaseDbContext<UserDbContext>();
-builder.Services.AddBaseDbContext<TelegramDbContext>();
-builder.Services.AddBaseDbContext<FirebaseDbContext>();
-builder.Services.AddBaseDbContext<CustomDbContext>();
-builder.Services.AddBaseDbContext<WebstudioDbContext>();
-builder.Services.AddBaseDbContext<InstanceRegistrationContext>();
-builder.Services.AddBaseDbContext<IntegrationEventLogContext>();
-builder.Services.AddBaseDbContext<FeedDbContext>();
-builder.Services.AddBaseDbContext<WebhooksDbContext>();
-builder.Services.AddBaseDbContext<MessagesContext>();
-builder.Services.AddBaseDbContext<BackupsContext>();
-builder.Services.AddBaseDbContext<FilesDbContext>();
-builder.Services.AddBaseDbContext<NotifyDbContext>();
-builder.Services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+builder.Services.AddBaseDbContext<MigrationContext>();
 builder.Services.AddBaseDbContext<TeamlabSiteContext>();
 
 var app = builder.Build();
 
 var providersInfo = app.Configuration.GetSection("options").Get<Options>();
+var configurationInfo = !string.IsNullOrEmpty(app.Configuration["standalone"]) ? ConfigurationInfo.Standalone : ConfigurationInfo.SaaS;
 
 foreach (var providerInfo in providersInfo.Providers)
 {
     var migrationCreator = new MigrationRunner(app.Services);
-    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo, providersInfo.TeamlabsiteProviders.SingleOrDefault(q => q.Provider == providerInfo.Provider));
+    migrationCreator.RunApplyMigrations(AppContext.BaseDirectory, providerInfo, providersInfo.TeamlabsiteProviders.SingleOrDefault(q => q.Provider == providerInfo.Provider), configurationInfo);
 }

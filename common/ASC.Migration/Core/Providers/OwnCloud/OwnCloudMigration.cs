@@ -37,7 +37,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -46,7 +46,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         SecurityContext securityContext,
         TenantManager tenantManager,
         UserManager userManager,
@@ -126,7 +126,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
                     {
                         var userName = item.Data.DisplayName.Split(' ');
                         item.Data.DisplayName = userName.Length > 1 ? string.Format("{0} {1}", userName[0], userName[1]).Trim() : userName[0].Trim();
-                        var user = new OCMigratingUser(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
+                        var user = new OCMigratingUser(_globalFolderHelper, _daoFactory, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
                         user.Parse();
                         foreach (var element in user.ModulesList)
                         {
@@ -450,7 +450,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
             try
             {
                 user.dataСhange(migrationApiInfo.Users.Find(element => element.Key == user.Key));
-                await user.Migrate();
+                await user.MigrateAsync();
                 _importedUsers.Add(user.Guid);
             }
             catch (Exception ex)
@@ -479,7 +479,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
                     .Where(user => group.UserUidList.Exists(u => user.Key == u))
                     .Select(u => u)
                     .ToDictionary(k => k.Key, v => v.Value.Guid);
-                    await group.Migrate();
+                    await group.MigrateAsync();
                 }
                 catch (Exception ex)
                 {
@@ -502,7 +502,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
 
             try
             {
-                await user.MigratingContacts.Migrate();
+                await user.MigratingContacts.MigrateAsync();
             }
             catch (Exception ex)
             {
@@ -529,11 +529,11 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
             try
             {
                 var currentUser = _securityContext.CurrentAccount;
-                _securityContext.AuthenticateMe(user.Guid);
+                await _securityContext.AuthenticateMeAsync(user.Guid);
                 user.MigratingFiles.SetUsersDict(usersForImport.Except(failedUsers));
                 user.MigratingFiles.SetGroupsDict(groupsForImport);
-                await user.MigratingFiles.Migrate();
-                _securityContext.AuthenticateMe(currentUser.ID);
+                await user.MigratingFiles.MigrateAsync();
+                await _securityContext.AuthenticateMeAsync(currentUser.ID);
             }
             catch (Exception ex)
             {

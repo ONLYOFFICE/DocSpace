@@ -31,8 +31,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly EntryManager _entryManager;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly FileStorageService<int> _fileStorageService;
-    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
+    private readonly FileStorageService _fileStorageService;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly SecurityContext _securityContext;
     private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
@@ -46,8 +45,7 @@ public class ThirdpartyController : ApiControllerBase
         CoreBaseSettings coreBaseSettings,
         EntryManager entryManager,
         FilesSettingsHelper filesSettingsHelper,
-        FileStorageService<int> fileStorageService,
-        FileStorageService<string> fileStorageServiceThirdparty,
+        FileStorageService fileStorageService,
         GlobalFolderHelper globalFolderHelper,
         SecurityContext securityContext,
         ThirdpartyConfiguration thirdpartyConfiguration,
@@ -63,7 +61,6 @@ public class ThirdpartyController : ApiControllerBase
         _entryManager = entryManager;
         _filesSettingsHelper = filesSettingsHelper;
         _fileStorageService = fileStorageService;
-        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
         _globalFolderHelper = globalFolderHelper;
         _securityContext = securityContext;
         _thirdpartyConfiguration = thirdpartyConfiguration;
@@ -82,11 +79,11 @@ public class ThirdpartyController : ApiControllerBase
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <returns></returns>
     [HttpGet("thirdparty/capabilities")]
-    public List<List<string>> Capabilities()
+    public async Task<List<List<string>>> CapabilitiesAsync()
     {
         var result = new List<List<string>>();
 
-        if (_userManager.IsUser(_securityContext.CurrentAccount.ID)
+        if (await _userManager.IsUserAsync(_securityContext.CurrentAccount.ID)
                 || (!_filesSettingsHelper.EnableThirdParty
                 && !_coreBaseSettings.Personal))
         {
@@ -98,11 +95,11 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpPost("wordpress")]
-    public bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
+    public async Task<bool> CreateWordpressPostAsync(CreateWordpressPostRequestDto inDto)
     {
         try
         {
-            var token = _wordpressToken.GetToken();
+            var token = await _wordpressToken.GetTokenAsync();
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var parser = JObject.Parse(meInfo);
             if (parser == null)
@@ -138,20 +135,19 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>Folder id</returns>
     ///<exception cref="ArgumentException"></exception>
     [HttpDelete("thirdparty/{providerId:int}")]
-    public Task<object> DeleteThirdPartyAsync(int providerId)
+    public async Task<object> DeleteThirdPartyAsync(int providerId)
     {
-        return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
-
+        return await _fileStorageService.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
     }
 
     /// <visible>false</visible>
     [HttpGet("wordpress-delete")]
-    public object DeleteWordpressInfo()
+    public async Task<object> DeleteWordpressInfoAsync()
     {
-        var token = _wordpressToken.GetToken();
+        var token = await _wordpressToken.GetTokenAsync();
         if (token != null)
         {
-            _wordpressToken.DeleteToken(token);
+            await _wordpressToken.DeleteTokenAsync(token);
             return new
             {
                 success = true
@@ -190,7 +186,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty")]
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
-        return _fileStorageServiceThirdparty.GetThirdPartyAsync();
+        return _fileStorageService.GetThirdPartyAsync();
     }
 
     /// <summary>
@@ -202,7 +198,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty/backup")]
     public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
-        var folder = await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
+        var folder = await _fileStorageService.GetBackupThirdPartyAsync();
         if (folder != null)
         {
 
@@ -216,9 +212,9 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [HttpGet("wordpress-info")]
-    public object GetWordpressInfo()
+    public async Task<object> GetWordpressInfoAsync()
     {
-        var token = _wordpressToken.GetToken();
+        var token = await _wordpressToken.GetTokenAsync();
         if (token != null)
         {
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
@@ -271,7 +267,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyAsync(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
@@ -294,7 +290,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/backup")]
     public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyBackupRequestDto inDto)
     {
-        if (!_fileSecurityCommon.IsDocSpaceAdministrator(_securityContext.CurrentAccount.ID))
+        if (!await _fileSecurityCommon.IsDocSpaceAdministratorAsync(_securityContext.CurrentAccount.ID))
         {
             throw new InvalidOperationException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }
@@ -306,14 +302,14 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyBackupAsync(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyBackupAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
 
     /// <visible>false</visible>
     [HttpPost("wordpress-save")]
-    public object WordpressSave(WordpressSaveRequestDto inDto)
+    public async Task<object> WordpressSaveAsync(WordpressSaveRequestDto inDto)
     {
         if (inDto.Code.Length == 0)
         {
@@ -324,7 +320,7 @@ public class ThirdpartyController : ApiControllerBase
         }
         try
         {
-            var token = _wordpressToken.SaveTokenFromCode(inDto.Code);
+            var token = await _wordpressToken.SaveTokenFromCodeAsync(inDto.Code);
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
 

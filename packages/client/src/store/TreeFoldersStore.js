@@ -4,6 +4,7 @@ import { FolderType } from "@docspace/common/constants";
 
 class TreeFoldersStore {
   selectedFolderStore;
+  authStore;
 
   treeFolders = [];
   selectedTreeNode = [];
@@ -11,16 +12,69 @@ class TreeFoldersStore {
   rootFoldersTitles = {};
   isLoadingNodes = false;
 
-  constructor(selectedFolderStore) {
+  constructor(selectedFolderStore, authStore) {
     makeAutoObservable(this);
+
     this.selectedFolderStore = selectedFolderStore;
+    this.authStore = authStore;
   }
 
   fetchTreeFolders = async () => {
     const treeFolders = await getFoldersTree();
     this.setRootFoldersTitles(treeFolders);
     this.setTreeFolders(treeFolders);
+    this.listenTreeFolders(treeFolders);
     return treeFolders;
+  };
+
+  listenTreeFolders = (treeFolders) => {
+    const { socketHelper } = this.authStore.settingsStore;
+
+    if (treeFolders.length > 0) {
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: {
+          roomParts: treeFolders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: treeFolders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+    }
+  };
+
+  updateTreeFoldersItem = (opt) => {
+    if (opt?.data && opt?.cmd === "create") {
+      const data = JSON.parse(opt.data);
+
+      const parentId = opt?.type === "file" ? data.folderId : data.parentId;
+
+      const idx = this.treeFolders.findIndex((f) => f.id === parentId);
+
+      if (idx >= 0) {
+        if (opt.type === "file") {
+          this.treeFolders[idx].filesCount++;
+          if (this.treeFolders[idx].files) {
+            this.treeFolders[idx].files.push(data);
+          } else {
+            this.treeFolders[idx].files = [data];
+          }
+        } else {
+          this.treeFolders[idx].foldersCount++;
+          if (this.treeFolders[idx].folders) {
+            this.treeFolders[idx].folders.push(data);
+          } else {
+            this.treeFolders[idx].folders = [data];
+          }
+        }
+      }
+    }
   };
 
   resetTreeItemCount = () => {
@@ -87,6 +141,10 @@ class TreeFoldersStore {
     return this.rootFoldersTitles[FolderType.Archive]?.id;
   }
 
+  get recycleBinFolderId() {
+    return this.rootFoldersTitles[FolderType.TRASH]?.id;
+  }
+
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderType === FolderType.USER);
   }
@@ -143,6 +201,10 @@ class TreeFoldersStore {
 
   get archiveFolderId() {
     return this.archiveFolder ? this.archiveFolder.id : null;
+  }
+
+  get recycleBinFolderId() {
+    return this.recycleBinFolder ? this.recycleBinFolder.id : null;
   }
 
   get isPersonalRoom() {

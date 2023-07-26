@@ -1,13 +1,16 @@
 //import "@docspace/common/utils/wdyr";
 import React from "react";
+import { RouterProvider } from "react-router-dom";
+
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
-import Shell from "client/shell";
 import "@docspace/common/custom.scss";
+
+import router from "./router";
 
 const App = () => {
   return (
     <ErrorBoundary>
-      <Shell />
+      <RouterProvider router={router} />
     </ErrorBoundary>
   );
 };

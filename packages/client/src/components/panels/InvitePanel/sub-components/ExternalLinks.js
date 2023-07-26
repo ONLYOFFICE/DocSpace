@@ -34,9 +34,10 @@ const ExternalLinks = ({
   getInfo,
   onChangeExternalLinksVisible,
   externalLinksVisible,
+  onChangeActiveLink,
+  activeLink,
 }) => {
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
-  const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
 
@@ -51,7 +52,7 @@ const ExternalLinks = ({
     if (roomId === -1) {
       link = shareLinks.find((l) => l.access === +defaultAccess);
 
-      setActiveLink(link);
+      onChangeActiveLink(link);
     } else {
       link = shareLinks[0];
 
@@ -77,7 +78,7 @@ const ExternalLinks = ({
         shareLinks[0].access
       );
     }
-    setActiveLink(shareLinks[0]);
+    onChangeActiveLink(shareLinks[0]);
   };
 
   const onSelectAccess = (access) => {
@@ -85,12 +86,12 @@ const ExternalLinks = ({
     if (roomId === -1) {
       link = shareLinks.find((l) => l.access === access.access);
 
-      setActiveLink(link);
+      onChangeActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
 
       link = shareLinks[0];
-      setActiveLink(shareLinks[0]);
+      onChangeActiveLink(shareLinks[0]);
     }
 
     copyLink(link.shareLink);
@@ -187,6 +188,7 @@ const ExternalLinks = ({
           </div>
         )}
         <StyledToggleButton
+          className="invite-via-link"
           isChecked={externalLinksVisible}
           onChange={toggleLinks}
         />
@@ -211,6 +213,7 @@ const ExternalLinks = ({
             />
           </StyledInviteInput>
           <AccessSelector
+            className="invite-via-link-access"
             t={t}
             roomType={roomType}
             defaultAccess={activeLink.access}

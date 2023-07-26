@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Konta pieteikšanās veids",
   "DeleteSelfProfile": "Dzēst profilu",
-  "DisableUserButton": "Atspējot",
   "DisabledEmployeeStatus": "Atspējots",
+  "DisableUserButton": "Atspējot",
   "EmailChangeButton": "Mainīt e-pastu",
   "EnableUserButton": "Iespējot",
   "InviteLinkTitle": "Uzaicinājuma saite",
@@ -12,6 +13,7 @@
   "RemoveData": "Dzēst personas datus",
   "ResetAuth": "Atiestatīt autentifikāciju",
   "SendInviteAgain": "Nosūtiet ielūgumu vēlreiz",
+  "StandardLogin": "Standarta pieteikšanās",
   "SuccessChangeUserStatus": "Lietotāja statuss tika veiksmīgi mainīts",
   "SuccessDeletePersonalData": "Personas dati ir veiksmīgi izdzēsti",
   "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts",

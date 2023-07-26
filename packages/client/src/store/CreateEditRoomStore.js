@@ -1,6 +1,9 @@
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
+import FilesFilter from "@docspace/common/api/files/filter";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 class CreateEditRoomStore {
   roomParams = null;
@@ -25,7 +28,8 @@ class CreateEditRoomStore {
     thirdPartyStore,
     settingsStore,
     infoPanelStore,
-    currentQuotaStore
+    currentQuotaStore,
+    clientLoadingStore
   ) {
     makeAutoObservable(this);
 
@@ -37,6 +41,7 @@ class CreateEditRoomStore {
     this.settingsStore = settingsStore;
     this.infoPanelStore = infoPanelStore;
     this.currentQuotaStore = currentQuotaStore;
+    this.clientLoadingStore = clientLoadingStore;
   }
 
   setRoomParams = (roomParams) => {
@@ -136,12 +141,12 @@ class CreateEditRoomStore {
               this.onClose();
             }
 
-            !withPaging && this.onOpenNewRoom(room.id);
+            !withPaging && this.onOpenNewRoom(room);
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      } else !withPaging && this.onOpenNewRoom(room.id);
+      } else !withPaging && this.onOpenNewRoom(room);
 
       this.roomIsCreated = true;
     } catch (err) {
@@ -156,20 +161,36 @@ class CreateEditRoomStore {
     }
   };
 
-  onOpenNewRoom = async (id) => {
-    const { fetchFiles } = this.filesStore;
+  onOpenNewRoom = async (room) => {
+    const { setIsSectionFilterLoading } = this.clientLoadingStore;
     const { setView, setIsVisible } = this.infoPanelStore;
 
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     setView("info_members");
-    fetchFiles(id)
-      .then(() => {
-        !isMobile && setIsVisible(true);
-      })
-      .finally(() => {
-        this.setIsLoading(false);
-        this.setConfirmDialogIsLoading(false);
-        this.onClose();
-      });
+
+    const state = {
+      isRoot: false,
+      title: room.title,
+
+      rootFolderType: room.rootFolderType,
+    };
+
+    const newFilter = FilesFilter.getDefault();
+    newFilter.folder = room.id;
+    setIsLoading(true);
+
+    const path = getCategoryUrl(CategoryType.SharedRoom, room.id);
+
+    window.DocSpace.navigate(`${path}?${newFilter.toUrlParams()}`, { state });
+
+    !isMobile && setIsVisible(true);
+
+    this.setIsLoading(false);
+    this.setConfirmDialogIsLoading(false);
+    this.onClose();
   };
 }
 

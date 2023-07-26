@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
@@ -30,7 +30,7 @@ const MainContainer = styled.div`
 const AdminMessage = (props) => {
   const {
     t,
-    history,
+
     enableAdmMess,
     setMessageSettings,
     initSettings,
@@ -41,6 +41,8 @@ const AdminMessage = (props) => {
   const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage(
@@ -90,8 +92,8 @@ const AdminMessage = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("admin-message") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("admin-message") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSelectType = (e) => {
@@ -143,10 +145,12 @@ const AdminMessage = (props) => {
         spacing="8px"
         options={[
           {
+            id: "admin-message-disabled",
             label: t("Disabled"),
             value: "disabled",
           },
           {
+            id: "admin-message-enable",
             label: t("Common:Enable"),
             value: "enable",
           },
@@ -165,6 +169,8 @@ const AdminMessage = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        additionalClassSaveButton="admin-message-save"
+        additionalClassCancelButton="admin-message-cancel"
       />
     </MainContainer>
   );
@@ -187,4 +193,4 @@ export default inject(({ auth, setup }) => {
     currentColorScheme,
     administratorMessageSettingsUrl,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));
+})(withTranslation(["Settings", "Common"])(observer(AdminMessage)));

@@ -64,4 +64,135 @@
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Премахването на потребителските данни е завършено</value>
   </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Моля, активирайте имейл адреса си</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+* Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+* *Работа с файлове с различни формати*: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+* *Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+* *Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център": "https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Искате ли да промените паролата на вашия облачен офис акаунт? Кликнете бутона по-долу, за да потвърдите.
+
+$GreenButton
+
+Линкът е валиден 7 дни.
+
+Не искате да променяте паролата си? Просто игнорирайте това съобщение.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Добре дошли в ONLYOFFICE Personal
+
+Току-що създадохте своя личен офис в облака.
+
+h3. Това е виртуално работно пространство, където можете да редактирате и съхранявате документи, да работите с тях отвсякъде, осигурявайки достъп на вашите приятели или колеги.
+
+h3. За бърз старт, ето какво можете да правите в ONLYOFFICE:
+
+- Създавайте, преглеждайте и редактирайте текстови документи, електронни таблици, презентации.
+
+- Работа с всички популярни формати. Най-широката съвместимост с MS Office файлове.
+
+- Създавайте и редактирайте съвместно "готови за попълване формуляри":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Споделяйте и работете съвместно върху документи онлайн.
+
+- Използвайте различни плъгини, за да прилагате допълнителни функции.
+
+– Лесен достъп до личния ви облак чрез "разширение за Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Можете също така да редактирате документи офлайн с нашите безплатни "десктоп редактори":"https://www.onlyoffice.com/download-desktop.aspx" или да получите мобилен пакет за редакции за вашите "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" устройства.
+
+С уважение,
+Екипът на ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Искате ли да промените имейла на вашия облачен офис акаунт?
+
+Кликнете върху бутона по-долу и влезте* в облака си.
+
+$GreenButton
+
+Линкът е валиден 7 дни.
+
+*Ако не сте влезли в своя облачен офис в този браузър, ще трябва да използвате стария си имейл за потвърждение.
+
+Не искате да променяте имейла си? Просто игнорирайте това съобщение.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Здравейте,
+
+току-що сте регистрирали акаунт в ONLYOFFICE за лична употреба. Щракнете "тук":"$InviteLink", за да потвърдите регистрацията си и да създадете парола.
+
+Ако не можете да отворите линка, моля, копирайте следното "$InviteLink":"$InviteLink" и го поставете в адресната лента на браузъра си.
+
+С уважение,
+Екипът на ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Поискали сте вашия personal.onlyoffice.com акаунт да бъде изтрит. Последвайте линка, за да завършите заявката (линкът е активен за период от 7 дни): 
+
+Потвърдете прекратяването на акаунта
+
+*Забележка*: След изтриването вашият акаунт и всички свързани с него данни ще бъдат изтрити за постоянно в съответствие с нашата "Декларация за поверителност":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid= 5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Прочетете повече за прекратяването на акаунта":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Игнорирайте този имейл, ако не искате да продължите.
+
+Ако имате някакви въпроси, моля свържете се с нас на "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважение,
+Екипът на ONLYOFFICE</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Регистриран е нов портал
+
+# URL адрес на портала: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Първо име: $UserName
+# Фамилия: $UserLastName
+# Имейл: $UserEmail
+# Телефон: $Phone
+# Дата на създаване: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Направете същото като потребител|Свържете Dropbox, Box и други акаунти в секцията „Общи“|Настройте права за достъп до документите и папките в секцията „Общи“</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Прекратяване на ONLYOFFICE Personal акаунт</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Регистриран е нов портал</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Уважаеми $UserName,
+
+Процесът на премахване на данни от потребителя "$FromUserName":"$FromUserLink" е завършен успешно.
+
+Изтриването на лични данни позволява безплатно:
+
+# Документи - $DocsSpace
+# Поща - $MailSpace
+# Говоря - $TalkSpace</value>
+  </data>
 </root>

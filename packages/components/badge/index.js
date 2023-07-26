@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { StyledBadge, StyledInner, StyledText } from "./styled-badge";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const Badge = (props) => {
   //console.log("Badge render");
@@ -24,7 +24,10 @@ const Badge = (props) => {
     padding,
     maxWidth,
     height,
+    type,
+    compact,
     isHovered,
+    border,
     label,
   } = props;
 
@@ -33,18 +36,23 @@ const Badge = (props) => {
       {...props}
       isHovered={isHovered}
       onClick={onClick}
+      border={border}
+      height={height}
       themeId={ThemeType.Badge}
     >
       <StyledInner
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
+        type={type}
+        compact={compact}
         maxWidth={maxWidth}
-        height={height}
       >
         <StyledText
           textAlign="center"
+          backgroundColor={backgroundColor}
           fontWeight={fontWeight}
+          borderRadius={borderRadius}
           color={color}
           fontSize={fontSize}
         >
@@ -56,7 +64,7 @@ const Badge = (props) => {
 };
 
 Badge.propTypes = {
-  /** Value */
+  /** Label */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /** CSS background-color */
   backgroundColor: PropTypes.string,
@@ -82,10 +90,16 @@ Badge.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Set hovered state and effects of link */
+  /** Sets hovered state and link effects */
   isHovered: PropTypes.bool,
-  /** Disabled hover styles */
+  /** Disables hover styles */
   noHover: PropTypes.bool,
+  /** Type Badge */
+  type: PropTypes.oneOf(["high", null]),
+  /** Compact badge */
+  compact: PropTypes.bool,
+  /**Border badge */
+  border: PropTypes.string,
 };
 
 Badge.defaultProps = {
@@ -93,9 +107,8 @@ Badge.defaultProps = {
   fontSize: "11px",
   fontWeight: 800,
   borderRadius: "11px",
-  padding: "0 5px",
+  padding: "0px 5px",
   maxWidth: "50px",
-  height: "16px",
   isHovered: false,
   noHover: false,
 };

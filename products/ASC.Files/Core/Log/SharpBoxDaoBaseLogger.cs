@@ -28,5 +28,5 @@ namespace ASC.Files.Core.Log;
 internal static partial class SharpBoxDaoBaseLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "Sharpbox makeId error")]
-    public static partial void ErrorSharpboxMakeId(this ILogger logger, Exception exception);
+    public static partial void ErrorSharpboxMakeId(this ILogger<SharpBoxDaoBase> logger, Exception exception);
 }

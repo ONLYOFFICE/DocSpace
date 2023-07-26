@@ -35,40 +35,20 @@ public class MigrationRunner
         _dbContextActivator = new DbContextActivator(serviceProvider);
     }
 
-    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider)
+    public void RunApplyMigrations(string path, ProviderInfo dbProvider, ProviderInfo teamlabsiteProvider, ConfigurationInfo configurationInfo)
     {
-        var counter = 0;
 
-        foreach (var assembly in GetAssemblies(path))
+        var migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider);
+        migrationContext.Database.Migrate();
+
+        var teamlabContext = _dbContextActivator.CreateInstance(typeof(TeamlabSiteContext), teamlabsiteProvider);
+        teamlabContext.Database.Migrate();
+
+        if (configurationInfo == ConfigurationInfo.Standalone)
         {
-            var ctxTypesFinder = new AssemblyContextFinder(assembly);
-
-            foreach (var contextType in ctxTypesFinder.GetIndependentContextsTypes())
-            {
-                DbContext context = null;
-                if (contextType.GetInterfaces().Contains(typeof(ITeamlabsiteDb)))
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, teamlabsiteProvider);
-                }
-                else
-                {
-                    context = _dbContextActivator.CreateInstance(contextType, dbProvider);
-                }
-                context.Database.Migrate();
-                counter++;
-            }
+            migrationContext = _dbContextActivator.CreateInstance(typeof(MigrationContext), dbProvider, ConfigurationInfo.Standalone);
+            migrationContext.Database.Migrate();
         }
-
-        Console.WriteLine($"Applied {counter} migrations");
-    }
-
-    private static IEnumerable<Assembly> GetAssemblies(string path)
-    {
-        var assemblyPaths = Directory.GetFiles(path, "ASC.*.dll");
-
-        foreach (var assembly in assemblyPaths)
-        {
-            yield return Assembly.LoadFrom(assembly);
-        }
+        Console.WriteLine("Applied migrations");
     }
 }

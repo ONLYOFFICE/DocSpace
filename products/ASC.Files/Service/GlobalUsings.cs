@@ -39,6 +39,7 @@ global using ASC.Core.Billing;
 global using ASC.Core.ChunkedUploader;
 global using ASC.Core.Common;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Quota;
@@ -84,6 +85,7 @@ global using ASC.Web.Studio.Utility;
 global using Autofac;
 
 global using Microsoft.AspNetCore.Builder;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 

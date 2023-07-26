@@ -60,8 +60,8 @@ public interface IFolderDao<T>
     IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
         bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
 
-    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> parentsIds, IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
+    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
+        bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null);
 
     IAsyncEnumerable<Folder<T>> GetFakeRoomsAsync(IEnumerable<T> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
@@ -88,7 +88,8 @@ public interface IFolderDao<T>
     /// <param name="withSubfolders"></param>
     /// <param name="tagIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool exludeSubject = false);
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -211,19 +212,20 @@ public interface IFolderDao<T>
     /// <returns>Maximum size of file which can be uploaded to folder</returns>
     Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
-    IDataWriteOperator CreateDataWriteOperator(
+    Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             T folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder);
+    
 
     #region Only for TMFolderDao
 
     /// <summary>
     /// Set created by
     /// </summary>
-    /// <param name="folderIds"></param>
+    /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFoldersAsync(T[] folderIds, Guid newOwnerId);
+    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId);
 
 
     /// <summary>
@@ -368,6 +370,7 @@ public interface IFolderDao<T>
     /// <param name="fileEntry"></param>
     /// <returns></returns>
     Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
+    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false);
 
     #endregion
 }

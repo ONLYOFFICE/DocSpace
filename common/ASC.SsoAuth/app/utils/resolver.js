@@ -18,15 +18,17 @@
 "use strict";
 
 const config = require("../../config").get(),
-// ReSharper disable once InconsistentNaming
-      URL = require("url");
+    logger = require("../log.js");
+    URL = require("url");
 
 // ReSharper disable once InconsistentNaming
-module.exports = function (logger) {
+module.exports = function () {
 
     function getBaseUrl(req) {
-        const url = req.headers["x-rewriter-url"] || req.protocol + "://" + req.get("host");
-        return url;
+        const proto = req.headers['x-forwarded-proto']?.split(',').shift();
+        const host = req.headers['x-forwarded-host']?.split(',').shift();
+
+        return `${proto}://${host}`;
     }
 
     function getPortalSsoHandlerUrl(req) {

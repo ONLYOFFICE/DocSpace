@@ -79,4 +79,22 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>Стаи</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Персонален</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Любими</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Частна стая</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Файловете ще бъдат компресирани във файла {0}.tar.gz{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Файловете ще бъдат компресирани в {0}.zip файла{1}</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Скорошни</value>
+  </data>
 </root>

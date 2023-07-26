@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import logoPersonalAboutUrl from "PUBLIC_DIR/images/logo_personal_about.svg?url";
 import { getLogoFromPath } from "@docspace/common/utils";
 
@@ -144,7 +144,10 @@ const AboutContent = (props) => {
           </ColorTheme>
 
           <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.docspace}
+            v.
+            <span className="version-document-management">
+              {buildVersionInfo.docspace}
+            </span>
           </Text>
         </div>
 
@@ -166,7 +169,10 @@ const AboutContent = (props) => {
             &nbsp;ONLYOFFICE Docs&nbsp;
           </ColorTheme>
           <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.documentServer}
+            v.
+            <span className="version-online-editors">
+              {buildVersionInfo.documentServer}
+            </span>
           </Text>
         </div>
 
@@ -236,7 +242,7 @@ const AboutContent = (props) => {
             href={site}
             enableUserSelect
           >
-            &nbsp;{site.replace(/^https?\:\/\//i, "")}
+            &nbsp;{site?.replace(/^https?\:\/\//i, "")}
           </ColorTheme>
         </div>
       </StyledAboutBody>

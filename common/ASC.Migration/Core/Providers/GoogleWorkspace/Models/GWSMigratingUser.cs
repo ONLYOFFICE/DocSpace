@@ -38,14 +38,14 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly UserManager _userManager;
 
     public GwsMigratingUser(
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         UserManager userManager)
     {
         _globalFolderHelper = globalFolderHelper;
@@ -109,7 +109,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -120,7 +120,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
             _userInfo.LastName = FilesCommonResource.UnknownLastName;
         }
 
-        var saved = _userManager.GetUserByEmail(_userInfo.Email);
+        var saved = await _userManager.GetUserByEmailAsync(_userInfo.Email);
         if (saved != Constants.LostUser)
         {
             saved.ContactsList = saved.ContactsList.Union(_userInfo.ContactsList).ToList();
@@ -142,7 +142,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
                         {
                             imageStream.CopyTo(ms);
                         }
-                        _userManager.SaveUserPhoto(saved.Id, ms.ToArray());
+                        await _userManager.SaveUserPhotoAsync(saved.Id, ms.ToArray());
                     }
                 }
             }

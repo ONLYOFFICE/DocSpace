@@ -37,7 +37,13 @@ const Template = (args) => {
   const { onClick } = args;
   return (
     <div style={{ height: "220px", position: "relative" }}>
-      <DropDown directionX={direction} manualY="1%" open={true}>
+      <DropDown
+        isDefaultMode={false}
+        directionX={direction}
+        open={true}
+        clickOutsideAction={() => {}}
+        style={{ top: "20px", left: "20px" }}
+      >
         <DropDownItem
           isHeader={isHeader}
           label={isHeader ? "Category" : ""}

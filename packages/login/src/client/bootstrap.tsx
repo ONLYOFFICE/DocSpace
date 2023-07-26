@@ -1,5 +1,5 @@
 import React from "react";
-import { hydrate } from "react-dom";
+import { hydrateRoot } from "react-dom/client";
 // import { registerSW } from "@docspace/common/sw/helper";
 import pkg from "../../package.json";
 import { initI18n } from "./helpers/utils";
@@ -14,15 +14,18 @@ if (isDesktopEditor) typeof window["AscDesktopEditor"];
 
 initI18n(initialI18nStoreASC);
 
-hydrate(
-  <ClientApp
-    initialLanguage={initialLanguage}
-    initialI18nStoreASC={initialI18nStoreASC}
-    isDesktopEditor={isDesktopEditor}
-    {...propsObj}
-  />,
-  document.getElementById("root")
-);
+const container = document.getElementById("root");
+if (container) {
+  hydrateRoot(
+    container,
+    <ClientApp
+      initialLanguage={initialLanguage}
+      initialI18nStoreASC={initialI18nStoreASC}
+      isDesktopEditor={isDesktopEditor}
+      {...propsObj}
+    />
+  );
+}
 
 if (IS_DEVELOPMENT) {
   const port = PORT || 5011;

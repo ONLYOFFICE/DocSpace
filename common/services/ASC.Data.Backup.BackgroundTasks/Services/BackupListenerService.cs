@@ -39,19 +39,19 @@ internal sealed class BackupListenerService : IHostedService
         _scopeFactory = scopeFactory;
     }
 
-    public void DeleteScheldure(DeleteSchedule deleteSchedule)
+    public async Task DeleteScheldureAsync(DeleteSchedule deleteSchedule)
     {
         using (var scope = _scopeFactory.CreateScope())
         {
             var backupService = scope.ServiceProvider.GetService<BackupService>();
 
-            backupService.DeleteSchedule(deleteSchedule.TenantId);
+            await backupService.DeleteScheduleAsync(deleteSchedule.TenantId);
         }
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _cacheDeleteSchedule.Subscribe((n) => DeleteScheldure(n), CacheNotifyAction.Insert);
+        _cacheDeleteSchedule.Subscribe(async (n) => await DeleteScheldureAsync(n), CacheNotifyAction.Insert);
 
         return Task.CompletedTask;
     }

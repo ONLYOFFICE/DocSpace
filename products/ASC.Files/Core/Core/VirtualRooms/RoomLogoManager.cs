@@ -35,10 +35,10 @@ public class RoomLogoManager
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
 
-    private static (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
-    private static (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
-    private static (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
-    private static (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
+    private static readonly (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
+    private static readonly (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
+    private static readonly (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
+    private static readonly (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
 
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -48,6 +48,8 @@ public class RoomLogoManager
     private IDataStore _dataStore;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly SecurityContext _securityContext;
 
     public RoomLogoManager(
         StorageFactory storageFactory,
@@ -56,7 +58,9 @@ public class RoomLogoManager
         FileSecurity fileSecurity,
         ILogger<RoomLogoManager> logger,
         FilesMessageService filesMessageService,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, 
+        EmailValidationKeyProvider emailValidationKeyProvider, 
+        SecurityContext securityContext)
     {
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
@@ -65,12 +69,18 @@ public class RoomLogoManager
         _logger = logger;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
+        _securityContext = securityContext;
     }
 
     public bool EnableAudit { get; set; } = true;
-    private IDataStore DataStore => _dataStore ??= _storageFactory.GetStorage(TenantId, ModuleName);
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
+    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request.Headers;
+
+    private async ValueTask<IDataStore> GetDataStoreAsync()
+    {
+        return _dataStore ??= await _storageFactory.GetStorageAsync(TenantId, ModuleName);
+    }
 
     public async Task<Folder<T>> CreateAsync<T>(T id, string tempFile, int x, int y, int width, int height)
     {
@@ -113,7 +123,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _ = _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
+            _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -133,7 +143,7 @@ public class RoomLogoManager
 
         try
         {
-            await DataStore.DeleteFilesAsync(string.Empty, $"{ProcessFolderId(stringId)}*.*", false);
+            await (await GetDataStoreAsync()).DeleteFilesAsync(string.Empty, $"{ProcessFolderId(stringId)}*.*", false);
             room.HasLogo = false;
 
             if (room.ProviderEntry)
@@ -147,7 +157,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _ = _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
+                _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (Exception e)
@@ -174,13 +184,14 @@ public class RoomLogoManager
         var id = GetId(room);
 
         var cacheKey = Math.Abs(room.ModifiedOn.GetHashCode());
+        var secure = !_securityContext.IsAuthenticated;
 
         return new Logo
         {
-            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?hash={cacheKey}",
-            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?hash={cacheKey}",
-            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?hash={cacheKey}",
-            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?hash={cacheKey}"
+            Original = await GetLogoPathAsync(id, SizeName.Original, cacheKey, secure),
+            Large = await GetLogoPathAsync(id, SizeName.Large, cacheKey, secure),
+            Medium = await GetLogoPathAsync(id, SizeName.Medium, cacheKey, secure),
+            Small = await GetLogoPathAsync(id, SizeName.Small, cacheKey, secure)
         };
     }
 
@@ -191,7 +202,7 @@ public class RoomLogoManager
         var fileName = $"{Guid.NewGuid()}.png";
 
         using var stream = new MemoryStream(data);
-        var path = await DataStore.SaveAsync(TempDomainPath, fileName, stream);
+        var path = await (await GetDataStoreAsync()).SaveAsync(TempDomainPath, fileName, stream);
 
         var pathAsString = path.ToString();
 
@@ -212,7 +223,7 @@ public class RoomLogoManager
 
         try
         {
-            await DataStore.DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
+            await (await GetDataStoreAsync()).DeleteFilesAsync(TempDomainPath, "", fileNameWithoutExt + "*.*", false);
         }
         catch (Exception e)
         {
@@ -232,7 +243,7 @@ public class RoomLogoManager
         }
 
         using var stream = new MemoryStream(imageData);
-        await DataStore.SaveAsync(fileName, stream);
+        await (await GetDataStoreAsync()).SaveAsync(fileName, stream);
 
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _mediumLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _smallLogoSize, position, cropSize);
@@ -268,7 +279,7 @@ public class RoomLogoManager
             var fileName = string.Format(LogosPath, ProcessFolderId(id), size.Item1.ToStringLowerFast());
 
             using var stream2 = new MemoryStream(data);
-            await DataStore.SaveAsync(fileName, stream2);
+            await (await GetDataStoreAsync()).SaveAsync(fileName, stream2);
         }
         catch (ArgumentException error)
         {
@@ -276,17 +287,21 @@ public class RoomLogoManager
         }
     }
 
-    private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size)
+    private async ValueTask<string> GetLogoPathAsync<T>(T id, SizeName size, int hash, bool secure = false)
     {
         var fileName = string.Format(LogosPath, ProcessFolderId(id), size.ToStringLowerFast());
-        var uri = await DataStore.GetUriAsync(fileName);
+        var headers = secure ? new[] { SecureHelper.GenerateSecureKeyHeader(fileName, _emailValidationKeyProvider) } : null;
 
-        return uri.ToString();
+        var store = await GetDataStoreAsync();
+        
+        var uri = await store.GetPreSignedUriAsync(string.Empty, fileName, TimeSpan.MaxValue, headers);
+
+        return uri + (secure ? "&" : "?") + $"hash={hash}";
     }
 
     private async Task<byte[]> GetTempAsync(string fileName)
     {
-        await using var stream = await DataStore.GetReadStreamAsync(TempDomainPath, fileName);
+        await using var stream = await (await GetDataStoreAsync()).GetReadStreamAsync(TempDomainPath, fileName);
 
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
@@ -320,14 +335,14 @@ public class RoomLogoManager
             return room.Id.ToString();
         }
 
-        if (room.Id.ToString()!.Contains("sbox"))
+        if (room.Id.ToString()!.Contains(Selectors.SharpBox.Id))
         {
-            return $"sbox-{room.ProviderId}";
+            return $"{Selectors.SharpBox.Id}-{room.ProviderId}";
         }
 
-        if (room.Id.ToString()!.Contains("spoint"))
+        if (room.Id.ToString()!.Contains(Selectors.SharePoint.Id))
         {
-            return $"spoint-{room.ProviderId}";
+            return $"{Selectors.SharePoint.Id}-{room.ProviderId}";
         }
 
         return room.Id.ToString();

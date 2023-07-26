@@ -16,7 +16,11 @@ export default {
   argTypes: {
     color: { control: "color" },
     backgroundColor: { control: "color" },
-    exampleText: { control: "text" },
+    exampleText: {
+      table: {
+        disable: true,
+      },
+    },
   },
 };
 

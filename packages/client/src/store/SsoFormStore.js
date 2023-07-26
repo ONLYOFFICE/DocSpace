@@ -9,7 +9,17 @@ import {
   validateCerts,
 } from "@docspace/common/api/settings";
 import toastr from "@docspace/components/toast/toastr";
-import { BINDING_POST, BINDING_REDIRECT } from "../helpers/constants";
+import {
+  BINDING_POST,
+  BINDING_REDIRECT,
+  SSO_GIVEN_NAME,
+  SSO_SN,
+  SSO_EMAIL,
+  SSO_LOCATION,
+  SSO_TITLE,
+  SSO_PHONE,
+  SSO_NAME_ID_FORMAT,
+} from "../helpers/constants";
 import isEqual from "lodash/isEqual";
 
 class SsoFormStore {
@@ -31,7 +41,7 @@ class SsoFormStore {
   sloUrlPost = "";
   sloUrlRedirect = "";
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
-  nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
+  nameIdFormat = SSO_NAME_ID_FORMAT;
 
   idpCertificate = "";
   idpPrivateKey = null;
@@ -64,12 +74,12 @@ class SsoFormStore {
   // spVerifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
 
   // Field mapping
-  firstName = "";
-  lastName = "";
-  email = "";
-  location = "";
-  title = "";
-  phone = "";
+  firstName = SSO_GIVEN_NAME;
+  lastName = SSO_SN;
+  email = SSO_EMAIL;
+  location = SSO_LOCATION;
+  title = SSO_TITLE;
+  phone = SSO_PHONE;
 
   hideAuthPage = false;
 
@@ -216,6 +226,7 @@ class SsoFormStore {
   };
 
   confirmDisable = () => {
+    this.resetForm();
     this.setIsSsoEnabled(false);
     this.ssoToggle();
     this.confirmationDisableModal = false;
@@ -229,7 +240,7 @@ class SsoFormStore {
     this.confirmationResetModal = false;
   };
 
-  uploadByUrl = async () => {
+  uploadByUrl = async (t) => {
     const data = { url: this.uploadXmlUrl };
 
     try {
@@ -239,7 +250,7 @@ class SsoFormStore {
       this.isLoadingXml = false;
     } catch (err) {
       this.isLoadingXml = false;
-      toastr.error(err);
+      toastr.error(t("MetadataLoadError"));
       console.error(err);
     }
   };
@@ -351,6 +362,7 @@ class SsoFormStore {
       this.isSubmitLoading = false;
       this.setSpMetadata(true);
       this.setDefaultSettings(settings);
+      this.setIsSsoEnabled(settings.enableSso);
     } catch (err) {
       toastr.error(err);
       console.error(err);
@@ -474,41 +486,95 @@ class SsoFormStore {
     }
   };
 
+  getPropValue = (obj, propName) => {
+    let value = "";
+
+    if (!obj) return value;
+
+    if (obj.hasOwnProperty(propName)) return obj[propName];
+
+    if (
+      obj.hasOwnProperty("binding") &&
+      obj.hasOwnProperty("location") &&
+      obj["binding"] == propName
+    )
+      return obj["location"];
+
+    if (Array.isArray(obj)) {
+      obj.forEach(function (item) {
+        if (item.hasOwnProperty(propName)) {
+          value = item[propName];
+          return;
+        }
+
+        if (
+          item.hasOwnProperty("binding") &&
+          item.hasOwnProperty("location") &&
+          item["binding"] == propName
+        ) {
+          value = item["location"];
+          return;
+        }
+      });
+    }
+
+    return value;
+  };
+
+  includePropertyValue = (obj, value) => {
+    let props = Object.getOwnPropertyNames(obj);
+    for (let i = 0; i < props.length; i++) {
+      if (obj[props[i]] === value) return true;
+    }
+    return false;
+  };
+
   setFieldsFromMetaData = async (meta) => {
     if (meta.entityID) {
-      this.entityId = meta.entityID;
+      this.entityId = meta.entityID || "";
     }
 
     if (meta.singleSignOnService) {
-      this.ssoUrlPost =
-        meta.singleSignOnService[
-          "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-        ];
-      this.ssoUrlRedirect =
-        meta.singleSignOnService[
-          "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-        ];
+      this.ssoUrlPost = this.getPropValue(
+        meta.singleSignOnService,
+        BINDING_POST
+      );
+
+      this.ssoUrlRedirect = this.getPropValue(
+        meta.singleSignOnService,
+        BINDING_REDIRECT
+      );
     }
 
     if (meta.singleLogoutService) {
-      this.sloBinding = meta.singleLogoutService.binding;
-      if (
-        meta.singleLogoutService.binding ===
-        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-      ) {
-        this.sloUrlRedirect = meta.singleLogoutService.location;
+      if (meta.singleLogoutService.binding) {
+        this.sloBinding = meta.singleLogoutService.binding;
       }
 
-      if (
-        meta.singleLogoutService.binding ===
-        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-      ) {
-        this.sloUrlPost = meta.singleLogoutService.location;
-      }
+      this.sloUrlRedirect = this.getPropValue(
+        meta.singleLogoutService,
+        BINDING_REDIRECT
+      );
+
+      this.sloUrlPost = this.getPropValue(
+        meta.singleLogoutService,
+        BINDING_POST
+      );
     }
 
     if (meta.nameIDFormat) {
-      this.nameIdFormat = meta.nameIDFormat;
+      if (Array.isArray(meta.nameIDFormat)) {
+        let formats = meta.nameIDFormat.filter((format) => {
+          return this.includePropertyValue(SSO_NAME_ID_FORMAT, format);
+        });
+        if (formats.length) {
+          this.nameIdFormat = formats[0];
+        }
+      } else {
+        if (this.includePropertyValue(SSO_NAME_ID_FORMAT, meta.nameIDFormat)) {
+          this.nameIdFormat = meta.nameIDFormat;
+        }
+      }
     }
 
     if (meta.certificate) {

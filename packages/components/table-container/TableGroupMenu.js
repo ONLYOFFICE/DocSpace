@@ -4,7 +4,7 @@ import Checkbox from "../checkbox";
 import {
   StyledTableGroupMenu,
   StyledScrollbar,
-  StyledInfoPanelToggleWrapper,
+  StyledInfoPanelToggleColorThemeWrapper,
 } from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import IconButton from "../icon-button";
 import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
 import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+import { ThemeType } from "@docspace/components/ColorTheme";
 
 const TableGroupMenu = (props) => {
   const {
@@ -67,7 +68,10 @@ const TableGroupMenu = (props) => {
           ))}
         </StyledScrollbar>
         {!withoutInfoPanelToggler && (
-          <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
+          <StyledInfoPanelToggleColorThemeWrapper
+            themeId={ThemeType.InfoPanelToggle}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
             <div className="info-panel-toggle-bg">
               <IconButton
                 id="info-panel-toggle--open"
@@ -78,7 +82,7 @@ const TableGroupMenu = (props) => {
                 onClick={toggleInfoPanel}
               />
             </div>
-          </StyledInfoPanelToggleWrapper>
+          </StyledInfoPanelToggleColorThemeWrapper>
         )}
       </StyledTableGroupMenu>
     </>

@@ -1,8 +1,10 @@
 module.exports = {
-  core: {
-    builder: "webpack5",
-  },
-  stories: ["../**/*.stories.@(js|mdx)"],
+  stories: [
+    "../all/all.stories.js",
+    // default page
+    "../**/*.stories.@(js|jsx|ts|tsx|mdx)", //"../**/*.stories.@(js|mdx)",
+  ],
+
   staticDirs: ["../../../public"],
   addons: [
     "@storybook/addon-links",
@@ -11,6 +13,8 @@ module.exports = {
     "@storybook/addon-controls",
     "@storybook/addon-viewport",
     "@storybook/addon-contexts/register",
+    "@react-theming/storybook-addon",
+    "storybook-addon-designs",
     {
       name: "@storybook/addon-docs",
       options: {
@@ -26,5 +30,14 @@ module.exports = {
         },
       },
     },
+    "@storybook/addon-mdx-gfm",
+    "storybook-dark-mode",
   ],
+  framework: {
+    name: "@storybook/react-webpack5",
+    options: {},
+  },
+  docs: {
+    autodocs: true,
+  },
 };

@@ -12,7 +12,6 @@ import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import {
   LogoutConnectionDialog,
@@ -134,7 +133,7 @@ const ActiveSessions = ({
           offsetRight={0}
           iconName={InfoReactSvgUrl}
           tooltipContent={
-            <Text fontSize="13px">
+            <Text fontSize="12px">
               {t("Profile:LogoutAllActiveSessionsDescription")}
             </Text>
           }
@@ -265,12 +264,4 @@ export default inject(({ auth, setup }) => {
     setLogoutAllVisible,
     removeAllExecptThis,
   };
-})(
-  observer(
-    withTranslation(["Profile", "Common"])(
-      withPeopleLoader(ActiveSessions)(
-        <Loaders.ProfileFooter isProfileFooter />
-      )
-    )
-  )
-);
+})(observer(withTranslation(["Profile", "Common"])(ActiveSessions)));

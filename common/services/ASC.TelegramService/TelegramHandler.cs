@@ -69,7 +69,7 @@ public class TelegramHandler
 
         try
         {
-            var tgUser = telegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
+            var tgUser = await telegramDao.GetUserAsync(Guid.Parse(msg.Reciever), msg.TenantId);
 
             if (tgUser == null)
             {
@@ -188,7 +188,7 @@ public class TelegramHandler
         var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken);
 
         client.StartReceiving(updateHandler: (botClient, exception, cancellationToken) => HandleUpdateAsync(botClient, exception, cancellationToken, tenantId),
-                              errorHandler: HandleErrorAsync,
+                              pollingErrorHandler: HandleErrorAsync,
                               cancellationToken: linkedCts.Token);
     }
 

@@ -416,6 +416,7 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       isDisabled,
+      isFullWidth,
     } = this.props;
 
     return (
@@ -423,6 +424,7 @@ class PasswordInput extends React.Component {
         onValidateInput={onValidateInput}
         className={className}
         style={style}
+        $isFullWidth={isFullWidth}
       >
         {simpleView ? (
           <>
@@ -452,73 +454,85 @@ class PasswordInput extends React.Component {
 }
 
 PasswordInput.propTypes = {
-  /** Allows you to set the component id  */
+  /** Allows setting the component id  */
   id: PropTypes.string,
-  /** Allows you to set the component auto-complete  */
+  /** Allows setting the component auto-complete */
   autoComplete: PropTypes.string,
-  /** It is necessary for correct display of values inside input */
+  /** Facilitates the correct display of values inside the input*/
   inputType: PropTypes.oneOf(["text", "password"]),
   /** Input name */
   inputName: PropTypes.string,
-  /** Required to associate password field with email field */
+  /** Required to associate the password field with the email field */
   emailInputName: PropTypes.string,
   /** Input value */
   inputValue: PropTypes.string,
-  /** Will be triggered whenever an PasswordInput typing  */
+  /** Sets a callback function that is triggered on PasswordInput */
   onChange: PropTypes.func,
+  /** Default event that is triggered when the button is already pressed but not released */
   onKeyDown: PropTypes.func,
+  /** Event that is triggered when the focused item is lost  */
   onBlur: PropTypes.func,
-  /** If you need to set input width manually */
+  /** Sets the input width manually */
   inputWidth: PropTypes.string,
+  /** Notifies if the error occurs */
   hasError: PropTypes.bool,
+  /** Notifies if the warning occurs */
   hasWarning: PropTypes.bool,
+  /** Default placeholder input */
   placeholder: PropTypes.string,
+  /** Tab index input */
   tabIndex: PropTypes.number,
+  /** Default maxLength input */
   maxLength: PropTypes.number,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Set input disabled */
+  /** Sets the input disabled */
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
+  /** Indicates that the input field has scale  */
   scale: PropTypes.bool,
   /** Allows to hide Tooltip */
   isDisableTooltip: PropTypes.bool,
-  /** Allows to show text Tooltip */
+  /** Allows to show Tooltip text */
   isTextTooltipVisible: PropTypes.bool,
-  /** Translation of text for copying email data and password  */
+  /** Prompts to copy the email and password data to clipboard */
   clipActionResource: PropTypes.string,
-  /** Text translation email to copy */
+  /** Prompts to copy the email data to clipboard */
   clipEmailResource: PropTypes.string,
-  /** Text translation password to copy */
+  /** Prompts to copy the password data to clipboard */
   clipPasswordResource: PropTypes.string,
-  /** Text translation copy action to copy */
+  /** Prompts that the data has been copied to clipboard */
   clipCopiedResource: PropTypes.string,
-  /** Text translation tooltip */
+  /** Title that indicates that the tooltip must contain a password */
   tooltipPasswordTitle: PropTypes.string,
-  /** Password text translation is long tooltip  */
+  /** Prompt that indicates the minimal password length  */
   tooltipPasswordLength: PropTypes.string,
-  /** Digit text translation tooltip */
+  /** Prompt that instructs to include digits into the password */
   tooltipPasswordDigits: PropTypes.string,
-  /** Capital text translation tooltip */
+  /** Prompt that indicates that capital letters are allowed */
   tooltipPasswordCapital: PropTypes.string,
-  /** Special text translation tooltip */
+  /** Prompt that indicates that special characters are allowed */
   tooltipPasswordSpecial: PropTypes.string,
   /** Set of special characters for password generator and validator */
   generatorSpecial: PropTypes.string,
-  NewPasswordButtonVisible: PropTypes.bool,
   /** Set of settings for password generator and validator */
   passwordSettings: PropTypes.object,
-  /** Will be triggered whenever an PasswordInput typing, return bool value */
+  /** Sets a callback function that is triggered on PasswordInput. Returns bool value */
   onValidateInput: PropTypes.func,
-  /** Will be triggered if you press copy button, return formatted value */
+  /** Sets a callback function that is triggered when the copy button is clicked. Returns formatted value */
   onCopyToClipboard: PropTypes.func,
-
+  /** Sets the tooltip offset to the left */
   tooltipOffsetLeft: PropTypes.number,
-  /** Set simple view of password input (without tooltips, password progress bar and several additional buttons (copy and generate password) */
+  /** Sets the tooltip offset to the top */
+  tooltipOffsetTop: PropTypes.number,
+  /** Sets the password input view to simple (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
+  /** Sets a title of the password generation button */
   generatePasswordTitle: PropTypes.string,
+  /** Setting display block to set element to full width*/
+  isfullwidth: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -538,8 +552,6 @@ PasswordInput.defaultProps = {
 
   generatorSpecial: "!@#$%^&*",
   className: "",
-  tooltipOffsetLeft: 0,
-  tooltipOffsetTop: -5,
   simpleView: false,
   passwordSettings: {
     minLength: 8,
@@ -547,6 +559,7 @@ PasswordInput.defaultProps = {
     digits: false,
     specSymbols: false,
   },
+  isfullwidth: false,
 };
 
 export default PasswordInput;

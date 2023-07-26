@@ -43,6 +43,7 @@ public class DocumentServiceHelper
     private readonly FileTrackerHelper _fileTracker;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ExternalShare _externalShare;
 
     public DocumentServiceHelper(
         IDaoFactory daoFactory,
@@ -58,7 +59,8 @@ public class DocumentServiceHelper
         LockerManager lockerManager,
         FileTrackerHelper fileTracker,
         EntryStatusManager entryStatusManager,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, 
+        ExternalShare externalShare)
     {
         _daoFactory = daoFactory;
         _fileShareLink = fileShareLink;
@@ -74,6 +76,7 @@ public class DocumentServiceHelper
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _serviceProvider = serviceProvider;
+        _externalShare = externalShare;
     }
 
     public async Task<(File<T> File, Configuration<T> Configuration, bool LocatedInPrivateRoom)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
@@ -264,7 +267,7 @@ public class DocumentServiceHelper
                     strError = string.Format(!coauth
                                                  ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                  : FilesCommonResource.ErrorMassage_EditingMobile,
-                                             _global.GetUserName(editingBy, true));
+                                             await _global.GetUserNameAsync(editingBy, true));
                 }
                 rightToEdit = editPossible = reviewPossible = fillFormsPossible = commentPossible = false;
             }
@@ -277,7 +280,7 @@ public class DocumentServiceHelper
             fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
-        var docKey = GetDocKey(fileStable);
+        var docKey = await GetDocKeyAsync(fileStable);
         var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
         if (file.ParentId != null)
@@ -324,24 +327,27 @@ public class DocumentServiceHelper
             configuration.Document.IsLinkedForMe = !string.IsNullOrEmpty(sourceId);
         }
 
+        if (await _externalShare.GetLinkIdAsync() == default)
+        {
+            return (file, configuration, locatedInPrivateRoom);
+        }
+
+        configuration.Document.SharedLinkParam = FilesLinkUtility.FolderShareKey;
+        configuration.Document.SharedLinkKey = _externalShare.GetKey();
+
         return (file, configuration, locatedInPrivateRoom);
     }
 
     private async Task<bool> CanDownloadAsync<T>(FileSecurity fileSecurity, File<T> file, FileShare linkRight)
     {
-        if (!file.DenyDownload)
+        var canDownload = linkRight != FileShare.Restrict && linkRight != FileShare.Read && linkRight != FileShare.Comment;
+
+        if (canDownload)
         {
             return true;
         }
 
-        var canDownload = linkRight != FileShare.Restrict && linkRight != FileShare.Read && linkRight != FileShare.Comment;
-
-        if (canDownload || _authContext.CurrentAccount.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
-        {
-            return canDownload;
-        }
-
-        if (linkRight == FileShare.Read || linkRight == FileShare.Comment)
+        if (linkRight is FileShare.Read or FileShare.Comment)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
             file = await fileDao.GetFileAsync(file.Id); // reset Access prop
@@ -370,14 +376,14 @@ public class DocumentServiceHelper
     }
 
 
-    public string GetDocKey<T>(File<T> file)
+    public async Task<string> GetDocKeyAsync<T>(File<T> file)
     {
-        return GetDocKey(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
+        return await GetDocKeyAsync(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
     }
 
-    public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
+    public async Task<string> GetDocKeyAsync<T>(T fileId, int fileVersion, DateTime modified)
     {
-        var str = $"teamlab_{fileId}_{fileVersion}_{modified.GetHashCode()}_{_global.GetDocDbKey()}";
+        var str = $"teamlab_{fileId}_{fileVersion}_{modified.GetHashCode()}_{await _global.GetDocDbKeyAsync()}";
 
         var keyDoc = Encoding.UTF8.GetBytes(str)
                              .ToList()
@@ -400,7 +406,7 @@ public class DocumentServiceHelper
 
         foreach (var uid in _fileTracker.GetEditingBy(file.Id))
         {
-            if (!_userManager.UserExists(uid) && !sharedLink)
+            if (!await _userManager.UserExistsAsync(uid) && !sharedLink)
             {
                 usersDrop.Add(uid.ToString());
                 continue;
@@ -428,14 +434,14 @@ public class DocumentServiceHelper
             fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
-        var docKey = GetDocKey(fileStable);
+        var docKey = await GetDocKeyAsync(fileStable);
 
         await DropUserAsync(docKey, usersDrop.ToArray(), file.Id);
     }
 
-    public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
+    public async Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
     {
-        return _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
     }
 
     public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)
@@ -451,7 +457,7 @@ public class DocumentServiceHelper
         }
 
         var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
-        var docKeyForTrack = GetDocKey(fileStable);
+        var docKeyForTrack = await GetDocKeyAsync(fileStable);
 
         var meta = new MetaData { Title = file.Title };
 

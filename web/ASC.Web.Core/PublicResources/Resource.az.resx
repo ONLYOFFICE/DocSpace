@@ -77,10 +77,10 @@
     <value>SMS vasitəsi ilə</value>
   </data>
   <data name="ButtonTfaAppEnable" xml:space="preserve">
-    <value> Audentifikasiya tətbiqi ilə</value>
+    <value>Audentifikasiya tətbiqi ilə</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>LDAP istifadəçisi üçün parol bərpa əməliyyatı qadağandır</value>
@@ -92,7 +92,7 @@
     <value>İstifadəçi seçimləri</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Yanlış Nümunə id.</value>
@@ -224,7 +224,7 @@
     <value>Uğurla yükləndi. {0}Bu lisenziya üçün dəstək {2} tarixindən etibarən mövcud deyil.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Elektron poçt dəyişdirilmə instruksiyaları {0} elektron poçt ünvanına göndərildi.</value>
+    <value>Elektron poçt dəyişdirilmə instruksiyaları elektron poçt ünvanına göndərildi</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>{0} e-poçtu olan istifadəçi varsa, parol dəyişdirmə təlimatı bu e-poçt ünvanına göndərilib.</value>
@@ -290,7 +290,7 @@
     <value>Ayarlar uğurla yeniləndi</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Profilinizin silinməsi üçün instruksiyalar Sizin elektron poçt ünvanınıza göndərildi</value>
+    <value>Profilinizin silinməsi üçün instruksiyalar Sizin {0} elektron poçt ünvanınıza göndərildi</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>Səhv kod</value>
@@ -306,5 +306,689 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Yeniliklər</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Brendləşdirmə və fərdiləşdirmə</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>İstifadəçi giriş və hərəkətlərinin izlənməsi</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimum fayl ölçüsü</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Fayl ölçüsü {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Adminlərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Adminlərin sayı</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Avtomatik ehtiyat nüsxə və bərpa</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Limitsiz sayda aktiv otaqlar</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Otaqların sayı {0}-dən çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} yaddaş sahəsi</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>İstifadə olunan yaddaş ölçüsü {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Yaddaş sahəsi</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Otaqlar:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>İstifadə olunan yaddaş sahəsi:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Otaqdakı istifadəçilər:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Limitsiz sayda istifadəçilər</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>İstifadəçilərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Otaqdakı istifadəçilər</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Otaqdakı istifadəçilərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Admin/ekspert istifadəçilərin sayı:</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Apple ID hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Apple ID-dən istifadə edərək ONLYOFFICE-a daxil olmaq üçün bu proqramı aktivləşdirin. {0}Apple Developers Portalına keçin və yeni tətbiq ONLYOFFICE inteqrasiyası yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 giriş açarı</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Tətbiq Müştəri ID-si</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Apple şəxsi açarı ilə daxil olmaq üçün yaradılan 10 simvollu açar identifikatoru</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Şəxsi açar Apple Developer-dən endirilib</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10 simvollu tərtibatçı hesabı Komanda ID-si</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bir az</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>giriş</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Bitly xidməti ilə Sənədlər modulunda portal dəvəti keçidlərini və paylaşılan keçidləri qısaltmaq üçün bu proqramı aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Dəvət və sənəd bağlantılarını qısaltmaq üçün bu proqramı aktivləşdirin. {0}Bitly girişinizi və API açarınızı aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box açarı</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Box fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Box hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Box-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Box tərtibatçıları səhifəsində hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatell vasitəsilə iki faktorlu autentifikasiya üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Clickatell xidməti ilə iki faktorlu autentifikasiyanı aktivləşdirmək üçün bu proqramdan istifadə edin. {0}SMS Platforma hesabınıza daxil olun və ONLYOFFICE üçün yeni inteqrasiya yaradın. ApiKey-ni kopyalayın və aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Açarı</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Sənədlərinizi DocuSign ilə rəqəmsal imzalamaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign autentifikasiya son nöqtəsi</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>DocuSign istifadə edərək sənədləri rəqəmsal imzalamaq üçün bu proqramı aktivləşdirin. {0}DocuSign Admin Konsolunuza keçin və ONLYOFFICE inteqrasiyasını əlavə edin. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropbox fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Dropbox hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Dropbox-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Dropbox Developers vebsaytında hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Proqram açarı</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBib ilə sənədlərdə biblioqrafik siyahılar yaratmaq üçün bu proqramı aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Proqram nişanı</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook açarı</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Facebook hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Facebook-dan istifadə edərək ONLYOFFICE-a daxil olmaq və müştərilərinin Facebook hesablarını CRM modulu ilə əlaqələndirmək üçün bu proqramı aktivləşdirin. {0}Facebook Developers Portalına keçin və ONLYOFFICE inteqrasiyası üçün yeni tətbiq yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Veb API açarı</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Server açarı</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Firebase Bulud Mesajlaşması ilə sizə göndərilən mesajlar haqqında bildirişlər almaq üçün bu tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Sirri</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Göndərənin İD-si</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Layihə İD</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxələrinizi saxlamaq istədiyiniz Google Bulud paketinin adını daxil edin.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Portalınızdakı məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Google Bulud Saxlama xidmətinə qoşulun.</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Google hesabından istifadə edərək portala daxil olmaq və Google Disk fayl və qovluqlarını idarə etmək üçün layihəni qoşun.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Google Disk hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Google Diskdən faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Google API konsoluna keçin və ONLYOFFICE inteqrasiyası üçün yeni layihə yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>LinkedIn hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Açarı</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Mail.ru hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Tətbiq Müştəri ID-si</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Müştəri sirri</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Microsoft hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Microsoft-dan istifadə edərək ONLYOFFICE-a daxil olmaq üçün bu proqramı aktivləşdirin. {0}Microsoft Azure-a keçin və yeni tətbiq ONLYOFFICE inteqrasiyası yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Bulud Yaddaşı</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Rackspace Cloud Storage xidmətinə qoşulun.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Şəxsi Qutu</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxələrinizi saxlamaq istədiyiniz Rackspace şəxsi qutusunun URL ünvanını daxil edin.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>İctimai Qutu</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxə saxlamaq üçün Rackspace şəxsi qutusunun URL ünvanını daxil edin.</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Rackspace qutularınızın yerləşdiyi bölgəni daxil edin.</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxələrinizi saxlamaq istədiyiniz Amazon paketinin unikal adını daxil edin.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Amazon AWS S3-ə qoşulun.</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Amazon paketinizin yerləşdiyi AWS bölgəsinə daxil olun.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 gizli giriş açarı</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Bulud Yaddaşı</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Yaddaşa daxil olmaq üçün parol</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Selectel Cloud Storage xidmətinə qoşulun.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Şəxsi Qutu</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxələrinizi saxlamaq istədiyiniz Selectel şəxsi qutusunun adını daxil edin.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>İctimai Qutu</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Ehtiyat nüsxələrinizi saxlamaq istədiyiniz Selectel ictimai qutusunun adını daxil edin.</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Müştəri sirri</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>OneDrive fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>OneDrive hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə OneDrive-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Microsoft Azure hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>SMS Mərkəzi vasitəsilə iki faktorlu autentifikasiya üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>SMS Mərkəzi xidməti ilə iki faktorlu autentifikasiyanı aktivləşdirmək üçün bu proqramdan istifadə edin. {0}SMS hesabınıza girişinizi və parolunuzu (və ya parol MD5 hash) kiçik hərflə daxil edin:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Parol və ya kiçik hərflərlə parol MD5 hash</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot istifadəçi adı</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot nişanı</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Telegram vasitəsilə portal bildirişləri almaq üçün Telegram hesabını qoşun.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Telegram vasitəsilə portal bildirişləri almaq üçün Telegram botunu aktiv edin. Telegram Desktop-da BotFather istifadə edərək yeni bot yarada bilərsiniz. Bu botdan istifadə etmək üçün portal istifadəçiləri öz Profil Səhifələrində Telegram bildirişlərini aktivləşdirməlidirlər. {0}Aşağıdakı sahələrə botun istifadəçi adını və aldığınız nişanı yerləşdirin.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Twilio ilə CRM kontaktlarına zəng etmək üçün bu proqramı aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Twilio-dan istifadə edərək CRM modulundan kontaktlarına zəng etmək imkanı vermək üçün bu proqramı aktiv edin. {0}Twilio Panelinə keçin və aşağıdakı məlumatları yerləşdirin:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Twilio-dan telefon nömrəsi (SMS icazəsi üçün tələb olunur)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Twitter hesabından istifadə edərək portala daxil olmaq və kontaktları axtarmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Twitter-dən istifadə edərək ONLYOFFICE-a daxil olmaq və müştərilərinin Twitter hesablarını CRM modulu ilə əlaqələndirmək üçün bu proqramı işə salın. {0}Twitter Developers Portalına keçin və yeni tətbiq ONLYOFFICE inteqrasiyası yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>VK hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Sənədləri birbaşa WordPress-də dərc etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Yahoo xidmətindən istifadəçiləri daxil etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Yahoo kontakt siyahınızdan yeni portal istifadəçiləri əlavə etmək üçün bu proqramı aktiv edin. {0}Yahoo Developer Network-də Tətbiq Yaradın səhifəsinə keçin və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Yandex hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Naməlum şəkil faylı növü</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Şəklin ölçüsü icazə verilən parametrləri keçir</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Portala giriş məhdudlaşdırılıb</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>boşluqlar yoxdur</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>yalnız latın hərfləri</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Soyad</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Bağlantı xətası</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>İstifadəçilər yaradıla bilmədi, alınan məlumatlar yanlışdır.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Server parametrləri əldə edə bilmədi.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Səhv giriş və ya parol.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP domeni tapılmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Heç bir qrup tapılmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Yanlış İstifadəçi Filtri dəyəri.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Siz admin hüquqlarını özünüzdən almağa cəhd etdiniz. Admin hüquqlarınıza toxunulmayıb.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Hesabınız LDAP kataloqu ilə əlaqələndirilməyib və LDAP parolunuz artıq aktiv deyil. Profil parametrləri səhifəsində hesabınızın parolunu dəyişdirin və ya təyin edin.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Naməlum xəta.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Heç bir istifadəçi tapılmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Bir və ya bir neçə qrup üçün Qrup Atributunu əldə etmək mümkün olmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Yanlış Qrup Filtri.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Bir və ya bir neçə qrup üçün Qrup Adı Atributunu əldə etmək mümkün olmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Bir və ya bir neçə istifadəçi üçün Giriş Atributunu əldə etmək mümkün olmadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>LDAP serverinə qoşulmaq mümkün deyil. Server ünvanının və port nömrəsinin düzgün olub olmadığını yoxlayın.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Bir və ya bir neçə istifadəçi üçün İstifadəçi Atributunu əldə etmək mümkün olmadı.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Server daxili xətası.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Adi portal istifadəçilərində LDAP istifadəçilərinin dəyişdirilməsi</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>istifadəçinin əlavə edilməsi</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Sertifikat yoxlanışı</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAP dəstək parametrləri yoxlanılır</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP bağlantısı kəsilir</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>LDAP serverindən qrup siyahısı götürülür</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>LDAP serverindən istifadəçi siyahısı əldə edilir</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>İstifadəçi {0} {1} admin olaraq təyin edilir</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAP baza məlumatı yüklənir</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>istifadəçinin silinməsi</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Əvvəllər LDAP vasitəsilə yüklənmiş köhnəlmiş qrupların silinməsi</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Əvvəllər LDAP vasitəsilə yüklənmiş köhnəlmiş giriş hüquqlarının silinməsi</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Əvvəllər LDAP vasitəsilə yüklənmiş köhnəlmiş istifadəçi profillərinin deaktiv edilməsi</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Qruplar yadda saxlanılır</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Parametrlər yadda saxlanılır</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Foto yadda saxlanılır</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>İstifadəçilər yadda saxlanılır</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>İstifadəçilərin sinxronizasiyası</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>İstifadəçilərin giriş hüquqları yenilənir</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>İstifadəçi şəkilləri yenilənir</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Daha təhlükəsiz autentifikasiya növü tələb olunur. Şifrələnmiş bağlantıdan istifadə edin və ya serverdə adi autentifikasiyanı aktivləşdirin.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Cari qiymət planının istifadəçi limitinə çatıldı</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS cari LDAP serveri üçün dəstəklənmir.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>İstifadəçi/qrup obyektləri üçün unikal ID əldə etmək mümkün olmadı. Defolt olaraq sistem aşağıdakı identifikatorlardan birinə uyğunlaşmağa çalışacaq: entryUUID, nsuniqueid, GUID, objectSid. Əgər atributlardan heç biri LDAP serverinizə uyğun gəlmirsə, lütfən, web.appsettings.config faylının ldap.unique.id parametrində lazımi atributu göstərin.</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Açarı</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google İD</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Açarı</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Bulud Yaddaşı</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Saxlama yeri</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>İD</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Gizli açar</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Saxlama yeri</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>İstifadəçi əslliyinin yoxlanması</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>Tətbiq ID</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS Mərkəzi</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Hesab Təhlükəsizlik İdentifikatoru</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Proqram nişanı</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Müştəri sirri</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>İD</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Parol</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace istifadəçi adı</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Təhlükəsiz açar</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Tətbiq ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Müştəri İD</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress Açarı</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress sirri</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Müştəri İD</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Müştəri sirri</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə LinkedIn hesabından istifadə edərək ONLYOFFICE-a daxil olmağa icazə vermək üçün bu proqramı aktiv edin. {0}LinkedIn Developers vebsaytına keçin və yeni ONLYOFFICE inteqrasiyası tətbiqi yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Mail.ru tətbiqini əlavə etdikdə, profil səhifənizdəki Mail.ru hesabından istifadə edərək portala girişi aktivləşdirə bilərsiniz.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Açarı</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Açar Sirri</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>VK tətbiqini əlavə edərkən, profil səhifənizdəki VK hesabından istifadə edərək portala girişi aktivləşdirə bilərsiniz.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Yandex tətbiqini əlavə etdikdə, profil səhifənizdəki Yandex hesabından istifadə edərək portala daxil olmağı aktivləşdirə bilərsiniz.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Ofis sənədləriniz üçün bulud sahəsi</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Biznes</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startap</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Sənədləri WordPress veb saytınızda asanlıqla dərc etmək üçün tətbiqi aktivləşdirin. {0}Wordpress Developers səhifəsində ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>ONLYOFFICE redaktorlarında biblioqrafiya yaratmaq üçün bu tətbiqi aktiv edin. {0}EasyBib qeydiyyat səhifəsinə keçin və ONLYOFFICE inteqrasiyasını əlavə etmək üçün formanı doldurun. Proqram açarı əldə etdikdən sonra onu aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə hətta oflayn olsa belə, mesajlar haqqında bildirişlər almağa icazə vermək üçün bu proqramı aktiv edin. {0}Firebase konsoluna keçin və ONLYOFFICE inteqrasiyası üçün yeni layihə əlavə edin. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Portalınızdakı məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Google Bulud Saxlama xidmətinə qoşulun. {0}Google Bulud Platforma Konsoluna keçin və ONLYOFFICE üçün yeni xidmət hesabı yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Rackspace Cloud Storage xidmətinə qoşulun. {0}Rackspace Cloud İdarəetmə Panelinin təhlükəsizlik parametrlərində Rackspace API Açarının yanındakı Göstər linkinə klikləyin. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Amazon AWS S3-ə qoşulun. {0}AWS İdarəetmə Konsoluna keçin və ONLYOFFICE üçün giriş açarları yaradın. Aldığınız məlumatları aşağıya yerləşdirin:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Selectel Cloud Storage xidmətinə qoşulun. {0}Yedək nüsxələrinizi saxlamağı planlaşdırdığınız konteynerlər üçün Oxumaq/Yazmaq hüququ olan istifadəçi üçün giriş məlumatını əldə edin və aşağıda yerləşdirin:</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Üçüncü tərəf inteqrasiyaları</value>
   </data>
 </root>

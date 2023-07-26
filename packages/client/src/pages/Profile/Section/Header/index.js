@@ -6,7 +6,7 @@ import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import IconButton from "@docspace/components/icon-button";
@@ -18,14 +18,13 @@ import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
-import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-
 import { StyledHeader } from "./StyledHeader";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 const Header = (props) => {
   const {
     t,
-    history,
 
     isAdmin,
     isVisitor,
@@ -40,12 +39,18 @@ const Header = (props) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    isProfileLoaded,
+    profileClicked,
   } = props;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
-  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] = useState(
-    false
-  );
+
+  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
+    useState(false);
 
   const getUserContextOptions = () => {
     const options = [
@@ -87,36 +92,44 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    const url = filter.toUrlParams();
-    const backUrl = combineUrl(
-      window.DocSpaceConfig?.proxy?.url,
-      config.homepage,
-      `/accounts/filter?/${url}`
-    );
+    if (location?.state?.fromUrl && profileClicked) {
+      return navigate(location?.state?.fromUrl);
+    }
 
-    history.push(backUrl, url);
-    setFilter(filter);
+    if (location.pathname.includes("portal-settings")) {
+      return navigate("/portal-settings/customization/general");
+    }
+
+    const roomsFilter = RoomsFilter.getDefault();
+
+    roomsFilter.searchArea = RoomSearchArea.Active;
+    const urlParams = roomsFilter.toUrlParams();
+    const backUrl = `/rooms/shared/filter?${urlParams}`;
+
+    navigate(backUrl);
+    // setFilter(filter);
   };
+
+  if (!isProfileLoaded) return <Loaders.SectionHeader />;
 
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
       isVisitor={isVisitor || isCollaborator}
     >
-      {!(isVisitor || isCollaborator) && (
-        <IconButton
-          iconName={ArrowPathReactSvgUrl}
-          size="17"
-          isFill={true}
-          onClick={onClickBack}
-          className="arrow-button"
-        />
-      )}
+      <IconButton
+        iconName={ArrowPathReactSvgUrl}
+        size="17"
+        isFill={true}
+        onClick={onClickBack}
+        className="arrow-button"
+      />
+
       <Headline className="header-headline" type="content" truncate={true}>
         {t("Profile:MyProfile")}
-        {profile.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
+        {profile?.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
       </Headline>
-      {((isAdmin && !profile.isOwner) || isMe) && (
+      {((isAdmin && !profile?.isOwner) || isMe) && (
         <ContextMenuButton
           className="action-button"
           directionX="right"
@@ -133,7 +146,7 @@ const Header = (props) => {
         <DeleteSelfProfileDialog
           visible={deleteSelfProfileDialog}
           onClose={() => setDeleteSelfProfileDialog(false)}
-          email={profile.email}
+          email={profile?.email}
         />
       )}
 
@@ -147,8 +160,8 @@ const Header = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore }) => {
+export default inject(
+  ({ auth, peopleStore, clientLoadingStore, profileActionsStore }) => {
     const { isAdmin } = auth;
 
     const { isVisitor, isCollaborator } = auth.userStore.user;
@@ -158,6 +171,10 @@ export default withRouter(
     const { filter, setFilterParams } = filterStore;
 
     const { targetUser, isMe } = targetUserStore;
+
+    const { isProfileLoaded } = clientLoadingStore;
+
+    const { profileClicked } = profileActionsStore;
 
     const {
       setChangeEmailVisible,
@@ -178,12 +195,11 @@ export default withRouter(
       setChangeEmailVisible,
       setChangePasswordVisible,
       setChangeAvatarVisible,
+
+      isProfileLoaded,
+      profileClicked,
     };
-  })(
-    observer(
-      withTranslation(["Profile", "Common", "PeopleTranslations"])(
-        withPeopleLoader(Header)(<Loaders.SectionHeader />)
-      )
-    )
-  )
+  }
+)(
+  observer(withTranslation(["Profile", "Common", "PeopleTranslations"])(Header))
 );

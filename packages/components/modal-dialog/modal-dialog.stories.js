@@ -13,12 +13,9 @@ export default {
       },
     },
   },
-  argTypes: {
-    onOk: { action: "onOk" },
-  },
 };
 
-const Template = ({ onOk, ...args }) => {
+const Template = ({ ...args }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const openModal = () => setIsVisible(true);
@@ -32,7 +29,10 @@ const Template = ({ onOk, ...args }) => {
         <ModalDialog.Body>
           <span>
             Send the password change instruction to the{" "}
-            <a href="mailto:asc@story.book">asc@story.book</a> email address
+            <a style={{ color: "#5299E0" }} href="mailto:asc@story.book">
+              asc@story.book
+            </a>{" "}
+            email address
           </span>
         </ModalDialog.Body>
         <ModalDialog.Footer>
@@ -43,7 +43,6 @@ const Template = ({ onOk, ...args }) => {
             scale
             size="normal"
             onClick={() => {
-              onOk();
               closeModal();
             }}
           />
@@ -63,10 +62,6 @@ const Template = ({ onOk, ...args }) => {
       </ModalDialog>
     </>
   );
-};
-
-Template.propTypes = {
-  onOk: PropTypes.func,
 };
 
 export const Default = Template.bind({});

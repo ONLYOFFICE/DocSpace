@@ -167,13 +167,13 @@
     <value>Se ha producido un error en el servicio de documentos</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>El archivo es abierto para editar por usuario {0}. En este momento la edición colaborativa no es soportada para este formato. </value>
+    <value>El archivo es abierto para editar por usuario {0}. En este momento la edición colaborativa no es soportada para este formato.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>{0}abrió el archivo para la edición en la aplicación móvil </value>
+    <value>{0}abrió el archivo para la edición en la aplicación móvil</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
-    <value>Archivo vacío </value>
+    <value>Archivo vacío</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
     <value>El archivo solicitado no es encontrado</value>
@@ -206,7 +206,7 @@
     <value>Por lo menos {0} mensajes de correo no consiguió enviar. Por favor, visite el módulo "Correo" para enterarse de una razón de este fallo posible.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Demasiadas descargas</value>
+    <value>Demasiadas descargas.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Lo sentimos, pero el formato de archivo no se admite</value>
@@ -315,7 +315,7 @@
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Edite, comparta y colabore en documentos de oficina en tiempo real. Cree y gestione documentos comunes para que todo el equipo tenga acceso a ellos. 
-100% de compatibilidad con docx, xlsx, pptx. </value>
+100% de compatibilidad con docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Vea y descargue los documentos compartidos. Suba archivos a las carpetas compartidas. Se garantiza la máxima compatibilidad con docx, xlsx, pptx.</value>
@@ -324,15 +324,96 @@
     <value>Documentos</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Crear y editar sus propios documentos y documentos compartidos con los derechos de acceso propios|Dar derechos de acceso a otros usuarios para leer/editar los documentos y carpetas|Enlazar Dropbox, Box y otras cuentas en la sección de 'Mis documentos' </value>
+    <value>Crear y editar sus propios documentos y documentos compartidos con los derechos de acceso propios|Dar derechos de acceso a otros usuarios para leer/editar los documentos y carpetas|Enlazar Dropbox, Box y otras cuentas en la sección de 'Mis documentos'</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>Nombre </value>
+    <value>Nombre</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
     <value>Apellido</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>El archivo es desbloqueado</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Administrador de DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador de la sala</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Espectador</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Comentarista</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Rellenador de formularios</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Revisor</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador de la sala</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Este proveedor ya está conectado a la sala</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Proveedor no válido</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>No es posible utilizar esta carpeta para almacenar la sala</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nueva versión no puede ser la misma que la actual</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>El enlace de invitación no es válido o su validez ha expirado</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>El rol no está disponible para este tipo de usuario</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>No tiene permisos para editar la sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>No tiene permisos suficientes para archivar la sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>No tiene permisos para copiar algo a esta carpeta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar la carpeta</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar el archivo</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>No tiene permisos suficientes para copiar la carpeta</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>No tiene permisos suficientes para desarchivar la sala</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>No puede anclar una sala</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>No puede editar salas archivadas</value>
   </data>
 </root>

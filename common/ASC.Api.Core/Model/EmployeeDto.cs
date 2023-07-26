@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
+using System.Collections.Concurrent;
 
 namespace ASC.Web.Api.Models;
 
@@ -54,52 +54,56 @@ public class EmployeeDtoHelper
 {
     protected readonly UserPhotoManager _userPhotoManager;
     protected readonly UserManager _userManager;
-
+    private readonly ILogger<EmployeeDtoHelper> _logger;
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly Dictionary<Guid, EmployeeDto> _dictionary;
+    private readonly ConcurrentDictionary<Guid, EmployeeDto> _dictionary;
 
     public EmployeeDtoHelper(
         ApiContext httpContext,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserPhotoManager userPhotoManager,
         CommonLinkUtility commonLinkUtility,
-        UserManager userManager)
+        UserManager userManager,
+        ILogger<EmployeeDtoHelper> logger)
     {
         _userPhotoManager = userPhotoManager;
         _userManager = userManager;
+        _logger = logger;
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
-        _dictionary = new Dictionary<Guid, EmployeeDto>();
+        _dictionary = new ConcurrentDictionary<Guid, EmployeeDto>();
     }
 
-    public async Task<EmployeeDto> Get(UserInfo userInfo)
+    public async Task<EmployeeDto> GetAsync(UserInfo userInfo)
     {
-        if (_dictionary.ContainsKey(userInfo.Id))
+        if (!_dictionary.TryGetValue(userInfo.Id, out var employee))
         {
-            return _dictionary[userInfo.Id];
-        }
-        var employee = await Init(new EmployeeDto(), userInfo);
-        _dictionary.Add(userInfo.Id, employee);
+            employee = await InitAsync(new EmployeeDto(), userInfo);
 
+            _dictionary.AddOrUpdate(userInfo.Id, i => employee, (i, v) => employee);
+
+        }
+        
         return employee;
     }
 
-    public async Task<EmployeeDto> Get(Guid userId)
+    public async Task<EmployeeDto> GetAsync(Guid userId)
     {
         try
         {
-            return await Get(_userManager.GetUsers(userId));
+            return await GetAsync(await _userManager.GetUsersAsync(userId));
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return await Get(ASC.Core.Users.Constants.LostUser);
+            _logger.ErrorWithException(e);
+            return await GetAsync(ASC.Core.Users.Constants.LostUser);
         }
     }
 
-    protected async Task<EmployeeDto> Init(EmployeeDto result, UserInfo userInfo)
+    protected async Task<EmployeeDto> InitAsync(EmployeeDto result, UserInfo userInfo)
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);

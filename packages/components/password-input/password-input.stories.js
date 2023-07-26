@@ -1,6 +1,32 @@
 import React, { useState, useEffect } from "react";
 import PasswordInput from ".";
 import TextInput from "../text-input";
+import PasswordInputDocs from "./password-input.mdx";
+
+const disable = {
+  table: {
+    disable: true,
+  },
+};
+
+export default {
+  title: "Components/PasswordInput",
+  component: PasswordInput,
+  parameters: {
+    docs: {
+      description: {
+        component: "Paging is used to navigate med content pages",
+      },
+      page: PasswordInputDocs,
+    },
+  },
+  argTypes: {
+    settingMinLength: disable,
+    settingsUpperCase: disable,
+    settingsDigits: disable,
+    settingsSpecSymbols: disable,
+  },
+};
 
 const Template = ({
   settingMinLength,
@@ -58,14 +84,13 @@ const Template = ({
         tooltipPasswordLength={`${tooltipPasswordLength} ${settingMinLength}`}
         passwordSettings={fakeSettings}
         onValidateInput={onValidateInputHandler}
-        tooltipOffsetLeft={150}
       />
     </div>
   );
 };
 
-export const basic = Template.bind({});
-basic.args = {
+export const Default = Template.bind({});
+Default.args = {
   isDisabled: false,
   settingMinLength: 6,
   settingsUpperCase: false,

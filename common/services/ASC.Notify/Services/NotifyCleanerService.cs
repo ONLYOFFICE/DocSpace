@@ -62,7 +62,7 @@ public class NotifyCleanerService : BackgroundService
                 continue;
             }
 
-            Clear();
+            await ClearAsync();
 
             await Task.Delay(_waitingPeriod, stoppingToken);
         }
@@ -70,30 +70,23 @@ public class NotifyCleanerService : BackgroundService
         _logger.InformationNotifyCleanerStopping();
     }
 
-    private void Clear()
+    private async Task ClearAsync()
     {
         try
         {
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
             using var scope = _scopeFactory.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
-            var strategy = dbContext.Database.CreateExecutionStrategy();
+            var info = await Queries.NotifyInfosAsync(dbContext, date).ToListAsync();
+            var queue = await Queries.NotifyQueuesAsync(dbContext, date).ToListAsync();
+            
+            dbContext.NotifyInfo.RemoveRange(info);
+            dbContext.NotifyQueue.RemoveRange(queue);
 
-            strategy.Execute(async () =>
-            {
-                using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
-                using var tx = await dbContext.Database.BeginTransactionAsync();
+            await dbContext.SaveChangesAsync();
 
-                var infoCount = await dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ExecuteDeleteAsync();
-                var queueCount = await dbContext.NotifyQueue.Where(r => r.CreationDate < date).ExecuteDeleteAsync();
-
-                await tx.CommitAsync();
-
-                _logger.InformationClearNotifyMessages(infoCount, queueCount);
-            }).GetAwaiter()
-              .GetResult();
         }
         catch (ThreadAbortException)
         {
@@ -104,4 +97,19 @@ public class NotifyCleanerService : BackgroundService
             _logger.ErrorClear(err);
         }
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> NotifyInfosAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyInfo
+                    .Where(r => r.ModifyDate < date && r.State == 4));
+
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> NotifyQueuesAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyQueue
+                    .Where(r => r.CreationDate < date));
 }

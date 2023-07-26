@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.Hosting.Extensions;
-internal static class InstanceRegistrationExtension
+public static class InstanceRegistrationExtension
 {
     public static ModelBuilderWrapper AddInstanceRegistration(this ModelBuilderWrapper modelBuilder)
     {

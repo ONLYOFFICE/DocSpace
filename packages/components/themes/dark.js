@@ -238,18 +238,18 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#ED7309",
-    disableBackgroundColor: "#4C3B2D",
-    hoverBackgroundColor: "#FFAD3D",
-    clickBackgroundColor: "#E6842E",
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgba(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgba(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: black,
-    textColorDisabled: black,
+    textColor: white,
+    textColorDisabled: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -303,6 +303,7 @@ const Dark = {
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
+    disabledSvgColor: "#474747",
 
     border: "1px solid #474747",
     text: {
@@ -680,6 +681,14 @@ const Dark = {
       large: "550px",
     },
 
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
+    },
+
     paddingRight: {
       base: "37px",
       middle: "48px",
@@ -839,16 +848,6 @@ const Dark = {
   },
 
   textArea: {
-    width: "100%",
-    height: "90%",
-    border: "none",
-    outline: "none",
-    resize: "none",
-    overflow: "hidden",
-    padding: "5px 8px 2px 8px",
-    fontSize: "13px",
-    lineHeight: "1.5",
-
     disabledColor: "#474747",
 
     focusBorderColor: grayMaxLight,
@@ -857,6 +856,11 @@ const Dark = {
 
     scrollWidth: "100%",
     scrollHeight: "91px",
+
+    numerationColor: "#858585",
+
+    copyIconFilter:
+      "invert(62%) sepia(0%) saturate(0%) hue-rotate(119deg) brightness(85%) contrast(87%)",
   },
 
   link: {
@@ -1114,8 +1118,8 @@ const Dark = {
     },
 
     icon: {
-      background: grayMain,
-      color: globalColors.lightHover,
+      background: "#242424",
+      color: "#ADADAD",
     },
 
     width: {
@@ -1284,6 +1288,10 @@ const Dark = {
     background: "#3D3D3D",
     disableColor: "#858585",
 
+    icon: {
+      color: "#ADADAD",
+    },
+
     dragging: {
       draggable: {
         background: "rgba(230, 211, 138, 0.12)",
@@ -1293,6 +1301,7 @@ const Dark = {
 
       title: {
         width: "85%",
+        color: "#000",
       },
     },
 
@@ -1669,7 +1678,7 @@ const Dark = {
       defaultColor: white,
       disabledColor: "#858585",
       color: white,
-      selectedColor: white,
+      // selectedColor: white,
     },
   },
 
@@ -1718,67 +1727,16 @@ const Dark = {
   },
 
   calendar: {
-    baseWidth: "265px",
-    bigWidth: "289px",
-
-    baseMaxWidth: "293px",
-    bigMaxWidth: "325px",
-
-    hover: {
-      backgroundColor: "#292929",
-      borderRadius: "16px",
-      cursor: "pointer",
-    },
-
-    day: {
-      width: "32px",
-      height: "32px",
-      baseSizeWidth: "270px",
-      bigSizeWidth: "294px",
-      baseMarginTop: "3px",
-      bigMarginTop: "7.5px",
-      lineHeight: "33px",
-    },
-
-    weekdays: {
-      color: "#5c5c5c",
-      disabledColor: "#5c5c5c",
-      baseWidth: "272px",
-      bigWidth: "295px",
-      marginBottom: "-5px",
-    },
-
-    month: {
-      baseWidth: "267px",
-      bigWidth: "295px",
-      color: black,
-      weekendColor: grayMaxLight,
-      disabledColor: "#474747",
-      neighboringHoverColor: grayMaxLight,
-      neighboringColor: "#5c5c5c",
-    },
-
-    selectedDay: {
-      backgroundColor: "#F59931",
-      borderRadius: "16px",
-      cursor: "pointer",
-      color: black,
-    },
-
-    comboBox: {
-      color: black,
-      minWidth: "80px",
-      height: "32px",
-      marginLeft: "8px",
-      padding: "0 0 24px 0",
-    },
-    comboBoxMonth: {
-      baseWidth: "172px",
-      bigWidth: "205px",
-
-      baseMaxWidth: "172px",
-      bigMaxWidth: "196px",
-    },
+    color: "#FFFFFF",
+    disabledColor: "#474747",
+    pastColor: "#858585",
+    onHoverBackground: "#3D3D3D",
+    titleColor: "#ADADAD",
+    outlineColor: "#474747",
+    arrowColor: "#F6F9FC",
+    disabledArrow: "#474747",
+    weekdayColor: "#858585",
+    accent: "#4781d1",
   },
 
   datePicker: {
@@ -1925,6 +1883,7 @@ const Dark = {
       width: "100%",
       height: "36px",
       padding: "0 12px",
+      background: "#1b1c1d",
       marginBottom: "16px",
       tablet: {
         height: "44px",
@@ -2002,6 +1961,7 @@ const Dark = {
   navigation: {
     expanderColor: "#eeeeee",
     background: black,
+    rootFolderTitleColor: "#858585",
 
     icon: {
       fill: "#E06A1B",
@@ -2117,10 +2077,9 @@ const Dark = {
     downloadAppList: {
       color: "#C4C4C4",
       winHoverColor: "#3785D3",
-      macHoverColor: white,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: white,
     },
 
     thirdPartyList: {
@@ -2337,6 +2296,13 @@ const Dark = {
 
   selector: {
     border: `1px solid #474747`,
+
+    breadCrumbs: {
+      prevItemColor: "#858585",
+      arrowRightColor: "#858585",
+    },
+
+    bodyDescriptionText: "#858585",
 
     item: {
       hoverBackground: "#3d3d3d",
@@ -2930,6 +2896,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",
@@ -3002,6 +2969,10 @@ const Dark = {
           iconButton: white,
           iconButtonDisabled: "#333",
         },
+
+        smtp: {
+          requirementColor: "#E06451",
+        },
       },
 
       backup: {
@@ -3009,6 +2980,7 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {
@@ -3035,7 +3007,12 @@ const Dark = {
         benefitsContainer: {
           iconsColor: "#858585",
         },
+        contactContainer: {
+          textColor: "#ADADAD",
+          linkColor: "#858585",
+        },
         warningColor: "#E06451",
+        color: "#E17415",
       },
     },
 
@@ -3156,6 +3133,11 @@ const Dark = {
 
   portalUnavailable: {
     textDescriptionColor: "#858585",
+  },
+
+  emailChips: {
+    borderColor: "#858585",
+    dashedBorder: "1px dashed #fff",
   },
 };
 

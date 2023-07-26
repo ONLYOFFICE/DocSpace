@@ -1,5 +1,5 @@
 {
-  "Desc": "Por favor, configure los datos de registro del portal.",
+  "Desc": "Por favor, configure los datos de registro del espacio.",
   "Domain": "Dominio:",
   "ErrorEmail": "Dirección de correo electrónico no válida",
   "ErrorInitWizard": "El servicio no está disponible actualmente, por favor inténtelo más tarde.",
@@ -12,5 +12,5 @@
   "LicenseLink": "Contratos de licencia",
   "PlaceholderLicense": "Su archivo de licencia",
   "Timezone": "Zona horaria:",
-  "WelcomeTitle": "¡Bienvenido/a a su portal!"
+  "WelcomeTitle": "¡Bienvenido/a a su DocSpace!"
 }

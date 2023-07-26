@@ -47,18 +47,18 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
 
     public virtual async Task CheckUsed(TenantQuota quota)
     {
-        var used = await _tenantQuotaFeatureStatistic.GetValue();
+        var used = await _tenantQuotaFeatureStatistic.GetValueAsync();
         Check(quota, used);
     }
 
-    public void CheckAdd(T1 newValue)
+    public async Task CheckAddAsync(T1 newValue)
     {
-        CheckAdd(_tenantManager.GetCurrentTenant().Id, newValue);
+        await CheckAddAsync(await _tenantManager.GetCurrentTenantIdAsync(), newValue);
     }
 
-    public virtual void CheckAdd(int tenantId, T1 newValue)
+    public virtual async Task CheckAddAsync(int tenantId, T1 newValue)
     {
-        var quota = _tenantManager.GetTenantQuota(tenantId);
+        var quota = await _tenantManager.GetTenantQuotaAsync(tenantId);
         Check(quota, newValue);
     }
 
@@ -81,6 +81,6 @@ public abstract class TenantQuotaFeatureCheckerCount<T> : TenantQuotaFeatureChec
 
     public async Task CheckAppend()
     {
-        CheckAdd((await _tenantQuotaFeatureStatistic.GetValue()) + 1);
+        await CheckAddAsync((await _tenantQuotaFeatureStatistic.GetValueAsync()) + 1);
     }
 }

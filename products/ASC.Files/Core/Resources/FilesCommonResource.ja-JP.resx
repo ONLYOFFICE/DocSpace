@@ -86,7 +86,7 @@
     <value>管理</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>ファイルを操作するように、アクセス権を付与するはずです。</value>
+    <value>ファイルを操作するように、アクセス権を付与するはずです</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
     <value>私に</value>
@@ -98,10 +98,10 @@
     <value>所有者が変更されました</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>｛０｝から変換しました。</value>
+    <value>{0}から変換しました</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>コピーしました。　</value>
+    <value>コピーしました</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
     <value>作成した</value>
@@ -161,10 +161,10 @@
     <value>文書サービでスエラーが発生してしまいました</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>｛０｝はファイルを編集しています。そのファイルの形式では、共同編集機能が現在サポートされていません。</value>
+    <value>{0}はファイルを編集しています。そのファイルの形式では、共同編集機能が現在サポートされていません。</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>ファイルがモバイルアップで｛０｝によって編集するように開かれています</value>
+    <value>このファイルは{0}によってモバイルアプリケーションで編集用に開かれています</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>空ファイル</value>
@@ -197,7 +197,7 @@
     <value>このファイルが別のユーザーによってロックされています</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>少なくとも｛０｝通のメールメッセージが送信できませんでした。失敗のあり得る原因を確認するためには、「メール」モジュールのページを訪問してください。</value>
+    <value>少なくとも{0}通のメールメッセージが送信できませんでした。失敗のあり得る原因を確認するためには、「メール」モジュールのページを訪問してください。</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>あまりにも多くのダウンロード。</value>
@@ -206,7 +206,7 @@
     <value>申し訳ありませんが、このファイル形式はサポートされていません</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>保存した人は不明です。</value>
+    <value>保存した人は不明です</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
     <value>保存しようとした時に、ファイルが破損してしまいました</value>
@@ -218,7 +218,7 @@
     <value>この操作を実行するための十分な権限がありません</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>指定された認証情報で｛０｝プロバイダを許可することができません。</value>
+    <value>与えられた認証情報で{0}プロバイダで認証できません。</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>作成するのに十分な権限がありません</value>
@@ -318,5 +318,101 @@
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>ファイルがアンロックとなりました</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace 管理者</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>編集者</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>ルームの管理者</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>ユーザー</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>読み取り専用</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>フォームへの入力</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>レビュー</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>コラボレーター</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>コラボレーター</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>編集者</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>ルームの管理者</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>フォームに入力するために作成されました</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>提出されたフォーム</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>新しいバージョンは、現在のと同じにすることはできません</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>ファイルをコピーするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>フォルダをコピーするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>無効なプロバイダ</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>このフォルダを使用してルームを保存することはできません</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>招待リンクが無効か、有効期限が切れています</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>このプロバイダはすでにルームに接続しています</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>この役割は、このユーザータイプでは使用できません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>ルームをアーカイブするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>このフォルダーにコピーする権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>ルームを編集する権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>このフォルダーに移動する権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>ルームをアーカイブ解除する十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>アーカイブされたルームを編集することはできません</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>ルームを固定することはできません</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>記入可能なOFORM文書が出来上がりました。{0}に保存されます</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORMのコピーは{0}フォルダーに作成されました。フォームに必要事項を記入し、結果ファイルをPDFまたはDOCXファイルとしてダウンロードしてください。</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>このファイルは、もはや記入用の下書きではありません。</value>
   </data>
 </root>

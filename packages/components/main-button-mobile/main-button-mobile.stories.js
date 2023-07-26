@@ -1,17 +1,95 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import MainButtonMobile from ".";
 import { useEffect, useReducer, useState } from "react";
 import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
 import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
 import MobileStartReactSvgUrl from "PUBLIC_DIR/images/mobile.star.react.svg?url";
 
+import MobileMainButtonDocs from "./main-button-mobile-docs.mdx";
+
 export default {
   title: "Components/MainButtonMobile",
   component: MainButtonMobile,
+  tags: ["autodocs"],
   parameters: {
-    docs: { description: { component: "Components/MainButtonMobile" } },
+    docs: {
+      page: MobileMainButtonDocs,
+    },
   },
 };
+
+const actionOptions = [
+  {
+    key: "1",
+    label: "New document",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "2",
+    label: "New presentation",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "3",
+    label: "New spreadsheet",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+  {
+    key: "4",
+    label: "New folder",
+    icon: MobileActionsFolderReactSvgUrl,
+  },
+];
+
+const buttonOptions = [
+  {
+    key: "1",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+  {
+    key: "2",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+  {
+    key: "3",
+    label: "Import point",
+    isSeparator: true,
+  },
+  {
+    key: "4",
+    label: "Import point",
+    icon: MobileStartReactSvgUrl,
+    onClick: () => setIsOpenButton(false),
+  },
+];
+
+const StyledWrapper = styled.div`
+  width: 500px;
+  height: 600px;
+
+  ${(props) =>
+    props.isAutoDocs &&
+    css`
+      width: calc(100% + 40px);
+      height: 500px;
+      position: relative;
+      margin: 0 0 -20px -20px;
+    `}
+
+  ${(props) =>
+    props.isMobile &&
+    css`
+      .mainBtnDropdown {
+        right: 5px !important;
+        bottom: 5px !important;
+      }
+    `}
+`;
 
 const Template = ({ ...args }) => {
   const maxUploads = 10;
@@ -82,29 +160,6 @@ const Template = ({ ...args }) => {
   const uploadPercent = (state.uploads / maxUploads) * 100;
   const operationPercent = (state.operations / maxOperations) * 100;
 
-  const actionOptions = [
-    {
-      key: "1",
-      label: "New document",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "2",
-      label: "New presentation",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "3",
-      label: "New spreadsheet",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-    {
-      key: "4",
-      label: "New folder",
-      icon: MobileActionsFolderReactSvgUrl,
-    },
-  ];
-
   const progressOptions = [
     {
       key: "1",
@@ -127,46 +182,41 @@ const Template = ({ ...args }) => {
     },
   ];
 
-  const buttonOptions = [
-    {
-      key: "1",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-    {
-      key: "2",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-    {
-      key: "3",
-      label: "Import point",
-      isSeparator: true,
-    },
-    {
-      key: "4",
-      label: "Import point",
-      icon: MobileStartReactSvgUrl,
-      onClick: () => setIsOpenButton(false),
-    },
-  ];
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1245);
+
+  useEffect(() => {
+    const handleResize = () => {
+      isMobile !== window.innerWidth && setIsMobile(window.innerWidth < 1025);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isAutoDocs =
+    typeof window !== "undefined" && window?.location?.href.includes("docs");
 
   return (
-    <MainButtonMobile
-      {...args}
-      style={{ position: "absolute", top: "87%", left: "87%" }}
-      actionOptions={actionOptions}
-      progressOptions={progressOptions}
-      buttonOptions={buttonOptions}
-      onUploadClick={onUploadClick}
-      withButton={true}
-      isOpenButton={isOpenButton}
-      title="Upload"
-      percent={uploadPercent}
-      opened={opened}
-    />
+    <StyledWrapper isAutoDocs={isAutoDocs} isMobile={isMobile}>
+      <MainButtonMobile
+        {...args}
+        style={{ position: "absolute", bottom: "26px", right: "44px" }}
+        actionOptions={actionOptions}
+        dropdownStyle={{ position: "absolute", right: "60px", bottom: "25px" }}
+        progressOptions={progressOptions}
+        buttonOptions={buttonOptions}
+        onUploadClick={onUploadClick}
+        withButton={true}
+        isOpenButton={isOpenButton}
+        isDefaultMode={false}
+        title="Upload"
+        percent={uploadPercent}
+        opened={opened}
+      />
+    </StyledWrapper>
   );
 };
 

@@ -2,6 +2,21 @@ import React from "react";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "./";
+import TooltipDocs from "./tooltip.mdx";
+
+export default {
+  title: "Components/Tooltip",
+  component: Tooltip,
+  parameters: {
+    docs: {
+      page: TooltipDocs,
+    },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?node-id=649%3A4458&mode=dev",
+    },
+  },
+};
 
 const BodyStyle = { marginTop: 100, marginLeft: 200, position: "absolute" };
 
@@ -88,7 +103,7 @@ const AllTemplate = (args) => {
           Bob Johnston
         </Link>
       </div>
-      <Tooltip id="link" offsetRight={90} effect="solid">
+      <Tooltip id="link" offsetRight={0} effect="solid">
         <div>
           <Text isBold={true} fontSize="16px">
             Bob Johnston
@@ -125,7 +140,7 @@ const AllTemplate = (args) => {
 
       <Tooltip
         id="group"
-        offsetRight={90}
+        offsetRight={0}
         getContent={(dataTip) =>
           dataTip ? (
             <div>

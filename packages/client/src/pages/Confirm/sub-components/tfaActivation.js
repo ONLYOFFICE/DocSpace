@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -94,7 +94,7 @@ const TfaActivationForm = withLoader((props) => {
     qrCode,
     loginWithCode,
     loginWithCodeAndCookie,
-    history,
+
     location,
     currentColorScheme,
   } = props;
@@ -102,6 +102,8 @@ const TfaActivationForm = withLoader((props) => {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {
@@ -112,10 +114,10 @@ const TfaActivationForm = withLoader((props) => {
 
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
-        history.push(url || "/");
+        navigate(url || "/");
       } else {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
-        history.push("/");
+        navigate("/");
       }
     } catch (err) {
       let errorMessage = "";
@@ -265,7 +267,7 @@ const TfaActivationWrapper = (props) => {
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
 
-  const fetchData = async () => {
+  const getSecretKeyAndQRAction = useCallback(async () => {
     try {
       setIsLoading(true);
       const confirmKey = linkData.confirmHeader;
@@ -280,10 +282,10 @@ const TfaActivationWrapper = (props) => {
     }
     setIsLoaded(true);
     setIsLoading(false);
-  };
+  });
 
   useEffect(() => {
-    fetchData();
+    getSecretKeyAndQRAction();
   }, []);
 
   return error ? (
@@ -303,8 +305,4 @@ export default inject(({ auth, confirm }) => ({
   tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
   tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
   currentColorScheme: auth.settingsStore.currentColorScheme,
-}))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper))
-  )
-);
+}))(withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper)));

@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
+import Dropzone from "react-dropzone";
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
-
+import { withTranslation } from "react-i18next";
 import IconButton from "../icon-button";
 import Button from "../button";
 import TextInput from "../text-input";
 import StyledFileInput from "./styled-file-input";
+import Loader from "../loader";
+import toastr from "../toast/toastr";
 
 class FileInput extends Component {
   constructor(props) {
@@ -24,39 +27,19 @@ class FileInput extends Component {
     return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
-  onIconFileClick = (e) => {
-    const { isDisabled } = this.props;
+  onDrop = (acceptedFiles) => {
+    const { onInput, t } = this.props;
 
-    if (isDisabled) {
-      return false;
+    if (acceptedFiles.length === 0) {
+      toastr.error(t("Common:NotSupportedFormat"));
+      return;
     }
-    e.target.blur();
-    this.inputRef.current.click();
-  };
 
-  onChangeHandler = (e) => {
     this.setState({
-      fileName: e.target.value,
+      fileName: acceptedFiles[0].name,
     });
-  };
 
-  onInputFile = () => {
-    const { onInput } = this.props;
-
-    if (this.inputRef.current.files.length > 0) {
-      this.setState(
-        {
-          fileName: this.inputRef.current.files[0].name,
-          file: this.inputRef.current.files[0],
-        },
-        () => {
-          if (onInput) {
-            this.inputRef.current.value = "";
-            onInput(this.state.file);
-          }
-        }
-      );
-    }
+    onInput(acceptedFiles[0]);
   };
 
   render() {
@@ -73,6 +56,8 @@ class FileInput extends Component {
       id,
       onInput, // eslint-disable-line no-unused-vars
       buttonLabel,
+      idButton,
+      isLoading,
       ...rest
     } = this.props;
 
@@ -103,54 +88,65 @@ class FileInput extends Component {
     }
 
     return (
-      <StyledFileInput
-        size={size}
-        scale={scale ? 1 : 0}
-        hasError={hasError}
-        hasWarning={hasWarning}
-        isDisabled={isDisabled}
-        {...rest}
+      <Dropzone
+        onDrop={this.onDrop}
+        {...(accept && { accept: [accept] })}
+        noClick={isDisabled || isLoading}
       >
-        <TextInput
-          className="text-input"
-          placeholder={placeholder}
-          value={fileName}
-          size={size}
-          isDisabled={isDisabled}
-          hasError={hasError}
-          hasWarning={hasWarning}
-          scale={scale}
-          onFocus={this.onIconFileClick}
-          onChange={this.onChangeHandler}
-        />
-        <input
-          type="file"
-          id={id}
-          ref={this.inputRef}
-          style={{ display: "none" }}
-          accept={accept}
-          onInput={this.onInputFile}
-        />
-
-        {buttonLabel ? (
-          <Button
+        {({ getRootProps, getInputProps }) => (
+          <StyledFileInput
+            size={size}
+            scale={scale ? 1 : 0}
+            hasError={hasError}
+            hasWarning={hasWarning}
+            id={idButton}
             isDisabled={isDisabled}
-            label={buttonLabel}
-            onClick={this.onIconFileClick}
-            size={buttonSize}
-          />
-        ) : (
-          <div className="icon" onClick={this.onIconFileClick}>
-            <IconButton
-              className="icon-button"
-              iconName={CatalogFolderReactSvgUrl}
-              color={"#A3A9AE"}
-              size={iconSize}
-              isDisabled={isDisabled}
+            {...rest}
+            {...getRootProps()}
+          >
+            <TextInput
+              isReadOnly
+              className="text-input"
+              placeholder={placeholder}
+              value={fileName}
+              size={size}
+              isDisabled={isDisabled || isLoading}
+              hasError={hasError}
+              hasWarning={hasWarning}
+              scale={scale}
             />
-          </div>
+            <input
+              type="file"
+              id={id}
+              ref={this.inputRef}
+              style={{ display: "none" }}
+              {...getInputProps()}
+            />
+
+            {buttonLabel ? (
+              <Button
+                isDisabled={isDisabled}
+                label={buttonLabel}
+                size={buttonSize}
+              />
+            ) : (
+              <div className="icon">
+                {isLoading ? (
+                  <Loader className="loader" size="20px" type="track" />
+                ) : (
+                  <IconButton
+                    className="icon-button"
+                    iconName={CatalogFolderReactSvgUrl}
+                    color={"#A3A9AE"}
+                    size={iconSize}
+                    isDisabled={isDisabled}
+                  />
+                )}
+              </div>
+            )}
+          </StyledFileInput>
         )}
-      </StyledFileInput>
+      </Dropzone>
     );
   }
 }
@@ -162,25 +158,27 @@ FileInput.propTypes = {
   placeholder: PropTypes.string,
   /** Supported size of the input fields */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
-  /** Indicates the input field has scale */
+  /** Indicates that the input field has scale */
   scale: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,
-  /** Indicates the input field has an error */
+  /** Indicates that the input field has an error */
   hasError: PropTypes.bool,
-  /** Indicates the input field has a warning */
+  /** Indicates that the input field has a warning */
   hasWarning: PropTypes.bool,
   /** Used as HTML `id` property */
   id: PropTypes.string,
   /** Indicates that the field cannot be used (e.g not authorised, or changes not saved) */
   isDisabled: PropTypes.bool,
+  /** Tells when the button should show loader icon */
+  isLoading: PropTypes.bool,
   /** Used as HTML `name` property */
   name: PropTypes.string,
   /** Called when a file is selected */
   onInput: PropTypes.func,
-  /**Specifies files visible for upload */
+  /** Specifies the files visible for upload */
   accept: PropTypes.string,
-  /**Specifies label for upload button */
+  /** Specifies the label for the upload button */
   buttonLabel: PropTypes.string,
 };
 
@@ -190,7 +188,8 @@ FileInput.defaultProps = {
   hasWarning: false,
   hasError: false,
   isDisabled: false,
+  isLoading: false,
   accept: "",
 };
 
-export default FileInput;
+export default withTranslation("Common")(FileInput);

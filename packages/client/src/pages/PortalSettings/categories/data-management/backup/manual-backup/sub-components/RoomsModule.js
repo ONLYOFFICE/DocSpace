@@ -87,6 +87,7 @@ class RoomsModule extends React.Component {
         </div>
         <div className="manual-backup_buttons">
           <Button
+            id="create-copy"
             label={t("Common:CreateCopy")}
             onClick={this.onMakeCopy}
             primary

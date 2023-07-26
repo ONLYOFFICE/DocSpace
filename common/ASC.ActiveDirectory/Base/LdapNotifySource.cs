@@ -47,9 +47,9 @@ public class LdapNotifySource : INotifySource
         _tenant = tenant;
     }
 
-    public void AutoSync(DateTime date)
+    public async Task AutoSyncAsync(DateTime date)
     {
-        _ldapNotifyHelper.AutoSync(_tenant);
+        await _ldapNotifyHelper.AutoSyncAsync(_tenant);
     }
 
     public IActionProvider GetActionProvider()

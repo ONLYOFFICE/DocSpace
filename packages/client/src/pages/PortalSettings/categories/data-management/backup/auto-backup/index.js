@@ -27,15 +27,12 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import Badge from "@docspace/components/badge";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 
-const {
-  DocumentModuleType,
-  ResourcesModuleType,
-  StorageModuleType,
-} = BackupStorageType;
+const { DocumentModuleType, ResourcesModuleType, StorageModuleType } =
+  BackupStorageType;
 const { EveryDayType, EveryWeekType, EveryMonthType } = AutoBackupPeriod;
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
@@ -444,7 +441,8 @@ class AutomaticBackup extends React.PureComponent {
           {renderTooltip(
             t("AutoBackupHelp") +
               " " +
-              t("AutoBackupHelpNote", { organizationName })
+              t("AutoBackupHelpNote", { organizationName }),
+            "automatic-backup"
           )}
           {!isEnableAuto && (
             <Badge
@@ -460,7 +458,7 @@ class AutomaticBackup extends React.PureComponent {
         </Text>
         <div className="backup_toggle-wrapper">
           <ToggleButton
-            className="backup_toggle-btn"
+            className="enable-automatic-backup backup_toggle-btn"
             label={t("EnableAutomaticBackup")}
             onChange={this.onClickPermissions}
             isChecked={selectedEnableSchedule}
@@ -475,6 +473,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
+                id="backup-room"
                 label={t("RoomsModule")}
                 name={`${DocumentModuleType}`}
                 key={0}
@@ -496,6 +495,7 @@ class AutomaticBackup extends React.PureComponent {
             >
               <RadioButton
                 {...commonRadioButtonProps}
+                id="third-party-resource"
                 label={t("ThirdPartyResource")}
                 name={`${ResourcesModuleType}`}
                 isChecked={isCheckedThirdParty}
@@ -518,6 +518,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
+                id="third-party-storage"
                 label={t("Common:ThirdPartyStorage")}
                 name={`${StorageModuleType}`}
                 isChecked={isCheckedThirdPartyStorage}
@@ -591,10 +592,8 @@ export default inject(
       defaultFolderId,
     } = backup;
 
-    const {
-      updateBaseFolderPath,
-      resetNewFolderPath,
-    } = selectFolderDialogStore;
+    const { updateBaseFolderPath, resetNewFolderPath } =
+      selectFolderDialogStore;
 
     const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
     const isCheckedThirdParty =

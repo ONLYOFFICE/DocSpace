@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import Loaders from "@docspace/common/components/Loaders";
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
@@ -32,7 +31,14 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const { setBackupCodes, getTfaType, getBackupCodes, history, t } = props;
+  const {
+    setBackupCodes,
+    getTfaType,
+    getBackupCodes,
+    isProfileLoaded,
+
+    t,
+  } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
 
@@ -59,6 +65,8 @@ const SectionBodyContent = (props) => {
     fetchData();
   }, []);
 
+  if (!isProfileLoaded) return <Loaders.ProfileView />;
+
   return (
     <Wrapper>
       <MainProfile />
@@ -66,38 +74,33 @@ const SectionBodyContent = (props) => {
         <LoginSettings backupCodesCount={backupCodesCount} />
       )}
       <SocialNetworks />
-      <Subscription history={history} t={t} />
+      <Subscription t={t} />
       <InterfaceTheme />
     </Wrapper>
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { tfaStore } = auth;
-    const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
-
-    return {
-      getBackupCodes,
-      getTfaType,
-      setBackupCodes,
-    };
-  })(
-    observer(
-      withTranslation([
-        "Profile",
-        "Common",
-        "PeopleTranslations",
-        "ProfileAction",
-        "ResetApplicationDialog",
-        "BackupCodesDialog",
-        "DeleteSelfProfileDialog",
-        "Notifications",
-      ])(
-        withPeopleLoader(SectionBodyContent)(
-          <Loaders.ProfileView isProfileView />
-        )
-      )
-    )
+export default inject(({ auth, clientLoadingStore }) => {
+  const { tfaStore } = auth;
+  const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
+  const { isProfileLoaded } = clientLoadingStore;
+  return {
+    getBackupCodes,
+    getTfaType,
+    setBackupCodes,
+    isProfileLoaded,
+  };
+})(
+  observer(
+    withTranslation([
+      "Profile",
+      "Common",
+      "PeopleTranslations",
+      "ProfileAction",
+      "ResetApplicationDialog",
+      "BackupCodesDialog",
+      "DeleteSelfProfileDialog",
+      "Notifications",
+    ])(SectionBodyContent)
   )
 );

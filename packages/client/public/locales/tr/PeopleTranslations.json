@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Hesap giriş türü",
   "DeleteSelfProfile": "Profili sil",
-  "DisableUserButton": "Devre dışı bırak",
   "DisabledEmployeeStatus": "Devre dışı bırakıldı",
+  "DisableUserButton": "Devre dışı bırak",
   "EmailChangeButton": "E-postayı değiştir",
   "EnableUserButton": "Etkinleştir",
   "InviteLinkTitle": "Davet Bağlantısı",
@@ -12,6 +13,7 @@
   "RemoveData": "Kişisel bilgileri sil",
   "ResetAuth": "Kimlik doğrulamayı sıfırlayın",
   "SendInviteAgain": "Bir kez daha davetiye gönder",
+  "StandardLogin": "Standart giriş",
   "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
   "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
   "SuccessSentInvitation": "Davetiye başarıyla gönderildi",

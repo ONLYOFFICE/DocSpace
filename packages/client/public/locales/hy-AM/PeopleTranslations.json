@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Հաշվի մուտքի տեսակը",
   "DeleteSelfProfile": "Ջնջել կայքէջը",
-  "DisableUserButton": "Կասեցնել",
   "DisabledEmployeeStatus": "Կասեցված",
+  "DisableUserButton": "Կասեցնել",
   "EmailChangeButton": "Փոխել էլ․ փոստը",
   "EnableUserButton": "Թույլատրել",
   "InviteLinkTitle": "Հրավերի հղում",
@@ -12,6 +13,7 @@
   "RemoveData": "Ջնջել անձնական տվյալները",
   "ResetAuth": "Վերականգնել նույնականացումը",
   "SendInviteAgain": "Ուղարկեք հրավեր ևս մեկ անգամ",
+  "StandardLogin": "Ստանդարտ մուտք",
   "SuccessChangeUserStatus": "Օգտատիրոջ կարգավիճակը հաջողությամբ փոխվել է",
   "SuccessDeletePersonalData": "Անձնական տվյալները հաջողությամբ ջնջվել են",
   "SuccessSentInvitation": "Հրավերը հաջողությամբ ուղարկվեց",

@@ -118,21 +118,15 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
 
             result.Logo = await _roomLogoManager.GetLogoAsync(folder);
-            result.RoomType = folder.FolderType switch
+            result.RoomType = DocSpaceHelper.GetRoomType(folder.FolderType);
+
+            if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
             {
-                FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
-                FolderType.EditingRoom => RoomType.EditingRoom,
-                FolderType.ReviewRoom => RoomType.ReviewRoom,
-                FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
-                FolderType.CustomRoom => RoomType.CustomRoom,
-                _ => null,
-            };
+                result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
 
-            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
-                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
-
-            var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
-            result.Mute = isMuted;
+                var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
+                result.Mute = isMuted;
+            }
         }
 
         if (folder.RootFolderType == FolderType.USER
@@ -171,7 +165,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
 
         if (folder.RootFolderType == FolderType.VirtualRooms)
         {
-            var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
+            var isEnabledBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
 
             if (!isEnabledBadges)
             {

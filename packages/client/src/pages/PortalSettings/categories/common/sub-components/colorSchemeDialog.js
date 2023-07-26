@@ -123,6 +123,7 @@ const ColorSchemeDialog = (props) => {
         {showSaveButtonDialog && (
           <>
             <Button
+              className="save"
               label={t("Common:SaveButton")}
               size="normal"
               primary
@@ -130,6 +131,7 @@ const ColorSchemeDialog = (props) => {
               onClick={onSaveColorSchemeDialog}
             />
             <Button
+              className="cancel-button"
               label={t("Common:CancelButton")}
               size="normal"
               scale

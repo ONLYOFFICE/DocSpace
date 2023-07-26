@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Account inlogtype",
   "DeleteSelfProfile": "Verwijder profiel",
-  "DisableUserButton": "Schakel uit",
   "DisabledEmployeeStatus": "Uitgeschakeld",
+  "DisableUserButton": "Schakel uit",
   "EmailChangeButton": "Wijzig e-mail",
   "EnableUserButton": "Inschakelen",
   "InviteLinkTitle": "Uitnodigingslink",
@@ -12,6 +13,7 @@
   "RemoveData": "Verwijder persoonsgegevens",
   "ResetAuth": "Authenticatie opnieuw instellen",
   "SendInviteAgain": "Stuur uitnodiging opnieuw",
+  "StandardLogin": "Standaard aanmelding",
   "SuccessChangeUserStatus": "De gebruikersstatus is met succes gewijzigd",
   "SuccessDeletePersonalData": "Persoonsgegevens zijn met succes verwijderd",
   "SuccessSentInvitation": "De uitnodiging werd met succes verzonden",

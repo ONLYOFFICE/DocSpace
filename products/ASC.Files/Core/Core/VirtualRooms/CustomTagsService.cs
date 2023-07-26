@@ -27,7 +27,7 @@
 namespace ASC.Files.Core.VirtualRooms;
 
 [Scope]
-public class CustomTagsService<T>
+public class CustomTagsService
 {
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -52,20 +52,19 @@ public class CustomTagsService<T>
         _userManager = userManager;
     }
 
-    private ITagDao<T> TagDao => _daoFactory.GetTagDao<T>();
-    private IFolderDao<T> FolderDao => _daoFactory.GetFolderDao<T>();
     private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 
-    public async Task<object> CreateTagAsync(string name)
+    public async Task<string> CreateTagAsync(string name)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(name);
 
-        var tags = await TagDao.GetTagsInfoAsync(name, TagType.Custom, true).ToListAsync();
+        var tagDao = _daoFactory.GetTagDao<int>();
+        var tags = await tagDao.GetTagsInfoAsync(name, TagType.Custom, true).ToListAsync();
 
         if (tags.Any())
         {
@@ -79,16 +78,16 @@ public class CustomTagsService<T>
             Type = TagType.Custom
         };
 
-        var savedTag = await TagDao.SaveTagInfoAsync(tagInfo);
+        var savedTag = await tagDao.SaveTagInfoAsync(tagInfo);
 
-        _filesMessageService.Send(Headers, MessageAction.TagCreated, savedTag.Name);
+        await _filesMessageService.SendAsync(Headers, MessageAction.TagCreated, savedTag.Name);
 
         return savedTag.Name;
     }
 
-    public async Task DeleteTagsAsync(IEnumerable<string> names)
+    public async Task DeleteTagsAsync<T>(IEnumerable<string> names)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -98,18 +97,18 @@ public class CustomTagsService<T>
             return;
         }
 
-        var tagDao = TagDao;
+        var tagDao = _daoFactory.GetTagDao<T>();
 
         var tags = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
         await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
+        await _filesMessageService.SendAsync(Headers, MessageAction.TagsDeleted, string.Join(',', tags.Select(t => t.Name).ToArray()));
     }
 
-    public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<string> names)
+    public async Task<Folder<T>> AddRoomTagsAsync<T>(T folderId, IEnumerable<string> names)
     {
-        var folder = await FolderDao.GetFolderAsync(folderId);
+        var folder = await _daoFactory.GetFolderDao<T>().GetFolderAsync(folderId);
 
         if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
@@ -121,7 +120,7 @@ public class CustomTagsService<T>
             return folder;
         }
 
-        var tagDao = TagDao;
+        var tagDao = _daoFactory.GetTagDao<T>();
 
         var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
@@ -129,14 +128,14 @@ public class CustomTagsService<T>
 
         await tagDao.SaveTags(tags);
 
-        _ = _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.AddedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }
 
-    public async Task<Folder<T>> DeleteRoomTagsAsync(T folderId, IEnumerable<string> names)
+    public async Task<Folder<T>> DeleteRoomTagsAsync<T>(T folderId, IEnumerable<string> names)
     {
-        var folder = await FolderDao.GetFolderAsync(folderId);
+        var folder = await _daoFactory.GetFolderDao<T>().GetFolderAsync(folderId);
 
         if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
@@ -148,20 +147,20 @@ public class CustomTagsService<T>
             return folder;
         }
 
-        var tagDao = TagDao;
+        var tagDao = _daoFactory.GetTagDao<T>();
 
         var tagsInfos = await tagDao.GetTagsInfoAsync(names).ToListAsync();
 
         await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _ = _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
+        _ = _filesMessageService.SendAsync(folder, Headers, MessageAction.DeletedRoomTags, folder.Title, string.Join(',', tagsInfos.Select(t => t.Name)));
 
         return folder;
     }
 
-    public async IAsyncEnumerable<object> GetTagsInfoAsync(string searchText, TagType tagType, int from, int count)
+    public async IAsyncEnumerable<object> GetTagsInfoAsync<T>(string searchText, TagType tagType, int from, int count)
     {
-        await foreach (var tagInfo in TagDao.GetTagsInfoAsync(searchText, tagType, false, from, count))
+        await foreach (var tagInfo in _daoFactory.GetTagDao<T>().GetTagsInfoAsync(searchText, tagType, false, from, count))
         {
             yield return tagInfo.Name;
         }

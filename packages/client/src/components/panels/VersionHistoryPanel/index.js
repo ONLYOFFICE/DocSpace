@@ -4,7 +4,7 @@ import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import Loaders from "@docspace/common/components/Loaders";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import { withTranslation } from "react-i18next";
 import {
   StyledVersionHistoryPanel,
@@ -75,7 +75,7 @@ class PureVersionHistoryPanel extends React.Component {
             </StyledHeaderContent>
 
             <StyledBody className="version-history-panel-body">
-              <SectionBodyContent />
+              <SectionBodyContent onClose={this.onClose} />
             </StyledBody>
             {showProgressBar && (
               <FloatingButton
@@ -99,9 +99,9 @@ VersionHistoryPanel.propTypes = {
   fileId: PropTypes.string,
 };
 
-export default inject(({ auth, filesStore, versionHistoryStore }) => {
+export default inject(({ auth, clientLoadingStore, versionHistoryStore }) => {
   const { isTabletView } = auth.settingsStore;
-  const { isLoading } = filesStore;
+  const { isLoading } = clientLoadingStore;
   const {
     fileId,
     versions,

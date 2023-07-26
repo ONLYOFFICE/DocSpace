@@ -46,7 +46,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly NCUser _user;
@@ -57,7 +57,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         TenantManager tenantManager,
         UserManager userManager,
         string key,
@@ -177,7 +177,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -188,7 +188,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
             _userInfo.LastName = FilesCommonResource.UnknownLastName;
         }
 
-        var saved = _userManager.GetUserByEmail(_userInfo.Email);
+        var saved = await _userManager.GetUserByEmailAsync(_userInfo.Email);
         if (saved != Constants.LostUser)
         {
             saved.ContactsList = saved.ContactsList.Union(_userInfo.ContactsList).ToList();
@@ -206,7 +206,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
                 {
                     fs.CopyTo(ms);
                 }
-                _userManager.SaveUserPhoto(saved.Id, ms.ToArray());
+                await _userManager.SaveUserPhotoAsync(saved.Id, ms.ToArray());
             }
         }
     }

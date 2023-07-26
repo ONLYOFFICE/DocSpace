@@ -24,32 +24,38 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
 using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint;
 
-internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
+internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObject>
 {
-    protected override string Id => "spoint";
+    internal SharePointProviderInfo SharePointProviderInfo { get; private set; }
 
-    public SharePointDaoBase(
-        IServiceProvider serviceProvider,
+    public SharePointDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
-        TenantManager tenantManager,
+        TenantManager tenantManager, 
         TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
-        ILogger<SharePointDaoBase> monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext, 
+        RegexDaoSelectorBase<File, Folder, ClientObject> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
 
-    protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
+    public void Init(string pathPrefix, IProviderInfo<File, Folder, ClientObject> providerInfo)
     {
-        if (!isExist(requestTitle, parentFolderID))
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        SharePointProviderInfo = providerInfo as SharePointProviderInfo;
+    }
+
+    protected string GetAvailableTitle(string requestTitle, Folder parentFolderId, Func<string, Folder, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolderId))
         {
             return requestTitle;
         }
@@ -68,7 +74,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
             requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
 
-        while (isExist(requestTitle, parentFolderID))
+        while (isExist(requestTitle, parentFolderId))
         {
             requestTitle = re.Replace(requestTitle, MatchEvaluator);
         }
@@ -113,57 +119,48 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         return string.Format(" ({0}){1}", index + 1, staticText);
     }
 
-    protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+    protected async ValueTask UpdatePathInDBAsync(string oldValue, string newValue)
     {
         if (oldValue.Equals(newValue))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalUpdatePathInDBAsync(oldValue, newValue);
-    }
-
-    private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
-    {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
-            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-            .Where(r => r.Id.StartsWith(oldValue))
-            .Select(r => r.Id)
-            .ToListAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            foreach (var oldID in oldIDs)
+            var oldIds = Queries.IdsAsync(filesDbContext, _tenantId, oldValue);
+
+            await foreach (var oldId in oldIds)
             {
-                var oldHashID = await MappingIDAsync(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = await MappingIDAsync(newID);
+                var oldHashId = await MappingIDAsync(oldId);
+                var newId = oldId.Replace(oldValue, newValue);
+                var newHashId = await MappingIDAsync(newId);
 
-                var mappingForDelete = await Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID).ToListAsync();
-
+                var mappingForDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
                 var mappingForInsert = mappingForDelete.Select(m => new DbFilesThirdpartyIdMapping
                 {
                     TenantId = m.TenantId,
-                    Id = newID,
-                    HashId = newHashID
+                    Id = newId,
+                    HashId = newHashId
                 });
 
                 filesDbContext.RemoveRange(mappingForDelete);
                 await filesDbContext.AddRangeAsync(mappingForInsert);
 
-                var securityForDelete = await Query(filesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+                var securityForDelete =
+                    await Queries.DbFilesSecuritiesAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var securityForInsert = securityForDelete.Select(s => new DbFilesSecurity
                 {
                     TenantId = s.TenantId,
                     TimeStamp = DateTime.Now,
-                    EntryId = newHashID,
+                    EntryId = newHashId,
                     Share = s.Share,
                     Subject = s.Subject,
                     EntryType = s.EntryType,
@@ -173,12 +170,12 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
                 filesDbContext.RemoveRange(securityForDelete);
                 await filesDbContext.AddRangeAsync(securityForInsert);
 
-                var linkForDelete = await Query(filesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+                var linkForDelete =
+                    await Queries.DbFilesTagLinksAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var linkForInsert = linkForDelete.Select(l => new DbFilesTagLink
                 {
-                    EntryId = newHashID,
+                    EntryId = newHashId,
                     Count = l.Count,
                     CreateBy = l.CreateBy,
                     CreateOn = l.CreateOn,
@@ -197,24 +194,51 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         });
     }
 
-    protected Task<string> MappingIDAsync(string id)
-    {
-        return MappingIDAsync(id, false);
-    }
-
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         return path;
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
-        var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folders = await SharePointProviderInfo.GetFolderFoldersAsync(folderId);
+        var subFolders = folders.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
-        var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
-        var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folderFiles = await SharePointProviderInfo.GetFolderFilesAsync(folderId);
+        var files = folderFiles.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
         return subFolders.Concat(files);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> IdsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id.StartsWith(idStart))
+                    .Select(r => r.Id));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.HashId == hashId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> DbFilesSecuritiesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> DbFilesTagLinksAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
 }

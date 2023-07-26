@@ -1,13 +1,10 @@
 import { useGesture } from "@use-gesture/react";
 import { isMobile, isDesktop } from "react-device-detect";
 import { useSpring, config } from "@react-spring/web";
-import React, {
-  SyntheticEvent,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+
+import indexedDBHelper from "../../../../utils/indexedDBHelper";
+import { IndexedDBStores } from "../../../../constants";
 
 import ViewerLoader from "../ViewerLoader";
 import ImageViewerToolbar from "../ImageViewerToolbar";
@@ -24,6 +21,7 @@ import {
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import { ToolbarActionType, KeyboardEventKeys, compareTo } from "../../helpers";
+import PlayerMessageError from "../PlayerMessageError";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -50,6 +48,12 @@ function ImageViewer({
   resetToolbarVisibleTimer,
   mobileDetails,
   toolbar,
+  thumbnailSrc,
+  imageId,
+  version,
+  isTiff,
+  contextModel,
+  errorTitle,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -60,10 +64,12 @@ function ImageViewer({
   const lastTapTimeRef = useRef<number>(0);
   const isDoubleTapRef = useRef<boolean>(false);
   const setTimeoutIDTapRef = useRef<NodeJS.Timeout>();
+  const changeSourceTimeoutRef = useRef<NodeJS.Timeout>();
   const startAngleRef = useRef<number>(0);
   const toolbarRef = useRef<ImperativeHandle>(null);
 
   const [scale, setScale] = useState(1);
+  const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [backgroundBlack, setBackgroundBlack] = useState<boolean>(() => false);
 
@@ -89,8 +95,8 @@ function ImageViewer({
     };
   }, []);
 
-  useLayoutEffect(() => {
-    if (unmountRef.current) return;
+  useEffect(() => {
+    if (unmountRef.current || isTiff) return;
     setIsLoading(true);
   }, [src]);
 
@@ -101,21 +107,6 @@ function ImageViewer({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, []);
-
-  function resize() {
-    if (!imgRef.current || isLoading) return;
-
-    const naturalWidth = imgRef.current.naturalWidth;
-    const naturalHeight = imgRef.current.naturalHeight;
-
-    const imagePositionAndSize = getImagePositionAndSize(
-      naturalWidth,
-      naturalHeight
-    );
-    if (imagePositionAndSize) {
-      api.set(imagePositionAndSize);
-    }
-  }
 
   const restartScaleAndSize = () => {
     if (!imgRef.current || style.scale.isAnimating) return;
@@ -146,16 +137,92 @@ function ImageViewer({
     });
   };
 
+  const changeSource = React.useCallback(
+    (src) => {
+      if (!window.DocSpaceConfig.imageThumbnails) return;
+      changeSourceTimeoutRef.current = setTimeout(() => {
+        if (imgRef.current && !unmountRef.current) {
+          if (!src) return;
+
+          if (!isTiff) {
+            imgRef.current.src = URL.createObjectURL(src);
+          } else {
+            imgRef.current.src = src;
+          }
+
+          setIsLoading(() => false);
+        }
+      }, 500);
+    },
+    [src, isTiff, imageId]
+  );
+
+  React.useEffect(() => {
+    if (!window.DocSpaceConfig.imageThumbnails) return;
+    if (!thumbnailSrc) setIsLoading(true);
+  }, []);
+
+  const loadImage = React.useCallback(async () => {
+    if (!src || !window.DocSpaceConfig.imageThumbnails) return;
+
+    if (isTiff) {
+      return changeSource(src);
+    }
+
+    const res = await fetch(src);
+    const blob = await res.blob();
+
+    indexedDBHelper.addItem(IndexedDBStores.images, {
+      id: imageId,
+      src: blob,
+      created: new Date(),
+      version,
+    });
+
+    changeSource(blob);
+  }, [src, imageId, version, isTiff, changeSource]);
+
+  useEffect(() => {
+    changeSourceTimeoutRef.current &&
+      clearTimeout(changeSourceTimeoutRef.current);
+  }, [src, version]);
+
+  useEffect(() => {
+    if (!imageId || thumbnailSrc || !window.DocSpaceConfig.imageThumbnails)
+      return;
+
+    indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
+      if (result && result.version === version) {
+        changeSource(result.src);
+      } else {
+        loadImage();
+      }
+    });
+  }, [src, imageId, version, isTiff, loadImage, changeSource, thumbnailSrc]);
+
+  function resize() {
+    if (!imgRef.current || isLoading) return;
+
+    const naturalWidth = imgRef.current.naturalWidth;
+    const naturalHeight = imgRef.current.naturalHeight;
+
+    const imagePositionAndSize = getImagePositionAndSize(
+      naturalWidth,
+      naturalHeight
+    );
+    if (imagePositionAndSize) {
+      api.set(imagePositionAndSize);
+    }
+  }
+
   function getImagePositionAndSize(
     imageNaturalWidth: number,
     imageNaturalHeight: number
   ) {
     if (!containerRef.current) return;
 
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     let width = Math.min(containerWidth, imageNaturalWidth);
     let height = (width / imageNaturalWidth) * imageNaturalHeight;
@@ -407,10 +474,8 @@ function ImageViewer({
       return;
 
     const { width, height, x, y } = imgRef.current.getBoundingClientRect();
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     const scale = Math.max(style.scale.get() - DefaultSpeedScale, MinScale);
 
@@ -456,10 +521,8 @@ function ImageViewer({
       return;
 
     const { width, height, x, y } = imgRef.current.getBoundingClientRect();
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
     const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
@@ -677,12 +740,8 @@ function ImageViewer({
         if (!pinching) cancel();
 
         if (first) {
-          const {
-            width,
-            height,
-            x,
-            y,
-          } = imgRef.current.getBoundingClientRect();
+          const { width, height, x, y } =
+            imgRef.current.getBoundingClientRect();
           const tx = ox - (x + width / 2);
           const ty = oy - (y + height / 2);
           memo = [style.x.get(), style.y.get(), tx, ty];
@@ -824,12 +883,8 @@ function ImageViewer({
         const mScale = (-1 * mYWheel) / RatioWheel;
 
         if (first || !memo) {
-          const {
-            width,
-            height,
-            x,
-            y,
-          } = imgRef.current.getBoundingClientRect();
+          const { width, height, x, y } =
+            imgRef.current.getBoundingClientRect();
           const tx = (event.pageX - (x + width / 2)) / style.scale.get();
           const ty = (event.pageY - (y + height / 2)) / style.scale.get();
           memo = [style.x.get(), style.y.get(), tx, ty];
@@ -926,6 +981,11 @@ function ImageViewer({
       handleAction(item.actionType);
     }
   }
+  const onError = () => {
+    setIsError(true);
+  };
+
+  const model = React.useMemo(contextModel, [contextModel]);
 
   return (
     <>
@@ -934,18 +994,35 @@ function ImageViewer({
         ref={containerRef}
         $backgroundBlack={backgroundBlack}
       >
-        <ViewerLoader isLoading={isLoading} />
+        {isError ? (
+          <PlayerMessageError
+            model={model}
+            onMaskClick={onMask}
+            errorTitle={errorTitle}
+          />
+        ) : (
+          <ViewerLoader isLoading={isLoading} />
+        )}
+
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
-            src={src}
+            src={
+              !window.DocSpaceConfig.imageThumbnails
+                ? src
+                : thumbnailSrc
+                ? `${thumbnailSrc}&size=1280x720`
+                : ""
+            }
             ref={imgRef}
             style={style}
             onDoubleClick={handleDoubleTapOrClick}
             onLoad={imageLoaded}
+            onError={onError}
           />
         </ImageWrapper>
       </ImageViewerContainer>
-      {isDesktop && panelVisible && (
+
+      {isDesktop && panelVisible && !isError && (
         <ImageViewerToolbar
           ref={toolbarRef}
           toolbar={toolbar}

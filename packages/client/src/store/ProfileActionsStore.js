@@ -11,7 +11,7 @@ import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
@@ -19,7 +19,7 @@ import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
-const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
+const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/profile");
 //const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(
@@ -38,6 +38,7 @@ class ProfileActionsStore {
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
   isShowLiveChat = false;
+  profileClicked = false;
 
   constructor(
     authStore,
@@ -92,24 +93,34 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
-    //TODO: add check manager
     const { isAdmin, isOwner } = this.authStore.userStore.user;
     const { isRoomAdmin } = this.authStore;
 
-    if (isAdmin || isOwner || isRoomAdmin) {
+    this.profileClicked = true;
+    const prefix = window.DocSpace.location.pathname.includes("portal-settings")
+      ? "/portal-settings"
+      : "";
+
+    if ((isAdmin || isOwner || isRoomAdmin) && !prefix) {
       this.selectedFolderStore.setSelectedFolder(null);
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    history.push(PROFILE_SELF_URL);
+    const state = {
+      fromUrl: `${window.DocSpace.location.pathname}${window.DocSpace.location.search}`,
+    };
+
+    window.DocSpace.navigate(`${prefix}${PROFILE_SELF_URL}`, { state });
   };
 
   onSettingsClick = (settingsUrl) => {
-    history.push(settingsUrl);
+    this.selectedFolderStore.setSelectedFolder(null);
+    window.DocSpace.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
-    history.push(PAYMENTS_URL);
+    this.selectedFolderStore.setSelectedFolder(null);
+    window.DocSpace.navigate(PAYMENTS_URL);
   };
 
   onHelpCenterClick = () => {
@@ -129,8 +140,9 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl = this.authStore.settingsStore.additionalResourcesData
-      ?.feedbackAndSupportUrl;
+    const supportUrl =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -153,7 +165,7 @@ class ProfileActionsStore {
     if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
-      history.push(ABOUT_URL);
+      window.DocSpace.navigate(ABOUT_URL);
     }
   };
 
@@ -161,11 +173,6 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      setTimeout(() => {
-        window.location.replace(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-        );
-      }, 300);
     });
   };
 
@@ -174,8 +181,9 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const { enablePlugins } = this.authStore.settingsStore;
+    const { enablePlugins, standalone } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+    const isCommunity = this.authStore.isCommunity;
 
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -247,12 +255,13 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
-      isAdmin && {
-        key: "user-menu-payments",
-        icon: PaymentsReactSvgUrl,
-        label: t("Common:PaymentsTitle"),
-        onClick: this.onPaymentsClick,
-      },
+      isAdmin &&
+        !isCommunity && {
+          key: "user-menu-payments",
+          icon: PaymentsReactSvgUrl,
+          label: t("Common:PaymentsTitle"),
+          onClick: this.onPaymentsClick,
+        },
       {
         isSeparator: true,
         key: "separator1",
@@ -333,12 +342,13 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(

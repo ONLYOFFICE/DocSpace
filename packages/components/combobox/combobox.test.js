@@ -298,7 +298,7 @@ describe("<ComboBox />", () => {
   it("render like toggle displayType", () => {
     const onToggleClick = jest.fn();
     const wrapper = mount(
-      <ComboBox {...toggleDisplayProps} toggleAction={onToggleClick} />
+      <ComboBox {...toggleDisplayProps} onToggle={onToggleClick} />
     );
 
     expect(wrapper.prop("displayType")).toEqual("toggle");
@@ -307,7 +307,7 @@ describe("<ComboBox />", () => {
   it("click on toggle", () => {
     const onToggleClick = jest.fn();
     const wrapper = mount(
-      <ComboBox {...toggleDisplayProps} toggleAction={onToggleClick} />
+      <ComboBox {...toggleDisplayProps} onToggle={onToggleClick} />
     );
 
     jest.spyOn(wrapper.instance(), "setIsOpen");
@@ -320,7 +320,7 @@ describe("<ComboBox />", () => {
   it("click outside", () => {
     const onToggleClick = jest.fn();
     const wrapper = mount(
-      <ComboBox {...baseProps} opened toggleAction={onToggleClick} />
+      <ComboBox {...baseProps} opened onToggle={onToggleClick} />
     );
     const instance = wrapper.instance();
 

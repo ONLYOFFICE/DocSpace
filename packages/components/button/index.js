@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 
 import Base from "../themes/base";
 import Loader from "../loader";
-import StyledButton from "./styled-button";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
@@ -31,13 +30,13 @@ const Button = React.forwardRef((props, ref) => {
 Button.propTypes = {
   /** Button text */
   label: PropTypes.string,
-  /** Tells when the button should be primary */
+  /** Sets the button primary */
   primary: PropTypes.bool,
-  /** Size of button.
+  /** Size of the button.
 
    The normal size equals 36px and 40px in height on the Desktop and Touchcreen devices. */
   size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
-  /** Scale width of button to 100% */
+  /** Scales the width of the button to 100% */
   scale: PropTypes.bool,
   /** Icon node element */
   icon: PropTypes.node,
@@ -49,19 +48,19 @@ Button.propTypes = {
   id: PropTypes.string,
   /** Accepts CSS style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Tells when the button should present a hovered state */
+  /** Sets the button to show a hovered state */
   isHovered: PropTypes.bool,
   /** Disable hover effect */
   disableHover: PropTypes.bool,
-  /** Tells when the button should present a clicked state */
+  /** Sets the button to show a clicked state */
   isClicked: PropTypes.bool,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to show a disabled state */
   isDisabled: PropTypes.bool,
-  /** Tells when the button should show loader icon */
+  /** Sets a button to show a loader icon */
   isLoading: PropTypes.bool,
-  /** Sets the nim width of the button */
+  /** Sets the minimal button width */
   minwidth: PropTypes.string,
-  /** What the button will trigger when clicked */
+  /** Sets the action initiated upon clicking the button */
   onClick: PropTypes.func,
 };
 

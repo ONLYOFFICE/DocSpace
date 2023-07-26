@@ -7,7 +7,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { sendDeletePortalEmail } from "@docspace/common/api/portal";
 
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const DeletePortalDialog = (props) => {
   const { t, ready } = useTranslation("Settings", "Common");
@@ -38,6 +38,7 @@ const DeletePortalDialog = (props) => {
           Before you delete the portal, please make sure that automatic billing
           is turned off. You may check the status of automatic billing in
           <ColorTheme
+            className="stripe-url-link"
             tag="a"
             themeId={ThemeType.Link}
             fontSize="13px"
@@ -51,6 +52,7 @@ const DeletePortalDialog = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          className="delete-button"
           key="DeletePortalBtn"
           label={t("Common:Delete")}
           size="normal"
@@ -59,6 +61,7 @@ const DeletePortalDialog = (props) => {
           onClick={onDeleteClick}
         />
         <Button
+          className="cancel-button"
           key="CancelDeleteBtn"
           label={t("Common:CancelButton")}
           size="normal"

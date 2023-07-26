@@ -41,7 +41,7 @@ public class TelegramSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public async Task<NoticeSendResult> Send(NotifyMessage m)
+    public async Task<NoticeSendResult> SendAsync(NotifyMessage m)
     {
         if (!string.IsNullOrEmpty(m.Content))
         {

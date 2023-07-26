@@ -3,6 +3,7 @@ import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { Events } from "@docspace/common/constants";
+import { SortByFieldName } from "../../../../../helpers/constants";
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class FilesTableHeader extends React.Component {
           resizable: true,
           enable: this.props.roomColumnNameIsEnabled,
           default: true,
-          sortBy: "AZ",
+          sortBy: SortByFieldName.Name,
           minWidth: 210,
           onClick: this.onRoomsFilter,
         },
@@ -42,7 +43,7 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Type"),
           enable: this.props.roomColumnTypeIsEnabled,
           resizable: true,
-          sortBy: "roomType",
+          sortBy: SortByFieldName.RoomType,
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
         },
@@ -51,7 +52,7 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Tags"),
           enable: this.props.roomColumnTagsIsEnabled,
           resizable: true,
-          sortBy: "Tags",
+          sortBy: SortByFieldName.Tags,
           withTagRef: true,
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
@@ -61,7 +62,7 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Owner"),
           enable: this.props.roomColumnOwnerIsEnabled,
           resizable: true,
-          sortBy: "Author",
+          sortBy: SortByFieldName.Author,
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
         },
@@ -70,7 +71,7 @@ class FilesTableHeader extends React.Component {
           title: t("ByLastModified"),
           enable: this.props.roomColumnActivityIsEnabled,
           resizable: true,
-          sortBy: "DateAndTime",
+          sortBy: SortByFieldName.ModifiedDate,
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
         },
@@ -84,7 +85,7 @@ class FilesTableHeader extends React.Component {
           resizable: true,
           enable: this.props.nameColumnIsEnabled,
           default: true,
-          sortBy: "AZ",
+          sortBy: SortByFieldName.Name,
           minWidth: 210,
           onClick: this.onFilter,
         },
@@ -93,8 +94,8 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Room"),
           enable: this.props.roomColumnIsEnabled,
           resizable: true,
-          sortBy: "Room",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.Room,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -102,8 +103,8 @@ class FilesTableHeader extends React.Component {
           title: t("ByAuthor"),
           enable: this.props.authorTrashColumnIsEnabled,
           resizable: true,
-          sortBy: "Author",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.Author,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -111,8 +112,8 @@ class FilesTableHeader extends React.Component {
           title: t("ByCreation"),
           enable: this.props.createdTrashColumnIsEnabled,
           resizable: true,
-          sortBy: "DateAndTimeCreation",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.CreationDate,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -120,7 +121,7 @@ class FilesTableHeader extends React.Component {
           title: t("ByErasure"),
           enable: this.props.erasureColumnIsEnabled,
           resizable: true,
-          sortBy: "DateAndTime",
+          sortBy: SortByFieldName.ModifiedDate,
           onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
@@ -129,7 +130,7 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Size"),
           enable: this.props.sizeTrashColumnIsEnabled,
           resizable: true,
-          sortBy: "Size",
+          sortBy: SortByFieldName.Size,
           onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
@@ -138,8 +139,8 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Type"),
           enable: this.props.typeTrashColumnIsEnabled,
           resizable: true,
-          sortBy: "Type",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.Type,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -159,7 +160,7 @@ class FilesTableHeader extends React.Component {
           resizable: true,
           enable: this.props.nameColumnIsEnabled,
           default: true,
-          sortBy: "AZ",
+          sortBy: SortByFieldName.Name,
           minWidth: 210,
           onClick: this.onFilter,
         },
@@ -168,8 +169,8 @@ class FilesTableHeader extends React.Component {
           title: t("ByAuthor"),
           enable: this.props.authorColumnIsEnabled,
           resizable: true,
-          sortBy: "Author",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.Author,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -177,8 +178,8 @@ class FilesTableHeader extends React.Component {
           title: t("ByCreation"),
           enable: this.props.createdColumnIsEnabled,
           resizable: true,
-          sortBy: "DateAndTimeCreation",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.CreationDate,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -186,7 +187,7 @@ class FilesTableHeader extends React.Component {
           title: t("ByLastModified"),
           enable: this.props.modifiedColumnIsEnabled,
           resizable: true,
-          sortBy: "DateAndTime",
+          sortBy: SortByFieldName.ModifiedDate,
           onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
@@ -195,7 +196,7 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Size"),
           enable: this.props.sizeColumnIsEnabled,
           resizable: true,
-          sortBy: "Size",
+          sortBy: SortByFieldName.Size,
           onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
@@ -204,8 +205,8 @@ class FilesTableHeader extends React.Component {
           title: t("Common:Type"),
           enable: this.props.typeColumnIsEnabled,
           resizable: true,
-          sortBy: "Type",
-          onClick: this.onFilter,
+          sortBy: SortByFieldName.Type,
+          // onClick: this.onFilter,
           onChange: this.onColumnChange,
         },
         {
@@ -336,7 +337,7 @@ class FilesTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, selectedFolderId, setIsLoading, fetchFiles } = this.props;
+    const { filter, setIsLoading } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -347,16 +348,14 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+    );
   };
 
   onRoomsFilter = (sortBy) => {
-    const {
-      roomsFilter,
-      selectedFolderId,
-      setIsLoading,
-      fetchRooms,
-    } = this.props;
+    const { roomsFilter, setIsLoading, navigate, location } = this.props;
 
     const newFilter = roomsFilter.clone();
     if (newFilter.sortBy !== sortBy) {
@@ -367,11 +366,13 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchRooms(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   render() {
     const {
+      t,
       containerRef,
       isHeaderChecked,
       filter,
@@ -414,32 +415,35 @@ class FilesTableHeader extends React.Component {
         useReactWindow={!withPaging}
         tagRef={tagRef}
         setHideColumns={setHideColumns}
+        settingsTitle={t("Files:TableSettingsTitle")}
       />
     );
   }
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore, tableStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    tableStore,
+    clientLoadingStore,
+  }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
       isHeaderChecked,
-      setIsLoading,
+
       filter,
-      fetchFiles,
+
       canShare,
       firstElemChecked,
       headerBorder,
       roomsFilter,
-      fetchRooms,
     } = filesStore;
-    const {
-      isRecentFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-      isTrashFolder,
-    } = treeFoldersStore;
+    const { isRecentFolder, isRoomsFolder, isArchiveFolder, isTrashFolder } =
+      treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
     const withContent = canShare;
     const sortingVisible = !isRecentFolder;
@@ -481,11 +485,9 @@ export default inject(
       withContent,
       sortingVisible,
 
-      setIsLoading,
-      fetchFiles,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
 
       roomsFilter,
-      fetchRooms,
 
       firstElemChecked,
       headerBorder,

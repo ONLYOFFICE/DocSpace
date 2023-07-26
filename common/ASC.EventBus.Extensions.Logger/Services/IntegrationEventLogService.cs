@@ -44,14 +44,16 @@ public class IntegrationEventLogService : IIntegrationEventLogService
     {
         var tid = transactionId.ToString();
 
-        using var _integrationEventLogContext = _dbContextFactory.CreateDbContext();
-        var result = await _integrationEventLogContext.IntegrationEventLogs
-            .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished).ToListAsync();
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+
+        var result = await Queries.IntegrationEventLogEntriesAsync(integrationEventLogContext, tid).ToListAsync();
 
         if (result != null && result.Any())
         {
-            return result.OrderBy(o => o.CreateOn)
-                .Select(e => e.DeserializeJsonContent(_eventTypes.Find(t => t.Name == e.EventTypeShortName)));
+            return result
+                .OrderBy(o => o.CreateOn)
+                .Select(e => e.DeserializeJsonContent(_eventTypes.Find(t => t.Name == e.EventTypeShortName)))
+                .ToList();
         }
 
         return new List<IntegrationEventLogEntry>();
@@ -66,32 +68,32 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
 
-        using var _integrationEventLogContext = _dbContextFactory.CreateDbContext();
-        _integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
-        _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+        integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
+        integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
-        await _integrationEventLogContext.SaveChangesAsync();
+        await integrationEventLogContext.SaveChangesAsync();
     }
 
-    public Task MarkEventAsPublishedAsync(Guid eventId)
+    public async Task MarkEventAsPublishedAsync(Guid eventId)
     {
-        return UpdateEventStatus(eventId, EventStateEnum.Published);
+        await UpdateEventStatusAsync(eventId, EventStateEnum.Published);
     }
 
-    public Task MarkEventAsInProgressAsync(Guid eventId)
+    public async Task MarkEventAsInProgressAsync(Guid eventId)
     {
-        return UpdateEventStatus(eventId, EventStateEnum.InProgress);
+        await UpdateEventStatusAsync(eventId, EventStateEnum.InProgress);
     }
 
-    public Task MarkEventAsFailedAsync(Guid eventId)
+    public async Task MarkEventAsFailedAsync(Guid eventId)
     {
-        return UpdateEventStatus(eventId, EventStateEnum.PublishedFailed);
+        await UpdateEventStatusAsync(eventId, EventStateEnum.PublishedFailed);
     }
 
-    private async Task UpdateEventStatus(Guid eventId, EventStateEnum status)
+    private async Task UpdateEventStatusAsync(Guid eventId, EventStateEnum status)
     {
-        using var _integrationEventLogContext = _dbContextFactory.CreateDbContext();
-        var eventLogEntry = _integrationEventLogContext.IntegrationEventLogs.Single(ie => ie.EventId == eventId);
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+        var eventLogEntry = await Queries.IntegrationEventLogEntryAsync(integrationEventLogContext, eventId);
         eventLogEntry.State = status;
 
         if (status == EventStateEnum.InProgress)
@@ -99,8 +101,22 @@ public class IntegrationEventLogService : IIntegrationEventLogService
             eventLogEntry.TimesSent++;
         }
 
-        _integrationEventLogContext.IntegrationEventLogs.Update(eventLogEntry);
+        integrationEventLogContext.IntegrationEventLogs.Update(eventLogEntry);
 
-        await _integrationEventLogContext.SaveChangesAsync();
+        await integrationEventLogContext.SaveChangesAsync();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<IntegrationEventLogContext, string, IAsyncEnumerable<IntegrationEventLogEntry>>
+        IntegrationEventLogEntriesAsync = EF.CompileAsyncQuery(
+            (IntegrationEventLogContext ctx, string tid) =>
+                ctx.IntegrationEventLogs
+                    .Where(e => e.TransactionId == tid && e.State == EventStateEnum.NotPublished));
+
+    public static readonly Func<IntegrationEventLogContext, Guid, Task<IntegrationEventLogEntry>>
+        IntegrationEventLogEntryAsync = EF.CompileAsyncQuery(
+            (IntegrationEventLogContext ctx, Guid eventId) =>
+                ctx.IntegrationEventLogs.Single(ie => ie.EventId == eventId));
 }

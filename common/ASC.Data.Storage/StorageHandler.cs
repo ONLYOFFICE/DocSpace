@@ -48,18 +48,18 @@ public class StorageHandler
         _checkAuth = checkAuth;
     }
 
-    public Task Invoke(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
+    public async ValueTask InvokeAsync(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
     {
-        var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().Id, _module);
+        var storage = await storageFactory.GetStorageAsync((await tenantManager.GetCurrentTenantAsync()).Id, _module);
         var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
         var header = context.Request.Query[Constants.QueryHeader].FirstOrDefault() ?? "";
         var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
         var storageExpire = storage.GetExpire(_domain);
 
-        if (_checkAuth && !securityContext.IsAuthenticated && String.IsNullOrEmpty(auth))
+        if (_checkAuth && !securityContext.IsAuthenticated && !await SecureHelper.CheckSecureKeyHeader(header, path, emailValidationKeyProvider))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return Task.CompletedTask;
+            return;
         }
 
         if (storageExpire != TimeSpan.Zero && storageExpire != TimeSpan.MinValue && storageExpire != TimeSpan.MaxValue || !string.IsNullOrEmpty(auth))
@@ -70,19 +70,14 @@ public class StorageHandler
                 expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
             }
 
-            var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
+            var validateResult = await emailValidationKeyProvider.ValidateEmailKeyAsync(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return Task.CompletedTask;
+                return;
             }
         }
 
-        return InternalInvoke(context, storage, path, header);
-    }
-
-    private async Task InternalInvoke(HttpContext context, IDataStore storage, string path, string header)
-    {
         if (!await storage.IsFileAsync(_domain, path))
         {
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -163,7 +158,7 @@ public class StorageHandler
         context.Response.Headers["Connection"] = "Keep-Alive";
         context.Response.Headers["Content-Length"] = length.ToString(CultureInfo.InvariantCulture);
 
-        using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
+        await using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
         {
             var responseBufferingFeature = context.Features.Get<IHttpResponseBodyFeature>();
             responseBufferingFeature?.DisableBuffering();
@@ -226,13 +221,13 @@ public static class StorageHandlerExtensions
 
         if (!builder.DataSources.Any(r => r.Endpoints.Any(e => e.DisplayName == url)))
         {
-            builder.MapGet(url, handler.Invoke);
+            builder.MapGet(url, handler.InvokeAsync);
 
             var newUrl = url.Replace("{0}", "{t1}/{t2}/{t3}");
 
             if (newUrl != url)
             {
-                builder.MapGet(url, handler.Invoke);
+                builder.MapGet(url, handler.InvokeAsync);
             }
         }
 

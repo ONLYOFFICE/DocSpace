@@ -11,6 +11,31 @@ cat<<EOF
 EOF
 apt-get -y update
 
+if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
+	ds_pkg_installed_name=$(dpkg -l | grep ${package_sysname}-documentserver | tail -n1 | awk '{print $2}');
+
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
+		ds_pkg_name="${package_sysname}-documentserver";
+	elif [ "$INSTALLATION_TYPE" = "ENTERPRISE" ]; then
+		ds_pkg_name="${package_sysname}-documentserver-ee";
+	fi
+
+	if [ -n $ds_pkg_name ]; then
+		if ! dpkg -l ${ds_pkg_name} &> /dev/null; then
+			
+			debconf-get-selections | grep ^${ds_pkg_installed_name} | sed s/${ds_pkg_installed_name}/${ds_pkg_name}/g | debconf-set-selections
+						
+			apt-get remove -yq ${ds_pkg_installed_name}
+			
+			apt-get install -yq ${ds_pkg_name}
+			
+			RECONFIGURE_PRODUCT="true"
+		else
+			apt-get install -y --only-upgrade ${ds_pkg_name};	
+		fi				
+	fi
+fi
+
 if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_PORT=${DS_PORT:-8083};
 
@@ -20,8 +45,8 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_DB_PWD=$DS_COMMON_NAME;
 	
 	DS_JWT_ENABLED=${DS_JWT_ENABLED:-true};
-	DS_JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)";
-	DS_JWT_HEADER="AuthorizationJwt";
+	DS_JWT_SECRET=${DS_JWT_SECRET:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)};
+	DS_JWT_HEADER=${DS_JWT_HEADER:-AuthorizationJwt};
 
 	if ! su - postgres -s /bin/bash -c "psql -lqt" | cut -d \| -f 1 | grep -q ${DS_DB_NAME}; then
 		su - postgres -s /bin/bash -c "psql -c \"CREATE USER ${DS_DB_USER} WITH password '${DS_DB_PWD}';\""
@@ -36,29 +61,11 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
 	
-	apt-get install -yq ${package_sysname}-documentserver
-elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
-	apt-get install -y --only-upgrade ${package_sysname}-documentserver
-fi
-
-NGINX_ROOT_DIR="/etc/nginx"
-
-NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-
-if ! id "nginx" &>/dev/null; then
-	systemctl stop nginx
-
-	rm -dfr /var/log/nginx/*
-	rm -dfr /var/cache/nginx/*
-	useradd -s /bin/false nginx
-
-	systemctl start nginx
-else
-	systemctl reload nginx
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
+		apt-get install -yq ${package_sysname}-documentserver
+	else
+		apt-get install -yq ${package_sysname}-documentserver-ee
+	fi
 fi
 
 if [ "$PRODUCT_INSTALLED" = "false" ]; then
@@ -69,7 +76,13 @@ if [ "$PRODUCT_INSTALLED" = "false" ]; then
 	apt-get install -y ${product} || true #Fix error 'Failed to fetch'
 	apt-get install -y ${product}
 elif [ "$UPDATE" = "true" ] && [ "$PRODUCT_INSTALLED" = "true" ]; then
-	apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
+	CURRENT_VERSION=$(dpkg-query -W -f='${Version}' ${product} 2>/dev/null)
+	AVAILABLE_VERSIONS=$(apt show  ${product} 2>/dev/null | grep -E '^Version:' | awk '{print $2}')
+	if [[ "$AVAILABLE_VERSIONS" != *"$CURRENT_VERSION"* ]]; then
+		apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
+	elif [ $RECONFIGURE_PRODUCT = "true" ]; then
+		DEBIAN_FRONTEND=noninteractive dpkg-reconfigure ${product}
+	fi
 fi
 
 echo ""

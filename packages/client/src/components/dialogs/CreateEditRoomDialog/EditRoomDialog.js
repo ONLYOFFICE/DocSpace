@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import TagHandler from "./handlers/TagHandler";
 import SetRoomParams from "./sub-components/SetRoomParams";
@@ -48,7 +48,7 @@ const EditRoomDialog = ({
     onSave(roomParams);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (fetchedImage)
       setRoomParams({
         ...roomParams,

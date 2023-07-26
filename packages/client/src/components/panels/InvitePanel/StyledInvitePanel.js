@@ -25,11 +25,23 @@ const fillAvailableWidth = css`
   width: fill-available;
 `;
 
-const StyledInvitePanel = styled.div``;
+const StyledInvitePanel = styled.div`
+  .invite-panel-body {
+    height: ${(props) =>
+      props.hasInvitedUsers ? "calc(100% - 55px - 70px)" : "calc(100% - 55px)"};
+
+    .scroll-body {
+      padding-right: 0px !important;
+    }
+  }
+`;
 
 const ScrollList = styled.div`
   width: 100%;
-  height: ${(props) => props.offsetTop && `calc(100% - ${props.offsetTop}px)`};
+  height: ${(props) =>
+    props.scrollAllPanelContent && props.isTotalListHeight
+      ? "auto"
+      : props.offsetTop && `calc(100% - ${props.offsetTop}px)`};
 `;
 
 const StyledBlock = styled.div`
@@ -90,6 +102,11 @@ const StyledRow = styled.div`
     font-weight: 600;
     font-size: 14px;
     line-height: 16px;
+  }
+
+  .invite-panel_access-selector {
+    margin-left: auto;
+    margin-right: 0;
   }
 `;
 

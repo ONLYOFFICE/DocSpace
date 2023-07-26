@@ -11,7 +11,10 @@ export default {
   component: TreeMenu,
   subcomponents: { TreeNode },
   parameters: { docs: { description: { component: "Example" } } },
-  argTypes: { data: { table: { disable: true } } },
+  argTypes: {
+    data: { table: { disable: true } },
+    disableSwitch: { description: "Disables Switch" },
+  },
 };
 
 const treeData = [
@@ -123,11 +126,7 @@ const Template = (args) => {
             key={item.key}
             icon={
               item.root ? (
-                <CatalogDepartmentsReactSvg
-                  size="scale"
-                  isfill={true}
-                  color="dimgray"
-                />
+                <CatalogDepartmentsReactSvg size="scale" color="dimgray" />
               ) : (
                 ""
               )
@@ -143,11 +142,7 @@ const Template = (args) => {
           title={item.title}
           icon={
             !item.root ? (
-              <CatalogFolderReactSvg
-                size="scale"
-                isfill={true}
-                color="dimgray"
-              />
+              <CatalogFolderReactSvg size="scale" color="dimgray" />
             ) : (
               ""
             )
@@ -162,11 +157,9 @@ const Template = (args) => {
       return null;
     }
     if (obj.expanded) {
-      return <ExpanderDownReactSvg width="8px" isfill={true} color="dimgray" />;
+      return <ExpanderDownReactSvg width="8px" color="dimgray" />;
     } else {
-      return (
-        <ExpanderRightReactSvg width="8px" isfill={true} color="dimgray" />
-      );
+      return <ExpanderRightReactSvg width="8px" color="dimgray" />;
     }
   };
 

@@ -1,7 +1,8 @@
 {
+  "AccountLoginType": "Typ přihlášení k účtu",
   "DeleteSelfProfile": "Smazat profil",
-  "DisableUserButton": "Deaktivovat",
   "DisabledEmployeeStatus": "Deaktivováno",
+  "DisableUserButton": "Deaktivovat",
   "EmailChangeButton": "Změnit emailovou adresu",
   "EnableUserButton": "Aktivovat",
   "InviteLinkTitle": "Odkaz s pozvánkou",
@@ -12,6 +13,7 @@
   "RemoveData": "Odstranit osobní údaje",
   "ResetAuth": "Obnovení ověřování",
   "SendInviteAgain": "Odeslat pozvánku ještě jednou",
+  "StandardLogin": "Standardní přihlášení",
   "SuccessChangeUserStatus": "Stav uživatele byl úspěšně změněn",
   "SuccessDeletePersonalData": "Osobní údaje byly úspěšně odstraněny",
   "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána",

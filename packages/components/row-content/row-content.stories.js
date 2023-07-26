@@ -5,6 +5,11 @@ import Checkbox from "../checkbox";
 import SendClockReactSvg from "PUBLIC_DIR/images/send.clock.react.svg";
 import CatalogSpamReactSvg from "PUBLIC_DIR/images/catalog.spam.react.svg";
 
+export default {
+  title: "Components/RowContent",
+  component: RowContent,
+};
+
 const Template = (args) => {
   const [isChecked, setIsChecked] = useState(false);
   return (
@@ -12,18 +17,12 @@ const Template = (args) => {
       <h3>Base demo</h3>
       <div style={{ height: "16px" }}></div>
       <RowContent {...args}>
-        <Link
-          type="page"
-          title="Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo" isBold={true} fontSize="15px">
           Demo
         </Link>
         <>
-          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
-          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo
@@ -51,17 +50,11 @@ const Template = (args) => {
         </Link>
       </RowContent>
       <RowContent>
-        <Link
-          type="page"
-          title="Demo Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo Demo" isBold={true} fontSize="15px">
           Demo Demo
         </Link>
         <>
-          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" color="#3B72A7" />
         </>
         <></>
         <Link
@@ -87,13 +80,7 @@ const Template = (args) => {
         </Link>
       </RowContent>
       <RowContent>
-        <Link
-          type="page"
-          title="Demo Demo Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo Demo Demo" isBold={true} fontSize="15px">
           Demo Demo Demo
         </Link>
         <></>
@@ -126,12 +113,11 @@ const Template = (args) => {
           title="Demo Demo Demo Demo"
           isBold={true}
           fontSize="15px"
-          color="#333333"
         >
           Demo Demo Demo Demo
         </Link>
         <>
-          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo
@@ -162,13 +148,7 @@ const Template = (args) => {
       <h3>Custom elements</h3>
       <div style={{ height: "16px" }}></div>
       <RowContent disableSideInfo={true}>
-        <Link
-          type="page"
-          title="John Doe"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="John Doe" isBold={true} fontSize="15px">
           John Doe
         </Link>
         <></>

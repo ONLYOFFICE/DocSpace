@@ -42,7 +42,7 @@ public class LoggerMiddleware
                              CoreSettings coreSettings,
                              ILogger<LoggerMiddleware> logger)
     {
-        var tenant = tenantManager.GetCurrentTenant(false, context);
+        var tenant = await tenantManager.GetCurrentTenantAsync(false, context);
 
         if (tenant == null)
         {
@@ -62,7 +62,7 @@ public class LoggerMiddleware
             state.Add("tenantMappedDomain", tenant.MappedDomain);
         }
 
-        using (logger.BeginScope(state.ToArray()))
+        using (logger.BeginScope(state))
         {
             await _next.Invoke(context);
         }

@@ -10,12 +10,14 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import SsoFormField from "./sub-components/SsoFormField";
 
-const GIVENNAME = "givenName";
-const SN = "sn";
-const EMAIL = "email";
-const LOCATION = "location";
-const TITLE = "title";
-const PHONE = "phone";
+import {
+  SSO_GIVEN_NAME,
+  SSO_SN,
+  SSO_EMAIL,
+  SSO_LOCATION,
+  SSO_TITLE,
+  SSO_PHONE,
+} from "SRC_DIR/helpers/constants";
 
 const FieldMapping = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
@@ -52,15 +54,18 @@ const FieldMapping = (props) => {
         </Text>
 
         <HelpButton
+          className="attribute-matching-tooltip icon-button"
           offsetRight={0}
-          tooltipContent={t("AttributeMatchingTooltip")}
+          tooltipContent={
+            <Text fontSize="12px">{t("AttributeMatchingTooltip")}</Text>
+          }
         />
       </Box>
 
       <SsoFormField
         labelText={t("Common:FirstName")}
         name="firstName"
-        placeholder={GIVENNAME}
+        placeholder={SSO_GIVEN_NAME}
         tabIndex={16}
         value={firstName}
         hasError={firstNameHasError}
@@ -69,7 +74,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:LastName")}
         name="lastName"
-        placeholder={SN}
+        placeholder={SSO_SN}
         tabIndex={17}
         value={lastName}
         hasError={lastNameHasError}
@@ -78,16 +83,16 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Email")}
         name="email"
-        placeholder={EMAIL}
+        placeholder={SSO_EMAIL}
         tabIndex={18}
         value={email}
         hasError={emailHasError}
       />
 
-      <SsoFormField
+      {/*<SsoFormField
         labelText={t("Common:Location")}
         name="location"
-        placeholder={LOCATION}
+        placeholder={SSO_LOCATION}
         tabIndex={19}
         value={location}
         hasError={locationHasError}
@@ -96,7 +101,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Title")}
         name="title"
-        placeholder={TITLE}
+        placeholder={SSO_TITLE}
         tabIndex={20}
         value={title}
         hasError={titleHasError}
@@ -105,11 +110,11 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Phone")}
         name="phone"
-        placeholder={PHONE}
+        placeholder={SSO_PHONE}
         tabIndex={21}
         value={phone}
         hasError={phoneHasError}
-      />
+  />*/}
 
       <FieldContainer
         className="advanced-block"
@@ -117,9 +122,13 @@ const FieldMapping = (props) => {
         isVertical
         labelText={t("AdvancedSettings")}
         place="top"
-        tooltipContent={t("AdvancedSettingsTooltip")}
+        tooltipContent={
+          <Text fontSize="12px">{t("AdvancedSettingsTooltip")}</Text>
+        }
+        tooltipClass="advanced-settings-tooltip icon-button"
       >
         <Checkbox
+          id="hide-auth-page"
           className="checkbox-input"
           label={t("HideAuthPage")}
           name="hideAuthPage"

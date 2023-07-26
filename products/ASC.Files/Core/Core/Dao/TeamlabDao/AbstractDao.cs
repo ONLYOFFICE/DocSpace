@@ -94,25 +94,20 @@ public class AbstractDao
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var folders = await filesDbContext.Folders
-            .Where(r => r.TenantId == TenantID)
-            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => a.ParentId == r.Id))
-            .ToListAsync();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var folders = await Queries.FoldersAsync(filesDbContext, TenantID, folderId).ToListAsync();
 
         foreach (var f in folders)
         {
-            f.FilesCount = await
-                filesDbContext.Files
-                .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
-                .Where(r => r.file.TenantId == f.TenantId)
-                .Where(r => r.tree.ParentId == f.Id)
-                .Select(r => r.file.Id)
-                .Distinct()
-                .CountAsync();
+            f.FilesCount = await Queries.FilesCountAsync(filesDbContext, f.TenantId, f.Id);
         }
 
         await filesDbContext.SaveChangesAsync();
+    }
+
+    protected ValueTask<object> MappingIDAsync(object id)
+    {
+        return MappingIDAsync(id, false);
     }
 
     protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
@@ -132,27 +127,29 @@ public class AbstractDao
         return InternalMappingIDAsync(id, saveIfNotExist);
     }
 
+    protected int MappingIDAsync(int id)
+    {
+        return MappingIDAsync(id, false);
+    }
+
+    protected int MappingIDAsync(int id, bool saveIfNotExist = false)
+    {
+        return id;
+    }
+
     private async ValueTask<object> InternalMappingIDAsync(object id, bool saveIfNotExist = false)
     {
         object result;
 
-        if (id.ToString().StartsWith("sbox")
-            || id.ToString().StartsWith("box")
-            || id.ToString().StartsWith("dropbox")
-            || id.ToString().StartsWith("spoint")
-            || id.ToString().StartsWith("drive")
-            || id.ToString().StartsWith("onedrive"))
+        var sId = id.ToString();
+        if (Selectors.All.Any(s => sId.StartsWith(s.Id)))
         {
             result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
         }
         else
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            result = await Query(filesDbContext.ThirdpartyIdMapping)
-                .AsNoTracking()
-                .Where(r => r.HashId == id.ToString())
-                .Select(r => r.Id)
-                .FirstOrDefaultAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            result = await Queries.IdAsync(filesDbContext, TenantID, id.ToString());
         }
 
         if (saveIfNotExist)
@@ -164,17 +161,12 @@ public class AbstractDao
                 TenantId = TenantID
             };
 
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
             await filesDbContext.SaveChangesAsync();
         }
 
         return result;
-    }
-
-    protected ValueTask<object> MappingIDAsync(object id)
-    {
-        return MappingIDAsync(id, false);
     }
 
     internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
@@ -198,4 +190,35 @@ public class AbstractDao
         End,
         Any
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolder>> FoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.Tree.Where(t => t.FolderId == folderId).Any(a => a.ParentId == r.Id)));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> FilesCountAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Files
+                    .Join(ctx.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+                    .Where(r => r.file.TenantId == tenantId)
+                    .Where(r => r.tree.ParentId == folderId)
+                    .Select(r => r.file.Id)
+                    .Distinct()
+                    .Count());
+
+    public static readonly Func<FilesDbContext, int, string, Task<string>> IdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.HashId == hashId)
+                    .AsNoTracking()
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
 }

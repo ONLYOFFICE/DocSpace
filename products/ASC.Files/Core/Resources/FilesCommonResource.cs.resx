@@ -125,7 +125,7 @@
     <value>Odesílání dokumentu pomocí DocuSign bylo zrušeno</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Dokument byl poslán k zapsání pomocí DocuSign.</value>
+    <value>Dokument byl poslán k zapsání pomocí DocuSign</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Zrušeno</value>
@@ -188,13 +188,13 @@
     <value>Omlouváme se, ale formát tohoto souboru není podporován</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Autor, který provedl poslední změnu je neznámý.</value>
+    <value>Autor, který provedl poslední změnu je neznámý</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
     <value>Soubor byl poškozen při ukládání</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Nepodařilo se získat soubor, který chcete uložit.</value>
+    <value>Nepodařilo se získat soubor, který chcete uložit</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
     <value>Nemáte dostatečné oprávnění k provedení operace</value>
@@ -266,19 +266,20 @@
     <value>Soubor vytvořen ve složce "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Udělej to samé jako uživatel|Odkaz na Dropbox, Box a další účty v sekci "Běžné dokumenty"|Nastavení přístupních práv k dokumentům a složkám v sekci "Běžné dokumenty".</value>
+    <value>Udělej to samé jako uživatel|Odkaz na Dropbox, Box a další účty v sekci "Běžné dokumenty"|Nastavení přístupních práv k dokumentům a složkám v sekci "Běžné dokumenty"</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
     <value>Vytvářejte, upravujte a sdílejte dokumenty. Spolupracujte na nich v reálném čase. Je garantována 100% kompatibilita s MS Office formáty.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Vytvářejte, upravujte a sdílejte dokumenty. Spolupracujte na nich v reálném čase. Je garantována 100% kompatibilita s MS Office formáty.</value>
+    <value>Vytvářejte, upravujte a sdílejte dokumenty. Spolupracujte na nich v reálném čase.
+Je garantována 100% kompatibilita s MS Office formáty.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Dokumenty</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Vytvořit a upravit vlastní dokumenty stejně tak jako sdílené dokumenty se správnými přístupními právy|Udělit přístup ke čtení/upravování dalším uživatelům k dokumentům a složkám|Odkaz na Dropbox, Box nebo další účty v sekci "Moje dokumenty" </value>
+    <value>Vytvořit a upravit vlastní dokumenty stejně tak jako sdílené dokumenty se správnými přístupními právy|Udělit přístup ke čtení/upravování dalším uživatelům k dokumentům a složkám|Odkaz na Dropbox, Box nebo další účty v sekci "Moje dokumenty"</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Křestní jméno</value>
@@ -288,5 +289,131 @@
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>Soubor je odemčen</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Správce DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor místnosti</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Uživatel</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Prohlížející</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Komentátor</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Vyplňování formulářů</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Recenzent</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Spolupracovník</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Spolupracovník</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Odeslaný formulář</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Nová verze nemůže být stejná jako ta aktuální</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění ke kopírování souboru</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění ke kopírování složky</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Neplatný poskytovatel</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Tuto složku není možné použít k uložení místnosti</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Odkaz na pozvánku je neplatný nebo jeho platnost vypršela</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Tento poskytovatel je již připojen k místnosti</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Role není pro tento typ uživatele dostupná</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatečné povolení k archivaci místnosti</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Ke kopírování do této složky nemáte oprávnění</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Nemáte oprávnění k úpravám místnosti</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>K přesunu do této složky nemáte oprávnění</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatečné povolení ke zrušení archivace místnosti</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Archivované místnosti nelze upravovat</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Místnost nelze připnout</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor místnosti</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Vlastní filtr</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Vyplňování formulářů</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Automaticky uloženo</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Vytvořeno pro vyplnění formuláře</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Upraveno pomocí šifrování</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Šifrováno</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Uloženo</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění k přesunu souboru</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění k přesunu složky</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Vyhledávání v obsahu dokumentů</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Vyplnitelný dokument OFORM je připraven. Je uložen v {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Kopie OFORM se vytvoří ve složce {0}. Vyplňte formulář a stáhněte si výsledek ve formátu PDF nebo DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Soubor již není návrhem pro vyplnění formuláře.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Zobrazení a stažení sdílených dokumentů. Nahrávání souborů do sdílených složek. Zaručena nejvyšší kompatibilita s formáty docx, xlsx, pptx.</value>
   </data>
 </root>

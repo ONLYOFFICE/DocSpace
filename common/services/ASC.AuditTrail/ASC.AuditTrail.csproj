@@ -20,8 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Update="AuditReportResource.Designer.cs">
       <DesignTime>True</DesignTime>

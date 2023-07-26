@@ -62,6 +62,7 @@ public class FilesDbContext : DbContext
             .AddDbFilesLink()
             .AddDbFilesProperties()
             .AddDbTenant()
-            .AddFilesConverts();
+            .AddFilesConverts()
+            .AddDbFunctions();
     }
 }

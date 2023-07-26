@@ -60,6 +60,8 @@ public class IntegrationEventLogEntry
     public string TransactionId { get; private set; }
     public int TenantId { get; private set; }
 
+    public DbTenant Tenant { get; private set; }
+
     public IntegrationEventLogEntry DeserializeJsonContent(Type type)
     {
         IntegrationEvent = JsonSerializer.Deserialize(Content, type, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) as IntegrationEvent;

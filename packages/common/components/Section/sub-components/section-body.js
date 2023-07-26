@@ -209,7 +209,7 @@ class SectionBody extends React.Component {
   componentDidMount() {
     const { withScroll } = this.props;
     if (!this.props.autoFocus) return;
-    if (withScroll) this.focusRef.current.focus();
+    if (withScroll) this?.focusRef?.current?.focus();
   }
 
   componentWillUnmount() {
@@ -287,7 +287,11 @@ class SectionBody extends React.Component {
       >
         {withScroll ? (
           !isMobileOnly ? (
-            <Scrollbar id="sectionScroll" stype="mediumBlack">
+            <Scrollbar
+              id="sectionScroll"
+              scrollclass="section-scroll"
+              stype="mediumBlack"
+            >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
