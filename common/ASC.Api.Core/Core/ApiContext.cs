@@ -50,6 +50,18 @@ public class ApiContext : ICloneable
             }
         }
     }
+    
+    public bool NextPage
+    {
+        get => (bool)(_httpContextAccessor.HttpContext?.Items[nameof(NextPage)] ?? false);
+        set
+        {
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                _httpContextAccessor.HttpContext.Items[nameof(NextPage)] = value;
+            }
+        }
+    }
 
     /// <summary>
     /// Filters responce to specific type from request parameter "type"
@@ -200,6 +212,16 @@ public class ApiContext : ICloneable
     public ApiContext SetCount(int count)
     {
         _httpContextAccessor.HttpContext.Items[nameof(Count)] = count;
+
+        return this;
+    }
+    
+    public ApiContext SetNextPage(bool value)
+    {
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            _httpContextAccessor.HttpContext.Items[nameof(NextPage)] = value;
+        }
 
         return this;
     }
