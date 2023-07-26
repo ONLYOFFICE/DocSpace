@@ -99,7 +99,8 @@ function PDFViewer({
       loadScript(
         combineUrl(origin, path),
         pdfViewerId,
-        () => {
+        (event) => {
+          console.log({ event });
           // initViewer();
           setIsLoadedViewerScript(true);
           setIsLoadingScript(false);
@@ -121,6 +122,8 @@ function PDFViewer({
 
     fetch(src)
       .then((value) => {
+        if (!value.ok) throw new Error(value.statusText);
+
         return value.blob();
       })
       .then((value) => {

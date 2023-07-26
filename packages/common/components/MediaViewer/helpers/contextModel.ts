@@ -88,7 +88,7 @@ export const getPDFContextModel = (
       label: t("Common:Download"),
       icon: DownloadReactSvgUrl,
       onClick: () => funcs.onClickDownload(item, t),
-      disabled: false,
+      disabled: !item.security.Download,
     },
     {
       id: "option_download-as",
@@ -96,7 +96,7 @@ export const getPDFContextModel = (
       label: t("Translations:DownloadAs"),
       icon: DownloadAsReactSvgUrl,
       onClick: funcs.onClickDownloadAs,
-      disabled: false,
+      disabled: !item.security.Download,
     },
     {
       id: "option_rename",
