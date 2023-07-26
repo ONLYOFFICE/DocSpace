@@ -1,13 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { observer } from "mobx-react";
 import Article from "@docspace/common/components/Article";
+import ArticleWrapper from "@docspace/common/components/Article/ArticleWrapper";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
 import Section from "@docspace/common/components/Section";
 
+type TLayoutProps = {
+  children: React.ReactNode;
+};
+
 const ArticleSettings = React.memo(() => {
   return (
-    <Article hideProfileBlock hideAppsBlock>
+    <ArticleWrapper hideProfileBlock hideAppsBlock>
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>
@@ -15,11 +20,11 @@ const ArticleSettings = React.memo(() => {
       <Article.Body>
         <ArticleBodyContent />
       </Article.Body>
-    </Article>
+    </ArticleWrapper>
   );
 });
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: TLayoutProps) => {
   return (
     <>
       <ArticleSettings />
