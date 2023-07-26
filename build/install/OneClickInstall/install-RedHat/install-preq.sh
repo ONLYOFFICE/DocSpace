@@ -59,7 +59,8 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/sc
 curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$REV bash
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_16.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
+[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
+curl -sL https://rpm.nodesource.com/setup_${NODE_VERSION}.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
 rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
 
 #add dotnet repo
