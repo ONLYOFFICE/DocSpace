@@ -417,4 +417,3 @@ public class WhitelabelController : BaseSettingsController
         await DemandWhiteLabelPermissionAsync();
     }
 }
-}
