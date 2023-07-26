@@ -31,7 +31,7 @@ public class UrlShortRewriter
 
     public UrlShortRewriter(RequestDelegate next)
     {
-         
+
     }
 
     public async Task InvokeAsync(HttpContext httpContext, IDbContextFactory<UrlShortenerDbContext> dbContextFactory)
@@ -41,8 +41,12 @@ public class UrlShortRewriter
 
         var id = ShortUrl.Decode(path);
 
-        var context = dbContextFactory.CreateDbContext();
-        var link = await context.ShortLinks.FindAsync(id);
+        ShortLink link;
+
+        using (var context = dbContextFactory.CreateDbContext())
+        {
+            link = await context.ShortLinks.FindAsync(id);
+        }
 
         if (link != null)
         {
