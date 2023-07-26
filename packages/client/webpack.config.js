@@ -1,8 +1,8 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin =
-  require("webpack").container.ModuleFederationPlugin;
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
 
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
@@ -310,7 +310,7 @@ module.exports = (env, argv) => {
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
         "./CommonWhiteLabel":
-          "./src/pages/PortalSettings/categories/common/Branding/CommonWhiteLabel.js",
+          "./src/pages/PortalSettings/categories/common/Branding/WhiteLabelWrapper.js",
       },
       shared: {
         ...deps,
