@@ -690,7 +690,7 @@ class TableHeader extends React.Component {
 
               return (
                 <TableHeaderCell
-                  key={column.key}
+                  key={column.key ?? "empty-cell"}
                   index={index}
                   column={column}
                   sorted={sorted}

@@ -288,6 +288,7 @@ public class ValidationInfo
     public FolderType FolderType { get; set; }
     public Logo Logo { get; set; }
     public int TenantId { get; set; }
+    public bool Shared { get; set; }
 }
 
 public class ExternalShareData

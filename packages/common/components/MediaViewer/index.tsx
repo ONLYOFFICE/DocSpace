@@ -245,6 +245,8 @@ function MediaViewer({
   const onDownload = () => {
     const { playlist, onDownload } = props;
 
+    if (!targetFile?.security.Download) return;
+
     let currentFileId = playlist.find(
       (file) => file.id === playlistPos
     )?.fileId;
@@ -369,6 +371,7 @@ function MediaViewer({
     <>
       {canOpen && (
         <ViewerWrapper
+          targetFile={targetFile}
           userAccess={props.userAccess}
           visible={props.visible}
           title={title}

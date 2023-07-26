@@ -3136,6 +3136,13 @@ const Base = {
     borderColor: "#A3A9AE",
     dashedBorder: "1px dashed #5299E0",
   },
+
+  editLink: {
+    text: {
+      color: "#A3A9AE",
+      errorColor: "#F21C0E",
+    },
+  },
 };
 
 export default Base;
