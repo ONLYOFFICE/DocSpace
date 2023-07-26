@@ -3,6 +3,7 @@ using System;
 using ASC.Migrations.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.SaaS.Migrations
 {
     [DbContext(typeof(MigrationContext))]
-    partial class MigrationContextModelSnapshot : ModelSnapshot
+    [Migration("20230726124747_MigrationContext_Upgrade1")]
+    partial class MigrationContextUpgrade1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
