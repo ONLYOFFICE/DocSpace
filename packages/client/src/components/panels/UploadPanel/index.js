@@ -7,7 +7,6 @@ import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import { withTranslation } from "react-i18next";
-//import SharingPanel from "../SharingPanel";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -149,7 +148,6 @@ class UploadPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-        {/* sharingPanelVisible && <SharingPanel /> */}
       </StyledAsidePanel>
     );
   }
