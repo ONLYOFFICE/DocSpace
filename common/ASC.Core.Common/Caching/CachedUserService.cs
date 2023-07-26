@@ -181,7 +181,7 @@ public class CachedUserService : IUserService, ICachedService
         CacheUserGroupRefItem = userServiceCache.CacheUserGroupRefItem;
     }
 
-    public IQueryable<UserInfo> GetUsers(
+    public IAsyncEnumerable<UserInfo> GetUsers(
         int tenant,
         bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
@@ -194,11 +194,9 @@ public class CachedUserService : IUserService, ICachedService
         string sortBy,
         bool sortOrderAsc,
         long limit,
-        long offset,
-        out int total,
-        out int count)
+        long offset)
     {
-        return Service.GetUsers(tenant, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return Service.GetUsers(tenant, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset);
     }
 
     public async Task<UserInfo> GetUserAsync(int tenant, Guid id)
