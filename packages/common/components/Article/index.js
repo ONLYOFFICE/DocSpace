@@ -190,6 +190,7 @@ const Article = ({
             showText={showText}
             toggleShowText={toggleShowText}
             currentColorScheme={currentColorScheme}
+            hideProfileBlock={hideProfileBlock}
           />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />

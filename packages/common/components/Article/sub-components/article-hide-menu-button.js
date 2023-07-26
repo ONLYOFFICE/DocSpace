@@ -15,7 +15,7 @@ const StyledHideArticleMenuButton = styled.div`
   position: fixed;
   height: 44px;
   z-index: 209;
-  bottom: 89px;
+  bottom: ${({ hideProfileBlock }) => (hideProfileBlock ? "16px" : "89px")};
   left: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -100,6 +100,7 @@ const HideArticleMenuButton = ({
   showText,
   toggleShowText,
   currentColorScheme,
+  hideProfileBlock,
 }) => {
   const { t } = useTranslation("Common");
 
@@ -108,6 +109,7 @@ const HideArticleMenuButton = ({
       showText={showText}
       onClick={toggleShowText}
       currentColorScheme={currentColorScheme}
+      hideProfileBlock={hideProfileBlock}
     >
       {showText ? (
         <div
