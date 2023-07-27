@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
-
 namespace ASC.Web.Files.Services.WCFService;
 
 [Scope]
@@ -68,7 +66,7 @@ public class FileStorageService //: IFileStorageService
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly FileSharing _fileSharing;
     private readonly NotifyClient _notifyClient;
-    private readonly UrlShortener _urlShortener;
+    private readonly IUrlShortener _urlShortener;
     private readonly IServiceProvider _serviceProvider;
     private readonly FileSharingAceHelper _fileSharingAceHelper;
     private readonly ConsumerFactory _consumerFactory;
@@ -123,7 +121,7 @@ public class FileStorageService //: IFileStorageService
         DocumentServiceConnector documentServiceConnector,
         FileSharing fileSharing,
         NotifyClient notifyClient,
-        UrlShortener urlShortener,
+        IUrlShortener urlShortener,
         IServiceProvider serviceProvider,
         FileSharingAceHelper fileSharingAceHelper,
         ConsumerFactory consumerFactory,
@@ -2564,7 +2562,7 @@ public class FileStorageService //: IFileStorageService
 
         try
         {
-            return await _urlShortener.Instance.GetShortenLinkAsync(shareLink);
+            return await _urlShortener.GetShortenLinkAsync(shareLink);
         }
         catch (Exception e)
         {
