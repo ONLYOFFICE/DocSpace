@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { isMobile, isDesktop } from "react-device-detect";
+import React, { useEffect } from "react";
+import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@docspace/components/box";
+import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
 
 import Certificates from "./Certificates";
 import FieldMapping from "./FieldMapping";
@@ -23,23 +24,12 @@ const SP_METADATA = "spMetadata";
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
-  const [isSmallWindow, setIsSmallWindow] = useState(false);
+
+  const isSmallWindow = useIsSmallWindow(795);
 
   useEffect(() => {
     isSSOAvailable && load();
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
-
-    return () => window.removeEventListener("resize", onCheckView);
   }, []);
-
-  const onCheckView = () => {
-    if (isDesktop && window.innerWidth < 795) {
-      setIsSmallWindow(true);
-    } else {
-      setIsSmallWindow(false);
-    }
-  };
 
   if (isSmallWindow)
     return (
