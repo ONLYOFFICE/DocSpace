@@ -15,7 +15,7 @@ const SectionHeaderContent = () => {
 
   return (
     <Headline type="content" truncate={true}>
-      <div className="header">{t(item.tKey)}</div>
+      <div className="header">{t(item?.tKey)}</div>
     </Headline>
   );
 };
