@@ -1,7 +1,7 @@
 ﻿import ArrowReactSvgUrl from "PUBLIC_DIR/images/arrow.react.svg?url";
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
@@ -53,7 +53,14 @@ const StyledRoomType = styled.div`
   }
 
   .choose_room-forward_btn {
-    margin-left: auto;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     max-width: 17px;
     max-height: 17px;
     min-width: 17px;
@@ -62,53 +69,53 @@ const StyledRoomType = styled.div`
 `;
 
 const StyledListItem = styled(StyledRoomType)`
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.theme.createEditRoomDialog.roomType.listItem.background};
   border: 1px solid
-    ${(props) => props.theme.createEditRoomDialog.roomType.listItem.borderColor};
+    ${props => props.theme.createEditRoomDialog.roomType.listItem.borderColor};
   border-radius: 6px;
 
   .choose_room-description {
-    color: ${(props) =>
+    color: ${props =>
       props.theme.createEditRoomDialog.roomType.listItem.descriptionText};
   }
 `;
 
 const StyledDropdownButton = styled(StyledRoomType)`
   border-radius: 6px;
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.theme.createEditRoomDialog.roomType.dropdownButton.background};
   border: 1px solid
-    ${(props) =>
+    ${props =>
       props.isOpen
         ? props.theme.createEditRoomDialog.roomType.dropdownButton
             .isOpenBorderColor
         : props.theme.createEditRoomDialog.roomType.dropdownButton.borderColor};
 
   .choose_room-description {
-    color: ${(props) =>
+    color: ${props =>
       props.theme.createEditRoomDialog.roomType.dropdownButton.descriptionText};
   }
 
   .choose_room-forward_btn {
     &.dropdown-button {
-      transform: ${(props) =>
+      transform: ${props =>
         props.isOpen ? "rotate(-90deg)" : "rotate(90deg)"};
     }
   }
 `;
 
 const StyledDropdownItem = styled(StyledRoomType)`
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.theme.createEditRoomDialog.roomType.dropdownItem.background};
 
   &:hover {
-    background-color: ${(props) =>
+    background-color: ${props =>
       props.theme.createEditRoomDialog.roomType.dropdownItem.hoverBackground};
   }
 
   .choose_room-description {
-    color: ${(props) =>
+    color: ${props =>
       props.theme.createEditRoomDialog.roomType.dropdownItem.descriptionText};
   }
 
@@ -119,15 +126,15 @@ const StyledDropdownItem = styled(StyledRoomType)`
 
 const StyledDisplayItem = styled(StyledRoomType)`
   cursor: default;
-  background-color: ${(props) =>
+  background-color: ${props =>
     props.theme.createEditRoomDialog.roomType.displayItem.background};
   border: 1px solid
-    ${(props) =>
+    ${props =>
       props.theme.createEditRoomDialog.roomType.displayItem.borderColor};
   border-radius: 6px;
 
   .choose_room-description {
-    color: ${(props) =>
+    color: ${props =>
       props.theme.createEditRoomDialog.roomType.displayItem.descriptionText};
   }
 
@@ -194,8 +201,7 @@ const RoomType = ({
       title={t(room.title)}
       onClick={onClick}
       isOpen={isOpen}
-      data-selected-id={selectedId}
-    >
+      data-selected-id={selectedId}>
       {content}
     </StyledDropdownButton>
   ) : type === "dropdownItem" ? (
@@ -204,16 +210,14 @@ const RoomType = ({
       title={t(room.title)}
       onClick={onClick}
       isOpen={isOpen}
-      data-selected-id={selectedId}
-    >
+      data-selected-id={selectedId}>
       {content}
     </StyledDropdownItem>
   ) : (
     <StyledDisplayItem
       id={id}
       title={t(room.title)}
-      data-selected-id={selectedId}
-    >
+      data-selected-id={selectedId}>
       {content}
     </StyledDisplayItem>
   );

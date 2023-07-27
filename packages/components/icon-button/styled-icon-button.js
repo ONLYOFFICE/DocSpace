@@ -16,6 +16,11 @@ const StyledOuter = styled.div`
     css`
       svg {
         &:not(:root) {
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl" &&
+            css`
+              transform: scaleX(-1);
+            `}
           width: 100%;
           height: 100%;
         }
