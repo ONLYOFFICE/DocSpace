@@ -7,7 +7,7 @@ import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view) {
+export function openEdit(fileId, version, doc, view, shareKey) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -20,6 +20,10 @@ export function openEdit(fileId, version, doc, view) {
 
   if (doc) {
     params.push(`doc=${doc}`);
+  }
+
+  if (shareKey) {
+    params.push(`share=${shareKey}`);
   }
 
   const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
@@ -561,9 +565,14 @@ export function uploadFile(url, data) {
   return axios.post(url, data);
 }
 
-export function downloadFiles(fileIds, folderIds) {
+export function downloadFiles(fileIds, folderIds, shareKey) {
   const data = { fileIds, folderIds };
-  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
+  const share = shareKey ? `?share=${shareKey}` : "";
+  return request({
+    method: "put",
+    url: `/files/fileops/bulkdownload${share}`,
+    data,
+  });
 }
 
 export function getProgress() {

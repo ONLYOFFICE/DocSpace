@@ -141,13 +141,6 @@ const StyledContent = styled.div`
     margin-right: 0 !important;
   }
 
-  .header_aside-panel-header {
-    max-width: 500px;
-    margin: 0 0 0 16px;
-    line-height: 57px;
-    font-weight: 700;
-  }
-
   .header_aside-panel-plus-icon {
     margin-left: auto;
   }

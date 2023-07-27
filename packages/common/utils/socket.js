@@ -6,7 +6,7 @@ let callbacks = [];
 class SocketIOHelper {
   socketUrl = null;
 
-  constructor(url) {
+  constructor(url, publicRoomKey) {
     if (!url) return;
 
     this.socketUrl = url;
@@ -20,6 +20,9 @@ class SocketIOHelper {
       transports: ["websocket", "polling"],
       eio: 4,
       path: url,
+      query: {
+        share: publicRoomKey,
+      },
     });
 
     client.on("connect", () => {

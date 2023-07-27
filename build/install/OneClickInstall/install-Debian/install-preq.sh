@@ -44,7 +44,8 @@ echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://
 chmod 644 /usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg
 
 # add nodejs repo
-curl -sL https://deb.nodesource.com/setup_16.x | bash - 
+[[ "$DISTRIB_CODENAME" =~ ^(bionic|stretch)$ ]] && NODE_VERSION="16" || NODE_VERSION="18"
+curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - 
 
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
@@ -77,6 +78,7 @@ if ! dpkg -l | grep -q "mysql-server"; then
 
 	#Temporary fix for missing mysql repository for debian bookworm
 	[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/jammy/g" /etc/apt/sources.list.d/mysql.list
+	[ "$DISTRIB_CODENAME" = "buster" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/bionic/g" /etc/apt/sources.list.d/mysql.list
 
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections

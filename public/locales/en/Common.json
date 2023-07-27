@@ -277,5 +277,7 @@
   "Warning": "Warning",
   "Website": "Website",
   "Yesterday": "Yesterday",
-  "InfoPanel": "Info panel"
+  "InfoPanel": "Info panel",
+  "NeedPassword": "You need a password to access the room",
+  "IncorrectPassword": "Incorrect password"
 }

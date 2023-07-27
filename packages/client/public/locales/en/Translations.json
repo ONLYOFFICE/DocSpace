@@ -70,5 +70,7 @@
   "TypeTitleSharePoint": "SharePoint",
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
-  "TypeTitleYandex": "Yandex.Disk"
+  "TypeTitleYandex": "Yandex.Disk",
+  "PublicRoomLinkValidTime": "This link is valid until {{date}} Once it expires, it will be impossible to access the room via this link.",
+  "LinkHasExpiredAndHasBeenDisabled": "The link has expired and has been disabled"
 }

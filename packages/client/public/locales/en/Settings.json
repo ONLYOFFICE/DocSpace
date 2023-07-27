@@ -219,5 +219,7 @@
   "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
-  "YourCurrentDomain": "Your current domain"
+  "YourCurrentDomain": "Your current domain",
+  "UnsavedChangesBody": "If you close the link settings menu right now, your changes will not be saved.",
+  "CloseMenu": "Close menu"
 }
