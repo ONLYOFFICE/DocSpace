@@ -7,6 +7,17 @@ export const getItemByLink = (path: string) => {
     return item[0];
 }
 
+export const getMinifyTitle = (title: string) => {
+    const titleArr = title.split(" ");
+
+    if (titleArr.length === 1) {
+        return titleArr[0][0].toUpperCase();
+    }
+    const firstChar = titleArr[0][0].toUpperCase();
+    const secondChar = titleArr[1][0].toUpperCase();
+    return `${firstChar}${secondChar}`
+}
+
 export function getLanguage(lng: string) {
     try {
         let language = lng == "en-US" || lng == "en-GB" ? "en" : lng;

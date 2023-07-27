@@ -1,10 +1,30 @@
 import React from "react";
+import styled from "styled-components";
+import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-const ArticleHeaderContent = () => {
-  const { t } = useTranslation("Common");
+import { getMinifyTitle } from "SRC_DIR/utils";
+import { useStore } from "SRC_DIR/store";
 
-  return <h1>Space management</h1>;
+const StyledHeader = styled.h1`
+  padding: 12px 4px;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 22px;
+`;
+
+const ArticleHeaderContent = () => {
+  const { t } = useTranslation("Management");
+  const { authStore } = useStore();
+  const { settingsStore } = authStore;
+  const { showText } = settingsStore;
+
+  const title = !showText
+    ? getMinifyTitle(t("SpaceManagement"))
+    : t("SpaceManagement");
+
+  return <StyledHeader>{title}</StyledHeader>;
 };
 
-export default React.memo(ArticleHeaderContent);
+export default observer(ArticleHeaderContent);

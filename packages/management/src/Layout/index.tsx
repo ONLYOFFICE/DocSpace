@@ -12,7 +12,7 @@ type TLayoutProps = {
 
 const ArticleSettings = React.memo(() => {
   return (
-    <ArticleWrapper hideProfileBlock hideAppsBlock>
+    <ArticleWrapper hideProfileBlock hideAppsBlock withCustomArticleHeader>
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>
