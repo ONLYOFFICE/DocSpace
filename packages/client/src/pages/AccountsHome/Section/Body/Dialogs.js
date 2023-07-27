@@ -40,8 +40,6 @@ const Dialogs = ({
   profile,
   resetTfaApp,
 }) => {
-  console.log({ data });
-
   return (
     <>
       {changeEmailVisible && (
