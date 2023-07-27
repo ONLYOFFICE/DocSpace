@@ -22,7 +22,14 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 
   .badge {
-    margin-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
     cursor: pointer;
     height: 16px;
     width: 16px;
@@ -30,7 +37,14 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .new-items {
     position: absolute;
-    right: 29px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 29px;
+          `
+        : css`
+            right: 29px;
+          `}
     top: 19px;
   }
 
@@ -41,7 +55,14 @@ const SimpleFilesTileContent = styled(TileContent)`
 
   .share-icon {
     margin-top: -4px;
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 
   .favorite,
@@ -98,8 +119,7 @@ const FilesTileContent = ({
       <SimpleFilesTileContent
         sideColor={theme.filesSection.tilesView.sideColor}
         isFile={fileExst}
-        isRooms={isRooms}
-      >
+        isRooms={isRooms}>
         <Link
           className="item-file-name"
           containerWidth="100%"
@@ -110,8 +130,7 @@ const FilesTileContent = ({
           target="_blank"
           {...linkStyles}
           color={theme.filesSection.tilesView.color}
-          isTextOverflow
-        >
+          isTextOverflow>
           {titleWithoutExt}
         </Link>
       </SimpleFilesTileContent>

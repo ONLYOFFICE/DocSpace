@@ -3,12 +3,27 @@ import { desktop, tablet } from "@docspace/components/utils/device";
 
 const paddingCss = css`
   @media ${desktop} {
-    margin-left: 1px;
-    padding-right: 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 1px;
+            padding-left: 0px;
+          `
+        : css`
+            margin-left: 1px;
+            padding-right: 0px;
+          `}
   }
 
   @media ${tablet} {
-    margin-left: -1px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -1px;
+          `
+        : css`
+            margin-left: -1px;
+          `}
   }
 `;
 
