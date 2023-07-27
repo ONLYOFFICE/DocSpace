@@ -8,13 +8,17 @@ import {
   getNewLogoArr,
   getLogosAsText,
 } from "@docspace/common/utils/whiteLabelHelper";
+import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
 
 import CommonWhiteLabel from "client/CommonWhiteLabel";
+import LoaderWhiteLabel from "client/LoaderWhiteLabel";
+import BreakpointWarning from "client/BreakpointWarning";
 
 import { useStore } from "SRC_DIR/store";
 
 const Branding = () => {
   const { t } = useTranslation(["Settings"]);
+  const isSmallWindow = useIsSmallWindow(795);
 
   const { brandingStore } = useStore();
   const {
@@ -105,8 +109,13 @@ const Branding = () => {
     await restoreDefault(true);
   };
 
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning sectionName={t("Settings:Branding")} isSmallWindow />
+    );
+
   return isLoading ? (
-    <h1>Loading...</h1>
+    <LoaderWhiteLabel />
   ) : (
     <CommonWhiteLabel
       isSettingPaid={true}
