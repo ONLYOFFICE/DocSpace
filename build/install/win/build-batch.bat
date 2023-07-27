@@ -42,7 +42,7 @@ del /f /q build\install\win\Files\config\*.test.json
 del /f /q build\install\win\Files\config\*.dev.json
 
 ::default logging to warning
-%sed% "s_\(minlevel=\)".*"_\1\"Warn\"_g" -i build\install\win\Files\config\nlog.config
+%sed% -i "s/minlevel=\"Debug\""/minlevel=\"Warn\""/g" build\install\win\Files\config\nlog.config
 %sed% "s_\(\"Default\":\).*,_\1 \"Warning\",_g" -i build\install\win\Files\config\appsettings.json
 %sed% "s_\(\"logLevel\":\).*_\1 \"warning\"_g" -i build\install\win\Files\config\appsettings.services.json
 %sed% "/\"debug-info\": {/,/}/ s/\(\"enabled\": \)\".*\"/\1\"false\"/" -i build\install\win\Files\config\appsettings.json
