@@ -7,6 +7,7 @@ package_sysname="onlyoffice";
 product="docspace"
 GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
+MAKESWAP="true"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
