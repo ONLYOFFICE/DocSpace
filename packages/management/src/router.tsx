@@ -1,12 +1,15 @@
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-//import routes from "./routes";
-import Error404 from "client/Error404";
-
 import App from "./App";
-import Branding from "./categories/branding";
+
 import Spaces from "./categories/spaces";
+import Branding from "./categories/branding";
+import Backup from "./categories/backup";
+import Restore from "./categories/restore";
+import Payments from "./categories/payments";
+
+import Error404 from "client/Error404";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +25,18 @@ const router = createBrowserRouter([
       {
         path: "branding",
         element: <Branding />,
+      },
+      {
+        path: "backup",
+        element: <Backup />,
+      },
+      {
+        path: "restore",
+        element: <Restore />,
+      },
+      {
+        path: "payments",
+        element: <Payments />,
       },
     ],
   },

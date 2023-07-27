@@ -408,13 +408,7 @@ export default inject(
       setIsSectionFilterLoading(param);
     };
 
-    const {
-      filter,
-
-      privacyInstructions,
-
-      isEmptyPage,
-    } = filesStore;
+    const { filter, privacyInstructions, isEmptyPage } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId, myFolder, roomsFolder } =
       treeFoldersStore;
@@ -423,8 +417,8 @@ export default inject(
       theme,
       isPrivacyFolder,
       isDesktop: isDesktopClient,
-      isVisitor: auth.userStore.user.isVisitor,
-      isCollaborator: auth.userStore.user.isCollaborator,
+      isVisitor: auth?.userStore?.user?.isVisitor,
+      isCollaborator: auth?.userStore?.user?.isCollaborator,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,

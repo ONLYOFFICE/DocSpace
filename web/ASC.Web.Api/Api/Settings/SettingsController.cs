@@ -157,7 +157,7 @@ public class SettingsController : BaseSettingsController
             CookieSettingsEnabled = tenantCookieSettings.Enabled
         };
 
-        if (!_authContext.IsAuthenticated && (await _externalShare.GetSessionIdAsync() != default || await _externalShare.GetLinkIdAsync() != default))
+        if (!_authContext.IsAuthenticated && await _externalShare.GetLinkIdAsync() != default)
         {
             settings.SocketUrl = _configuration["web:hub:url"] ?? "";
         }

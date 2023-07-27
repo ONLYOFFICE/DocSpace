@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 
 class SelectFolderDialogStore {
   resultingFolderId = null;
+  roomType = null;
   fileInfo = null;
   folderTitle = "";
   providerKey = null;
@@ -18,6 +19,7 @@ class SelectFolderDialogStore {
 
   toDefault = () => {
     this.resultingFolderId = null;
+    this.roomType = null;
     this.resultingFolderTree = [];
     this.baseFolderPath = "";
     this.newFolderPath = "";
@@ -55,6 +57,10 @@ class SelectFolderDialogStore {
   };
   setResultingFolderId = (id) => {
     this.resultingFolderId = id;
+  };
+
+  setRoomType = (type) => {
+    this.roomType = type;
   };
 
   setFolderTitle = (title) => {

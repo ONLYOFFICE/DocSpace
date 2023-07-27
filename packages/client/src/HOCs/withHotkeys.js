@@ -414,8 +414,9 @@ const withHotkeys = (Component) => {
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
-      const { isVisitor } = auth.userStore.user;
       const { isGracePeriod } = auth.currentTariffStatusStore;
+
+      const isVisitor = auth.userStore.user?.isVisitor;
 
       const {
         isFavoritesFolder,

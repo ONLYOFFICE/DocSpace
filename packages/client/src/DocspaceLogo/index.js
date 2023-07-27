@@ -27,7 +27,11 @@ const DocspaceLogo = (props) => {
 
   return (
     <StyledWrapper>
-      <ReactSVG src={logo} className={`logo-wrapper ${className}`} />
+      {logo ? (
+        <ReactSVG src={logo} className={`logo-wrapper ${className}`} />
+      ) : (
+        <></>
+      )}
     </StyledWrapper>
   );
 };
