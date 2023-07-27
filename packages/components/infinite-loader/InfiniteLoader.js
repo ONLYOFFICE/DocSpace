@@ -13,8 +13,8 @@ const InfiniteLoaderComponent = (props) => {
   useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
   const scroll = isMobileOnly
-    ? document.querySelector("#customScrollBar > .scroll-body")
-    : document.querySelector("#sectionScroll > .scroll-body");
+    ? document.querySelector("#customScrollBar")
+    : document.querySelector("#sectionScroll");
 
   return isLoading ? (
     <Loader
