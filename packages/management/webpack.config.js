@@ -1,8 +1,8 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack").container
-  .ModuleFederationPlugin;
+const ModuleFederationPlugin =
+  require("webpack").container.ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
 
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
@@ -82,6 +82,7 @@ const config = {
       PUBLIC_DIR: path.resolve(__dirname, "../../public"),
       ASSETS_DIR: path.resolve(__dirname, "./public"),
       SRC_DIR: path.resolve(__dirname, "./src"),
+      CLIENT_PUBLIC_DIR: path.resolve(__dirname, "../client/public"),
       PACKAGE_FILE: path.resolve(__dirname, "package.json"),
     },
   },
