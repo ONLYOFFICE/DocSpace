@@ -8,17 +8,15 @@ import { StyledMultipleSpaces } from "../StyledSpaces";
 import { useStore } from "SRC_DIR/store";
 
 const MultipleSpaces = () => {
-  // const {
-  //   setCreateDocspaceDialogVisible,
-  //   setChangeDomainDialogVisible,
-  //   deletePortal,
-  //   portals,
-  //   domain,
-  // } = props;
-
   const { spacesStore } = useStore();
 
-  const { portals, deletePortal, domain } = spacesStore;
+  const {
+    portals,
+    deletePortal,
+    domain,
+    setChangeDomainDialogVisible,
+    setCreatePortalDialogVisible,
+  } = spacesStore;
 
   return (
     <StyledMultipleSpaces>
@@ -28,7 +26,7 @@ const MultipleSpaces = () => {
           label="New space"
           className="spaces-button"
           primary={true}
-          //   onClick={() => setCreateDocspaceDialogVisible(true)}
+          onClick={() => setCreatePortalDialogVisible(true)}
         />
         <SpacesRowContainer deletePortal={deletePortal} portals={portals} />
         <div className="domain-settings-wrapper">
@@ -57,35 +55,12 @@ const MultipleSpaces = () => {
             size="normal"
             label="Edit"
             primary={true}
-            //    onClick={() => setChangeDomainDialogVisible(true)}
+            onClick={() => setChangeDomainDialogVisible(true)}
           />
         </div>
       </div>
     </StyledMultipleSpaces>
   );
 };
-
-// export default inject(({ dialogsStore, auth }) => {
-//   const {
-//     setCreateDocspaceDialogVisible,
-//     setChangeDomainDialogVisible,
-//   } = dialogsStore;
-
-//   const {
-//     getSpaces,
-//     portals,
-//     domain,
-//     deletePortal,
-//   } = auth.spaceManagementStore;
-
-//   return {
-//     setChangeDomainDialogVisible,
-//     setCreateDocspaceDialogVisible,
-//     deletePortal,
-//     getSpaces,
-//     portals,
-//     domain,
-//   };
-// })(observer(MultipleSpaces));
 
 export default observer(MultipleSpaces);

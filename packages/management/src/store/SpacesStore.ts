@@ -8,11 +8,21 @@ import {
   getAllPortals,
 } from "@docspace/common/api/management";
 
+type NewPortalData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  portalName: string;
+};
+
 class SpacesStore {
   isInit = false;
 
-  portals = [];
+  portals = []; // need interface
   domain: string | null = null;
+
+  createPortalDialogVisible = false;
+  domainDialogVisible = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -59,18 +69,22 @@ class SpacesStore {
     //   console.log(name);
   };
 
-  createNewPortal = async (portalName: string) => {
-    //  const { firstName, lastName, email } = authStore.userStore.user;
-    //   console.log(firstName, lastName, email);
-    //    const data = { firstName, lastName, email, portalName };
-    //  const register = await createNewPortal(data);
-    // console.log(register);
+  createNewPortal = async (data: NewPortalData) => {
+    const register = await createNewPortal(data);
   };
 
   getAllPortals = async () => {
     const res = await getAllPortals();
     this.portals = res.tenants;
     return res;
+  };
+
+  setCreatePortalDialogVisible = (createPortalDialogVisible: boolean) => {
+    this.createPortalDialogVisible = createPortalDialogVisible;
+  };
+
+  setChangeDomainDialogVisible = (domainDialogVisible: boolean) => {
+    this.domainDialogVisible = domainDialogVisible;
   };
 }
 
