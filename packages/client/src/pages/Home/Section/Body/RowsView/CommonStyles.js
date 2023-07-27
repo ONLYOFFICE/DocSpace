@@ -23,10 +23,20 @@ const marginStyles = css`
   }
 
   @media (max-width: 375px) {
-    margin-left: -16px;
-    margin-right: -8px;
-    padding-left: 16px;
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -16px;
+            margin-left: -8px;
+            padding-right: 16px;
+            padding-left: 8px;
+          `
+        : css`
+            margin-left: -16px;
+            margin-right: -8px;
+            padding-left: 16px;
+            padding-right: 8px;
+          `}
   }
 `;
 
