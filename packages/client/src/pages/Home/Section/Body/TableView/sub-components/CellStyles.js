@@ -22,7 +22,14 @@ const StyledAuthorCell = styled.div`
     width: 16px;
     min-width: 16px;
     height: 16px;
-    margin-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px;
+          `
+        : css`
+            margin-right: 8px;
+          `}
   }
 `;
 
