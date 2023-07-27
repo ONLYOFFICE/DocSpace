@@ -24,19 +24,45 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
-
-public class UrlShortenerFakeDbContext : DbContext
+namespace ASC.Web.Core;
+public class UrlShortRewriter
 {
-    public UrlShortenerFakeDbContext(DbContextOptions<UrlShortenerFakeDbContext> dbContextOptions) : base(dbContextOptions)
+    public const string BasePath = "/sh/";
+
+    public UrlShortRewriter(RequestDelegate next)
     {
 
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public async Task InvokeAsync(HttpContext httpContext, IDbContextFactory<UrlShortenerDbContext> dbContextFactory)
     {
-        ModelBuilderWrapper
-            .From(modelBuilder, Database)
-            .AddShortLinks();
+        var path = httpContext.Request.Path.ToString();
+        path = path.Substring(BasePath.Length);
+
+        var id = ShortUrl.Decode(path);
+
+        ShortLink link;
+
+        using (var context = dbContextFactory.CreateDbContext())
+        {
+            link = await context.ShortLinks.FindAsync(id);
+        }
+
+        if (link != null)
+        {
+            httpContext.Response.Redirect(link.Link);
+        }
+        else
+        {
+            throw new ArgumentException("Bad Request");
+        }
+    }
+}
+
+public static class UrlShortRewriterExtensions
+{
+    public static IApplicationBuilder UseUrlShortRewriter(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<UrlShortRewriter>();
     }
 }
