@@ -34,7 +34,7 @@ export const settingsTree = [
         key: "3",
         icon: RestoreIconUrl,
         link: "restore",
-        tKey: "Restore",
+        tKey: "RestoreBackup",
         isHeader: true,
     },
     {
@@ -42,7 +42,7 @@ export const settingsTree = [
         key: "4",
         icon: PaymentIconUrl,
         link: "payments",
-        tKey: "Payments",
+        tKey: "Common:PaymentsTitle",
         isHeader: true,
     },
 ];
