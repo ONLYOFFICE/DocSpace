@@ -8,8 +8,8 @@
     "build:translations": "node scripts/buildTranslations.js",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "serve dist -s -p 5002"
+    "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
+    "start-prod": "serve dist -s -p 5015"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
