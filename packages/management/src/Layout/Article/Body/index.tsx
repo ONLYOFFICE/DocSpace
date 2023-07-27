@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import CatalogItem from "@docspace/components/catalog-item";
 
 import { settingsTree } from "SRC_DIR/utils/settingsTree";
@@ -10,6 +12,7 @@ import { TSettingsTreeItem } from "SRC_DIR/types/index";
 const ArticleBodyContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation(["Settings", "Common"]);
 
   const [selectedKey, setSelectedKey] = useState("0");
 
@@ -37,7 +40,7 @@ const ArticleBodyContent = () => {
           id={item.key}
           icon={item.icon}
           showText={true}
-          text={item.tKey}
+          text={t(item.tKey)}
           value={item.link}
           isActive={item.key === selectedKey}
           onClick={() => onClickItem(item)}

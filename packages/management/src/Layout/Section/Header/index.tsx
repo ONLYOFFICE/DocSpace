@@ -7,7 +7,7 @@ import Headline from "@docspace/common/components/Headline";
 import { getItemByLink } from "SRC_DIR/utils";
 
 const SectionHeaderContent = () => {
-  const { t } = useTranslation("Settings");
+  const { t } = useTranslation(["Settings", "Common"]);
 
   const location = useLocation();
   const path = location.pathname;
