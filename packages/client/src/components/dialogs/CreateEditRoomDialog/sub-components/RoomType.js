@@ -57,6 +57,7 @@ const StyledRoomType = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
+            transform: scaleX(-1);
           `
         : css`
             margin-left: auto;
