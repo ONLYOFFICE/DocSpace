@@ -20,8 +20,6 @@ const PublicRoomBlock = (props) => {
     setEditLinkPanelIsVisible,
   } = props;
 
-  const [barIsVisible, setBarVisible] = useState(!isArchiveFolder);
-
   const onAddNewLink = () => {
     setLinkParams({ isEdit: false });
     setEditLinkPanelIsVisible(true);
@@ -29,7 +27,7 @@ const PublicRoomBlock = (props) => {
 
   return (
     <>
-      {barIsVisible && (
+      {externalLinks.length > 0 && !isArchiveFolder && (
         <PublicRoomBar
           headerText={t("Files:PublicRoom")}
           bodyText={t("CreateEditRoomDialog:PublicRoomBarDescription")}
