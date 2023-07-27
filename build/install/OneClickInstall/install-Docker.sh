@@ -43,6 +43,9 @@ CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
 NETWORK_NAME=${PACKAGE_SYSNAME}
 
+SWAPFILE="/${PRODUCT}_swapfile";
+MAKESWAP="true";
+
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
 CORE_REQUIREMENTS=2;
@@ -310,6 +313,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -341,6 +351,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
@@ -1048,6 +1059,30 @@ install_product () {
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
 
+make_swap () {
+	DISK_REQUIREMENTS=6144; #6Gb free space
+	MEMORY_REQUIREMENTS=11000; #RAM ~12Gb
+
+	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	EXIST=$(swapon -s | awk '{ print $1 }' | { grep -x ${SWAPFILE} || true; });
+
+	if [[ -z $EXIST ]] && [ ${TOTAL_MEMORY} -lt ${MEMORY_REQUIREMENTS} ] && [ ${AVAILABLE_DISK_SPACE} -gt ${DISK_REQUIREMENTS} ]; then
+
+		if [ "${DIST}" == "Ubuntu" ] || [ "${DIST}" == "Debian" ]; then
+			fallocate -l 6G ${SWAPFILE}
+		else
+			dd if=/dev/zero of=${SWAPFILE} count=6144 bs=1MiB
+		fi
+
+		chmod 600 ${SWAPFILE}
+		mkswap ${SWAPFILE}
+		swapon ${SWAPFILE}
+		echo "$SWAPFILE none swap sw 0 0" >> /etc/fstab
+	fi
+}
+
+
 start_installation () {
 	root_checking
 
@@ -1063,6 +1098,10 @@ start_installation () {
 
 	if [ "$SKIP_HARDWARE_CHECK" != "true" ]; then
 		check_hardware
+	fi
+
+	if [ "$MAKESWAP" == "true" ]; then
+		make_swap
 	fi
 
 	if command_exists docker ; then

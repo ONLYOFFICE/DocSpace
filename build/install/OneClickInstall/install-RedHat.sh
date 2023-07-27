@@ -81,6 +81,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+		
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
 
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
@@ -92,6 +99,7 @@ while [ "$1" != "" ]; do
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
 			echo "      -ls, --local_scripts              use 'true' to run local scripts (true|false)"
 			echo "      -skiphc, --skiphardwarecheck      use to skip hardware check (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			exit 0
