@@ -312,6 +312,8 @@ module.exports = (env, argv) => {
         "./BreakpointWarning": "./src/components/BreakpointWarning",
         "./CommonWhiteLabel":
           "./src/pages/PortalSettings/categories/common/Branding/WhiteLabelWrapper.js",
+        "./LoaderWhiteLabel":
+          "./src/pages/PortalSettings/categories/common/sub-components/loaderWhiteLabel.js",
       },
       shared: {
         ...deps,
