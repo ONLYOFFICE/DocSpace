@@ -10,7 +10,15 @@ import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
 const StyledFilterBlock = styled.div`
   position: fixed;
   top: 0;
-  right: 0;
+
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 0;
+        `
+      : css`
+          right: 0;
+        `}
 
   width: 480px;
   height: 100%;
@@ -20,7 +28,7 @@ const StyledFilterBlock = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: ${(props) => props.theme.filterInput.filter.background};
+  background: ${props => props.theme.filterInput.filter.background};
 
   @media ${tablet} {
     max-width: calc(100% - 69px);
@@ -50,7 +58,7 @@ const StyledFilterBlock = styled.div`
   }
 
   .filter-body {
-    height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
+    height: ${props => (props.showFooter ? "calc(100% - 125px)" : "100%")};
 
     .combo-item {
       padding: 0;
@@ -79,19 +87,26 @@ const StyledFilterBlockHeader = styled.div`
 
   box-sizing: border-box;
 
-  border-bottom: ${(props) =>
+  border-bottom: ${props =>
     props.isSelector ? "none" : props.theme.filterInput.filter.border};
 
   display: flex;
   align-items: center;
-  justify-content: ${(props) => (props.isSelector ? "start" : "space-between")};
+  justify-content: ${props => (props.isSelector ? "start" : "space-between")};
 
   h1 {
     font-weight: 700;
   }
 
   .arrow-button {
-    margin-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 12px;
+          `
+        : css`
+            margin-right: 12px;
+          `}
   }
 
   svg {
@@ -102,10 +117,16 @@ const StyledFilterBlockHeader = styled.div`
 StyledFilterBlockHeader.defaultProps = { theme: Base };
 
 const StyledFilterBlockItem = styled.div`
-  margin: ${(props) =>
+  margin: ${props =>
     props.withoutHeader ? "0" : props.isFirst ? "12px 0 0 0" : "16px 0 0 0"};
-  padding: 0 15px 0 16px;
-
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding: 0 16px 0 15px;
+        `
+      : css`
+          padding: 0 15px 0 16px;
+        `}
   max-width: 480px;
   box-sizing: border-box;
 
@@ -117,16 +138,32 @@ const StyledFilterBlockItem = styled.div`
 const StyledFilterBlockItemHeader = styled.div`
   height: 16px;
   line-height: 16px;
-  margin-right: -16px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: -16px;
+        `
+      : css`
+          margin-right: -16px;
+        `}
 
   display: flex;
   align-items: center;
 `;
 
 const StyledFilterBlockItemContent = styled.div`
-  margin: ${(props) =>
+  margin: ${props =>
     props.withoutSeparator ? "12px -16px 0 0" : "12px -16px 16px 0"};
-
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin: ${props =>
+            props.withoutSeparator ? "12px 0 0 -16px" : "12px 0 16px -16px"};
+        `
+      : css`
+          margin: ${props =>
+            props.withoutSeparator ? "12px -16px 0 0" : "12px -16px 16px 0"};
+        `}
   height: fit-content;
 
   display: flex;
@@ -134,7 +171,7 @@ const StyledFilterBlockItemContent = styled.div`
   align-items: center;
   flex-wrap: wrap;
 
-  gap: ${(props) => (props.withMultiItems ? "12px 8px" : "8px")};
+  gap: ${props => (props.withMultiItems ? "12px 8px" : "8px")};
 `;
 
 const StyledFilterBlockItemSelector = styled.div`
@@ -150,22 +187,28 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
-  color: ${(props) => props.theme.filterInput.filter.color};
-  margin-left: 8px;
+  color: ${props => props.theme.filterInput.filter.color};
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 8px;
+        `
+      : css`
+          margin-left: 8px;
+        `}
   cursor: pointer;
 `;
 
 StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };
 
 const selectedItemTag = css`
-  background: ${(props) =>
+  background: ${props =>
     props.theme.filterInput.filter.selectedItem.background};
-  border-color: ${(props) =>
-    props.theme.filterInput.filter.selectedItem.border};
+  border-color: ${props => props.theme.filterInput.filter.selectedItem.border};
 `;
 
 const selectedItemTagText = css`
-  color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
+  color: ${props => props.theme.filterInput.filter.selectedItem.color};
   font-weight: 600;
 `;
 
@@ -176,13 +219,20 @@ const StyledFilterBlockItemTagText = styled(Text)`
   font-size: 13px;
   line-height: 20px;
 
-  ${(props) => props.isSelected && selectedItemTagText}
+  ${props => props.isSelected && selectedItemTagText}
 `;
 
 StyledFilterBlockItemTagText.defaultProps = { theme: Base };
 
 const StyledFilterBlockItemTagIcon = styled.div`
-  margin-left: 8px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 8px;
+        `
+      : css`
+          margin-left: 8px;
+        `}
 
   display: flex;
   align-items: center;
@@ -190,7 +240,7 @@ const StyledFilterBlockItemTagIcon = styled.div`
 
   svg {
     path {
-      fill: ${(props) => props.theme.filterInput.filter.selectedItem.color};
+      fill: ${props => props.theme.filterInput.filter.selectedItem.color};
     }
   }
 `;
@@ -220,7 +270,14 @@ const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
 `;
 const StyledFilterBlockItemCheckboxContainer = styled.div`
   .checkbox {
-    margin-right: 8px !important;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px !important;
+          `
+        : css`
+            margin-right: 8px !important;
+          `}
   }
 
   .checkbox-text {
@@ -232,9 +289,16 @@ const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
   width: calc(100% + 16px);
 
-  margin-right: 16px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 16px;
+        `
+      : css`
+          margin-right: 16px;
+        `}
 
-  background: ${(props) => props.theme.filterInput.filter.separatorColor};
+  background: ${props => props.theme.filterInput.filter.separatorColor};
 `;
 
 StyledFilterBlockItemToggleButton.defaultProps = { theme: Base };
@@ -242,7 +306,14 @@ StyledFilterBlockItemToggleButton.defaultProps = { theme: Base };
 const StyledFilterBlockFooter = styled.div`
   position: fixed;
   bottom: 0;
-  right: 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 0;
+        `
+      : css`
+          right: 0;
+        `}
 
   z-index: 401;
 
@@ -250,7 +321,7 @@ const StyledFilterBlockFooter = styled.div`
   height: 72px;
   min-height: 72px;
 
-  border-top: ${(props) => props.theme.filterInput.filter.border};
+  border-top: ${props => props.theme.filterInput.filter.border};
 
   box-sizing: border-box;
 
@@ -285,7 +356,14 @@ const StyledControlContainer = styled.div`
   z-index: 450;
 
   top: 14px;
-  left: -34px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: -34px;
+        `
+      : css`
+          left: -34px;
+        `}
 
   ${isMobile &&
   css`
@@ -294,8 +372,17 @@ const StyledControlContainer = styled.div`
 
   @media (max-width: 428px) {
     top: -34px;
-    right: 10px;
-    left: unset;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 10px;
+            right: unset;
+          `
+        : css`
+            right: 10px;
+
+            left: unset;
+          `}
   }
 `;
 
@@ -306,7 +393,7 @@ const StyledCrossIcon = styled(CrossIcon)`
   height: 17px;
   z-index: 455;
   path {
-    fill: ${(props) => props.theme.catalog.control.fill};
+    fill: ${props => props.theme.catalog.control.fill};
   }
 `;
 
