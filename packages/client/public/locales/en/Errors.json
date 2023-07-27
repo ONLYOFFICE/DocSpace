@@ -4,5 +4,9 @@
   "Error404Text": "Sorry, the resource cannot be found.",
   "ErrorEmptyResponse": "Empty response",
   "ErrorOfflineText": "No internet connection",
-  "ErrorUnavailableText": "DocSpace unavailable"
+  "ErrorUnavailableText": "DocSpace unavailable",
+  "InvalidLink": "Invalid link",
+  "ExpiredLink": "Expired link",
+  "LinkDoesNotExist": "The link you are trying to open does not exist.",
+  "LinkHasExpired": "The link you followed has expired."
 }

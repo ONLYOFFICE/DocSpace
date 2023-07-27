@@ -53,8 +53,9 @@ public class ExternalLinkHelper
         };
 
         var linkId = await _externalShare.ParseShareKeyAsync(key);
+        var securityDao = _daoFactory.GetSecurityDao<int>();
 
-        var record = await _daoFactory.GetSecurityDao<int>().GetSharesAsync(new[] { linkId }).FirstOrDefaultAsync();
+        var record = await securityDao.GetSharesAsync(new[] { linkId }).FirstOrDefaultAsync();
 
         if (record == null)
         {
@@ -63,15 +64,17 @@ public class ExternalLinkHelper
 
         var status = await _externalShare.ValidateRecordAsync(record, password);
         result.Status = status;
-        
+
         if (status != Status.Ok && status != Status.RequiredPassword)
         {
             return result;
         }
 
-        var entry = int.TryParse(record.EntryId.ToString(), out var id)
+        var entryId = record.EntryId.ToString();
+
+        var entry = int.TryParse(entryId, out var id)
             ? await GetEntryAndProcessAsync(id, result)
-            : await GetEntryAndProcessAsync(record.EntryId.ToString(), result);
+            : await GetEntryAndProcessAsync(entryId, result);
 
         if (entry == null || entry.RootFolderType is FolderType.TRASH or FolderType.Archive)
         {
@@ -86,6 +89,21 @@ public class ExternalLinkHelper
         
         result.Access = record.Share;
         result.TenantId = record.TenantId;
+
+        if (_securityContext.IsAuthenticated)
+        {
+            if (entry.CreateBy.Equals(_securityContext.CurrentAccount.ID))
+            {
+                result.Shared = true;
+            }
+            else
+            {
+                var existedRecord = await securityDao.GetSharesAsync(new[] { _securityContext.CurrentAccount.ID })
+                    .FirstOrDefaultAsync(r => r.EntryId.ToString() == entryId);
+
+                result.Shared = existedRecord != null;
+            }
+        }
 
         if (_securityContext.IsAuthenticated || !string.IsNullOrEmpty(_externalShare.GetAnonymousSessionKey()))
         {

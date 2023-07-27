@@ -22,6 +22,7 @@ class FilesTableHeader extends React.Component {
       getColumns,
       columnStorageName,
       columnInfoPanelStorageName,
+      isPublicRoom,
     } = this.props;
 
     const defaultColumns = [];
@@ -153,6 +154,18 @@ class FilesTableHeader extends React.Component {
       ];
       defaultColumns.push(...columns);
     } else {
+      const authorBlock = !isPublicRoom
+        ? {
+            key: "Author",
+            title: t("ByAuthor"),
+            enable: this.props.authorColumnIsEnabled,
+            resizable: true,
+            sortBy: SortByFieldName.Author,
+            // onClick: this.onFilter,
+            onChange: this.onColumnChange,
+          }
+        : {};
+
       const columns = [
         {
           key: "Name",
@@ -164,15 +177,7 @@ class FilesTableHeader extends React.Component {
           minWidth: 210,
           onClick: this.onFilter,
         },
-        {
-          key: "Author",
-          title: t("ByAuthor"),
-          enable: this.props.authorColumnIsEnabled,
-          resizable: true,
-          sortBy: SortByFieldName.Author,
-          // onClick: this.onFilter,
-          onChange: this.onColumnChange,
-        },
+        { ...authorBlock },
         {
           key: "Created",
           title: t("ByCreation"),
@@ -226,7 +231,7 @@ class FilesTableHeader extends React.Component {
     const resetColumnsSize =
       (splitColumns && splitColumns.length !== columns.length) || !splitColumns;
 
-    const tableColumns = columns.map(c => c.enable && c.key);
+    const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
     if (fromUpdate) {
       this.setState({
@@ -245,7 +250,7 @@ class FilesTableHeader extends React.Component {
     }
   };
 
-  setTableColumns = tableColumns => {
+  setTableColumns = (tableColumns) => {
     localStorage.setItem(this.props.tableStorageName, tableColumns);
   };
 
@@ -297,7 +302,7 @@ class FilesTableHeader extends React.Component {
 
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
-      const columnIndex = columns.findIndex(c => c.key === "Share");
+      const columnIndex = columns.findIndex((c) => c.key === "Share");
       if (columnIndex === -1) return;
 
       columns[columnIndex].enable = this.props.withContent;
@@ -317,10 +322,10 @@ class FilesTableHeader extends React.Component {
     this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
   }
 
-  onColumnChange = key => {
+  onColumnChange = (key) => {
     const { columns } = this.state;
 
-    const columnIndex = columns.findIndex(c => c.key === key);
+    const columnIndex = columns.findIndex((c) => c.key === key);
     if (columnIndex === -1) return;
 
     this.props.setColumnEnable(key);
@@ -328,7 +333,7 @@ class FilesTableHeader extends React.Component {
     columns[columnIndex].enable = !columns[columnIndex].enable;
     this.setState({ columns });
 
-    const tableColumns = columns.map(c => c.enable && c.key);
+    const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
     const event = new Event(Events.CHANGE_COLUMN);
@@ -336,8 +341,8 @@ class FilesTableHeader extends React.Component {
     window.dispatchEvent(event);
   };
 
-  onFilter = sortBy => {
-    const { filter, setIsLoading } = this.props;
+  onFilter = (sortBy) => {
+    const { filter, setIsLoading, isPublicRoom, publicRoomKey } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -349,12 +354,20 @@ class FilesTableHeader extends React.Component {
 
     setIsLoading(true);
 
-    window.DocSpace.navigate(
-      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
-    );
+    if (isPublicRoom) {
+      window.DocSpace.navigate(
+        `${
+          window.DocSpace.location.pathname
+        }?key=${publicRoomKey}&${newFilter.toUrlParams()}`
+      );
+    } else {
+      window.DocSpace.navigate(
+        `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+      );
+    }
   };
 
-  onRoomsFilter = sortBy => {
+  onRoomsFilter = (sortBy) => {
     const { roomsFilter, setIsLoading, navigate, location } = this.props;
 
     const newFilter = roomsFilter.clone();
@@ -428,6 +441,7 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     tableStore,
+    publicRoomStore,
     clientLoadingStore,
   }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
@@ -478,6 +492,8 @@ export default inject(
       setColumnEnable,
     } = tableStore;
 
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
+
     return {
       isHeaderChecked,
       filter,
@@ -523,10 +539,12 @@ export default inject(
       setColumnEnable,
       isRooms,
       isTrashFolder,
+      isPublicRoom,
+      publicRoomKey,
     };
   }
 )(
-  withTranslation(["Files", "Common", "Translations"])(
+  withTranslation(["Files", "Common", "Translations", "Notifications"])(
     observer(FilesTableHeader)
   )
 );

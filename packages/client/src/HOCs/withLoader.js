@@ -48,24 +48,35 @@ const withLoader = (WrappedComponent) => (Loader) => {
     );
   };
 
-  return inject(({ auth, filesStore, peopleStore, clientLoadingStore }) => {
-    const { viewAs, isLoadingFilesFind, isInit } = filesStore;
-    const { viewAs: accountsViewAs } = peopleStore;
+  return inject(
+    ({
+      auth,
+      filesStore,
+      peopleStore,
+      clientLoadingStore,
+      publicRoomStore,
+    }) => {
+      const { viewAs, isLoadingFilesFind, isInit } = filesStore;
+      const { viewAs: accountsViewAs } = peopleStore;
 
-    const { firstLoad, isLoading, showBodyLoader } = clientLoadingStore;
-    const { settingsStore } = auth;
-    const { setIsBurgerLoading } = settingsStore;
-    return {
-      firstLoad,
-      isLoaded: auth.isLoaded,
-      isLoading,
-      viewAs,
-      setIsBurgerLoading,
-      isLoadingFilesFind,
-      isInit,
-      showBodyLoader,
-      accountsViewAs,
-    };
-  })(observer(withLoader));
+      const { firstLoad, isLoading, showBodyLoader } = clientLoadingStore;
+      const { settingsStore } = auth;
+      const { setIsBurgerLoading } = settingsStore;
+      const { isPublicRoom } = publicRoomStore;
+
+      return {
+        firstLoad: isPublicRoom ? false : firstLoad,
+        isLoaded: isPublicRoom ? true : auth.isLoaded,
+        isLoading,
+        viewAs,
+        setIsBurgerLoading,
+        isLoadingFilesFind,
+        isInit: isPublicRoom ? true : isInit,
+        showBodyLoader,
+        isPublicRoom,
+        accountsViewAs,
+      };
+    }
+  )(observer(withLoader));
 };
 export default withLoader;

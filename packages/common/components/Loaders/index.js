@@ -50,6 +50,7 @@ import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
 import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
 import SettingsSMTP from "./SettingsLoader/SettingsSMTPLoader";
 import EmptyContainerLoader from "./EmptyContainerLoader/EmptyContainerLoader";
+import ContextMenuLoader from "./ContextMenuLoader";
 
 export default {
   Rectangle,
@@ -105,4 +106,5 @@ export default {
 
   EmptyContainerLoader,
   Notifications,
+  ContextMenuLoader,
 };
