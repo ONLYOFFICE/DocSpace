@@ -12,10 +12,18 @@ const StyledAccountsItemTitle = styled.div`
   gap: 16px;
   position: fixed;
   margin-top: -80px;
-  margin-left: -20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: -20px;
+          padding: 24px 20px 24px 0;
+        `
+      : css`
+          margin-left: -20px;
+          padding: 24px 0 24px 20px;
+        `}
   width: calc(100% - 40px);
-  padding: 24px 0 24px 20px;
-  background: ${(props) => props.theme.infoPanel.backgroundColor};
+  background: ${props => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
   @media ${tablet} {
@@ -25,7 +33,14 @@ const StyledAccountsItemTitle = styled.div`
 
   @media ${hugeMobile} {
     width: calc(100vw - 32px);
-    padding: 24px 0 24px 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 24px 16px 24px 0;
+          `
+        : css`
+            padding: 24px 0 24px 16px;
+          `}
   }
 
   .avatar {
@@ -46,7 +61,14 @@ const StyledAccountsItemTitle = styled.div`
 
     .badges {
       height: 22px;
-      margin-left: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
     }
 
     .info-text__name {
@@ -59,7 +81,7 @@ const StyledAccountsItemTitle = styled.div`
       font-weight: 600;
       font-size: 13px;
       line-height: 20px;
-      color: ${(props) => props.theme.text.disableColor};
+      color: ${props => props.theme.text.disableColor};
       user-select: text;
     }
 
@@ -70,14 +92,28 @@ const StyledAccountsItemTitle = styled.div`
 
   .context-button {
     padding-top: 24px;
-    margin-left: auto;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
   }
 `;
 
 StyledAccountsItemTitle.defaultProps = { theme: Base };
 
 const StyledAccountContent = styled.div`
-  margin: 80px auto 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin: 80px 0 0 auto;
+        `
+      : css`
+          margin: 80px auto 0 0;
+        `}
 
   .data__header {
     width: 100%;
@@ -98,10 +134,24 @@ const StyledAccountContent = styled.div`
     align-items: center;
 
     .type-combobox {
-      margin-left: -8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: -8px;
+            `
+          : css`
+              margin-left: -8px;
+            `}
 
       .combo-button {
-        padding-left: 8px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding-right: 8px;
+              `
+            : css`
+                padding-left: 8px;
+              `}
       }
 
       .backdrop-active {
