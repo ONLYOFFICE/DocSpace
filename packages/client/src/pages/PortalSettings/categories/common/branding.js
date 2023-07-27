@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { isMobile, isDesktop } from "react-device-detect";
 
-import withLoading from "SRC_DIR/HOCs/withLoading";
-import Whitelabel from "./Branding/whitelabel";
-import CompanyInfoSettings from "./Branding/companyInfoSettings";
-import styled from "styled-components";
+import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
+
 import AdditionalResources from "./Branding/additionalResources";
-
+import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
+import Whitelabel from "./Branding/whitelabel";
 
-import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+import BreakpointWarning from "SRC_DIR/components/BreakpointWarning/index";
+
+import withLoading from "SRC_DIR/HOCs/withLoading";
 
 import { UnavailableStyles } from "../../utils/commonSettingsStyles";
 import { resetSessionStorage } from "../../utils";
@@ -60,7 +61,7 @@ const Branding = ({
   isSettingPaid,
   standalone,
 }) => {
-  // const [viewDesktop, setViewDesktop] = useState(false);
+  const isSmallWindow = useIsSmallWindow(795);
 
   useEffect(() => {
     return () => {
@@ -70,20 +71,10 @@ const Branding = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   onCheckView();
-  //   window.addEventListener("resize", onCheckView);
-
-  //   return () => window.removeEventListener("resize", onCheckView);
-  // }, []);
-
-  // const onCheckView = () => {
-  //   if (!isMobile && window.innerWidth > 1024) {
-  //     setViewDesktop(true);
-  //   } else {
-  //     setViewDesktop(false);
-  //   }
-  // };
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning sectionName={t("Settings:Branding")} isSmallWindow />
+    );
 
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
