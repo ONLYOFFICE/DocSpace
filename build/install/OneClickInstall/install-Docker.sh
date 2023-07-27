@@ -491,6 +491,10 @@ check_os_info () {
 		echo "Not supported OS";
 		exit 1;
 	fi
+
+	if [ -f /etc/needrestart/needrestart.conf ]; then
+		sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
+	fi
 }
 
 check_kernel () {
