@@ -14,17 +14,38 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
 
   z-index: 200;
 
-  right: 24px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 24px;
+        `
+      : css`
+          right: 24px;
+        `}
   bottom: 24px;
 
   @media ${mobile} {
-    right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 16px;
+          `
+        : css`
+            right: 16px;
+          `}
     bottom: 16px;
   }
 
   ${isMobileOnly &&
   css`
-    right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 16px;
+          `
+        : css`
+            right: 16px;
+          `}
     bottom: 16px;
   `}
 `;
@@ -61,7 +82,7 @@ const MobileView = ({
   const primaryCurrentFile = React.useRef(null);
 
   const openButtonToggler = React.useCallback(() => {
-    setIsOpenButton((prevState) => !prevState);
+    setIsOpenButton(prevState => !prevState);
   }, []);
 
   const showUploadPanel = React.useCallback(() => {
@@ -77,9 +98,9 @@ const MobileView = ({
     let currentPrimaryNumEl = primaryNumEl;
 
     const uploadedFileCount = files.filter(
-      (item) => item.percent === 100 && !item.cancel
+      item => item.percent === 100 && !item.cancel
     ).length;
-    const fileLength = files.filter((item) => !item.cancel).length;
+    const fileLength = files.filter(item => !item.cancel).length;
 
     if (primaryCurrentFile.current === null && primaryProgressDataLoadingFile) {
       primaryCurrentFile.current = primaryProgressDataLoadingFile.uniqueId;
