@@ -1,9 +1,10 @@
 import { createContext, useContext } from "react";
 
-import authStore from "@docspace/common/store/AuthStore";
-
 import BrandingStore from "./BrandingStore";
 import SpacesStore from "./SpacesStore";
+
+import store from "client/store";
+const { auth: authStore } = store;
 
 export class RootStore {
   authStore = authStore;
