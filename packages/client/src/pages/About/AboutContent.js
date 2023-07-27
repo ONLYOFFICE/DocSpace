@@ -143,7 +143,12 @@ const AboutContent = (props) => {
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
 
-          <Text className="row-el select-el" fontSize="13px" fontWeight="600">
+          <Text
+            className="row-el select-el"
+            fontSize="13px"
+            fontWeight="600"
+            title={`${BUILD_AT}`}
+          >
             v.{buildVersionInfo.docspace}
           </Text>
         </div>
