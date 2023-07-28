@@ -1,7 +1,14 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledNoItemContainer = styled.div`
-  margin: 80px auto 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin: 80px 0 0 auto;
+        `
+      : css`
+          margin: 80px auto 0 0;
+        `}
   display: flex;
   align-items: center;
   justify-content: center;

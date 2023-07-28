@@ -9,7 +9,7 @@ const StyledHistoryList = styled.div`
 
 const StyledHistorySubtitle = styled.div`
   position: sticky;
-  background: ${(props) => props.theme.infoPanel.backgroundColor};
+  background: ${props => props.theme.infoPanel.backgroundColor};
   top: 80px;
   z-index: 100;
 
@@ -17,7 +17,7 @@ const StyledHistorySubtitle = styled.div`
   font-weight: 600;
   font-size: 13px;
   line-height: 20px;
-  color: ${(props) => props.theme.infoPanel.history.subtitleColor};
+  color: ${props => props.theme.infoPanel.history.subtitleColor};
 `;
 
 const StyledUserNameLink = styled.span`
@@ -63,7 +63,7 @@ const StyledHistoryBlock = styled.div`
   .info {
     width: calc(100% - 40px);
     max-width: calc(100% - 40px);
-    display: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
+    display: ${props => `solid 1px ${props.theme.infoPanel.borderColor}`};
     flex-direction: column;
     gap: 2px;
 
@@ -81,15 +81,22 @@ const StyledHistoryBlock = styled.div`
       .date {
         white-space: nowrap;
         display: inline-block;
-        margin-left: auto;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: auto;
+              `
+            : css`
+                margin-left: auto;
+              `}
         font-weight: 600;
         font-size: 12px;
-        color: ${(props) => props.theme.infoPanel.history.dateColor};
+        color: ${props => props.theme.infoPanel.history.dateColor};
       }
     }
   }
 
-  ${(props) =>
+  ${props =>
     props.isUserAction &&
     css`
       .info {
@@ -97,7 +104,14 @@ const StyledHistoryBlock = styled.div`
         flex-wrap: wrap;
         .message {
           display: inline-block;
-          margin-right: 4px;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-left: 4px;
+                `
+              : css`
+                  margin-right: 4px;
+                `}
         }
       }
     `}
@@ -125,7 +139,7 @@ const StyledHistoryBlockMessage = styled.div`
 
   .folder-label {
     max-width: 100%;
-    color: ${(props) => props.theme.infoPanel.history.locationIconColor};
+    color: ${props => props.theme.infoPanel.history.locationIconColor};
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -137,12 +151,19 @@ const StyledHistoryBlockFilesList = styled.div`
   display: flex;
   flex-direction: column;
   padding: 8px 0;
-  background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
+  background: ${props => props.theme.infoPanel.history.fileBlockBg};
   border-radius: 3px;
 
   .show_more-link {
     cursor: pointer;
-    margin: 10px 0 3px 20px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 10px 20px 3px 0;
+          `
+        : css`
+            margin: 10px 0 3px 20px;
+          `}
     font-weight: 400;
     font-size: 13px;
     line-height: 15px;
@@ -188,12 +209,19 @@ const StyledHistoryBlockFile = styled.div`
 
     .exst {
       flex-shrink: 0;
-      color: ${(props) => props.theme.infoPanel.history.fileExstColor};
+      color: ${props => props.theme.infoPanel.history.fileExstColor};
     }
   }
 
   .location-btn {
-    margin-left: auto;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     min-width: 16px;
   }
 `;
