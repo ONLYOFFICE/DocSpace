@@ -15,6 +15,11 @@ map $SERVICE_CLIENT $service_client {
     $SERVICE_CLIENT $SERVICE_CLIENT;
 }
 
+map $SERVICE_MANAGEMENT $service_management {
+    volatile;
+    $SERVICE_MANAGEMENT $SERVICE_MANAGEMENT;
+}
+
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;
     $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
