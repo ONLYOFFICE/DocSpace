@@ -65,7 +65,7 @@ public interface IFolderDao<T>
 
     IAsyncEnumerable<Folder<T>> GetFakeRoomsAsync(IEnumerable<T> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
-    
+
     IAsyncEnumerable<Folder<T>> GetFakeRoomsAsync(IEnumerable<T> parentsIds, IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags,
         Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
         IEnumerable<string> subjectEntriesIds);
@@ -88,7 +88,7 @@ public interface IFolderDao<T>
     /// <param name="withSubfolders"></param>
     /// <param name="tagIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
         bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
 
     /// <summary>
@@ -154,10 +154,10 @@ public interface IFolderDao<T>
     /// <returns>
     /// Returns pair of file ID, file name, in which the same name.
     /// </returns>
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, T to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, string to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, int to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, T to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, string to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, int to);
 
     /// <summary>
     ///     Rename folder
@@ -216,7 +216,7 @@ public interface IFolderDao<T>
             T folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder);
-    
+
 
     #region Only for TMFolderDao
 

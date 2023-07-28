@@ -131,6 +131,11 @@ public class SmtpSettingsController : ControllerBase
 
         var current = _coreConfiguration.DefaultSmtpSettings;
 
+        if (current.IsDefaultSettings && !_coreBaseSettings.Standalone)
+        {
+            current = SmtpSettings.Empty;
+        }
+
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";
 
