@@ -11,7 +11,7 @@ import {
 } from "@docspace/components";
 import toastr from "@docspace/components/toast/toastr";
 
-const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/$/;
+const URL_REGEX = /^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\/?$/;
 
 const DocumentService = ({ changeDocumentServiceLocation }) => {
   const { t } = useTranslation(["Settings", "Common"]);
