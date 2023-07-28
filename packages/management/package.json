@@ -7,7 +7,7 @@
     "build": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
     "build:translations": "node scripts/buildTranslations.js",
     "clean": "shx rm -rf dist",
-    "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
+    "deploy": "shx --silent mkdir -p ../../build/deploy/management && shx cp -r dist/* ../../build/deploy/management",
     "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
     "start-prod": "serve dist -s -p 5015"
   },
@@ -48,7 +48,7 @@
     "playwright": "^1.17.1",
     "sass": "^1.39.2",
     "sass-loader": "^12.1.0",
-    "serve": "14.1.1",
+    "serve": "14.2.0",
     "shx": "^0.3.3",
     "source-map-loader": "^3.0.0",
     "style-loader": "3.2.1",
