@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import { classNames } from "../utils/classNames";
@@ -105,65 +105,53 @@ const Scrollbar = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
+  const { interfaceDirection } = useTheme();
   const [isScrolling, setIsScrolling] = useState();
   const [isMouseOver, setIsMouseOver] = useState();
-  const { interfaceDirection } = useTheme();
   const timerId = useRef();
 
   const isRtl = interfaceDirection === "rtl";
 
   const scrollbarType = scrollbarTypes[stype] ?? {};
 
-  const tracksCommonStyles = {
-    opacity: autoHide && !isScrolling ? 0 : 1,
-    transition: "opacity 0.4s ease-in-out",
+  const showTrack = () => {
+    clearTimeout(timerId.current);
+    setIsScrolling(true);
   };
 
-  let showTrack;
-  let hideTrack;
-  let onScrollStart;
-  let onScrollStop;
-  let onMouseEnter;
-  let onMouseLeave;
+  const hideTrack = () => {
+    timerId.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, hideTrackTimer);
+  };
 
-  if (autoHide) {
-    showTrack = () => {
-      clearTimeout(timerId.current);
-      setIsScrolling(true);
-    };
+  const onScrollStart = () => showTrack();
 
-    hideTrack = () => {
-      timerId.current = setTimeout(() => {
-        setIsScrolling(false);
-      }, hideTrackTimer);
-    };
+  const onScrollStop = () => {
+    if (isMouseOver) return;
+    hideTrack();
+  };
 
-    onScrollStart = () => {
-      if (autoHide) {
-        showTrack();
+  const onMouseEnter = () => {
+    showTrack();
+    setIsMouseOver(true);
+  };
+
+  const onMouseLeave = () => {
+    hideTrack();
+    setIsMouseOver(false);
+  };
+
+  const scrollAutoHideHandlers = autoHide
+    ? { onScrollStart, onScrollStop }
+    : {};
+  const tracksAutoHideHandlers = autoHide ? { onMouseEnter, onMouseLeave } : {};
+  const tracksAutoHideStyles = autoHide
+    ? {
+        opacity: !isScrolling ? 0 : 1,
+        transition: "opacity 0.4s ease-in-out",
       }
-    };
-
-    onScrollStop = () => {
-      if (autoHide && !isMouseOver) {
-        hideTrack();
-      }
-    };
-
-    onMouseEnter = () => {
-      if (autoHide) {
-        showTrack();
-        setIsMouseOver(true);
-      }
-    };
-
-    onMouseLeave = () => {
-      if (autoHide) {
-        hideTrack();
-        setIsMouseOver(false);
-      }
-    };
-  }
+    : {};
 
   // onScroll handler placed here on Scroller element to get native event instead of parameters that library put
   const renderScroller = (libProps) => {
@@ -189,7 +177,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       disableTracksWidthCompensation
       rtl={isRtl}
       ref={ref}
-      onScrollStop={onScrollStop}
+      {...scrollAutoHideHandlers}
       onScrollStart={onScrollStart}
       scrollerProps={{ renderer: renderScroller }}
       contentProps={{
@@ -213,21 +201,19 @@ const Scrollbar = React.forwardRef((props, ref) => {
       trackYProps={{
         style: {
           ...scrollbarType.trackV,
-          ...tracksCommonStyles,
+          ...tracksAutoHideStyles,
           marginLeft: isRtl ? "1px" : "0",
           marginRight: isRtl ? "0" : "1px",
         },
-        onMouseEnter,
-        onMouseLeave,
+        ...tracksAutoHideHandlers,
       }}
       trackXProps={{
         style: {
           ...scrollbarType.trackH,
-          ...tracksCommonStyles,
+          ...tracksAutoHideStyles,
           direction: "ltr",
         },
-        onMouseEnter,
-        onMouseLeave,
+        ...tracksAutoHideHandlers,
       }}
     />
   );
