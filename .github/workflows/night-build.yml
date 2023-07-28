@@ -2,7 +2,7 @@ name: night-build
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/15 * * * *'
 
 env:
     DOCKER_PATH: "/build/install/docker"
