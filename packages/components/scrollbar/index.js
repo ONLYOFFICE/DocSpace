@@ -119,59 +119,65 @@ const Scrollbar = React.forwardRef((props, ref) => {
     transition: "opacity 0.4s ease-in-out",
   };
 
-  const showTrack = useCallback(() => {
-    clearTimeout(timerId.current);
-    setIsScrolling(true);
-  }, [timerId]);
+  let showTrack;
+  let hideTrack;
+  let onScrollStart;
+  let onScrollStop;
+  let onMouseEnter;
+  let onMouseLeave;
 
-  const hideTrack = useCallback(() => {
-    timerId.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, hideTrackTimer);
-  }, [timerId, hideTrackTimer]);
+  if (autoHide) {
+    showTrack = () => {
+      clearTimeout(timerId.current);
+      setIsScrolling(true);
+    };
 
-  const onScrollStart = useCallback(() => {
-    if (autoHide) {
-      showTrack();
-    }
-  }, [autoHide, showTrack]);
+    hideTrack = () => {
+      timerId.current = setTimeout(() => {
+        setIsScrolling(false);
+      }, hideTrackTimer);
+    };
 
-  const onScrollStop = useCallback(() => {
-    if (autoHide && !isMouseOver) {
-      hideTrack();
-    }
-  }, [autoHide, hideTrack, isMouseOver]);
+    onScrollStart = () => {
+      if (autoHide) {
+        showTrack();
+      }
+    };
 
-  const onMouseEnter = useCallback(() => {
-    if (autoHide) {
-      showTrack();
-      setIsMouseOver(true);
-    }
-  }, [autoHide, showTrack]);
+    onScrollStop = () => {
+      if (autoHide && !isMouseOver) {
+        hideTrack();
+      }
+    };
 
-  const onMouseLeave = useCallback(() => {
-    if (autoHide) {
-      hideTrack();
-      setIsMouseOver(false);
-    }
-  }, [autoHide, hideTrack]);
+    onMouseEnter = () => {
+      if (autoHide) {
+        showTrack();
+        setIsMouseOver(true);
+      }
+    };
+
+    onMouseLeave = () => {
+      if (autoHide) {
+        hideTrack();
+        setIsMouseOver(false);
+      }
+    };
+  }
 
   // onScroll handler placed here on Scroller element to get native event instead of parameters that library put
-  const renderScroller = useCallback(
-    (libProps) => {
-      const { elementRef, ...restLibProps } = libProps;
-      return (
-        <div
-          {...restLibProps}
-          id={id}
-          className={classNames("scroller", scrollclass)}
-          ref={elementRef}
-          onScroll={onScroll}
-        />
-      );
-    },
-    [id, onScroll, scrollclass]
-  );
+  const renderScroller = (libProps) => {
+    const { elementRef, ...restLibProps } = libProps;
+    return (
+      <div
+        {...restLibProps}
+        id={id}
+        className={classNames("scroller", scrollclass)}
+        ref={elementRef}
+        onScroll={onScroll}
+      />
+    );
+  };
 
   useEffect(() => {
     return () => clearTimeout(timerId.current);
