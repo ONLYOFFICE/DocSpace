@@ -9,7 +9,7 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/management && shx cp -r dist/* ../../build/deploy/management",
     "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "serve dist -s -p 5015"
+    "start-prod": "ws --port 5015 --directory dist --spa index.html --rewrite '/management/(.*) -> http://localhost:5015/$1'"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -39,6 +39,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "5.3.2",
     "json-loader": "^0.5.7",
+    "local-web-server": "^5.3.0",
     "mocha": "^9.1.3",
     "mocha-junit-reporter": "^2.0.2",
     "mocha-multi": "^1.1.5",
@@ -48,7 +49,6 @@
     "playwright": "^1.17.1",
     "sass": "^1.39.2",
     "sass-loader": "^12.1.0",
-    "serve": "14.2.0",
     "shx": "^0.3.3",
     "source-map-loader": "^3.0.0",
     "style-loader": "3.2.1",
