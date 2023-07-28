@@ -145,20 +145,18 @@ const HotkeyPanel = ({
 
 HotkeyPanel.defaultProps = { theme: Base };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, publicRoomStore }) => {
   const {
     hotkeyPanelVisible,
     setHotkeyPanelVisible,
     theme,
   } = auth.settingsStore;
 
-  const { isVisitor } = auth.userStore.user;
-
   return {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
     theme,
-    isVisitor,
+    isVisitor: auth?.userStore?.user?.isVisitor || publicRoomStore.isPublicRoom,
   };
 })(
   withTranslation(["HotkeysPanel", "Article", "Common", "Files"])(

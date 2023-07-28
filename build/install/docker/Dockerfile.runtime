@@ -1,0 +1,115 @@
+ARG SRC_PATH="/app/onlyoffice/src"
+ARG BUILD_PATH="/var/www"
+ARG DOTNET_SDK="mcr.microsoft.com/dotnet/sdk:7.0"
+ARG DOTNET_RUN="mcr.microsoft.com/dotnet/aspnet:7.0"
+
+FROM alpine:latest AS base
+ARG SRC_PATH
+ARG BUILD_PATH
+
+WORKDIR ${SRC_PATH}
+
+COPY  /config ./config
+
+RUN find config/ -maxdepth 1 -name "*.json" | grep -v test | grep -v dev | xargs tar -cvf config.tar && \
+    tar -C "/app/onlyoffice/" -xvf config.tar && \
+    cp config/*.config /app/onlyoffice/config/ && \
+    mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
+    sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
+    sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
+
+FROM $DOTNET_RUN as dotnetrun
+ARG BUILD_PATH
+ARG SRC_PATH
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+# add defualt user and group for no-root run
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R && \
+    chown onlyoffice:onlyoffice /var/www -R && \
+    apt-get -y update && \
+    apt-get install -yq \
+        python3-pip \
+        nano \
+        curl \
+        vim \
+        libgdiplus && \
+    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
+
+EXPOSE 5050
+ENTRYPOINT ["python3", "docker-entrypoint.py"]
+
+FROM node:18.12.1-slim as noderun
+ARG BUILD_PATH
+ARG SRC_PATH 
+ENV BUILD_PATH=${BUILD_PATH}
+ENV SRC_PATH=${SRC_PATH}
+
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R  && \
+    chown onlyoffice:onlyoffice /var/www -R && \
+    apt-get -y update && \
+    apt-get install -yq \ 
+            nano \
+            curl \
+            vim \
+            python3-pip && \
+    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
+
+EXPOSE 5050
+ENTRYPOINT ["python3", "docker-entrypoint.py"]
+
+FROM nginx AS proxy
+ARG SRC_PATH
+ARG BUILD_PATH
+ARG COUNT_WORKER_CONNECTIONS=1024
+ENV DNS_NAMESERVER=127.0.0.11 \
+    COUNT_WORKER_CONNECTIONS=$COUNT_WORKER_CONNECTIONS \
+    MAP_HASH_BUCKET_SIZE=""
+
+RUN apt-get -y update && \
+    apt-get install -yq vim && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /usr/share/nginx/html/* 
+
+# copy static services files and config values 
+COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+COPY /build/install/docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
+COPY /build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY /build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+
+# todo modify for client
+# add defualt user and group for no-root run
+RUN chown nginx:nginx /etc/nginx/* -R && \
+    chown nginx:nginx /docker-entrypoint.d/* && \
+    # changes for upstream configure
+    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf

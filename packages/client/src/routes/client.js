@@ -17,7 +17,10 @@ const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
 
+const Sdk = loadable(() => import("../pages/Sdk"));
+
 const FormGallery = loadable(() => import("../pages/FormGallery"));
+const PublicRoom = loadable(() => import("../pages/PublicRoom"));
 const About = loadable(() => import("../pages/About"));
 const Wizard = loadable(() => import("../pages/Wizard"));
 const PreparationPortal = loadable(() => import("../pages/PreparationPortal"));
@@ -178,6 +181,18 @@ const ClientRoutes = [
             ),
           },
           {
+            path: "accounts/changeOwner",
+            element: (
+              <PrivateRoute restricted withManager>
+                <Navigate
+                  to="/accounts/filter"
+                  state={{ openChangeOwnerDialog: true }}
+                  replace
+                />
+              </PrivateRoute>
+            ),
+          },
+          {
             path: "accounts/filter",
             element: (
               <PrivateRoute restricted withManager>
@@ -231,6 +246,16 @@ const ClientRoutes = [
     ),
   },
   {
+    path: "/rooms/share",
+    element: (
+      <PublicRoute>
+        <ErrorBoundary>
+          <PublicRoom />
+        </ErrorBoundary>
+      </PublicRoute>
+    ),
+  },
+  {
     path: "/wizard",
     element: (
       <PublicRoute>
@@ -239,6 +264,10 @@ const ClientRoutes = [
         </ErrorBoundary>
       </PublicRoute>
     ),
+  },
+  {
+    path: "/sdk/:mode",
+    element: <Sdk />,
   },
   {
     path: "/about",

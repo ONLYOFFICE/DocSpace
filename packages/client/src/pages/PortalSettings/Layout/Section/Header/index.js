@@ -153,7 +153,10 @@ const SectionHeaderContent = (props) => {
     const arrayOfParams = getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const currKey = key.length > 3 ? key : key[0];
+    let currKey = key.length > 3 ? key : key[0];
+
+    if (key === "8" || key === "8-0") currKey = "8-0";
+
     const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
       arrayOfParams,

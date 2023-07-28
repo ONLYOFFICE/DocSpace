@@ -52,6 +52,8 @@ export type SecurityType = {
   ReadHistory: boolean;
   Rename: boolean;
   Review: boolean;
+  Download: boolean;
+  Convert: boolean;
 };
 
 export type ViewAccessabilityType = {

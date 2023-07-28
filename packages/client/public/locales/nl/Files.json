@@ -24,6 +24,7 @@
   "DaysRemaining": "Aantal resterende dagen: {{daysRemaining}}",
   "DisableNotifications": "Meldingen uitschakelen",
   "Document": "Document",
+  "DocumentEdited": "Kan de actie niet uitvoeren omdat het document bewerkt wordt.",
   "EditRoom": "Bewerk kamer",
   "EmptyFile": "Leeg bestand",
   "EmptyFilterDescriptionText": "Geen bestanden of mappen komen overeen met dit filter. Probeer een andere of verwijder de filter om alle bestanden te zien. ",

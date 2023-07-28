@@ -125,4 +125,31 @@ $Message</value>
  
 $__AuthorName a supprimé la salle : $RoomTitle</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Tous les signataires ont rempli $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Changement de statut du signe</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notification DocSpace. Mentionné dans le document</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Mentionné dans le document</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>L'envoi est terminé.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notification DocSpace. Salle supprimée</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Accès accordé au document : $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Accès accordé au document chiffré : $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Accès autorisé au dossier : $DocumentTitle</value>
+  </data>
 </root>

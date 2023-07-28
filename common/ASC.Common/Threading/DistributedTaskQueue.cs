@@ -62,6 +62,7 @@ public class DistributedTaskQueue
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger<DistributedTaskQueue> _logger;
+    private bool _subscribed;
 
     /// <summary>
     /// setup -1 for infinity thread counts
@@ -83,14 +84,7 @@ public class DistributedTaskQueue
         _cancellationCacheNotify = cancelTaskNotify;
         _cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
         _logger = logger;
-
-        _cancellationCacheNotify.Subscribe((c) =>
-        {
-            if (_cancelations.TryGetValue(c.Id, out var s))
-            {
-                s.Cancel();
-            }
-        }, CacheNotifyAction.Remove);
+        _subscribed = false;
     }
 
     public string Name
@@ -133,9 +127,27 @@ public class DistributedTaskQueue
 
         distributedTask.InstanceId = INSTANCE_ID;
 
+        if (distributedTask.LastModifiedOn.Equals(DateTime.MinValue))
+        {
+            distributedTask.LastModifiedOn = DateTime.UtcNow;
+        }
+
         var cancelation = new CancellationTokenSource();
         var token = cancelation.Token;
         _cancelations[distributedTask.Id] = cancelation;
+
+        if (!_subscribed)
+        {
+            _cancellationCacheNotify.Subscribe((c) =>
+            {
+                if (_cancelations.TryGetValue(c.Id, out var s))
+                {
+                    s.Cancel();
+                }
+            }, CacheNotifyAction.Remove);
+
+            _subscribed = true;
+        }
 
         var task = new Task(() =>
     {
@@ -307,11 +319,12 @@ public class DistributedTaskQueue
     {
         var listTasks = queueTasks.ToList();
 
-        listTasks.RemoveAll(IsOrphanCacheItem);
+        if (listTasks.RemoveAll(IsOrphanCacheItem) > 0)
+        {
+            SaveToCache(listTasks);
+        }
 
-        SaveToCache(listTasks);
-
-        return queueTasks;
+        return listTasks;
     }
 
     private bool IsOrphanCacheItem(DistributedTask obj)

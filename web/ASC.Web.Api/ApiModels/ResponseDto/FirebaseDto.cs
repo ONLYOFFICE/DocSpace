@@ -35,5 +35,5 @@ public class FirebaseDto
     public string MessagingSenderId { get; set; }
     public string AppId { get; set; }
     public string MeasurementId { get; set; }
-
+    public string DatabaseURL { get; set; }
 }

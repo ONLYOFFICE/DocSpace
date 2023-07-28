@@ -38,7 +38,7 @@ public class PortalController : ControllerBase
     protected readonly TenantManager _tenantManager;
     protected readonly ITariffService _tariffService;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly UrlShortener _urlShortener;
+    private readonly IUrlShortener _urlShortener;
     private readonly AuthContext _authContext;
     private readonly WebItemSecurity _webItemSecurity;
     protected readonly SecurityContext _securityContext;
@@ -64,6 +64,7 @@ public class PortalController : ControllerBase
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly QuotaHelper _quotaHelper;
     private readonly IEventBus _eventBus;
 
     public PortalController(
@@ -73,7 +74,7 @@ public class PortalController : ControllerBase
         TenantManager tenantManager,
         ITariffService tariffService,
         CommonLinkUtility commonLinkUtility,
-        UrlShortener urlShortener,
+        IUrlShortener urlShortener,
         AuthContext authContext,
         WebItemSecurity webItemSecurity,
         SecurityContext securityContext,
@@ -98,6 +99,7 @@ public class PortalController : ControllerBase
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
+        QuotaHelper quotaHelper,
         IEventBus eventBus)
     {
         _log = logger;
@@ -131,6 +133,7 @@ public class PortalController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _quotaHelper = quotaHelper;
         _eventBus = eventBus;
     }
 
@@ -164,7 +167,7 @@ public class PortalController : ControllerBase
     {
         try
         {
-            return await _urlShortener.Instance.GetShortenLinkAsync(inDto.Link);
+            return await _urlShortener.GetShortenLinkAsync(inDto.Link);
         }
         catch (Exception ex)
         {
@@ -173,25 +176,34 @@ public class PortalController : ControllerBase
         }
     }
 
+    [AllowNotPayment, AllowAnonymous]
     [HttpGet("tenantextra")]
-    public async Task<object> GetTenantExtraAsync()
+    public async Task<TenantExtraDto> GetTenantExtra(bool refresh)
     {
-        return new
+        var result = new TenantExtraDto
         {
-            customMode = _coreBaseSettings.CustomMode,
-            opensource = _tenantExtra.Opensource,
-            enterprise = _tenantExtra.Enterprise,
-            tariff = await _tenantExtra.GetCurrentTariffAsync(),
-            quota = await _tenantManager.GetCurrentTenantQuotaAsync(),
-            notPaid = await _tenantExtra.IsNotPaidAsync(),
-            licenseAccept = (await _settingsManager.LoadForCurrentUserAsync<TariffSettings>()).LicenseAcceptSetting,
-            enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
+            CustomMode = _coreBaseSettings.CustomMode,
+            Opensource = _tenantExtra.Opensource,
+            Enterprise = _tenantExtra.Enterprise,
+            EnableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                 (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
                 && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl)
-                && !_coreBaseSettings.CustomMode,
-            DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync(),
-            DocServerLicense = await _documentServiceLicense.GetLicenseAsync()
+                && !_coreBaseSettings.CustomMode
         };
+
+
+
+        if (_authContext.IsAuthenticated)
+        {
+            result.Tariff = await _tenantExtra.GetCurrentTariffAsync(refresh);
+            result.Quota = await _quotaHelper.GetCurrentQuotaAsync(refresh);
+            result.NotPaid = await _tenantExtra.IsNotPaidAsync();
+            result.LicenseAccept = _settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting;
+            result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
+            result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
+    }
+
+        return result;
     }
 
 
@@ -528,7 +540,7 @@ public class PortalController : ControllerBase
         }
 
         _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id));
-        
+
         await _studioNotifyService.SendMsgPortalDeletionSuccessAsync(owner, redirectLink);
 
         return redirectLink;

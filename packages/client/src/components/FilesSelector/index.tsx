@@ -81,6 +81,7 @@ const FilesSelector = ({
   footerCheckboxLabel,
 
   descriptionText,
+  setSelectedItems,
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -329,7 +330,7 @@ const FilesSelector = ({
         };
 
         setIsRequestRunning(true);
-
+        setSelectedItems();
         checkFileConflicts(selectedItemId, folderIds, fileIds)
           .then(async (conflicts: any) => {
             if (conflicts.length) {
@@ -509,7 +510,8 @@ export default inject(
   ) => {
     const { id: selectedId, parentId, rootFolderType } = selectedFolderStore;
 
-    const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
+    const { setConflictDialogData, checkFileConflicts, setSelectedItems } =
+      filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
     const sessionPath = window.sessionStorage.getItem("filesSelectorPath");
@@ -593,6 +595,7 @@ export default inject(
       setCopyPanelVisible,
       setRestoreAllPanelVisible,
       setIsFolderActions,
+      setSelectedItems,
     };
   }
 )(observer(FilesSelector));

@@ -17,6 +17,7 @@ import {
   mapSupplied,
   mediaTypes,
 } from "./helpers";
+import { getFileExtension } from "@docspace/common/utils";
 
 import {
   getDesktopMediaContextModel,
@@ -220,15 +221,6 @@ function MediaViewer({
     [props.extsMediaPreviewed]
   );
 
-  const getFileExtension = useCallback((fileTitle: string) => {
-    if (!fileTitle) {
-      return "";
-    }
-    fileTitle = fileTitle.trim();
-    const posExt = fileTitle.lastIndexOf(".");
-    return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
-  }, []);
-
   let lastRemovedFileId: null | number = null;
 
   const onDelete = () => {
@@ -252,6 +244,8 @@ function MediaViewer({
 
   const onDownload = () => {
     const { playlist, onDownload } = props;
+
+    if (!targetFile?.security.Download) return;
 
     let currentFileId = playlist.find(
       (file) => file.id === playlistPos
@@ -377,6 +371,7 @@ function MediaViewer({
     <>
       {canOpen && (
         <ViewerWrapper
+          targetFile={targetFile}
           userAccess={props.userAccess}
           visible={props.visible}
           title={title}

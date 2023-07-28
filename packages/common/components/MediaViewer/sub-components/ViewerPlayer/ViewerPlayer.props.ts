@@ -7,6 +7,7 @@ interface ViewerPlayerProps {
   isError: boolean;
   audioIcon: string;
   errorTitle: string;
+  canDownload: boolean;
   isLastImage: boolean;
   isFistImage: boolean;
   isFullScreen: boolean;
