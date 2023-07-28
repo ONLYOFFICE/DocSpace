@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 
+import { inject, observer } from "mobx-react";
+
 import { FileAction } from "@docspace/common/constants";
 import { Events } from "@docspace/common/constants";
 
@@ -8,8 +10,9 @@ import RenameEvent from "./RenameEvent";
 import CreateRoomEvent from "./CreateRoomEvent";
 import EditRoomEvent from "./EditRoomEvent";
 import ChangeUserTypeEvent from "./ChangeUserTypeEvent";
+import CreatePluginFile from "./CreatePluginFileEvent";
 
-const GlobalEvents = () => {
+const GlobalEvents = ({ enablePlugins }) => {
   const [createDialogProps, setCreateDialogProps] = useState({
     visible: false,
     id: null,
@@ -40,6 +43,12 @@ const GlobalEvents = () => {
 
   const [changeUserTypeDialog, setChangeUserTypeDialogProps] = useState({
     visible: false,
+    onClose: null,
+  });
+
+  const [createPluginFileDialog, setCreatePluginFileProps] = useState({
+    visible: false,
+    props: null,
     onClose: null,
   });
 
@@ -115,10 +124,28 @@ const GlobalEvents = () => {
   const onChangeUserType = useCallback((e) => {
     setChangeUserTypeDialogProps({
       visible: true,
-      onClose: () =>
-        setChangeUserTypeDialogProps({ visible: false, onClose: null }),
+      onClose: () => {
+        setChangeUserTypeDialogProps({ visible: false, onClose: null });
+      },
     });
   }, []);
+
+  const onCreatePluginFileDialog = useCallback(
+    (e) => {
+      if (!enablePlugins) return;
+
+      const { payload } = e;
+      setCreatePluginFileProps({
+        ...payload,
+        visible: true,
+        onClose: () => {
+          payload.onClose && payload.onClose();
+          setCreatePluginFileProps({ visible: false, onClose: null });
+        },
+      });
+    },
+    [enablePlugins]
+  );
 
   useEffect(() => {
     window.addEventListener(Events.CREATE, onCreate);
@@ -127,6 +154,13 @@ const GlobalEvents = () => {
     window.addEventListener(Events.ROOM_EDIT, onEditRoom);
     window.addEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
 
+    if (enablePlugins) {
+      window.addEventListener(
+        Events.CREATE_PLUGIN_FILE,
+        onCreatePluginFileDialog
+      );
+    }
+
     return () => {
       window.removeEventListener(Events.CREATE, onCreate);
       window.removeEventListener(Events.RENAME, onRename);
@@ -134,7 +168,14 @@ const GlobalEvents = () => {
       window.removeEventListener(Events.ROOM_EDIT, onEditRoom);
       window.removeEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
     };
-  }, [onRename, onCreate, onCreateRoom, onEditRoom, onChangeUserType]);
+  }, [
+    onRename,
+    onCreate,
+    onCreateRoom,
+    onEditRoom,
+    onChangeUserType,
+    enablePlugins,
+  ]);
 
   return [
     createDialogProps.visible && (
@@ -155,7 +196,17 @@ const GlobalEvents = () => {
         {...changeUserTypeDialog}
       />
     ),
+    createPluginFileDialog.visible && (
+      <CreatePluginFile
+        key={Events.CREATE_PLUGIN_FILE}
+        {...createPluginFileDialog}
+      />
+    ),
   ];
 };
 
-export default memo(GlobalEvents);
+export default inject(({ auth }) => {
+  const { enablePlugins } = auth.settingsStore;
+
+  return { enablePlugins };
+})(observer(GlobalEvents));

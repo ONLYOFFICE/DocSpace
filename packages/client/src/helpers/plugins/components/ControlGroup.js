@@ -28,7 +28,17 @@ const StyledControlGroup = styled.div`
   }
 `;
 
-const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
+const ControlGroup = ({
+  group,
+  isLoading,
+  setAcceptButtonProps,
+  pluginId,
+  updatePluginStatus,
+  setCurrentSettingsDialogPlugin,
+  setSettingsPluginDialogVisible,
+  setPluginDialogVisible,
+  setPluginDialogProps,
+}) => {
   const [elementProps, setElementProps] = React.useState(null);
 
   React.useEffect(() => {
@@ -47,7 +57,18 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
 
           const message = await elementProps.onChange(value);
 
-          messageActions(message, setElementProps, setAcceptButtonProps);
+          messageActions(
+            message,
+            setElementProps,
+            setAcceptButtonProps,
+            pluginId,
+            setSettingsPluginDialogVisible,
+            setCurrentSettingsDialogPlugin,
+            updatePluginStatus,
+            null,
+            setPluginDialogVisible,
+            setPluginDialogProps
+          );
         };
 
         const onBlur = async (e) => {
@@ -56,7 +77,18 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
 
           const message = await elementProps.onBlur(value);
 
-          messageActions(message, setElementProps, setAcceptButtonProps);
+          messageActions(
+            message,
+            setElementProps,
+            setAcceptButtonProps,
+            pluginId,
+            setSettingsPluginDialogVisible,
+            setCurrentSettingsDialogPlugin,
+            updatePluginStatus,
+            null,
+            setPluginDialogVisible,
+            setPluginDialogProps
+          );
         };
 
         const onFocus = async (e) => {
@@ -65,7 +97,18 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
 
           const message = await elementProps.onFocus(value);
 
-          messageActions(message, setElementProps, setAcceptButtonProps);
+          messageActions(
+            message,
+            setElementProps,
+            setAcceptButtonProps,
+            pluginId,
+            setSettingsPluginDialogVisible,
+            setCurrentSettingsDialogPlugin,
+            updatePluginStatus,
+            null,
+            setPluginDialogVisible,
+            setPluginDialogProps
+          );
         };
 
         return (
@@ -85,7 +128,18 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
 
             const message = await elementProps[index].onChange();
 
-            messageActions(message, setElementProps, setAcceptButtonProps);
+            messageActions(
+              message,
+              setElementProps,
+              setAcceptButtonProps,
+              pluginId,
+              setSettingsPluginDialogVisible,
+              setCurrentSettingsDialogPlugin,
+              updatePluginStatus,
+              null,
+              setPluginDialogVisible,
+              setPluginDialogProps
+            );
           };
 
           if (isLoading) {
@@ -116,7 +170,18 @@ const ControlGroup = ({ group, isLoading, setAcceptButtonProps }) => {
 
             const message = await elementProps[index].onChange();
 
-            messageActions(message, setElementProps, setAcceptButtonProps);
+            messageActions(
+              message,
+              setElementProps,
+              setAcceptButtonProps,
+              pluginId,
+              setSettingsPluginDialogVisible,
+              setCurrentSettingsDialogPlugin,
+              updatePluginStatus,
+              null,
+              setPluginDialogVisible,
+              setPluginDialogProps
+            );
           };
 
           if (isLoading) {

@@ -31,6 +31,7 @@ import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 import PortalRenamingDialog from "./PortalRenamingDialog";
 import SettingsPluginDialog from "./SettingsPluginDialog";
 import ReportDialog from "./ReportDialog";
+import PluginDialog from "./PluginDialog";
 
 export {
   EmptyTrashDialog,
@@ -66,4 +67,5 @@ export {
   PortalRenamingDialog,
   SettingsPluginDialog,
   ReportDialog,
+  PluginDialog,
 };

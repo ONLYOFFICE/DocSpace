@@ -40,13 +40,13 @@ import ClientLoadingStore from "./ClientLoadingStore";
 
 import PluginStore from "./PluginStore";
 
-const pluginStore = new PluginStore(authStore);
-
 const oformsStore = new OformsStore(authStore);
 
 const clientLoadingStore = new ClientLoadingStore();
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
+
+const pluginStore = new PluginStore(authStore, selectedFolderStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();

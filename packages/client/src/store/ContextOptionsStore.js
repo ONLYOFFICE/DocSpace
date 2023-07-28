@@ -47,7 +47,6 @@ import { Events } from "@docspace/common/constants";
 
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
-import { messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 class ContextOptionsStore {
   authStore;
@@ -1123,53 +1122,36 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
-    if (enablePlugins) {
-      const pluginOptions = this.pluginStore.contextMenuItemsList;
+    if (enablePlugins && this.pluginStore.contextMenuItemsList) {
+      this.pluginStore.contextMenuItemsList.forEach((option) => {
+        if (contextOptions.includes(option.key)) {
+          const value = option.value;
 
-      if (pluginOptions) {
-        pluginOptions.forEach((option) => {
-          if (contextOptions.includes(option.key)) {
-            const value = option.value;
-            if (!value.onClick) {
+          if (value.onClick) {
+            const onClick = () => value.onClick(item.id);
+
+            value.onClick = onClick;
+          }
+
+          if (value.fileExt) {
+            if (value.fileExt.includes(item.fileExst)) {
               options.splice(value.position, 0, {
                 key: option.key,
-                ...value,
+                label: value.label,
+                icon: value.icon,
+                onClick: value.onClick,
               });
-            } else {
-              const onClick = async () => {
-                const message = await value.onClick(item.id);
-
-                messageActions(
-                  message,
-                  null,
-                  null,
-                  option.value.pluginId,
-                  this.pluginStore.setSettingsPluginDialogVisible,
-                  this.pluginStore.setCurrentSettingsDialogPlugin
-                );
-              };
-
-              if (value.fileExt) {
-                if (value.fileExt.includes(item.fileExst)) {
-                  options.splice(value.position, 0, {
-                    key: option.key,
-                    label: value.label,
-                    icon: value.icon,
-                    onClick: onClick,
-                  });
-                }
-              } else {
-                options.splice(value.position, 0, {
-                  key: option.key,
-                  label: value.label,
-                  icon: value.icon,
-                  onClick: onClick,
-                });
-              }
             }
+          } else {
+            options.splice(value.position, 0, {
+              key: option.key,
+              label: value.label,
+              icon: value.icon,
+              onClick: value.onClick,
+            });
           }
-        });
-      }
+        }
+      });
     }
 
     if (options[0]?.isSeparator) {

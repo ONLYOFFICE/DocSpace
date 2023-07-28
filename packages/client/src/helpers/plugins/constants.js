@@ -2,6 +2,8 @@ export const PluginFileType = Object.freeze({
   Files: "file",
   Folders: "folder",
   Rooms: "room",
+  Image: "image",
+  Video: "video",
 });
 
 export const PluginScopes = Object.freeze({
@@ -35,9 +37,18 @@ export const PluginSettingsType = Object.freeze({
 export const PluginActions = Object.freeze({
   updateProps: "update-props",
   updateAcceptButtonProps: "update-accept-button-props",
+  updateContext: "update-context",
+
   updateStatus: "update-status",
+
   showToast: "show-toast",
+
   showSettingsModal: "show-settings-modal",
+
+  showCreateDialogModal: "show-create-dialog-modal",
+
+  showModal: "show-modal",
+  closeModal: "close-modal",
 });
 
 export const PluginToastType = Object.freeze({
@@ -56,6 +67,9 @@ export const PluginComponents = Object.freeze({
   text: "text",
   textArea: "textArea",
   toggleButton: "toggleButton",
+  img: "img",
+  iFrame: "iFrame",
+  comboBox: "comboBox",
 });
 
 export const PluginUsersType = Object.freeze({

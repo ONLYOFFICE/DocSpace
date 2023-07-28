@@ -13,15 +13,31 @@ import ToggleButton from "@docspace/components/toggle-button";
 import { PluginComponents } from "./constants";
 
 import { messageActions } from "./utils";
+import ComboBox from "@docspace/components/combobox";
 
-const WrappedComponent = ({
+const PropsContext = React.createContext({});
+
+const ComponentPure = ({
   component,
   pluginId,
   setSettingsPluginDialogVisible,
   setCurrentSettingsDialogPlugin,
   updatePluginStatus,
+  setPluginDialogVisible,
+  setPluginDialogProps,
 }) => {
   const [elementProps, setElementProps] = React.useState(component.props);
+
+  const { contextProps, updatePropsContext, isLoading } =
+    React.useContext(PropsContext);
+
+  React.useEffect(() => {
+    if (!component.contextName || !contextProps[component.contextName]) return;
+
+    setElementProps(contextProps[component.contextName]);
+  }, [contextProps[component.contextName]]);
+
+  if (isLoading) return <></>;
 
   const getElement = () => {
     const componentName = component.component;
@@ -29,7 +45,7 @@ const WrappedComponent = ({
     switch (componentName) {
       case PluginComponents.box: {
         const childrenComponents = elementProps.children.map((item, index) => (
-          <WrappedComponent
+          <Component
             key={`box-${index}-${item.component}`}
             component={item}
             pluginId={pluginId}
@@ -58,7 +74,10 @@ const WrappedComponent = ({
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
-            updatePluginStatus
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
           );
         };
 
@@ -76,7 +95,10 @@ const WrappedComponent = ({
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
-            updatePluginStatus
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
           );
         };
 
@@ -94,7 +116,10 @@ const WrappedComponent = ({
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
-            updatePluginStatus
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
           );
         };
 
@@ -112,7 +137,10 @@ const WrappedComponent = ({
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
-            updatePluginStatus
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
           );
         };
 
@@ -130,11 +158,35 @@ const WrappedComponent = ({
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
-            updatePluginStatus
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
           );
         };
 
         return <Button {...elementProps} onClick={onClickAction} />;
+      }
+
+      case PluginComponents.comboBox: {
+        const onSelectAction = (option) => {
+          const message = elementProps.onSelect(option);
+
+          messageActions(
+            message,
+            setElementProps,
+            null,
+            pluginId,
+            setSettingsPluginDialogVisible,
+            setCurrentSettingsDialogPlugin,
+            updatePluginStatus,
+            updatePropsContext,
+            setPluginDialogVisible,
+            setPluginDialogProps
+          );
+        };
+
+        return <ComboBox {...elementProps} onSelect={onSelectAction} />;
       }
     }
   };
@@ -144,15 +196,40 @@ const WrappedComponent = ({
   return element;
 };
 
-export default inject(({ pluginStore }) => {
+const Component = inject(({ pluginStore }) => {
   const {
     updatePluginStatus,
     setCurrentSettingsDialogPlugin,
     setSettingsPluginDialogVisible,
+    setPluginDialogVisible,
+    setPluginDialogProps,
   } = pluginStore;
   return {
     updatePluginStatus,
     setCurrentSettingsDialogPlugin,
     setSettingsPluginDialogVisible,
+    setPluginDialogVisible,
+    setPluginDialogProps,
   };
-})(observer(WrappedComponent));
+})(observer(ComponentPure));
+
+const WrappedComponent = ({ component, pluginId, isLoading }) => {
+  const [contextProps, setContextProps] = React.useState({});
+
+  const updatePropsContext = (name, props) => {
+    const newProps = { ...contextProps };
+    newProps[name] = props;
+
+    setContextProps(newProps);
+  };
+
+  return (
+    <PropsContext.Provider
+      value={{ contextProps, updatePropsContext, isLoading }}
+    >
+      <Component component={component} pluginId={pluginId} />
+    </PropsContext.Provider>
+  );
+};
+
+export default WrappedComponent;

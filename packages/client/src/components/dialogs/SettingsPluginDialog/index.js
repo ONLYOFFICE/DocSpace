@@ -6,9 +6,13 @@ import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 
-import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
+import {
+  PluginSettingsType,
+  PluginComponents,
+} from "SRC_DIR/helpers/plugins/constants";
 import ControlGroup from "SRC_DIR/helpers/plugins/components/ControlGroup";
 import { messageActions } from "SRC_DIR/helpers/plugins/utils";
+import WrappedComponent from "SRC_DIR/helpers/plugins/WrappedComponent";
 
 const SettingsPluginDialog = ({
   plugin,
@@ -20,6 +24,9 @@ const SettingsPluginDialog = ({
   acceptButtonProps,
   cancelButtonProps,
 
+  withCustomSettings,
+  customSettings,
+
   settingsPluginDialogVisible,
   currentSettingsDialogPlugin,
 
@@ -28,6 +35,12 @@ const SettingsPluginDialog = ({
   isUserDialog,
 
   updatePluginSettings,
+
+  setSettingsPluginDialogVisible,
+  setCurrentSettingsDialogPlugin,
+  updateStatus,
+  setPluginDialogVisible,
+  setPluginDialogProps,
 
   ...rest
 }) => {
@@ -72,7 +85,18 @@ const SettingsPluginDialog = ({
 
       const message = await acceptButton.onClick();
 
-      messageActions(message, setAcceptButton);
+      messageActions(
+        message,
+        setAcceptButton,
+        null,
+        plugin.id,
+        setSettingsPluginDialogVisible,
+        setCurrentSettingsDialogPlugin,
+        updateStatus,
+        null,
+        setPluginDialogVisible,
+        setPluginDialogProps
+      );
 
       setIsRequestRunning(false);
       onCloseAction();
@@ -100,26 +124,40 @@ const SettingsPluginDialog = ({
     >
       <ModalDialog.Header>{plugin?.name}</ModalDialog.Header>
       <ModalDialog.Body>
-        {groupsProps?.map((group) => (
-          <ControlGroup
-            key={group.header}
-            group={group}
-            setAcceptButtonProps={setAcceptButton}
-            isLoading={isLoadingState}
+        {withCustomSettings ? (
+          <WrappedComponent
+            pluginId={plugin.id}
+            component={{
+              component: PluginComponents.box,
+              props: customSettings,
+            }}
           />
-        ))}
+        ) : (
+          groupsProps?.map((group) => (
+            <ControlGroup
+              key={group.header}
+              group={group}
+              setAcceptButtonProps={setAcceptButton}
+              isLoading={isLoadingState}
+            />
+          ))
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        {element}
+        {!withCustomSettings && (
+          <>
+            {element}
 
-        {isLoadingState ? (
-          <RectangleLoader width={"160px"} height={"40px"} />
-        ) : (
-          <Button
-            {...cancelButtonProps}
-            onClick={onCloseAction}
-            size={"normal"}
-          />
+            {isLoadingState ? (
+              <RectangleLoader width={"160px"} height={"40px"} />
+            ) : (
+              <Button
+                {...cancelButtonProps}
+                onClick={onCloseAction}
+                size={"normal"}
+              />
+            )}
+          </>
         )}
       </ModalDialog.Footer>
     </ModalDialog>
@@ -136,6 +174,9 @@ export default inject(({ pluginStore }) => {
     setIsAdminSettingsDialog,
     isAdminSettingsDialog,
     updatePluginSettings,
+    updateStatus,
+    setPluginDialogVisible,
+    setPluginDialogProps,
   } = pluginStore;
 
   const isUserDialog = !isAdminSettingsDialog;
@@ -164,5 +205,10 @@ export default inject(({ pluginStore }) => {
     onClose,
     isUserDialog,
     updatePluginSettings,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
+    updateStatus,
+    setPluginDialogVisible,
+    setPluginDialogProps,
   };
 })(observer(SettingsPluginDialog));

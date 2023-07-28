@@ -30,7 +30,7 @@ const StyledSubmenu = styled(Submenu)`
 `;
 
 const DeveloperToolsWrapper = (props) => {
-  const { loadBaseInfo } = props;
+  const { loadBaseInfo, enablePlugins } = props;
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -59,12 +59,15 @@ const DeveloperToolsWrapper = (props) => {
       name: t("Webhooks:Webhooks"),
       content: <Webhooks />,
     },
-    {
+  ];
+
+  if (enablePlugins) {
+    data.push({
       id: "plugins",
       name: t("PluginsSettings:Plugins"),
       content: <PluginPage />,
-    },
-  ];
+    });
+  }
 
   const [currentTab, setCurrentTab] = useState(
     data.findIndex((item) => location.pathname.includes(item.id))
@@ -105,10 +108,13 @@ const DeveloperToolsWrapper = (props) => {
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, auth }) => {
   const { initSettings } = setup;
 
+  const { settingsStore } = auth;
+
   return {
+    enablePlugins: settingsStore.enablePlugins,
     loadBaseInfo: async () => {
       await initSettings();
     },

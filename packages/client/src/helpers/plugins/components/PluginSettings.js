@@ -1,12 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
+import { inject, observer } from "mobx-react";
+
 import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader/RectangleLoader";
 
 import Button from "@docspace/components/button";
 
 import ControlGroup from "SRC_DIR/helpers/plugins/components/ControlGroup";
 import { messageActions } from "SRC_DIR/helpers/plugins/utils";
+import WrappedComponent from "../WrappedComponent";
+import { PluginComponents } from "../constants";
 
 const StyledPluginSettings = styled.div`
   .settings-header {
@@ -23,22 +27,33 @@ const PluginSettings = ({
   withAcceptButton,
   acceptButtonProps,
 
+  withCustomSettings,
+  customSettings,
+
   getPluginSettings,
 
   updatePluginStatus,
+  setCurrentSettingsDialogPlugin,
+  setSettingsPluginDialogVisible,
+  setPluginDialogVisible,
+  setPluginDialogProps,
 
   ...rest
 }) => {
   const [groupsProps, setGroupsProps] = React.useState(groups);
+  const [customSettingsProps, setCustomSettingsProps] =
+    React.useState(customSettings);
   const [acceptButton, setAcceptButton] = React.useState({});
-  const [isLoadingState, setILoadingState] = React.useState(isLoading);
+  const [isLoadingState, setIsLoading] = React.useState(isLoading);
 
   const onLoadAction = React.useCallback(async () => {
+    if (!onLoad) return;
     const res = await onLoad();
 
     const settings = getPluginSettings();
     setGroupsProps(settings.groups);
-    setILoadingState(res);
+    setCustomSettingsProps(settings.customSettings);
+    setIsLoading(res);
   }, [onLoad]);
 
   React.useEffect(() => {
@@ -62,9 +77,12 @@ const PluginSettings = ({
         setAcceptButton,
         null,
         id,
+        setSettingsPluginDialogVisible,
+        setCurrentSettingsDialogPlugin,
+        updatePluginStatus,
         null,
-        null,
-        updatePluginStatus
+        setPluginDialogVisible,
+        setPluginDialogProps
       );
     };
 
@@ -75,17 +93,55 @@ const PluginSettings = ({
 
   return (
     <StyledPluginSettings>
-      {groupsProps?.map((group) => (
-        <ControlGroup
-          key={group.header}
-          group={group}
-          setAcceptButtonProps={setAcceptButton}
-          isLoading={isLoadingState}
-        />
-      ))}
-      {withAcceptButton && element}
+      {withCustomSettings ? (
+        isLoadingState ? (
+          <></>
+        ) : (
+          <WrappedComponent
+            pluginId={id}
+            component={{
+              component: PluginComponents.box,
+              props: customSettingsProps,
+            }}
+            isLoading={isLoadingState}
+          />
+        )
+      ) : (
+        <>
+          {groupsProps?.map((group) => (
+            <ControlGroup
+              key={group.header}
+              group={group}
+              setAcceptButtonProps={setAcceptButton}
+              isLoading={isLoadingState}
+              pluginId={id}
+              updatePluginStatus={updatePluginStatus}
+              setCurrentSettingsDialogPlugin={setCurrentSettingsDialogPlugin}
+              setSettingsPluginDialogVisible={setSettingsPluginDialogVisible}
+              setPluginDialogVisible={setPluginDialogVisible}
+              setPluginDialogProps={setPluginDialogProps}
+            />
+          ))}
+          {withAcceptButton && element}
+        </>
+      )}
     </StyledPluginSettings>
   );
 };
 
-export default PluginSettings;
+export default inject(({ pluginStore }) => {
+  const {
+    updatePluginStatus,
+    setCurrentSettingsDialogPlugin,
+    setSettingsPluginDialogVisible,
+    setPluginDialogVisible,
+    setPluginDialogProps,
+  } = pluginStore;
+  return {
+    updatePluginStatus,
+    setCurrentSettingsDialogPlugin,
+    setSettingsPluginDialogVisible,
+    setPluginDialogVisible,
+    setPluginDialogProps,
+  };
+})(observer(PluginSettings));

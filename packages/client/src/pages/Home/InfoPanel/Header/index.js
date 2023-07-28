@@ -38,6 +38,8 @@ const InfoPanelHeaderContent = (props) => {
     // selectionParentRoom,
     infoPanelItemsList,
     enablePlugins,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
   } = props;
 
   const [isTablet, setIsTablet] = useState(false);
@@ -106,10 +108,12 @@ const InfoPanelHeaderContent = (props) => {
     const isRoom = !!selection?.roomType;
     const isFile = !!selection?.fileExst;
     infoPanelItemsList.forEach((item) => {
-      const onClick = () => {
+      const onClick = async () => {
         setView(`info_plugin-${item.key}`);
 
-        item.value.subMenu.onClick && item.value.subMenu.onClick();
+        if (item.value.subMenu.onClick) {
+          item.value.subMenu.onClick();
+        }
       };
 
       const submenuItem = {
@@ -183,7 +187,11 @@ const InfoPanelHeaderContent = (props) => {
 };
 
 export default inject(({ auth, selectedFolderStore, pluginStore }) => {
-  const { infoPanelItemsList } = pluginStore;
+  const {
+    infoPanelItemsList,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
+  } = pluginStore;
 
   const {
     selection,
@@ -222,6 +230,8 @@ export default inject(({ auth, selectedFolderStore, pluginStore }) => {
 
     infoPanelItemsList,
     enablePlugins,
+    setSettingsPluginDialogVisible,
+    setCurrentSettingsDialogPlugin,
     //  rootFolderType,
 
     //selectionParentRoom,

@@ -10,7 +10,7 @@ import {
   PluginScopes,
   PluginUsersType,
 } from "SRC_DIR/helpers/plugins/constants";
-import { getPluginUrl } from "SRC_DIR/helpers/plugins/utils";
+import { getPluginUrl, messageActions } from "SRC_DIR/helpers/plugins/utils";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
 let { orign: apiOrigin, prefix: apiPrefix } = apiConf;
@@ -23,6 +23,7 @@ const prefix = window.DocSpaceConfig?.api?.prefix || apiPrefix;
 
 class PluginStore {
   authStore = null;
+  selectedFolderStore = null;
 
   plugins = null;
 
@@ -40,8 +41,12 @@ class PluginStore {
   currentSettingsDialogPlugin = null;
   isAdminSettingsDialog = false;
 
-  constructor(authStore) {
+  pluginDialogVisible = false;
+  pluginDialogProps = null;
+
+  constructor(authStore, selectedFolderStore) {
     this.authStore = authStore;
+    this.selectedFolderStore = selectedFolderStore;
 
     this.plugins = [];
 
@@ -64,6 +69,14 @@ class PluginStore {
 
   setIsAdminSettingsDialog = (value) => {
     this.isAdminSettingsDialog = value;
+  };
+
+  setPluginDialogVisible = (value) => {
+    this.pluginDialogVisible = value;
+  };
+
+  setPluginDialogProps = (value) => {
+    this.pluginDialogProps = value;
   };
 
   updatePluginStatus = (id) => {
@@ -130,9 +143,7 @@ class PluginStore {
         ...this.pluginFrame.contentWindow.Plugins[plugin.pluginName],
       });
 
-      const { displayName } = await api.people.getUserById(plugin.createBy);
-
-      newPlugin.createBy = displayName;
+      newPlugin.createBy = newPlugin.createBy.displayName;
       newPlugin.scopes = newPlugin.scopes.split(",");
 
       this.installPlugin(newPlugin);
@@ -408,7 +419,28 @@ class PluginStore {
       if (plugin.scopes.includes(PluginScopes.ContextMenu)) {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
-        Array.from(plugin.getContextMenuItems(), ([key, value]) =>
+        Array.from(plugin.getContextMenuItems(), ([key, value]) => {
+          if (value.onClick) {
+            const onClick = async (id) => {
+              const message = await value.onClick(id);
+
+              messageActions(
+                message,
+                null,
+                null,
+                plugin.id,
+                this.setSettingsPluginDialogVisible,
+                this.setCurrentSettingsDialogPlugin,
+                this.updatePluginStatus,
+                null,
+                this.setPluginDialogVisible,
+                this.setPluginDialogProps
+              );
+            };
+
+            value.onClick = onClick;
+          }
+
           items.push({
             key,
             value: {
@@ -416,8 +448,8 @@ class PluginStore {
               pluginId: plugin.id,
               icon: `${iconUrl}/${value.icon}`,
             },
-          })
-        );
+          });
+        });
       }
     });
 
@@ -438,6 +470,27 @@ class PluginStore {
     this.plugins.forEach((plugin) => {
       if (plugin.scopes.includes(PluginScopes.InfoPanel)) {
         Array.from(plugin.getInfoPanelItems(), ([key, value]) => {
+          if (value.submenu.onClick) {
+            const onClick = async () => {
+              const message = await value.submenu.onClick();
+
+              messageActions(
+                message,
+                null,
+                null,
+                plugin.id,
+                this.setSettingsPluginDialogVisible,
+                this.setCurrentSettingsDialogPlugin,
+                this.updatePluginStatus,
+                null,
+                this.setPluginDialogVisible,
+                this.setPluginDialogProps
+              );
+            };
+
+            value.submenu.onClick = onClick;
+          }
+
           if (value.usersType) {
             if (value.usersType.includes(userRole))
               items.push({ key, value: { ...value, pluginId: plugin.id } });
@@ -461,6 +514,27 @@ class PluginStore {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
         Array.from(plugin.getProfileMenuItems(), ([key, value]) => {
+          if (value.onClick) {
+            const onClick = async () => {
+              const message = await value.onClick();
+
+              messageActions(
+                message,
+                null,
+                null,
+                plugin.id,
+                this.setSettingsPluginDialogVisible,
+                this.setCurrentSettingsDialogPlugin,
+                this.updatePluginStatus,
+                null,
+                this.setPluginDialogVisible,
+                this.setPluginDialogProps
+              );
+            };
+
+            value.onClick = onClick;
+          }
+
           if (value.usersType) {
             if (value.usersType.includes(userRole)) {
               items.push({
@@ -505,6 +579,60 @@ class PluginStore {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
         Array.from(plugin.getMainButtonItems(), ([key, value]) => {
+          if (value.items) {
+            const newItems = [];
+
+            value.items.forEach((i) => {
+              const onClick = async () => {
+                const message = await i.onClick(this.selectedFolderStore.id);
+
+                messageActions(
+                  message,
+                  null,
+                  null,
+                  plugin.id,
+                  this.setSettingsPluginDialogVisible,
+                  this.setCurrentSettingsDialogPlugin,
+                  this.updatePluginStatus,
+                  null,
+                  this.setPluginDialogVisible,
+                  this.setPluginDialogProps
+                );
+              };
+
+              newItems.push({
+                ...i,
+                onClick,
+                icon: `${iconUrl}/${i.icon}`,
+              });
+            });
+
+            value.items = newItems;
+          }
+
+          if (value.onClick) {
+            const onClick = async () => {
+              const message = await option.value.onClick(
+                this.selectedFolderStore.id
+              );
+
+              messageActions(
+                message,
+                null,
+                null,
+                plugin.id,
+                this.setSettingsPluginDialogVisible,
+                this.setCurrentSettingsDialogPlugin,
+                this.updatePluginStatus,
+                null,
+                this.setPluginDialogVisible,
+                this.setPluginDialogProps
+              );
+            };
+
+            value.onClick = onClick;
+          }
+
           if (value.usersType) {
             if (value.usersType.includes(userRole)) {
               items.push({
@@ -513,6 +641,7 @@ class PluginStore {
                   ...value,
                   pluginId: plugin.id,
                   icon: `${iconUrl}/${value.icon}`,
+                  iconUrl,
                 },
               });
             }
