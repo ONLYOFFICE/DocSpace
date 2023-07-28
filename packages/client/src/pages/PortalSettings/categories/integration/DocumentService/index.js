@@ -154,14 +154,14 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
             primary
             size={"small"}
             label={t("Common:SaveButton")}
-            isDisabled={isFormEmpty || !allInputsValid}
+            // isDisabled={isFormEmpty || !allInputsValid}
           />
           <Button
             onClick={onReset}
             className="button"
             size={"small"}
             label={t("Common:ResetButton")}
-            isDisabled={!anyInputFilled}
+            // isDisabled={!anyInputFilled}
           />
         </div>
       </Styled.LocationForm>
