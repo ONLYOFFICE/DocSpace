@@ -1408,7 +1408,8 @@ class FilesStore {
     filter,
     clearFilter = true,
     withSubfolders = false,
-    clearSelection = true
+    clearSelection = true,
+    withFilterLocalStorage = false
   ) => {
     const { setSelectedNode, roomsFolderId } = this.treeFoldersStore;
 
@@ -1423,7 +1424,7 @@ class FilesStore {
       `UserRoomsFilter=${this.authStore.userStore.user.id}`
     );
 
-    if (filterStorageItem && !filter) {
+    if ((filterStorageItem && !filter) || withFilterLocalStorage) {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];
