@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
-using ASC.EventBus.Abstractions;
 
 namespace ASC.Web.Api.Controllers.Settings;
 
@@ -48,6 +47,7 @@ public class StorageController : BaseSettingsController, IDisposable
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly EncryptionWorker _encryptionWorker;
+    private readonly TenantExtra _tenantExtra;
     private readonly ILogger _log;
     private readonly IEventBus _eventBus;
     private readonly SecurityContext _securityContext;
@@ -75,7 +75,8 @@ public class StorageController : BaseSettingsController, IDisposable
         BackupAjaxHandler backupAjaxHandler,
         ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
         EncryptionWorker encryptionWorker,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        TenantExtra tenantExtra) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
         _eventBus = eventBus;
@@ -94,6 +95,7 @@ public class StorageController : BaseSettingsController, IDisposable
         _backupAjaxHandler = backupAjaxHandler;
         _cacheDeleteSchedule = cacheDeleteSchedule;
         _encryptionWorker = encryptionWorker;
+        _tenantExtra = tenantExtra;
         _securityContext = securityContext;
     }
 
@@ -102,10 +104,7 @@ public class StorageController : BaseSettingsController, IDisposable
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         var current = await _settingsManager.LoadAsync<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
@@ -170,6 +169,8 @@ public class StorageController : BaseSettingsController, IDisposable
         }
 
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         var storages = await GetAllStoragesAsync();
 
@@ -276,12 +277,9 @@ public class StorageController : BaseSettingsController, IDisposable
                 throw new NotSupportedException();
             }
 
-            if (!_coreBaseSettings.Standalone)
-            {
-                throw new SecurityException(Resource.ErrorAccessDenied);
-            }
-
             await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+            await _tenantExtra.DemandAccessSpacePermissionAsync();
 
             var settings = await _encryptionSettingsHelper.LoadAsync();
 
@@ -324,10 +322,7 @@ public class StorageController : BaseSettingsController, IDisposable
         {
             await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-            if (!_coreBaseSettings.Standalone)
-            {
-                throw new SecurityException(Resource.ErrorAccessDenied);
-            }
+            await _tenantExtra.DemandAccessSpacePermissionAsync();
 
             var consumer = _consumerFactory.GetByKey(inDto.Module);
             if (!consumer.IsSet)
@@ -361,10 +356,7 @@ public class StorageController : BaseSettingsController, IDisposable
         {
             await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-            if (!_coreBaseSettings.Standalone)
-            {
-                throw new SecurityException(Resource.ErrorAccessDenied);
-            }
+            await _tenantExtra.DemandAccessSpacePermissionAsync();
 
             var settings = await _settingsManager.LoadAsync<StorageSettings>();
 
@@ -386,10 +378,7 @@ public class StorageController : BaseSettingsController, IDisposable
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         var current = await _settingsManager.LoadAsync<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
@@ -401,10 +390,7 @@ public class StorageController : BaseSettingsController, IDisposable
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         var consumer = _consumerFactory.GetByKey(inDto.Module);
         if (!consumer.IsSet)
@@ -439,10 +425,7 @@ public class StorageController : BaseSettingsController, IDisposable
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         await _storageSettingsHelper.ClearAsync(await _settingsManager.LoadAsync<CdnStorageSettings>());
     }
@@ -451,6 +434,8 @@ public class StorageController : BaseSettingsController, IDisposable
     public async Task<List<StorageDto>> GetAllBackupStorages()
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
 
         var schedule = await _backupAjaxHandler.GetScheduleAsync();
         var current = new StorageSettings();

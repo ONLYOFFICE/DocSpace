@@ -39,6 +39,7 @@ public class WhitelabelController : BaseSettingsController
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IMapper _mapper;
     private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
+    private readonly TenantExtra _tenantExtra;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -53,7 +54,9 @@ public class WhitelabelController : BaseSettingsController
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper,
-        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper,
+        TenantExtra tenantExtra)
+        : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -64,6 +67,7 @@ public class WhitelabelController : BaseSettingsController
         _commonLinkUtility = commonLinkUtility;
         _mapper = mapper;
         _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
+        _tenantExtra = tenantExtra;
     }
 
     ///<visible>false</visible>
@@ -410,7 +414,9 @@ public class WhitelabelController : BaseSettingsController
 
     private async Task DemandRebrandingPermissionAsync()
     {
-        if (!_coreBaseSettings.Standalone || _coreBaseSettings.CustomMode)
+        await _tenantExtra.DemandAccessSpacePermissionAsync();
+
+        if (_coreBaseSettings.CustomMode)
         {
             throw new SecurityException(Resource.ErrorAccessDenied);
         }

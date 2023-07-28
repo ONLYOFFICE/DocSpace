@@ -148,4 +148,12 @@ public class TenantExtra
         }
         return _setupInfo.ChunkUploadSize;
     }
+
+    public async Task DemandAccessSpacePermissionAsync()
+    {
+        if (!_coreBaseSettings.Standalone || (await _settingsManager.LoadAsync<TenantAccessSpaceSettings>()).LimitedAccessSpace)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
+        }
+    }
 }

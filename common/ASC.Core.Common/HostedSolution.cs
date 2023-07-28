@@ -32,15 +32,15 @@ namespace ASC.Core;
 [Scope]
 public class HostedSolution
 {
-    internal ITenantService TenantService { get; set; }
-    internal IUserService UserService { get; set; }
-    internal IQuotaService QuotaService { get; set; }
-    internal ITariffService TariffService { get; set; }
-    internal UserFormatter UserFormatter { get; set; }
-    internal TenantManager ClientTenantManager { get; set; }
-    internal TenantUtil TenantUtil { get; set; }
-    internal SettingsManager SettingsManager { get; set; }
-    internal CoreSettings CoreSettings { get; set; }
+    private readonly ITenantService _tenantService;
+    private readonly IUserService _userService;
+    private readonly IQuotaService _quotaService;
+    private readonly ITariffService _tariffService;
+    private readonly UserFormatter _userFormatter;
+    private readonly TenantManager _clientTenantManager;
+    private readonly TenantUtil _tenantUtil;
+    private readonly SettingsManager _settingsManager;
+    private readonly CoreSettings _coreSettings;
 
     public HostedSolution(ITenantService tenantService,
         IUserService userService,
@@ -52,50 +52,50 @@ public class HostedSolution
         SettingsManager settingsManager,
         CoreSettings coreSettings)
     {
-        TenantService = tenantService;
-        UserService = userService;
-        QuotaService = quotaService;
-        TariffService = tariffService;
-        UserFormatter = userFormatter;
-        ClientTenantManager = clientTenantManager;
-        TenantUtil = tenantUtil;
-        SettingsManager = settingsManager;
-        CoreSettings = coreSettings;
+        _tenantService = tenantService;
+        _userService = userService;
+        _quotaService = quotaService;
+        _tariffService = tariffService;
+        _userFormatter = userFormatter;
+        _clientTenantManager = clientTenantManager;
+        _tenantUtil = tenantUtil;
+        _settingsManager = settingsManager;
+        _coreSettings = coreSettings;
     }
 
     public async Task<List<Tenant>> GetTenantsAsync(DateTime from)
     {
-        return (await TenantService.GetTenantsAsync(from)).ToList();
+        return (await _tenantService.GetTenantsAsync(from)).ToList();
     }
 
     public async Task<List<Tenant>> FindTenantsAsync(string login, string passwordHash = null)
     {
-        if (!string.IsNullOrEmpty(passwordHash) && await UserService.GetUserByPasswordHashAsync(Tenant.DefaultTenant, login, passwordHash) == null)
-    {
+        if (!string.IsNullOrEmpty(passwordHash) && _userService.GetUserByPasswordHashAsync(Tenant.DefaultTenant, login, passwordHash) == null)
+        {
             throw new SecurityException("Invalid login or password.");
         }
 
-        return (await TenantService.GetTenantsAsync(login, passwordHash)).ToList();
+        return (await _tenantService.GetTenantsAsync(login, passwordHash)).ToList();
     }
 
     public async Task<Tenant> GetTenantAsync(string domain)
     {
-        return await TenantService.GetTenantAsync(domain);
+        return await _tenantService.GetTenantAsync(domain);
     }
 
     public async Task<Tenant> GetTenantAsync(int id)
     {
-        return await TenantService.GetTenantAsync(id);
+        return await _tenantService.GetTenantAsync(id);
     }
 
     public Tenant GetTenant(int id)
     {
-        return TenantService.GetTenant(id);
+        return _tenantService.GetTenant(id);
     }
 
     public async Task CheckTenantAddressAsync(string address)
     {
-        await TenantService.ValidateDomainAsync(address);
+        await _tenantService.ValidateDomainAsync(address);
     }
 
     public async Task<Tenant> RegisterTenantAsync(TenantRegistrationInfo registrationInfo)
@@ -118,7 +118,7 @@ public class HostedSolution
         {
             throw new Exception("Account lastname can not be empty");
         }
-        if (!UserFormatter.IsValidUserName(registrationInfo.FirstName, registrationInfo.LastName))
+        if (!_userFormatter.IsValidUserName(registrationInfo.FirstName, registrationInfo.LastName))
         {
             throw new Exception("Incorrect firstname or lastname");
         }
@@ -142,7 +142,7 @@ public class HostedSolution
             Calls = registrationInfo.Calls
         };
 
-        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
+        tenant = await _tenantService.SaveTenantAsync(_coreSettings, tenant);
 
         // create user
         var user = new UserInfo
@@ -152,33 +152,35 @@ public class HostedSolution
             FirstName = registrationInfo.FirstName,
             Email = registrationInfo.Email,
             MobilePhone = registrationInfo.MobilePhone,
-            WorkFromDate = TenantUtil.DateTimeNow(tenant.TimeZone),
+            WorkFromDate = _tenantUtil.DateTimeNow(tenant.TimeZone),
             ActivationStatus = registrationInfo.ActivationStatus
         };
 
-        user = await UserService.SaveUserAsync(tenant.Id, user);
-        await UserService.SetUserPasswordHashAsync(tenant.Id, user.Id, registrationInfo.PasswordHash);
-        await UserService.SaveUserGroupRefAsync(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+        user = await _userService.SaveUserAsync(tenant.Id, user);
+        await _userService.SetUserPasswordHashAsync(tenant.Id, user.Id, registrationInfo.PasswordHash);
+        await _userService.SaveUserGroupRefAsync(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
         // save tenant owner
         tenant.OwnerId = user.Id;
-        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
+
+        await _settingsManager.SaveAsync(new TenantAccessSpaceSettings { LimitedAccessSpace = registrationInfo.LimitedAccessSpace }, tenant.Id);
+
         return tenant;
     }
 
     public async Task<Tenant> SaveTenantAsync(Tenant tenant)
     {
-        return await TenantService.SaveTenantAsync(CoreSettings, tenant);
+        return await _tenantService.SaveTenantAsync(_coreSettings, tenant);
     }
 
     public async Task RemoveTenantAsync(Tenant tenant)
     {
-        await TenantService.RemoveTenantAsync(tenant.Id);
+        await _tenantService.RemoveTenantAsync(tenant.Id);
     }
 
     public async Task<string> CreateAuthenticationCookieAsync(CookieStorage cookieStorage, int tenantId, Guid userId)
     {
-        var u = await UserService.GetUserAsync(tenantId, userId);
+        var u = await _userService.GetUserAsync(tenantId, userId);
 
         return await CreateAuthenticationCookieAsync(cookieStorage, tenantId, u);
     }
@@ -190,49 +192,49 @@ public class HostedSolution
             return null;
         }
 
-        var tenantSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, Guid.Empty);
+        var tenantSettings = await _settingsManager.LoadAsync<TenantCookieSettings>(tenantId, Guid.Empty);
         var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-        var userSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, user.Id);
+        var userSettings = await _settingsManager.LoadAsync<TenantCookieSettings>(tenantId, user.Id);
 
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }
 
     public async Task<Tariff> GetTariffAsync(int tenant, bool withRequestToPaymentSystem = true)
     {
-        return await TariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
+        return await _tariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
     }
 
     public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        return await ClientTenantManager.GetTenantQuotaAsync(tenant);
+        return await _clientTenantManager.GetTenantQuotaAsync(tenant);
     }
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return await ClientTenantManager.GetTenantQuotasAsync();
+        return await _clientTenantManager.GetTenantQuotasAsync();
     }
 
     public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
-        return await ClientTenantManager.SaveTenantQuotaAsync(quota);
+        return await _clientTenantManager.SaveTenantQuotaAsync(quota);
     }
 
     public async Task SetTariffAsync(int tenant, bool paid)
     {
-        var quota = (await QuotaService.GetTenantQuotasAsync()).FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
+        var quota = (await _quotaService.GetTenantQuotasAsync()).FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            await TariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.TenantId, 1) }, DueDate = DateTime.MaxValue, });
+            await _tariffService.SetTariffAsync(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.TenantId, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 
     public async Task SetTariffAsync(int tenant, Tariff tariff)
     {
-        await TariffService.SetTariffAsync(tenant, tariff);
+        await _tariffService.SetTariffAsync(tenant, tariff);
     }
 
     public async Task<IEnumerable<UserInfo>> FindUsersAsync(IEnumerable<Guid> userIds)
     {
-        return await UserService.GetUsersAllTenantsAsync(userIds);
+        return await _userService.GetUsersAllTenantsAsync(userIds);
     }
 }

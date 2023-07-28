@@ -95,7 +95,7 @@ public class SettingsController : BaseSettingsController
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager,
-        TenantDomainValidator tenantDomainValidator, 
+        TenantDomainValidator tenantDomainValidator,
         ExternalShare externalShare
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
@@ -174,6 +174,7 @@ public class SettingsController : BaseSettingsController
             settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
             settings.DocumentationEmail = _setupInfo.DocumentationEmail;
             settings.SocketUrl = _configuration["web:hub:url"] ?? "";
+            settings.LimitedAccessSpace = (await _settingsManager.LoadAsync<TenantAccessSpaceSettings>()).LimitedAccessSpace;
 
             settings.Firebase = new FirebaseDto
             {
@@ -452,7 +453,7 @@ public class SettingsController : BaseSettingsController
             catch
             {
                 throw;
-        }
+            }
             finally
             {
                 _semaphore.Release();
@@ -486,7 +487,7 @@ public class SettingsController : BaseSettingsController
         if (settings.Selected == id)
         {
             settings.Selected = settings.Themes.Min(r => r.Id);
-           await _messageService.SendAsync(MessageAction.ColorThemeChanged);
+            await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
         await _settingsManager.SaveAsync(settings);
@@ -793,7 +794,7 @@ public class SettingsController : BaseSettingsController
     [HttpGet("telegramisconnected")]
     public async Task<object> TelegramIsConnectedAsync()
     {
-        return (int) await _telegramHelper.UserIsConnectedAsync(_authContext.CurrentAccount.ID, Tenant.Id);
+        return (int)await _telegramHelper.UserIsConnectedAsync(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 
     /// <summary>
