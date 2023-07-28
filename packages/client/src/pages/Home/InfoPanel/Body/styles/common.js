@@ -44,14 +44,15 @@ const StyledTitle = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  margin-left: -20px;
   ${props =>
     props.theme.interfaceDirection === "rtl"
       ? css`
-          padding: 24px 20 24px 0px;
+          padding: 24px 20px 24px 0px;
+          margin-right: -20px;
         `
       : css`
           padding: 24px 0 24px 20px;
+          margin-left: -20px;
         `}
 
   background: ${props => props.theme.infoPanel.backgroundColor};

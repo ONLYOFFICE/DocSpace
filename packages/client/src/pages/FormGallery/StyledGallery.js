@@ -20,7 +20,7 @@ const StyledContainer = styled.div`
   height: 32px;
   display: grid;
 
-  grid-template-columns: ${(props) =>
+  grid-template-columns: ${props =>
     props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
 
   align-items: center;
@@ -54,9 +54,16 @@ const StyledContainer = styled.div`
 `;
 
 const StyledInfoPanelToggleWrapper = styled.div`
-  margin-left: auto;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
-  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  display: ${props => (props.isInfoPanelVisible ? "none" : "flex")};
   align-items: center;
   justify-content: center;
 
@@ -73,13 +80,13 @@ const StyledInfoPanelToggleWrapper = styled.div`
     border-radius: 50%;
     margin-bottom: 1px;
 
-    background-color: ${(props) =>
+    background-color: ${props =>
       props.isInfoPanelVisible
         ? props.theme.infoPanel.sectionHeaderToggleBgActive
         : props.theme.infoPanel.sectionHeaderToggleBg};
 
     path {
-      fill: ${(props) =>
+      fill: ${props =>
         props.isInfoPanelVisible
           ? props.theme.infoPanel.sectionHeaderToggleIconActive
           : props.theme.infoPanel.sectionHeaderToggleIcon};

@@ -8,7 +8,7 @@ import {
 } from "@docspace/components/utils/device";
 
 const StyledContainer = styled.div`
-  ${(props) =>
+  ${props =>
     !props.isDropBoxComponent &&
     props.isDesktop &&
     css`
@@ -87,7 +87,7 @@ const StyledContainer = styled.div`
   }
 
   height: 100%;
-  ${(props) =>
+  ${props =>
     props.isDesktopClient &&
     props.isDropBoxComponent &&
     css`
@@ -114,9 +114,19 @@ const StyledContainer = styled.div`
 
   .navigation-header-separator {
     display: ${isMobileOnly ? "none" : "block"};
-    padding-left: 16px;
-    border-right: ${(props) =>
-      `1px solid ${props.theme.navigation.icon.stroke}`};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+            border-left: ${props =>
+              `1px solid ${props.theme.navigation.icon.stroke}`};
+          `
+        : css`
+            padding-left: 16px;
+            border-right: ${props =>
+              `1px solid ${props.theme.navigation.icon.stroke}`};
+          `}
+
     height: 21px;
     @media ${mobile} {
       display: none;
@@ -163,7 +173,7 @@ const StyledContainer = styled.div`
       display: none;
     }
 
-    grid-template-columns: ${(props) =>
+    grid-template-columns: ${props =>
       props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
 `;

@@ -23,7 +23,6 @@ export const StyledHeader = styled.div`
             margin-left: 16px;
           `}
     @media (max-width: 1024px) {
-      margin-left: auto;
       ${props =>
         props.theme.interfaceDirection === "rtl"
           ? css`
@@ -33,8 +32,16 @@ export const StyledHeader = styled.div`
               margin-left: auto;
             `}
       & > div:first-child {
-        padding: 8px 16px 8px 0px;
-        margin-right: -16px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                padding: 8px 0px 8px 16px;
+                margin-left: -16px;
+              `
+            : css`
+                padding: 8px 16px 8px 0px;
+                margin-right: -16px;
+              `}
       }
     }
   }

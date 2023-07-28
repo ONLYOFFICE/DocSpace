@@ -26,19 +26,31 @@ import { Base } from "@docspace/components/themes";
 const StyledBox = styled.div`
   position: absolute;
   top: 0px;
-  left: ${isMobile ? "-16px" : "-20px"};
-  ${({ withLogo }) =>
-    withLogo &&
-    css`
-      left: 207px;
-    `};
 
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: ${isMobile ? "-16px" : "-20px"};
+          ${({ withLogo }) =>
+            withLogo &&
+            css`
+              right: 207px;
+            `};
+        `
+      : css`
+          left: ${isMobile ? "-16px" : "-20px"};
+          ${({ withLogo }) =>
+            withLogo &&
+            css`
+              left: 207px;
+            `};
+        `}
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
 
   width: unset;
 
-  height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
+  height: ${props => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
 
   z-index: 401;
@@ -46,7 +58,7 @@ const StyledBox = styled.div`
   margin: auto;
   flex-direction: column;
 
-  background: ${(props) => props.theme.navigation.background};
+  background: ${props => props.theme.navigation.background};
 
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
@@ -58,7 +70,14 @@ const StyledBox = styled.div`
 
   @media ${tablet} {
     width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
-    left: -16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: -16px;
+          `
+        : css`
+            left: -16px;
+          `}
     padding: 0 16px;
     padding-top: 14px;
   }
@@ -75,10 +94,18 @@ const StyledBox = styled.div`
 
   ${isMobileOnly &&
   css`
-    margin-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
+
     padding: 0 16px !important;
     padding-top: 14px !important;
-    max-height: ${(props) => props.maxHeight};
+    max-height: ${props => props.maxHeight};
   `}
 `;
 
@@ -132,7 +159,7 @@ const DropBox = React.forwardRef(
     const [dropBoxHeight, setDropBoxHeight] = React.useState(0);
     const countItems = navigationItems.length;
 
-    const getItemSize = (index) => {
+    const getItemSize = index => {
       if (index === countItems - 1) return 51;
       return isMobile || isMobileUtils() || isTabletUtils() ? 36 : 30;
     };
@@ -192,15 +219,13 @@ const DropBox = React.forwardRef(
           showText={showText}
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
-          withLogo={withLogo}
-        >
+          withLogo={withLogo}>
           <StyledContainer
             canCreate={canCreate}
             isDropBoxComponent={true}
             isInfoPanelVisible={isInfoPanelVisible}
             isDesktopClient={isDesktopClient}
-            withLogo={!!withLogo && isTabletView}
-          >
+            withLogo={!!withLogo && isTabletView}>
             {withLogo && (
               <NavigationLogo
                 logo={withLogo}
@@ -239,8 +264,7 @@ const DropBox = React.forwardRef(
               onClickAvailable,
               { withLogo: !!withLogo },
             ]}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
+            outerElementType={CustomScrollbarsVirtualList}>
             {Row}
           </VariableSizeList>
         </StyledBox>

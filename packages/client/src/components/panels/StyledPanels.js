@@ -291,7 +291,14 @@ const StyledHeaderContent = styled.div`
 
   .upload_panel-icons-container {
     display: flex;
-    margin-left: auto;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
     .upload_panel-vertical-dots-icon {
     }
   }

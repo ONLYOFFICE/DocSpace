@@ -17,10 +17,9 @@ const StyledBody = styled.div`
 `;
 
 const StyledVersionList = styled.div`
-
-.row_context-menu-wrapper {
+  .row_context-menu-wrapper {
     .expandButton {
-      ${(props) =>
+      ${props =>
         props.isRestoreProcess &&
         `
         touch-action: none;
@@ -28,86 +27,81 @@ const StyledVersionList = styled.div`
         `}
       svg {
         path {
-          ${(props) =>
+          ${props =>
             props.isRestoreProcess &&
             `
-              fill: ${(props) =>
+              fill: ${props =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
     }
-  
   }
 
   .row_content {
-
     .version_link,
     .version-link-file,
     .version_content-length,
     .version_link-action,
     .row_context-menu-wrapper,
     .version_text {
-      ${(props) =>
+      ${props =>
         props.isRestoreProcess &&
         `
-          color:${(props) => props.theme.filesVersionHistory.versionList.color};
+          color:${props => props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
-        `}
+        `};
     }
 
-    .versioned, .not-versioned {
-      ${(props) =>
+    .versioned,
+    .not-versioned {
+      ${props =>
         props.isRestoreProcess &&
         `
         touch-action: none;
         pointer-events: none;
-        `}
+        `};
     }
 
-    .versioned { 
-        svg {
-            path {
-          ${(props) =>
+    .versioned {
+      svg {
+        path {
+          ${props =>
             props.isRestoreProcess &&
             `
-              fill: ${(props) =>
+              fill: ${props =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
       }
     }
 
-    .not-versioned{
-        svg {
-            path {
-
-          ${(props) =>
+    .not-versioned {
+      svg {
+        path {
+          ${props =>
             props.isRestoreProcess &&
             `
-              stroke: ${(props) =>
+              stroke: ${props =>
                 props.theme.filesVersionHistory.versionList.stroke};
             `};
         }
       }
     }
-
-}
-    .icon-link {
-      ${(props) =>
-        props.isRestoreProcess &&
-        `
+  }
+  .icon-link {
+    ${props =>
+      props.isRestoreProcess &&
+      `
         touch-action: none;
         pointer-events: none;
         `}
-      svg {
-        path {
-          ${(props) =>
-            props.isRestoreProcess &&
-            `fill: ${(props) =>
-              props.theme.filesVersionHistory.versionList.fill}`}
-        }
+    svg {
+      path {
+        ${props =>
+          props.isRestoreProcess &&
+          `fill: ${props => props.theme.filesVersionHistory.versionList.fill}`}
       }
     }
   }
@@ -121,11 +115,11 @@ const StyledVersionRow = styled(Row)`
     padding-top: 13px;
     padding-bottom: 12px;
     height: auto;
-    ${(props) => !props.isTabletView && "padding-right:16px"};
+    ${props => !props.isTabletView && "padding-right:16px"};
   }
 
   .version_badge {
-    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
+    cursor: ${props => (props.canEdit ? "pointer" : "default")};
     margin-right: 16px;
     margin-left: 0px;
 
@@ -177,14 +171,14 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_link {
-    display: ${(props) =>
+    display: ${props =>
       props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
     /* text-decoration: underline dashed; */
     white-space: break-spaces;
     margin-left: -7px;
     margin-top: 4px;
 
-    cursor: ${(props) => (props.isEditing ? "default" : "pointer")};
+    cursor: ${props => (props.isEditing ? "default" : "pointer")};
 
     @media ${tablet} {
       display: none;
@@ -202,9 +196,9 @@ const StyledVersionRow = styled(Row)`
     }
 
     word-break: break-word;
-    display: ${(props) => (props.showEditPanel ? "none" : "-webkit-box")};
-    display: ${(props) => (props.showEditPanel ? "none" : "-moz-box")};
-    display: ${(props) => (props.showEditPanel ? "none" : "-ms-box")};
+    display: ${props => (props.showEditPanel ? "none" : "-webkit-box")};
+    display: ${props => (props.showEditPanel ? "none" : "-moz-box")};
+    display: ${props => (props.showEditPanel ? "none" : "-ms-box")};
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-line-clamp: 3;
@@ -222,7 +216,7 @@ const StyledVersionRow = styled(Row)`
     top: 6px;
 
     .expandButton {
-      ${(props) =>
+      ${props =>
         props.isSavingComment &&
         `
         touch-action: none;
@@ -230,10 +224,10 @@ const StyledVersionRow = styled(Row)`
         `}
       svg {
         path {
-          ${(props) =>
+          ${props =>
             props.isSavingComment &&
             `
-              fill: ${(props) =>
+              fill: ${props =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
@@ -245,11 +239,10 @@ const StyledVersionRow = styled(Row)`
     display: block;
 
     .version_link-action {
-      ${(props) =>
+      ${props =>
         props.isSavingComment &&
         `
-          color: ${(props) =>
-            props.theme.filesVersionHistory.versionList.color};
+          color: ${props => props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
