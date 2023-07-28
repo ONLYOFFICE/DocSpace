@@ -109,6 +109,7 @@ public abstract class BaseStartup
                 .AddBaseDbContextPool<TelegramDbContext>()
                 .AddBaseDbContextPool<FirebaseDbContext>()
                 .AddBaseDbContextPool<CustomDbContext>()
+                .AddBaseDbContextPool<UrlShortenerDbContext>()
                 .AddBaseDbContextPool<WebstudioDbContext>()
                 .AddBaseDbContextPool<InstanceRegistrationContext>()
                 .AddBaseDbContextPool<IntegrationEventLogContext>()
