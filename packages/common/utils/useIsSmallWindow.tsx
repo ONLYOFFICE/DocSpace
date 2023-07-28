@@ -13,6 +13,8 @@ export const useIsSmallWindow = (windowWidth: number): boolean => {
   };
 
   useEffect(() => {
+    onCheckView();
+
     window.addEventListener("resize", onCheckView);
 
     return () => window.removeEventListener("resize", onCheckView);
