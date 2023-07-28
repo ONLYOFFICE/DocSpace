@@ -24,29 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Core.Common.EF.Context;
+
+public class UrlShortenerDbContext : DbContext
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public DbSet<ShortLink> ShortLinks { get; set; }
 
-var builder = WebApplication.CreateBuilder(options);
+    public UrlShortenerDbContext(DbContextOptions<UrlShortenerDbContext> dbContextOptions) : base(dbContextOptions)
+    {
 
-builder.Configuration.AddJsonFile($"appsettings.creator.json", true)
-               .AddCommandLine(args);
+    }
 
-builder.Services.AddScoped<EFLoggerFactory>();
-builder.Services.AddBaseDbContext<MigrationContext>();
-builder.Services.AddBaseDbContext<TeamlabSiteContext>();
-
-var app = builder.Build();
-
-var conf = app.Configuration.GetSection("options").Get<Options>();
-
-if (!Path.IsPathRooted(conf.Path))
-{
-    conf.Path = Path.GetFullPath(conf.Path);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        ModelBuilderWrapper
+            .From(modelBuilder, Database)
+            .AddShortLinks();
+    }
 }
-
-var migrationCreator = new MigrationCreator(app.Services);
-migrationCreator.RunCreateMigrations(conf);
