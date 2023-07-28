@@ -68,7 +68,7 @@ public class StorageFactoryConfig
 
 public static class StorageFactoryExtenstion
 {
-    public static void InitializeHttpHandlers(this IEndpointRouteBuilder builder, string config = null)
+    public static void InitializeHttpHandlers(this IEndpointRouteBuilder builder, string module = null)
     {
         //TODO:
         //if (!HostingEnvironment.IsHosted)
@@ -82,7 +82,7 @@ public static class StorageFactoryExtenstion
         {
             if (section.Module != null)
             {
-                foreach (var m in section.Module)
+                foreach (var m in section.Module.Where(r => string.IsNullOrEmpty(module) || r.Name == module))
                 {
                     //todo: add path criterion
                     if (m.Type == "disc" || !m.Public || m.Path.Contains(Constants.StorageRootParam))
