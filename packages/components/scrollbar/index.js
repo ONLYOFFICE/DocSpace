@@ -1,10 +1,98 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
-import { isMobile } from "@docspace/components/utils/device";
 import { classNames } from "../utils/classNames";
+import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 import { useTheme } from "styled-components";
+
+const scrollbarTypes = {
+  smallWhite: {
+    thumbV: {
+      width: "2px",
+      marginLeft: "2px",
+      borderRadius: "inherit",
+    },
+    thumbH: {
+      height: "2px",
+      marginTop: "2px",
+      borderRadius: "inherit",
+    },
+    trackV: {
+      width: "2px",
+      background: "transparent",
+    },
+    trackH: {
+      height: "2px",
+      background: "transparent",
+    },
+    content: { outline: "none", WebkitOverflowScrolling: "auto" },
+  },
+  smallBlack: {
+    thumbV: {
+      width: "3px",
+      marginLeft: "2px",
+      borderRadius: "inherit",
+    },
+    thumbH: {
+      height: "3px",
+      marginTop: "2px",
+      borderRadius: "inherit",
+    },
+    trackV: {
+      width: "3px",
+      background: "transparent",
+    },
+    trackH: {
+      height: "3px",
+      background: "transparent",
+    },
+    content: { outline: "none", WebkitOverflowScrolling: "auto" },
+  },
+  mediumBlack: {
+    thumbV: {
+      width: "8px",
+      borderRadius: "inherit",
+    },
+    thumbH: {
+      height: "8px",
+      borderRadius: "inherit",
+    },
+    trackV: {
+      width: "8px",
+      background: "transparent",
+    },
+    trackH: {
+      height: "8px",
+      background: "transparent",
+    },
+    content: {
+      outline: "none",
+      WebkitOverflowScrolling: "auto",
+    },
+  },
+  preMediumBlack: {
+    thumbV: {
+      width: "5px",
+      borderRadius: "inherit",
+      cursor: "default",
+    },
+    thumbH: {
+      height: "5px",
+      borderRadius: "inherit",
+      cursor: "default",
+    },
+    trackV: {
+      width: "5px",
+      background: "transparent",
+    },
+    trackH: {
+      height: "5px",
+      background: "transparent",
+    },
+    content: { outline: "none", WebkitOverflowScrolling: "auto" },
+  },
+};
 
 const Scrollbar = React.forwardRef((props, ref) => {
   const {
@@ -17,161 +105,53 @@ const Scrollbar = React.forwardRef((props, ref) => {
     ...rest
   } = props;
 
+  const { interfaceDirection } = useTheme();
   const [isScrolling, setIsScrolling] = useState();
   const [isMouseOver, setIsMouseOver] = useState();
-  const { interfaceDirection } = useTheme();
   const timerId = useRef();
 
   const isRtl = interfaceDirection === "rtl";
 
-  const scrollbarTypes = {
-    smallWhite: {
-      thumbV: {
-        width: "2px",
-        marginLeft: "2px",
-        borderRadius: "inherit",
-      },
-      thumbH: {
-        height: "2px",
-        marginTop: "2px",
-        borderRadius: "inherit",
-      },
-      trackV: {
-        width: "2px",
-        background: "transparent",
-      },
-      trackH: {
-        height: "2px",
-        background: "transparent",
-      },
-      content: { outline: "none", WebkitOverflowScrolling: "auto" },
-    },
-    smallBlack: {
-      thumbV: {
-        width: "3px",
-        marginLeft: "2px",
-        borderRadius: "inherit",
-      },
-      thumbH: {
-        height: "3px",
-        marginTop: "2px",
-        borderRadius: "inherit",
-      },
-      trackV: {
-        width: "3px",
-        background: "transparent",
-      },
-      trackH: {
-        height: "3px",
-        background: "transparent",
-      },
-      content: { outline: "none", WebkitOverflowScrolling: "auto" },
-    },
-    mediumBlack: {
-      thumbV: {
-        width: "8px",
-        borderRadius: "inherit",
-      },
-      thumbH: {
-        height: "8px",
-        borderRadius: "inherit",
-      },
-      trackV: {
-        width: "8px",
-        background: "transparent",
-      },
-      trackH: {
-        height: "8px",
-        background: "transparent",
-      },
-      content: {
-        paddingRight: !isRtl && (isMobile() ? "8px" : "17px"),
-        paddingLeft: isRtl && (isMobile() ? "8px" : "17px"),
-        outline: "none",
-        WebkitOverflowScrolling: "auto",
-      },
-    },
-    preMediumBlack: {
-      thumbV: {
-        width: "5px",
-        borderRadius: "inherit",
-        cursor: "default",
-      },
-      thumbH: {
-        height: "5px",
-        borderRadius: "inherit",
-        cursor: "default",
-      },
-      trackV: {
-        width: "5px",
-        background: "transparent",
-      },
-      trackH: {
-        height: "5px",
-        background: "transparent",
-      },
-      content: { outline: "none", WebkitOverflowScrolling: "auto" },
-    },
-  };
+  const scrollbarType = scrollbarTypes[stype] ?? {};
 
-  const scrollbarType = scrollbarTypes[stype];
-
-  const thumbVStyles = scrollbarType ? scrollbarType.thumbV : {};
-  const thumbHStyles = scrollbarType ? scrollbarType.thumbH : {};
-
-  // Add 1px margin to vertical track to avoid scrollbar lib crashing when event.clientX equals 0
-  const trackVCommonStyles = {
-    marginLeft: isRtl ? "1px" : "0",
-    marginRight: isRtl ? "0" : "1px",
-  };
-  const tracksCommonStyles = {
-    opacity: autoHide && !isScrolling ? 0 : 1,
-    transition: "opacity 0.4s ease-in-out",
-  };
-  const trackVStyles = scrollbarType
-    ? { ...scrollbarType.trackV, ...tracksCommonStyles, ...trackVCommonStyles }
-    : { ...tracksCommonStyles, ...trackVCommonStyles };
-  const trackHStyles = scrollbarType
-    ? { ...scrollbarType.trackH, ...tracksCommonStyles }
-    : { ...tracksCommonStyles };
-  const contentStyles = scrollbarType ? scrollbarType.content : {};
-
-  const showTrack = useCallback(() => {
+  const showTrack = () => {
     clearTimeout(timerId.current);
     setIsScrolling(true);
-  }, [timerId]);
+  };
 
-  const hideTrack = useCallback(() => {
+  const hideTrack = () => {
     timerId.current = setTimeout(() => {
       setIsScrolling(false);
     }, hideTrackTimer);
-  }, [timerId, hideTrackTimer]);
+  };
 
-  const onScrollStart = useCallback(() => {
-    if (autoHide) {
-      showTrack();
-    }
-  }, [autoHide, showTrack]);
+  const onScrollStart = () => showTrack();
 
-  const onScrollStop = useCallback(() => {
-    if (autoHide && !isMouseOver) {
-      hideTrack();
-    }
-  }, [autoHide, hideTrack, isMouseOver]);
+  const onScrollStop = () => {
+    if (isMouseOver) return;
+    hideTrack();
+  };
 
-  const onMouseEnter = useCallback(() => {
-    if (autoHide) {
-      showTrack();
-      setIsMouseOver(true);
-    }
-  }, [autoHide, showTrack]);
+  const onMouseEnter = () => {
+    showTrack();
+    setIsMouseOver(true);
+  };
 
-  const onMouseLeave = useCallback(() => {
-    if (autoHide) {
-      hideTrack();
-      setIsMouseOver(false);
-    }
-  }, [autoHide, hideTrack]);
+  const onMouseLeave = () => {
+    hideTrack();
+    setIsMouseOver(false);
+  };
+
+  const scrollAutoHideHandlers = autoHide
+    ? { onScrollStart, onScrollStop }
+    : {};
+  const tracksAutoHideHandlers = autoHide ? { onMouseEnter, onMouseLeave } : {};
+  const tracksAutoHideStyles = autoHide
+    ? {
+        opacity: !isScrolling ? 0 : 1,
+        transition: "opacity 0.4s ease-in-out",
+      }
+    : {};
 
   // onScroll handler placed here on Scroller element to get native event instead of parameters that library put
   const renderScroller = (libProps) => {
@@ -180,7 +160,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       <div
         {...restLibProps}
         id={id}
-        className={scrollclass}
+        className={classNames("scroller", scrollclass)}
         ref={elementRef}
         onScroll={onScroll}
       />
@@ -197,34 +177,43 @@ const Scrollbar = React.forwardRef((props, ref) => {
       disableTracksWidthCompensation
       rtl={isRtl}
       ref={ref}
-      onScrollStop={onScrollStop}
+      {...scrollAutoHideHandlers}
       onScrollStart={onScrollStart}
       scrollerProps={{ renderer: renderScroller }}
       contentProps={{
-        style: contentStyles,
         tabIndex: -1,
-        className: classNames("scroll-body"),
+        className: "scroll-body",
+        style: {
+          ...scrollbarType.content,
+          paddingRight: !isRtl && (isMobile() ? "8px" : "17px"),
+          paddingLeft: isRtl && (isMobile() ? "8px" : "17px"),
+        },
       }}
       thumbYProps={{
         className: "nav-thumb-vertical",
-        style: thumbVStyles,
+        style: scrollbarType.thumbV,
       }}
       thumbXProps={{
         className: "nav-thumb-horizontal",
-        style: thumbHStyles,
+        style: scrollbarType.thumbH,
       }}
+      // Add 1px margin to vertical track to avoid scrollbar lib crashing when event.clientX equals 0
       trackYProps={{
-        style: trackVStyles,
-        onMouseEnter,
-        onMouseLeave,
+        style: {
+          ...scrollbarType.trackV,
+          ...tracksAutoHideStyles,
+          marginLeft: isRtl ? "1px" : "0",
+          marginRight: isRtl ? "0" : "1px",
+        },
+        ...tracksAutoHideHandlers,
       }}
       trackXProps={{
         style: {
-          ...trackHStyles,
+          ...scrollbarType.trackH,
+          ...tracksAutoHideStyles,
           direction: "ltr",
         },
-        onMouseEnter,
-        onMouseLeave,
+        ...tracksAutoHideHandlers,
       }}
     />
   );

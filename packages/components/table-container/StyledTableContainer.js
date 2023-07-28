@@ -457,7 +457,7 @@ const StyledEmptyTableContainer = styled.div`
 `;
 
 const StyledScrollbar = styled(Scrollbar)`
-  .scroll-body {
+  .scroller {
     display: flex;
   }
   .nav-thumb-vertical {
