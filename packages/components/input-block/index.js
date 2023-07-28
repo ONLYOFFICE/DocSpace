@@ -62,6 +62,7 @@ class InputBlock extends React.Component {
       forwardedRef,
       iconButtonClassName,
       iconNode,
+      ...props
     } = this.props;
 
     if (typeof iconSize == "number" && iconSize > 0) {
@@ -124,6 +125,7 @@ class InputBlock extends React.Component {
           mask={mask}
           keepCharPositions={keepCharPositions}
           forwardedRef={forwardedRef}
+          {...props}
         />
         {
           //iconNames.includes(iconName) && (
