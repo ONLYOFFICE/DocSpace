@@ -41,7 +41,8 @@
       "🔑 @docspace/login",
       "🚀 @docspace/client",
       "📄 @docspace/editor",
-      "📦 @docspace/common"
+      "📦 @docspace/common",
+      "🗂 @docspace/management"
     ]
   },
   "extensions": {
