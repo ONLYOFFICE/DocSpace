@@ -79,7 +79,14 @@ const StyledHotkeysPanel = styled.div`
           `}
 
     @media (max-width: 550px) {
-      margin: 0 0 0 auto;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin: 0 auto 0 0;
+            `
+          : css`
+              margin: 0 0 0 auto;
+            `}
       width: fit-content;
     }
   }
