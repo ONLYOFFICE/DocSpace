@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
+import { classNames } from "../utils/classNames";
 import { isMobile } from "@docspace/components/utils/device";
 import StyledScrollbar from "./styled-scrollbar";
 import { useTheme } from "styled-components";
@@ -163,7 +164,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
         <div
           {...restLibProps}
           id={id}
-          className={scrollclass}
+          className={classNames("scroller", scrollclass)}
           ref={elementRef}
           onScroll={onScroll}
         />
