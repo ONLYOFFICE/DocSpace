@@ -101,6 +101,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
               id="editingAdress"
               type="text"
               autocomplete="off"
+              tabindex={1}
               scale
               iconButtonClassName={"icon-button"}
               value={apiUrl}
@@ -118,6 +119,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
               id="fromDocspaceAdress"
               type="text"
               autocomplete="off"
+              tabindex={2}
               scale
               iconButtonClassName={"icon-button"}
               value={internalUrl}
@@ -135,6 +137,7 @@ const DocumentService = ({ changeDocumentServiceLocation }) => {
               id="fromDocServiceAdress"
               type="text"
               autocomplete="off"
+              tabindex={3}
               scale
               iconButtonClassName={"icon-button"}
               value={portalUrl}
