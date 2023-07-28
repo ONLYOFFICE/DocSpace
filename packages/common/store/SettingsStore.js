@@ -150,6 +150,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  publicRoomKey = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -297,6 +298,10 @@ class SettingsStore {
 
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
+  }
+
+  get isPublicRoom() {
+    return window.location.pathname === "/rooms/share";
   }
 
   setMainBarVisible = (visible) => {
@@ -670,8 +675,15 @@ class SettingsStore {
     return window.firebaseHelper;
   }
 
+  setPublicRoomKey = (key) => {
+    this.publicRoomKey = key;
+  };
+
   get socketHelper() {
-    return new SocketIOHelper(this.socketUrl);
+    const socketUrl =
+      this.isPublicRoom && this.publicRoomKey ? this.socketUrl : null;
+
+    return new SocketIOHelper(socketUrl, this.publicRoomKey);
   }
 
   getBuildVersionInfo = async () => {

@@ -17,6 +17,7 @@ import {
 class SettingsStore {
   thirdPartyStore;
   treeFoldersStore;
+  publicRoomStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -64,11 +65,12 @@ class SettingsStore {
   html = [".htm", ".mht", ".html"];
   ebook = [".fb2", ".ibk", ".prc", ".epub"];
 
-  constructor(thirdPartyStore, treeFoldersStore) {
+  constructor(thirdPartyStore, treeFoldersStore, publicRoomStore) {
     makeAutoObservable(this);
 
     this.thirdPartyStore = thirdPartyStore;
     this.treeFoldersStore = treeFoldersStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -110,7 +112,8 @@ class SettingsStore {
         this.setFilesSettings(settings);
         this.setIsLoaded(true);
 
-        if (!settings.enableThirdParty) return;
+        if (!settings.enableThirdParty || this.publicRoomStore.isPublicRoom)
+          return;
 
         return axios
           .all([
@@ -313,6 +316,9 @@ class SettingsStore {
           break;
         case RoomsType.ReviewRoom:
           path = "review.svg";
+          break;
+        case RoomsType.PublicRoom:
+          path = "public.svg";
           break;
       }
     }
