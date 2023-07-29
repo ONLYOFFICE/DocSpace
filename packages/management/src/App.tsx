@@ -12,6 +12,7 @@ import "@docspace/common/custom.scss";
 
 import { RootStoreContext, RootStore, useStore } from "./store";
 import Client from "./categories";
+import SimpleHeader from "./SimpleHeader";
 
 import store from "client/store";
 import Layout from "client/Layout";
@@ -51,7 +52,7 @@ const App = observer(() => {
     <ThemeProvider theme={theme}>
       <Layout>
         {toast}
-        <NavMenu hideProfileMenu />
+        <NavMenu hideProfileMenu customHeader={<SimpleHeader />} />
         <Main isDesktop={false}>
           <div className="main-container">
             <Client />
