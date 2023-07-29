@@ -247,6 +247,7 @@
   "SomethingWentWrongDescription": "Click Send report to automatically generate a report and help us fix the error. None of your personal data will be used in the report.",
   "SortBy": "Sort by",
   "SpacesInLocalPart": "Local part can't contain spaces",
+  "SpaceManagement": "Space management",
   "Standard": "Standard",
   "SubscriptionExpired": "Your subscription to support and updates has expired",
   "SubscriptionIsExpiring": "Your subscription is expiring on {{date}}",
