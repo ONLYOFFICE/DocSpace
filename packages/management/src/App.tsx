@@ -14,6 +14,9 @@ import { RootStoreContext, RootStore, useStore } from "./store";
 import Client from "./categories";
 
 import store from "client/store";
+import Layout from "client/Layout";
+import Main from "client/Main";
+import NavMenu from "client/NavMenu";
 
 import i18n from "./i18n";
 
@@ -46,8 +49,15 @@ const App = observer(() => {
 
   return (
     <ThemeProvider theme={theme}>
-      {toast}
-      <Client />
+      <Layout>
+        {toast}
+        <NavMenu hideProfileMenu />
+        <Main isDesktop={false}>
+          <div className="main-container">
+            <Client />
+          </div>
+        </Main>
+      </Layout>
     </ThemeProvider>
   );
 });
