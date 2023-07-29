@@ -15,7 +15,7 @@ const StyledHeader = styled.h1`
 `;
 
 const ArticleHeaderContent = () => {
-  const { t } = useTranslation("Management");
+  const { t } = useTranslation("Common");
   const { authStore } = useStore();
   const { settingsStore } = authStore;
   const { showText } = settingsStore;
