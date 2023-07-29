@@ -3,16 +3,26 @@ import { observer } from "mobx-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+import { isMobileOnly } from "react-device-detect";
+
+import { isMobile } from "@docspace/components/utils/device";
 import CatalogItem from "@docspace/components/catalog-item";
 
 import { settingsTree } from "SRC_DIR/utils/settingsTree";
 import { getItemByLink } from "SRC_DIR/utils";
 import { TSettingsTreeItem } from "SRC_DIR/types/index";
 
+import { useStore } from "SRC_DIR/store";
+
 const ArticleBodyContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { t } = useTranslation(["Settings", "Common"]);
+
+  const { authStore } = useStore();
+  const { settingsStore } = authStore;
+  const { toggleArticleOpen } = settingsStore;
 
   const [selectedKey, setSelectedKey] = useState("0");
 
@@ -25,6 +35,11 @@ const ArticleBodyContent = () => {
   const onClickItem = (item: TSettingsTreeItem) => {
     const path = "/management/" + item.link;
     setSelectedKey(item.key);
+
+    if (isMobileOnly || isMobile()) {
+      toggleArticleOpen();
+    }
+
     navigate(path);
   };
 
