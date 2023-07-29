@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 const SpaceContainer = styled.div`
-  width: 700px;
+  max-width: 700px;
 
   .spaces {
     &-input-block {
