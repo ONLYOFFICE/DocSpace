@@ -24,6 +24,7 @@ import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 import { Base } from "@docspace/components/themes";
 
 const StyledContainer = styled.header`
+  height: 48px;
   position: relative;
   align-items: center;
   background-color: ${(props) => props.theme.header.backgroundColor};
@@ -142,6 +143,8 @@ const NavMenu = (props) => {
     isDesktop,
     isFrame,
     showHeader,
+
+    hideProfileMenu,
   } = props;
 
   const isAsideAvailable = !!asideContent;
@@ -167,7 +170,9 @@ const NavMenu = (props) => {
           {!hideHeader &&
             (isLoaded && isAuthenticated ? (
               <>
-                {!isPreparationPortal && <HeaderNav />}
+                {!isPreparationPortal && (
+                  <HeaderNav hideProfileMenu={hideProfileMenu} />
+                )}
                 <Header
                   isPreparationPortal={isPreparationPortal}
                   isNavOpened={isNavOpened}
@@ -209,6 +214,8 @@ NavMenu.propTypes = {
 
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
+
+  hideProfileMenu: PropTypes.bool,
 };
 
 NavMenu.defaultProps = {
@@ -234,8 +241,8 @@ const NavMenuWrapper = inject(({ auth }) => {
   };
 })(observer(withTranslation(["NavMenu", "Common"])(NavMenu)));
 
-export default () => (
+export default ({ ...props }) => (
   <I18nextProvider i18n={i18n}>
-    <NavMenuWrapper />
+    <NavMenuWrapper {...props} />
   </I18nextProvider>
 );
