@@ -1,7 +1,8 @@
 import React from "react";
+import PaymentsPage from "client/PaymentsPage";
 
 const Payments = () => {
-  return <h1>Payments</h1>;
+  return <PaymentsPage />;
 };
 
 export default Payments;
