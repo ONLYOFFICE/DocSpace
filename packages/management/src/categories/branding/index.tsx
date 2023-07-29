@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 import {
@@ -113,6 +114,9 @@ const Branding = () => {
     return (
       <BreakpointWarning sectionName={t("Settings:Branding")} isSmallWindow />
     );
+
+  if (isMobile)
+    return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return isLoading ? (
     <LoaderWhiteLabel />
