@@ -145,6 +145,8 @@ const NavMenu = (props) => {
     showHeader,
 
     hideProfileMenu,
+
+    customHeader,
   } = props;
 
   const isAsideAvailable = !!asideContent;
@@ -174,6 +176,7 @@ const NavMenu = (props) => {
                   <HeaderNav hideProfileMenu={hideProfileMenu} />
                 )}
                 <Header
+                  customHeader={customHeader}
                   isPreparationPortal={isPreparationPortal}
                   isNavOpened={isNavOpened}
                   onClick={showNav}

@@ -122,6 +122,7 @@ const HeaderComponent = ({
   toggleArticleOpen,
   logoUrl,
 
+  customHeader,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -221,20 +222,24 @@ const HeaderComponent = ({
         {((isPersonal && location.pathname.includes("files")) ||
           (!isPersonal && currentProductId !== "home")) &&
           !isFormGallery && <HeaderCatalogBurger onClick={toggleArticleOpen} />}
-        <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
-          {!isPersonal ? (
-            <img alt="logo" src={logo} className="header-logo-icon" />
-          ) : (
-            <img
-              alt="logo"
-              className="header-logo-icon"
-              src={combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                PersonalLogoReactSvgUrl
-              )}
-            />
-          )}
-        </LinkWithoutRedirect>
+        {customHeader ? (
+          <>{customHeader}</>
+        ) : (
+          <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
+            {!isPersonal ? (
+              <img alt="logo" src={logo} className="header-logo-icon" />
+            ) : (
+              <img
+                alt="logo"
+                className="header-logo-icon"
+                src={combineUrl(
+                  window.DocSpaceConfig?.proxy?.url,
+                  PersonalLogoReactSvgUrl
+                )}
+              />
+            )}
+          </LinkWithoutRedirect>
+        )}
         {/* {isNavAvailable &&
           isDesktopView &&
           !isPersonal &&
