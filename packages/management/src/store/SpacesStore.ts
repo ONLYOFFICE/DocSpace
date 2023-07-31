@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { getLogoFromPath } from "@docspace/common/utils";
 import {
   deletePortal,
   getDomainName,
@@ -6,31 +7,29 @@ import {
   setPortalName,
   createNewPortal,
   getAllPortals,
+  getPortalStatus,
 } from "@docspace/common/api/management";
-
-type NewPortalData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  portalName: string;
-};
+import { TNewPortalData, TPortals } from "SRC_DIR/types/spaces";
 
 class SpacesStore {
   isInit = false;
+  brandingStore = null;
 
-  portals = []; // need interface
+  portals: TPortals[] = [];
   domain: string | null = null;
 
   createPortalDialogVisible = false;
   domainDialogVisible = false;
 
-  constructor() {
+  constructor(brandingStore) {
+    this.brandingStore = brandingStore;
     makeAutoObservable(this);
   }
 
   initStore = async () => {
     if (this.isInit) return;
     this.isInit = true;
+    this.brandingStore.initStore();
 
     const requests = [];
     requests.push(this.getPortalDomain(), this.getAllPortals());
@@ -53,11 +52,16 @@ class SpacesStore {
     const { settings } = res;
 
     this.domain = settings;
-    // const status = await getPortalStatus(settings);
+    const status = await getPortalStatus(settings);
   };
 
   get isConnected() {
     return !!this.domain;
+  }
+
+  get faviconLogo() {
+    const logos = this.brandingStore.whiteLabelLogos;
+    return getLogoFromPath(logos[2]?.path?.light);
   }
 
   setPortalSettings = async (domain: string, portalName: string) => {
@@ -66,10 +70,13 @@ class SpacesStore {
     this.domain = settings;
     if (!portalName) return;
     const name = await setPortalName(portalName);
-    //   console.log(name);
   };
 
-  createNewPortal = async (data: NewPortalData) => {
+  setPortalName = async (portalName: string) => {
+    const name = await setPortalName(portalName);
+  };
+
+  createNewPortal = async (data: TNewPortalData) => {
     const register = await createNewPortal(data);
   };
 
