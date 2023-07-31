@@ -9,7 +9,7 @@ const { auth: authStore } = store;
 export class RootStore {
   authStore = authStore;
   brandingStore = new BrandingStore();
-  spacesStore = new SpacesStore();
+  spacesStore = new SpacesStore(this.brandingStore);
 }
 
 export const RootStoreContext = createContext<RootStore | null>(null);
