@@ -385,7 +385,7 @@ ONLYOFFICE DocSpaceの "お支払いセクション":"$PricingPage" をご参照
 _ご注意：サブスクリプションをお支払いされている方は、支払者になります。お支払い担当者のみがサブスクリプションの変更（マネージャー数の調整）を行うことができます。ユーザーはお支払いの詳細にアクセスすることはできません。ONLYOFFICE DocSpaceのアカウント所有者は、支払者をいつでも変更することができます。_
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>$UserName 様
@@ -419,7 +419,7 @@ ONLYOFFICE DocSpaceの "お支払いセクション":"$PricingPage" をご参照
 _ご注意：サブスクリプションをお支払いされている方は、支払者になります。お支払い担当者のみがサブスクリプションの変更（マネージャー数の調整）を行うことができます。ユーザーはお支払いの詳細にアクセスすることはできません。ONLYOFFICE DocSpaceのアカウント所有者は、支払者をいつでも変更することができます。_
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>$UserName 様
@@ -441,7 +441,7 @@ ONLYOFFICE DocSpaceの "お支払いセクション":"$PricingPage" をご参照
 _ご注意：サブスクリプションをお支払いされている方は、支払者になります。お支払い担当者のみがサブスクリプションの変更（マネージャー数の調整）を行うことができます。ユーザーはお支払いの詳細にアクセスすることはできません。ONLYOFFICE DocSpaceのアカウント所有者は、支払者をいつでも変更することができます。_
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
     <value>$UserName 様
@@ -523,7 +523,7 @@ $GreenButton
 お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>$UserName 様
@@ -543,47 +543,47 @@ $GreenButton
 お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>$UserName 様
  
 ONLYOFFICE DocSpaceへようこそ！あなたのユーザープロファイルは、"${__VirtualRootPath}":"${__VirtualRootPath}"に正常に追加されました。これで、次のことができるようになりました：
  
-*# 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
+* 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
  
-*# テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディア*など、さまざまな形式のファイルを扱うことができます。
+* *テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディア*など、さまざまな形式のファイルを扱うことができます。
  
-*# リアルタイムまたは段落ロックという2つの共同編集モードにより、文書の共同編集*が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
+* *リアルタイムまたは段落ロックという2つの共同編集モードにより、文書の共同編集*が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
  
-*# 任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
+* *任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
 
 $GreenButton
 
 お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>$UserName 様
  
 ONLYOFFICE DocSpaceへようこそ！あなたのユーザープロファイルは、"${__VirtualRootPath}":"${__VirtualRootPath}"に正常に追加されました。これで、次のことができるようになりました：
  
-*# 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
+* 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
  
-*# テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディア*など、さまざまな形式のファイルを扱うことができます。
+* *テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディア*など、さまざまな形式のファイルを扱うことができます。
  
-*# リアルタイムまたは段落ロックという2つの共同編集モードにより、文書の共同編集*が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
+* *リアルタイムまたは段落ロックという2つの共同編集モードにより、文書の共同編集*が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
  
-*# 任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
+* *任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
 
 $GreenButton
 
 お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_for_sales_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}"ポータルからのメッセージが届いています。
@@ -637,7 +637,7 @@ $GreenButton
 ONLYOFFICEをご利用いただき誠にありがとうございました。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":”http://onlyoffice.com/ja”</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
     <value>$UserName 様
@@ -674,7 +674,7 @@ ONLYOFFICE DocSpaceのご利用を停止することにした理由は何でし�
  
 $GreenButton
  
-もし、これが間違いだと思い、ONLYOFFICE DocSpaceのご利用を継続したい場合は、お手数ですが、弊社の”サポートチーム”:"https://www.onlyoffice.com/support-contact-form.aspx "までご連絡ください。
+もし、これが間違いだと思い、ONLYOFFICE DocSpaceのご利用を継続したい場合は、お手数ですが、弊社の"サポートチーム":"https://www.onlyoffice.com/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
 "www.onlyoffice.com":http://onlyoffice.com/ja</value>
