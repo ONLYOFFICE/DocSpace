@@ -11,7 +11,7 @@ const LoginContainer = styled.div`
   z-index: 0;
 
   .remember-wrapper {
-    max-width: 142px;
+    max-width: 170px;
     display: flex;
     flex-direction: row;
     align-items: center;
