@@ -188,7 +188,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
     }
 
-    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
         bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (filterType == FilterType.FoldersOnly)
@@ -666,7 +666,6 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         {
             var googleDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("GoogleDriveSession");
             var storage = await ProviderInfo.StorageAsync;
-            storage = await ProviderInfo.StorageAsync;
             await storage.TransferAsync(googleDriveSession, stream, chunkLength, uploadSession.LastChunk);
         }
         else
