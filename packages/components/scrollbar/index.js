@@ -159,7 +159,6 @@ const Scrollbar = React.forwardRef((props, ref) => {
     return (
       <div
         {...restLibProps}
-        id={id}
         className={classNames("scroller", scrollclass)}
         ref={elementRef}
         onScroll={onScroll}
@@ -174,11 +173,13 @@ const Scrollbar = React.forwardRef((props, ref) => {
   return (
     <StyledScrollbar
       {...rest}
+      id={id}
       disableTracksWidthCompensation
       rtl={isRtl}
       ref={ref}
       {...scrollAutoHideHandlers}
       onScrollStart={onScrollStart}
+      wrapperProps={{ className: "scroll-wrapper" }}
       scrollerProps={{ renderer: renderScroller }}
       contentProps={{
         tabIndex: -1,
