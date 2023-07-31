@@ -45,7 +45,7 @@ const Spaces = () => {
         </Text>
       </div>
       {isConnected && portals.length > 0 ? (
-        <MultipleSpaces portals={portals} />
+        <MultipleSpaces />
       ) : (
         <ConfigurationSection />
       )}

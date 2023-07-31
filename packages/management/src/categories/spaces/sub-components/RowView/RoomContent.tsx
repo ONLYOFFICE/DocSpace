@@ -34,7 +34,8 @@ export const RoomContent = ({ item }) => {
         color="#A3A9AE"
         className="spaces_row-current"
       >
-        {item.isCurrent ? "Current space" : ""}
+        {/** TODO: add display current space */}
+        {/* {item.isCurrent ? "Current space" : ""} */}
       </Text>
       <Text fontSize="12px" as="div" fontWeight={600}>
         {`Rooms: 0 | Users:  1 | Storage space used: 0 GB/50 GB`}

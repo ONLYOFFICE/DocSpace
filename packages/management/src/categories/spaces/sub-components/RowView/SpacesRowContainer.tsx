@@ -1,6 +1,6 @@
 import React from "react";
 import RowContainer from "@docspace/components/row-container";
-import { SpacesRoomRow } from "./SpacesRoomRow";
+import SpacesRoomRow from "./SpacesRoomRow";
 import styled from "styled-components";
 
 const StyledRowContainer = styled(RowContainer)`
@@ -12,17 +12,11 @@ const StyledRowContainer = styled(RowContainer)`
   margin-top: 20px;
 `;
 
-export const SpacesRowContainer = ({ portals, deletePortal }) => {
-  if (!portals) return;
-
+export const SpacesRowContainer = ({ portals }) => {
   return (
     <StyledRowContainer useReactWindow={false}>
       {portals.map((item) => (
-        <SpacesRoomRow
-          deletePortal={deletePortal}
-          key={item.tenantId}
-          item={item}
-        />
+        <SpacesRoomRow key={item.tenantId} item={item} />
       ))}
     </StyledRowContainer>
   );

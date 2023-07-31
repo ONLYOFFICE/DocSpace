@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, TextInput } from "@docspace/components";
-import { inject, observer } from "mobx-react";
-import styled from "styled-components";
+import { observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import { SpacesRowContainer } from "./RowView/SpacesRowContainer";
 import { StyledMultipleSpaces } from "../StyledSpaces";
@@ -14,6 +13,7 @@ const MultipleSpaces = () => {
     portals,
     deletePortal,
     domain,
+    setPortalName,
     setChangeDomainDialogVisible,
     setCreatePortalDialogVisible,
   } = spacesStore;
@@ -22,7 +22,7 @@ const MultipleSpaces = () => {
     <StyledMultipleSpaces>
       <div className="multiple-spaces-section">
         <Button
-          size="normal"
+          size="small"
           label="New space"
           className="spaces-button"
           primary={true}
@@ -52,7 +52,7 @@ const MultipleSpaces = () => {
 
           <Button
             className="spaces-button"
-            size="normal"
+            size="small"
             label="Edit"
             primary={true}
             onClick={() => setChangeDomainDialogVisible(true)}
