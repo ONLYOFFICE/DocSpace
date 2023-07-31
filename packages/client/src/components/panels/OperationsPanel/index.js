@@ -9,16 +9,13 @@ let timerId;
 const OperationsPanelComponent = (props) => {
   const {
     t,
-    tReady,
-    filter,
     isCopy,
     isRestore,
     visible,
-    provider,
+    isProviderFolder,
     selection,
     isFolderActions,
     isRecycleBin,
-    setDestFolderId,
     setIsFolderActions,
     currentFolderId,
     setCopyPanelVisible,
@@ -69,10 +66,9 @@ const OperationsPanelComponent = (props) => {
   };
 
   const startOperation = async (isCopy, destFolderId, folderTitle) => {
-    const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy
-        ? selection.filter((x) => !x.providerKey)
+        ? selection.filter((x) => x && !x.providerKey)
         : selection;
 
     let fileIds = [];
@@ -193,7 +189,6 @@ export default inject(
     { isCopy, isRestore }
   ) => {
     const {
-      filter,
       selection,
       filesList,
       bufferSelection,
@@ -209,7 +204,6 @@ export default inject(
       isFolderActions,
       setCopyPanelVisible,
       setMoveToPanelVisible,
-      setDestFolderId,
       setIsFolderActions,
       conflictResolveDialogVisible,
       thirdPartyMoveDialogVisible,
@@ -219,9 +213,11 @@ export default inject(
 
     const selections = isRestore
       ? filesList
-      : selection.length
+      : selection.length > 0 && selection[0] != null
       ? selection
-      : [bufferSelection];
+      : bufferSelection != null
+      ? [bufferSelection]
+      : [];
 
     const selectionsWithoutEditing = isRestore
       ? filesList
@@ -229,22 +225,20 @@ export default inject(
       ? selections
       : selections.filter((f) => f && !f?.isEditing);
 
-    const provider = selections?.find((x) => x?.providerKey);
+    const isProviderFolder = selections?.find((x) => x && !x?.providerKey);
 
     return {
       currentFolderId: selectedFolderStore.id,
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
-      filter,
       visible: copyPanelVisible || moveToPanelVisible || restoreAllPanelVisible,
-      provider,
+      isProviderFolder,
       selection: selectionsWithoutEditing,
       isFolderActions,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setRestoreAllPanelVisible,
-      setDestFolderId,
       setIsFolderActions,
       setConflictDialogData,
       setExpandedPanelKeys,
