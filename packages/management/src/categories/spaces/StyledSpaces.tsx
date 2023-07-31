@@ -5,7 +5,7 @@ const SpaceContainer = styled.div`
 
   .spaces {
     &-input-block {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     &-text-wrapper {
       display: flex;
@@ -18,6 +18,10 @@ const SpaceContainer = styled.div`
     &-header {
       margin-bottom: 20px;
     }
+  }
+
+  .row-content_tablet-side-info {
+    font-size: 12px;
   }
 
   @media (max-width: 600px) {
@@ -50,7 +54,7 @@ const ConfigurationWrapper = styled.div`
 
 const StyledMultipleSpaces = styled.div`
   .domain-settings-wrapper {
-    padding-top: 16px;
+    padding-top: 22px;
   }
 
   .spaces {
