@@ -11,6 +11,7 @@ import {
 import { Base } from "@docspace/components/themes";
 import MenuIcon from "PUBLIC_DIR/images/menu.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.react.svg";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledArticle = styled.article`
   position: relative;
@@ -26,7 +27,10 @@ const StyledArticle = styled.article`
 
   //padding: 0 20px;
 
-  border-right: ${(props) => props.theme.catalog.verticalLine};
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `border-left: ${theme.catalog.verticalLine};`
+      : `border-right: ${theme.catalog.verticalLine};`}
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -75,7 +79,10 @@ const StyledArticle = styled.article`
     top: 64px;
     height: calc(100% - 64px) !important;
 
-    border-right: none;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `border-left: none;`
+        : `border-right: none;`}
   `}
 
   z-index: ${(props) =>
@@ -168,7 +175,8 @@ StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
   height: 24px;
-  padding: 22px 21px 23px 20px;
+  padding: ${({ theme }) =>
+    getCorrectFourValuesStyle("22px 21px 23px 20px", theme.interfaceDirection)};
   margin: 0;
   display: flex;
   justify-content: flex-start;
@@ -236,22 +244,34 @@ const StyledHeading = styled.div`
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: 9px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 9px;`
+        : `margin-left: 9px;`}
   }
 
   ${isTablet &&
   css`
     display: ${(props) => (props.showText ? "block" : "none")};
-    margin-left: 9px !important;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 9px !important;`
+        : `margin-left: 9px !important`}
   `}
 
   @media ${mobile} {
-    margin-left: 0;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 0;`
+        : `margin-left: 0;`}
   }
 
   ${isMobileOnly &&
   css`
-    margin-left: 0 !important;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 0 !important;`
+        : `margin-left: 0 !important;`}
   `}
 `;
 
@@ -319,7 +339,9 @@ const StyledControlContainer = styled.div`
   height: 17px;
   position: absolute;
   top: 37px;
-  right: 10px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left: 10px;` : `right: 10px;`}
   border-radius: 100px;
   cursor: pointer;
   display: flex;
@@ -348,7 +370,11 @@ const StyledArticleProfile = styled.div`
   justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
-  border-right: ${(props) => props.theme.catalog.verticalLine};
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `border-left: ${theme.catalog.verticalLine};`
+      : `border-right: ${theme.catalog.verticalLine};`}
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
@@ -365,7 +391,10 @@ const StyledArticleProfile = styled.div`
   }
 
   .option-button {
-    margin-left: auto;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: auto;`
+        : `margin-left: auto;`}
     height: 32px;
     width: 32px;
 

@@ -26,7 +26,10 @@ const StyledArticleApps = styled.div`
     ${(props) =>
       props.showText &&
       css`
-        margin-left: 8px;
+        ${({ theme }) =>
+          theme.interfaceDirection === "rtl"
+            ? `margin-right: 8px;`
+            : `margin-left: 8px;`}
       `}
   }
 
