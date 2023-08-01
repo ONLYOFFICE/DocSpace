@@ -694,30 +694,34 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return moved;
     }
 
-    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, string to)
+    public Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, string to)
     {
-        return Task.FromResult((IDictionary<int, string>)new Dictionary<int, string>());
+        return Task.FromResult((IDictionary<int, TTo>)new Dictionary<int, TTo>());
     }
 
-    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, int to)
+    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, int to)
     {
-        var result = new Dictionary<int, string>();
+        if (typeof(TTo) == typeof(string))
+        {
+            return new Dictionary<int, TTo>();
+        }
 
+        var result = new Dictionary<int, TTo>();
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         foreach (var folderId in folderIds)
@@ -737,14 +741,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 await foreach (var file in files)
                 {
-                    result[file.Id] = file.Title;
+                    result[file.Id] = (TTo)Convert.ChangeType(conflict, typeof(TTo));
                 }
 
                 var childs = await Queries.ArrayAsync(filesDbContext, TenantID, folderId);
 
                 foreach (var pair in await CanMoveOrCopyAsync(childs, conflict))
                 {
-                    result.Add(pair.Key, pair.Value);
+                    result.Add(pair.Key, (TTo)Convert.ChangeType(pair.Value, typeof(TTo)));
                 }
             }
         }
