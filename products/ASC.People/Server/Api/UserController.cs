@@ -1387,11 +1387,11 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var count = _apiContext.Count;
-        const int margin = 1;
+        var totalCountTask = _userManager.GetUsersCountAsync(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType,
+            _apiContext.FilterValue);
 
         var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, 
-            _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, count + margin, _apiContext.StartIndex);
+            _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex);
 
         var counter = 0;
 
@@ -1399,16 +1399,10 @@ public class UserController : PeopleControllerBase
         {
             counter++;
 
-            if (counter > count)
-            {
-                _apiContext.SetCount((int)count).SetNextPage(true);
-                yield break;
-            }
-
             yield return user;
         }
 
-        _apiContext.SetCount(counter).SetNextPage(false);
+        _apiContext.SetCount(counter).SetTotalCount(await totalCountTask);
 
         void FilterByUserType(EmployeeType employeeType, List<List<Guid>> includeGroups, List<Guid> excludeGroups)
         {
