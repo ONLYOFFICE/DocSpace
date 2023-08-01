@@ -2372,8 +2372,12 @@ class FilesStore {
     if (this.authStore.settingsStore.withPaging) return;
 
     const scrollElm = isMobileOnly
-      ? document.querySelector("#customScrollBar > .scroll-body")
-      : document.querySelector("#sectionScroll > .scroll-body");
+      ? document.querySelector(
+          "#customScrollBar > .scroll-wrapper > .scroller > .scroll-body"
+        )
+      : document.querySelector(
+          "#sectionScroll > .scroll-wrapper > .scroller > .scroll-body"
+        );
 
     scrollElm && scrollElm.scrollTo(0, 0);
   };

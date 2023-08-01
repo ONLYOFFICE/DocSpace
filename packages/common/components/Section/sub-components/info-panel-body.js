@@ -8,7 +8,7 @@ const StyledScrollbar = styled(Scrollbar)`
     $isScrollLocked &&
     css`
       box-sizing: border-box;
-      & > .scroll-body {
+      & .scroll-wrapper > .scroller > .scroll-body {
         overflow: hidden !important;
         ${props =>
           props.theme.interfaceDirection === "rtl"

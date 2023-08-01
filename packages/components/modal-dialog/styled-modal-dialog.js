@@ -119,7 +119,7 @@ const StyledBody = styled(Box)`
 
   white-space: pre-line;
 
-  #modal-scroll > .scroll-body {
+  #modal-scroll > .scroll-wrapper > .scroller > .scroll-body {
     ${(props) =>
       isMobile && props.theme.interfaceDirection === "rtl"
         ? `margin-left: 0 !important;`
