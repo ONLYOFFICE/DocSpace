@@ -237,6 +237,26 @@ public class EFUserService : IUserService
             .ToListAsync();
     }
 
+    public async Task<int> GetUsersCountAsync(
+        int tenant,
+        bool isDocSpaceAdmin,
+        EmployeeStatus? employeeStatus,
+        List<List<Guid>> includeGroups,
+        List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
+        EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
+        string text)
+    {
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetUserQuery(userDbContext, tenant);
+
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
+
+        return await q.CountAsync();
+    }
+
     public async IAsyncEnumerable<UserInfo> GetUsers(
         int tenant,
         bool isDocSpaceAdmin,

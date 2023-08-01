@@ -180,6 +180,19 @@ public class UserManager
 
         return await users.ToArrayAsync();
     }
+    
+    public Task<int> GetUsersCountAsync(
+        bool isDocSpaceAdmin,
+        EmployeeStatus? employeeStatus,
+        List<List<Guid>> includeGroups,
+        List<Guid> excludeGroups,
+        List<Tuple<List<List<Guid>>, List<Guid>>> combinedGroups,
+        EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
+        string text)
+    {
+        return _userService.GetUsersCountAsync(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, combinedGroups, activationStatus, accountLoginType, text);
+    }
 
     public IAsyncEnumerable<UserInfo> GetUsers(
         bool isDocSpaceAdmin,
