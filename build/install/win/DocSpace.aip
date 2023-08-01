@@ -1568,9 +1568,9 @@
     <ROW Key="xml" Component="tools" FileName="*.xml" Directory="tools_Dir" Options="17"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlAttributeComponent">
-    <ROW XmlAttribute="minlevel" XmlElement="logger" Name="minlevel" Flags="14" Order="0" Value="Trace"/>
-    <ROW XmlAttribute="minlevel_1" XmlElement="logger_1" Name="minlevel" Flags="14" Order="0" Value="Trace"/>
-    <ROW XmlAttribute="minlevel_2" XmlElement="logger_2" Name="minlevel" Flags="14" Order="0" Value="Trace"/>
+    <ROW XmlAttribute="minlevel" XmlElement="logger" Name="minlevel" Flags="14" Order="0" Value="Warn"/>
+    <ROW XmlAttribute="minlevel_1" XmlElement="logger_1" Name="minlevel" Flags="14" Order="0" Value="Warn"/>
+    <ROW XmlAttribute="minlevel_2" XmlElement="logger_2" Name="minlevel" Flags="14" Order="0" Value="Warn"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.XmlElementComponent">
     <ROW XmlElement="logger" ParentElement="rules" Name="logger" Condition="ENVIRONMENT = &quot;PRODUCT.ENVIRONMENT.SUB&quot;" Order="0" Flags="22" UpdateIndexInParent="0"/>
