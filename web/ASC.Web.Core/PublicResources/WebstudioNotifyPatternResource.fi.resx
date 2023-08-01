@@ -545,7 +545,7 @@ ONLYOFFICE-tiimi
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
-    <value>Hei, $ UserName!
+    <value>Hei, $UserName!
 
 Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä parantamaan käyttäjäkokemusta.
 
@@ -557,7 +557,7 @@ Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä paranta
 
 Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
 
-Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":"$PricingPage" ONLYOFFICE DocSpacesi. Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
 
 _Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
 
