@@ -28,6 +28,7 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import debounce from "lodash.debounce";
+import Queue from "queue-promise";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -128,6 +129,12 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
+  createNewFilesQueue = new Queue({
+    concurrent: 5,
+    interval: 500,
+    start: true,
+  });
 
   constructor(
     authStore,
@@ -169,18 +176,20 @@ class FilesStore {
             break;
         }
 
-      if (opt?.cmd === "create") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount++;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount++;
-        this.authStore.infoPanelStore.reloadSelection();
-      } else if (opt?.cmd === "delete") {
-        if (opt?.type === "file" && opt?.id)
-          this.selectedFolderStore.filesCount--;
-        if (opt?.type === "folder" && opt?.id)
-          this.selectedFolderStore.foldersCount--;
-        this.authStore.infoPanelStore.reloadSelection();
+      if (
+        opt?.cmd &&
+        opt.id &&
+        (opt.type === "file" || opt.type === "folder") &&
+        (opt.cmd === "create" || opt.cmd === "delete")
+      ) {
+        runInAction(() => {
+          if (opt.cmd === "create") {
+            this.selectedFolderStore[opt.type + "sCount"]++;
+          } else if (opt.cmd === "delete") {
+            this.selectedFolderStore[opt.type + "sCount"]--;
+          }
+          this.authStore.infoPanelStore.reloadSelection();
+        });
       }
     });
 
@@ -269,7 +278,42 @@ class FilesStore {
 
       this.createThumbnail(this.files[foundIndex]);
     });
+
+    this.createNewFilesQueue.on("resolve", this.onResolveNewFile);
   }
+
+  onResolveNewFile = (fileInfo) => {
+    if (!fileInfo) return;
+
+    //console.log("onResolveNewFiles", { fileInfo });
+
+    if (this.files.findIndex((x) => x.id === fileInfo.id) > -1) return;
+
+    console.log("[WS] create new file", { fileInfo });
+
+    const newFiles = [fileInfo, ...this.files];
+
+    if (
+      newFiles.length > this.filter.pageCount &&
+      this.authStore.settingsStore.withPaging
+    ) {
+      newFiles.pop(); // Remove last
+    }
+
+    const newFilter = this.filter;
+    newFilter.total += 1;
+
+    runInAction(() => {
+      this.setFilter(newFilter);
+      this.setFiles(newFiles);
+    });
+
+    this.debouncefetchTreeFolders();
+  };
+
+  debouncefetchTreeFolders = debounce(() => {
+    this.treeFoldersStore.fetchTreeFolders();
+  }, 1000);
 
   debounceRemoveFiles = debounce(() => {
     this.removeFiles(this.tempActionFilesIds);
@@ -293,34 +337,35 @@ class FilesStore {
 
       //To update a file version
       if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
-        this.getFileInfo(file.id);
+        if (
+          this.files[foundIndex].version !== file.version ||
+          this.files[foundIndex].versionGroup !== file.versionGroup
+        ) {
+          this.files[foundIndex].version = file.version;
+          this.files[foundIndex].versionGroup = file.versionGroup;
+        }
         this.checkSelection(file);
       }
 
       if (foundIndex > -1) return;
 
-      const fileInfo = await api.files.getFileInfo(file.id);
+      setTimeout(() => {
+        const foundIndex = this.files.findIndex((x) => x.id === file.id);
+        if (foundIndex > -1) {
+          //console.log("Skip in timeout");
+          return null;
+        }
 
-      if (this.files.findIndex((x) => x.id === opt?.id) > -1) return;
-      console.log("[WS] create new file", fileInfo.id, fileInfo.title);
+        this.createNewFilesQueue.enqueue(() => {
+          const foundIndex = this.files.findIndex((x) => x.id === file.id);
+          if (foundIndex > -1) {
+            //console.log("Skip in queue");
+            return null;
+          }
 
-      const newFiles = [fileInfo, ...this.files];
-
-      if (
-        newFiles.length > this.filter.pageCount &&
-        this.authStore.settingsStore.withPaging
-      ) {
-        newFiles.pop(); // Remove last
-      }
-
-      const newFilter = this.filter;
-      newFilter.total += 1;
-
-      runInAction(() => {
-        this.setFilter(newFilter);
-        this.setFiles(newFiles);
-        this.treeFoldersStore.fetchTreeFolders();
-      });
+          return api.files.getFileInfo(file.id);
+        });
+      }, 300);
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
 
@@ -435,6 +480,7 @@ class FilesStore {
       tempActionFilesIds.push(this.files[foundIndex].id);
 
       this.setTempActionFilesIds(tempActionFilesIds);
+
       this.debounceRemoveFiles();
 
       // Hide pagination when deleting files
@@ -509,8 +555,8 @@ class FilesStore {
     this.isPreview = predicate;
   };
 
-  setTempFilter = (filser) => {
-    this.tempFilter = filser;
+  setTempFilter = (filter) => {
+    this.tempFilter = filter;
   };
 
   setHighlightFile = (highlightFile) => {
@@ -568,30 +614,45 @@ class FilesStore {
     }
   };
 
-  addActiveItems = (files, folders) => {
+  addActiveItems = (files, folders, destFolderId) => {
     if (folders && folders.length) {
       if (!this.activeFolders.length) {
-        this.setActiveFolders(folders);
+        this.setActiveFolders(folders, destFolderId);
       } else {
-        folders.map((item) => this.activeFolders.push(item));
+        folders.map((item) =>
+          this.activeFolders.push({ id: item, destFolderId })
+        );
       }
     }
 
     if (files && files.length) {
       if (!this.activeFiles.length) {
-        this.setActiveFiles(files);
+        this.setActiveFiles(files, destFolderId);
       } else {
-        files.map((item) => this.activeFiles.push(item));
+        files.map((item) => this.activeFiles.push({ id: item, destFolderId }));
       }
     }
   };
 
-  setActiveFiles = (activeFiles) => {
-    this.activeFiles = activeFiles;
+  updateActiveFiles = (items) => {
+    this.activeFiles = items;
+  };
+  setActiveFiles = (activeFiles, destFolderId) => {
+    const arrayFormation = activeFiles.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFiles = arrayFormation;
   };
 
-  setActiveFolders = (activeFolders) => {
-    this.activeFolders = activeFolders;
+  setActiveFolders = (activeFolders, destFolderId) => {
+    const arrayFormation = activeFolders.map((id) => ({
+      id,
+      destFolderId,
+    }));
+
+    this.activeFolders = arrayFormation;
   };
 
   setIsLoaded = (isLoaded) => {
@@ -774,25 +835,29 @@ class FilesStore {
     if (folders.length === 0 && this.folders.length === 0) return;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "unsubscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "unsubscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
 
     this.folders = folders;
 
     if (this.folders?.length > 0) {
-      socketHelper.emit({
-        command: "subscribe",
-        data: {
-          roomParts: this.folders.map((f) => `DIR-${f.id}`),
-          individual: true,
-        },
-      });
+      this.folders.forEach((f) =>
+        socketHelper.emit({
+          command: "subscribe",
+          data: {
+            roomParts: `DIR-${f.id}`,
+            individual: true,
+          },
+        })
+      );
     }
   };
 
@@ -856,9 +921,9 @@ class FilesStore {
 
   getFilesChecked = (file, selected) => {
     if (!file.parentId) {
-      if (this.activeFiles.includes(file.id)) return false;
+      if (this.activeFiles.find((elem) => elem.id === file.id)) return false;
     } else {
-      if (this.activeFolders.includes(file.id)) return false;
+      if (this.activeFolders.find((elem) => elem.id === file.id)) return false;
     }
 
     const type = file.fileType;
@@ -909,9 +974,9 @@ class FilesStore {
     return newSelection;
   };
 
-  setSelected = (selected) => {
+  setSelected = (selected, clearBuffer = true) => {
     if (selected === "close" || selected === "none") {
-      this.setBufferSelection(null);
+      clearBuffer && this.setBufferSelection(null);
       this.setHotkeyCaretStart(null);
       this.setHotkeyCaret(null);
     }
@@ -962,13 +1027,13 @@ class FilesStore {
         const isFound =
           this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
 
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           isFound &&
             newSelections.push(
               this.filesList.find((f) => f.id == id && !f.isFolder)
             );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         const isFound =
           this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
 
@@ -997,12 +1062,12 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+        if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
           newSelections = newSelections.filter(
             (f) => !(f.id == id && !f.isFolder)
           );
         }
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+      } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
         newSelections = newSelections.filter(
           (f) => !(f.id == id && f.isFolder)
         );
@@ -1142,13 +1207,10 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
     }
-
-    this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -1530,10 +1592,7 @@ class FilesStore {
     const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing =
-      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    // const isFileOwner =
-    //   item.createdBy?.id === this.authStore.userStore.user?.id;
+    const isEditing = false; // (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
@@ -1594,7 +1653,7 @@ class FilesStore {
         "send-by-email",
         "docu-sign",
         "version", //category
-        "finalize-version",
+        //   "finalize-version",
         "show-version-history",
         "show-info",
         "block-unblock-version", //need split
@@ -2228,9 +2287,11 @@ class FilesStore {
     this.scrollToTop();
   };
 
-  removeFiles = (fileIds, folderIds, showToast) => {
+  removeFiles = (fileIds, folderIds, showToast, destFolderId) => {
     const newFilter = this.filter.clone();
     const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
+    if (destFolderId && destFolderId === this.selectedFolderStore.id) return;
 
     if (newFilter.total <= newFilter.pageCount) {
       const files = fileIds
@@ -2695,8 +2756,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3209,6 +3274,10 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
+  };
+
   setMainButtonMobileVisible = (visible) => {
     this.mainButtonMobileVisible = visible;
   };
@@ -3413,6 +3482,13 @@ class FilesStore {
   get roomsForDelete() {
     return this.folders.filter((f) => f.security.Delete);
   }
+
+  getRooms = async (filter) => {
+    let newFilter = RoomsFilter.getDefault();
+    Object.assign(newFilter, filter);
+
+    return await api.rooms.getRooms(newFilter);
+  };
 }
 
 export default FilesStore;

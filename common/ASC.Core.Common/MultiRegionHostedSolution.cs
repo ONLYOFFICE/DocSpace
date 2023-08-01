@@ -161,11 +161,6 @@ public class MultiRegionHostedSolution
         }
     }
 
-    public IEnumerable<string> GetRegions()
-    {
-        return GetRegionServices().Select(s => s.Region).ToList();
-    }
-
     private IEnumerable<HostedSolution> GetRegionServices()
     {
         return _regions.Where(x => !string.IsNullOrEmpty(x.Key))

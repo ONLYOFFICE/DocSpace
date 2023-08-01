@@ -28,7 +28,7 @@ const Members = ({
 
   selectionParentRoom,
   setSelectionParentRoom,
-  isScrollLocked,
+
   setIsScrollLocked,
 
   getRoomMembers,
@@ -184,7 +184,6 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
-            isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
           />
         ))}
@@ -222,7 +221,6 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
-            isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
           />
         ))}
@@ -250,7 +248,7 @@ export default inject(
 
       updateRoomMembers,
       setUpdateRoomMembers,
-      isScrollLocked,
+
       setIsScrollLocked,
     } = auth.infoPanelStore;
     const {
@@ -273,7 +271,7 @@ export default inject(
       setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
-      isScrollLocked,
+
       setIsScrollLocked,
 
       getRoomMembers,

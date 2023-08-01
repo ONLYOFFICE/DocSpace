@@ -112,9 +112,13 @@ const StyledArticle = styled.article`
     `}
 
     .scroll-body {
+      display: flex;
+      flex-direction: column;
+
       overflow-x: hidden !important;
 
       padding: 0 20px !important;
+      margin-bottom: 0px !important;
 
       @media ${tablet} {
         padding: 0 8px !important;
@@ -128,12 +132,14 @@ const StyledArticle = styled.article`
       `}
 
       @media ${mobile} {
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       }
 
       ${isMobileOnly &&
       css`
+        display: block;
         padding-bottom: 20px;
         height: 100%;
       `}
@@ -396,10 +402,15 @@ const StyledProfileWrapper = styled.div`
 const StyledArticleAlertsComponent = styled.div`
   margin: 32px 0;
 
-  div:last-child {
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
+
+  &:empty {
+    display: none;
   }
 `;
+
 export {
   StyledArticle,
   StyledArticleHeader,

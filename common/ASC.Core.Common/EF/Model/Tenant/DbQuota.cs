@@ -52,7 +52,9 @@ public static class DbQuotaExtension
     {
         modelBuilder
             .Add(MySqlAddDbQuota, Provider.MySql)
-            .Add(PgSqlAddDbQuota, Provider.PostgreSql)
+            .Add(PgSqlAddDbQuota, Provider.PostgreSql);
+
+        modelBuilder
             .HasData(
                 new DbQuota
                 {

@@ -145,7 +145,7 @@ public class PaymentController : ControllerBase
     /// <path>api/2.0/portal/payment/account</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/account")]
-    public Uri GetPaymentAccount(string backUrl)
+    public object GetPaymentAccount(string backUrl)
     {
         var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
         var payer = _userManager.GetUserByEmail(payerId);
@@ -156,7 +156,8 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        return _tariffService.GetAccountLink(Tenant.Id, backUrl);
+        var result = "payment.ashx";
+        return !string.IsNullOrEmpty(backUrl) ? $"{result}?backUrl={backUrl}" : result;
     }
 
     /// <summary>
@@ -269,7 +270,8 @@ public class PaymentController : ControllerBase
 
     internal void CheckCache(string basekey)
     {
-        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        var key = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString() + basekey;
+
         if (_memoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)

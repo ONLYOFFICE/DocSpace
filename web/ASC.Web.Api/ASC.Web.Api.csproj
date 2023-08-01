@@ -28,6 +28,7 @@
       <None Remove="img\restore.svg" />
       <None Remove="img\room.svg" />
       <None Remove="img\sso.svg" />
+      <None Remove="img\thirdparty.svg" />
       <None Remove="img\total_size.svg" />
       <None Remove="img\users.svg" />
       <None Remove="img\whitelabel.svg" />
@@ -37,6 +38,7 @@
       <EmbeddedResource Include="img\restore.svg" />
       <EmbeddedResource Include="img\room.svg" />
       <EmbeddedResource Include="img\sso.svg" />
+      <EmbeddedResource Include="img\thirdparty.svg" />
       <EmbeddedResource Include="img\total_size.svg" />
       <EmbeddedResource Include="img\users.svg" />
       <EmbeddedResource Include="img\whitelabel.svg" />

@@ -33,4 +33,5 @@ public class CookieSettingsRequestsDto
     /// <summary>Lifetime value in minutes</summary>
     /// <type>System.Int32, System</type>
     public int LifeTime { get; set; }
+    public bool Enabled { get; set; }
 }

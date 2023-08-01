@@ -7,6 +7,8 @@ import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
+import Text from "@docspace/components/text";
+import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import { combineUrl } from "@docspace/common/utils";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -23,7 +25,6 @@ const DataManagementWrapper = (props) => {
     t,
     history,
     isNotPaidPeriod,
-    currentColorScheme,
     toDefault,
   } = props;
 
@@ -44,26 +45,28 @@ const DataManagementWrapper = (props) => {
     return (
       <>
         <HelpButton
-          place="bottom"
+          size={12}
+          offsetRight={5}
+          place="right"
           iconName={HelpReactSvgUrl}
           tooltipContent={
-            <>
+            <Text fontSize="12px">
               <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">
                 {helpInfo}
               </Trans>
-              <div>
+              <Box marginProp="10px 0 0">
                 <Link
-                  as="a"
+                  color="#333333"
+                  fontSize="13px"
                   href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"
-                  color={currentColorScheme.main.accent}
                   isBold
                   isHovered
                 >
                   {t("Common:LearnMore")}
                 </Link>
-              </div>
-            </>
+              </Box>
+            </Text>
           }
         />
       </>

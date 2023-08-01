@@ -38,6 +38,7 @@ public class SmtpSender : INotifySender
     private int _port;
     private bool _ssl;
     private ICredentials _credentials;
+    private SaslMechanism _saslMechanism;
     protected bool _useCoreSettings;
     const int NetworkTimeout = 30000;
 
@@ -83,6 +84,10 @@ public class SmtpSender : INotifySender
                 if (_credentials != null)
                 {
                     smtpClient.Authenticate(_credentials);
+                }
+                else if (_saslMechanism != null)
+                {
+                    smtpClient.Authenticate(_saslMechanism);
                 }
 
                 smtpClient.Send(mail);
@@ -178,9 +183,9 @@ public class SmtpSender : INotifySender
 
             if (_initProperties.ContainsKey("userName"))
             {
-                _credentials = new NetworkCredential(
-                     _initProperties["userName"],
-                     _initProperties["password"]);
+                var useNtlm = _initProperties.ContainsKey("useNtlm") && bool.Parse(_initProperties["useNtlm"]);
+                _credentials = !useNtlm ? new NetworkCredential(_initProperties["userName"], _initProperties["password"]) : null;
+                _saslMechanism = useNtlm ? new SaslMechanismNtlm(_initProperties["userName"], _initProperties["password"]) : null;
             }
         }
         else
@@ -190,12 +195,15 @@ public class SmtpSender : INotifySender
             _host = s.Host;
             _port = s.Port;
             _ssl = s.EnableSSL;
-            _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
-                ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
-                : null;
+
+            if (!string.IsNullOrEmpty(s.CredentialsUserName))
+            {
+                _credentials = !s.UseNtlm ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword) : null;
+                _saslMechanism = s.UseNtlm ? new SaslMechanismNtlm(s.CredentialsUserName, s.CredentialsUserPassword) : null;
+            }
         }
     }
-    private MimeMessage BuildMailMessage(NotifyMessage m)
+    protected MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage
         {

@@ -299,7 +299,7 @@ public class ConnectionsController : ControllerBase
     {
         try
         {
-            var location = _geolocationHelper.GetIPGeolocation(ip);
+            var location = _geolocationHelper.GetIPGeolocation(IPAddress.Parse(ip));
             if (string.IsNullOrEmpty(location.Key))
             {
                 return new string[] { string.Empty, string.Empty };

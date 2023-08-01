@@ -111,9 +111,15 @@ public class MessageSettingsController : BaseSettingsController
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("cookiesettings")]
-    public int GetCookieSettings()
+    public CookieSettingsDto GetCookieSettings()
     {
-        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+        var result = _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+
+        return new CookieSettingsDto
+        {
+            Enabled = result.Enabled,
+            LifeTime = result.LifeTime
+        };
     }
 
     /// <summary>
@@ -137,7 +143,7 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(inDto.LifeTime);
+        await _cookiesManager.SetLifeTime(inDto.LifeTime, inDto.Enabled);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 
@@ -279,11 +285,7 @@ public class MessageSettingsController : BaseSettingsController
         }
         catch (FormatException)
         {
-            return Resource.ErrorNotCorrectEmail;
-        }
-        catch (Exception e)
-        {
-            return e.Message.HtmlEncode();
+            throw new Exception(Resource.ErrorNotCorrectEmail);
         }
     }
 }

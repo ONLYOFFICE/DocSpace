@@ -13,3 +13,21 @@ export const exceptPrivacyTrashArchiveFolders = [
   FolderType.TRASH,
   FolderType.Archive,
 ];
+
+export const roomsOnly = [
+  FolderType.USER,
+  FolderType.Recent,
+  FolderType.TRASH,
+  FolderType.Favorites,
+  FolderType.Privacy,
+  FolderType.Archive,
+];
+
+export const userFolderOnly = [
+  FolderType.Recent,
+  FolderType.Rooms,
+  FolderType.TRASH,
+  FolderType.Favorites,
+  FolderType.Privacy,
+  FolderType.Archive,
+];

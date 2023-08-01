@@ -7,7 +7,7 @@
   "DisplayTemplates": "テンプレートの表示",
   "IntermediateVersion": "保存された中間バージョンをすべて残す",
   "KeepIntermediateVersion": "編集時に中間バージョンを残す",
-  "OriginalCopy": "ピーしたファイルをオリジナルのフォーマットでも保存する",
+  "OriginalCopy": "コピーしたファイルをオリジナルの形式にも保存する",
   "StoringFileVersion": "ファイルバージョンの保存",
   "ThirdPartyAccounts": "サードパーティーアカウント",
   "ThirdPartyBtn": "サードパーティストレージの接続を可能にする",

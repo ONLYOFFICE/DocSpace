@@ -9,6 +9,7 @@ import {
   restoreDocumentsVersion,
   getEditDiff,
   getEditHistory,
+  createFile,
   updateFile,
   checkFillFormDraft,
   convertFile,
@@ -24,6 +25,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import styled from "styled-components";
+import { getEditorTheme } from "../helpers/utils";
 
 toast.configure();
 
@@ -162,7 +164,8 @@ function Editor({
         url.indexOf("#message/") > -1 &&
         fileInfo &&
         fileInfo?.fileExst &&
-        fileInfo?.viewAccessability?.Convert
+        fileInfo?.viewAccessability?.Convert &&
+        fileInfo?.security?.Convert
       ) {
         showDocEditorMessage(url);
       }
@@ -194,19 +197,39 @@ function Editor({
     }
   };
 
-  const getDefaultFileName = (format) => {
-    switch (format) {
-      case "docx":
-        return t("Common:NewDocument");
+  const getDefaultFileName = (withExt = false) => {
+    const documentType = config?.documentType;
+
+    const fileExt =
+      documentType === "word"
+        ? "docx"
+        : documentType === "slide"
+        ? "pptx"
+        : documentType === "cell"
+        ? "xlsx"
+        : "docxf";
+
+    let fileName = t("Common:NewDocument");
+
+    switch (fileExt) {
       case "xlsx":
-        return t("Common:NewSpreadsheet");
+        fileName = t("Common:NewSpreadsheet");
+        break;
       case "pptx":
-        return t("Common:NewPresentation");
+        fileName = t("Common:NewPresentation");
+        break;
       case "docxf":
-        return t("Common:NewMasterForm");
+        fileName = t("Common:NewMasterForm");
+        break;
       default:
-        return t("Common:NewFolder");
+        break;
     }
+
+    if (withExt) {
+      fileName = `${fileName}.${fileExt}`;
+    }
+
+    return fileName;
   };
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
@@ -224,7 +247,7 @@ function Editor({
     if (index) {
       let convertUrl = url.substring(0, index);
 
-      if (fileInfo?.viewAccessability?.Convert) {
+      if (fileInfo?.viewAccessability?.Convert && fileInfo?.security?.Convert) {
         const newUrl = await convertDocumentUrl();
         if (newUrl) {
           convertUrl = newUrl.webUrl;
@@ -260,6 +283,23 @@ function Editor({
 
   const generateLink = (actionData) => {
     return encodeURIComponent(JSON.stringify(actionData));
+  };
+
+  const onSDKRequestCreateNew = (event) => {
+    const defaultFileName = getDefaultFileName(true);
+
+    createFile(fileInfo.folderId, defaultFileName)
+      .then((newFile) => {
+        const newUrl = combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          `/doceditor?fileId=${encodeURIComponent(newFile.id)}`
+        );
+        window.open(newUrl, "_blank");
+      })
+      .catch((e) => {
+        toastr.error(e);
+      });
   };
 
   const onSDKRequestRename = (event) => {
@@ -409,6 +449,8 @@ function Editor({
     console.log("onDocumentReady", arguments, { docEditor });
     documentIsReady = true;
 
+    config?.errorMessage && docEditor?.showMessage(config.errorMessage);
+
     // if (isSharingAccess) {
     //   loadUsersRightsList(docEditor);
     // }
@@ -557,6 +599,7 @@ function Editor({
 
       let goBack;
       const url = window.location.href;
+      const search = window.location.search;
 
       if (fileInfo) {
         let backUrl = "";
@@ -569,18 +612,25 @@ function Editor({
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
-        goBack = {
-          blank: true,
-          requestClose: false,
-          text: t("FileLocation"),
-          url: `${combineUrl(origin, backUrl)}`,
-        };
+        const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+        goBack =
+          editorGoBack === "false"
+            ? {}
+            : {
+                blank: true,
+                requestClose: false,
+                text: t("FileLocation"),
+                url: `${combineUrl(origin, backUrl)}`,
+              };
       }
 
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
-        goback: goBack,
+        goback: { ...goBack },
       };
+
+      config.editorConfig.customization.uiTheme = getEditorTheme(user?.theme);
 
       config.document.info.favorite = null;
 
@@ -599,28 +649,6 @@ function Editor({
         };
       }
 
-      if (successAuth) {
-        const documentType = config?.documentType;
-
-        const fileExt =
-          documentType === "word"
-            ? "docx"
-            : documentType === "slide"
-            ? "pptx"
-            : "xlsx";
-
-        const defaultFileName = getDefaultFileName(fileExt);
-
-        if (!user.isVisitor && !isDesktopEditor)
-          config.editorConfig.createUrl = combineUrl(
-            window.location.origin,
-            window.DocSpaceConfig?.proxy?.url,
-            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
-              defaultFileName
-            )}`
-          );
-      }
-
       let //onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
@@ -631,7 +659,31 @@ function Editor({
         onRequestHistory,
         onRequestReferenceData,
         onRequestUsers,
-        onRequestSendNotify;
+        onRequestSendNotify,
+        onRequestCreateNew;
+
+      if (successAuth && !user.isVisitor) {
+        if (isDesktopEditor) {
+          onRequestCreateNew = onSDKRequestCreateNew;
+        } else {
+          //FireFox security issue fix (onRequestCreateNew will be blocked)
+          const documentType = config?.documentType || "word";
+          const defaultFileName = getDefaultFileName();
+
+          const url = new URL(
+            combineUrl(
+              window.location.origin,
+              window.DocSpaceConfig?.proxy?.url,
+              "/filehandler.ashx"
+            )
+          );
+          url.searchParams.append("action", "create");
+          url.searchParams.append("doctype", documentType);
+          url.searchParams.append("title", defaultFileName);
+
+          config.editorConfig.createUrl = url.toString();
+        }
+      }
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -692,6 +744,7 @@ function Editor({
           onRequestRestore,
           onRequestUsers,
           onRequestSendNotify,
+          onRequestCreateNew,
         },
       };
 

@@ -32,6 +32,7 @@ const StyledSelectedItem = styled.div`
   .selected-item_label {
     line-height: 20px;
     margin-right: 10px;
+    max-width: 23ch;
   }
 `;
 

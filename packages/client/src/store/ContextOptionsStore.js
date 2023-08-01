@@ -1,4 +1,4 @@
-import HistoryReactSvgUrl from "PUBLIC_DIR/images/history.react.svg?url";
+﻿import HistoryReactSvgUrl from "PUBLIC_DIR/images/history.react.svg?url";
 import HistoryFinalizedReactSvgUrl from "PUBLIC_DIR/images/history-finalized.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import CheckBoxReactSvgUrl from "PUBLIC_DIR/images/check-box.react.svg?url";
@@ -126,7 +126,7 @@ class ContextOptionsStore {
     if (provider.isOauth) {
       let authModal = window.open(
         "",
-        "Authorization",
+        t("Common:Authorization"),
         "height=600, width=1020"
       );
       await openConnectWindow(provider.providerName, authModal)
@@ -303,7 +303,8 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
 
     if (canConvert) {
       setConvertItem({ ...item, isOpen: true });
@@ -405,6 +406,9 @@ class ContextOptionsStore {
   onMediaFileClick = (fileId, item) => {
     const itemId = typeof fileId !== "object" ? fileId : item.id;
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
+    // localStorage.setItem("isFirstUrl", window.location.href);
+    this.mediaViewerDataStore.saveFirstUrl(window.location.href);
+    this.mediaViewerDataStore.changeUrl(itemId);
   };
 
   onClickDeleteSelectedFolder = (t, isRoom) => {
@@ -589,7 +593,7 @@ class ContextOptionsStore {
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
     const {
       setArchiveDialogVisible,
-      setArchiveAction,
+      setRestoreRoomDialogVisible,
       setInviteUsersWarningDialogVisible,
     } = this.dialogsStore;
 
@@ -598,14 +602,21 @@ class ContextOptionsStore {
       return;
     }
 
-    setArchiveAction(action);
-    setArchiveDialogVisible(true);
+    if (action === "archive") {
+      setArchiveDialogVisible(true);
+    } else {
+      setRestoreRoomDialogVisible(true);
+    }
   };
 
   onSelect = (item) => {
     const { onSelectItem } = this.filesActionsStore;
 
     onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
+  };
+
+  onShowEditingToast = (t) => {
+    toastr.error(t("Files:DocumentEdited"));
   };
 
   onClickMute = (e, item, t) => {
@@ -670,7 +681,7 @@ class ContextOptionsStore {
     return { pinOptions, muteOptions };
   };
   getFilesContextOptions = (item, t, isInfoPanel) => {
-    const { contextOptions } = item;
+    const { contextOptions, isEditing } = item;
 
     const { enablePlugins } = this.authStore.settingsStore;
 
@@ -723,7 +734,10 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: HistoryFinalizedReactSvgUrl,
-                    onClick: () => this.finalizeVersion(item.id, item.security),
+                    onClick: () =>
+                      isEditing
+                        ? this.onShowEditingToast(t)
+                        : this.finalizeVersion(item.id, item.security),
                     disabled: false,
                   },
                   {
@@ -744,7 +758,10 @@ class ContextOptionsStore {
               key: "finalize-version",
               label: t("FinalizeVersion"),
               icon: HistoryFinalizedReactSvgUrl,
-              onClick: () => this.finalizeVersion(item.id),
+              onClick: () =>
+                isEditing
+                  ? this.onShowEditingToast(t)
+                  : this.finalizeVersion(item.id),
               disabled: false,
             },
             {
@@ -768,15 +785,17 @@ class ContextOptionsStore {
                 {
                   id: "option_move-to",
                   key: "move-to",
-                  label: t("MoveTo"),
+                  label: t("Common:MoveTo"),
                   icon: MoveReactSvgUrl,
-                  onClick: this.onMoveAction,
+                  onClick: isEditing
+                    ? () => this.onShowEditingToast(t)
+                    : this.onMoveAction,
                   disabled: false,
                 },
                 {
                   id: "option_copy-to",
                   key: "copy-to",
-                  label: t("Translations:Copy"),
+                  label: t("Common:Copy"),
                   icon: CopyReactSvgUrl,
                   onClick: this.onCopyAction,
                   disabled: false,
@@ -796,15 +815,17 @@ class ContextOptionsStore {
             {
               id: "option_move-to",
               key: "move-to",
-              label: t("MoveTo"),
+              label: t("Common:MoveTo"),
               icon: MoveReactSvgUrl,
-              onClick: this.onMoveAction,
+              onClick: isEditing
+                ? () => this.onShowEditingToast(t)
+                : this.onMoveAction,
               disabled: false,
             },
             {
               id: "option_copy-to",
               key: "copy-to",
-              label: t("Translations:Copy"),
+              label: t("Common:Copy"),
               icon: CopyReactSvgUrl,
               onClick: this.onCopyAction,
               disabled: false,
@@ -824,6 +845,8 @@ class ContextOptionsStore {
       t
     );
 
+    const withOpen = item.id !== this.selectedFolderStore.id;
+
     const optionsModel = [
       {
         id: "option_select",
@@ -833,7 +856,7 @@ class ContextOptionsStore {
         onClick: () => this.onSelect(item),
         disabled: false,
       },
-      {
+      withOpen && {
         id: "option_open",
         key: "open",
         label: t("Open"),
@@ -1041,7 +1064,7 @@ class ContextOptionsStore {
       {
         id: "option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => this.onClickRename(item),
         disabled: false,
@@ -1093,7 +1116,8 @@ class ContextOptionsStore {
           ? t("Common:Disconnect")
           : t("Common:Delete"),
         icon: TrashReactSvgUrl,
-        onClick: () => this.onClickDelete(item, t),
+        onClick: () =>
+          isEditing ? this.onShowEditingToast(t) : this.onClickDelete(item, t),
         disabled: false,
       },
     ];
@@ -1138,7 +1162,7 @@ class ContextOptionsStore {
 
   getGroupContextOptions = (t) => {
     const { personal } = this.authStore.settingsStore;
-    const { selection } = this.filesStore;
+    const { selection, allFilesIsEditing } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
     const {
       isRecycleBinFolder,
@@ -1146,25 +1170,23 @@ class ContextOptionsStore {
       isArchiveFolder,
     } = this.treeFoldersStore;
 
-    const {
-      pinRooms,
-      unpinRooms,
-
-      deleteRooms,
-    } = this.filesActionsStore;
+    const { pinRooms, unpinRooms, deleteRooms } = this.filesActionsStore;
 
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
 
-      const canDelete = selection.every((k) =>
-        k.contextOptions.includes("delete")
-      );
+      let canDelete;
+      if (isRoomsFolder) {
+        canDelete = selection.every((k) => k.contextOptions.includes("delete"));
+      } else if (isArchiveFolder) {
+        canDelete = selection.some((k) => k.contextOptions.includes("delete"));
+      }
 
       const canArchiveRoom = selection.every((k) =>
         k.contextOptions.includes("archive-room")
       );
 
-      const canRestoreRoom = selection.every((k) =>
+      const canRestoreRoom = selection.some((k) =>
         k.contextOptions.includes("unarchive-room")
       );
 
@@ -1328,14 +1350,16 @@ class ContextOptionsStore {
       },
       {
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         icon: MoveReactSvgUrl,
-        onClick: this.onMoveAction,
+        onClick: allFilesIsEditing
+          ? () => this.onShowEditingToast(t)
+          : this.onMoveAction,
         disabled: isRecycleBinFolder || !moveItems,
       },
       {
         key: "copy-to",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         icon: CopyReactSvgUrl,
         onClick: this.onCopyAction,
         disabled: isRecycleBinFolder || !copyItems,
@@ -1356,23 +1380,25 @@ class ContextOptionsStore {
         key: "delete",
         label: t("Common:Delete"),
         icon: TrashReactSvgUrl,
-        onClick: () => {
-          if (this.settingsStore.confirmDelete) {
-            setDeleteDialogVisible(true);
-          } else {
-            const translations = {
-              deleteOperation: t("Translations:DeleteOperation"),
-              deleteFromTrash: t("Translations:DeleteFromTrash"),
-              deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-              FileRemoved: t("Files:FileRemoved"),
-              FolderRemoved: t("Files:FolderRemoved"),
-            };
+        onClick: allFilesIsEditing
+          ? () => this.onShowEditingToast(t)
+          : () => {
+              if (this.settingsStore.confirmDelete) {
+                setDeleteDialogVisible(true);
+              } else {
+                const translations = {
+                  deleteOperation: t("Translations:DeleteOperation"),
+                  deleteFromTrash: t("Translations:DeleteFromTrash"),
+                  deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+                  FileRemoved: t("Files:FileRemoved"),
+                  FolderRemoved: t("Files:FolderRemoved"),
+                };
 
-            this.filesActionsStore
-              .deleteAction(translations)
-              .catch((err) => toastr.error(err));
-          }
-        },
+                this.filesActionsStore
+                  .deleteAction(translations)
+                  .catch((err) => toastr.error(err));
+              }
+            },
         disabled: !deleteItems || isRootThirdPartyFolder,
       },
     ];

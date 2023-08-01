@@ -361,7 +361,7 @@
     <value>It is not possible to use this folder to store the room</value>
   </data>
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
-    <value>The invitation link is invalid or it's validity has expired</value>
+    <value>The invitation link is invalid or its validity has expired</value>
   </data>
   <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
     <value>The role is not available for this user type</value>
@@ -409,11 +409,11 @@
     <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common' section|Set up access rights to the documents and folders in the 'Common' section</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed. </value>
+    <value>Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
-Highest compatibility with docx, xlsx, pptx. </value>
+Highest compatibility with docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>View and download shared documents. Upload files to shared folders. Highest compatibility with docx, xlsx, pptx guaranteed.</value>
@@ -458,7 +458,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
     <value>Viewer</value>
   </data>
   <data name="RoleEnum_Comment" xml:space="preserve">
-    <value>Сommentator</value>
+    <value>Сommenter</value>
   </data>
   <data name="RoleEnum_FillForms" xml:space="preserve">
     <value>Form filler</value>

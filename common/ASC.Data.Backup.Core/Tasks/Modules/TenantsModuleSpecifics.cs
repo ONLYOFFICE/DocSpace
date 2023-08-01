@@ -43,6 +43,7 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
             {
                 DateColumns = new Dictionary<string, bool> {{"creationdatetime", false}, {"statuschanged", false}, {"version_changed", false}}
             },
+            new TableInfo("tenants_tariffrow", "tenant") {InsertMethod = InsertMethod.Replace},
             new TableInfo("tenants_quotarow", "tenant") {InsertMethod = InsertMethod.Replace},
             new TableInfo("core_user", "tenant", "id", IdType.Guid)
             {
@@ -58,6 +59,7 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("tenants_tenants", "id", "tenants_quota", "tenant"),
             new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tenant"),
             new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tariff"),
+            new RelationInfo("tenants_tariff", "id", "tenants_tariffrow", "tariff_id"),
             new RelationInfo("core_user", "id", "tenants_tenants", "owner_id", null, null, RelationImportance.Low)
         };
 

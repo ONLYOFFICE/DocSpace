@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/remote-config";
 import "firebase/storage";
+import "firebase/database";
 
 import CampaignsCloudPngUrl from "PUBLIC_DIR/images/campaigns.cloud.png";
 import CampaignsDesktopPngUrl from "PUBLIC_DIR/images/campaigns.desktop.png";
@@ -12,6 +13,7 @@ class FirebaseHelper {
   remoteConfig = null;
   firebaseConfig = null;
   firebaseStorage = null;
+  firebaseDB = null;
 
   constructor(settings) {
     this.firebaseConfig = settings;
@@ -27,6 +29,8 @@ class FirebaseHelper {
     this.firebaseStorage = firebase.storage();
 
     this.remoteConfig = firebase.remoteConfig();
+
+    this.firebaseDB = firebase.database();
 
     this.remoteConfig.settings = {
       fetchTimeoutMillis: 3600000,
@@ -53,15 +57,19 @@ class FirebaseHelper {
 
   get isEnabled() {
     return (
-      this.config &&
-      this.config["apiKey"] &&
-      this.config["authDomain"] &&
-      this.config["projectId"] &&
-      this.config["storageBucket"] &&
-      this.config["messagingSenderId"] &&
-      this.config["appId"] /*&&
+      !!this.config &&
+      !!this.config["apiKey"] &&
+      !!this.config["authDomain"] &&
+      !!this.config["projectId"] &&
+      !!this.config["storageBucket"] &&
+      !!this.config["messagingSenderId"] &&
+      !!this.config["appId"] /*&&
       this.config["measurementId"]*/
     );
+  }
+
+  get isEnabledDB() {
+    return this.isEnabled && !!this.config["databaseURL"];
   }
 
   async checkMaintenance() {
@@ -144,6 +152,16 @@ class FirebaseHelper {
   async getCampaignsTranslations(banner, lng) {
     const domain = this.config["authDomain"];
     return `https://${domain}/locales/${lng}/CampaignPersonal${banner}.json`;
+  }
+
+  async sendCrashReport(report) {
+    try {
+      const reportListRef = this.firebaseDB.ref("reports");
+      const neReportRef = reportListRef.push();
+      neReportRef.set(report);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }
 

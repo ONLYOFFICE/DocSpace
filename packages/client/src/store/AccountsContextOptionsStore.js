@@ -15,10 +15,7 @@ import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
-import React from "react";
 import { makeAutoObservable } from "mobx";
-import { Trans } from "react-i18next";
-
 import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
@@ -28,6 +25,7 @@ import { resendUserInvites } from "@docspace/common/api/people";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
@@ -76,7 +74,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: ChangeMailReactSvgUrl,
             label: t("PeopleTranslations:EmailChangeButton"),
-            onClick: () => this.toggleChangeEmailDialog(item),
+            onClick: this.toggleChangeEmailDialog,
           };
         case "change-password":
           return {
@@ -84,7 +82,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: ChangeSecurityReactSvgUrl,
             label: t("PeopleTranslations:PasswordChangeButton"),
-            onClick: () => this.toggleChangePasswordDialog(item),
+            onClick: this.toggleChangePasswordDialog,
           };
         case "change-owner":
           return {
@@ -317,32 +315,14 @@ class AccountsContextOptionsStore {
     setChangeNameVisible(true);
   };
 
-  toggleChangeEmailDialog = (item) => {
-    const {
-      setDialogData,
-      setChangeEmailDialogVisible,
-    } = this.peopleStore.dialogStore;
-    const { id, email } = item;
-
-    setDialogData({
-      email,
-      id,
-    });
-
-    setChangeEmailDialogVisible(true);
+  toggleChangeEmailDialog = () => {
+    const { setChangeEmailVisible } = this.peopleStore.targetUserStore;
+    setChangeEmailVisible(true);
   };
 
-  toggleChangePasswordDialog = (item) => {
-    const {
-      setDialogData,
-      setChangePasswordDialogVisible,
-    } = this.peopleStore.dialogStore;
-    const { email } = item;
-    setDialogData({
-      email,
-    });
-
-    setChangePasswordDialogVisible(true);
+  toggleChangePasswordDialog = () => {
+    const { setChangePasswordVisible } = this.peopleStore.targetUserStore;
+    setChangePasswordVisible(true);
   };
 
   toggleChangeOwnerDialog = () => {
@@ -400,18 +380,7 @@ class AccountsContextOptionsStore {
   onInviteAgainClick = (t, item) => {
     const { id, email } = item;
     resendUserInvites([id])
-      .then(() =>
-        toastr.success(
-          <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            ns="People"
-            t={t}
-          >
-            The email activation instructions have been sent to the
-            <strong>{{ email: email }}</strong> email address
-          </Trans>
-        )
-      )
+      .then(() => showEmailActivationToast(email))
       .catch((error) => toastr.error(error));
   };
 

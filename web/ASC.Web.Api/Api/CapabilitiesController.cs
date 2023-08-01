@@ -30,7 +30,7 @@ namespace ASC.Web.Api.Controllers;
 /// Portal capabilities API.
 /// </summary>
 /// <name>capabilities</name>
-[DefaultRoute]
+[DefaultRoute, DefaultRoute("{.format}")]
 [ApiController]
 [AllowAnonymous]
 public class CapabilitiesController : ControllerBase

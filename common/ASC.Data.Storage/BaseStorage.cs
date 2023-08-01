@@ -30,6 +30,7 @@ public abstract class BaseStorage : IDataStore
 {
     public IQuotaController QuotaController { get; set; }
     public virtual bool IsSupportInternalUri => true;
+    public virtual bool IsSupportCdnUri => false;
     public virtual bool IsSupportedPreSignedUri => true;
     public virtual bool IsSupportChunking => false;
     internal string Modulename { get; set; }
@@ -150,6 +151,11 @@ public abstract class BaseStorage : IDataStore
     }
 
     public virtual Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+    {
+        return null;
+    }
+
+    public virtual Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
     {
         return null;
     }

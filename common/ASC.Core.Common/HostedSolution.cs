@@ -42,8 +42,6 @@ public class HostedSolution
     internal SettingsManager SettingsManager { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    public string Region { get; private set; }
-
     public HostedSolution(ITenantService tenantService,
         IUserService userService,
         IQuotaService quotaService,
@@ -65,14 +63,9 @@ public class HostedSolution
         CoreSettings = coreSettings;
     }
 
-    public void Init(string region)
-    {
-        Region = region;
-    }
-
     public List<Tenant> GetTenants(DateTime from)
     {
-        return TenantService.GetTenants(from).Select(AddRegion).ToList();
+        return TenantService.GetTenants(from).ToList();
     }
 
     public List<Tenant> FindTenants(string login)
@@ -87,17 +80,17 @@ public class HostedSolution
             throw new SecurityException("Invalid login or password.");
         }
 
-        return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
+        return TenantService.GetTenants(login, passwordHash).ToList();
     }
 
     public Tenant GetTenant(string domain)
     {
-        return AddRegion(TenantService.GetTenant(domain));
+        return TenantService.GetTenant(domain);
     }
 
     public Tenant GetTenant(int id)
     {
-        return AddRegion(TenantService.GetTenant(id));
+        return TenantService.GetTenant(id);
     }
 
     public void CheckTenantAddress(string address)
@@ -240,15 +233,5 @@ public class HostedSolution
     public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)
     {
         return UserService.GetUsersAllTenants(userIds);
-    }
-
-    private Tenant AddRegion(Tenant tenant)
-    {
-        if (tenant != null)
-        {
-            tenant.HostedRegion = Region;
-        }
-
-        return tenant;
     }
 }

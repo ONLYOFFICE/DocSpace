@@ -63,11 +63,19 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+    
     ///<summary>
     /// Supporting generate uri to the file
     ///</summary>
     ///<returns></returns>
     bool IsSupportInternalUri { get; }
+
+    ///<summary>
+    /// Supporting generate uri to the file
+    ///</summary>
+    ///<returns></returns>
+    bool IsSupportCdnUri { get; }
+
 
     /// <summary>
     /// Get absolute Uri for html links
@@ -78,6 +86,16 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+
+    /// <summary>
+    /// Get absolute Uri via CDN for html links
+    /// </summary>
+    /// <param name="domain"></param>
+    /// <param name="path"></param>
+    /// <param name="expire"></param>
+    /// <param name="headers"></param>
+    /// <returns></returns>
+    Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
 
     ///<summary>
     /// A stream of read-only. In the case of the C3 stream NetworkStream general, and with him we have to work

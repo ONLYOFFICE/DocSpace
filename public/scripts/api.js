@@ -1,31 +1,31 @@
 (function () {
   const defaultConfig = {
     src: new URL(document.currentScript.src).origin,
-    rootPath: "/rooms/personal/",
+    rootPath: "/rooms/shared/",
     width: "100%",
     height: "100%",
     name: "frameDocSpace",
     type: "desktop", // TODO: ["desktop", "mobile"]
     frameId: "ds-frame",
-    mode: "manager", //TODO: ["manager", "editor", "viewer", "file selector", "folder selector", "user picker"]
-    fileId: null,
+    mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
+    id: null,
+    locale: "en-US",
+    theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
+    editorGoBack: true,
+    selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomsOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     showHeader: false,
     showTitle: true,
     showMenu: false,
     showFilter: false,
-    showAction: false,
-    destroyText: "Frame container",
+    destroyText: "",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
-      folder: "@my",
-      count: 25,
-      page: 0,
+      count: 100,
+      page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
       search: "",
-      filterType: null,
-      authorType: null,
       withSubfolders: true,
     },
     keysForReload: [
@@ -35,14 +35,16 @@
       "height",
       "name",
       "frameId",
-      "fileId",
+      "id",
       "type",
       "editorType",
       "mode",
     ],
     events: {
-      onSelectCallback: (e) => console.log("onCloseCallback", e),
+      onSelectCallback: null,
       onCloseCallback: null,
+      onAppReady: null,
+      onAppError: null,
     },
   };
 
@@ -78,6 +80,7 @@
     #isConnected = false;
     #callbacks = [];
     #tasks = [];
+    #classNames = "";
 
     constructor(config) {
       this.config = config;
@@ -95,19 +98,37 @@
       switch (config.mode) {
         case "manager": {
           if (config.filter) {
+            if (config.id) config.filter.folder = config.id;
             const filterString = new URLSearchParams(config.filter).toString();
-            path = `${config.rootPath}filter?${filterString}`;
+            path = `${config.rootPath}${
+              config.id ? config.id + "/" : ""
+            }filter?${filterString}`;
           }
           break;
         }
 
+        case "room-selector": {
+          path = `/sdk/room-selector`;
+          break;
+        }
+
+        case "file-selector": {
+          path = `/sdk/file-selector?selectorType=${config.selectorType}`;
+          break;
+        }
+
+        case "system": {
+          path = `/sdk/system`;
+          break;
+        }
+
         case "editor": {
-          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}&action=view`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
@@ -144,28 +165,31 @@
         data: message,
       };
 
-      if (this.#iframe)
+      if (!!this.#iframe.contentWindow) {
         this.#iframe.contentWindow.postMessage(
-          JSON.stringify(mes),
+          JSON.stringify(mes, (key, value) =>
+            typeof value === "function" ? value.toString() : value
+          ),
           this.config.src
         );
+      }
     };
 
     #onMessage = (e) => {
       if (typeof e.data == "string") {
-        let frameData = {};
+        let data = {};
 
         try {
-          frameData = JSON.parse(e.data);
+          data = JSON.parse(e.data);
         } catch (err) {
-          frameData = {};
+          data = {};
         }
 
-        switch (frameData.type) {
+        switch (data.type) {
           case "onMethodReturn": {
             if (this.#callbacks.length > 0) {
               const callback = this.#callbacks.shift();
-              callback && callback(frameData.methodReturnData);
+              callback && callback(data.methodReturnData);
             }
 
             if (this.#tasks.length > 0) {
@@ -173,8 +197,20 @@
             }
             break;
           }
+          case "onEventReturn": {
+            if (
+              data?.eventReturnData?.event in this.config.events &&
+              typeof this.config.events[data?.eventReturnData.event] ===
+                "function"
+            ) {
+              this.config.events[data?.eventReturnData.event](
+                data?.eventReturnData?.data
+              );
+            }
+            break;
+          }
           case "onCallCommand": {
-            this[frameData.commandName].call(this, frameData.commandData);
+            this[data.commandName].call(this, data.commandData);
             break;
           }
           default:
@@ -204,13 +240,15 @@
       this.#sendMessage(message);
     };
 
-    initFrame(frameConfig) {
-      this.config = { ...this.config, ...frameConfig };
+    initFrame(config) {
+      const configFull = { ...defaultConfig, ...config };
+      this.config = { ...this.config, ...configFull };
 
       const target = document.getElementById(this.config.frameId);
 
       if (target) {
         this.#iframe = this.#createIframe(this.config);
+        this.#classNames = target.className;
 
         target.parentNode &&
           target.parentNode.replaceChild(this.#iframe, target);
@@ -218,6 +256,48 @@
         window.addEventListener("message", this.#onMessage, false);
         this.#isConnected = true;
       }
+
+      window.DocSpace.SDK.frames = window.DocSpace.SDK.frames || [];
+
+      window.DocSpace.SDK.frames[this.config.frameId] = this;
+
+      return this.#iframe;
+    }
+
+    initManager(config = {}) {
+      config.mode = "manager";
+
+      return this.initFrame(config);
+    }
+
+    initEditor(config = {}) {
+      config.mode = "editor";
+
+      return this.initFrame(config);
+    }
+
+    initViewer(config = {}) {
+      config.mode = "viewer";
+
+      return this.initFrame(config);
+    }
+
+    initRoomSelector(config = {}) {
+      config.mode = "room-selector";
+
+      return this.initFrame(config);
+    }
+
+    initFileSelector(config = {}) {
+      config.mode = "file-selector";
+
+      return this.initFrame(config);
+    }
+
+    initSystem(config = {}) {
+      config.mode = "system";
+
+      return this.initFrame(config);
     }
 
     destroyFrame() {
@@ -225,14 +305,19 @@
 
       target.setAttribute("id", this.config.frameId);
       target.innerHTML = this.config.destroyText;
+      target.className = this.#classNames;
 
       if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
         this.#isConnected = false;
 
+        delete window.DocSpace.SDK.frames[this.config.frameId];
+
         this.#iframe.parentNode &&
           this.#iframe.parentNode.replaceChild(target, this.#iframe);
       }
+
+      this.config = {};
     }
 
     #getMethodPromise = (methodName, params = null, withReload = false) => {
@@ -266,12 +351,20 @@
       return this.#getMethodPromise("getList");
     }
 
+    getRooms(filter) {
+      return this.#getMethodPromise("getRooms", filter);
+    }
+
     getUserInfo() {
       return this.#getMethodPromise("getUserInfo");
     }
 
     getConfig() {
       return this.config;
+    }
+
+    getHashSettings() {
+      return this.#getMethodPromise("getHashSettings");
     }
 
     setConfig(newConfig = {}, reload = false) {
@@ -303,21 +396,45 @@
       });
     }
 
-    createRoom(title, type) {
+    createRoom(title, roomType) {
       return this.#getMethodPromise("createRoom", {
         title,
-        type,
+        roomType,
       });
     }
 
     setListView(type) {
       return this.#getMethodPromise("setItemsView", type);
     }
+
+    createHash(password, hashSettings) {
+      return this.#getMethodPromise("createHash", { password, hashSettings });
+    }
+
+    login(email, passwordHash) {
+      return this.#getMethodPromise("login", { email, passwordHash });
+    }
+
+    logout() {
+      return this.#getMethodPromise("logout");
+    }
+
+    createTag(name) {
+      return this.#getMethodPromise("createTag", name);
+    }
+
+    addTagsToRoom(roomId, tags) {
+      return this.#getMethodPromise("addTagsToRoom", { roomId, tags });
+    }
+
+    removeTagsFromRoom(roomId, tags) {
+      return this.#getMethodPromise("removeTagsFromRoom", { roomId, tags });
+    }
   }
 
   const config = getConfigFromParams();
 
-  window.DocSpace = new DocSpace(config);
+  window.DocSpace = window.DocSpace || {};
 
-  window.DocSpace.initFrame();
+  window.DocSpace.SDK = new DocSpace(config);
 })();

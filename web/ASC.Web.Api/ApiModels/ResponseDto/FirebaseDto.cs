@@ -58,4 +58,7 @@ public class FirebaseDto
     /// <type>System.String, System</type>
     public string MeasurementId { get; set; }
 
+    /// <summary>Database URL</summary>
+    /// <type>System.String, System</type>
+    public string DatabaseURL { get; set; }
 }

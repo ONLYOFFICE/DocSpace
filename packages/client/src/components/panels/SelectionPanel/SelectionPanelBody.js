@@ -14,6 +14,8 @@ import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashArchiveFolders,
+  roomsOnly,
+  userFolderOnly,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
@@ -48,6 +50,7 @@ const SelectionPanelBody = ({
   isDisableButton,
   parentId,
   selectionFiles,
+  displayType,
 }) => {
   const isLoaded = folderId && resultingFolderTree;
   return (
@@ -60,31 +63,15 @@ const SelectionPanelBody = ({
       isDoubleFooterLine
       autoMaxWidth
     >
-      <ModalDialog.Header className={"select-panel-modal-header"}>
-        {dialogName}
-      </ModalDialog.Header>
+      {displayType !== "embedded" && (
+        <ModalDialog.Header className={"select-panel-modal-header"}>
+          {dialogName}
+        </ModalDialog.Header>
+      )}
       <ModalDialog.Body className="select-file_body-modal-dialog">
         <StyledBody header={!!header} footer={!!footer}>
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
-              {isLoaded ? (
-                <Text
-                  fontWeight="700"
-                  fontSize="18px"
-                  className="selection-panel_folder-title"
-                >
-                  {t("Common:Rooms")}
-                </Text>
-              ) : (
-                <div className="selection-panel_folder-title">
-                  <Loaders.Rectangle
-                    className="selection-panel_header-loader"
-                    width="83px"
-                    height="24px"
-                  />
-                </div>
-              )}
-
               {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
@@ -108,7 +95,13 @@ const SelectionPanelBody = ({
                 <div className="selection-panel_files-header">
                   {header}
 
-                  <Text color="#A3A9AE" className="selection-panel_title">
+                  <Text
+                    color="#A3A9AE"
+                    className="selection-panel_title"
+                    fontSize="12px"
+                    fontWeight={600}
+                    noSelect
+                  >
                     {folderSelection
                       ? t("FolderContents", { folderTitle })
                       : filesListTitle}
@@ -207,6 +200,10 @@ class SelectionPanel extends React.Component {
             treeFolders,
             exceptPrivacyTrashArchiveFolders
           );
+        case "roomsOnly":
+          return filterFoldersTree(treeFolders, roomsOnly);
+        case "userFolderOnly":
+          return filterFoldersTree(treeFolders, userFolderOnly);
       }
     };
 
@@ -215,14 +212,20 @@ class SelectionPanel extends React.Component {
     const foldersTree =
       passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0].id;
-
     if (
       filteredType === "exceptSortedByTags" ||
-      filteredType === "exceptPrivacyTrashArchiveFolders"
+      filteredType === "exceptPrivacyTrashArchiveFolders" ||
+      filteredType === "roomsOnly" ||
+      filteredType === "userFolderOnly"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
+
+    const passedId = id
+      ? id
+      : filteredTreeFolders
+      ? filteredTreeFolders[0].id
+      : foldersTree[0].id;
 
     return [filteredTreeFolders || foldersTree, passedId];
   };

@@ -42,6 +42,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   setIsLoading,
   onRecoverDialogVisible,
   enableAdmMess,
+  cookieSettingsEnabled,
 }) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -60,9 +61,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const { t, ready } = useTranslation(["Login", "Common"]);
 
-  const { message, confirmedEmail } = match || {
+  const { message, confirmedEmail, authError } = match || {
     message: "",
     confirmedEmail: "",
+    authError: "",
   };
 
   const authCallback = (profile: string) => {
@@ -108,6 +110,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     const text = `${messageEmailConfirmed} ${messageAuthorize}`;
 
     confirmedEmail && ready && toastr.success(text);
+    authError && ready && toastr.error(t("Common:ProviderLoginError"));
 
     focusInput();
 
@@ -302,27 +305,29 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           <div className="login-forgot-wrapper">
             <div className="login-checkbox-wrapper">
               <div className="remember-wrapper">
-                <Checkbox
-                  id="login_remember"
-                  className="login-checkbox"
-                  isChecked={isChecked}
-                  onChange={onChangeCheckbox}
-                  label={t("Remember")}
-                  helpButton={
-                    !checkIsSSR() && (
-                      <HelpButton
-                        id="login_remember-hint"
-                        className="help-button"
-                        offsetRight={0}
-                        helpButtonHeaderContent={t("CookieSettingsTitle")}
-                        tooltipContent={
-                          <Text fontSize="12px">{t("RememberHelper")}</Text>
-                        }
-                        tooltipMaxWidth={isMobileOnly ? "240px" : "340px"}
-                      />
-                    )
-                  }
-                />
+                {!cookieSettingsEnabled && (
+                  <Checkbox
+                    id="login_remember"
+                    className="login-checkbox"
+                    isChecked={isChecked}
+                    onChange={onChangeCheckbox}
+                    label={t("Remember")}
+                    helpButton={
+                      !checkIsSSR() && (
+                        <HelpButton
+                          id="login_remember-hint"
+                          className="help-button"
+                          offsetRight={0}
+                          helpButtonHeaderContent={t("CookieSettingsTitle")}
+                          tooltipContent={
+                            <Text fontSize="12px">{t("RememberHelper")}</Text>
+                          }
+                          tooltipMaxWidth={isMobileOnly ? "240px" : "340px"}
+                        />
+                      )
+                    }
+                  />
+                )}
               </div>
 
               <Link

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
@@ -51,6 +51,8 @@ const InvitePanel = ({
   const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
+
+  const inputsRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
@@ -236,6 +238,7 @@ const InvitePanel = ({
           onClose={onClose}
           roomUsers={roomUsers}
           roomType={roomType}
+          inputsRef={inputsRef}
         />
 
         {!!inviteItems.length && (
@@ -245,6 +248,7 @@ const InvitePanel = ({
               setHasErrors={setHasErrors}
               roomType={roomType}
               externalLinksVisible={externalLinksVisible}
+              inputsRef={inputsRef}
             />
 
             <StyledButtons>

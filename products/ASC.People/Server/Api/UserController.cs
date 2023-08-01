@@ -197,7 +197,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
         user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
@@ -296,7 +296,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
 
         user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && linkData is { IsCorrect: true }, true, true, byEmail);
@@ -704,7 +704,7 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null, null);
     }
 
     /// <summary>
@@ -725,9 +725,9 @@ public class UserController : PeopleControllerBase
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -818,9 +818,9 @@ public class UserController : PeopleControllerBase
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -1137,6 +1137,15 @@ public class UserController : PeopleControllerBase
     [HttpPost("password")]
     public object SendUserPassword(MemberRequestDto inDto)
     {
+        if (_authContext.IsAuthenticated)
+        {
+            var currentUser = _userManager.GetUserByEmail(inDto.Email);
+            if (currentUser.Id != _authContext.CurrentAccount.ID && !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+            {
+                throw new Exception(Resource.ErrorAccessDenied);
+            }
+        }
+
         var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
@@ -1177,6 +1186,21 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             await _userManager.UpdateUserInfo(u);
+
+            if (activationstatus == EmployeeActivationStatus.Activated
+                && u.IsOwner(_tenantManager.GetCurrentTenant()))
+            {
+                var settings = _settingsManager.Load<FirstEmailConfirmSettings>();
+
+                if (settings.IsFirst)
+                {
+                    _studioNotifyService.SendAdminWelcome(u);
+
+                    settings.IsFirst = false;
+                    _settingsManager.Save(settings);
+                }
+            }
+
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -1313,10 +1337,6 @@ public class UserController : PeopleControllerBase
         {
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
-        }
-        if (self && !isDocSpaceAdmin)
-        {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
         }
 
         // change user type
@@ -1620,7 +1640,7 @@ public class UserController : PeopleControllerBase
             if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
             {
-                var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
+                var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress.ToString();
 
                 if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
                     || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
@@ -1680,7 +1700,7 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
+    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -1744,7 +1764,7 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 

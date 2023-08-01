@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { MainContainer } from "../StyledSecurity";
@@ -17,7 +17,14 @@ import { size } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 
 const AccessPortal = (props) => {
-  const { t, helpLink, currentColorScheme } = props;
+  const {
+    t,
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  } = props;
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -40,8 +47,19 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("SettingPasswordStrength")}
-        tooltipTitle={t("SettingPasswordStrengthDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipTitle={
+          <Trans
+            i18nKey="SettingPasswordStrengthDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
+        tooltipUrl={passwordStrengthSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <PasswordStrengthSection />
@@ -49,8 +67,19 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("TwoFactorAuth")}
-        tooltipTitle={t("TwoFactorAuthDescription")}
-        tooltipUrl={`${helpLink}/administration/two-factor-authentication.aspx`}
+        tooltipTitle={
+          <Trans
+            i18nKey="TwoFactorAuthDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
+        tooltipUrl={tfaSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <TfaSection />
@@ -58,8 +87,20 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("TrustedMail")}
-        tooltipTitle={t("TrustedMailDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipTitle={
+          <Trans
+            i18nKey="TrustedMailDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+              4: <strong></strong>,
+            }}
+          />
+        }
+        tooltipUrl={trustedMailDomainSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <TrustedMailSection />
@@ -67,16 +108,36 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("IPSecurity")}
+        tooltipTitle={
+          <Trans
+            i18nKey="IPSecurityDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
+        }
         tooltipContent={t("IPSecurityDescription")}
-        tooltipTitle={t("IPSecurityDescription")}
       />
       <IpSecuritySection />
       <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("AdminsMessage")}
-        tooltipTitle={t("AdminsMessageDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipTitle={
+          <Trans
+            i18nKey="AdminsMessageDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
+        tooltipUrl={administratorMessageSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <AdminMessageSection />
@@ -85,7 +146,16 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("SessionLifetime")}
-        tooltipTitle={t("SessionLifetimeDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="SessionLifetimeDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
+        }
       />
       <SessionLifetimeSection />
     </MainContainer>
@@ -93,6 +163,18 @@ const AccessPortal = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { helpLink, currentColorScheme } = auth.settingsStore;
-  return { helpLink, currentColorScheme };
+  const {
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  } = auth.settingsStore;
+  return {
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  };
 })(withTranslation("Settings")(withRouter(observer(AccessPortal))));

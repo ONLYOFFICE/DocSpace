@@ -368,27 +368,19 @@ public class NotifyTransferRequest : INotifyEngineAction
     private void AddLetterLogo(NotifyRequest request)
     {
 
-        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
+        try
         {
-            try
-            {
-                var attachment = _tenantLogoManager.GetMailLogoAsAttacment().Result;
+            var attachment = _tenantLogoManager.GetMailLogoAsAttacment().Result;
 
-                if (attachment != null)
-                {
-                    request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                    request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                    return;
-                }
-            }
-            catch (Exception error)
+            if (attachment != null)
             {
-                _log.ErrorAddLetterLogo(error);
+                request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
             }
         }
-
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false).Result);
-
-        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
+        catch (Exception error)
+        {
+            _log.ErrorAddLetterLogo(error);
+        }
     }
 }

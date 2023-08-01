@@ -7,7 +7,7 @@ import DataManagementIconUrl from "PUBLIC_DIR/images/data-management.react.svg?u
 import RestoreIconUrl from "PUBLIC_DIR/images/restore.react.svg?url";
 import TrashIconUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import DeveloperReactSvgUrl from "PUBLIC_DIR/images/catalog.developer.react.svg?url";
-
+import GiftReactSvgUrl from "PUBLIC_DIR/images/gift.react.svg?url";
 /**
  * Array for generation current settings tree.
  */
@@ -278,21 +278,37 @@ export const settingsTree = [
         tKey: "Plugins",
         isCategory: true,
       },
+      {
+        id: "portal-settings_catalog-smtp-settings",
+        key: "4-3",
+        icon: "",
+        link: "smtp-settings",
+        tKey: "SMTPSettings",
+        isCategory: true,
+      },
     ],
   },
   {
     id: "portal-settings_catalog-developer",
     key: "5",
     icon: DeveloperReactSvgUrl,
-    link: "developer",
+    link: "developer-tools",
     tKey: "DeveloperTools",
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-developer-tools",
+        id: "portal-settings_catalog-api",
         key: "5-0",
         icon: "",
-        link: "tools",
+        link: "api",
+        tKey: "Api",
+        isCategory: true,
+      },
+      {
+        id: "portal-settings_catalog-developer-tools",
+        key: "5-1",
+        icon: "",
+        link: "javascript-sdk",
         tKey: "DeveloperTools",
         isCategory: true,
       },
@@ -336,6 +352,24 @@ export const settingsTree = [
         icon: "",
         link: "portal-payments",
         tKey: "Common:PaymentsTitle",
+        isCategory: true,
+      },
+    ],
+  },
+  {
+    id: "portal-settings_catalog-bonus",
+    key: "8",
+    icon: GiftReactSvgUrl,
+    link: "bonus",
+    tKey: "Common:Bonus",
+    isHeader: true,
+    children: [
+      {
+        id: "portal-settings_catalog-portal-bonus",
+        key: "8-0",
+        icon: "",
+        link: "",
+        tKey: "Common:FreeProFeatures",
         isCategory: true,
       },
     ],

@@ -366,7 +366,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -393,7 +393,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -430,7 +430,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(user) || _userManager.IsOutsider(user))
+        if (_userManager.IsOutsider(user))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -438,9 +438,9 @@ public class TfaappController : BaseSettingsController
         TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
         _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
+        await _cookiesManager.ResetUserCookie(user.Id);
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookie();
             return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
         }
 

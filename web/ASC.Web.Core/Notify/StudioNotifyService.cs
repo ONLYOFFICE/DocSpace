@@ -664,11 +664,13 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
+            return;
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
+            return;
             notifyAction = Actions.OpensourceAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
         }
@@ -790,7 +792,8 @@ public class StudioNotifyService
 
             var userId = u.Id;
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation, null, userId);
-            confirmationUrl += "&first=true";
+
+            _settingsManager.Save(new FirstEmailConfirmSettings() { IsFirst = true});
 
             var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
 
@@ -876,7 +879,7 @@ public class StudioNotifyService
 
     #region Migration Portal
 
-    public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
+    public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath, string oldAlias)
     {
         var users = _userManager.GetUsers()
                 .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
@@ -895,6 +898,7 @@ public class StudioNotifyService
                     Actions.PortalRename,
                     new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                     new[] { EMailSenderName },
+                    _commonLinkUtility.GetFullAbsolutePath("").Replace(oldAlias, tenant.Alias),
                     new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                     new TagValue(Tags.UserDisplayName, u.DisplayUserName(_displayUserSettingsHelper)));
             }

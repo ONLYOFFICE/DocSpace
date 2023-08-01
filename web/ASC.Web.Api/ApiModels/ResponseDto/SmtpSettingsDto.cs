@@ -70,6 +70,16 @@ public class SmtpSettingsDto : IMapFrom<SmtpSettings>
     /// <example>false</example>
     public bool EnableAuth { get; set; }
 
+    /// <summary>Use ntlm or not</summary>
+    /// <type>System.Boolean, System</type>
+    /// <example>false</example>
+    public bool UseNtlm { get; set; }
+
+    /// <summary>Is default or not</summary>
+    /// <type>System.Boolean, System</type>
+    /// <example>false</example>
+    public bool IsDefaultSettings { get; set; }
+
     public static SmtpSettingsDto GetSample()
     {
         return new SmtpSettingsDto

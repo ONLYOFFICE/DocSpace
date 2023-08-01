@@ -1,4 +1,4 @@
-﻿const winston = require("winston"),
+const winston = require("winston"),
   WinstonCloudWatch = require("winston-cloudwatch");
 
 require("winston-daily-rotate-file");
@@ -11,6 +11,7 @@ const { randomUUID } = require("crypto");
 const date = require("date-and-time");
 
 let logpath = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 if (logpath != null) {
   if (!path.isAbsolute(logpath)) {
     logpath = path.join(__dirname, "..", logpath);
@@ -41,6 +42,7 @@ if (!fs.existsSync(dirName)) {
 var options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -50,14 +52,14 @@ var options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: "aws",
-    level: "debug",
+    level: logLevel,
     logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,

@@ -132,7 +132,12 @@ const FilesSection = React.memo(({ withMainButton }) => {
         exact
         restricted
         withManager
-        path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
+        path={[
+          "/accounts",
+          "/accounts/changeOwner",
+          "/accounts/filter",
+          "/accounts/create/:type",
+        ]}
         component={Accounts}
       />
 
@@ -230,7 +235,9 @@ class FilesContent extends React.Component {
         <GlobalEvents />
         <Panels />
         {isFrame ? (
-          showMenu && <FilesArticle history={history} />
+          showMenu && (
+            <FilesArticle history={history} withMainButton={withMainButton} />
+          )
         ) : (
           <FilesArticle history={history} withMainButton={withMainButton} />
         )}

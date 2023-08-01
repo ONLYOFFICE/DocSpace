@@ -67,7 +67,6 @@ const Wizard = (props) => {
     hashSettings,
     setPortalOwner,
     setWizardComplete,
-    getPortalSettings,
     isLicenseRequired,
     setLicense,
     licenseUpload,
@@ -253,12 +252,15 @@ const Wizard = (props) => {
         analytics
       );
       setWizardComplete();
-      getPortalSettings();
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     } catch (error) {
       console.error(error);
       setIsCreated(false);
     }
+  };
+
+  const onClickRetry = () => {
+    window.location.href = "/";
   };
 
   if (!isWizardLoaded)
@@ -270,7 +272,7 @@ const Wizard = (props) => {
         headerText={t("Common:SomethingWentWrong")}
         bodyText={t("ErrorInitWizard")}
         buttonText={t("ErrorInitWizardButton")}
-        buttonUrl="/"
+        onClickButton={onClickRetry}
       />
     );
 
@@ -354,7 +356,7 @@ const Wizard = (props) => {
               </Link>
             </StyledLink>
 
-            {/*isLicenseRequired && (
+            {isLicenseRequired && (
               <FieldContainer
                 className="license-filed"
                 isVertical={true}
@@ -375,7 +377,7 @@ const Wizard = (props) => {
                   hasError={hasErrorLicense}
                 />
               </FieldContainer>
-              )*/}
+            )}
             <StyledInfo>
               <Text color="#A3A9AE" fontWeight={400}>
                 {t("Domain")}
@@ -484,7 +486,6 @@ export default inject(({ auth, wizard }) => {
     timezone,
     urlLicense,
     hashSettings,
-    getPortalSettings,
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
@@ -518,7 +519,6 @@ export default inject(({ auth, wizard }) => {
     machineName,
     isLicenseRequired,
     licenseUpload,
-    getPortalSettings,
     setWizardComplete,
     getPortalPasswordSettings,
     getPortalTimezones,

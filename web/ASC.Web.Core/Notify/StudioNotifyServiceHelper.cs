@@ -54,6 +54,11 @@ public class StudioNotifyServiceHelper
         SendNoticeToAsync(action, null, recipients, senderNames, false, args);
     }
 
+    public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, string baseUri, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, null, recipients, senderNames, false, baseUri, args);
+    }
+
     public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
     {
         SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
@@ -87,7 +92,12 @@ public class StudioNotifyServiceHelper
         SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
     }
 
-    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubscription, params ITagValue[] args)
+    {
+        SendNoticeToAsync(action, objectID, recipients, senderNames, checkSubscription, null, args);
+    }
+
+    public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, string baseUri, params ITagValue[] args)
     {
         var item = new NotifyItem
         {
@@ -95,7 +105,7 @@ public class StudioNotifyServiceHelper
             UserId = _authContext.CurrentAccount.ID.ToString(),
             Action = (NotifyAction)action,
             CheckSubsciption = checkSubsciption,
-            BaseUrl = _commonLinkUtility.GetFullAbsolutePath("")
+            BaseUrl = baseUri ?? _commonLinkUtility.GetFullAbsolutePath("")
         };
 
         if (objectID != null)
@@ -130,7 +140,7 @@ public class StudioNotifyServiceHelper
 
         if (args != null)
         {
-            item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            item.Tags.AddRange(args.Where(r => r.Value != null).Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
         }
 
         _cache.Publish(item, CacheNotifyAction.Any);

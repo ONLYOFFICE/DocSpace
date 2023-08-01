@@ -17,6 +17,7 @@ import {
   mapSupplied,
   mediaTypes,
 } from "./helpers";
+import { getFileExtension } from "@docspace/common/utils";
 
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
@@ -164,7 +165,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: archiveRoom,
@@ -198,7 +199,7 @@ function MediaViewer({
       },
       {
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         icon: MoveReactSvgUrl,
         onClick: onMoveAction,
         disabled: !targetFile.security.Move,
@@ -206,7 +207,7 @@ function MediaViewer({
       {
         id: "option_copy-to",
         key: "copy-to",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         icon: CopyReactSvgUrl,
         onClick: onCopyAction,
         disabled: !targetFile.security.Copy,
@@ -221,7 +222,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: !targetFile.security.Rename,
@@ -269,15 +270,6 @@ function MediaViewer({
     },
     [props.extsMediaPreviewed]
   );
-
-  const getFileExtension = useCallback((fileTitle: string) => {
-    if (!fileTitle) {
-      return "";
-    }
-    fileTitle = fileTitle.trim();
-    const posExt = fileTitle.lastIndexOf(".");
-    return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
-  }, []);
 
   let lastRemovedFileId: null | number = null;
 

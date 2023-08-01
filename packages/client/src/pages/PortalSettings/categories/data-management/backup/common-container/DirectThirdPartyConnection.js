@@ -195,7 +195,7 @@ const DirectThirdPartyConnection = (props) => {
     if (directConnection) {
       let authModal = window.open(
         "",
-        "Authorization",
+        t("Common:Authorization"),
         "height=600, width=1020"
       );
 

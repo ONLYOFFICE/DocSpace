@@ -40,13 +40,13 @@ public class Builder<T>
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly DocumentServiceHelper _documentServiceHelper;
     private readonly Global _global;
-    private readonly GlobalStore _globalStore;
     private readonly PathProvider _pathProvider;
     private readonly IHttpClientFactory _clientFactory;
     private readonly SocketManager _socketManager;
     private readonly FFmpegService _fFmpegService;
     private readonly TempPath _tempPath;
     private readonly TempStream _tempStream;
+    private readonly StorageFactory _storageFactory;
     private IDataStore _dataStore;
 
     private readonly List<string> _imageFormatsCanBeCrop = new List<string>
@@ -61,14 +61,14 @@ public class Builder<T>
         DocumentServiceConnector documentServiceConnector,
         DocumentServiceHelper documentServiceHelper,
         Global global,
-        GlobalStore globalStore,
         PathProvider pathProvider,
         ILoggerProvider log,
         IHttpClientFactory clientFactory,
         FFmpegService fFmpegService,
         TempPath tempPath,
         SocketManager socketManager,
-        TempStream tempStream)
+        TempStream tempStream,
+        StorageFactory storageFactory)
     {
         _config = settings;
         _tenantManager = tenantManager;
@@ -82,8 +82,8 @@ public class Builder<T>
         _fFmpegService = fFmpegService;
         _tempPath = tempPath;
         _tempStream = tempStream;
+        _storageFactory = storageFactory;
         _socketManager = socketManager;
-        _globalStore = globalStore;
     }
 
     internal async Task BuildThumbnail(FileData<T> fileData)
@@ -92,7 +92,7 @@ public class Builder<T>
         {
             _tenantManager.SetCurrentTenant(fileData.TenantId);
 
-            _dataStore = _globalStore.GetStore();
+            _dataStore = _storageFactory.GetStorage(fileData.TenantId, FileConstant.StorageModule, (IQuotaController)null);
 
             var fileDao = _daoFactory.GetFileDao<T>();
             if (fileDao == null)

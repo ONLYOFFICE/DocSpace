@@ -31,6 +31,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     withManager,
     withCollaborator,
     isLogout,
+    standalone,
+    isCommunity,
+    isEnterprise,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -48,6 +51,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     const isPortalDeletionUrl =
       props.location.pathname === "/portal-settings/delete-data/deletion" ||
       props.location.pathname === "/portal-settings/delete-data/deactivation";
+
+    const isBonusPage = props.location.pathname === "/portal-settings/bonus";
 
     if (isLoaded && !isAuthenticated) {
       if (personal) {
@@ -81,7 +86,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       isLoaded &&
       ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
-        (!user.isOwner && isPortalDeletionUrl))
+        (!user.isOwner && isPortalDeletionUrl) ||
+        (standalone && isPortalDeletionUrl) ||
+        (isCommunity && isPaymentsUrl) ||
+        (isEnterprise && isBonusPage))
     ) {
       return window.location.replace("/");
     }
@@ -242,6 +250,8 @@ export default inject(({ auth }) => {
     settingsStore,
     currentTariffStatusStore,
     isLogout,
+    isCommunity,
+    isEnterprise,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -251,9 +261,11 @@ export default inject(({ auth }) => {
     wizardCompleted,
     personal,
     tenantStatus,
+    standalone,
   } = settingsStore;
 
   return {
+    isCommunity,
     isNotPaidPeriod,
     user,
     isAuthenticated,
@@ -264,5 +276,7 @@ export default inject(({ auth }) => {
     tenantStatus,
     personal,
     isLogout,
+    standalone,
+    isEnterprise,
   };
 })(observer(PrivateRoute));

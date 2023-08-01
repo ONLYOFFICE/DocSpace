@@ -134,6 +134,10 @@ public class SettingsDto
     /// <type>System.String, System</type>
     public string HelpLink { get; set; }
 
+    /// <summary>Api docs link</summary>
+    /// <type>System.String, System</type>
+    public string ApiDocsLink { get; set; }
+
     /// <summary>Domain validator</summary>
     /// <type>ASC.Core.Tenants.TenantDomainValidator, ASC.Core.Common</type>
     public TenantDomainValidator DomainValidator { get; set; }
@@ -153,6 +157,10 @@ public class SettingsDto
     /// <summary>Legal terms</summary>
     /// <type>System.String, System</type>
     public string LegalTerms { get; set; }
+
+    /// <summary>Cookie settings enabled</summary>
+    /// <type>System.Boolean, System</type>
+    public bool CookieSettingsEnabled { get; set; }
 
     /// <summary>Plugins</summary>
     /// <type>ASC.Web.Api.ApiModel.ResponseDto.PluginsDto, ASC.Web.Api</type>

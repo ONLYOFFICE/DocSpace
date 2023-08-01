@@ -34,6 +34,7 @@ public class CoreBaseSettings
     private bool? _personal;
     private bool? _customMode;
     private bool? _disableDocSpace;
+    private string _serverRoot;
 
     private IConfiguration Configuration { get; }
 
@@ -52,6 +53,19 @@ public class CoreBaseSettings
             }
 
             return _basedomain;
+        }
+    }
+
+    public string ServerRoot
+    {
+        get
+        {
+            if (_serverRoot == null)
+            {
+                _serverRoot = Configuration["core:server-root"] ?? string.Empty;
+            }
+
+            return _serverRoot;
         }
     }
 
@@ -240,6 +254,19 @@ public class CoreConfiguration
         _personalMaxSpace = value;
 
         return _personalMaxSpace.Value;
+    }
+
+    public SmtpSettings DefaultSmtpSettings
+    {
+        get
+        {
+            var settingsValue = GetSetting("SmtpSettings");
+
+            var settings = SmtpSettings.Deserialize(settingsValue);
+            settings.IsDefaultSettings = true;
+
+            return settings;
+        }
     }
 
     public SmtpSettings SmtpSettings

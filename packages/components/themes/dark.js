@@ -681,6 +681,14 @@ const Dark = {
       large: "550px",
     },
 
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
+    },
+
     paddingRight: {
       base: "37px",
       middle: "48px",
@@ -2118,10 +2126,9 @@ const Dark = {
     downloadAppList: {
       color: "#C4C4C4",
       winHoverColor: "#3785D3",
-      macHoverColor: white,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: white,
     },
 
     thirdPartyList: {
@@ -2931,6 +2938,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",
@@ -3003,6 +3011,10 @@ const Dark = {
           iconButton: white,
           iconButtonDisabled: "#333",
         },
+
+        smtp: {
+          requirementColor: "#E06451",
+        },
       },
 
       backup: {
@@ -3010,6 +3022,7 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {
@@ -3036,7 +3049,12 @@ const Dark = {
         benefitsContainer: {
           iconsColor: "#858585",
         },
+        contactContainer: {
+          textColor: "#ADADAD",
+          linkColor: "#858585",
+        },
         warningColor: "#E06451",
+        color: "#E17415",
       },
     },
 

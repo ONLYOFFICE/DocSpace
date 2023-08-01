@@ -12,11 +12,18 @@ const AccessSelector = ({
   containerRef,
   defaultAccess,
   isOwner,
+  withRemove,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
 
-  const accessOptions = getAccessOptions(t, roomType, false, true, isOwner);
+  const accessOptions = getAccessOptions(
+    t,
+    roomType,
+    withRemove,
+    true,
+    isOwner
+  );
 
   const selectedOption = accessOptions.filter(
     (access) => access.access === +defaultAccess
@@ -45,7 +52,7 @@ const AccessSelector = ({
     : {};
 
   return (
-    <StyledAccessSelector>
+    <StyledAccessSelector className="invite-panel_access-selector">
       <AccessRightSelect
         selectedOption={selectedOption}
         onSelect={onSelectAccess}
