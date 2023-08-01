@@ -28,7 +28,7 @@ const MultipleSpaces = () => {
           primary={true}
           onClick={() => setCreatePortalDialogVisible(true)}
         />
-        <SpacesRowContainer deletePortal={deletePortal} portals={portals} />
+        <SpacesRowContainer portals={portals} />
         <div className="domain-settings-wrapper">
           <Text fontSize="16px" fontWeight={700}>
             Domain settings
