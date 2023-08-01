@@ -61,5 +61,8 @@ public class ConfigurationDto<T>
     /// <summary>File parameters</summary>
     /// <type>ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core</type>
     public FileDto<T> File { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string ErrorMessage { get; set; }
 }

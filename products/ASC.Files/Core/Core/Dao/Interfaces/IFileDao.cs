@@ -110,6 +110,8 @@ public interface IFileDao<T>
     /// <param name="searchInContent"></param>
     /// <param name="withSubfolders"> </param>
     /// <param name="exludeSubject"> </param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
     /// <returns>list of files</returns>
     /// <remarks>
     ///    Return only the latest versions of files of a folder

@@ -89,7 +89,7 @@ public class LdapSettingsDto : IMapFrom<LdapSettings>
     /// <type>System.String, System</type>
     public string UserAttribute { get; set; }
 
-    /// <summary>Group filter value to import the groups who correspond to the specified search criteria. The default filter value (objectClass=posixGroup) allows importing all users<</summary>
+    /// <summary>Group filter value to import the groups who correspond to the specified search criteria. The default filter value (objectClass=posixGroup) allows importing all users</summary>
     /// <type>System.String, System</type>
     public string GroupFilter { get; set; }
 

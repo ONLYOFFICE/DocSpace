@@ -107,7 +107,7 @@ public class MessageSettingsController : BaseSettingsController
     /// Get cookies lifetime
     /// </short>
     /// <category>Cookies</category>
-    /// <returns type="System.Int32, System">Lifetime value in minutes</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CookieSettingsDto, ASC.Web.Api">Lifetime value in minutes</returns>
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("cookiesettings")]

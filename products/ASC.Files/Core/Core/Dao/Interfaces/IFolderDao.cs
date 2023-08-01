@@ -87,6 +87,8 @@ public interface IFolderDao<T>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
     /// <param name="exludeSubject"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
         bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);

@@ -187,7 +187,6 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the forcasaving ability</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core" name="inDto">Settings request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/forcesave</path>
     /// <httpMethod>PUT</httpMethod>
@@ -262,7 +261,6 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the ability to store the forcesaved files</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core" name="inDto">Settings request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/storeforcesave</path>
     /// <httpMethod>PUT</httpMethod>

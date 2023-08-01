@@ -141,7 +141,7 @@ public class PaymentController : ControllerBase
     /// </short>
     /// <category>Payment</category>
     /// <param type="System.String, System" name="backUrl">Back URL</param>
-    /// <returns type="System.Uri, System">The URL to the payment account</returns>
+    /// <returns type="System.Object, System">The URL to the payment account</returns>
     /// <path>api/2.0/portal/payment/account</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/account")]
