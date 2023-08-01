@@ -26,7 +26,11 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class SettingsRequestDto
 {
+    /// <summary>Specifies whether to set the specified settings or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Set { get; set; }
 }

@@ -26,6 +26,8 @@
 
 namespace ASC.Common.Threading;
 
+/// <summary>
+/// </summary>
 [ProtoContract(IgnoreUnknownSubTypes = true)]
 [ProtoInclude(100, typeof(DistributedTaskProgress))]
 public class DistributedTask
@@ -38,18 +40,28 @@ public class DistributedTask
 
     public Action<DistributedTask> Publication { get; set; }
 
+    /// <summary>Instance ID</summary>
+    /// <type>System.Int32, System</type>
     [ProtoMember(1)]
     public int InstanceId { get; set; }
 
+    /// <summary>ID</summary>
+    /// <type>System.String, System</type>
     [ProtoMember(2)]
     public string Id { get; set; }
 
+    /// <summary>Status</summary>
+    /// <type>ASC.Common.Threading.DistributedTaskStatus, ASC.Common</type>
     [ProtoMember(3)]
     public DistributedTaskStatus Status { get; set; }
 
+    /// <summary>Last modified date</summary>
+    /// <type>System.DateTime, System</type>
     [ProtoMember(4)]
     public DateTime LastModifiedOn { get; set; }
 
+    /// <summary>Exception</summary>
+    /// <type>System.Object, System</type>
     public Exception Exception
     {
         get => new Exception(_exeption);

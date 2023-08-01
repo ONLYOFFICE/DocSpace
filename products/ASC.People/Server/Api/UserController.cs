@@ -141,6 +141,17 @@ public class UserController : PeopleControllerBase
         _usersQuotaSyncOperation = usersQuotaSyncOperation;
     }
 
+    /// <summary>
+    /// Adds an activated portal user with the first name, last name, email address, and several optional parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Add an activated user
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Newly added user with the detailed information</returns>
+    /// <path>api/2.0/people/active</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivatedAsync(MemberRequestDto inDto)
     {
@@ -199,6 +210,17 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Adds a new portal user with the first name, last name, email address, and several optional parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Add a user
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Newly added user with the detailed information</returns>
+    /// <path>api/2.0/people</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     public async Task<EmployeeFullDto> AddMember(MemberRequestDto inDto)
@@ -311,6 +333,18 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Invites users specified in the request to the current portal.
+    /// </summary>
+    /// <short>
+    /// Invite users
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.InviteUsersRequestDto, ASC.People" name="inDto">Request parameters for inviting users</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
+    /// <path>api/2.0/people/invite</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <collection>list</collection>
     [HttpPost("invite")]
     public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
@@ -340,6 +374,16 @@ public class UserController : PeopleControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Sets a new password to the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Change a user password</short>
+    /// <category>Password</category>
+    /// <param type="System.Guid, System" method="url" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Request parameters for setting new password</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed user information</returns>
+    /// <path>api/2.0/people/{userid}/password</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     public async Task<EmployeeFullDto> ChangeUserPassword(Guid userid, MemberRequestDto inDto)
@@ -394,6 +438,17 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(await GetUserInfoAsync(userid.ToString()));
     }
 
+    /// <summary>
+    /// Deletes a user with the ID specified in the request from the portal.
+    /// </summary>
+    /// <short>
+    /// Delete a user
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Deleted user detailed information</returns>
+    /// <path>api/2.0/people/{userid}</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{userid}")]
     public async Task<EmployeeFullDto> DeleteMemberAsync(string userid)
     {
@@ -423,6 +478,16 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Deletes the current user profile.
+    /// </summary>
+    /// <short>
+    /// Delete my profile
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed information about my profile</returns>
+    /// <path>api/2.0/people/@self</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
     public async Task<EmployeeFullDto> DeleteProfile()
@@ -471,6 +536,19 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Returns a list of users matching the status filter and search query.
+    /// </summary>
+    /// <short>
+    /// Search users by status filter
+    /// </short>
+    /// <category>Search</category>
+    /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">User status</param>
+    /// <param type="System.String, System" name="query">Search query</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/status/{status}/search</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("status/{status}/search")]
     public async IAsyncEnumerable<EmployeeFullDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
     {
@@ -498,12 +576,34 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a list of profiles for all the portal users.
+    /// </summary>
+    /// <short>
+    /// Get profiles
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet]
     public IAsyncEnumerable<EmployeeFullDto> GetAll()
     {
         return GetByStatus(EmployeeStatus.Active);
     }
 
+    /// <summary>
+    /// Returns the detailed information about a profile of the user with the email specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get a profile by user email
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="System.String, System" method="url" name="email">User email address</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed profile information</returns>
+    /// <path>api/2.0/people/email</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("email")]
     public async Task<EmployeeFullDto> GetByEmailAsync([FromQuery] string email)
@@ -522,6 +622,17 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Returns the detailed information about a profile of the user with the name specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get a profile by user name
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="System.String, System" method="url" name="username">User name</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed profile information</returns>
+    /// <path>api/2.0/people/{username}</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [HttpGet("{username}", Order = 1)]
@@ -563,6 +674,18 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Returns a list of profiles filtered by user status.
+    /// </summary>
+    /// <short>
+    /// Get profiles by status
+    /// </short>
+    /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">User status</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <category>User status</category>
+    /// <path>api/2.0/people/status/{status}</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("status/{status}")]
     public IAsyncEnumerable<EmployeeFullDto> GetByStatus(EmployeeStatus status)
     {
@@ -581,6 +704,24 @@ public class UserController : PeopleControllerBase
         return GetFullByFilter(status, groupId, null, null, null, null, null, null);
     }
 
+    /// <summary>
+    /// Returns a list of users with full information about them matching the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Search users and their information by extended filter
+    /// </short>
+    /// <category>Search</category>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeStatus}, System" name="employeeStatus">User status</param>
+    /// <param type="System.Nullable{System.Guid}, System" name="groupId">Group ID</param>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeActivationStatus}, System" name="activationStatus">Activation status</param>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
+    /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
+    /// <param name="accountLoginType"></param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/filter</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("filter")]
     public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
@@ -592,6 +733,14 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the information about the People module.
+    /// </summary>
+    /// <short>Get the People information</short>
+    /// <category>Module</category>
+    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">Module information</returns>
+    /// <path>api/2.0/people/info</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("info")]
     public Module GetModule()
     {
@@ -601,12 +750,32 @@ public class UserController : PeopleControllerBase
         return new Module(product);
     }
 
+    /// <summary>
+    /// Returns a list of users matching the search query. This method uses the query parameters.
+    /// </summary>
+    /// <short>Search users (using query parameters)</short>
+    /// <category>Search</category>
+    /// <param type="System.String, System" name="query">Search query</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
+    /// <path>api/2.0/people/search</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("search")]
     public IAsyncEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
     {
         return GetSearch(query);
     }
 
+    /// <summary>
+    /// Returns a list of users matching the search query.
+    /// </summary>
+    /// <short>Search users</short>
+    /// <category>Search</category>
+    /// <param type="System.String, System" method="url" name="query">Search query</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/@search/{query}</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("@search/{query}")]
     public async IAsyncEnumerable<EmployeeFullDto> GetSearch(string query)
     {
@@ -629,6 +798,24 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a list of users matching the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Search users by extended filter
+    /// </short>
+    /// <category>Search</category>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeStatus}, System" name="employeeStatus">User status</param>
+    /// <param type="System.Nullable{System.Guid}, System" name="groupId">Group ID</param>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeActivationStatus}, System" name="activationStatus">Activation status</param>
+    /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
+    /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
+    /// <param name="accountLoginType"></param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
+    /// <path>api/2.0/people/simple/filter</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("simple/filter")]
     public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, [FromQuery] EmployeeType[] employeeTypes, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
@@ -640,6 +827,18 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Registers a user on the Personal portal.
+    /// </summary>
+    /// <short>
+    /// Register a Personal account
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.RegisterPersonalUserRequestDto, ASC.People" name="inDto">Request parameters for registering a Personal account</param>
+    /// <returns type="System.String, System">Error message or empty string</returns>
+    /// <path>api/2.0/people/register</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
@@ -733,6 +932,18 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
+    /// <summary>
+    /// Deletes a list of the users with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Delete users
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating portal users</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/delete</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("delete", Order = -1)]
     public async IAsyncEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
@@ -765,6 +976,18 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Resends emails to the users who have not activated their emails.
+    /// </summary>
+    /// <short>
+    /// Resend activation emails
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating portal users</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/invite</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [AllowNotPayment]
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvitesAsync(UpdateMembersRequestDto inDto)
@@ -837,18 +1060,39 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns a theme which is set to the current portal.
+    /// </summary>
+    /// <short>
+    /// Get portal theme
+    /// </short>
+    /// <category>Theme</category>
+    /// <returns type="ASC.Web.Core.Users.DarkThemeSettings, ASC.Web.Core">Theme</returns>
+    /// <path>api/2.0/people/theme</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("theme")]
     public async Task<DarkThemeSettings> GetThemeAsync()
     {
         return await _settingsManager.LoadForCurrentUserAsync<DarkThemeSettings>();
     }
 
+    /// <summary>
+    /// Changes the current portal theme.
+    /// </summary>
+    /// <short>
+    /// Change portal theme
+    /// </short>
+    /// <category>Theme</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.DarkThemeSettingsRequestDto, ASC.People" name="inDto">Theme settings request parameters</param>
+    /// <returns type="ASC.Web.Core.Users.DarkThemeSettings, ASC.Web.Core">Theme</returns>
+    /// <path>api/2.0/people/theme</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("theme")]
-    public async Task<DarkThemeSettings> ChangeThemeAsync(DarkThemeSettingsRequestDto model)
+    public async Task<DarkThemeSettings> ChangeThemeAsync(DarkThemeSettingsRequestDto inDto)
     {
         var darkThemeSettings = new DarkThemeSettings
         {
-            Theme = model.Theme
+            Theme = inDto.Theme
         };
 
         await _settingsManager.SaveForCurrentUserAsync(darkThemeSettings);
@@ -856,6 +1100,16 @@ public class UserController : PeopleControllerBase
         return darkThemeSettings;
     }
 
+    /// <summary>
+    /// Returns the detailed information about the current user profile.
+    /// </summary>
+    /// <short>
+    /// Get my profile
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed information about my profile</returns>
+    /// <path>api/2.0/people/@self</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("@self")]
     public async Task<EmployeeFullDto> SelfAsync()
@@ -869,6 +1123,17 @@ public class UserController : PeopleControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Sends a message to the user email with the instructions to change the email address connected to the portal.
+    /// </summary>
+    /// <short>
+    /// Send instructions to change email
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="System.Object, System">Message text</returns>
+    /// <path>api/2.0/people/email</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("email")]
     public async Task<object> SendEmailChangeInstructionsAsync(UpdateMemberRequestDto inDto)
@@ -934,6 +1199,18 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
     }
 
+    /// <summary>
+    /// Reminds a password to the user using the email address specified in the request.
+    /// </summary>
+    /// <short>
+    /// Remind a user password
+    /// </short>
+    /// <category>Password</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
+    /// <returns type="System.Object, System">Email with the password</returns>
+    /// <path>api/2.0/people/password</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowNotPayment]
     [AllowAnonymous]
     [HttpPost("password")]
@@ -957,6 +1234,19 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
     }
 
+    /// <summary>
+    /// Sets the required activation status to the list of users with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Set an activation status to the users
+    /// </short>
+    /// <category>User status</category>
+    /// <param type="ASC.Core.Users.EmployeeActivationStatus, ASC.Core.Common" method="url" name="activationstatus">Activation status</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/activationstatus/{activationstatus}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [AllowNotPayment]
     [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
@@ -994,6 +1284,18 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Updates the user language with the parameter specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update user language
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed user information</returns>
+    /// <path>api/2.0/people/{userid}/culture</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/culture")]
     public async Task<EmployeeFullDto> UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
@@ -1032,6 +1334,18 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Updates the data for the selected portal user with the first name, last name, email address, and/or optional parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update a user
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Updated user with the detailed information</returns>
+    /// <path>api/2.0/people/{userid}</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}", Order = 1)]
     public async Task<EmployeeFullDto> UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
@@ -1134,6 +1448,19 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
+    /// <summary>
+    /// Changes a status for the users with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Change a user status
+    /// </short>
+    /// <category>User status</category>
+    /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">New user status</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/status/{status}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("status/{status}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
@@ -1187,6 +1514,19 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    /// <summary>
+    /// Changes a type for the users with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Change a user type
+    /// </short>
+    /// <category>User type</category>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" method="url" name="type">New user type</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/type/{type}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("type/{type}")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserTypeAsync(EmployeeType type, UpdateMembersRequestDto inDto)
     {
@@ -1217,6 +1557,16 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    ///<summary>
+    /// Starts the process of recalculating quota.
+    /// </summary>
+    /// <short>
+    /// Recalculate quota 
+    /// </short>
+    /// <category>Quota</category>
+    /// <path>api/2.0/people/recalculatequota</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns></returns>
     [HttpGet("recalculatequota")]
     public async Task RecalculateQuotaAsync()
     {
@@ -1224,6 +1574,16 @@ public class UserController : PeopleControllerBase
         _usersQuotaSyncOperation.RecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
+    /// <summary>
+    /// Checks the process of recalculating quota.
+    /// </summary>
+    /// <short>
+    /// Check quota recalculation
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="ASC.Api.Core.Model.TaskProgressDto, ASC.Api.Core.Model">Task progress</returns>
+    /// <path>api/2.0/people/checkrecalculatequota</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("checkrecalculatequota")]
     public async Task<TaskProgressDto> CheckRecalculateQuotaAsync()
     {
@@ -1231,6 +1591,18 @@ public class UserController : PeopleControllerBase
         return _usersQuotaSyncOperation.CheckRecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
+    /// <summary>
+    /// Changes a quota limit for the users with the IDs specified in the request.
+    /// </summary>
+    /// <short>
+    /// Change a user quota limit
+    /// </short>
+    /// <category>Quota</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
+    /// <path>api/2.0/people/quota</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("quota")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuotaAsync(UpdateMembersQuotaRequestDto inDto)
     {
@@ -1416,14 +1788,17 @@ public class UserController : PeopleControllerBase
     }
 
     ///// <summary>
-    ///// Adds a new portal user from import with the first and last name, email address
+    ///// Imports the new portal users with the first name, last name, and email address.
     ///// </summary>
     ///// <short>
-    ///// Add new import user
+    ///// Import users
     ///// </short>
-    ///// <param name="userList">The list of users to add</param>
-    ///// <param name="importUsersAsCollaborators" optional="true">Add users as guests (bool type: false|true)</param>
-    ///// <returns>Newly created users</returns>
+    ///// <category>Profiles</category>
+    ///// <param type="System.String, System" name="userList">List of users</param>
+    ///// <param type="System.Boolean, System" name="importUsersAsCollaborators" optional="true">Specifies whether to import users as guests or not</param>
+    ///// <returns></returns>
+    ///// <path>api/2.0/people/import/save</path>
+    ///// <httpMethod>POST</httpMethod>
     //[HttpPost("import/save")]
     //public void SaveUsers(string userList, bool importUsersAsCollaborators)
     //{
@@ -1449,6 +1824,16 @@ public class UserController : PeopleControllerBase
     //    }
     //}
 
+    // <summary>
+    // Returns a status of the current user.
+    // </summary>
+    // <short>
+    // Get a user status
+    // </short>
+    // <returns tye="System.Object, System">Current user information</returns>
+    // <category>User status</category>
+    // <path>api/2.0/people/import/status</path>
+    // <httpMethod>GET</httpMethod>
     //[HttpGet("import/status")]
     //public object GetStatus()
     //{

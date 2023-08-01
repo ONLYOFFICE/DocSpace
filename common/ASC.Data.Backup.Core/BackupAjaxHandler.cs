@@ -393,12 +393,28 @@ public class BackupAjaxHandler
         return Path.Combine(folder, BackupFileName);
     }
 
+    /// <summary>
+    /// </summary>
     public class Schedule
     {
+        /// <summary>Storage type</summary>
+        /// <type>ASC.Data.Backup.Contracts.BackupStorageType, ASC.Data.Backup.Core</type>
         public BackupStorageType StorageType { get; set; }
+
+        /// <summary>Storage parameters</summary>
+        /// <type>System.Collections.Generic.Dictionary{System.String, System.String}, System.Collections.Generic</type>
         public Dictionary<string, string> StorageParams { get; set; }
+
+        /// <summary>Cron parameters</summary>
+        /// <type>ASC.Data.Backup.BackupAjaxHandler.CronParams, ASC.Data.Backup.Core</type>
         public CronParams CronParams { get; set; }
+
+        /// <summary>Maximum number of the stored backup copies</summary>
+        /// <type>System.Nullable{System.Int32}, System</type>
         public int? BackupsStored { get; set; }
+
+        /// <summary>Last backup creation time</summary>
+        /// <type>System.DateTime, System</type>
         public DateTime LastBackupTime { get; set; }
     }
 
