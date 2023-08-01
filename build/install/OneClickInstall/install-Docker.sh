@@ -677,7 +677,7 @@ install_docker_compose () {
 }
 
 check_ports () {
-	RESERVED_PORTS=(3306);
+	RESERVED_PORTS=();
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -819,6 +819,14 @@ install_docker () {
 docker_login () {
 	if [[ -n ${USERNAME} && -n ${PASSWORD}  ]]; then
 		docker login ${HUB} --username ${USERNAME} --password ${PASSWORD}
+	fi
+}
+
+create_network () {
+	EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
+
+	if [[ -z ${EXIST} ]]; then
+		docker network create --driver bridge ${NETWORK_NAME}
 	fi
 }
 
@@ -1079,9 +1087,11 @@ set_mysql_params () {
 
 set_docspace_params() {
 	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
-	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
 	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+
+	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
 
@@ -1211,7 +1221,6 @@ install_product () {
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
-	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
@@ -1284,6 +1293,8 @@ start_installation () {
 	fi
 
 	docker_login
+
+	create_network
 
 	domain_check
 

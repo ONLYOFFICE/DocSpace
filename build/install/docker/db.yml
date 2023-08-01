@@ -29,6 +29,7 @@ networks:
   onlyoffice:
     name: ${NETWORK_NAME}
     driver: "bridge"
+    external: true
 
 volumes:
   mysql_data:
