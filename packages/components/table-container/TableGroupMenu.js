@@ -63,11 +63,9 @@ const TableGroupMenu = (props) => {
         />
         <div className="table-container_group-menu-separator" />
         <StyledScrollbar>
-          <div>
-            {headerMenu.map((item, index) => (
-              <GroupMenuItem key={index} item={item} isBlocked={isBlocked} />
-            ))}
-          </div>
+          {headerMenu.map((item, index) => (
+            <GroupMenuItem key={index} item={item} isBlocked={isBlocked} />
+          ))}
         </StyledScrollbar>
         {!withoutInfoPanelToggler && (
           <StyledInfoPanelToggleColorThemeWrapper
