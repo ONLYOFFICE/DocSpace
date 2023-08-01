@@ -58,6 +58,7 @@ INSTALL_REDIS="true";
 INSTALL_RABBITMQ="true";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
+INSTALL_ELASTICSEARCH="true";
 INSTALL_PRODUCT="true";
 UPDATE="false";
 
@@ -75,6 +76,7 @@ DATABASE_MIGRATION="true"
 
 ELK_VERSION=""
 ELK_HOST=""
+ELK_PORT=""
 
 DOCUMENT_SERVER_IMAGE_NAME=""
 DOCUMENT_SERVER_VERSION=""
@@ -207,6 +209,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-esp | --elasticport )
+			if [ "$2" != "" ]; then
+				ELK_PORT=$2
+				shift
+			fi
+		;;
+
 		-skiphc | --skiphardwarecheck )
 			if [ "$2" != "" ]; then
 				SKIP_HARDWARE_CHECK=$2
@@ -320,6 +329,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ies | --installelastic )
+			if [ "$2" != "" ]; then
+				INSTALL_ELASTICSEARCH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -343,8 +359,10 @@ while [ "$1" != "" ]; do
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
 			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
 			echo "      -irds, --installredis             install or update redis (true|false)"
-			echo "      -esh, --elastichost               elasticsearch host"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"		
+			echo "      -ies, --installelastic            install or update elasticsearch (true|false)"
+			echo "      -esh, --elastichost               the IP address or hostname of the elasticsearch"
+			echo "      -esp, --elasticport               elasticsearch port number (default value 6379)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
@@ -763,6 +781,19 @@ domain_check () {
 	fi
 }
 
+establish_conn() {
+	echo -n "Trying to establish $3 connection... "
+  
+	exec {FD}<> /dev/tcp/$1/$2 && exec {FD}>&-
+
+	if [ "$?" != 0 ]; then
+		echo "FAILURE";
+		exit 1;
+	fi
+
+	echo "OK"
+}
+
 get_container_env_parameter () {
 	local CONTAINER_NAME=$1;
 	local PARAMETER_NAME=$2;
@@ -954,9 +985,11 @@ set_mysql_params () {
 set_docspace_params() {
 	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
 	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
-	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
+	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
+
 	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
@@ -1027,6 +1060,16 @@ install_rabbitmq () {
 
 install_redis () {
 	docker-compose -f $BASE_DIR/redis.yml up -d
+
+install_elasticsearch () {
+	if [[ -z ${ELK_HOST} ]] && [ "$INSTALL_ELASTICSEARCH" == "true" ]; then
+		reconfigure ELK_VERSION ${ELK_VERSION}
+		docker-compose -f $BASE_DIR/elasticsearch.yml up -d
+	elif [ ! -z "$ELK_HOST" ]; then
+		establish_conn ${ELK_HOST} "${ELK_PORT:-"9200"}" "Elasticsearch"
+		reconfigure ELK_HOST ${ELK_HOST}
+		reconfigure ELK_PORT "${ELK_PORT:-"9200"}"	
+	fi
 }
 
 install_product () {
@@ -1040,8 +1083,6 @@ install_product () {
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
-	reconfigure ELK_HOST ${ELK_HOST}
-	reconfigure ELK_VERSION ${ELK_VERSION}
 	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
@@ -1147,6 +1188,8 @@ start_installation () {
 	if [ "$INSTALL_REDIS" == "true" ]; then
 		install_redis
 	fi
+
+	install_elasticsearch
 
 	if [ "$INSTALL_PRODUCT" == "true" ]; then
 		install_product

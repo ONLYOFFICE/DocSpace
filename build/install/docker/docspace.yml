@@ -40,28 +40,6 @@ x-service: &x-service-base
     - people_data:/var/www/products/ASC.People/server/
 
 services:
-  onlyoffice-elasticsearch:
-    image: onlyoffice/elasticsearch:${ELK_VERSION}
-    container_name: ${ELK_HOST}
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
-      - "indices.fielddata.cache.size=30%"
-      - "indices.memory.index_buffer_size=30%" 
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65535
-        hard: 65535
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-    expose:
-      - "9200"
-      - "9300"
   onlyoffice-backup-background-tasks:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
@@ -228,7 +206,6 @@ networks:
     external: true
 
 volumes:
-  es_data:
   proxy_log:
   app_data:
   files_data:
