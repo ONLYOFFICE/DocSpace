@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
