@@ -30,11 +30,6 @@ if ! dpkg -l | grep -q "software-properties-common"; then
 fi
 
 locale-gen en_US.UTF-8
-if [ -f /etc/needrestart/needrestart.conf ]; then
-	sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
-fi
-
-locale-gen en_US.UTF-8
 
 # add elasticsearch repo
 ELASTIC_VERSION="7.10.0"
@@ -78,7 +73,6 @@ if ! dpkg -l | grep -q "mysql-server"; then
 
 	#Temporary fix for missing mysql repository for debian bookworm
 	[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/jammy/g" /etc/apt/sources.list.d/mysql.list
-	[ "$DISTRIB_CODENAME" = "buster" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/bionic/g" /etc/apt/sources.list.d/mysql.list
 
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections

@@ -587,7 +587,7 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
 
   return request({
     method: "get",
-    url: `/files/fileops/move?destFolderId=${destFolderId}${paramsString}`,
+    url: `/files/fileops/move/full?destFolderId=${destFolderId}${paramsString}`,
   });
 }
 

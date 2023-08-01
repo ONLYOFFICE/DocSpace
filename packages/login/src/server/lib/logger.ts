@@ -9,6 +9,7 @@ import config from "../config";
 import { randomUUID } from "crypto";
 
 let logPath: string = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 
 if (logPath != null) {
   if (!path.isAbsolute(logPath)) {
@@ -39,6 +40,7 @@ const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
 const options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -48,14 +50,14 @@ const options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: 'aws',
-    level: "debug",
+    level: logLevel,
     logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,
