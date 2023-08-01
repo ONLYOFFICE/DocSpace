@@ -83,6 +83,11 @@ REDIS_PORT=""
 REDIS_USER_NAME=""
 REDIS_PASSWORD=""
 
+RABBIT_HOST=""
+RABBIT_PORT=""
+RABBIT_USER_NAME=""
+RABBIT_PASSWORD=""
+
 DOCUMENT_SERVER_IMAGE_NAME=""
 DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
@@ -369,6 +374,41 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-rbth | --rabbitmqhost )
+			if [ "$2" != "" ]; then
+				RABBIT_HOST=$2
+				shift
+			fi
+		;;
+
+		-rbtp | --rabbitmqport )
+			if [ "$2" != "" ]; then
+				RABBIT_PORT=$2
+				shift
+			fi
+		;;
+
+		-rbtu | --rabbitmqusername )
+			if [ "$2" != "" ]; then
+				RABBIT_USER_NAME=$2
+				shift
+			fi
+		;;
+
+		-rbtpass | --rabbitmqpassword )
+			if [ "$2" != "" ]; then
+				RABBIT_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-rbtvh | --rabbitmqvirtualhost )
+			if [ "$2" != "" ]; then
+				RABBIT_VIRTUAL_HOST=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -400,6 +440,11 @@ while [ "$1" != "" ]; do
 			echo "      -rdsp, --redisport                redis server port number (default value 9200)"
 			echo "      -rdsu, --redisusername            redis user name"
 			echo "      -rdspass, --redispassword         password set for redis account"
+			echo "      -rbth, --rabbitmqhost             the IP address or hostname of the rabbitmq server"
+			echo "      -rbtp, --rabbitmqport             rabbitmq server port number (default value 5672)"
+			echo "      -rbtu, --rabbitmqusername         username for rabbitmq server account"
+			echo "      -rbtpass, --rabbitmqpassword      password set for rabbitmq server account"
+			echo "      -rbtvh, --rabbitmqvirtualhost     rabbitmq virtual host (default value \"/\")"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
@@ -1032,6 +1077,11 @@ set_docspace_params() {
 	REDIS_USER_NAME=${REDIS_USER_NAME:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_USER_NAME")};
 	REDIS_PASSWORD=${REDIS_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_PASSWORD")};
 
+	RABBIT_HOST=${RABBIT_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_HOST")};
+	RABBIT_PORT=${RABBIT_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PORT")};
+	RABBIT_USER_NAME=${RABBIT_USER_NAME:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_USER_NAME")};
+	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
+	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
 	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
@@ -1097,7 +1147,16 @@ install_document_server () {
 }
 
 install_rabbitmq () {
-	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
+	if [[ -z ${RABBIT_HOST} ]] && [ "$INSTALL_RABBITMQ" == "true" ]; then
+		docker-compose -f $BASE_DIR/rabbitmq.yml up -d
+	elif [ ! -z "$RABBIT_HOST" ]; then
+		establish_conn ${RABBIT_HOST} "${RABBIT_PORT:-"5672"}" "RabbitMQ"
+		reconfigure RABBIT_HOST ${RABBIT_HOST}
+		reconfigure RABBIT_PORT "${RABBIT_PORT:-"5672"}"
+		reconfigure RABBIT_USER_NAME ${RABBIT_USER_NAME}
+		reconfigure RABBIT_PASSWORD ${RABBIT_PASSWORD}
+		reconfigure RABBIT_VIRTUAL_HOST "${RABBIT_VIRTUAL_HOST:-"/"}"
+	fi
 }
 
 install_redis () {
@@ -1232,9 +1291,7 @@ start_installation () {
 		install_document_server
 	fi
 
-	if [ "$INSTALL_RABBITMQ" == "true" ]; then
-		install_rabbitmq
-	fi
+	install_rabbitmq
 
 	install_redis
 
