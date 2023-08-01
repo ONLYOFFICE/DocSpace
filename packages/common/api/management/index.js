@@ -56,17 +56,14 @@ export const setDomainName = async (domainName) => {
   return res;
 };
 
-export const setPortalName = (portalName) => {
+export const setPortalName = async (portalName) => {
   const data = {
-    key: "portalName",
-    tenantId: 1,
-    value: portalName,
+    Alias: portalName,
   };
 
   const res = request({
-    baseURL,
-    method: "post",
-    url: `/settings/save`,
+    method: "put",
+    url: `portal/portalrename`,
     data,
   });
 
