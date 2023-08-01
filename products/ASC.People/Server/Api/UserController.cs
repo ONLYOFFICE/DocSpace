@@ -715,9 +715,10 @@ public class UserController : PeopleControllerBase
     /// <param type="System.Nullable{System.Guid}, System" name="groupId">Group ID</param>
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeActivationStatus}, System" name="activationStatus">Activation status</param>
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" name="employeeTypes"></param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <param name="accountLoginType"></param>
+    /// <param type="ASC.Core.AccountLoginType, ASC.Core.Common" name="accountLoginType"></param>
     /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/filter</path>
     /// <httpMethod>GET</httpMethod>
@@ -809,9 +810,10 @@ public class UserController : PeopleControllerBase
     /// <param type="System.Nullable{System.Guid}, System" name="groupId">Group ID</param>
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeActivationStatus}, System" name="activationStatus">Activation status</param>
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" name="employeeTypes"></param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <param name="accountLoginType"></param>
+    /// <param type="ASC.Core.AccountLoginType, ASC.Core.Common" name="accountLoginType"></param>
     /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
     /// <path>api/2.0/people/simple/filter</path>
     /// <httpMethod>GET</httpMethod>

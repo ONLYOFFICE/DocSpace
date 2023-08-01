@@ -337,7 +337,16 @@ public class SecurityControllerCommon : ApiControllerBase
             yield return s;
         }
     }
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <short>Get external share data</short>
+    /// <category>Sharing</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="key"></param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.ExternalShareDto, ASC.Files.Core"></returns>
+    /// <path>api/2.0/files/share/{key}</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowAnonymous]
     [HttpGet("share/{key}")]
     public async Task<ExternalShareDto> GetExternalShareDataAsync(string key)
@@ -347,6 +356,16 @@ public class SecurityControllerCommon : ApiControllerBase
         return _mapper.Map<ValidationInfo, ExternalShareDto>(validationInfo);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <short>Apply external share password</short>
+    /// <category>Sharing</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="key"></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ExternalShareRequestDto, ASC.Files.Core" name="inDto"></param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.ExternalShareDto, ASC.Files.Core"></returns>
+    /// <path>api/2.0/files/share/{key}/password</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowAnonymous]
     [HttpPost("share/{key}/password")]
     public async Task<ExternalShareDto> ApplyExternalSharePasswordAsync(string key, ExternalShareRequestDto inDto)

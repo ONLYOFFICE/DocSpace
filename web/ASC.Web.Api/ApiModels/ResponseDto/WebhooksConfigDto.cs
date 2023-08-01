@@ -49,6 +49,9 @@ public class WebhooksConfigDto : IMapFrom<WebhooksConfig>
     /// <summary>Specifies if the webhooks are enabled or not</summary>
     /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
+
+    /// <summary>SSL</summary>
+    /// <type>System.Boolean, System</type>
     public bool SSL { get; set; }
 }
 

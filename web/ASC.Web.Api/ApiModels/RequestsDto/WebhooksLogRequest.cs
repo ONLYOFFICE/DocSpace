@@ -37,6 +37,7 @@ public class WebhooksLogRequest
     /// <summary></summary>
     /// <type>System.Nullable{System.DateTime}, System</type>
     public DateTime? DeliveryTo { get; set; }
+
     /// <summary>Hook URI</summary>
     /// <type>System.String, System</type>
     public string HookUri { get; set; }

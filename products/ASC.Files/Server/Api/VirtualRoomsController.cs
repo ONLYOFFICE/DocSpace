@@ -358,13 +358,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <summary>
     /// Getting room links
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="type">
-    /// Link type
-    /// </param>
-    /// <returns>Room security info</returns>
+    /// <short>Set an external invitation link</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.ResponseDto.LinkType, ASC.Files.Core" name="type">Link type</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Room security info</returns>
+    /// <path>api/2.0/files/rooms/{id}/links</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("rooms/{id}/links")]
     public async IAsyncEnumerable<FileShareDto> GetLinksAsync(T id, LinkType? type)
     {

@@ -96,7 +96,7 @@ public class WebhooksController : BaseSettingsController
 
         ArgumentNullException.ThrowIfNull(inDto.Uri);
         ArgumentNullException.ThrowIfNull(inDto.SecretKey);
-        ArgumentNullException.ThrowIfNull(model.Name);
+        ArgumentNullException.ThrowIfNull(inDto.Name);
 
         var webhook = await _webhookDbWorker.AddWebhookConfig(inDto.Uri, inDto.Name, inDto.SecretKey, inDto.Enabled, inDto.SSL);
 
@@ -155,7 +155,13 @@ public class WebhooksController : BaseSettingsController
     /// Get webhook logs
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksLogRequest, ASC.Web.Api" name="inDto">Webhook log request parameters</param>
+    /// <param type="System.DateTime, System" name="deliveryFrom"></param>
+    /// <param type="System.DateTime, System" name="deliveryTo"></param>
+    /// <param type="System.String, System" name="hookUri"></param>
+    /// <param type="System.Int32, System" name="webhookId"></param>
+    /// <param type="System.Int32, System" name="configId"></param>
+    /// <param type="System.Int32, System" name="eventId"></param>
+    /// <param type="ASC.Webhooks.Core.WebhookGroupStatus, ASC.Webhooks.Core" name="groupStatus"></param>
     /// <path>api/2.0/settings/webhooks/log</path>
     /// <httpMethod>GET</httpMethod>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto, ASC.Web.Api">Logs of the webhook activities</returns>

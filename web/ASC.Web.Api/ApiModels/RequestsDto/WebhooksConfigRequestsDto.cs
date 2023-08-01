@@ -49,5 +49,8 @@ public class WebhooksConfigRequestsDto
     /// <summary>Enabled or not</summary>
     /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Enabled { get; set; }
+
+    /// <summary>SSL</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? SSL { get; set;}
 }
