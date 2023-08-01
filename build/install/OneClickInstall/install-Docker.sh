@@ -72,6 +72,7 @@ MYSQL_USER=""
 MYSQL_PASSWORD=""
 MYSQL_ROOT_PASSWORD=""
 MYSQL_HOST=""
+MYSQL_PORT=""
 DATABASE_MIGRATION="true"
 
 ELK_VERSION=""
@@ -201,6 +202,13 @@ while [ "$1" != "" ]; do
 		-mysqlh | --mysqlhost )
 			if [ "$2" != "" ]; then
 				MYSQL_HOST=$2
+				shift
+			fi
+		;;
+
+		-mysqlport | --mysqlport )
+			if [ "$2" != "" ]; then
+				MYSQL_PORT=$2
 				shift
 			fi
 		;;
@@ -450,6 +458,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
+			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -1062,6 +1071,10 @@ set_mysql_params () {
 	if [[ -z ${MYSQL_HOST} ]]; then
 		MYSQL_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_HOST");
 	fi
+
+	if [[ -z ${MYSQL_PORT} ]]; then
+		MYSQL_PORT=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PORT");
+	fi
 }
 
 set_docspace_params() {
@@ -1115,11 +1128,6 @@ download_files () {
 	reconfigure STATUS ${STATUS}
 	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
 	reconfigure NETWORK_NAME ${NETWORK_NAME}
-	
-	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
-	reconfigure MYSQL_USER ${MYSQL_USER}
-	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
-	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 }
 
 reconfigure () {
@@ -1132,10 +1140,20 @@ reconfigure () {
 }
 
 install_mysql_server () {
-	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
-	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
+	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}	
+	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
+	reconfigure MYSQL_USER ${MYSQL_USER}
+	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
+	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 
-	docker-compose -f $BASE_DIR/db.yml up -d
+	if [[ -z ${MYSQL_HOST} ]] && [ "$INSTALL_MYSQL_SERVER" == "true" ]; then	
+		reconfigure MYSQL_VERSION ${MYSQL_VERSION}
+		docker-compose -f $BASE_DIR/db.yml up -d
+	elif [ ! -z "$MYSQL_HOST" ]; then
+		establish_conn ${MYSQL_HOST} "${MYSQL_PORT:-"3306"}" "MySQL"
+		reconfigure MYSQL_HOST ${MYSQL_HOST}
+		reconfigure MYSQL_PORT "${MYSQL_PORT:-"3306"}"
+	fi
 }
 
 install_document_server () {
@@ -1194,7 +1212,6 @@ install_product () {
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
-	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
@@ -1283,9 +1300,7 @@ start_installation () {
 
 	download_files
 
-	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
-		install_mysql_server
-	fi
+	install_mysql_server
 	
 	if [ "$INSTALL_DOCUMENT_SERVER" == "true" ]; then
 		install_document_server
