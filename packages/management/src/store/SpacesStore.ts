@@ -52,7 +52,7 @@ class SpacesStore {
     const { settings } = res;
 
     this.domain = settings;
-    const status = await getPortalStatus(settings);
+    // const status = await getPortalStatus(settings);
   };
 
   get isConnected() {
@@ -61,6 +61,7 @@ class SpacesStore {
 
   get faviconLogo() {
     const logos = this.brandingStore.whiteLabelLogos;
+    if (!logos) return;
     return getLogoFromPath(logos[2]?.path?.light);
   }
 
