@@ -1187,7 +1187,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore Ã
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Ciao!
