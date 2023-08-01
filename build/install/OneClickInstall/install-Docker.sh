@@ -78,6 +78,11 @@ ELK_VERSION=""
 ELK_HOST=""
 ELK_PORT=""
 
+REDIS_HOST=""
+REDIS_PORT=""
+REDIS_USER_NAME=""
+REDIS_PASSWORD=""
+
 DOCUMENT_SERVER_IMAGE_NAME=""
 DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
@@ -336,6 +341,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-rdsh | --redishost )
+			if [ "$2" != "" ]; then
+				REDIS_HOST=$2
+				shift
+			fi
+		;;
+
+		-rdsp | --redisport )
+			if [ "$2" != "" ]; then
+				REDIS_PORT=$2
+				shift
+			fi
+		;;
+
+		-rdsu | --redisusername )
+			if [ "$2" != "" ]; then
+				REDIS_USER_NAME=$2
+				shift
+			fi
+		;;
+
+		-rdspass | --redispassword )
+			if [ "$2" != "" ]; then
+				REDIS_PASSWORD=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -363,6 +396,10 @@ while [ "$1" != "" ]; do
 			echo "      -ies, --installelastic            install or update elasticsearch (true|false)"
 			echo "      -esh, --elastichost               the IP address or hostname of the elasticsearch"
 			echo "      -esp, --elasticport               elasticsearch port number (default value 6379)"
+			echo "      -rdsh, --redishost                the IP address or hostname of the redis server"
+			echo "      -rdsp, --redisport                redis server port number (default value 9200)"
+			echo "      -rdsu, --redisusername            redis user name"
+			echo "      -rdspass, --redispassword         password set for redis account"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
@@ -990,6 +1027,11 @@ set_docspace_params() {
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
 
+	REDIS_HOST=${REDIS_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_HOST")};
+	REDIS_PORT=${REDIS_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_PORT")};
+	REDIS_USER_NAME=${REDIS_USER_NAME:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_USER_NAME")};
+	REDIS_PASSWORD=${REDIS_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "REDIS_PASSWORD")};
+
 	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
@@ -1059,7 +1101,16 @@ install_rabbitmq () {
 }
 
 install_redis () {
-	docker-compose -f $BASE_DIR/redis.yml up -d
+	if [[ -z ${REDIS_HOST} ]] && [ "$INSTALL_REDIS" == "true" ]; then
+		docker-compose -f $BASE_DIR/redis.yml up -d
+	elif [ ! -z "$REDIS_HOST" ]; then
+		establish_conn ${REDIS_HOST} "${REDIS_PORT:-"6379"}" "Redis"
+		reconfigure REDIS_HOST ${REDIS_HOST}
+		reconfigure REDIS_PORT "${REDIS_PORT:-"6379"}"
+		reconfigure REDIS_USER_NAME ${REDIS_USER_NAME}
+		reconfigure REDIS_PASSWORD ${REDIS_PASSWORD}
+	fi
+}
 
 install_elasticsearch () {
 	if [[ -z ${ELK_HOST} ]] && [ "$INSTALL_ELASTICSEARCH" == "true" ]; then
@@ -1185,9 +1236,7 @@ start_installation () {
 		install_rabbitmq
 	fi
 
-	if [ "$INSTALL_REDIS" == "true" ]; then
-		install_redis
-	fi
+	install_redis
 
 	install_elasticsearch
 
