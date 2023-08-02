@@ -26,16 +26,47 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class TenantExtraDto
 {
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool CustomMode { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool Opensource { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool Enterprise { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Core.Billing.Tariff, ASC.Core.Common</type>
     public Tariff Tariff { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api</type>
     public QuotaDto Quota { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool NotPaid { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string LicenseAccept { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool EnableTariffPage { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Collections.Generic.Dictionary{System.String, System.DateTime}, System.Collections.Generic</type>
     public Dictionary<string, DateTime> DocServerUserQuota { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Core.Billing.License, ASC.Core.Common</type>
     public License DocServerLicense { get; set; }
 }

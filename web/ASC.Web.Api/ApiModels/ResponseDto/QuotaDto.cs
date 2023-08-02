@@ -26,28 +26,69 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class QuotaDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 
+    /// <summary>Price</summary>
+    /// <type>ASC.Web.Api.ApiModels.ResponseDto.PriceDto, ASC.Web.Api</type>
     public PriceDto Price { get; set; }
 
+    /// <summary>Specifies if the quota is nonprofit or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool NonProfit { get; set; }
+
+    /// <summary>Specifies if the quota is free or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Free { get; set; }
+
+    /// <summary>Specifies if the quota is trial or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Trial { get; set; }
 
+    /// <summary>List of quota features</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModels.ResponseDto.TenantQuotaFeatureDto}, ASC.Web.Api</type>
     public IEnumerable<TenantQuotaFeatureDto> Features { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class TenantQuotaFeatureDto : IEquatable<TenantQuotaFeatureDto>
 {
+    /// <summary>ID</summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
+
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Image URL</summary>
+    /// <type>System.String, System</type>
     public string Image { get; set; }
+
+    /// <summary>Value</summary>
+    /// <type>System.Object, System</type>
     public object Value { get; set; }
+
+    /// <summary>Type</summary>
+    /// <type>System.String, System</type>
     public string Type { get; set; }
+
+    /// <summary>Used feature parameters</summary>
+    /// <type>ASC.Web.Api.ApiModels.ResponseDto.FeatureUsedDto, ASC.Web.Api</type>
     public FeatureUsedDto Used { get; set; }
+
+    /// <summary>Price title</summary>
+    /// <type>System.String, System</type>
     public string PriceTitle { get; set; }
 
     public bool Equals(TenantQuotaFeatureDto other)
@@ -64,14 +105,28 @@ public class TenantQuotaFeatureDto : IEquatable<TenantQuotaFeatureDto>
     public override int GetHashCode() => Id.GetHashCode();
 }
 
+/// <summary>
+/// </summary>
 public class PriceDto
 {
+    /// <summary>Value</summary>
+    /// <type>System.Nullable{System.Decimal}, System</type>
     public decimal? Value { get; set; }
+
+    /// <summary>Currency symbol</summary>
+    /// <type>System.String, System</type>
     public string CurrencySymbol { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class FeatureUsedDto
 {
+    /// <summary>Value</summary>
+    /// <type>System.Object, System</type>
     public object Value { get; set; }
+
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 }

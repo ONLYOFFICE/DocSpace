@@ -26,8 +26,15 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class MoveDto
 {
+    /// <summary>Document config</summary>
+    /// <type>ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core</type>
     public FileEntryDto EntryFrom { get; set; }
+
+    /// <summary>Document config</summary>
+    /// <type>ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core</type>
     public FileEntryDto EntryTo { get; set; }
 }

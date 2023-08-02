@@ -44,9 +44,14 @@ public class PushController : BaseSettingsController
     }
 
     /// <summary>
-    /// Saves a documents firebase device token specified in the request.
+    /// Saves the Firebase device token specified in the request for the Documents application.
     /// </summary>
-    /// <returns>FireBase user</returns>
+    /// <short>Save the Documents Firebase device token</short>
+    /// <category>Firebase</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.FirebaseRequestsDto, ASC.Web.Api" name="inDto">Firebase request parameters</param>
+    /// <returns type="ASC.Core.Common.EF.FireBaseUser, ASC.Core.Common">FireBase user</returns>
+    /// <path>api/2.0/settings/push/docregisterdevice</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("push/docregisterdevice")]
     public FireBaseUser DocRegisterPusnNotificationDevice(FirebaseRequestsDto inDto)
     {
@@ -54,9 +59,14 @@ public class PushController : BaseSettingsController
     }
 
     /// <summary>
-    /// Subscribe to documents push notification.
+    /// Subscribes to the Documents push notification.
     /// </summary>
-    /// <returns>FireBase user</returns>
+    /// <short>Subscribe to Documents push notification</short>
+    /// <category>Firebase</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.FirebaseRequestsDto, ASC.Web.Api" name="inDto">Firebase request parameters</param>
+    /// <returns type="ASC.Core.Common.EF.FireBaseUser, ASC.Core.Common">Firebase user</returns>
+    /// <path>api/2.0/settings/push/docsubscribe</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("push/docsubscribe")]
     public FireBaseUser SubscribeDocumentsPushNotification(FirebaseRequestsDto inDto)
     {

@@ -26,6 +26,10 @@
 
 namespace ASC.Files.Api;
 
+/// <summary>
+/// Provides access to documents.
+/// </summary>
+/// <name>files</name>
 [Scope]
 [DefaultRoute]
 [ApiController]

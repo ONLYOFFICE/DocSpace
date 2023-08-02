@@ -26,8 +26,15 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SendCongratulationsDto
 {
+    /// <summary>Uer ID,e</summary>
+    /// <type>System.Guid, System</type>
     public Guid Userid { get; set; }
+
+    /// <summary>Email key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
 }

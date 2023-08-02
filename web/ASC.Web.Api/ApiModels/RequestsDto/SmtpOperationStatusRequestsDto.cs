@@ -26,12 +26,28 @@
 
 namespace ASC.Api.Settings.Smtp;
 
+/// <summary>
+/// </summary>
 public class SmtpOperationStatusRequestsDto
 {
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool Completed { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Error { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Status { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Int32, System</type>
     public int Percents { get; set; }
 
     public static SmtpOperationStatusRequestsDto GetSample()
