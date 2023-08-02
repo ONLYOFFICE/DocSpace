@@ -6,7 +6,7 @@ services:
     command: --default-authentication-plugin=caching_sha2_password
     cap_add:
       - SYS_NICE
-    container_name: ${MYSQL_HOST}
+    container_name: ${MYSQL_CONTAINER_NAME}
     restart: always
     tty: true
     user: mysql

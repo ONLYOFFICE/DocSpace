@@ -2,7 +2,7 @@ version: "3"
 services:
   onlyoffice-elasticsearch:
     image: onlyoffice/elasticsearch:${ELK_VERSION}
-    container_name: ${ELK_HOST}
+    container_name: ${ELK_CONTAINER_NAME}
     restart: always
     environment:
       - discovery.type=single-node

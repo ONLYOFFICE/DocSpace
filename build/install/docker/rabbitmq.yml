@@ -2,7 +2,7 @@ version: "3"
 services:
   onlyoffice-rabbitmq:
     image: rabbitmq:3
-    container_name: onlyoffice-rabbitmq
+    container_name: ${RABBIT_CONTAINER_NAME}
     restart: always
     expose:
       - "5672"
