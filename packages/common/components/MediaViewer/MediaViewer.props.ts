@@ -30,6 +30,15 @@ export interface MediaViewerProps {
 
   playlistPos: number;
 
+  pluginContextMenuItems?: {
+    key: string;
+    value: {
+      label: string;
+      onClick: (id: number) => void;
+      icon: string;
+    };
+  }[];
+
   getIcon: (size: number, ext: string, ...arg: any) => string;
 
   onClose: VoidFunction;

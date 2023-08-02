@@ -32,6 +32,7 @@ class PluginStore {
   mainButtonItems = null;
   profileMenuItems = null;
   eventListenerItems = null;
+  fileItems = null;
 
   pluginFrame = null;
 
@@ -55,6 +56,7 @@ class PluginStore {
     this.mainButtonItems = new Map();
     this.profileMenuItems = new Map();
     this.eventListenerItems = new Map();
+    this.fileItems = new Map();
 
     makeAutoObservable(this);
   }
@@ -109,13 +111,13 @@ class PluginStore {
     frame.style.display = "none";
     frame.sandbox = "allow-same-origin allow-scripts";
 
-    this.setIsInit(true);
-
     document.body.appendChild(frame);
 
     this.setPluginFrame(frame);
 
     this.updatePlugins();
+
+    this.setIsInit(true);
   };
 
   updatePlugins = async () => {
@@ -173,20 +175,22 @@ class PluginStore {
       const idx = this.plugins.findIndex((p) => p.id === plugin.id);
 
       if (idx === -1) {
-        this.plugins.push(plugin);
+        this.plugins.unshift(plugin);
       } else {
         this.plugins[idx] = plugin;
       }
     }
 
-    if (!plugin || !plugin.enabled) return;
+    console.log(!plugin || !plugin.enabled);
 
-    if (plugin.onLoadCallback) {
-      plugin.onLoadCallback();
-    }
+    if (!plugin || !plugin.enabled) return;
 
     if (plugin.scopes.includes(PluginScopes.API)) {
       plugin.setAPI(origin, proxy, prefix);
+    }
+
+    if (plugin.onLoadCallback) {
+      plugin.onLoadCallback();
     }
 
     if (
@@ -233,10 +237,18 @@ class PluginStore {
         this.eventListenerItems.set(key, value);
       });
     }
+
+    if (plugin.scopes.includes(PluginScopes.File) && plugin.fileItems) {
+      Array.from(plugin.fileItems).map(([key, value]) => {
+        this.eventListenerItems.set(key, value);
+      });
+    }
   };
 
   activatePlugin = async (id) => {
     const plugin = this.plugins.find((p) => p.id === id);
+
+    if (!plugin) return;
 
     plugin.enabled = true;
 
@@ -294,6 +306,12 @@ class PluginStore {
         this.eventListenerItems.delete(key);
       });
     }
+
+    if (plugin.scopes.includes(PluginScopes.File) && plugin.fileItems) {
+      Array.from(plugin.fileItems).map(([key, value]) => {
+        this.fileItems.delete(key);
+      });
+    }
   };
 
   uninstallPlugin = async (id) => {
@@ -347,6 +365,8 @@ class PluginStore {
     switch (type) {
       case PluginFileType.Files:
         itemsMap.forEach(([key, item]) => {
+          if (!item.fileType) return;
+
           if (item.fileType.includes(PluginFileType.Files)) {
             if (item.fileExt) {
               if (item.fileExt.includes(fileExst)) {
@@ -368,6 +388,8 @@ class PluginStore {
         break;
       case PluginFileType.Folders:
         itemsMap.forEach(([key, item]) => {
+          if (!item.fileType) return;
+
           if (item.fileType.includes(PluginFileType.Folders)) {
             if (item.usersType) {
               if (item.usersType.includes(userRole)) keys.push(item.key);
@@ -379,7 +401,35 @@ class PluginStore {
         break;
       case PluginFileType.Rooms:
         itemsMap.forEach(([key, item]) => {
+          if (!item.fileType) return;
+
           if (item.fileType.includes(PluginFileType.Rooms)) {
+            if (item.usersType) {
+              if (item.usersType.includes(userRole)) keys.push(item.key);
+            } else {
+              keys.push(item.key);
+            }
+          }
+        });
+        break;
+      case PluginFileType.Image:
+        itemsMap.forEach(([key, item]) => {
+          if (!item.fileType) return;
+
+          if (item.fileType.includes(PluginFileType.Image)) {
+            if (item.usersType) {
+              if (item.usersType.includes(userRole)) keys.push(item.key);
+            } else {
+              keys.push(item.key);
+            }
+          }
+        });
+        break;
+      case PluginFileType.Video:
+        itemsMap.forEach(([key, item]) => {
+          if (!item.fileType) return;
+
+          if (item.fileType.includes(PluginFileType.Video)) {
             if (item.usersType) {
               if (item.usersType.includes(userRole)) keys.push(item.key);
             } else {
@@ -391,6 +441,7 @@ class PluginStore {
       default:
         itemsMap.forEach(([key, item]) => {
           if (item.fileType) return;
+
           if (item.usersType) {
             if (item.usersType.includes(userRole)) keys.push(item.key);
           } else {
@@ -416,37 +467,38 @@ class PluginStore {
     const items = [];
 
     this.plugins.forEach((plugin) => {
+      if (!plugin.enabled) return;
+
       if (plugin.scopes.includes(PluginScopes.ContextMenu)) {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
-        Array.from(plugin.getContextMenuItems(), ([key, value]) => {
-          if (value.onClick) {
-            const onClick = async (id) => {
-              const message = await value.onClick(id);
+        Array.from(plugin.contextMenuItems, ([key, value]) => {
+          const onClick = async (id) => {
+            const message = await value.onClick(id);
 
-              messageActions(
-                message,
-                null,
-                null,
-                plugin.id,
-                this.setSettingsPluginDialogVisible,
-                this.setCurrentSettingsDialogPlugin,
-                this.updatePluginStatus,
-                null,
-                this.setPluginDialogVisible,
-                this.setPluginDialogProps
-              );
-            };
-
-            value.onClick = onClick;
-          }
+            messageActions(
+              message,
+              null,
+              null,
+              plugin.id,
+              this.setSettingsPluginDialogVisible,
+              this.setCurrentSettingsDialogPlugin,
+              this.updatePluginStatus,
+              null,
+              this.setPluginDialogVisible,
+              this.setPluginDialogProps
+            );
+          };
 
           items.push({
             key,
             value: {
               ...value,
+              onClick,
               pluginId: plugin.id,
-              icon: `${iconUrl}/${value.icon}`,
+              icon: value.icon.includes("storage/webplugins")
+                ? value.icon
+                : `${iconUrl}/${value.icon}`,
             },
           });
         });
@@ -468,6 +520,7 @@ class PluginStore {
     const userRole = this.getUserRole();
 
     this.plugins.forEach((plugin) => {
+      if (!plugin.enabled) return;
       if (plugin.scopes.includes(PluginScopes.InfoPanel)) {
         Array.from(plugin.getInfoPanelItems(), ([key, value]) => {
           if (value.submenu.onClick) {
@@ -510,30 +563,27 @@ class PluginStore {
     const userRole = this.getUserRole();
 
     this.plugins.forEach((plugin) => {
+      if (!plugin.enabled) return;
       if (plugin.scopes.includes(PluginScopes.ProfileMenu)) {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
         Array.from(plugin.getProfileMenuItems(), ([key, value]) => {
-          if (value.onClick) {
-            const onClick = async () => {
-              const message = await value.onClick();
+          const onClick = async () => {
+            const message = await value.onClick();
 
-              messageActions(
-                message,
-                null,
-                null,
-                plugin.id,
-                this.setSettingsPluginDialogVisible,
-                this.setCurrentSettingsDialogPlugin,
-                this.updatePluginStatus,
-                null,
-                this.setPluginDialogVisible,
-                this.setPluginDialogProps
-              );
-            };
-
-            value.onClick = onClick;
-          }
+            messageActions(
+              message,
+              null,
+              null,
+              plugin.id,
+              this.setSettingsPluginDialogVisible,
+              this.setCurrentSettingsDialogPlugin,
+              this.updatePluginStatus,
+              null,
+              this.setPluginDialogVisible,
+              this.setPluginDialogProps
+            );
+          };
 
           if (value.usersType) {
             if (value.usersType.includes(userRole)) {
@@ -541,8 +591,11 @@ class PluginStore {
                 key,
                 value: {
                   ...value,
+                  onClick,
                   pluginId: plugin.id,
-                  icon: `${iconUrl}/${value.icon}`,
+                  icon: value.icon.includes("storage/webplugins")
+                    ? value.icon
+                    : `${iconUrl}/${value.icon}`,
                 },
               });
             }
@@ -551,8 +604,11 @@ class PluginStore {
               key,
               value: {
                 ...value,
+                onClick,
                 pluginId: plugin.id,
-                icon: `${iconUrl}/${value.icon}`,
+                icon: value.icon.includes("storage/webplugins")
+                  ? value.icon
+                  : `${iconUrl}/${value.icon}`,
               },
             });
           }
@@ -575,6 +631,7 @@ class PluginStore {
     const userRole = this.getUserRole();
 
     this.plugins.forEach((plugin) => {
+      if (!plugin.enabled) return;
       if (plugin.scopes.includes(PluginScopes.MainButton)) {
         const iconUrl = getPluginUrl(plugin.url, "assets");
 
@@ -603,7 +660,9 @@ class PluginStore {
               newItems.push({
                 ...i,
                 onClick,
-                icon: `${iconUrl}/${i.icon}`,
+                icon: value.icon.includes("storage/webplugins")
+                  ? value.icon
+                  : `${iconUrl}/${i.icon}`,
               });
             });
 
@@ -612,9 +671,7 @@ class PluginStore {
 
           if (value.onClick) {
             const onClick = async () => {
-              const message = await option.value.onClick(
-                this.selectedFolderStore.id
-              );
+              const message = await value.onClick(this.selectedFolderStore.id);
 
               messageActions(
                 message,
@@ -640,7 +697,9 @@ class PluginStore {
                 value: {
                   ...value,
                   pluginId: plugin.id,
-                  icon: `${iconUrl}/${value.icon}`,
+                  icon: value.icon.includes("storage/webplugins")
+                    ? value.icon
+                    : `${iconUrl}/${value.icon}`,
                   iconUrl,
                 },
               });
@@ -651,7 +710,9 @@ class PluginStore {
               value: {
                 ...value,
                 pluginId: plugin.id,
-                icon: `${iconUrl}/${value.icon}`,
+                icon: value.icon.includes("storage/webplugins")
+                  ? value.icon
+                  : `${iconUrl}/${value.icon}`,
               },
             });
           }
@@ -662,6 +723,66 @@ class PluginStore {
     if (items.length > 0) {
       items.sort((a, b) => a.value.position < b.value.position);
 
+      return items;
+    }
+
+    return null;
+  }
+
+  get fileItemsList() {
+    const items = [];
+
+    const userRole = this.getUserRole();
+
+    this.plugins.forEach((plugin) => {
+      if (!plugin.enabled) return;
+      if (plugin.scopes.includes(PluginScopes.File)) {
+        Array.from(plugin.getFileItems(), ([key, value]) => {
+          const onClick = async (item) => {
+            if (!value.onClick) return;
+
+            const message = await value.onClick(item);
+
+            messageActions(
+              message,
+              null,
+              null,
+              plugin.id,
+              this.setSettingsPluginDialogVisible,
+              this.setCurrentSettingsDialogPlugin,
+              this.updatePluginStatus,
+              null,
+              this.setPluginDialogVisible,
+              this.setPluginDialogProps
+            );
+          };
+
+          if (value.usersType) {
+            if (value.usersType.includes(userRole)) {
+              items.push({
+                key,
+                value: {
+                  ...value,
+                  onClick,
+                  pluginId: plugin.id,
+                },
+              });
+            }
+          } else {
+            items.push({
+              key,
+              value: {
+                ...value,
+                onClick,
+                pluginId: plugin.id,
+              },
+            });
+          }
+        });
+      }
+    });
+
+    if (items.length > 0) {
       return items;
     }
 

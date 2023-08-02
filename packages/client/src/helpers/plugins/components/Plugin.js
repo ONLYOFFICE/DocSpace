@@ -7,7 +7,6 @@ import PluginSettings from "./PluginSettings";
 
 import { PluginSettingsType } from "SRC_DIR/helpers/plugins/constants";
 
-import ToggleButton from "@docspace/components/toggle-button";
 import { PluginScopes } from "../constants";
 
 const StyledPlugin = styled.div`
@@ -42,9 +41,7 @@ const Plugin = ({
   url,
 
   userPluginSettings,
-  getUserPluginSettings,
   adminPluginSettings,
-  getAdminPluginSettings,
 
   scopes,
 
@@ -69,9 +66,6 @@ const Plugin = ({
   const pluginSettings = isUserSettings
     ? userPluginSettings
     : adminPluginSettings;
-  const getPluginSettings = isUserSettings
-    ? getUserPluginSettings
-    : getAdminPluginSettings;
 
   const showPluginSettingsPage =
     withSettings &&
@@ -111,7 +105,6 @@ const Plugin = ({
         <PluginSettings
           {...pluginSettings}
           id={id}
-          getPluginSettings={getPluginSettings}
           updatePluginStatus={updatePluginStatus}
         />
       )}

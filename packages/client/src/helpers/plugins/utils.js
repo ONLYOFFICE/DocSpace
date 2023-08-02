@@ -34,10 +34,9 @@ export const messageActions = (
         break;
       case PluginActions.updateContext:
         if (message.contextProps) {
-          updatePropsContext(
-            message.contextProps.name,
-            message.contextProps.props
-          );
+          message.contextProps.forEach((prop) => {
+            updatePropsContext(prop.name, prop.props);
+          });
         }
         break;
       case PluginActions.updateStatus:
@@ -71,6 +70,15 @@ export const messageActions = (
             setSettingsPluginDialogVisible(true);
           setCurrentSettingsDialogPlugin &&
             setCurrentSettingsDialogPlugin(pluginId);
+        }
+        break;
+
+      case PluginActions.closeSettingsModal:
+        if (pluginId) {
+          setSettingsPluginDialogVisible &&
+            setSettingsPluginDialogVisible(false);
+          setCurrentSettingsDialogPlugin &&
+            setCurrentSettingsDialogPlugin(null);
         }
         break;
       case PluginActions.showCreateDialogModal:

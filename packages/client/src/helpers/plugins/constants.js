@@ -14,6 +14,7 @@ export const PluginScopes = Object.freeze({
   MainButton: "MainButton",
   ProfileMenu: "ProfileMenu",
   EventListener: "EventListener",
+  File: "File",
 });
 
 export const PluginType = Object.freeze({
@@ -36,7 +37,6 @@ export const PluginSettingsType = Object.freeze({
 
 export const PluginActions = Object.freeze({
   updateProps: "update-props",
-  updateAcceptButtonProps: "update-accept-button-props",
   updateContext: "update-context",
 
   updateStatus: "update-status",
@@ -44,6 +44,7 @@ export const PluginActions = Object.freeze({
   showToast: "show-toast",
 
   showSettingsModal: "show-settings-modal",
+  closeSettingsModal: "close-settings-modal",
 
   showCreateDialogModal: "show-create-dialog-modal",
 
@@ -70,6 +71,7 @@ export const PluginComponents = Object.freeze({
   img: "img",
   iFrame: "iFrame",
   comboBox: "comboBox",
+  skeleton: "skeleton",
 });
 
 export const PluginUsersType = Object.freeze({

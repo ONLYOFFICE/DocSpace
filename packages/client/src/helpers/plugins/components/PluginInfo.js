@@ -6,6 +6,7 @@ import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 
 import { PluginStatus } from "SRC_DIR/helpers/plugins/constants";
 import Link from "@docspace/components/link";
+
 import { getPluginUrl } from "../utils";
 
 const StyledInfo = styled.div`

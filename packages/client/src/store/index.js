@@ -119,7 +119,8 @@ const filesActionsStore = new FilesActionsStore(
   dialogsStore,
   mediaViewerDataStore,
   accessRightsStore,
-  clientLoadingStore
+  clientLoadingStore,
+  pluginStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(

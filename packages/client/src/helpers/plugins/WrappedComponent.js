@@ -1,6 +1,8 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 
+import RectangleLoader from "@docspace/common/components/Loaders/RectangleLoader";
+
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
@@ -9,11 +11,11 @@ import TextInput from "@docspace/components/text-input";
 import Label from "@docspace/components/label";
 import Button from "@docspace/components/button";
 import ToggleButton from "@docspace/components/toggle-button";
+import ComboBox from "@docspace/components/combobox";
 
 import { PluginComponents } from "./constants";
 
 import { messageActions } from "./utils";
-import ComboBox from "@docspace/components/combobox";
 
 const PropsContext = React.createContext({});
 
@@ -28,8 +30,9 @@ const ComponentPure = ({
 }) => {
   const [elementProps, setElementProps] = React.useState(component.props);
 
-  const { contextProps, updatePropsContext, isLoading } =
-    React.useContext(PropsContext);
+  const [isRequestRunning, setIsRequestRunning] = React.useState(false);
+
+  const { contextProps, updatePropsContext } = React.useContext(PropsContext);
 
   React.useEffect(() => {
     if (!component.contextName || !contextProps[component.contextName]) return;
@@ -37,20 +40,24 @@ const ComponentPure = ({
     setElementProps(contextProps[component.contextName]);
   }, [contextProps[component.contextName]]);
 
-  if (isLoading) return <></>;
+  React.useEffect(() => {
+    setElementProps(component.props);
+  }, [component.props]);
 
   const getElement = () => {
     const componentName = component.component;
 
     switch (componentName) {
       case PluginComponents.box: {
-        const childrenComponents = elementProps.children.map((item, index) => (
-          <Component
-            key={`box-${index}-${item.component}`}
-            component={item}
-            pluginId={pluginId}
-          />
-        ));
+        const childrenComponents = elementProps?.children?.map(
+          (item, index) => (
+            <Component
+              key={`box-${index}-${item.component}`}
+              component={item}
+              pluginId={pluginId}
+            />
+          )
+        );
 
         return <Box {...elementProps}>{childrenComponents}</Box>;
       }
@@ -148,7 +155,12 @@ const ComponentPure = ({
       }
 
       case PluginComponents.button: {
+        const { withLoadingAfterClick, ...rest } = elementProps;
+
         const onClickAction = async () => {
+          if (withLoadingAfterClick) {
+            setIsRequestRunning(true);
+          }
           const message = await elementProps.onClick();
 
           messageActions(
@@ -163,9 +175,17 @@ const ComponentPure = ({
             setPluginDialogVisible,
             setPluginDialogProps
           );
+
+          setIsRequestRunning(false);
         };
 
-        return <Button {...elementProps} onClick={onClickAction} />;
+        return (
+          <Button
+            {...rest}
+            isLoading={isRequestRunning}
+            onClick={onClickAction}
+          />
+        );
       }
 
       case PluginComponents.comboBox: {
@@ -187,6 +207,18 @@ const ComponentPure = ({
         };
 
         return <ComboBox {...elementProps} onSelect={onSelectAction} />;
+      }
+
+      case PluginComponents.iFrame: {
+        return <iframe {...elementProps}></iframe>;
+      }
+
+      case PluginComponents.img: {
+        return <img {...elementProps}></img>;
+      }
+
+      case PluginComponents.skeleton: {
+        return <RectangleLoader {...elementProps} />;
       }
     }
   };
@@ -213,7 +245,7 @@ const Component = inject(({ pluginStore }) => {
   };
 })(observer(ComponentPure));
 
-const WrappedComponent = ({ component, pluginId, isLoading }) => {
+const WrappedComponent = ({ component, pluginId }) => {
   const [contextProps, setContextProps] = React.useState({});
 
   const updatePropsContext = (name, props) => {
@@ -224,9 +256,7 @@ const WrappedComponent = ({ component, pluginId, isLoading }) => {
   };
 
   return (
-    <PropsContext.Provider
-      value={{ contextProps, updatePropsContext, isLoading }}
-    >
+    <PropsContext.Provider value={{ contextProps, updatePropsContext }}>
       <Component component={component} pluginId={pluginId} />
     </PropsContext.Provider>
   );

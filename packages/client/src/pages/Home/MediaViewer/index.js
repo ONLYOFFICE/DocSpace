@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import queryString from "query-string";
 import MediaViewer from "@docspace/common/components/MediaViewer";
+import { PluginFileType } from "SRC_DIR/helpers/plugins/constants";
 
 const FilesMediaViewer = (props) => {
   const {
@@ -56,6 +57,7 @@ const FilesMediaViewer = (props) => {
     activeFiles,
     activeFolders,
     onClickDownloadAs,
+    pluginContextMenuItems,
   } = props;
 
   const navigate = useNavigate();
@@ -223,6 +225,7 @@ const FilesMediaViewer = (props) => {
         onChangeUrl={onChangeUrl}
         nextMedia={nextMedia}
         prevMedia={prevMedia}
+        pluginContextMenuItems={pluginContextMenuItems}
       />
     )
   );
@@ -238,6 +241,7 @@ export default inject(
     treeFoldersStore,
     contextOptionsStore,
     clientLoadingStore,
+    pluginStore,
   }) => {
     const {
       firstLoad,
@@ -248,6 +252,22 @@ export default inject(
     const setIsLoading = (param) => {
       setIsSectionFilterLoading(param);
     };
+
+    const { contextMenuItemsList } = pluginStore;
+
+    const pluginContextMenuItems =
+      contextMenuItemsList?.filter((i) => {
+        const { value } = i;
+
+        if (
+          value?.fileType?.includes(PluginFileType.Image) ||
+          !value?.fileType
+        ) {
+          return true;
+        }
+
+        return false;
+      }) || [];
 
     const {
       files,
@@ -343,6 +363,7 @@ export default inject(
       getFirstUrl,
       activeFiles,
       activeFolders,
+      pluginContextMenuItems,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(FilesMediaViewer)));

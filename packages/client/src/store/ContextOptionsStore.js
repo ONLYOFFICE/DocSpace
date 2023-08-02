@@ -1127,11 +1127,7 @@ class ContextOptionsStore {
         if (contextOptions.includes(option.key)) {
           const value = option.value;
 
-          if (value.onClick) {
-            const onClick = () => value.onClick(item.id);
-
-            value.onClick = onClick;
-          }
+          const onClick = () => value.onClick(item.id);
 
           if (value.fileExt) {
             if (value.fileExt.includes(item.fileExst)) {
@@ -1139,7 +1135,7 @@ class ContextOptionsStore {
                 key: option.key,
                 label: value.label,
                 icon: value.icon,
-                onClick: value.onClick,
+                onClick,
               });
             }
           } else {
@@ -1147,7 +1143,7 @@ class ContextOptionsStore {
               key: option.key,
               label: value.label,
               icon: value.icon,
-              onClick: value.onClick,
+              onClick,
             });
           }
         }

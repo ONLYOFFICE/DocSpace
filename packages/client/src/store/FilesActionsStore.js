@@ -78,7 +78,8 @@ class FilesActionStore {
     dialogsStore,
     mediaViewerDataStore,
     accessRightsStore,
-    clientLoadingStore
+    clientLoadingStore,
+    pluginStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -91,6 +92,7 @@ class FilesActionStore {
     this.mediaViewerDataStore = mediaViewerDataStore;
     this.accessRightsStore = accessRightsStore;
     this.clientLoadingStore = clientLoadingStore;
+    this.pluginStore = pluginStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -2024,6 +2026,9 @@ class FilesActionStore {
   openFileAction = (item) => {
     const { openDocEditor, isPrivacyFolder } = this.filesStore;
 
+    const { fileItemsList } = this.pluginStore;
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
@@ -2101,6 +2106,22 @@ class FilesActionStore {
         window.DocSpace.navigate(url);
         return;
       }
+
+      if (fileItemsList && enablePlugins) {
+        let currPluginItem = null;
+
+        fileItemsList.forEach((i) => {
+          if (i.key === item.fileExst) currPluginItem = i.value;
+        });
+
+        if (currPluginItem) {
+          currPluginItem.onClick(item);
+
+          return;
+        }
+      }
+
+      return;
 
       return window.open(viewUrl, "_self");
     }

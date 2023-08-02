@@ -61,7 +61,7 @@ const DropDownItem = (props) => {
       {icon && (
         <IconWrapper className="drop-down-icon">
           {!withoutIcon ? (
-            !icon.includes("images/") ? (
+            !icon.includes("images/") && !icon.includes(".svg") ? (
               <img className="drop-down-icon_image" src={icon} />
             ) : (
               <ReactSVG

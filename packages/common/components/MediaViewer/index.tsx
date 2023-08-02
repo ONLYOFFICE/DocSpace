@@ -29,6 +29,7 @@ function MediaViewer({
   playlistPos,
   nextMedia,
   prevMedia,
+  pluginContextMenuItems,
   ...props
 }: MediaViewerProps): JSX.Element {
   const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
@@ -191,6 +192,31 @@ function MediaViewer({
         onPreviewClick,
         onCopyLink,
       });
+
+    if (pluginContextMenuItems) {
+      pluginContextMenuItems.forEach((item) => {
+        const onClick = (): void => {
+          item.value.onClick(targetFile.id);
+
+          props.onClose();
+        };
+
+        model.push({
+          id: item.key,
+          key: item.key,
+          disabled: false,
+          ...item.value,
+          onClick,
+        });
+
+        desktopModel.push({
+          key: item.key,
+          disabled: false,
+          ...item.value,
+          onClick,
+        });
+      });
+    }
 
     return isMobile
       ? model

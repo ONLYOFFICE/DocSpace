@@ -27,7 +27,6 @@ export const getPlugin = async (id) => {
 };
 
 export const activatePlugin = async (id, enabled) => {
-  console.log(id, enabled);
   return request({
     method: "PUT",
     url: `/settings/webplugins/${id}`,
