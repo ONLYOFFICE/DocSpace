@@ -228,8 +228,8 @@ public class OperationController : ApiControllerBase
         entries.AddRange(await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
 
-        var conflictEntries = await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
-        conflictEntries.AddRange(await _fileStorageServiceString.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
+        var conflictEntries = await _fileStorageServiceString.GetItemsAsync(conflictFiles.OfType<int>().Select(Convert.ToInt32), conflictFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
+        conflictEntries.AddRange(await _fileStorageServiceString.GetItemsAsync(conflictFiles.OfType<string>(), conflictFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
         for (var i = 0; i < entries.Count; i++)
         {
