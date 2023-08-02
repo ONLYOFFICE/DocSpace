@@ -106,6 +106,7 @@
   "EncryptionKeysReload": "Encryption keys must be re-entered",
   "EnterName": "Enter name",
   "Error": "Error",
+  "ErrorEmptyList": "The list of entities has been changed. Please check the contents and try again.",
   "ErrorInternalServer": "Internal server error. Try again later.",
   "ErrorReport": "Error report",
   "ErrorReportDescription": "Open the report below to see what data is included. Error reports do not contain any personal data of the users. To help our team better understand the problem, describe it in the free form using the comment field.",

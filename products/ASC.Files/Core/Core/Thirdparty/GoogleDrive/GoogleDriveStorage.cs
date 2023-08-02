@@ -442,21 +442,10 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         {
             response = await httpClient.SendAsync(request);
         }
-        catch (HttpRequestException exception) // todo create catch
+        catch (Exception exception) // todo create catch
         {
-            /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range")) if (exception.Status == WebExceptionStatus.ProtocolError || exception.Status == WebExceptionStatus.UnknownError) //Status is UnknownError (unix)
-            {
-                response = exception.Response;
-            }
-            else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
-            {
-                response = null;
-            }
-            else
-            {
-                throw;
-            }*/
-            throw exception;
+            _logger.ErrorWithException(exception);
+            throw;
         }
 
         if (response == null || response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
