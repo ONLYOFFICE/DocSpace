@@ -17,12 +17,6 @@ export const PluginScopes = Object.freeze({
   File: "File",
 });
 
-export const PluginType = Object.freeze({
-  CONTEXT_MENU: "context menu",
-  ACTION_BUTTON: "action button",
-  PROFILE_MENU: "profile menu",
-});
-
 export const PluginStatus = Object.freeze({
   active: "active",
   hide: "hide",
@@ -50,6 +44,13 @@ export const PluginActions = Object.freeze({
 
   showModal: "show-modal",
   closeModal: "close-modal",
+
+  updateContextMenuItems: "update-context-menu-items",
+  updateInfoPanelItems: "update-info-panel-items",
+  updateMainButtonItems: "update-main-button-items",
+  updateProfileMenuItems: "update-profile-menu-items",
+  updateFileItems: "update-file-items",
+  updateEventListenerItems: "update-event-listener-items",
 });
 
 export const PluginToastType = Object.freeze({

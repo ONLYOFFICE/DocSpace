@@ -134,6 +134,13 @@ const InfoPanelHeaderContent = (props) => {
       }
 
       if (isFile && item.value.filesType.includes(PluginFileType.Files)) {
+        if (
+          item.value.filesExsts &&
+          !item.value.filesExsts.includes(fileExst)
+        ) {
+          return;
+        }
+
         roomsSubmenu.push(submenuItem);
         personalSubmenu.push(submenuItem);
         return;
