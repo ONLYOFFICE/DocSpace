@@ -13,10 +13,9 @@
   "FrameId": "ID rámu",
   "Header": "Hlavička",
   "ItemsCount": "Počet položiek",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Menu",
   "Page": "Strana",
   "SearchTerm": "Hľadať termín",
-  "SortOrder": "Zoradiť objednávku",
-  "WindowParameters": "Parametre okna"
+  "SortOrder": "Zoradiť objednávku"
 }

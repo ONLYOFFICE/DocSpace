@@ -129,6 +129,9 @@ export const getAccessOptions = (
         accesses.viewer,
       ];
       break;
+    case RoomsType.PublicRoom:
+      options = [accesses.roomAdmin, accesses.collaborator];
+      break;
     case -1:
       if (isOwner) options.push(accesses.docSpaceAdmin);
 

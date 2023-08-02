@@ -1,13 +1,25 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
-import { combineUrl, setCookie, getCookie } from "../utils";
+import {
+  combineUrl,
+  setCookie,
+  getCookie,
+  frameCallEvent,
+  getSystemTheme,
+} from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { ThemeKeys, COOKIE_EXPIRATION_YEAR, LANGUAGE, TenantStatus } from "../constants";
+import {
+  ThemeKeys,
+  COOKIE_EXPIRATION_YEAR,
+  LANGUAGE,
+  TenantStatus,
+} from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const themes = {
   Dark: Dark,
@@ -31,7 +43,8 @@ class SettingsStore {
     ? window.RendererProcessVariable?.theme?.type === "dark"
       ? Dark
       : Base
-    : window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
     ? Dark
     : Base;
   trustedDomains = [];
@@ -39,6 +52,7 @@ class SettingsStore {
   ipRestrictionEnable = false;
   ipRestrictions = [];
   sessionLifetime = "1440";
+  enabledSessionLifetime = false;
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -77,7 +91,7 @@ class SettingsStore {
   isHeaderVisible = false;
   isTabletView = false;
 
-  showText = false;
+  showText = JSON.parse(localStorage.getItem("showArticle")) ?? false;
   articleOpen = false;
   isMobileArticle = false;
 
@@ -116,6 +130,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  apiDocsLink = null;
   bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
@@ -141,6 +156,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  publicRoomKey = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -278,8 +294,20 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-webhooks.aspx`;
   }
 
+  get sdkLink() {
+    return `${this.apiDocsLink}/docspace/jssdk`;
+  }
+
+  get apiBasicLink() {
+    return `${this.apiDocsLink}/docspace/basic`;
+  }
+
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
+  }
+
+  get isPublicRoom() {
+    return window.location.pathname === "/rooms/share";
   }
 
   setMainBarVisible = (visible) => {
@@ -310,6 +338,17 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
+  getPortal = async () => {
+    try {
+      const res = await api.portal.getPortal();
+
+      if (!res) return;
+
+      return res;
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
   getSettings = async () => {
     let newSettings = null;
 
@@ -318,7 +357,10 @@ class SettingsStore {
     else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
-      const dp = combineUrl(window.DocSpaceConfig?.proxy?.url, "/products/files/");
+      const dp = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        "/products/files/"
+      );
       this.setDefaultPage(dp);
     }
 
@@ -328,7 +370,7 @@ class SettingsStore {
           key,
           key === "defaultPage"
             ? combineUrl(window.DocSpaceConfig?.proxy?.url, newSettings[key])
-            : newSettings[key],
+            : newSettings[key]
         );
         if (key === "culture") {
           if (newSettings.wizardToken) return;
@@ -375,7 +417,7 @@ class SettingsStore {
       this.pluginOptions = origSettings.plugins.allow;
     }
 
-    if (origSettings.tenantAlias) {
+    if (origSettings?.tenantAlias) {
       this.setTenantAlias(origSettings.tenantAlias);
     }
   };
@@ -388,7 +430,7 @@ class SettingsStore {
       this.getPortalSettings(),
       this.getAppearanceTheme(),
       this.getWhiteLabelLogoUrls(),
-      this.getBuildVersionInfo(),
+      this.getBuildVersionInfo()
     );
 
     await Promise.all(requests);
@@ -424,12 +466,12 @@ class SettingsStore {
   setAdditionalResources = async (
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
-    helpCenterEnabled,
+    helpCenterEnabled
   ) => {
     return await api.settings.setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
-      helpCenterEnabled,
+      helpCenterEnabled
     );
   };
 
@@ -476,7 +518,13 @@ class SettingsStore {
   };
 
   setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
-    return api.settings.setCompanyInfoSettings(address, companyName, email, phone, site);
+    return api.settings.setCompanyInfoSettings(
+      address,
+      companyName,
+      email,
+      phone,
+      site
+    );
   };
 
   setLogoUrl = (url) => {
@@ -535,11 +583,15 @@ class SettingsStore {
   };
 
   getLoginLink = (token, code) => {
-    return combineUrl(window.DocSpaceConfig?.proxy?.url, `/login.ashx?p=${token}&code=${code}`);
+    return combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      `/login.ashx?p=${token}&code=${code}`
+    );
   };
 
   setModuleInfo = (homepage, productId) => {
-    if (this.homepage === homepage || this.currentProductId === productId) return;
+    if (this.homepage === homepage || this.currentProductId === productId)
+      return;
 
     console.log(`setModuleInfo('${homepage}', '${productId}')`);
 
@@ -585,12 +637,17 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
-  setPortalPasswordSettings = async (minLength, upperCase, digits, specSymbols) => {
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
     const settings = await api.settings.setPortalPasswordSettings(
       minLength,
       upperCase,
       digits,
-      specSymbols,
+      specSymbols
     );
     this.setPasswordSettings(settings);
   };
@@ -618,7 +675,11 @@ class SettingsStore {
   };
 
   toggleShowText = () => {
-    this.showText = !this.showText;
+    const reverseValue = !this.showText;
+
+    localStorage.setItem("showArticle", reverseValue);
+
+    this.showText = reverseValue;
   };
 
   setArticleOpen = (articleOpen) => {
@@ -638,8 +699,15 @@ class SettingsStore {
     return window.firebaseHelper;
   }
 
+  setPublicRoomKey = (key) => {
+    this.publicRoomKey = key;
+  };
+
   get socketHelper() {
-    return new SocketIOHelper(this.socketUrl);
+    const socketUrl =
+      this.isPublicRoom && !this.publicRoomKey ? null : this.socketUrl;
+
+    return new SocketIOHelper(socketUrl, this.publicRoomKey);
   }
 
   getBuildVersionInfo = async () => {
@@ -657,7 +725,8 @@ class SettingsStore {
       ...versionInfo,
     };
 
-    if (!this.buildVersionInfo.documentServer) this.buildVersionInfo.documentServer = "6.4.1";
+    if (!this.buildVersionInfo.documentServer)
+      this.buildVersionInfo.documentServer = "6.4.1";
   };
 
   setTheme = (key) => {
@@ -674,10 +743,7 @@ class SettingsStore {
       case ThemeKeys.System:
       case ThemeKeys.SystemStr:
       default:
-        theme =
-          window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? ThemeKeys.DarkStr
-            : ThemeKeys.BaseStr;
+        theme = getSystemTheme();
     }
 
     this.theme = themes[theme];
@@ -727,12 +793,18 @@ class SettingsStore {
 
   getSessionLifetime = async () => {
     const res = await api.settings.getCookieSettings();
-    this.sessionLifetime = res;
+
+    this.enabledSessionLifetime = res.enabled;
+    this.sessionLifetime = res.lifeTime;
   };
 
-  setSessionLifetimeSettings = async (lifeTime) => {
-    const res = await api.settings.setCookieSettings(lifeTime);
+  setSessionLifetimeSettings = async (lifeTime, enabled) => {
+    const res = await api.settings.setCookieSettings(lifeTime, enabled);
+
+    this.enabledSessionLifetime = enabled;
     this.sessionLifetime = lifeTime;
+
+    return res;
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {
@@ -743,8 +815,18 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = (frameConfig) => {
-    this.frameConfig = frameConfig;
+  setFrameConfig = async (frameConfig) => {
+    runInAction(() => {
+      this.frameConfig = frameConfig;
+    });
+
+    if (!!frameConfig) {
+      this.setTheme(frameConfig?.theme);
+      frameCallEvent({
+        event: "onAppReady",
+        data: { frameId: frameConfig.frameId },
+      });
+    }
     return frameConfig;
   };
 

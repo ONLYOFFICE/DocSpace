@@ -10,14 +10,16 @@ import Text from "./text";
 import ControlButtons from "./control-btn";
 import Item from "./item";
 import StyledContainer from "../StyledNavigation";
+import NavigationLogo from "./logo-block";
 
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   tablet,
   mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+import { ReactSVG } from "react-svg";
 
 import { Base } from "@docspace/components/themes";
 
@@ -25,6 +27,11 @@ const StyledBox = styled.div`
   position: absolute;
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
+  ${({ withLogo }) =>
+    withLogo &&
+    css`
+      left: 207px;
+    `};
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
@@ -87,6 +94,7 @@ const Row = React.memo(({ data, index, style }) => {
       isRootRoom={data[0][index].isRootRoom}
       isRoot={isRoot}
       onClick={data[1]}
+      withLogo={data[2].withLogo}
       style={{ ...style }}
     />
   );
@@ -115,6 +123,9 @@ const DropBox = React.forwardRef(
       isDesktop,
       isDesktopClient,
       showRootFolderNavigation,
+      withLogo,
+      burgerLogo,
+      titleIcon,
     },
     ref
   ) => {
@@ -151,7 +162,10 @@ const DropBox = React.forwardRef(
     }, [sectionHeight]);
 
     const navigationTitleNode = (
-      <Text title={title} isOpen={true} onClick={toggleDropBox} />
+      <div className="title-block">
+        {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+        <Text title={title} isOpen={true} onClick={toggleDropBox} />
+      </div>
     );
 
     const navigationTitleContainerNode = showRootFolderNavigation ? (
@@ -167,6 +181,8 @@ const DropBox = React.forwardRef(
       navigationTitleNode
     );
 
+    const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+
     return (
       <>
         <StyledBox
@@ -176,13 +192,22 @@ const DropBox = React.forwardRef(
           showText={showText}
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
+          withLogo={withLogo}
         >
           <StyledContainer
             canCreate={canCreate}
             isDropBoxComponent={true}
             isInfoPanelVisible={isInfoPanelVisible}
             isDesktopClient={isDesktopClient}
+            withLogo={!!withLogo && isTabletView}
           >
+            {withLogo && (
+              <NavigationLogo
+                logo={withLogo}
+                burgerLogo={burgerLogo}
+                className="navigation-logo drop-box-logo"
+              />
+            )}
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
@@ -209,7 +234,11 @@ const DropBox = React.forwardRef(
             width={"auto"}
             itemCount={countItems}
             itemSize={getItemSize}
-            itemData={[navigationItems, onClickAvailable]}
+            itemData={[
+              navigationItems,
+              onClickAvailable,
+              { withLogo: !!withLogo },
+            ]}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}

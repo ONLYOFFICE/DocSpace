@@ -226,6 +226,7 @@ class SsoFormStore {
   };
 
   confirmDisable = () => {
+    this.resetForm();
     this.setIsSsoEnabled(false);
     this.ssoToggle();
     this.confirmationDisableModal = false;
@@ -361,6 +362,7 @@ class SsoFormStore {
       this.isSubmitLoading = false;
       this.setSpMetadata(true);
       this.setDefaultSettings(settings);
+      this.setIsSsoEnabled(settings.enableSso);
     } catch (err) {
       toastr.error(err);
       console.error(err);

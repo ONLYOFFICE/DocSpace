@@ -132,7 +132,7 @@ $__AuthorName usunął pokój: $RoomTitle</value>
     <value>Wspomniano w dokumencie</value>
   </data>
   <data name="subject_MailMergeEnd_push" xml:space="preserve">
-    <value>Wysłano.</value>
+    <value>Wiadomości zostały wysłane.</value>
   </data>
   <data name="subject_RoomRemoved" xml:space="preserve">
     <value>Powiadomienie DocSpace. Pokój został usunięty</value>

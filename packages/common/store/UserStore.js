@@ -84,7 +84,7 @@ class UserStore {
 
     runInAction(() => {
       this.user.theme = theme;
-    })
+    });
 
     this.setIsLoading(false);
 

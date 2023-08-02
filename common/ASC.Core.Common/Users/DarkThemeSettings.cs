@@ -26,15 +26,21 @@
 
 namespace ASC.Web.Core.Users;
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class DarkThemeSettings : ISettings<DarkThemeSettings>
 {
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     [JsonIgnore]
     public Guid ID
     {
         get { return new Guid("{38362061-066D-4C57-A23E-8953CF34EFC3}"); }
     }
 
+    /// <summary>Theme</summary>
+    /// <type>ASC.Web.Core.Users.DarkThemeSettingsEnum, ASC.Core.Common</type>
     public DarkThemeSettingsEnum Theme { get; set; }
 
     public DarkThemeSettings GetDefault()
@@ -46,6 +52,8 @@ public class DarkThemeSettings : ISettings<DarkThemeSettings>
     }
 }
 
+/// <summary>
+/// </summary>
 [System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter))]
 public enum DarkThemeSettingsEnum
 {

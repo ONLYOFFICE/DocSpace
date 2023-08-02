@@ -1,80 +1,20 @@
-﻿import React, { useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
 
-import Loaders from "@docspace/common/components/Loaders";
-import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
+import PaymentsEnterprise from "./Standalone";
+import PaymentsSaaS from "./SaaS";
 
-import PaymentContainer from "./PaymentContainer";
+const PaymentsPage = (props) => {
+  const { standalone } = props;
 
-const PaymentsPage = ({
-  language,
-  isLoadedTariffStatus,
-  isLoadedCurrentQuota,
-  isInitPaymentPage,
-  init,
-  isUpdatingTariff,
-  isUpdatingBasicSettings,
-  resetTariffContainerToBasic,
-}) => {
-  const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
-
-  useEffect(() => {
-    moment.locale(language);
-    return () => resetTariffContainerToBasic();
-  }, []);
-
-  useEffect(() => {
-    setDocumentTitle(t("Common:PaymentsTitle"));
-  }, [ready]);
-
-  useEffect(() => {
-    if (!isLoadedTariffStatus || !isLoadedCurrentQuota || !ready) return;
-
-    init(t);
-  }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
-
-  return !isInitPaymentPage ||
-    !ready ||
-    isUpdatingTariff ||
-    isUpdatingBasicSettings ? (
-    <Loaders.PaymentsLoader />
-  ) : (
-    <PaymentContainer t={t} />
-  );
+  return standalone ? <PaymentsEnterprise /> : <PaymentsSaaS />;
 };
 
-PaymentsPage.propTypes = {
-  isLoaded: PropTypes.bool,
-};
-
-export default inject(({ auth, payments }) => {
-  const {
-    language,
-    currentQuotaStore,
-    currentTariffStatusStore,
-    isUpdatingTariff,
-  } = auth;
-
-  const { isLoaded: isLoadedCurrentQuota } = currentQuotaStore;
-  const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
-  const {
-    isInitPaymentPage,
-    init,
-    isUpdatingBasicSettings,
-    resetTariffContainerToBasic,
-  } = payments;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { standalone } = settingsStore;
 
   return {
-    resetTariffContainerToBasic,
-    isUpdatingTariff,
-    init,
-    isInitPaymentPage,
-    language,
-    isLoadedTariffStatus,
-    isLoadedCurrentQuota,
-    isUpdatingBasicSettings,
+    standalone,
   };
 })(observer(PaymentsPage));

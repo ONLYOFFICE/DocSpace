@@ -211,13 +211,6 @@ ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
  
 $GreenButton
  
-現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
- 
-* 管理者1人、パワーユーザー2人
-* 最大12ルーム
-* 各ルームのユーザー数は無制限
-* ディスク領域 2 GB
- 
 ドキュメントコラボレーションの新時代をどうぞお楽しみください！
  
 ONLYOFFICE Team
@@ -234,13 +227,6 @@ ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
  
 $GreenButton
  
-現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
- 
-* 管理者1人、パワーユーザー2人
-* 最大12ルーム
-* 各ルームのユーザー数は無制限
-* ディスク領域 2 GB
- 
 ドキュメントコラボレーションの新時代をどうぞお楽しみください！
  
 ONLYOFFICE Team
@@ -256,13 +242,6 @@ ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
 メールのご確認をお願いします。リンクの有効期限は7日間です：
  
 $GreenButton
- 
-現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
- 
-* 管理者1人、パワーユーザー2人
-* 最大12ルーム
-* 各ルームのユーザー数は無制限
-* ディスク領域 2 GB
  
 ドキュメントコラボレーションの新時代をどうぞお楽しみください！
  
@@ -484,7 +463,7 @@ ONLYOFFICE DocSpaceの "お支払いセクション":"$PricingPage" をご参照
 _ご注意：サブスクリプションをお支払いされている方は、支払者になります。お支払い担当者のみがサブスクリプションの変更（マネージャー数の調整）を行うことができます。ユーザーはお支払いの詳細にアクセスすることはできません。ONLYOFFICE DocSpaceのアカウント所有者は、支払者をいつでも変更することができます。_
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>こんにちは！

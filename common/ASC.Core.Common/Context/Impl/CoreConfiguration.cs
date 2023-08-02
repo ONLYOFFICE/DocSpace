@@ -80,9 +80,13 @@ public class CoreBaseSettings
     public bool DisableDocSpace => _disableDocSpace ?? (bool)(_disableDocSpace = string.Equals(Configuration["core:disableDocspace"], "true", StringComparison.OrdinalIgnoreCase));
 }
 
+/// <summary>
+/// </summary>
 [Scope]
 public class CoreSettings : IDisposable
 {
+    /// <summary>Base domain</summary>
+    /// <type>System.String, System</type>
     public string BaseDomain
     {
         get
@@ -334,7 +338,7 @@ public class CoreConfiguration
         return _personalMaxSpace.Value;
     }
 
-    public async Task<SmtpSettings> GetSmtpSettingsAsync()
+    public async Task<SmtpSettings> GetDefaultSmtpSettingsAsync()
     {
         var isDefaultSettings = false;
         var tenant = await _tenantManager.GetCurrentTenantAsync(false);

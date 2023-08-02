@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Hesap giriş türü",
   "DeleteSelfProfile": "Profili sil",
   "DisabledEmployeeStatus": "Devre dışı bırakıldı",
   "DisableUserButton": "Devre dışı bırak",
@@ -12,6 +13,7 @@
   "RemoveData": "Kişisel bilgileri sil",
   "ResetAuth": "Kimlik doğrulamayı sıfırlayın",
   "SendInviteAgain": "Bir kez daha davetiye gönder",
+  "StandardLogin": "Standart giriş",
   "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
   "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
   "SuccessSentInvitation": "Davetiye başarıyla gönderildi",

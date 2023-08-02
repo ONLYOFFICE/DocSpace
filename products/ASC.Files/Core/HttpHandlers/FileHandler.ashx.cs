@@ -349,7 +349,8 @@ public class FileHandlerService
             {
                 var linkId = await _externalShare.GetLinkIdAsync();
 
-                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title)) || linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title) || FileUtility.GetFileExtension(file.Title) == ".pdf") || 
+                    linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;

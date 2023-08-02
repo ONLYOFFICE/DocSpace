@@ -645,13 +645,6 @@ Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
 
 $GreenButton
 
-Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
-
-* 1 yönetici, 2 uzman kullanıcı
-* 12 odaya kadar
-* Her odada sınırsız sayıda kullanıcı
-* 2 GB disk alanı
-
 Yeni bir belge iş birliği yönteminin keyfini çıkarın!
 
 Saygılarımızla,
@@ -666,13 +659,6 @@ Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliği
 Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
 
 $GreenButton
-
-Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
-
-* 1 yönetici, 2 uzman kullanıcı
-* 12 odaya kadar
-* Her odada sınırsız sayıda kullanıcı
-* 2 GB disk alanı
 
 Yeni bir belge iş birliği yönteminin keyfini çıkarın!
 
@@ -710,13 +696,6 @@ Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliği
 Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
 
 $GreenButton
-
-Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
-
-* 1 yönetici, 2 uzman kullanıcı
-* 12 odaya kadar
-* Her odada sınırsız sayıda kullanıcı
-* 2 GB disk alanı
 
 Yeni bir belge iş birliği yönteminin keyfini çıkarın!
 
@@ -1236,5 +1215,598 @@ ONLYOFFICE Ekibi
   </data>
   <data name="ButtonVisitPaymentsSection" xml:space="preserve">
     <value>Ödemeler Bölümünü Ziyaret Edin</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Geribildirim Bırak</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Profili kaldır</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Şimdi yenile</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Ücretsiz denemeyi başlat</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>İndirim kulan</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal yedeği oluşturuldu
+
+Sayın $OwnerName,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) portalınızdaki verileri içeren bir yedekleme dosyası oluşturuldu.
+
+Yedekleme prosedürü hakkında daha fazla bilgi almak için lütfen [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx) kullanıcı kılavuzumuza başvurun.
+
+Herhangi bir sorunuz veya yardıma ihtiyacınız olması halinde lütfen [support.onlyoffice.com](http://support.onlyoffice.com) adresinden bizimle iletişime geçin.
+
+Saygılarımızla,
+ONLYOFFICE™ Destek Ekibi
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>${LetterLogoText} hesabınızdaki e-postayı değiştirmek mi istiyorsunuz?
+
+Aşağıdaki butona tıklayın ve bulutunuzda giriş yapın*.
+
+$GreenButton
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+*Bu tarayıcıda, ${LetterLogoText} için oturum açmadıysanız, onay için eski e-posta adresinizi kullanmanız gerekir. Adresinizi hatırlamıyorsanız, portal yöneticinizle iletişime geçin.
+
+E-postanızı değiştirmek istemiyorsanız, lütfen bu mesajı yok sayın.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Güvenlik bildirimi
+
+${LetterLogoText} portalına girmek için kullandığınız kimlik doğrulama uygulamasının yapılandırması sıfırlandı.
+
+Portal oturum açma sayfasına gitmek ve kimlik doğrulayıcı uygulamasını yapılandırmak için lütfen aşağıdaki butona tıklayın:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Merhaba $UserName!
+
+Konuk kullanıcı olarak davetlisiniz: "${__VirtualRootPath}":"${__VirtualRootPath}". Bağlantıya tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Bağlantı yalnızca 7 gün boyunca geçerlidir.
+
+Web ofisinizi nasıl kullanacağınıza dair daha fazla ipucu göndereceğiz. Profil sayfanızdaki abonelikleri her an iptal edebileceğiniz gibi yeniden etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Merhaba $UserName!
+
+$__AuthorName size konuk kullanıcı olarak davet ediyor: "${__VirtualRootPath}":"${__VirtualRootPath}". Bağlantıya tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Bağlantı yalnızca 7 gün boyunca geçerlidir.
+
+Web ofisinizi nasıl kullanacağınıza dair daha fazla ipucu göndereceğiz. Profil sayfanızdaki abonelikleri her an iptal edebileceğiniz gibi yeniden etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portalından mesaj
+
+E-posta: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Sayın $UserName,
+
+      Yönetici, "${__VirtualRootPath}":"${__VirtualRootPath}" portalında sizin için yeni bir &lt;b&gt;$Address&lt;/b&gt; posta kutusu oluşturdu.
+
+      Diğer e-posta istemcileri için aşağıdaki ayarları kullanın:
+      Kullanıcı adı: &lt;b&gt;$Login&lt;/b&gt;
+      Şifre: "&lt;b&gt;belirlenmiş şifre&lt;/b&gt;":"$MyStaffLink"
+
+      Gelen E-Posta (IMAP): 
+      Sunucu: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Giden E-Posta (SMTP): 
+      Sunucu: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Kimlik doğrulaması gerektirir: &lt;b&gt;Evet&lt;/b&gt;
+
+      Bu e-postayı yanlışlıkla aldıysanız, lütfen dikkate almayın veya daha fazla bilgi almak için portal yöneticinizle iletişime geçin.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Sayın $UserName,
+
+      &lt;b&gt;$Address&lt;/b&gt; posta kutusunun şifresi değiştirildi.
+
+      Bu e-postayı yanlışlıkla aldıysanız, lütfen dikkate almayın veya daha fazla bilgi almak için portal yöneticinizle iletişime geçin.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Sayın $UserName,
+
+      Yönetici, "${__VirtualRootPath}":"${__VirtualRootPath}" portalında sizin için yeni bir &lt;b&gt;$Address&lt;/b&gt; posta kutusu oluşturdu.
+
+      Bu e-postayı yanlışlıkla aldıysanız, lütfen dikkate almayın veya daha fazla bilgi almak için portal yöneticinizle iletişime geçin.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Portal taşınması
+h1."$PortalUrl":"$PortalUrl"
+
+Portalınız yeni bir alana taşındı. Lütfen oturum açmak için kullanılacak şifreyi belirleyerek portala erişiminizi yeniden etkin hale getirin.
+
+Hesap şifrenizi belirlemek üzere lütfen aşağıdaki bağlantıyı takip edin:
+$GreenButton
+
+*Not*: Bu bağlantı yalnızca 7 gün boyunca geçerlidir. Lütfen erişimi yeniden etkin hale getirme işlemini bu süre zarfında tamamlayın.
+
+Bu e-postayı yanlışlıkla aldıysanız, lütfen dikkate almayın veya daha fazla bilgi almak için "$PortalUrl":"$PortalUrl" portal yöneticinizle iletişime geçin.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Merhaba,
+
+Konuk kullanıcı olarak davetlisiniz: "${__VirtualRootPath}":"${__VirtualRootPath}". Bağlantıya tıklayarak daveti kabul edin:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Bağlantı yalnızca 7 gün boyunca geçerlidir.
+
+Web ofisinizi nasıl kullanacağınıza dair daha fazla ipucu göndereceğiz. Profil sayfanızdaki abonelikleri her an iptal edebileceğiniz gibi yeniden etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Merhaba, $UserName
+"${__VirtualRootPath}":"${__VirtualRootPath}" ONLYOFFICE Personal’a başarıyla kayıt oldunuz.
+
+Belgeleriniz için her yerden erişilebilen tek bir çalışma alanı oluşturmak için Dropbox, Google Drive, OneDrive veya Box gibi favoriniz olan bulut depolama hizmetine bağlayın.
+
+"Blogumuz":"$TagBlogLink" dan ONLYOFFICE Personal ile ilgili daha fazla bilgi alabilirsiniz.
+
+Burada olmanızdan çok mutluyuz. Bizi izlemeye devam edin!
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.ONLYOFFICE Personal'a Hoş Geldiniz
+
+An itibariyle, bulut üzerinde kişisel ofisinizi oluşturdunuz.
+
+h3. Bu, dosyaları düzenleyip saklayabileceğiniz ve arkadaşlarınız veya iş ekibinize erişim vererek, nerede olurlarsa olsunlar onlarla birlikte çalışabileceğiniz sanal bir çalışma alanıdır.  
+
+h3. Hızlı bir başlangıç için, ONLYOFFICE ile yapabilecekleriniz şunlardır:
+
+- Metin belgeleri, tablolar, sunumlar oluşturma, görüntüleme ve düzenleme
+
+- Tüm popüler formatlarla çalışma. MS Office dosyaları ile en yüksek uyumluluk.
+
+- "Doldurmaya hazır şablonlar ":"https://www.onlyoffice.com/form-creator.aspx" oluşturma ve birlikte düzenleme
+
+- Çevrimiçi olarak belgeler paylaşma ve belgeler üzerinde birlikte çalışma
+
+- Ekstra özellikler uygulamak için çeşitli eklentiler kullanma
+
+- "Chrome eklentisi ile":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" Personal bulutunuza kolay erişim
+
+Ayrıca, belgeleri ücretsiz "masaüstü düzenleyicilerimiz":"https://www.onlyoffice.com/download-desktop.aspx" ile çevrimdışı olarak da düzenleyebilir ya da "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" cihazınız için mobil düzenleme programını indirebilirsiniz.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>ONLYOFFICE hesabınızdaki e-postayı değiştirmek mi istiyorsunuz?
+
+Aşağıdaki butona tıklayın ve bulutunuzda giriş yapın*.
+
+$GreenButton
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+*Bu tarayıcıda, ONLYOFFICE için oturum açmadıysanız, onay için eski e-posta adresinizi kullanmanız gerekir
+
+E-postanızı değiştirmek istemiyorsanız, lütfen bu mesajı yok sayın.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Merhaba,
+
+Kişisel kullanım için ONLYOFFICE çözümünde bir oluşturdunuz. Kaydı doğrulamak ve parola oluşturmak için "buraya":"$InviteLink"i tıklayın.
+
+Bağlantıyı açamıyorsanız, lütfen bağlantı adresini "$InviteLink":"$InviteLink" kopyalayın ve tarayıcınızın adres çubuğuna yapıştırın.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Personal.onlyoffice.com adresindeki hesabınızın sonlandırılmasını talep ettiniz. İsteği tamamlamak için bağlantıya tıklayın (bağlantı 7 günlük bir süre boyunca etkindir):
+
+$GreenButton
+
+*Not*: Silme sonrasında, hesabınız ve tüm ilişkili veriler “Gizlilik Politikası":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" uyarınca kalıcı olarak silinecektir.
+
+"Hesap sonlandırma hakkında daha fazla bilgi edinin":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Devam etmek istemiyorsanız bu e-postayı dikkate almayın.
+
+Herhangi bir sorunuz varsa, lütfen "support@onlyoffice.com":"mailto:support@onlyoffice.com" adresinden bizimle iletişime geçin.
+
+Saygılarımızla,
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portalının devre dışı bırakılması
+
+Sayın $OwnerName,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) portalınızın geçici olarak devre dışı bırakılmasını talep ettiniz. Lütfen işlemi onaylamak için aşağıdaki bağlantıya tıklayın:
+
+$GreenButton
+
+_Not_: Bu bağlantı yalnızca 7 gün boyunca geçerlidir. Lütfen portal devre dışı bırakma işlemini bu süre zarfında tamamlayın.
+
+Aşağıdaki bağlantıya tıklayarak portalınızı istediğiniz zaman yeniden etkinleştirebilirsiniz:
+[Portalı Yeniden Etkinleştir]($ActivateUrl) (bu bağlantının ise zaman sınırı yoktur)
+
+Herhangi bir sorunuz veya yardıma ihtiyacınız olması halinde lütfen [support.onlyoffice.com](http://support.onlyoffice.com) adresinden bizimle iletişime geçin.
+
+Saygılarımızla,
+ONLYOFFICE™ Destek Ekibi
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portalının silinmesi
+
+Sayın $OwnerName,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) portalınızın kalıcı olarak silinmesini talep ettiniz.
+
+_Önemli! Portalınızda saklanan tüm veriler ve kayıt bilgileriniz kaybolacaktır ve kurtarılamazlar._
+
+#if($AutoRenew == "True")
+Portalı silmeden önce, lütfen otomatik faturalamanın kapalı olduğundan emin olun. Otomatik faturalamanın durumunu [Avangate hesabı](https://secure.avangate.com/myaccount/") sayfanızdan kontrol edebilirsiniz.
+#end
+
+[${__VirtualRootPath}](${__VirtualRootPath}) portalınızı silmeye devam etmek istiyorsanız, lütfen işlemi onaylamak için aşağıdaki bağlantıya tıklayın:
+
+$GreenButton
+
+*Not*: Bu bağlantı yalnızca 7 gün boyunca geçerlidir. Lütfen portal silme işlemini bu süre zarfında tamamlayın.
+
+Herhangi bir sorunuz veya yardıma ihtiyacınız olması halinde lütfen [support.onlyoffice.com](http://support.onlyoffice.com) adresinden bizimle iletişime geçin.
+
+Saygılarımızla,
+ONLYOFFICE™ Destek Ekibi
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>"$FromUserName":"$FromUserLink" kullanıcısı profilini sildi ve bu profil artık bloke edilmiştir. Kullanıcıya tüm dosyaları hâlâ kendisine atanmış durumdadır ve disk alanı kaplamaktadır.
+
+Kullanıcının başkalarıyla paylaşılan belgelerini, başka bir aktif kullanıcıya yeniden atayabilir veya portal disk alanını boşaltmak için bunları silebilirsiniz.
+
+Belgeleri başka bir kullanıcıya atamak veya verileri silmek üzere lütfen "bu bağlantıyı":"$FromUserLink" kullanarak kullanıcı profiline gidin.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) üzerindeki profiliniz değiştirildi
+
+Sayın $UserName,
+
+[${__VirtualRootPath}](${__VirtualRootPath}) üzerinde yer alan profil bilgileriniz, [$__AuthorName]($__AuthorUrl) tarafından değiştirildi.
+
+Profilinizi görüntülemek için aşağıdaki bağlantıya tıklayın:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Sayın $UserName,
+
+Verilerin "$FromUserName":"$FromUserLink" kullanıcısından, "$ToUserName":"$ToUserLink kullanıcısına yeniden atanması işlemi başarısız oldu. 
+
+İstisna mesajı: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Sayın $UserName,
+
+"$FromUserName":"$FromUserLink" kullanıcısından veri silme işlemi başarıyla tamamlandı.
+
+Aşağıdakileri boşaltmak üzere kişisel veri silinmesine izin verilmiştir: 
+
+# Belgeler - $DocsSpace
+# CRM - $CrmSpace
+# E-Posta - $MailSpace
+# Konuşma - $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Sayın $UserName,
+
+"$FromUserName":"$FromUserLink" kullanıcısından veri silme işlemi başarısız oldu. 
+
+İstisna mesajı: $Message</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" için tarife talebi
+
+h3.Ad
+$UserName
+
+h3.Soyad
+$UserLastName
+
+h3.Pozisyon
+$Position
+
+h3.E-posta
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefon
+$Phone
+
+h3.Şirket web sitesi
+$Website
+
+h3.Şirket adı
+$CompanyTitle
+
+h3.Şirket büyüklüğü
+$CompanySize
+
+h3.Talep içeriği
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Portal geri yükleme
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Portalınız geri yüklendi. Erişmek için yeni bir şifre belirlemeniz gerekmektedir.
+
+$GreenButton
+
+s
+*Not*: Bu bağlantı yalnızca 7 gün boyunca geçerlidir.
+
+Bu e-postayı yanlışlıkla aldıysanız, lütfen dikkate almayın veya daha fazla bilgi almak için "${__VirtualRootPath}":"${__VirtualRootPath}" portal yöneticinizle iletişime geçin.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Merhaba!
+
+Konuk kullanıcı olarak davetlisiniz: "${__VirtualRootPath}":"${__VirtualRootPath}". Bağlantıya tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Aralıklarla size kullanışlı ipuçları ve güncel ONLYOFFICE haberlerini de göndereceğiz. Profil sayfanızdaki abonelikleri her an iptal edebileceğiniz gibi yeniden etkinleştirebilirsiniz.
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal profili değişim bildirimi
+
+[$__AuthorName]($__AuthorUrl), [${__VirtualRootPath}](${__VirtualRootPath}) portalındaki profil bilgilerini değiştirdi.</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalınızdaki dosya şifre çözme işlemi başarısız oldu.
+
+Bazı dosyaların şifresi çözülemedi. "Kontrol Paneli":"${ControlPanelUrl}/storage" bölümünden daha fazla bilgi alabilirsiniz.</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalınızda dosya şifre çözme işlemi başlatıldı.
+
+Şifre çözme işlemi zaman alabilir, bu nedenle portal geçici olarak kullanılamayacaktır. Şifre çözme tamamlandığında, verilerinizle yeniden çalışabileceksiniz.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalınızdaki dosya şifre çözme işlemi başarıyla tamamlandı.
+
+Portalınız yeniden kullanılabilir.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalındaki dosya şifreleme işlemi başarısız oldu.
+
+Bazı dosyalar şifrelenemedi. "Kontrol Paneli":"${ControlPanelUrl}/storage" bölümünden daha fazla bilgi alabilirsiniz.</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalınızda dosya şifreleme işlemi başlatıldı.
+
+Şifreleme işlemi zaman alabilir, bu nedenle portal geçici olarak kullanılamayacaktır. Şifreleme tamamlandığında, verilerinizle yeniden çalışabileceksiniz.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+"${PortalUrl}":"${PortalUrl}" portalınızdaki dosya şifreleme işlemi başarıyla tamamlandı.
+
+Portalınız yeniden kullanılabilir.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) portalına yeni kullanıcı eklendi
+[${__VirtualRootPath}](${__VirtualRootPath}) adresindeki portalınıza [$__AuthorName]($__AuthorUrl) katıldı.</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Sayın $UserName,
+
+İşbirliğinizi artıracak güvenli ve emniyetli şirket web ofisine katılmaya davet edildiniz. Adresi: "${__VirtualRootPath}":"${__VirtualRootPath}". Bu bağlantıyı favorilerinize ekleseniz iyi edersiniz, büyük olasılıkla sık kullanacaksınız.
+
+Aşağıdaki bağlantıya tıklayarak daveti kabul edin ve oturum açmak için kurumsal hesap kullanıcı adınızı ve şifrenizi kullanın.
+
+$GreenButton
+
+Bağlantı yalnızca 7 gün boyunca geçerlidir.</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Güvenlik bildirimi</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e hoş geldiniz!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ücretsiz ONLYOFFICE uygulamalarını edinin</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ücretsiz ONLYOFFICE uygulamalarını edinin</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ücretsiz ONLYOFFICE uygulamalarını edinin</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’e katılın</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Kişisel kullanım için ONLYOFFICE’e hoşgeldiniz!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Belgeleriniz üzerinde etkin çalışmanız için pek çok ipucu</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Belgeleriniz üzerinde etkin çalışmanız için pek çok ipucu</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Belgeleriniz üzerinde etkin çalışmanız için pek çok ipucu</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Belgeleriniz üzerinde etkin çalışmanız için pek çok ipucu</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’in işletme aboneliğini keşfedin</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’in işletme aboneliğini keşfedin</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’in işletme aboneliğini keşfedin</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’in işletme aboneliğini keşfedin</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Satış departmanı talebi</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Posta kutusu oluşturma</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Posta kutusu şifresi değiştirme</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Şimdi katılın ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Şimdi katılın ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Şimdi katılın ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>ONLYOFFICE Personal’a hoş geldiniz</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>ONLYOFFICE Personal hesabınıza giriş yapın</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Lütfen e-posta adresinizi doğrulayın</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal hesap sonlandırma</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace devre dışı bırakıldı</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Kullanıcı hesabını sildi</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Kullanıcı verisi yeniden ataması başarısız oldu</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Kullanıcı verisi silme tamamlandı</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Kullanıcı verisi silme başarısız oldu</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’inizi yapılandırın</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’iniz silinecektir</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Şimdi katılın ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’iniz için ödemesiz süre başlatılmıştır</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace aboneliğiniz sona ermek üzeredir</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’iniz için ödemesiz süre sona ermiştir</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace’iniz için ödemesiz süre yarın sona erecektir</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Şifre çözme işlemi başarısız oldu</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Şifre çözme işlemi başladı</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Şifre çözme işlemi tamamlandı</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Şifreleme işlemi başarısız oldu</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Şifreleme işlemi başladı</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Şifreleme işlemi tamamlandı</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Davetlisiniz: ${__VirtualRootPath}</value>
   </data>
 </root>

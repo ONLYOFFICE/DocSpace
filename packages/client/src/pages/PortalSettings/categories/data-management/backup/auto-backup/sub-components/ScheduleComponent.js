@@ -32,7 +32,9 @@ const ScheduleComponent = ({
 }) => {
   const { t } = useTranslation("Settings");
   const renderHelpContent = () => (
-    <Text className="schedule_description"> {t("AutoSavePeriodHelp")}</Text>
+    <Text className="schedule_description" fontSize="12px">
+      {t("AutoSavePeriodHelp")}
+    </Text>
   );
 
   return (
@@ -42,13 +44,16 @@ const ScheduleComponent = ({
       className="backup_schedule-component"
     >
       <div className="schedule_help-section">
-        <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
+        <Text className="schedule_description" fontSize="12px">
+          {t("AutoSavePeriod")}
+        </Text>
         <HelpButton
           className="schedule_help-button"
           iconName={HelpReactSvgUrl}
           getContent={renderHelpContent}
           tooltipMaxWidth="310px"
-          offsetLeft={160}
+          place="right"
+          offsetRight={0}
         />
       </div>
       <div className="main_options">
