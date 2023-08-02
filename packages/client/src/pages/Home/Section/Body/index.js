@@ -51,7 +51,7 @@ const SectionBodyContent = (props) => {
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
-      "#customScrollBar > .scroll-wrapper > .scroller > .scroll-body"
+      "#customScrollBar > .scroll-wrapper > .scroller"
     );
 
     if (isMobile) {
@@ -100,7 +100,7 @@ const SectionBodyContent = (props) => {
       if (!isInViewport || viewAs === "table") {
         const bodyScroll = isMobileOnly
           ? document.querySelector(
-              "#customScrollBar > .scroll-wrapper > .scroller > .scroll-body"
+              "#customScrollBar > .scroll-wrapper > .scroller"
             )
           : document.querySelector(".section-scroll");
 

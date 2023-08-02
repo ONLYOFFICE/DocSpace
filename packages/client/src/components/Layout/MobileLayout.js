@@ -25,7 +25,7 @@ class MobileLayout extends Component {
 
   componentDidMount() {
     this.customScrollElm = document.querySelector(
-      "#customScrollBar > .scroll-wrapper > .scroller .scroll-body"
+      "#customScrollBar > .scroll-wrapper > .scroller"
     );
 
     if (!isChrome) this.customScrollElm.scrollTo(0, 0);
