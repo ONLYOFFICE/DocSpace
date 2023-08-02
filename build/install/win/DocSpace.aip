@@ -432,7 +432,7 @@
     <ROW JsonProperty="postman" Parent="notify" Name="postman" Condition="1" Order="0" Flags="57" Value="services"/>
     <ROW JsonProperty="products" Parent="core" Name="products" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="products_1" Parent="core_1" Name="products" Condition="1" Order="2" Flags="60"/>
-    <ROW JsonProperty="public" Parent="url" Name="public" Condition="1" Order="0" Flags="57" Value="http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT]"/>
+    <ROW JsonProperty="public" Parent="url" Name="public" Condition="1" Order="0" Flags="57" Value="/ds-vpath/"/>
     <ROW JsonProperty="secret" Parent="docservice" Name="secret" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="url" Parent="docservice" Name="url" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="value" Parent="secret" Name="value" Condition="1" Order="0" Flags="57" Value="[DOCUMENT_SERVER_JWT_SECRET]"/>
@@ -1054,6 +1054,7 @@
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
     <ROW Action="SetDocumentServerJWTSecretProp" Type="6" Source="utils.vbs" Target="SetDocumentServerJWTSecretProp"/>
     <ROW Action="SetMACHINEKEY" Type="51" Source="MACHINE_KEY" Target="[ComputerName]"/>
+    <ROW Action="SetSERVERNAME" Type="51" Source="SERVER_NAME" Target="[ComputerName]"/>
     <ROW Action="Set_APPDIR_FORWARD_SLASH" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;) = Replace(Session.Property(&quot;APPDIR&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="Set_DS_JWT_ENABLED" Type="51" Source="DOCUMENT_SERVER_JWT_ENABLED" Target="[JWT_ENABLED]"/>
     <ROW Action="Set_DS_JWT_HEADER" Type="51" Source="DOCUMENT_SERVER_JWT_HEADER" Target="[JWT_HEADER]"/>
@@ -1176,7 +1177,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="IconFile" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="IconFile" Value="[#icon.ico]" Action="0" Component_="icon.ico"/>
     <ROW IniFile="IconIndex" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="IconIndex" Value="0" Action="0" Component_="icon.ico"/>
-    <ROW IniFile="URL" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://localhost/" Action="0" Component_="icon.ico"/>
+    <ROW IniFile="URL" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://[SERVER_NAME]/" Action="0" Component_="icon.ico"/>
     <ROW IniFile="WorkingDirectory" FileName="ONLYOF~1.URL|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="WorkingDirectory" Value="[DesktopFolder]" Action="0" Component_="icon.ico"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
@@ -1246,6 +1247,7 @@
     <ROW Action="AI_DATA_SETTER_21" Condition="(VersionNT &gt;= 501) AND (REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5801"/>
     <ROW Action="AI_FwUninstall" Condition="(VersionNT &gt;= 501) AND (REMOVE=&quot;ALL&quot;)" Sequence="1702"/>
     <ROW Action="AI_DATA_SETTER_22" Condition="(VersionNT &gt;= 501) AND (REMOVE=&quot;ALL&quot;)" Sequence="1701"/>
+    <ROW Action="SetSERVERNAME" Condition="( NOT Installed )" Sequence="1604"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
