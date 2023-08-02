@@ -494,7 +494,7 @@ Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä paranta
 
 Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
 
-Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":"$PricingPage" ONLYOFFICE DocSpacesi. Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
 
 _Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
 
@@ -515,7 +515,7 @@ Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä paranta
 
 Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
 
-Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":"$PricingPage" ONLYOFFICE DocSpacesi. Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
 
 _Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
 
@@ -536,7 +536,7 @@ Tässä on sinull kolme yksinkertaista kysymystä, jotka auttavat meitä paranta
 
 Jos sinulla on vähintään yksi 'kyllä'-vastaus, valitse Yritystilaus, joka mahdollistaa rajattoman managerien määrän sekä käyttää brändäysvaihtoehtoja ONLYOFFICE DocSpacessasi.
 
-Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":ONLYOFFICE DocSpacesi $PricingPage ". Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
+Tehdäksesi niin, ole hyvä ja pyydä apua "Maksut osiosta":"$PricingPage" ONLYOFFICE DocSpacesi. Sieltä löydät yksilöllisen linkin Stripe-asiakasportaaliin, jossa voit helposti hoitaa kaikkia maksutietoja.
 
 _Huom: Henkilöstä, joka maksaa tilauksen, tulee maksaja. Vain maksaja pystyy tekemään muutoksia tilaukseen (muuttaa johtajien määrää). Käyttäjillä ei ole pääsyä maksutietoihin. ONLY OFFICE DocSpace-tilin omistaja voi vaihtaa maksajaa milloin tahansa._
 
@@ -614,17 +614,17 @@ ONLYOFFICE-tiimi
 
 Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.*
 
-*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+* *Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
 
-*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+* *Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
 
-*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+* *Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
 
 $GreenButton
 
-Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+Jos tarvitset apua, selaa "Help Centeriämme":"https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":"https://www.onlyoffice.com/supportcontact-form.aspx".
 
 Ystävällisin terveisin,
 ONLYOFFICE-tiimi
@@ -635,17 +635,17 @@ ONLYOFFICE-tiimi
 
 Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.*
 
-*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+* *Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
 
-*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+* *Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
 
-*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+* *Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
 
 $GreenButton
 
-Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+Jos tarvitset apua, selaa "Help Centeriämme":"https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":"https://www.onlyoffice.com/supportcontact-form.aspx".
 
 Ystävällisin terveisin,
 ONLYOFFICE-tiimi
@@ -656,17 +656,17 @@ ONLYOFFICE-tiimi
 
 Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.*
 
-*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+* *Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
 
-*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+* *Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
 
-*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+* *Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
 
 $GreenButton
 
-Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+Jos tarvitset apua, selaa "Help Centeriämme":"https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":"https://www.onlyoffice.com/supportcontact-form.aspx".
 
 Ystävällisin terveisin,
 ONLYOFFICE-tiimi
@@ -677,17 +677,17 @@ ONLYOFFICE-tiimi
 
 Tervetuloa ONLYOFFICEN DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*#Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu*: Yhteistyöhuoneet reaaliaikaiseen yhteiskirjoittamiseen tai mukautetut huoneet joustavine asetuksineen mihin tahansa tarkoitukseen.*
 
-*#Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
+* *Työstä eri muotoisia tiedostoja*: tekstitiedostoja, laskentataulukkoja, esityksiä, digitaalisia lomakkeita, PDF:iä, e-kirjoja, multimediaa.
 
-*#Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
+* *Tee yhteistyötä asiakirjoilla* kahdella yhteismuokkaustilalla: reaaliajassa tai lukitsemalla kappaleita.  Jäljitä muutoksia, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- tai videopuheluita.
 
-*#Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
+* *Yhdistä mihin tahansa pilvipalveluun* ja työskentele vaihtamatta sovellusten välillä.
 
 $GreenButton
 
-Jos tarvitset apua, selaa "Help Centeriämme":https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":https://www.onlyoffice.com/supportcontact-form.aspx".
+Jos tarvitset apua, selaa "Help Centeriämme":"https://helpcenter.onlyoffice.com/" tai kysy "Tuki-tiimiltämme":"https://www.onlyoffice.com/supportcontact-form.aspx".
 
 Ystävällisin terveisin,
 ONLYOFFICE-tiimi
@@ -1758,6 +1758,6 @@ Ystävällisin terveisin,
 ONLYOFFICE™- tukitiimi
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Muuttaaksesi ilmoitustyyppiä, ole hyvä ja mene “tilauksen hallintaan” :"$RecipientSubscriptionConfigURL".^</value>
+^Muuttaaksesi ilmoitustyyppiä, ole hyvä ja mene "tilauksen hallintaan" :"$RecipientSubscriptionConfigURL".^</value>
   </data>
 </root>

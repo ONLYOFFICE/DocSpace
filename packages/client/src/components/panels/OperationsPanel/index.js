@@ -91,7 +91,10 @@ const OperationsPanelComponent = (props) => {
       folderIds.push(currentFolderId);
     }
 
-    if (!folderIds.length && !fileIds.length) return;
+    if (!folderIds.length && !fileIds.length) {
+      toastr.error(t("Common:ErrorEmptyList"));
+      return;
+    }
 
     const operationData = {
       destFolderId,
