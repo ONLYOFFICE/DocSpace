@@ -254,7 +254,7 @@ public class DbWorker
                     await webhooksDbContext.Webhooks.AddAsync(_mapper.Map<DbWebhook>(webhook));
                     await webhooksDbContext.SaveChangesAsync();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
