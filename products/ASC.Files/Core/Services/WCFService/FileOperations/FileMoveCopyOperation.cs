@@ -686,7 +686,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     {
                         if (_resolveType == FileConflictResolveType.Overwrite)
                         {
-                            if (checkPermissions && !await FilesSecurity.CanEditAsync(conflict))
+                            if (checkPermissions && !await FilesSecurity.CanEditAsync(conflict) && !await FilesSecurity.CanFillFormsAsync(conflict))
                             {
                                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
                             }
