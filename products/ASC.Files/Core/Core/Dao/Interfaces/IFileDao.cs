@@ -87,6 +87,7 @@ public interface IFileDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="searchInContent"></param>
+    /// <param name="checkShared"></param>
     /// <returns></returns>
     IAsyncEnumerable<File<T>> GetFilesFilteredAsync(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false);
 
@@ -108,6 +109,9 @@ public interface IFileDao<T>
     /// <param name="searchText"> </param>
     /// <param name="searchInContent"></param>
     /// <param name="withSubfolders"> </param>
+    /// <param name="exludeSubject"> </param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
     /// <returns>list of files</returns>
     /// <remarks>
     ///    Return only the latest versions of files of a folder
@@ -251,7 +255,7 @@ public interface IFileDao<T>
     Task ReassignFilesAsync(Guid oldOwnerId, Guid newOwnerId);
 
     /// <summary>
-    /// Search files in SharedWithMe & Projects
+    /// Search files in SharedWithMe &amp; Projects
     /// </summary>
     /// <param name="parentIds"></param>
     /// <param name="filterType"></param>

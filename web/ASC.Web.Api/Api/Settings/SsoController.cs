@@ -62,7 +62,9 @@ public class SsoController : BaseSettingsController
     /// Get the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>SSO settings</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2")]
     public async Task<SsoSettingsV2> GetSsoSettingsV2()
     {
@@ -85,7 +87,9 @@ public class SsoController : BaseSettingsController
     /// Get the default SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Default SSO settings</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">Default SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2/default</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/default")]
     public async Task<SsoSettingsV2> GetDefaultSsoSettingsV2Async()
     {
@@ -94,13 +98,15 @@ public class SsoController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns the constants of the SSO settings.
+    /// Returns the SSO settings constants.
     /// </summary>
     /// <short>
-    /// Get the constants of the SSO settings
+    /// Get the SSO settings constants
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Constants of the SSO settings</returns>
+    /// <returns type="System.Object, System">The SSO settings constants: SSO name ID format type, SSO binding type, SSO signing algorithm type, SSO SP certificate action type, SSO IDP certificate action type</returns>
+    /// <path>api/2.0/settings/ssov2/constants</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/constants")]
     public object GetSsoSettingsV2Constants()
     {
@@ -122,14 +128,16 @@ public class SsoController : BaseSettingsController
     /// Save the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <param name="serializeSettings">Serialized SSO settings</param>
-    /// <returns>SSO settings</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SsoSettingsRequestsDto, ASC.Web.Api" name="inDto">SSO settings request parameters</param>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("ssov2")]
-    public async Task<SsoSettingsV2> SaveSsoSettingsV2Async(SsoSettingsRequestsDto model)
+    public async Task<SsoSettingsV2> SaveSsoSettingsV2Async(SsoSettingsRequestsDto inDto)
     {
         await CheckSsoPermissionsAsync();
 
-        var serializeSettings = model.SerializeSettings;
+        var serializeSettings = inDto.SerializeSettings;
 
         if (string.IsNullOrEmpty(serializeSettings))
         {
@@ -204,7 +212,9 @@ public class SsoController : BaseSettingsController
     /// Reset the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns>Default SSO settings</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">Default SSO settings</returns>
+    /// <path>api/2.0/settings/ssov2</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("ssov2")]
     public async Task<SsoSettingsV2> ResetSsoSettingsV2Async()
     {

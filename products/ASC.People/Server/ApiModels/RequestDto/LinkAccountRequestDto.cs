@@ -26,16 +26,36 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class LinkAccountRequestDto
 {
+    /// <summary>Third-party profile in the serialized format</summary>
+    /// <type>System.String, System</type>
     public string SerializedProfile { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class SignupAccountRequestDto : LinkAccountRequestDto
 {
+    /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin, Collaborator)</summary>
+    /// <type>System.Nullable{ASC.Core.Users.EmployeeType}, System</type>
     public EmployeeType? EmployeeType { get; set; }
+
+    /// <summary>First name</summary>
+    /// <type>System.String, System</type>
     public string FirstName { get; set; }
+
+    /// <summary>Last name</summary>
+    /// <type>System.String, System</type>
     public string LastName { get; set; }
+
+    /// <summary>Email address</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>Password hash</summary>
+    /// <type>System.String, System</type>
     public string PasswordHash { get; set; }
 }
