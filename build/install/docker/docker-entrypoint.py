@@ -38,10 +38,14 @@ APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
 LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else "Warning"
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
 
+DOCUMENT_CONTAINER_NAME = os.environ["DOCUMENT_CONTAINER_NAME"] if environ.get("DOCUMENT_CONTAINER_NAME") else "onlyoffice-document-server"
+DOCUMENT_SERVER_HOST = os.environ["DOCUMENT_SERVER_HOST"] if environ.get("DOCUMENT_SERVER_HOST") else None
+DOCUMENT_SERVER_PORT = os.environ["DOCUMENT_SERVER_PORT"] if environ.get("DOCUMENT_SERVER_PORT") else "8083"
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
 DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ.get("DOCUMENT_SERVER_JWT_HEADER") else "AuthorizationJwt"
 DOCUMENT_SERVER_URL_PUBLIC = os.environ["DOCUMENT_SERVER_URL_PUBLIC"] if environ.get("DOCUMENT_SERVER_URL_PUBLIC") else "/ds-vpath/"
-DOCUMENT_SERVER_URL_INTERNAL = os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else "http://onlyoffice-document-server/"
+DOCUMENT_SERVER_URL_INTERNAL = ( os.environ["DOCUMENT_SERVER_URL_INTERNAL"] if environ.get("DOCUMENT_SERVER_URL_INTERNAL") else
+    "http://" + DOCUMENT_SERVER_HOST + ":" + str(DOCUMENT_SERVER_PORT) + "/" if DOCUMENT_SERVER_HOST else "http://" + DOCUMENT_CONTAINER_NAME + "/" )
 
 ELK_CONTAINER_NAME = os.environ["ELK_CONTAINER_NAME"] if environ.get("ELK_CONTAINER_NAME") else "onlyoffice-elasticsearch"
 ELK_SHEME = os.environ["ELK_SHEME"] if environ.get("ELK_SHEME") else "http"

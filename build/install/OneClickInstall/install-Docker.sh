@@ -94,6 +94,7 @@ DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
+DOCUMENT_SERVER_PORT=""
 
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
@@ -312,6 +313,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
+		-docsh | --docshost )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_HOST=$2
+				shift
+			fi
+		;;
+		
+		-docsp | --docsport )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_PORT=$2
+				shift
+			fi
+		;;
+		
 		-dbm | --databasemigration )
 			if [ "$2" != "" ]; then
 				DATABASE_MIGRATION=$2
@@ -436,6 +451,8 @@ while [ "$1" != "" ]; do
 			echo "      -idocs, --installdocs             install or update document server (true|false)"
 			echo "      -docsi, --docsimage               document server image name"
 			echo "      -docsv, --docsversion             document server version"
+			echo "      -docsh, --docshost                document server host"
+			echo "      -docsp, --docsport                document server port"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
 			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
@@ -992,7 +1009,7 @@ get_available_version () {
 set_jwt_secret () {
 	CURRENT_JWT_SECRET="";
 
-	if [[ -z ${JWT_SECRET} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
 		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-document-server" "JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
@@ -1000,7 +1017,7 @@ set_jwt_secret () {
 		fi
 	fi
 
-	if [[ -z ${JWT_SECRET} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
 		CURRENT_JWT_SECRET=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
@@ -1008,7 +1025,11 @@ set_jwt_secret () {
 		fi
 	fi
 
-	if [[ -z ${JWT_SECRET} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]] && [ -f $BASE_DIR/.env ]; then
+		DOCUMENT_SERVER_JWT_SECRET=$(sed -n "/.*DOCUMENT_SERVER_JWT_SECRET=/s///p" $BASE_DIR/.env)
+	fi
+
+	if [[ -z ${DOCUMENT_SERVER_JWT_SECRET} ]]; then
 		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
 	fi
 }
@@ -1016,7 +1037,7 @@ set_jwt_secret () {
 set_jwt_header () {
 	CURRENT_JWT_HEADER="";
 
-	if [[ -z ${JWT_HEADER} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
 		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
 
 		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
@@ -1024,7 +1045,7 @@ set_jwt_header () {
 		fi
 	fi	
 	
-	if [[ -z ${JWT_HEADER} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
 		CURRENT_JWT_HEADER=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_HEADER");
 
 		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
@@ -1032,7 +1053,11 @@ set_jwt_header () {
 		fi
 	fi
 
-	if [[ -z ${JWT_HEADER} ]]; then
+	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]] && [ -f $BASE_DIR/.env ]; then
+		DOCUMENT_SERVER_JWT_HEADER=$(sed -n "/.*DOCUMENT_SERVER_JWT_HEADER=/s///p" $BASE_DIR/.env)
+	fi
+
+	if [[ -z ${DOCUMENT_SERVER_JWT_HEADER} ]]; then
 		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
 	fi
 }
@@ -1091,6 +1116,7 @@ set_docspace_params() {
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
 
 	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+	DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_PORT")};
 
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
@@ -1167,11 +1193,17 @@ install_mysql_server () {
 }
 
 install_document_server () {
-	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
-
-	docker-compose -f $BASE_DIR/ds.yml up -d
+	if [[ -z ${DOCUMENT_SERVER_HOST} ]] && [ "$INSTALL_DOCUMENT_SERVER" == "true" ]; then
+		reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
+		docker-compose -f $BASE_DIR/ds.yml up -d
+	elif [ ! -z "$DOCUMENT_SERVER_HOST" ]; then
+		APP_URL_PORTAL=${APP_URL_PORTAL:-"http://$(curl -s ifconfig.me):${EXTERNAL_PORT}"}  
+		establish_conn ${DOCUMENT_SERVER_HOST} "${DOCUMENT_SERVER_PORT:-"8083"}" "${PACKAGE_SYSNAME^^} Docs"
+		reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
+		reconfigure DOCUMENT_SERVER_PORT "${DOCUMENT_SERVER_PORT:-"8083"}"
+	fi
 }
 
 install_rabbitmq () {
@@ -1313,9 +1345,7 @@ start_installation () {
 
 	install_mysql_server
 	
-	if [ "$INSTALL_DOCUMENT_SERVER" == "true" ]; then
-		install_document_server
-	fi
+	install_document_server
 
 	install_rabbitmq
 
