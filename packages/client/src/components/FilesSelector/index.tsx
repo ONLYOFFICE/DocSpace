@@ -350,6 +350,8 @@ const FilesSelector = ({
             setIsRequestRunning(false);
             clearActiveOperations(fileIds, folderIds);
           });
+      } else {
+        toastr.error(t("Common:ErrorEmptyList"));
       }
     } else {
       setIsRequestRunning(true);
@@ -553,9 +555,11 @@ export default inject(
       isMove || isCopy || isRestoreAll
         ? isRestoreAll
           ? filesList
-          : selection.length
+          : selection.length > 0 && selection[0] != null
           ? selection
-          : [bufferSelection]
+          : bufferSelection != null
+          ? [bufferSelection]
+          : []
         : [];
 
     const selectionsWithoutEditing = isRestoreAll
