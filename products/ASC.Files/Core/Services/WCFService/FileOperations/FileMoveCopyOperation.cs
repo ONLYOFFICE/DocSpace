@@ -196,8 +196,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
-            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
-                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom :
+                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom :
                 FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
             return;
@@ -470,7 +470,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
 
                                         var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
-                                        _ =  quotaSocketManager.ChangeQuotaUsedValue(name, value);
+                                        _ = quotaSocketManager.ChangeQuotaUsedValue(name, value);
                                     }
                                     else
                                     {
@@ -720,11 +720,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 if (file.ThumbnailStatus == Thumbnail.Created)
                                 {
                                     foreach (var size in _thumbnailSettings.Sizes)
-                                    {                                       
+                                    {
                                         await globalStorage.GetStore().CopyAsync(String.Empty,
                                                                                 FileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
                                                                                 String.Empty,
-                                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));                                      
+                                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
                                     }
 
                                     await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);
