@@ -1548,7 +1548,14 @@ class FilesStore {
             if (filterData.page > lastPage) {
               filterData.page = lastPage;
 
-              return this.fetchRooms(folderId, filterData);
+              return this.fetchRooms(
+                folderId,
+                filterData,
+                undefined,
+                undefined,
+                undefined,
+                true
+              );
             }
           }
 
