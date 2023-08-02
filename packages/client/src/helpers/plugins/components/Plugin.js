@@ -36,7 +36,7 @@ const Plugin = ({
   createBy,
   createOn,
   homePage,
-  license,
+
   system,
   url,
 
@@ -55,11 +55,7 @@ const Plugin = ({
 
   uninstallPlugin,
 
-  updatePluginStatus,
-
   isLast,
-
-  ...rest
 }) => {
   const withSettings = scopes.includes(PluginScopes.Settings);
 
@@ -101,13 +97,7 @@ const Plugin = ({
         homePage={homePage}
         url={url}
       />
-      {showPluginSettingsPage && (
-        <PluginSettings
-          {...pluginSettings}
-          id={id}
-          updatePluginStatus={updatePluginStatus}
-        />
-      )}
+      {showPluginSettingsPage && <PluginSettings {...pluginSettings} id={id} />}
       {!isLast && <div className="plugin-separator"></div>}
     </StyledPlugin>
   );

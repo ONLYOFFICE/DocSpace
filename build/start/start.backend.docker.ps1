@@ -13,7 +13,6 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
-$WebPlugins = ($LocalIp + ":5014")
 
 Set-Location -Path $DockerDir
 

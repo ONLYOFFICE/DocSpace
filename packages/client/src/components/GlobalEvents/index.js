@@ -167,6 +167,13 @@ const GlobalEvents = ({ enablePlugins }) => {
       window.removeEventListener(Events.ROOM_CREATE, onCreateRoom);
       window.removeEventListener(Events.ROOM_EDIT, onEditRoom);
       window.removeEventListener(Events.CHANGE_USER_TYPE, onChangeUserType);
+
+      if (enablePlugins) {
+        window.removeEventListener(
+          Events.CREATE_PLUGIN_FILE,
+          onCreatePluginFileDialog
+        );
+      }
     };
   }, [
     onRename,
@@ -174,6 +181,7 @@ const GlobalEvents = ({ enablePlugins }) => {
     onCreateRoom,
     onEditRoom,
     onChangeUserType,
+    onCreatePluginFileDialog,
     enablePlugins,
   ]);
 

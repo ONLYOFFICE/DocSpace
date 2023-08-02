@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { inject, observer } from "mobx-react";
 
 import WrappedComponent from "../WrappedComponent";
 
@@ -21,14 +20,6 @@ const PluginSettings = ({
   onLoad,
 
   customSettings,
-
-  updatePluginStatus,
-  setCurrentSettingsDialogPlugin,
-  setSettingsPluginDialogVisible,
-  setPluginDialogVisible,
-  setPluginDialogProps,
-
-  ...rest
 }) => {
   const [customSettingsProps, setCustomSettingsProps] =
     React.useState(customSettings);
@@ -57,19 +48,4 @@ const PluginSettings = ({
   );
 };
 
-export default inject(({ pluginStore }) => {
-  const {
-    updatePluginStatus,
-    setCurrentSettingsDialogPlugin,
-    setSettingsPluginDialogVisible,
-    setPluginDialogVisible,
-    setPluginDialogProps,
-  } = pluginStore;
-  return {
-    updatePluginStatus,
-    setCurrentSettingsDialogPlugin,
-    setSettingsPluginDialogVisible,
-    setPluginDialogVisible,
-    setPluginDialogProps,
-  };
-})(observer(PluginSettings));
+export default PluginSettings;

@@ -25,7 +25,7 @@ const CreatePluginFile = ({
   setPluginDialogVisible,
   setPluginDialogProps,
 }) => {
-  const { t } = useTranslation(["Translations", "Common"]);
+  const { t } = useTranslation(["Translations", "Common", "Files"]);
 
   const onSaveAction = async (e, value) => {
     if (!onSave) return onCloseAction();

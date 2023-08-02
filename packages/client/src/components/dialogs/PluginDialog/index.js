@@ -111,7 +111,7 @@ const PluginDialog = ({
           }}
         />
       </ModalDialog.Body>
-      {dialogFooter && (
+      {dialogFooterProps && (
         <ModalDialog.Footer>
           <WrappedComponent
             pluginId={pluginId}

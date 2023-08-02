@@ -118,8 +118,6 @@ const ArticleMainButtonContent = (props) => {
     security,
     isGracePeriod,
     setInviteUsersWarningDialogVisible,
-    setSettingsPluginDialogVisible,
-    setCurrentSettingsDialogPlugin,
   } = props;
 
   const navigate = useNavigate();
@@ -436,8 +434,7 @@ const ArticleMainButtonContent = (props) => {
     isRoomsFolder,
     isOwner,
     isAdmin,
-    setSettingsPluginDialogVisible,
-    setCurrentSettingsDialogPlugin,
+
     onCreate,
     onCreateRoom,
     onInvite,
@@ -569,11 +566,7 @@ export default inject(
     const { isAdmin, isOwner } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const {
-      mainButtonItemsList,
-      setSettingsPluginDialogVisible,
-      setCurrentSettingsDialogPlugin,
-    } = pluginStore;
+    const { mainButtonItemsList } = pluginStore;
 
     return {
       isGracePeriod,
@@ -608,8 +601,6 @@ export default inject(
 
       mainButtonMobileVisible,
       security,
-      setSettingsPluginDialogVisible,
-      setCurrentSettingsDialogPlugin,
     };
   }
 )(
@@ -620,6 +611,5 @@ export default inject(
     "Files",
     "People",
     "PeopleTranslations",
-    "PluginsSettings",
   ])(observer(ArticleMainButtonContent))
 );

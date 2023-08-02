@@ -27,11 +27,7 @@ export const messageActions = (
         setElementProps && setElementProps({ ...message.newProps });
 
         break;
-      case PluginActions.updateAcceptButtonProps:
-        setAcceptButtonProps &&
-          setAcceptButtonProps({ ...message.acceptButtonProps });
 
-        break;
       case PluginActions.updateContext:
         if (message.contextProps) {
           message.contextProps.forEach((prop) => {
@@ -39,10 +35,12 @@ export const messageActions = (
           });
         }
         break;
+
       case PluginActions.updateStatus:
         updatePluginStatus && updatePluginStatus(pluginId);
 
         break;
+
       case PluginActions.showToast:
         if (message.toastProps) {
           message.toastProps.forEach((toast) => {
@@ -64,6 +62,7 @@ export const messageActions = (
         }
 
         break;
+
       case PluginActions.showSettingsModal:
         if (pluginId) {
           setSettingsPluginDialogVisible &&
@@ -81,6 +80,7 @@ export const messageActions = (
             setCurrentSettingsDialogPlugin(null);
         }
         break;
+
       case PluginActions.showCreateDialogModal:
         if (message.createDialogProps) {
           const payload = { ...message.createDialogProps, pluginId };
@@ -92,6 +92,7 @@ export const messageActions = (
           window.dispatchEvent(event);
         }
         break;
+
       case PluginActions.showModal:
         if (message.modalDialogProps) {
           setPluginDialogVisible(true);
@@ -99,6 +100,7 @@ export const messageActions = (
         }
 
         break;
+
       case PluginActions.closeModal:
         setPluginDialogVisible(false);
         setPluginDialogProps(null);

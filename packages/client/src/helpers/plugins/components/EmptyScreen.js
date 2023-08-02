@@ -25,21 +25,19 @@ const EmptyScreen = ({ t, onAddAction }) => {
       buttonStyle={{ marginTop: "16px" }}
       imageSrc={EmptyScreenAltSvgUrl}
       buttons={
-        <>
-          <div className="empty-folder_container-links empty-connect_container-links">
-            <img
-              className="empty-folder_container_plus-image"
-              src={PlusSvgUrl}
-              onClick={onAddAction}
-              alt="plus_icon"
-            />
-            <Box className="flex-wrapper_container">
-              <Link {...linkStyles} onClick={onAddAction}>
-                {t("UploadPlugin")}
-              </Link>
-            </Box>
-          </div>
-        </>
+        <div className="empty-folder_container-links empty-connect_container-links">
+          <img
+            className="empty-folder_container_plus-image"
+            src={PlusSvgUrl}
+            onClick={onAddAction}
+            alt="plus_icon"
+          />
+          <Box className="flex-wrapper_container">
+            <Link {...linkStyles} onClick={onAddAction}>
+              {t("UploadPlugin")}
+            </Link>
+          </Box>
+        </div>
       }
     />
   );

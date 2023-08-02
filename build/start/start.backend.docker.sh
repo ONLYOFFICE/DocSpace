@@ -21,7 +21,6 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
-WebPlugins=${local_ip}:5014
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"

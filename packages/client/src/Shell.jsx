@@ -28,7 +28,6 @@ import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
-import GlobalEvents from "./components/GlobalEvents";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {

@@ -28,8 +28,6 @@ const SettingsPluginDialog = ({
   updateStatus,
   setPluginDialogVisible,
   setPluginDialogProps,
-
-  ...rest
 }) => {
   const [customSettingsProps, setCustomSettingsProps] =
     React.useState(customSettings);
@@ -55,7 +53,7 @@ const SettingsPluginDialog = ({
       displayType="modal"
       onClose={onCloseAction}
       autoMaxHeight
-      isLarge
+      autoMaxWidth
     >
       <ModalDialog.Header>{plugin?.name}</ModalDialog.Header>
       <ModalDialog.Body>

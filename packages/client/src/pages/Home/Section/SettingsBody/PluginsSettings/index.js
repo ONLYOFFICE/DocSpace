@@ -10,10 +10,9 @@ import {
 } from "./StyledPluginsSettings";
 
 const PluginsSettingsBodyContent = ({
-  withDelete,
+  withDele,
   enabledPluginList,
   changePluginStatus,
-  updatePluginStatus,
 }) => {
   const navigate = useNavigate();
 
@@ -31,10 +30,8 @@ const PluginsSettingsBodyContent = ({
             key={`plugin-${plugin.name}-${plugin.version}`}
             {...plugin}
             changePluginStatus={changePluginStatus}
-            withDelete={withDelete}
             isUserSettings={true}
             isLast={index === enabledPluginList.length - 1}
-            updatePluginStatus={updatePluginStatus}
           />
         ))}
       </StyledPluginList>
@@ -45,18 +42,12 @@ const PluginsSettingsBodyContent = ({
 export default inject(({ auth, pluginStore }) => {
   const { enablePlugins, pluginOptions } = auth.settingsStore;
 
-  const withUpload = pluginOptions.includes("upload");
-  const withDelete = pluginOptions.includes("delete");
-
-  const { enabledPluginList, changePluginStatus, updatePluginStatus } =
-    pluginStore;
+  const { enabledPluginList, changePluginStatus } = pluginStore;
 
   return {
     enablePlugins,
-    withUpload,
-    withDelete,
+
     enabledPluginList,
     changePluginStatus,
-    updatePluginStatus,
   };
 })(observer(PluginsSettingsBodyContent));
