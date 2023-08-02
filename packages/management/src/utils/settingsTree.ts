@@ -10,7 +10,7 @@ export const settingsTree = [
         key: "0",
         icon: SpacesSvgUrl,
         link: "spaces",
-        tKey: "Spaces",
+        tKey: "Common:Spaces",
         isHeader: true,
     },
     {
