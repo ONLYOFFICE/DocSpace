@@ -15,15 +15,20 @@ class SocketIOHelper {
 
     const origin = window.location.origin;
 
-    client = io(origin, {
+    const config = {
       withCredentials: true,
       transports: ["websocket", "polling"],
       eio: 4,
       path: url,
-      query: {
+    };
+
+    if (publicRoomKey) {
+      config.query = {
         share: publicRoomKey,
-      },
-    });
+      };
+    }
+
+    client = io(origin, config);
 
     client.on("connect", () => {
       console.log("socket is connected");

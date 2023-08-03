@@ -26,7 +26,11 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class GreetingSettingsRequestsDto
 {
+    /// <summary>Tenant name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 }

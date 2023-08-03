@@ -26,16 +26,36 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class MailDomainSettingsRequestsDto
 {
+    /// <summary>Trusted domain type</summary>
+    /// <type>ASC.Core.Tenants.TenantTrustedDomainsType, ASC.Core.Common</type>
     public TenantTrustedDomainsType Type { get; set; }
+
+    /// <summary>List of trusted domains</summary>
+    /// <type>System.Collections.Generic.List{System.String}, System.Collections.Generic</type>
     public List<string> Domains { get; set; }
+
+    /// <summary>Invites as a user or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool InviteAsUsers { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class AdminMessageSettingsRequestsDto
 {
+    /// <summary>Email</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>Message</summary>
+    /// <type>System.String, System</type>
     public string Message { get; set; }
+
+    /// <summary>Specifies if the administrator messages are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool TurnOn { get; set; }
 }

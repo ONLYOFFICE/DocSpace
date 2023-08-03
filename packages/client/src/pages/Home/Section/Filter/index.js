@@ -249,6 +249,7 @@ const SectionFilterContent = ({
   showFilterLoader,
   isPublicRoom,
   publicRoomKey,
+  setRoomsFilter,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -350,7 +351,6 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const filterType = getFilterType(data) || null;
@@ -504,7 +504,7 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
+        setRoomsFilter(newFilter);
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const path = location.pathname.split("/filter")[0];
@@ -2060,6 +2060,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       filesSettingsStore,
+      setRoomsFilter,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2140,6 +2141,7 @@ export default inject(
       accountsFilter,
       isPublicRoom,
       publicRoomKey,
+      setRoomsFilter,
     };
   }
 )(

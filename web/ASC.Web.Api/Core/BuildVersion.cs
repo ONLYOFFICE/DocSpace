@@ -26,17 +26,29 @@
 
 namespace ASC.Api.Settings;
 
+/// <summary>
+/// </summary>
 [Scope]
 public class BuildVersion
 {
+    /// <summary>DocSpace version</summary>
+    /// <type>System.String, System</type>
     public string DocSpace { get; set; }
 
+    /// <summary>Community Server version</summary>
+    /// <type>System.String, System</type>
     public string CommunityServer { get; set; } //old
 
+    /// <summary>Document Server version</summary>
+    /// <type>System.String, System</type>
     public string DocumentServer { get; set; }
 
+    /// <summary>Mail Server version</summary>
+    /// <type>System.String, System</type>
     public string MailServer { get; set; }
 
+    /// <summary>XMPP server version</summary>
+    /// <type>System.String, System</type>
     public string XmppServer { get; set; }
 
     [JsonIgnore]

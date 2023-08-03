@@ -29,6 +29,8 @@ using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttri
 
 namespace ASC.Core.Users;
 
+/// <summary>
+/// </summary>
 [Flags]
 [JsonConverter(typeof(JsonStringEnumConverter))]
 [EnumExtensions]
