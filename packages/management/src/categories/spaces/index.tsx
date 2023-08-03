@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import MultipleSpaces from "./sub-components/MultipleSpaces";
 import { SpaceContainer } from "./StyledSpaces";
@@ -11,7 +12,9 @@ import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
 const Spaces = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
-  const { spacesStore, authStore } = useStore();
+  const { t } = useTranslation(["Management", "Common"]);
+
+  const { spacesStore } = useStore();
 
   const {
     initStore,
@@ -39,15 +42,12 @@ const Spaces = () => {
         <CreatePortalDialog key="create-portal-dialog" />
       )}
       <div className="spaces-header">
-        <Text>
-          Use this section to create several spaces and make them accessible for
-          your users
-        </Text>
+        <Text>{t("Subheader")}</Text>
       </div>
       {isConnected && portals.length > 0 ? (
         <MultipleSpaces />
       ) : (
-        <ConfigurationSection />
+        <ConfigurationSection t={t} />
       )}
     </SpaceContainer>
   );

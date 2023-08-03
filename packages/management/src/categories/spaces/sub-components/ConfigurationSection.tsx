@@ -7,7 +7,7 @@ import { ConfigurationWrapper } from "../StyledSpaces";
 import { parseAddress } from "@docspace/components/utils/email";
 import { useStore } from "SRC_DIR/store";
 
-const ConfigurationSection = () => {
+const ConfigurationSection = ({ t }) => {
   const [domain, setDomain] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
 
@@ -30,16 +30,10 @@ const ConfigurationSection = () => {
       <div className="spaces-configuration-header">
         <div className="spaces-configuration-title">
           <Text fontSize="16px" fontWeight={700}>
-            Current space configuration
+            {t("ConfigurationHeader")}
           </Text>
         </div>
-        <Text>
-          You need to connect your domain to your current IP to change the
-          address settings. Please make sure you have access to the domain
-          settings to be able to do that. After connecting the domain, create a
-          DocSpace name. You can change the created DocSpace name later using
-          the space settings.
-        </Text>
+        <Text>{t("ConfigurationDescription")}</Text>
       </div>
       <div className="spaces-input-wrapper">
         <div className="spaces-input-block">
@@ -50,7 +44,7 @@ const ConfigurationSection = () => {
               fontWeight="600"
               className="spaces-domain-text"
             >
-              Domain
+              {t("Domain")}
             </Text>
             <Text color="#A3A9AE">(example.com)</Text>
           </div>
@@ -59,19 +53,19 @@ const ConfigurationSection = () => {
             hasError={isDomainError}
             onChange={onHandleDomain}
             value={domain}
-            placeholder="Enter domain name"
+            placeholder={t("EnterDomain")}
             className="spaces-input"
           />
         </div>
         <div className="spaces-input-block">
           <Text color="#333" fontSize="13px" fontWeight="600">
-            DocSpace name
+            {t("DocSpaceName")}
           </Text>
           <TextInput
             hasError={isNameError}
             onChange={onHandleName}
             value={name}
-            placeholder="Enter name"
+            placeholder={t("Common:EnterName")}
             className="spaces-input"
           />
         </div>
@@ -81,7 +75,7 @@ const ConfigurationSection = () => {
         isDisabled={!(name && domain) || isDomainError || isNameError}
         size="normal"
         className="spaces-button"
-        label="Connect"
+        label={t("Common:Connect")}
         onClick={() => setPortalSettings(domain, name)}
         primary={true}
       />
