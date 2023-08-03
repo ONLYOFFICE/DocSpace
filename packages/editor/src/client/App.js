@@ -13,7 +13,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import store from "client/store";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import { fonts } from "@docspace/common/fonts.js";
 import GlobalStyle from "./components/GlobalStyle.js";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
@@ -94,7 +93,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
 
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyle fonts={fonts} />
+      <GlobalStyle />
       <Editor
         mfReady={isInitialized}
         mfFailed={isErrorLoading}

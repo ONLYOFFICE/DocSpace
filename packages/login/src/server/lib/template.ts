@@ -2,9 +2,6 @@ import { getScripts } from "./helpers";
 import pkg from "../../../package.json";
 import { getLogoFromPath } from "@docspace/common/utils";
 
-import cyrillicOpenSansFont from "PUBLIC_DIR/fonts/v35/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTSumu1aB.woff2";
-import latinOpenSansFont from "PUBLIC_DIR/fonts/v35/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2";
-
 const { title } = pkg;
 const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
 
@@ -91,8 +88,7 @@ const template: Template = (
           content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="${cyrillicOpenSansFont}" />
-        <link rel="preload" as="font" crossorigin type="font/woff2" href="${latinOpenSansFont}" />
+        <link rel="stylesheet" type="text/css" href="/static/css/fonts.css" />
 
         <link id="favicon" rel="shortcut icon" href=${favicon} />
         <link rel="manifest" href="/manifest.json" />

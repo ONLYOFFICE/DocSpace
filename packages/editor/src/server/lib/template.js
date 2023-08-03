@@ -87,6 +87,8 @@ export default function template(
             content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
           />
           <meta name="theme-color" content="#000000" />
+          <link rel="stylesheet" type="text/css" href="/static/css/fonts.css" />
+          
           <link id="favicon" rel="shortcut icon" href=${faviconHref} type="image/x-icon"/>
           <link rel="manifest" href="/manifest.json" />
           <meta name="mobile-web-app-capable" content="yes" />
