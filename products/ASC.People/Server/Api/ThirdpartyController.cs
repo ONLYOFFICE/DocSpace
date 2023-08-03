@@ -93,6 +93,20 @@ public class ThirdpartyController : ApiControllerBase
         _tenantManager = tenantManager;
     }
 
+    /// <summary>
+    /// Returns a list of the available third-party accounts.
+    /// </summary>
+    /// <short>Get third-party accounts</short>
+    /// <category>Third-party accounts</category>
+    /// <param type="System.Boolean, System" name="inviteView">Specifies whether to return providers that are available for invitation links, i.e. the user can login or register through these providers</param>
+    /// <param type="System.Boolean, System" name="settingsView">Specifies whether to return URLs in the format that is used on the Settings page</param>
+    /// <param type="System.String, System" name="clientCallback">Method that is called after authorization</param>
+    /// <param type="System.String, System" name="fromOnly">Provider name if the response only from this provider is needed</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.AccountInfoDto, ASC.People">List of third-party accounts</returns>
+    /// <path>api/2.0/people/thirdparty/providers</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
@@ -134,6 +148,17 @@ public class ThirdpartyController : ApiControllerBase
         return infos;
     }
 
+    /// <summary>
+    /// Links a third-party account specified in the request to the user profile.
+    /// </summary>
+    /// <short>
+    /// Link a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People" name="inDto">Request parameters for linking accounts</param>
+    /// <path>api/2.0/people/thirdparty/linkaccount</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("thirdparty/linkaccount")]
     public void LinkAccount(LinkAccountRequestDto inDto)
     {
@@ -159,6 +184,18 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Creates a third-party account with the parameters specified in the request.
+    /// </summary>
+    /// <short>
+    /// Create a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People" name="inDto">Request parameters for creating a third-party account</param>
+    /// <path>api/2.0/people/thirdparty/signup</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns></returns>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]
     public async Task SignupAccount(SignupAccountRequestDto inDto)
@@ -227,6 +264,17 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Unlinks a third-party account specified in the request from the user profile.
+    /// </summary>
+    /// <short>
+    /// Unlink a third-pary account
+    /// </short>
+    /// <category>Third-party accounts</category>
+    /// <param type="System.String, System" name="provider">Provider name</param>
+    /// <path>api/2.0/people/thirdparty/unlinkaccount</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("thirdparty/unlinkaccount")]
     public void UnlinkAccount(string provider)
     {

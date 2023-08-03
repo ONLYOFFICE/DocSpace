@@ -26,8 +26,15 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class DnsSettingsRequestsDto
 {
+    /// <summary>DNS</summary>
+    /// <type>System.String, System</type>
     public string DnsName { get; set; }
+
+    /// <summary>Enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Enable { get; set; }
 }

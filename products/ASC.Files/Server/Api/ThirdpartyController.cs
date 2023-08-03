@@ -75,12 +75,15 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///   Get a list of available providers
+    /// Returns a list of the available providers.
     /// </summary>
-    /// <category>Third-Party Integration</category>
-    /// <returns>List of provider key</returns>
-    /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
-    /// <returns></returns>
+    /// <short>Get providers</short>
+    /// <category>Third-party integration</category>
+    /// <returns type="System.Collections.Generic.List{System.String}, System.Collections.Generic">List of provider keys</returns>
+    /// <remarks>Available provider keys: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive.</remarks>
+    /// <path>api/2.0/files/thirdparty/capabilities</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("thirdparty/capabilities")]
     public List<List<string>> Capabilities()
     {
@@ -96,6 +99,15 @@ public class ThirdpartyController : ApiControllerBase
         return _thirdpartyConfiguration.GetProviders();
     }
 
+    /// <summary>
+    /// Creates a WordPress post with the parameters specified in the request.
+    /// </summary>
+    /// <short>Create a WordPress post</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateWordpressPostRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a WordPress post</param>
+    /// <category>WordPress</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/files/wordpress</path>
+    /// <httpMethod>POST</httpMethod>
     /// <visible>false</visible>
     [HttpPost("wordpress")]
     public bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
@@ -128,15 +140,15 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///   Removes the third party file storage service account with the ID specified in the request
+    /// Removes the third-party storage service account with the ID specified in the request.
     /// </summary>
-    /// <param name="providerId">Provider ID. Provider id is part of folder id.
-    /// Example, folder id is "sbox-123", then provider id is "123"
-    /// </param>
-    /// <short>Remove third party account</short>
-    /// <category>Third-Party Integration</category>
-    /// <returns>Folder id</returns>
-    ///<exception cref="ArgumentException"></exception>
+    /// <param type="System.Int32, System" method="url" name="providerId">Provider ID. It is a part of the folder ID. Example: folder ID is "sbox-123", then provider ID is "123"</param>
+    /// <short>Remove a third-party account</short>
+    /// <category>Third-party integration</category>
+    /// <returns type="System.Object, System">Third-party folder ID</returns>
+    /// <path>api/2.0/files/thirdparty/{providerId}</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <exception cref="ArgumentException"></exception>
     [HttpDelete("thirdparty/{providerId:int}")]
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
@@ -144,6 +156,14 @@ public class ThirdpartyController : ApiControllerBase
 
     }
 
+    /// <summary>
+    /// Deletes the WordPress plugin information.
+    /// </summary>
+    /// <short>Delete the WordPress information</short>
+    /// <category>WordPress</category>
+    /// <returns type="System.Object, System">Object with the "success" field: true if the operation is successful</returns>
+    /// <path>api/2.0/files/wordpress-delete</path>
+    /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
     [HttpGet("wordpress-delete")]
     public object DeleteWordpressInfo()
@@ -164,11 +184,14 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///    Returns the list of third party services connected in the 'Common Documents' section
+    /// Returns a list of the third-party services connected to the "Common" section.
     /// </summary>
-    /// <category>Third-Party Integration</category>
-    /// <short>Get third party folder</short>
-    /// <returns>Connected providers folder</returns>
+    /// <category>Third-party integration</category>
+    /// <short>Get common third-party services</short>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">List of common third-party folderst</returns>
+    /// <path>api/2.0/files/thirdparty/common</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("thirdparty/common")]
     public async IAsyncEnumerable<FolderDto<string>> GetCommonThirdPartyFoldersAsync()
     {
@@ -182,11 +205,14 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///    Returns the list of all connected third party services
+    /// Returns a list of all the connected third-party accounts.
     /// </summary>
-    /// <category>Third-Party Integration</category>
-    /// <short>Get third party list</short>
-    /// <returns>Connected providers</returns>
+    /// <category>Third-party integration</category>
+    /// <short>Get third-party accounts</short>
+    /// <returns type="ASC.Web.Files.Services.WCFService.ThirdPartyParams, ASC.Files.Core">List of connected providers information</returns>
+    /// <path>api/2.0/files/thirdparty</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("thirdparty")]
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
@@ -194,11 +220,13 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///    Return connected third party backup services
+    /// Return a backup of the connected third-party account.
     /// </summary>
-    /// <category>Third-Party Integration</category>
-    /// <short>Get third party list</short>
-    /// <returns>Connected providers</returns>
+    /// <category>Third-party integration</category>
+    /// <short>Get a third-party account backup</short>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup</returns>
+    /// <path>api/2.0/files/thirdparty/backup</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("thirdparty/backup")]
     public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
@@ -214,6 +242,14 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the WordPress plugin information.
+    /// </summary>
+    /// <short>Get the WordPress information</short>
+    /// <category>WordPress</category>
+    /// <returns type="System.Object, System">Object with the following parameters: "success" - specifies if the operation is successful or not, "data" - blog information</returns>
+    /// <path>api/2.0/files/wordpress-info</path>
+    /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
     [HttpGet("wordpress-info")]
     public object GetWordpressInfo()
@@ -243,20 +279,15 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///   Saves the third party file storage service account
+    /// Saves the third-party storage service account. For WebDav, Yandex, kDrive and SharePoint, the login and password are used for authentication. For other providers, the authentication is performed using a token received via OAuth 2.0.
     /// </summary>
-    /// <short>Save third party account</short>
-    /// <param name="url">Connection url for SharePoint</param>
-    /// <param name="login">Login</param>
-    /// <param name="password">Password</param>
-    /// <param name="token">Authentication token</param>
-    /// <param name="isCorporate"></param>
-    /// <param name="customerTitle">Title</param>
-    /// <param name="providerKey">Provider Key</param>
-    /// <param name="providerId">Provider ID</param>
-    /// <category>Third-Party Integration</category>
-    /// <returns>Folder contents</returns>
-    /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
+    /// <short>Save a third-party account</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyRequestDto, ASC.Files.Core" name="inDto">Third-party request parameters</param>
+    /// <category>Third-party integration</category>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Connected provider folder</returns>
+    /// <remarks>List of provider keys: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive.</remarks>
+    /// <path>api/2.0/files/thirdparty</path>
+    /// <httpMethod>POST</httpMethod>
     /// <exception cref="ArgumentException"></exception>
     [HttpPost("thirdparty")]
     public async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
@@ -277,19 +308,15 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     /// <summary>
-    ///   Saves the third party backup file storage service account
+    /// Saves a backup of the connected third-party account.
     /// </summary>
-    /// <short>Save third party account</short>
-    /// <param name="url">Connection url for SharePoint</param>
-    /// <param name="login">Login</param>
-    /// <param name="password">Password</param>
-    /// <param name="token">Authentication token</param>
-    /// <param name="customerTitle">Title</param>
-    /// <param name="providerKey">Provider Key</param>
-    /// <param name="providerId">Provider ID</param>
-    /// <category>Third-Party Integration</category>
-    /// <returns>Folder contents</returns>
-    /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
+    /// <short>Save a third-party account backup</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyBackupRequestDto, ASC.Files.Core" name="inDto">Third-party backup request parameters</param>
+    /// <category>Third-party integration</category>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup</returns>
+    /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive</remarks>
+    /// <path>api/2.0/files/thirdparty/backup</path>
+    /// <httpMethod>POST</httpMethod>
     /// <exception cref="ArgumentException"></exception>
     [HttpPost("thirdparty/backup")]
     public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyBackupRequestDto inDto)
@@ -311,6 +338,15 @@ public class ThirdpartyController : ApiControllerBase
         return await _folderDtoHelper.GetAsync(folder);
     }
 
+    /// <summary>
+    /// Saves the user WordPress information when logging in.
+    /// </summary>
+    /// <short>Save the user WordPress information</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.WordpressSaveRequestDto, ASC.Files.Core" name="inDto">Request parameters for saving WordPress information</param>
+    /// <category>WordPress</category>
+    /// <returns type="System.Object, System">Object with the following parameters: "success" - specifies if the operation is successful or not, "data" - blog information</returns>
+    /// <path>api/2.0/files/wordpress-save</path>
+    /// <httpMethod>POST</httpMethod>
     /// <visible>false</visible>
     [HttpPost("wordpress-save")]
     public object WordpressSave(WordpressSaveRequestDto inDto)

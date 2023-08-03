@@ -77,6 +77,17 @@ public class MessageSettingsController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
     }
 
+    /// <summary>
+    /// Displays the contact form on the "Sign In" page, allowing users to send a message to the DocSpace administrator in case they encounter any issues while accessing DocSpace.
+    /// </summary>
+    /// <short>
+    /// Enable the administrator message settings
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
+    /// <category>Messages</category>
+    /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
+    /// <path>api/2.0/settings/messagesettings</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("messagesettings")]
     public object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
     {
@@ -89,6 +100,16 @@ public class MessageSettingsController : BaseSettingsController
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Returns the cookies lifetime value in minutes.
+    /// </summary>
+    /// <short>
+    /// Get cookies lifetime
+    /// </short>
+    /// <category>Cookies</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CookieSettingsDto, ASC.Web.Api">Lifetime value in minutes</returns>
+    /// <path>api/2.0/settings/cookiesettings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("cookiesettings")]
     public CookieSettingsDto GetCookieSettings()
     {
@@ -101,8 +122,19 @@ public class MessageSettingsController : BaseSettingsController
         };
     }
 
+    /// <summary>
+    /// Updates the cookies lifetime value in minutes.
+    /// </summary>
+    /// <short>
+    /// Update cookies lifetime
+    /// </short>
+    /// <category>Cookies</category>
+    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api" name="inDto">Cookies settings request parameters</param>
+    /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
+    /// <path>api/2.0/settings/cookiesettings</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("cookiesettings")]
-    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
+    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -111,13 +143,25 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(model.LifeTime, model.Enabled);
+        await _cookiesManager.SetLifeTime(inDto.LifeTime, inDto.Enabled);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Sends a message to the administrator email when unauthorized users encounter issues accessing DocSpace.
+    /// </summary>
+    /// <short>
+    /// Send a message to the administrator
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
+    /// <category>Messages</category>
+    /// <returns type="System.Object, System">Message about the result of sending a message</returns>
+    /// <path>api/2.0/settings/sendadmmail</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("sendadmmail")]
     public object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
@@ -148,6 +192,18 @@ public class MessageSettingsController : BaseSettingsController
         return Resource.AdminMessageSent;
     }
 
+    /// <summary>
+    /// Sends an invitation email with a link to the DocSpace.
+    /// </summary>
+    /// <short>
+    /// Sends an invitation email
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
+    /// <category>Messages</category>
+    /// <returns type="System.Object, System">Message about sending a link to confirm joining the DocSpace</returns>
+    /// <path>api/2.0/settings/sendjoininvite</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("sendjoininvite")]
     public async Task<object> SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)

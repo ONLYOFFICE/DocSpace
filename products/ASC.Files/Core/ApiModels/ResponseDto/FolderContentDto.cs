@@ -27,15 +27,40 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FolderContentDto<T>
 {
+    /// <summary>List of files</summary>
+    /// <type>System.Collections.Generic.List{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic</type>
     public List<FileEntryDto> Files { get; set; }
+
+    /// <summary>List of folders</summary>
+    /// <type>System.Collections.Generic.List{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic</type>
     public List<FileEntryDto> Folders { get; set; }
+
+    /// <summary>Current folder information</summary>
+    /// <type>ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core</type>
     public FolderDto<T> Current { get; set; }
+
+    /// <summary>Folder path</summary>
+    /// <type>System.Object, System</type>
     public object PathParts { get; set; }
+
+    /// <summary>Folder start index</summary>
+    /// <type>System.Int32, System</type>
     public int StartIndex { get; set; }
+
+    /// <summary>Number of folder elements</summary>
+    /// <type>System.Int32, System</type>
     public int Count { get; set; }
+
+    /// <summary>Total number of elements in the folder</summary>
+    /// <type>System.Int32, System</type>
     public int Total { get; set; }
+
+    /// <summary>New element index</summary>
+    /// <type>System.Int32, System</type>
     public int New { get; set; }
 
     public FolderContentDto() { }

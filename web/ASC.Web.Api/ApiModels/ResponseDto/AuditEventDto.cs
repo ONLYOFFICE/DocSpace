@@ -26,37 +26,72 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class AuditEventDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
 
+    /// <summary>Date</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Date { get; set; }
 
+    /// <summary>User</summary>
+    /// <type>System.String, System</type>
     public string User { get; set; }
 
+    /// <summary>User ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid UserId { get; set; }
 
+    /// <summary>Action</summary>
+    /// <type>System.String, System</type>
     public string Action { get; set; }
 
+    /// <summary>Action ID</summary>
+    /// <type>ASC.MessagingSystem.Core.MessageAction, ASC.Core.Common</type>
     public MessageAction ActionId { get; set; }
 
+    /// <summary>IP</summary>
+    /// <type>System.String, System</type>
     public string IP { get; set; }
 
+    /// <summary>Browser</summary>
+    /// <type>System.String, System</type>
     public string Browser { get; set; }
 
+    /// <summary>Platform</summary>
+    /// <type>System.String, System</type>
     public string Platform { get; set; }
 
+    /// <summary>Page</summary>
+    /// <type>System.String, System</type>
     public string Page { get; set; }
 
+    /// <summary>Action type</summary>
+    /// <type>ASC.AuditTrail.Types.ActionType, ASC.AuditTrail</type>
     public ActionType ActionType { get; set; }
 
+    /// <summary>Product type</summary>
+    /// <type>ASC.AuditTrail.Types.ProductType, ASC.AuditTrail</type>
     public ProductType Product { get; set; }
 
+    /// <summary>Module type</summary>
+    /// <type>ASC.AuditTrail.Types.ModuleType, ASC.AuditTrail</type>
     public ModuleType Module { get; set; }
 
+    /// <summary>List of targets</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic</type>
     public IEnumerable<string> Target { get; set; }
 
+    /// <summary>List of entry types</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.AuditTrail.Types.EntryType}, System.Collections.Generic</type>
     public IEnumerable<EntryType> Entries { get; set; }
+
+    /// <summary>Context</summary>
+    /// <type>System.String, System</type>
     public string Context { get; set; }
 
     public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)

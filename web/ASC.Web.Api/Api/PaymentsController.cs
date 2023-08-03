@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+///<summary>
+/// Portal information access.
+///</summary>
+///<name>portal</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -74,6 +78,17 @@ public class PaymentController : ControllerBase
         _studioNotifyService = studioNotifyService;
     }
 
+    /// <summary>
+    /// Returns the URL to the payment page.
+    /// </summary>
+    /// <short>
+    /// Get the payment page URL
+    /// </short>
+    /// <category>Payment</category>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api" name="inDto">Payment URL request parameters</param>
+    /// <returns type="System.Uri, System">The URL to the payment page</returns>
+    /// <path>api/2.0/portal/payment/url</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("payment/url")]
     public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
@@ -92,6 +107,17 @@ public class PaymentController : ControllerBase
             inDto.BackUrl);
     }
 
+    /// <summary>
+    /// Updates the quantity of payment.
+    /// </summary>
+    /// <short>
+    /// Update the payment quantity
+    /// </short>
+    /// <category>Payment</category>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api" name="inDto">Payment URL request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/portal/payment/update</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("payment/update")]
     public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
@@ -107,6 +133,17 @@ public class PaymentController : ControllerBase
         return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
     }
 
+    /// <summary>
+    /// Returns the URL to the payment account.
+    /// </summary>
+    /// <short>
+    /// Get the payment account
+    /// </short>
+    /// <category>Payment</category>
+    /// <param type="System.String, System" name="backUrl">Back URL</param>
+    /// <returns type="System.Object, System">The URL to the payment account</returns>
+    /// <path>api/2.0/portal/payment/account</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/account")]
     public object GetPaymentAccount(string backUrl)
     {
@@ -123,6 +160,16 @@ public class PaymentController : ControllerBase
         return !string.IsNullOrEmpty(backUrl) ? $"{result}?backUrl={backUrl}" : result;
     }
 
+    /// <summary>
+    /// Returns the available portal prices.
+    /// </summary>
+    /// <short>
+    /// Get prices
+    /// </short>
+    /// <category>Payment</category>
+    /// <returns type="System.Object, System">List of available portal prices</returns>
+    /// <path>api/2.0/portal/payment/prices</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
@@ -133,6 +180,17 @@ public class PaymentController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the available portal currencies.
+    /// </summary>
+    /// <short>
+    /// Get currencies
+    /// </short>
+    /// <category>Payment</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CurrenciesDto, ASC.Web.Api">List of available portal currencies</returns>
+    /// <path>api/2.0/portal/payment/currencies</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("payment/currencies")]
     public IEnumerable<CurrenciesDto> GetCurrencies()
     {
@@ -147,18 +205,50 @@ public class PaymentController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the available portal quotas.
+    /// </summary>
+    /// <short>
+    /// Get quotas
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">List of available portal quotas</returns>
+    /// <path>api/2.0/portal/payment/quotas</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("payment/quotas")]
     public IAsyncEnumerable<QuotaDto> GetQuotas()
     {
         return _quotaHelper.GetQuotas();
     }
 
+    /// <summary>
+    /// Returns the payment information about the current portal quota.
+    /// </summary>
+    /// <short>
+    /// Get quota payment information
+    /// </short>
+    /// <category>Payment</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">Payment information about the current portal quota</returns>
+    /// <path>api/2.0/portal/payment/quota</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]
     public async Task<QuotaDto> GetQuota(bool refresh)
     {
         return await _quotaHelper.GetCurrentQuota(refresh);
     }
 
+    /// <summary>
+    /// Sends a request for portal payment.
+    /// </summary>
+    /// <short>
+    /// Send a payment request
+    /// </short>
+    /// <category>Payment</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SalesRequestsDto, ASC.Web.Api" name="inDto">Portal payment request parameters</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/payment/request</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("payment/request")]
     public void SendSalesRequest(SalesRequestsDto inDto)
     {

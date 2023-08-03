@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
+///<summary>
+/// Portal settings API.
+///</summary>
+///<name>settings</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
