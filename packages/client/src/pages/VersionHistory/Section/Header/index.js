@@ -23,6 +23,11 @@ const StyledContainer = styled.div`
           `}
     min-width: 17px;
 
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
+    }
+
     @media (max-width: 1024px) {
       ${({ theme }) =>
         theme.interfaceDirection === "rtl"
