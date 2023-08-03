@@ -26,16 +26,38 @@
 
 namespace ASC.Core.Billing;
 
+/// <summary>
+/// </summary>
 [DebuggerDisplay("{State} before {DueDate}")]
 [Serializable]
 public class Tariff
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Tariff state</summary>
+    /// <type>ASC.Core.Billing.TariffState, ASC.Core.Common</type>
     public TariffState State { get; set; }
+
+    /// <summary>Due date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime DueDate { get; set; }
+
+    /// <summary>Delay due date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime DelayDueDate { get; set; }
+
+    /// <summary>License date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime LicenseDate { get; set; }
+
+    /// <summary>Customer ID</summary>
+    /// <type>System.String, System</type>
     public string CustomerId { get; set; }
+
+    /// <summary>List of quotas</summary>
+    /// <type>System.Collections.Generic.List{ASC.Core.Billing.Quota}, System.Collections.Generic</type>
     public List<Quota> Quotas { get; set; }
 
     public override int GetHashCode()
@@ -58,9 +80,16 @@ public class Tariff
     }
 }
 
+/// <summary>
+/// </summary>
 public class Quota : IEquatable<Quota>
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Quantity</summary>
+    /// <type>System.Int32, System</type>
     public int Quantity { get; set; }
 
     public Quota(int id, int quantity)

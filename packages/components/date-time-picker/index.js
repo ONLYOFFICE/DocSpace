@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
 import TimePicker from "@docspace/components/time-picker";
 import DatePicker from "@docspace/components/date-picker";
 
 import ClockIcon from "PUBLIC_DIR/images/clock.react.svg";
+import moment from "moment";
 
 const Selectors = styled.div`
   position: relative;
@@ -17,6 +18,12 @@ const Selectors = styled.div`
 
   .selectedItem {
     margin-bottom: 0;
+    cursor: pointer;
+    ${(props) =>
+      props.hasError &&
+      css`
+        color: red;
+      `}
   }
 `;
 
@@ -41,6 +48,12 @@ const TimeCell = styled.span`
     height: 12px;
     padding: 0 10px 0 2px;
   }
+
+  ${(props) =>
+    props.hasError &&
+    css`
+      color: red;
+    `}
 `;
 
 const TimeSelector = styled.span`
@@ -50,16 +63,29 @@ const TimeSelector = styled.span`
 `;
 
 const DateTimePicker = (props) => {
-  const { date, selectDateText, onChange, setDate, className, id } = props;
+  const {
+    initialDate,
+    selectDateText,
+    onChange,
+    className,
+    id,
+    hasError,
+    minDate,
+    maxDate,
+    locale,
+    openDate,
+  } = props;
 
   const [isTimeFocused, setIsTimeFocused] = useState(false);
+
+  const [date, setDate] = useState(initialDate ? moment(initialDate) : null);
 
   const showTimePicker = () => setIsTimeFocused(true);
   const hideTimePicker = () => setIsTimeFocused(false);
 
   const handleChange = (date) => {
+    onChange && onChange(date);
     setDate(date);
-    onChange(date);
   };
 
   const timePickerRef = useRef(null);
@@ -83,25 +109,31 @@ const DateTimePicker = (props) => {
   }, []);
 
   return (
-    <Selectors className={className} id={id}>
+    <Selectors className={className} id={id} hasError={hasError}>
       <DatePicker
+        initialDate={initialDate}
         date={date}
         onChange={handleChange}
         selectDateText={selectDateText}
+        minDate={minDate}
+        maxDate={maxDate}
+        locale={locale}
+        openDate={openDate}
+        outerDate={date}
       />
       <TimeSelector>
         {date !== null &&
           (isTimeFocused ? (
             <TimePicker
-              date={date}
-              setDate={handleChange}
+              initialTime={date}
+              onChange={handleChange}
               tabIndex={1}
               onBlur={hideTimePicker}
               focusOnRender
               forwardedRef={timePickerRef}
             />
           ) : (
-            <TimeCell onClick={showTimePicker}>
+            <TimeCell onClick={showTimePicker} hasError={hasError}>
               <ClockIcon className="clockIcon" />
               {date.format("HH:mm")}
             </TimeCell>
@@ -113,7 +145,11 @@ const DateTimePicker = (props) => {
 
 DateTimePicker.propTypes = {
   /** Date object */
-  date: PropTypes.object,
+  initialDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   /** Select date text */
   selectDateText: PropTypes.string,
   /** Allows to set classname */
@@ -122,8 +158,28 @@ DateTimePicker.propTypes = {
   id: PropTypes.string,
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
-  /** Sets date */
-  setDate: PropTypes.func,
+  /** Specifies min choosable calendar date */
+  minDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  /** Specifies max choosable calendar date */
+  maxDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  /** Specifies calendar locale */
+  locale: PropTypes.string,
+  /** Indicates the input field has an error  */
+  hasError: PropTypes.bool,
+  /** Allows to set first shown date in calendar */
+  openDate: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string,
+    PropTypes.number,
+  ]),
 };
 
 export default DateTimePicker;

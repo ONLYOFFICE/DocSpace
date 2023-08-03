@@ -156,6 +156,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  publicRoomKey = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -305,6 +306,10 @@ class SettingsStore {
     return this.isLoaded && !this.wizardToken;
   }
 
+  get isPublicRoom() {
+    return window.location.pathname === "/rooms/share";
+  }
+
   setMainBarVisible = (visible) => {
     this.mainBarVisible = visible;
   };
@@ -401,7 +406,7 @@ class SettingsStore {
         const url = new URL(wrongPortalNameUrl);
         url.searchParams.append("url", window.location.hostname);
         url.searchParams.append("ref", window.location.href);
-        return window.location.replace(url);
+        // return window.location.replace(url);
       }
     });
 
@@ -692,8 +697,15 @@ class SettingsStore {
     return window.firebaseHelper;
   }
 
+  setPublicRoomKey = (key) => {
+    this.publicRoomKey = key;
+  };
+
   get socketHelper() {
-    return new SocketIOHelper(this.socketUrl);
+    const socketUrl =
+      this.isPublicRoom && !this.publicRoomKey ? null : this.socketUrl;
+
+    return new SocketIOHelper(socketUrl, this.publicRoomKey);
   }
 
   getBuildVersionInfo = async () => {

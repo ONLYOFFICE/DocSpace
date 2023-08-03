@@ -11,6 +11,9 @@ on:
     - build/install/rpm**
     - build/install/common**
   workflow_dispatch:
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
   
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
@@ -27,6 +30,16 @@ jobs:
       contents: write
       
     steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
       - name: Import GPG 
         uses: crazy-max/ghaction-import-gpg@v5
         id: gpg_step
@@ -88,6 +101,16 @@ jobs:
       contents: write
  
     steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
       - name: Import GPG 
         uses: crazy-max/ghaction-import-gpg@v5
         with: 

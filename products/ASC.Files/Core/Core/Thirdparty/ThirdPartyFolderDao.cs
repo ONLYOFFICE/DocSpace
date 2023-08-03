@@ -672,6 +672,21 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     {
         throw new NotImplementedException();
     }
+
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, string to)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IDictionary<string, TTo>> IFolderDao<string>.CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, int to)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 internal abstract class BaseFolderDao

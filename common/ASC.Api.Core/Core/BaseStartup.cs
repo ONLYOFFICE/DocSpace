@@ -109,6 +109,7 @@ public abstract class BaseStartup
                 .AddBaseDbContextPool<TelegramDbContext>()
                 .AddBaseDbContextPool<FirebaseDbContext>()
                 .AddBaseDbContextPool<CustomDbContext>()
+                .AddBaseDbContextPool<UrlShortenerDbContext>()
                 .AddBaseDbContextPool<WebstudioDbContext>()
                 .AddBaseDbContextPool<InstanceRegistrationContext>()
                 .AddBaseDbContextPool<IntegrationEventLogContext>()
@@ -319,8 +320,6 @@ public abstract class BaseStartup
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices).Wait();
-
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {
                 Predicate = _ => true,
@@ -336,6 +335,8 @@ public abstract class BaseStartup
             {
                 Predicate = r => r.Name.Contains("self")
             });
+
+            endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices).Wait();
         });
 
         app.Map("/switch", appBuilder =>

@@ -20,6 +20,7 @@ const Home = loadable(() => import("../pages/Home"));
 const Sdk = loadable(() => import("../pages/Sdk"));
 
 const FormGallery = loadable(() => import("../pages/FormGallery"));
+const PublicRoom = loadable(() => import("../pages/PublicRoom"));
 const About = loadable(() => import("../pages/About"));
 const Wizard = loadable(() => import("../pages/Wizard"));
 const PreparationPortal = loadable(() => import("../pages/PreparationPortal"));
@@ -250,6 +251,16 @@ const ClientRoutes = [
           <FormGallery />
         </ErrorBoundary>
       </PrivateRoute>
+    ),
+  },
+  {
+    path: "/rooms/share",
+    element: (
+      <PublicRoute>
+        <ErrorBoundary>
+          <PublicRoom />
+        </ErrorBoundary>
+      </PublicRoute>
     ),
   },
   {

@@ -34,8 +34,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     getIsTrash,
     isRootFolder,
-    // rootFolderType,
-    // selectionParentRoom,
     infoPanelItemsList,
     enablePlugins,
   } = props;

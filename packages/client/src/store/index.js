@@ -34,6 +34,7 @@ import OformsStore from "./OformsStore";
 import AccessRightsStore from "./AccessRightsStore";
 import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
+import PublicRoomStore from "./PublicRoomStore";
 
 import WebhooksStore from "./WebhooksStore";
 import ClientLoadingStore from "./ClientLoadingStore";
@@ -41,8 +42,6 @@ import ClientLoadingStore from "./ClientLoadingStore";
 import PluginStore from "./PluginStore";
 
 const oformsStore = new OformsStore(authStore);
-
-const clientLoadingStore = new ClientLoadingStore();
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
@@ -60,7 +59,16 @@ const ssoStore = new SsoFormStore();
 const tagsStore = new TagsStore();
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
-const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
+const publicRoomStore = new PublicRoomStore();
+
+const clientLoadingStore = new ClientLoadingStore(publicRoomStore);
+
+const settingsStore = new SettingsStore(
+  thirdPartyStore,
+  treeFoldersStore,
+  publicRoomStore
+);
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
@@ -72,12 +80,14 @@ const filesStore = new FilesStore(
   thirdPartyStore,
   accessRightsStore,
   clientLoadingStore,
+  publicRoomStore,
   pluginStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
-  settingsStore
+  settingsStore,
+  publicRoomStore
 );
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
@@ -120,6 +130,7 @@ const filesActionsStore = new FilesActionsStore(
   mediaViewerDataStore,
   accessRightsStore,
   clientLoadingStore,
+  publicRoomStore,
   pluginStore
 );
 
@@ -134,6 +145,7 @@ const contextOptionsStore = new ContextOptionsStore(
   versionHistoryStore,
   settingsStore,
   selectedFolderStore,
+  publicRoomStore,
   pluginStore
 );
 
@@ -218,6 +230,7 @@ const store = {
 
   webhooksStore,
   clientLoadingStore,
+  publicRoomStore,
 
   pluginStore,
 };

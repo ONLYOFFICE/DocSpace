@@ -26,11 +26,27 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class LogoRequestDto
 {
+    /// <summary>The path to the temporary image file</summary>
+    /// <type>System.String, System</type>
     public string TmpFile { get; set; }
+
+    /// <summary>The X coordinate of the rectangle starting point</summary>
+    /// <type>System.Int32, System</type>
     public int X { get; set; }
+
+    /// <summary>The Y coordinate of the rectangle starting point</summary>
+    /// <type>System.Int32, System</type>
     public int Y { get; set; }
+
+    /// <summary>The rectangle width</summary>
+    /// <type>System.Int32, System</type>
     public int Width { get; set; }
+
+    /// <summary>The rectangle height</summary>
+    /// <type>System.Int32, System</type>
     public int Height { get; set; }
 }
