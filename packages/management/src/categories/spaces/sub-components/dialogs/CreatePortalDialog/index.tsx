@@ -45,7 +45,7 @@ const CreatePortalDialog = () => {
     getAllPortals,
   } = spacesStore;
 
-  const { t } = useTranslation(["Common"]);
+  const { t } = useTranslation(["Management", "Common"]);
 
   const [name, setName] = React.useState<string>("");
 
@@ -81,13 +81,9 @@ const CreatePortalDialog = () => {
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>Creating new DocSpace</ModalDialog.Header>
+      <ModalDialog.Header>{t("CreatingDocSpace")}</ModalDialog.Header>
       <ModalDialog.Body className="create-docspace-body">
-        <Text noSelect={true}>
-          You have successfully connected your domain to your IP address. To
-          edit the space address settings you need to set the future DocSpace
-          name.
-        </Text>
+        <Text noSelect={true}>{t("CreateSpaceDescription")}</Text>
         <div className="create-docspace-input-block">
           <Text
             color="#333"
@@ -95,7 +91,7 @@ const CreatePortalDialog = () => {
             fontWeight="600"
             style={{ paddingBottom: "5px" }}
           >
-            DocSpace name
+            {t("DocSpaceName")}
           </Text>
           <TextInput
             //     mask={[/[1-9]/, ".", "onlyoffice"]}
@@ -103,20 +99,20 @@ const CreatePortalDialog = () => {
             onChange={onHandleName}
             hasError={isNameError}
             value={name}
-            // placeholder="Enter name"
+            placeholder={t("addTranslationAndMask")}
             className="create-docspace-input"
           />
         </div>
         <div>
           <Checkbox
             className="create-docspace-checkbox"
-            label="Visit this space after creating"
+            label={t("VisitSpace")}
             onChange={() => setVisit((visit) => !visit)}
             isChecked={visit}
           />
 
           <Checkbox
-            label="Restrict access to managing spaces"
+            label={t("RestrictAccess")}
             onChange={() => setRestrictAccess((access) => !access)}
             isChecked={restrictAccess}
           />

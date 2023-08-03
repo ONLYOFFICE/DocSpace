@@ -20,7 +20,7 @@ const StyledModal = styled(ModalDialogContainer)`
 `;
 
 const ChangeDomainDialogComponent = () => {
-  const { t } = useTranslation(["Common"]);
+  const { t } = useTranslation(["Management", "Common"]);
   const { spacesStore } = useStore();
 
   const {
@@ -52,18 +52,15 @@ const ChangeDomainDialogComponent = () => {
   const isDomainError = domain.length > 0 && !parsed.isValid();
   return (
     <StyledModal
-      //    isLoading={!tReady}
       visible={visible}
       isLarge
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>Domain settings</ModalDialog.Header>
+      <ModalDialog.Header>{t("DomainSettings")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text noSelect={true} fontSize="13px">
-          Changing the domain name may cause some systems failure. After
-          changing the domain name you will need to reconfigure the following
-          settings: mail, account, jabber parameters.
+          {t("ChangeDomainDescription")}
         </Text>
         <div className="create-docspace-input-block">
           <Text
@@ -72,13 +69,13 @@ const ChangeDomainDialogComponent = () => {
             fontWeight="600"
             style={{ paddingBottom: "5px" }}
           >
-            Domain name
+            {t("DomainName")}
           </Text>
           <TextInput
             hasError={isDomainError}
             onChange={onHandleDomain}
             value={domain}
-            placeholder="Enter domain"
+            placeholder={t("EnterDomain")}
             className="create-docspace-input"
           />
         </div>

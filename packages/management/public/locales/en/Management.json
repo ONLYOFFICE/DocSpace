@@ -6,5 +6,11 @@
   "DocSpaceName": "DocSpace name",
   "EnterDomain": "Enter domain name",
   "DomainSettings": "Domain settings",
-  "NewSpace": "New space"
+  "NewSpace": "New space",
+  "CreatingDocSpace": "Creating new DocSpace",
+  "CreateSpaceDescription": "You have successfully connected your domain to your IP address. To edit the space address settings you need to set the future DocSpace name",
+  "VisitSpace": "Visit this space after creating",
+  "RestrictAccess": "Restrict access to managing spaces",
+  "ChangeDomainDescription": "Changing the domain name may cause some systems failure. After changing the domain name you will need to reconfigure the following settings: mail, account, jabber parameters.",
+  "DomainName": "Domain name"
 }
