@@ -40,5 +40,4 @@ jobs:
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
           --push
-
         shell: bash
