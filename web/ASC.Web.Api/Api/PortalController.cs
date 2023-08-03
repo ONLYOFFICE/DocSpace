@@ -225,7 +225,7 @@ public class PortalController : ControllerBase
     /// Get an extra tenant license
     /// </short>
     /// <category>Quota</category>
-    /// <param type="System.Boolean, System" name="refresh"></param>
+    /// <param type="System.Boolean, System" name="refresh">Specifies whether the tariff will be refreshed</param>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto, ASC.Web.Api">Extra tenant license information</returns>
     /// <path>api/2.0/portal/tenantextra</path>
     /// <httpMethod>GET</httpMethod>
@@ -303,7 +303,7 @@ public class PortalController : ControllerBase
     /// Get a portal tariff
     /// </short>
     /// <category>Quota</category>
-    /// <param type="System.Boolean, System" name="refresh"></param>
+    /// <param type="System.Boolean, System" name="refresh">Specifies whether the tariff will be refreshed</param>
     /// <returns type="ASC.Core.Billing.Tariff, ASC.Core.Common">Current portal tariff</returns>
     /// <path>api/2.0/portal/tariff</path>
     /// <httpMethod>GET</httpMethod>
