@@ -4,5 +4,7 @@
   "ConfigurationDescription": "You need to connect your domain to your current IP to change the address settings. Please make sure you have access to the domain settings to be able to do that. After connecting the domain, create a DocSpace name. You can change the created DocSpace name later using the space settings.",
   "Domain": "Domain",
   "DocSpaceName": "DocSpace name",
-  "EnterDomain": "Enter domain name"
+  "EnterDomain": "Enter domain name",
+  "DomainSettings": "Domain settings",
+  "NewSpace": "New space"
 }

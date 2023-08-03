@@ -6,7 +6,7 @@ import { SpacesRowContainer } from "./RowView/SpacesRowContainer";
 import { StyledMultipleSpaces } from "../StyledSpaces";
 import { useStore } from "SRC_DIR/store";
 
-const MultipleSpaces = () => {
+const MultipleSpaces = ({ t }) => {
   const { spacesStore } = useStore();
 
   const {
@@ -23,7 +23,7 @@ const MultipleSpaces = () => {
       <div className="multiple-spaces-section">
         <Button
           size="small"
-          label="New space"
+          label={t("NewSpace")}
           className="spaces-button"
           primary={true}
           onClick={() => setCreatePortalDialogVisible(true)}
@@ -31,7 +31,7 @@ const MultipleSpaces = () => {
         <SpacesRowContainer portals={portals} />
         <div className="domain-settings-wrapper">
           <Text fontSize="16px" fontWeight={700}>
-            Domain settings
+            {t("DomainSettings")}
           </Text>
 
           <div className="spaces-input-block">
@@ -41,7 +41,7 @@ const MultipleSpaces = () => {
               className="spaces-input-subheader"
               fontWeight="600"
             >
-              Your current domain
+              {t("Settings:YourCurrentDomain")}
             </Text>
             <TextInput
               isDisabled={true}
@@ -53,7 +53,7 @@ const MultipleSpaces = () => {
           <Button
             className="spaces-button"
             size="small"
-            label="Edit"
+            label={t("Common:EditButton")}
             primary={true}
             onClick={() => setChangeDomainDialogVisible(true)}
           />

@@ -12,7 +12,7 @@ import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
 const Spaces = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
-  const { t } = useTranslation(["Management", "Common"]);
+  const { t } = useTranslation(["Management", "Common", "Settings"]);
 
   const { spacesStore } = useStore();
 
@@ -45,7 +45,7 @@ const Spaces = () => {
         <Text>{t("Subheader")}</Text>
       </div>
       {isConnected && portals.length > 0 ? (
-        <MultipleSpaces />
+        <MultipleSpaces t={t} />
       ) : (
         <ConfigurationSection t={t} />
       )}

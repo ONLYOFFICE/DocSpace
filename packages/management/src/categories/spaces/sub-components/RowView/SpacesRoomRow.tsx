@@ -7,6 +7,7 @@ import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg?url";
 import DefaultLogoUrl from "PUBLIC_DIR/images/logo/dark_lightsmall.svg?url";
+import { useTranslation } from "react-i18next";
 
 import { ReactSVG } from "react-svg";
 import { useStore } from "SRC_DIR/store";
@@ -28,6 +29,8 @@ const SpacesRoomRow = ({ item }) => {
 
   const { deletePortal, faviconLogo } = spacesStore;
 
+  const { t } = useTranslation(["Common", "Files", "Settings"]);
+
   const logoElement = faviconLogo ? (
     <img id={item.key} width={"32px"} height={"32px"} src={faviconLogo} />
   ) : (
@@ -36,12 +39,12 @@ const SpacesRoomRow = ({ item }) => {
 
   const contextOptionsProps = [
     {
-      label: "Open",
+      label: t("Files:Open"),
       key: "space_open",
       icon: ExternalLinkIcon,
     },
     {
-      label: "DocSpace Settings",
+      label: t("Common:SettingsDocSpace"),
       key: "space_settings",
       icon: CatalogSettingsReactSvgUrl,
     },
@@ -50,7 +53,7 @@ const SpacesRoomRow = ({ item }) => {
       isSeparator: true,
     },
     {
-      label: "Delete",
+      label: t("Common:Delete"),
       key: "space_delete",
       icon: DeleteReactSvgUrl,
       onClick: () => deletePortal(item.portalName, item.tenantId),
