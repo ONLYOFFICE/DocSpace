@@ -10,13 +10,11 @@ import ChangeDomainDialog from "./sub-components/dialogs/ChangeDomainDialog";
 import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
 
 const Spaces = () => {
-  const { t } = useTranslation(["Common"]);
-
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const { t } = useTranslation(["Management", "Common", "Settings"]);
 
-  const { spacesStore } = useStore();
+  const { spacesStore, authStore } = useStore();
 
   const {
     initStore,
