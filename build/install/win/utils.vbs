@@ -118,6 +118,13 @@ Function SetDocumentServerJWTSecretProp
 
 End Function
 
+Function SetMACHINEKEY
+    On Error Resume Next
+
+    Session.Property("MACHINE_KEY") = RandomString( 12 )
+
+End Function
+
 Function MySQLConfigure
     On Error Resume Next
     
