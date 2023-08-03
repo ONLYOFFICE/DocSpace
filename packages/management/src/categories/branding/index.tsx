@@ -21,7 +21,7 @@ const Branding = () => {
   const { t } = useTranslation(["Settings"]);
   const isSmallWindow = useIsSmallWindow(795);
 
-  const { brandingStore } = useStore();
+  const { brandingStore, authStore } = useStore();
   const {
     initStore,
     whiteLabelLogos,
@@ -36,6 +36,7 @@ const Branding = () => {
     saveWhiteLabelSettings,
     restoreDefault,
   } = brandingStore;
+  const { setDocumentTitle } = authStore;
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -47,6 +48,7 @@ const Branding = () => {
     };
 
     fetchData();
+    setDocumentTitle(t("Branding"));
   }, []);
 
   const onChangeCompanyName = (e: React.FormEvent<HTMLInputElement>) => {

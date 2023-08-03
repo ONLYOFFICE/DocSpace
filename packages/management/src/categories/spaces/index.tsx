@@ -10,6 +10,8 @@ import ChangeDomainDialog from "./sub-components/dialogs/ChangeDomainDialog";
 import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
 
 const Spaces = () => {
+  const { t } = useTranslation(["Common"]);
+
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const { t } = useTranslation(["Management", "Common", "Settings"]);
@@ -23,6 +25,7 @@ const Spaces = () => {
     domainDialogVisible,
     createPortalDialogVisible,
   } = spacesStore;
+  const { setDocumentTitle } = authStore;
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +34,7 @@ const Spaces = () => {
     };
 
     fetchData();
+    setDocumentTitle(t("Common:Spaces"));
   }, []);
 
   if (isLoading) return <h1>Loading</h1>;

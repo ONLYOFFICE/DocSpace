@@ -25,22 +25,24 @@ const WhiteLabel = ({
   defaultWhiteLabelLogoUrls,
   getWhiteLabelLogoText,
   getWhiteLabelLogoUrlsAction,
+  setLogoText,
 }) => {
   const { t } = useTranslation("Settings");
 
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
-  const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] = useState(
-    ""
-  );
+  const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] =
+    useState("");
 
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const companyNameFromSessionStorage = getFromSessionStorage("companyName");
-
   useEffect(() => {
+    const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+
     if (!companyNameFromSessionStorage) {
+      if (!logoText) return;
+
       setLogoTextWhiteLabel(logoText);
       saveToSessionStorage("companyName", logoText);
     } else {
@@ -134,7 +136,9 @@ const WhiteLabel = ({
       setIsSaving(true);
       await setWhiteLabelSettings(data);
       await getWhiteLabelLogoUrls();
-      await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
+      await getWhiteLabelLogoUrlsAction();
+      setLogoText(data.logoText);
+      //TODO: delete duplicate request
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -169,6 +173,7 @@ export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings } = setup;
 
   const {
+    setLogoText,
     whiteLabelLogoText,
     getWhiteLabelLogoText,
     whiteLabelLogoUrls,
@@ -182,6 +187,7 @@ export default inject(({ setup, auth, common }) => {
   } = auth.settingsStore;
 
   return {
+    setLogoText,
     theme: auth.settingsStore.theme,
     logoText: whiteLabelLogoText,
     logoUrls: whiteLabelLogoUrls,

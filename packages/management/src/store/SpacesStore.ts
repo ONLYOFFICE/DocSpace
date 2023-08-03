@@ -52,7 +52,10 @@ class SpacesStore {
     const { settings } = res;
 
     this.domain = settings;
-    // const status = await getPortalStatus(settings);
+
+    if (settings) {
+      const status = await getPortalStatus(settings);
+    }
   };
 
   get isConnected() {

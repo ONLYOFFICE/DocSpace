@@ -1,6 +1,6 @@
 {
   "name": "@docspace/client",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "private": true,
   "homepage": "",
   "scripts": {
@@ -9,7 +9,7 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
     "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "serve dist -s -p 5001"
+    "start-prod": "ws --port 5001 --directory dist --spa index.html"
   },
   "old-scripts": {
     "build:test": "webpack --env minimize=false --mode production",
@@ -73,10 +73,10 @@
     "html-loader": "^4.2.0",
     "html-webpack-plugin": "5.5.0",
     "json-loader": "^0.5.7",
+    "local-web-server": "^5.3.0",
     "playwright": "^1.32.0",
     "sass": "^1.59.3",
     "sass-loader": "^12.6.0",
-    "serve": "14.2.0",
     "shx": "^0.3.4",
     "source-map-loader": "^3.0.2",
     "style-loader": "3.3.2",

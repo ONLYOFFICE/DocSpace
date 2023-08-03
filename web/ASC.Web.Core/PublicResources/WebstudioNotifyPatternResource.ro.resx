@@ -371,13 +371,13 @@ Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de ut
  
 Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
  
-Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+Pentru a proceda astfel, consultaţi secţiunea "Plăți":"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
  
 _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
  
 Cu deosebită considerație,
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Bună!
