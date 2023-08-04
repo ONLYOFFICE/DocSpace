@@ -55,10 +55,10 @@ export const initDocEditor = async (req) => {
     const fileVersion = version || null;
 
     const baseSettings = [
-      getUser(),
-      getSettings(),
-      getAppearanceTheme(),
-      getLogoUrls(),
+      getUser(null, headers),
+      getSettings(false, headers),
+      getAppearanceTheme(headers),
+      getLogoUrls(headers),
     ];
 
     [user, settings, appearanceTheme, logoUrls] = await Promise.all(
@@ -71,8 +71,8 @@ export const initDocEditor = async (req) => {
     }
 
     [filesSettings, versionInfo] = await Promise.all([
-      getSettingsFiles(),
-      getBuildVersion(),
+      getSettingsFiles(headers),
+      getBuildVersion(headers),
     ]);
 
     const successAuth = !!user;
@@ -90,7 +90,7 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    const config = await openEdit(fileId, fileVersion, doc, view);
+    const config = await openEdit(fileId, fileVersion, doc, view, headers);
 
     //const sharingSettings = await getShareFiles([+fileId], []);
 
