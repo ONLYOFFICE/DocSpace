@@ -17,7 +17,7 @@ import {
 } from "../styled-article";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import DefaultUserPhotoPngUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
-
+import { useTheme } from 'styled-components'
 const ArticleProfile = (props) => {
   const { user, showText, getUserRole, getActions, onProfileClick } = props;
   const { t } = useTranslation("Common");
@@ -49,7 +49,8 @@ const ArticleProfile = (props) => {
 
   const model = getActions(t);
   const username = user.displayName.split(" ");
-
+  const { interfaceDirection } = useTheme()
+  const isRtl = interfaceDirection === 'rtl'
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoPngUrl;
 
   if (!isMobileOnly && isMobileUtils()) return <></>;
@@ -73,7 +74,8 @@ const ArticleProfile = (props) => {
             ref={menuRef}
             onHide={onHide}
             scaled={false}
-            leftOffset={-50}
+            leftOffset={!isRtl && -50}
+            rightOffset={isRtl && 54}
           />
         </div>
         {(!isTabletView || showText) && (
