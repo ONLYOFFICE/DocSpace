@@ -1,5 +1,6 @@
 import { getFavicon, getScripts } from "./helpers";
 import pkg from "../../../package.json";
+import fontsCssUrl from "PUBLIC_DIR/css/fonts.css?url";
 
 export default function template(
   initialEditorState = {},
@@ -87,7 +88,7 @@ export default function template(
             content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
           />
           <meta name="theme-color" content="#000000" />
-          <link rel="stylesheet" type="text/css" href="/static/css/fonts.css" />
+          <link rel="stylesheet" type="text/css" href=${fontsCssUrl} />
           
           <link id="favicon" rel="shortcut icon" href=${faviconHref} type="image/x-icon"/>
           <link rel="manifest" href="/manifest.json" />

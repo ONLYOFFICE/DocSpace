@@ -2,6 +2,8 @@ import { getScripts } from "./helpers";
 import pkg from "../../../package.json";
 import { getLogoFromPath } from "@docspace/common/utils";
 
+import fontsCssUrl from "PUBLIC_DIR/css/fonts.css?url";
+
 const { title } = pkg;
 const organizationName = "ONLYOFFICE"; //TODO: Replace to API variant
 
@@ -88,7 +90,7 @@ const template: Template = (
           content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="stylesheet" type="text/css" href="/static/css/fonts.css" />
+        <link rel="preload" as="style" type="text/css" href=${fontsCssUrl}/>
 
         <link id="favicon" rel="shortcut icon" href=${favicon} />
         <link rel="manifest" href="/manifest.json" />
