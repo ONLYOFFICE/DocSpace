@@ -748,4 +748,97 @@ $GreenButton
  
 パスワードを変更したくないですか？このメッセージは無視してください。</value>
   </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>承認</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>承認</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>コントロールパネルにアクセスする</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>ポータルサイトにアクセスする</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Webオフィスにアクセスする</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>メールアドレスの有効化はこちら</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>メールアドレスを変更する</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>パスワードを変更する</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>携帯電話番号を変更する</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>認証アプリを設定する</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>DocSpaceでコラボレーションする</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>今すぐ設定する</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>DocSpaceの招待を確認する</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>ポータルのアドレス変更の確認</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>ポータル所有者の更新を確認する</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>ルーム招待の確認</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>アカウント停止の確認</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>ポータルの無効化</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>ポータルを削除する</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>今すぐ招待する</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>ポータルへの参加はこちら</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>フィードバックを書く</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>プロフィールを削除する</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>今すぐ更新する</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>折り返し電話を申し込む</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>今すぐ料金プランを選択する</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>無料トライアルを開始する</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>割引を利用する</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>お支払い方法について</value>
+  </data>
 </root>
