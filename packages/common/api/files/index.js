@@ -7,7 +7,7 @@ import { decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view) {
+export function openEdit(fileId, version, doc, view, headers = null) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -28,6 +28,8 @@ export function openEdit(fileId, version, doc, view) {
     method: "get",
     url: `/files/file/${fileId}/openedit${paramsString}`,
   };
+
+  if (headers) options.headers = headers;
 
   return request(options);
 }
@@ -781,8 +783,12 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+export function getSettingsFiles(headers = null) {
+  const options = { method: "get", url: `/files/settings` };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function markAsFavorite(ids) {
