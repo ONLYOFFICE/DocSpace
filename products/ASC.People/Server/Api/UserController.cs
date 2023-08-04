@@ -718,7 +718,7 @@ public class UserController : PeopleControllerBase
     /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" name="employeeTypes"></param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <param type="ASC.Core.AccountLoginType, ASC.Core.Common" name="accountLoginType"></param>
+    /// <param type="System.Nullable{ASC.Core.AccountLoginType}, System" name="accountLoginType">Account login type</param>
     /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/filter</path>
     /// <httpMethod>GET</httpMethod>
@@ -813,7 +813,7 @@ public class UserController : PeopleControllerBase
     /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" name="employeeTypes"></param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <param type="ASC.Core.AccountLoginType, ASC.Core.Common" name="accountLoginType"></param>
+    /// <param type="System.Nullable{ASC.Core.AccountLoginType}, System" name="accountLoginType">Account login type</param>
     /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
     /// <path>api/2.0/people/simple/filter</path>
     /// <httpMethod>GET</httpMethod>

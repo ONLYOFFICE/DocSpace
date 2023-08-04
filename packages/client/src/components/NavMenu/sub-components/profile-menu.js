@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import Avatar from "@docspace/components/avatar";
 import DropDown from "@docspace/components/drop-down";
 
-import styled, { css } from "styled-components";
+import styled, { css, withTheme } from "styled-components";
 import DropDownItem from "@docspace/components/drop-down-item";
 import { isMobileOnly } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
@@ -164,7 +164,6 @@ class ProfileMenu extends React.Component {
   constructor(props) {
     super(props);
   }
-
   renderDropDown = () => {
     const {
       avatarRole,
@@ -177,10 +176,12 @@ class ProfileMenu extends React.Component {
       forwardedRef,
       isBannerVisible,
     } = this.props;
+    console.log('Current theme: ', this.props.theme)
 
     return (
       <StyledDropDown
         className={className}
+
         directionX="right"
         open={open}
         clickOutsideAction={clickOutsideAction}
@@ -248,4 +249,4 @@ export default inject(({ auth }) => {
   const { isBannerVisible } = auth.bannerStore;
 
   return { isBannerVisible };
-})(observer(ProfileMenu));
+})(observer(withTheme(ProfileMenu)));

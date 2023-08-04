@@ -183,7 +183,7 @@ public class SmtpSettingsController : ControllerBase
     // Test the SMTP settings
     // </short>
     // <category>SMTP settings</category>
-    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Api.Settings.Smtp">SMTP operation status</returns>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test</path>
     // <httpMethod>GET</httpMethod>
     [HttpGet("smtp/test")]
@@ -207,7 +207,7 @@ public class SmtpSettingsController : ControllerBase
     // Get the SMTP test process status
     // </short>
     // <category>SMTP settings</category>
-    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Api.Settings.Smtp">SMTP operation status</returns>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test/status</path>
     // <httpMethod>GET</httpMethod>
     [HttpGet("smtp/test/status")]

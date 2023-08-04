@@ -1,12 +1,11 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 
-const paddingRightStyle = (props) =>
+const paddingRightStyle = props =>
   props.theme.fileInput.paddingRight[props.size];
 
-const widthIconStyle = (props) => props.theme.fileInput.icon.width[props.size];
-const heightIconStyle = (props) =>
-  props.theme.fileInput.icon.height[props.size];
+const widthIconStyle = props => props.theme.fileInput.icon.width[props.size];
+const heightIconStyle = props => props.theme.fileInput.icon.height[props.size];
 
 const StyledFileInput = styled.div`
   display: flex;
@@ -16,7 +15,7 @@ const StyledFileInput = styled.div`
     width: 100%;
     margin: 0;
   }
-  width: ${(props) =>
+  width: ${props =>
     (props.scale && "100%") ||
     (props.size === "base" && props.theme.input.width.base) ||
     (props.size === "middle" && props.theme.input.width.middle) ||
@@ -26,7 +25,7 @@ const StyledFileInput = styled.div`
 
   :hover {
     .icon {
-      border-color: ${(props) =>
+      border-color: ${props =>
         (props.hasError && props.theme.input.hoverErrorBorderColor) ||
         (props.hasWarning && props.theme.input.hoverWarningBorderColor) ||
         (props.isDisabled && props.theme.input.hoverDisabledBorderColor) ||
@@ -36,7 +35,7 @@ const StyledFileInput = styled.div`
 
   :active {
     .icon {
-      border-color: ${(props) =>
+      border-color: ${props =>
         (props.hasError && props.theme.input.focusErrorBorderColor) ||
         (props.hasWarning && props.theme.input.focusWarningBorderColor) ||
         (props.isDisabled && props.theme.input.focusDisabledBorderColor) ||
@@ -50,26 +49,33 @@ const StyledFileInput = styled.div`
     justify-content: center;
 
     position: absolute;
-    right: 0;
-    background: ${(props) => props.theme.fileInput.icon.background};
-    width: ${(props) => widthIconStyle(props)};
+    ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+            left: 0;
+          `
+      : css`
+            right: 0;
+          `}
+    background: ${props => props.theme.fileInput.icon.background};
+    width: ${props => widthIconStyle(props)};
 
-    height: ${(props) => heightIconStyle(props)};
+    height: ${props => heightIconStyle(props)};
 
     margin: 0;
-    border: ${(props) => props.theme.fileInput.icon.border};
-    border-radius: ${(props) => props.theme.fileInput.icon.borderRadius};
+    border: ${props => props.theme.fileInput.icon.border};
+    border-radius: ${props => props.theme.fileInput.icon.borderRadius};
 
-    border-color: ${(props) =>
+    border-color: ${props =>
       (props.hasError && props.theme.input.errorBorderColor) ||
       (props.hasWarning && props.theme.input.warningBorderColor) ||
       (props.isDisabled && props.theme.input.disabledBorderColor) ||
       props.theme.input.borderColor};
-    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+    cursor: ${props => (props.isDisabled ? "default" : "pointer")};
   }
 
   .icon-button {
-    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+    cursor: ${props => (props.isDisabled ? "default" : "pointer")};
   }
 `;
 StyledFileInput.defaultProps = { theme: Base };
