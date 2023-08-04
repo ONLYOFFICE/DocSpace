@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import { useStore } from "SRC_DIR/store";
 import ChangeDomainDialog from "./sub-components/dialogs/ChangeDomainDialog";
 import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
+import { SpacesLoader } from "./sub-components/SpacesLoader";
 
 const Spaces = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -35,7 +36,12 @@ const Spaces = () => {
     setDocumentTitle(t("Common:Spaces"));
   }, []);
 
-  if (isLoading) return <h1>Loading</h1>;
+  if (isLoading)
+    return (
+      <SpacesLoader
+        isConfigurationSection={!(isConnected && portals.length > 0)}
+      />
+    );
 
   return (
     <SpaceContainer>
