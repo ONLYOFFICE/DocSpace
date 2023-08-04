@@ -158,8 +158,8 @@ public class SocketManager : SocketServiceClient
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+
         serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         return serializerSettings;
     }
 }
