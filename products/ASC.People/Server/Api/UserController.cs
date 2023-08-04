@@ -1081,14 +1081,21 @@ public class UserController : PeopleControllerBase
         }
 
         var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var viewerIsAdmin = _userManager.IsDocSpaceAdmin(viewer);
+
         var user = _userManager.GetUsers(userid);
 
-        if (user == null)
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
+        if (!viewerIsAdmin && viewer.Id != user.Id)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        if (user.IsOwner(Tenant) && viewer.Id != user.Id)
         {
             throw new Exception(Resource.ErrorAccessDenied);
         }
@@ -1100,7 +1107,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!_userManager.IsDocSpaceAdmin(viewer))
+        if (!viewerIsAdmin)
         {
             _studioNotifyService.SendEmailChangeInstructions(user, email);
         }
