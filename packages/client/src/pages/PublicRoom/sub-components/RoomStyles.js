@@ -15,11 +15,25 @@ export const StyledPage = styled.div`
 
   @media ${hugeMobile} {
     margin: 32px 0;
-    padding: 0 8px 0 20px;
+    ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+            padding: 0 20px 0 8px;
+          `
+      : css`
+            padding: 0 8px 0 20px;
+          `}
   }
 
   @media ${mobile} {
-    padding: 0 8px 0 16px;
+    ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+            padding: 0 16px 0 8px;
+          `
+      : css`
+            padding: 0 8px 0 16px;
+          `}
   }
 
   .subtitle {
