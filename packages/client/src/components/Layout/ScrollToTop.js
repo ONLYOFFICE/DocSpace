@@ -7,7 +7,7 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     scrollRef.current = document.querySelector(
-      "#customScrollBar > .scroll-wrapper > .scroller > .scroll-body"
+      "#customScrollBar > .scroll-wrapper > .scroller"
     );
   }, []);
 

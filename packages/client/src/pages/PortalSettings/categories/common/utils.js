@@ -3,7 +3,7 @@ const checkScrollSettingsBlock = () => {
   let initHeightScroll = 0;
 
   const settingsDiv = document.getElementsByClassName("settings-block")?.[0];
-  const scrollBody = settingsDiv?.closest(".scroll-body");
+  const scrollBody = settingsDiv?.closest(".scroller");
 
   const height = parseInt(
     !!settingsDiv ? getComputedStyle(settingsDiv).height.slice(0, -2) : 0,
