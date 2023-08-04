@@ -134,7 +134,7 @@ public class SettingsDto
     /// <type>System.String, System</type>
     public string HelpLink { get; set; }
 
-    /// <summary>Api docs link</summary>
+    /// <summary>API documentation link</summary>
     /// <type>System.String, System</type>
     public string ApiDocsLink { get; set; }
 
@@ -158,7 +158,7 @@ public class SettingsDto
     /// <type>System.String, System</type>
     public string LegalTerms { get; set; }
 
-    /// <summary>Cookie settings enabled</summary>
+    /// <summary>Specifies whether the cookie settings are enabled</summary>
     /// <type>System.Boolean, System</type>
     public bool CookieSettingsEnabled { get; set; }
 
