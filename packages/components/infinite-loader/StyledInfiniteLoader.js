@@ -31,7 +31,10 @@ const StyledScroll = styled.div`
 `;
 
 const rowStyles = css`
-  margin-left: -20px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: -20px;`
+      : `margin-left: -20px;`}
   width: ${({ width }) => width + (isMobile ? 36 : 40) + "px !important"};
 
   .ReactVirtualized__Grid__innerScrollContainer {
@@ -54,12 +57,23 @@ const rowStyles = css`
     }
   }
 
+  // !important styles override inline styles from react-virtualized
   .row-list-item {
-    padding-left: 16px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `
+        padding-right: 16px;
+        left: unset !important;
+        right: 0 !important;
+        `
+        : `padding-left: 16px;`}
     width: calc(100% - 32px) !important;
 
     @media ${tablet} {
-      padding-left: 20px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-right: 20px;`
+          : `padding-left: 20px;`}
       width: calc(100% - 36px) !important;
     }
 
@@ -70,7 +84,10 @@ const rowStyles = css`
 `;
 
 const tableStyles = css`
-  margin-left: -20px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: -20px;`
+      : `margin-left: -20px;`}
   width: ${({ width }) => width + 40 + "px !important"};
 
   .ReactVirtualized__Grid__innerScrollContainer {
@@ -80,9 +97,17 @@ const tableStyles = css`
     width: calc(100% - 48px) !important;
   }
 
+  // !important styles override inline styles from react-virtualized
   .table-list-item,
   .table-container_body-loader {
-    padding-left: 20px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `
+        padding-right: 20px;
+        left: unset !important;
+        right: 0 !important;
+        `
+        : `padding-left: 20px;`}
   }
 `;
 
@@ -95,6 +120,8 @@ const tileStyles = css`
 const StyledList = styled(List)`
   outline: none;
   overflow: hidden !important;
+  // Override inline direction from react-virtualized
+  direction: inherit !important;
 
   ${({ viewAs }) =>
     viewAs === "row"

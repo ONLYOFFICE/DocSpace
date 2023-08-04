@@ -20,6 +20,7 @@ import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
+import { getFromLocalStorage } from "@docspace/client/src/pages/PortalSettings/utils";
 
 const themes = {
   Dark: Dark,
@@ -157,6 +158,8 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
   publicRoomKey = "";
+
+  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
 
   constructor() {
     makeAutoObservable(this);
@@ -867,6 +870,11 @@ class SettingsStore {
 
   deleteAppearanceTheme = async (id) => {
     return api.settings.deleteAppearanceTheme(id);
+  };
+
+  setInterfaceDirection = (direction) => {
+    this.interfaceDirection = direction;
+    localStorage.setItem("interfaceDirection", direction);
   };
 }
 

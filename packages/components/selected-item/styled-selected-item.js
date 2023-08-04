@@ -18,7 +18,10 @@ const StyledSelectedItem = styled.div`
 
   padding: 6px 8px;
 
-  margin-right: 4px;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: 4px;`
+      : `margin-right: 4px;`}
   margin-bottom: 4px;
 
   background: ${(props) => props.theme.filterInput.selectedItems.background};
@@ -35,7 +38,10 @@ const StyledSelectedItem = styled.div`
 
 const StyledLabel = styled.div`
   line-height: 20px;
-  margin-right: 10px;
+  ${({ theme }) =>
+          theme.interfaceDirection === "rtl"
+                  ? `margin-left: 10px;`
+                  : `margin-right: 10px;`}
   max-width: 23ch;
   color: ${(props) => props.isDisabled && props.theme.text.disableColor};
 

@@ -12,7 +12,12 @@ const badgeWithoutText = css`
 
   top: ${(props) => props.theme.catalogItem.badgeWithoutText.position};
   right: ${(props) => props.theme.catalogItem.badgeWithoutText.position};
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.catalogItem.badgeWithoutText.position};
+      right: auto;
+    `}
   border-radius: 1000px;
 
   background-color: ${(props) =>
@@ -100,6 +105,15 @@ const StyledCatalogItemBadgeWrapper = styled.div`
   margin-left: ${(props) => props.theme.catalogItem.badgeWrapper.marginLeft};
   margin-right: ${(props) => props.theme.catalogItem.badgeWrapper.marginRight};
 
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: ${(props) =>
+        props.theme.catalogItem.badgeWrapper.marginLeft};
+      margin-left: ${(props) =>
+        props.theme.catalogItem.badgeWrapper.marginRight};
+    `}
+
   div {
     display: flex;
     align-items: center;
@@ -166,6 +180,12 @@ const StyledCatalogItemInitialText = styled(Text)`
   position: absolute;
   top: 2px;
   left: 0;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: auto;
+      right: 0;
+    `}
   text-align: center;
   width: ${(props) => props.theme.catalogItem.initialText.width};
   line-height: ${(props) => props.theme.catalogItem.initialText.lineHeight};
@@ -199,6 +219,13 @@ const StyledCatalogItemText = styled(Text)`
   width: ${(props) => props.theme.catalogItem.text.width};
 
   margin-left: ${(props) => props.theme.catalogItem.text.marginLeft};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-left: 0;
+      margin-right: ${(props) => props.theme.catalogItem.text.marginLeft};
+    `}
 
   line-height: ${(props) => props.theme.catalogItem.text.lineHeight};
 
@@ -301,6 +328,13 @@ const StyledCatalogItemSibling = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: auto;
+      right: 0;
+    `}
 
   width: 100%;
   height: 100%;

@@ -25,11 +25,23 @@ const StyledAside = styled(Container)`
   height: ${(props) => props.theme.aside.height};
 
   position: fixed;
-  right: ${(props) => props.theme.aside.right};
   top: ${(props) => props.theme.aside.top};
-  transform: translateX(
-    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
-  );
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: ${(props) => props.theme.aside.right};
+          transform: translateX(
+            ${props.visible ? "0" : props.scale ? "-100%" : "-480px"}
+          );
+        `
+      : css`
+          right: ${(props) => props.theme.aside.right};
+          transform: translateX(
+            ${props.visible ? "0" : props.scale ? "100%" : "480px"}
+          );
+        `}
+
   transition: ${(props) => props.theme.aside.transition};
   width: ${(props) => (props.scale ? "100%" : "480px")};
   z-index: ${(props) => props.zIndex};
@@ -37,17 +49,37 @@ const StyledAside = styled(Container)`
 
   @media ${tablet} {
     max-width: calc(100% - 69px);
-    transform: translateX(
-      ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
-    );
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            transform: translateX(
+              ${props.visible ? "0" : props.scale ? "-100%" : "-480px"}
+            );
+          `
+        : css`
+            transform: translateX(
+              ${props.visible ? "0" : props.scale ? "100%" : "480px"}
+            );
+          `}
   }
 
   ${isMobile &&
   css`
     max-width: calc(100% - 69px);
-    transform: translateX(
-      ${(props) => (props.visible ? "0" : props.scale ? "100%" : "480px")}
-    );
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            transform: translateX(
+              ${props.visible ? "0" : props.scale ? "-100%" : "-480px"}
+            );
+          `
+        : css`
+            transform: translateX(
+              ${props.visible ? "0" : props.scale ? "100%" : "480px"}
+            );
+          `}
   `}
 
   @media (max-width: 428px) {
@@ -56,7 +88,17 @@ const StyledAside = styled(Container)`
     height: calc(100% - 64px);
     width: 100%;
     max-width: 100%;
-    transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            transform: translateX(
+              ${(props) => (props.visible ? "0" : "-100%")}
+            );
+          `
+        : css`
+            transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+          `}
 
     aside:not(:first-child) {
       height: 100%;
@@ -91,13 +133,19 @@ const StyledControlContainer = styled.div`
   z-index: 450;
 
   top: 18px;
-  left: -27px;
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" ? `right: -27px;` : `left: -27px;`}
 
   @media ${tablet} {
     display: flex;
 
     top: 18px;
-    left: -27px;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `right: -27px;`
+        : `left: -27px;`}
   }
 
   ${isMobile &&
@@ -105,7 +153,11 @@ const StyledControlContainer = styled.div`
     display: flex;
 
     top: 18px;
-    left: -27px;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `right: -27px;`
+        : `left: -27px;`}
   `}
 
   @media (max-width: 428px) {
@@ -114,6 +166,17 @@ const StyledControlContainer = styled.div`
     top: -27px;
     right: 10px;
     left: unset;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: unset;
+            left: 10px;
+          `
+        : css`
+            right: 10px;
+            left: unset;
+          `}
   }
 `;
 
