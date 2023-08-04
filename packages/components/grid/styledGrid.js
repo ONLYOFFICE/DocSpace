@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { getCorrectFourValuesStyle } from "../utils/rtlUtils";
 
 const alignContentStyle = (alignContent) => `align-content: ${alignContent};`;
 const alignItemsStyle = (alignItems) => `align-items: ${alignItems};`;
@@ -61,8 +62,10 @@ const justifyContentStyle = (justifyContent) =>
   `justify-content: ${justifyContent};`;
 const justifyItemsStyle = (justifyItems) => `justify-items: ${justifyItems};`;
 const justifySelfStyle = (justifySelf) => `justify-self: ${justifySelf};`;
-const marginStyle = (marginProp) => `margin: ${marginProp};`;
-const paddingStyle = (paddingProp) => `padding: ${paddingProp};`;
+const marginStyle = (marginProp, interfaceDirection) =>
+  `margin: ${getCorrectFourValuesStyle(marginProp, interfaceDirection)};`;
+const paddingStyle = (paddingProp, interfaceDirection) =>
+  `padding: ${getCorrectFourValuesStyle(paddingProp, interfaceDirection)};`;
 
 const rowsStyle = (props) => {
   if (Array.isArray(props.rowsProp)) {
@@ -93,8 +96,12 @@ const StyledGrid = styled.div`
     props.justifyContent && justifyContentStyle(props.justifyContent)}
   ${(props) => props.justifyItems && justifyItemsStyle(props.justifyItems)}
   ${(props) => props.justifySelf && justifySelfStyle(props.justifySelf)}
-  ${(props) => props.marginProp && marginStyle(props.marginProp)}
-  ${(props) => props.paddingProp && paddingStyle(props.paddingProp)}
+  ${(props) =>
+    props.marginProp &&
+    marginStyle(props.marginProp, props.theme.interfaceDirection)}
+  ${(props) =>
+    props.paddingProp &&
+    paddingStyle(props.paddingProp, props.theme.interfaceDirection)}
   ${(props) => props.rowsProp && rowsStyle(props)}
   ${(props) => props.widthProp && widthStyle(props.widthProp)}
 `;

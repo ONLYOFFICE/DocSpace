@@ -68,6 +68,8 @@ const ToggleButtonContainer = styled.label`
               }
             }
           `}
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
   }
 
   .toggle-button {

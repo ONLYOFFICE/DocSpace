@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ComboBox from "../combobox/index.js";
 import Base from "../themes/base";
 
@@ -6,6 +6,12 @@ const StyledWrapper = styled(ComboBox)`
   .combo-button {
     padding-left: 16px;
     padding-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        padding-left: 8px;
+        padding-right: 16px;
+      `}
   }
 
   @media (max-width: 428px) {

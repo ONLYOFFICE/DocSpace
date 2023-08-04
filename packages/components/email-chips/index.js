@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import Scrollbar from "../scrollbar";
+
 import { useClickOutside } from "../utils/useClickOutside.js";
 
 import {
@@ -15,6 +15,7 @@ import {
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
 import { EmailSettings, parseAddresses } from "../utils/email";
+import { Scrollbar } from "../index";
 
 const calcMaxLengthInput = (exceededLimit) =>
   exceededLimit * MAX_EMAIL_LENGTH_WITH_DOTS;
@@ -67,7 +68,7 @@ const EmailChips = ({
   useEffect(() => {
     const isChipAdd = chips.length > chipsCount.current;
     if (scrollbarRef.current && isChipAdd) {
-      scrollbarRef.current.scrollToBottom();
+      scrollbarRef.current?.scrollTo(0, scrollbarRef.current?.scrollHeight);
     }
     chipsCount.current = chips.length;
   }, [chips.length]);
@@ -291,7 +292,11 @@ const EmailChips = ({
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
-          <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
+          <Scrollbar
+            scrollclass={"scroll"}
+            stype={"preMediumBlack"}
+            ref={scrollbarRef}
+          >
             <ChipsRender
               chips={chips}
               checkSelected={checkSelected}

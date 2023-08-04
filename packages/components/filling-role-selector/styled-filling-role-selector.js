@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { AddRoleButton, EveryoneRoleIcon } from "./svg";
 
@@ -71,6 +71,12 @@ const StyledRole = styled.div`
 
 const StyledAssignedRole = styled.div`
   padding-left: 4px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      padding-right: 4px;
+      padding-left: auto;
+    `}
   color: rgba(170, 170, 170, 1);
 
   ::before {
