@@ -114,13 +114,19 @@ function Editor({
   }
 
   useEffect(() => {
-    const androidID = portalSettings.deepLink.androidPackageName;
-    const iOSId = portalSettings.deepLink.iosPackageId;
-    const deepLinkUrl = portalSettings.deepLink.url;
+    const androidID = portalSettings?.deepLink?.androidPackageName;
+    const iOSId = portalSettings?.deepLink?.iosPackageId;
+    const deepLinkUrl = portalSettings?.deepLink?.url;
 
     const defaultOpenDocument = localStorage.getItem("defaultOpenDocument");
 
-    if (isMobileOnly && !defaultOpenDocument) {
+    if (
+      isMobileOnly &&
+      !defaultOpenDocument &&
+      androidID &&
+      iOSId &&
+      deepLinkUrl
+    ) {
       setIsShowDeepLink(true);
     }
 
