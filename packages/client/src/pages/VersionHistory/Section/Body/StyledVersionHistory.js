@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Row from "@docspace/components/row";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledBody = styled.div`
   height: 100%;
@@ -12,14 +13,17 @@ const StyledBody = styled.div`
   }
 
   .loader-history-rows {
-    padding-right: 16px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 16px;`
+        : `padding-right: 16px;`}
   }
 `;
 
 const StyledVersionList = styled.div`
   .row_context-menu-wrapper {
     .expandButton {
-      ${props =>
+      ${(props) =>
         props.isRestoreProcess &&
         `
         touch-action: none;
@@ -27,10 +31,10 @@ const StyledVersionList = styled.div`
         `}
       svg {
         path {
-          ${props =>
+          ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: ${props =>
+              fill: ${(props) =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
@@ -45,10 +49,10 @@ const StyledVersionList = styled.div`
     .version_link-action,
     .row_context-menu-wrapper,
     .version_text {
-      ${props =>
+      ${(props) =>
         props.isRestoreProcess &&
         `
-          color:${props => props.theme.filesVersionHistory.versionList.color};
+          color:${(props) => props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `};
@@ -56,7 +60,7 @@ const StyledVersionList = styled.div`
 
     .versioned,
     .not-versioned {
-      ${props =>
+      ${(props) =>
         props.isRestoreProcess &&
         `
         touch-action: none;
@@ -67,10 +71,10 @@ const StyledVersionList = styled.div`
     .versioned {
       svg {
         path {
-          ${props =>
+          ${(props) =>
             props.isRestoreProcess &&
             `
-              fill: ${props =>
+              fill: ${(props) =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
@@ -80,10 +84,10 @@ const StyledVersionList = styled.div`
     .not-versioned {
       svg {
         path {
-          ${props =>
+          ${(props) =>
             props.isRestoreProcess &&
             `
-              stroke: ${props =>
+              stroke: ${(props) =>
                 props.theme.filesVersionHistory.versionList.stroke};
             `};
         }
@@ -91,7 +95,7 @@ const StyledVersionList = styled.div`
     }
   }
   .icon-link {
-    ${props =>
+    ${(props) =>
       props.isRestoreProcess &&
       `
         touch-action: none;
@@ -99,9 +103,10 @@ const StyledVersionList = styled.div`
         `}
     svg {
       path {
-        ${props =>
+        ${(props) =>
           props.isRestoreProcess &&
-          `fill: ${props => props.theme.filesVersionHistory.versionList.fill}`}
+          `fill: ${(props) =>
+            props.theme.filesVersionHistory.versionList.fill}`}
       }
     }
   }
@@ -115,17 +120,37 @@ const StyledVersionRow = styled(Row)`
     padding-top: 13px;
     padding-bottom: 12px;
     height: auto;
-    ${props => !props.isTabletView && "padding-right:16px"};
+    ${(props) =>
+      !props.isTabletView &&
+      (props.theme.interfaceDirection === "rtl"
+        ? "padding-left:16px"
+        : "padding-right:16px")};
   }
 
   .version_badge {
-    cursor: ${props => (props.canEdit ? "pointer" : "default")};
-    margin-right: 16px;
-    margin-left: 0px;
+    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+            margin-right: 0;
+          `
+        : css`
+            margin-right: 16px;
+            margin-left: 0;
+          `}
 
     .version_badge-text {
       position: absolute;
-      left: 6px;
+
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" ? `right: 6px;` : `left: 6px;`}
+    }
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
     }
 
     @media ${tablet} {
@@ -145,8 +170,17 @@ const StyledVersionRow = styled(Row)`
   .icon-link {
     width: 10px;
     height: 10px;
-    margin-left: 9px;
-    margin-right: 32px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 9px;
+            margin-left: 32px;
+          `
+        : css`
+            margin-left: 9px;
+            margin-right: 32px;
+          `}
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -157,13 +191,18 @@ const StyledVersionRow = styled(Row)`
   }
 
   .textarea-wrapper {
-    margin: 6px 31px 1px -7px;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("6px 31px 1px -7px", theme.interfaceDirection)};
     width: 100%;
   }
 
   .version_content-length {
     display: block;
-    margin-left: auto;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: auto;`
+        : `margin-left: auto;`}
 
     @media ${tablet} {
       display: none;
@@ -171,14 +210,18 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_link {
-    display: ${props =>
+    display: ${(props) =>
       props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
     /* text-decoration: underline dashed; */
     white-space: break-spaces;
-    margin-left: -7px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: -7px;`
+        : `margin-left: -7px;`}
     margin-top: 4px;
 
-    cursor: ${props => (props.isEditing ? "default" : "pointer")};
+    cursor: ${(props) => (props.isEditing ? "default" : "pointer")};
 
     @media ${tablet} {
       display: none;
@@ -187,18 +230,24 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    margin-left: -7px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: -7px;`
+        : `margin-left: -7px;`}
     margin-top: 5px;
 
     @media ${tablet} {
-      margin-left: -7px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: -7px;`
+          : `margin-left: -7px;`}
       margin-top: 5px;
     }
 
     word-break: break-word;
-    display: ${props => (props.showEditPanel ? "none" : "-webkit-box")};
-    display: ${props => (props.showEditPanel ? "none" : "-moz-box")};
-    display: ${props => (props.showEditPanel ? "none" : "-ms-box")};
+    display: ${(props) => (props.showEditPanel ? "none" : "-webkit-box")};
+    display: ${(props) => (props.showEditPanel ? "none" : "-moz-box")};
+    display: ${(props) => (props.showEditPanel ? "none" : "-ms-box")};
     text-overflow: ellipsis;
     overflow: hidden;
     -webkit-line-clamp: 3;
@@ -212,11 +261,15 @@ const StyledVersionRow = styled(Row)`
   .row_context-menu-wrapper {
     display: block;
     position: absolute;
-    right: 13px !important;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `left: 13px !important;`
+        : `right: 13px !important;`}
     top: 6px;
 
     .expandButton {
-      ${props =>
+      ${(props) =>
         props.isSavingComment &&
         `
         touch-action: none;
@@ -224,10 +277,10 @@ const StyledVersionRow = styled(Row)`
         `}
       svg {
         path {
-          ${props =>
+          ${(props) =>
             props.isSavingComment &&
             `
-              fill: ${props =>
+              fill: ${(props) =>
                 props.theme.filesVersionHistory.versionList.fill};
             `};
         }
@@ -239,10 +292,11 @@ const StyledVersionRow = styled(Row)`
     display: block;
 
     .version_link-action {
-      ${props =>
+      ${(props) =>
         props.isSavingComment &&
         `
-          color: ${props => props.theme.filesVersionHistory.versionList.color};
+          color: ${(props) =>
+            props.theme.filesVersionHistory.versionList.color};
           touch-action: none;
           pointer-events: none;
         `}
@@ -258,7 +312,10 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_edit-comment-button-primary {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
     width: 87px;
   }
   .version_edit-comment-button-second {

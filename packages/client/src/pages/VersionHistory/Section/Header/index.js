@@ -11,19 +11,43 @@ const StyledContainer = styled.div`
   align-items: center;
 
   .arrow-button {
-    margin-left: -8px;
-    margin-right: 15px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: -8px;
+            margin-left: 15px;
+          `
+        : css`
+            margin-left: -8px;
+            margin-right: 15px;
+          `}
     min-width: 17px;
 
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
+    }
+
     @media (max-width: 1024px) {
-      padding: 8px 0 8px 8px;
-      margin-left: -8px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 8px 8px 8px 0;
+              margin-right: -8px;
+            `
+          : css`
+              padding: 8px 0 8px 8px;
+              margin-left: -8px;
+            `}
     }
   }
 
   .headline-header {
     @media ${desktop} {
-      margin-left: -9px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: -9px;`
+          : `margin-left: -9px;`}
     }
   }
 `;
