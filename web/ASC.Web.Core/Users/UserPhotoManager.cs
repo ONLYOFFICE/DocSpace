@@ -563,6 +563,9 @@ public class UserPhotoManager
 
             await Task.WhenAll(t1, t2, t3, t4, t5);
         }
+        
+        _userPhotoManagerCache.AddToCache(userID, Size.Empty, fileName, await _tenantManager.GetCurrentTenantIdAsync());
+        
         return (photoUrl, fileName);
     }
 
