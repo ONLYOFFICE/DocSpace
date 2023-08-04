@@ -90,7 +90,7 @@ const template: Template = (
           content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
         />
         <meta name="theme-color" content="#000000" />
-        <link rel="preload" as="style" type="text/css" href=${fontsCssUrl}/>
+        <link  rel="stylesheet preload" href=${fontsCssUrl}  as="style" type="text/css" crossorigin/>
 
         <link id="favicon" rel="shortcut icon" href=${favicon} />
         <link rel="manifest" href="/manifest.json" />
