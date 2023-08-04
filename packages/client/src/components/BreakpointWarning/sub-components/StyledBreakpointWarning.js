@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledBreakpointWarning = styled.div`
-  padding: 24px 44px 0 24px;
+  padding: ${({ theme }) =>
+    getCorrectFourValuesStyle("24px 44px 0 24px", theme.interfaceDirection)};
   display: flex;
   flex-direction: column;
 
@@ -34,10 +36,12 @@ const StyledBreakpointWarning = styled.div`
   @media (min-width: 600px) {
     flex-direction: row;
 
-    padding: 65px 0 0 104px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("65px 0 0 104px", theme.interfaceDirection)};
 
     .description {
-      padding: 0 0 0 32px;
+      padding: ${({ theme }) =>
+        getCorrectFourValuesStyle("0 0 0 32px", theme.interfaceDirection)};
     }
 
     img {

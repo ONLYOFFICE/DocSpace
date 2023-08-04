@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
 import { isMobileOnly } from "react-device-detect";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledLoader = styled.div`
   padding-top: 25px;
-  padding-left: 32px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `padding-right: 32px;`
+      : `padding-left: 32px;`}
   display: flex;
   flex-direction: column;
 
@@ -28,11 +33,12 @@ const StyledLoader = styled.div`
 
   @media (min-width: 600px) {
     flex-direction: row;
-
-    padding: 65px 0 0 104px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("65px 0 0 104px", theme.interfaceDirection)};
 
     .loader-description {
-      padding: 0 0 0 32px;
+      padding: ${({ theme }) =>
+        getCorrectFourValuesStyle("0 0 0 32px", theme.interfaceDirection)};
     }
   }
 `;
