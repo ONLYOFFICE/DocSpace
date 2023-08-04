@@ -32,39 +32,46 @@ namespace ASC.Files.Core.ApiModels.ResponseDto;
 public class ConversationResultDto<T>
 {
     /// <summary>
-    /// Operation Id.
+    /// Operation ID
     /// </summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
 
     /// <summary>
-    /// Operation type.
+    /// Operation type
     /// </summary>
+    /// <type>ASC.Web.Files.Services.WCFService.FileOperations.FileOperationType, ASC.Files.Core</type>
     [JsonPropertyName("Operation")]
     public FileOperationType OperationType { get; set; }
 
     /// <summary>
-    /// Operation progress.
+    /// Operation progress
     /// </summary>
+    /// <type>System.Int32, System</type>
     public int Progress { get; set; }
 
     /// <summary>
-    /// Source files for operation.
+    /// Source file
     /// </summary>
+    /// <type>System.String, System</type>
     public string Source { get; set; }
 
     /// <summary>
-    /// Result file of operation.
+    /// Resulting file
     /// </summary>
+    /// <type>System.Object, System</type>
     [JsonPropertyName("result")]
     public object File { get; set; }
 
     /// <summary>
-    /// Error during conversation.
+    /// Error
     /// </summary>
+    /// <type>System.String, System</type>
     public string Error { get; set; }
 
     /// <summary>
-    /// Is operation processed.
+    /// Specifies if the operation is processed or not
     /// </summary>
+    /// <type>System.String, System</type>
     public string Processed { get; set; }
 }

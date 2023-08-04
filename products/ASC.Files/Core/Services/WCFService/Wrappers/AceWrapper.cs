@@ -67,10 +67,20 @@ public class AceWrapper : IMapFrom<RoomInvitation>
     public bool IsLink => (SubjectType is SubjectType.InvitationLink or SubjectType.ExternalLink) || !string.IsNullOrEmpty(Link);
 }
 
+/// <summary>
+/// </summary>
 public class AceShortWrapper
 {
+    /// <summary>User</summary>
+    /// <type>System.String, System</type>
     public string User { get; set; }
+
+    /// <summary>User access rights to the file</summary>
+    /// <type>System.String, System</type>
     public string Permissions { get; set; }
+
+    /// <summary>Specifies if the external link is available or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsLink { get; set; }
 
     public AceShortWrapper(AceWrapper aceWrapper)
