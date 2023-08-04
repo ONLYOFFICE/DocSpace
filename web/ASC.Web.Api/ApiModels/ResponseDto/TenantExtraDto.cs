@@ -30,43 +30,43 @@ namespace ASC.Web.Api.ApiModels.ResponseDto;
 /// </summary>
 public class TenantExtraDto
 {
-    /// <summary></summary>
+    /// <summary>Specifies if the extra tenant license is customizable or not</summary>
     /// <type>System.Boolean, System</type>
     public bool CustomMode { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Specifies if the extra tenant license is Opensource or not</summary>
     /// <type>System.Boolean, System</type>
     public bool Opensource { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Specifies if the extra tenant license is Enterprise or not</summary>
     /// <type>System.Boolean, System</type>
     public bool Enterprise { get; set; }
 
-    /// <summary></summary>
+    /// <summary>License tariff</summary>
     /// <type>ASC.Core.Billing.Tariff, ASC.Core.Common</type>
     public Tariff Tariff { get; set; }
 
-    /// <summary></summary>
+    /// <summary>License quota</summary>
     /// <type>ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api</type>
     public QuotaDto Quota { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Specifies if the license is paid or not</summary>
     /// <type>System.Boolean, System</type>
     public bool NotPaid { get; set; }
 
-    /// <summary></summary>
+    /// <summary>The time when the license was accepted</summary>
     /// <type>System.String, System</type>
     public string LicenseAccept { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Specifies if the tariff page is enabled or not</summary>
     /// <type>System.Boolean, System</type>
     public bool EnableTariffPage { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Document server user quotas</summary>
     /// <type>System.Collections.Generic.Dictionary{System.String, System.DateTime}, System.Collections.Generic</type>
     public Dictionary<string, DateTime> DocServerUserQuota { get; set; }
 
-    /// <summary></summary>
+    /// <summary>Document server license</summary>
     /// <type>ASC.Core.Billing.License, ASC.Core.Common</type>
     public License DocServerLicense { get; set; }
 }
