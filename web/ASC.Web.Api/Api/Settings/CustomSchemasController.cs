@@ -49,14 +49,23 @@ public class CustomSchemasController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
+    /// <summary>
+    /// Returns all portal team templates that allow users to name their organization (or group), add members, and define their activities within the portal.
+    /// </summary>
+    /// <short>Get team templates</short>
+    /// <category>Team templates</category>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">List of team templates with the following parameters</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("customschemas")]
-    public List<SchemaRequestsDto> PeopleSchemas()
+    public async Task<List<SchemaRequestsDto>> PeopleSchemasAsync()
     {
-        return _customNamingPeople
-                .GetSchemas()
-                .Select(r =>
+        return await _customNamingPeople
+                .GetSchemas().ToAsyncEnumerable()
+                .SelectAwait(async r =>
                 {
-                    var names = _customNamingPeople.GetPeopleNames(r.Key);
+                    var names = await _customNamingPeople.GetPeopleNamesAsync(r.Key);
 
                     return new SchemaRequestsDto
                     {
@@ -73,27 +82,45 @@ public class CustomSchemasController : BaseSettingsController
                         GuestsCaption = names.GuestsCaption,
                     };
                 })
-                .ToList();
+                .ToListAsync();
     }
 
+    /// <summary>
+    /// Saves the names from the team template with the ID specified in the request.
+    /// </summary>
+    /// <short>Save the naming settings</short>
+    /// <category>Team templates</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api" name="inDto">Team template parameters</param>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("customschemas")]
-    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _customNamingPeople.SetPeopleNames(inDto.Id);
+        await _customNamingPeople.SetPeopleNamesAsync(inDto.Id);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
-        return PeopleSchema(inDto.Id);
+        return await PeopleSchemaAsync(inDto.Id);
     }
 
+    /// <summary>
+    /// Creates a custom team template with the parameters specified in the request.
+    /// </summary>
+    /// <short>Create a custom team template</short>
+    /// <category>Team templates</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api" name="inDto">Team template parameters</param>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Custom team template with the following parameters</returns>
+    /// <path>api/2.0/settings/customschemas</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("customschemas")]
-    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveCustomNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var usrCaption = (inDto.UserCaption ?? "").Trim();
         var usrsCaption = (inDto.UsersCaption ?? "").Trim();
@@ -132,19 +159,28 @@ public class CustomSchemasController : BaseSettingsController
             GuestsCaption = guestsCaption.Substring(0, Math.Min(30, guestsCaption.Length)),
         };
 
-        _customNamingPeople.SetPeopleNames(names);
+        await _customNamingPeople.SetPeopleNamesAsync(names);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
-        return PeopleSchema(PeopleNamesItem.CustomID);
+        return await PeopleSchemaAsync(PeopleNamesItem.CustomID);
     }
 
+    /// <summary>
+    /// Returns a team template by the ID specified in the request.
+    /// </summary>
+    /// <short>Get a team template by ID</short>
+    /// <category>Team templates</category>
+    /// <param type="System.String, System" method="url" name="id">Team template ID</param>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters</returns>
+    /// <path>api/2.0/settings/customschemas/{id}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas/{id}")]
-    public SchemaRequestsDto PeopleSchema(string id)
+    public async Task<SchemaRequestsDto> PeopleSchemaAsync(string id)
     {
-        var names = _customNamingPeople.GetPeopleNames(id);
+        var names = await _customNamingPeople.GetPeopleNamesAsync(id);
         var schemaItem = new SchemaRequestsDto
         {
             Id = names.Id,

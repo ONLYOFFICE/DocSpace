@@ -60,7 +60,7 @@ public class NotifyRequest
         _log = options.CreateLogger("ASC.Notify");
     }
 
-    internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
+    internal async Task<bool> Intercept(InterceptorPlace place, IServiceScope serviceScope)
     {
         var result = false;
         foreach (var interceptor in _interceptors)
@@ -69,7 +69,7 @@ public class NotifyRequest
             {
                 try
                 {
-                    if (interceptor.PreventSend(this, place, serviceScope))
+                    if (await interceptor.PreventSend(this, place, serviceScope))
                     {
                         result = true;
                     }

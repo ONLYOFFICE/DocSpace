@@ -37,10 +37,15 @@ const StyledSettingsComponent = styled.div`
     margin-right: 4px;
   }
 
+  .paid-badge {
+    cursor: auto;
+  }
+
   .dns-textarea {
     textarea {
       color: ${(props) => props.theme.text.disableColor};
     }
+    ${(props) => props.standalone && "margin-top: 14px"};
   }
 
   .combo-button-label {
@@ -61,7 +66,7 @@ const StyledSettingsComponent = styled.div`
 
   .settings-block-description {
     line-height: 20px;
-    color: #657077;
+    color: ${(props) => props.theme.client.settings.security.descriptionColor};
     padding-bottom: 12px;
   }
 
@@ -72,6 +77,15 @@ const StyledSettingsComponent = styled.div`
   .combo-box-settings {
     .combo-button {
       justify-content: space-between !important;
+    }
+  }
+  .settings-dns_toggle-button {
+    .toggle-button-text {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    svg {
+      margin-top: 1px;
     }
   }
 

@@ -8,6 +8,7 @@ import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 import ToggleInfoPanelButton from "./toggle-infopanel-btn";
 import PlusButton from "./plus-btn";
+import ContextButton from "./context-btn";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 
 const StyledContainer = styled.div`
@@ -22,12 +23,12 @@ const StyledContainer = styled.div`
     min-width: 15px;
 
     @media ${tablet} {
-      display: none;
+      display: ${(props) => (props.isFrame ? "flex" : "none")};
     }
 
     ${isMobile &&
     css`
-      display: none;
+      display: ${(props) => (props.isFrame ? "flex" : "none")};
     `}
   }
 
@@ -105,6 +106,8 @@ const ControlButtons = ({
   titles,
   withMenu,
   onPlusClick,
+  isFrame,
+  isPublicRoom,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -112,7 +115,7 @@ const ControlButtons = ({
   };
 
   return (
-    <StyledContainer isDropBoxComponent={isDropBoxComponent}>
+    <StyledContainer isDropBoxComponent={isDropBoxComponent} isFrame={isFrame}>
       {!isRootFolder || (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
           {!isMobile && canCreate && (
@@ -121,10 +124,12 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
+              title={titles?.actions}
             />
           )}
 
-          <ContextMenuButton
+          {/* <ContextMenuButton
             id="header_optional-button"
             zIndex={402}
             className="option-button"
@@ -134,6 +139,16 @@ const ControlButtons = ({
             isFill
             getData={getContextOptionsFolder}
             isDisabled={false}
+            title={titles?.contextMenu}
+          /> */}
+
+          <ContextButton
+            id="header_optional-button"
+            className="option-button"
+            getData={getContextOptionsFolder}
+            withMenu={withMenu}
+            //onPlusClick={onPlusClick}
+            title={titles?.actions}
           />
 
           {!isDesktop && (
@@ -153,6 +168,8 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
+              title={titles?.actions}
             />
           )}
           {!isDesktop && (
@@ -170,6 +187,21 @@ const ControlButtons = ({
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
               toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
+
+          {isPublicRoom && (
+            <ContextMenuButton
+              id="header_optional-button"
+              zIndex={402}
+              className="option-button"
+              directionX="right"
+              iconName={VerticalDotsReactSvgUrl}
+              size={15}
+              isFill
+              getData={getContextOptionsFolder}
+              isDisabled={false}
+              title={titles?.contextMenu}
             />
           )}
         </>

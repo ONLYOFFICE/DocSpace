@@ -26,18 +26,40 @@
 
 namespace ASC.Web.Core.WhiteLabel;
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
 {
     private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;
     private readonly IConfiguration _configuration;
 
+    /// <summary>Specifies if the mail footer is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool FooterEnabled { get; set; }
+
+    /// <summary>Specifies if the footer with social media contacts is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool FooterSocialEnabled { get; set; }
+
+    /// <summary>Support URL</summary>
+    /// <type>System.String, System</type>
     public string SupportUrl { get; set; }
+
+    /// <summary>Support email</summary>
+    /// <type>System.String, System</type>
     public string SupportEmail { get; set; }
+
+    /// <summary>Sales email</summary>
+    /// <type>System.String, System</type>
     public string SalesEmail { get; set; }
+
+    /// <summary>Demo URL</summary>
+    /// <type>System.String, System</type>
     public string DemoUrl { get; set; }
+
+    /// <summary>Site URL</summary>
+    /// <type>System.String, System</type>
     public string SiteUrl { get; set; }
 
     [JsonIgnore]
@@ -80,14 +102,14 @@ public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
                 SiteUrl == defaultSettings.SiteUrl;
     }
 
-    public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
+    public static async Task<MailWhiteLabelSettings> InstanceAsync(SettingsManager settingsManager)
     {
-        return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+        return await settingsManager.LoadForDefaultTenantAsync<MailWhiteLabelSettings>();
     }
 
-    public static bool IsDefault(SettingsManager settingsManager)
+    public static async Task<bool> IsDefaultAsync(SettingsManager settingsManager)
     {
-        return Instance(settingsManager).IsDefault();
+        return (await InstanceAsync(settingsManager)).IsDefault();
     }
 }
 

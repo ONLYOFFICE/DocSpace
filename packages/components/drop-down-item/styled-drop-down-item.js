@@ -24,10 +24,26 @@ const disabledAndHeaderStyle = css`
   }
 `;
 
+const WrapperToggle = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  width: 36px;
+
+  & label {
+    position: static;
+  }
+`;
+
 const StyledDropdownItem = styled.div`
   display: ${(props) => (props.textOverflow ? "block" : "flex")};
   width: ${(props) => props.theme.dropDownItem.width};
   max-width: ${(props) => props.theme.dropDownItem.maxWidth};
+  ${(props) =>
+    props.minWidth &&
+    css`
+      min-width: ${props.minWidth};
+    `};
   border: ${(props) => props.theme.dropDownItem.border};
   cursor: pointer;
   margin: ${(props) => props.theme.dropDownItem.margin};
@@ -84,11 +100,13 @@ const StyledDropdownItem = styled.div`
   ${itemTruncate}
 
   &:hover {
-    background-color: ${(props) =>
-      props.noHover
-        ? props.theme.dropDownItem.backgroundColor
-        : props.theme.dropDownItem.hoverBackgroundColor};
-    text-align: left;
+    ${(props) =>
+      !props.noHover &&
+      css`
+        background-color: ${(props) =>
+          props.theme.dropDownItem.hoverBackgroundColor};
+        text-align: left;
+      `}
   }
 
   ${(props) =>
@@ -121,7 +139,23 @@ const StyledDropdownItem = styled.div`
     padding: ${(props) => props.theme.dropDownItem.tabletPadding};
   }
 
-  ${(props) => props.disabled && disabledAndHeaderStyle}
+  ${(props) =>
+    props.isActiveDescendant &&
+    !props.disabled &&
+    css`
+      background-color: ${(props) =>
+        props.theme.dropDownItem.hoverBackgroundColor};
+      text-align: left;
+    `}
+
+  ${(props) => props.disabled && !props.isSelected && disabledAndHeaderStyle}
+
+  ${(props) =>
+    ((props.disabled && props.isSelected) || props.isActive) &&
+    css`
+      background-color: ${(props) =>
+        props.theme.dropDownItem.selectedBackgroundColor};
+    `}
 
   .submenu-arrow {
     margin-left: auto;
@@ -132,13 +166,6 @@ const StyledDropdownItem = styled.div`
         height: auto;
       `}
   }
-
-  ${(props) =>
-    props.isActive &&
-    css`
-      background-color: ${(props) =>
-        props.theme.dropDownItem.hoverBackgroundColor} !important;
-    `}
 
   @media (max-width: 500px) {
     max-width: 100vw;
@@ -173,4 +200,4 @@ const IconWrapper = styled.div`
 `;
 IconWrapper.defaultProps = { theme: Base };
 
-export { StyledDropdownItem, IconWrapper };
+export { StyledDropdownItem, IconWrapper, WrapperToggle };

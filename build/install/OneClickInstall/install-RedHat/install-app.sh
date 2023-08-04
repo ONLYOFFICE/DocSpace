@@ -10,13 +10,6 @@ cat<<EOF
 
 EOF
 
-if [ -e /etc/redis.conf ]; then
- sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
- sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
- 
- systemctl restart redis
-fi
-
 sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
 sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
 
@@ -24,6 +17,29 @@ for SVC in $package_services; do
 		systemctl start $SVC	
 		systemctl enable $SVC
 done
+
+if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
+	ds_pkg_installed_name=$(rpm -qa --qf '%{NAME}\n' | grep ${package_sysname}-documentserver);
+
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
+		ds_pkg_name="${package_sysname}-documentserver";
+	fi
+
+	if [ "$INSTALLATION_TYPE" = "ENTERPRISE" ]; then
+		ds_pkg_name="${package_sysname}-documentserver-ee";
+	fi
+
+	if [ -n $ds_pkg_name ]; then
+		if ! rpm -qi ${ds_pkg_name} &> /dev/null; then
+			${package_manager} -y remove ${ds_pkg_installed_name}
+
+			DOCUMENT_SERVER_INSTALLED="false"
+			RECONFIGURE_PRODUCT="true"
+		else
+			${package_manager} -y update ${ds_pkg_name}	
+		fi				
+	fi
+fi
 
 MYSQL_SERVER_HOST=${MYSQL_SERVER_HOST:-"localhost"}
 MYSQL_SERVER_DB_NAME=${MYSQL_SERVER_DB_NAME:-"${package_sysname}"}
@@ -49,8 +65,11 @@ if [ "${MYSQL_FIRST_TIME_INSTALL}" = "true" ]; then
 		   MYSQL_ROOT_PASS=$(echo $MYSQL_TEMPORARY_ROOT_PASS | sed -e 's/;/%/g' -e 's/=/%/g');
 		fi
 
-		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASS}'" >/dev/null 2>&1 \
-		|| $MYSQL -e "UPDATE user SET plugin='mysql_native_password', authentication_string=PASSWORD('${MYSQL_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
+		MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}')
+		MYSQL_AUTHENTICATION_PLUGIN=${MYSQL_AUTHENTICATION_PLUGIN:-caching_sha2_password}
+
+		$MYSQL -e "ALTER USER '${MYSQL_SERVER_USER}'@'localhost' IDENTIFIED WITH ${MYSQL_AUTHENTICATION_PLUGIN} BY '${MYSQL_ROOT_PASS}'" >/dev/null 2>&1 \
+		|| $MYSQL -e "UPDATE user SET plugin='${MYSQL_AUTHENTICATION_PLUGIN}', authentication_string=PASSWORD('${MYSQL_ROOT_PASS}') WHERE user='${MYSQL_SERVER_USER}' and host='localhost';"		
 
 		systemctl restart mysqld
 	fi
@@ -72,17 +91,20 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_DB_USER=$DS_COMMON_NAME;
 	DS_DB_PWD=$DS_COMMON_NAME;
 	
-	declare -x JWT_ENABLED=true;
-	declare -x JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)";
-	declare -x JWT_HEADER="AuthorizationJwt";
+	declare -x JWT_ENABLED=${JWT_ENABLED:-true};
+	declare -x JWT_SECRET=${JWT_SECRET:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)};
+	declare -x JWT_HEADER=${JWT_HEADER:-AuthorizationJwt};
 		
 	if ! su - postgres -s /bin/bash -c "psql -lqt" | cut -d \| -f 1 | grep -q ${DS_DB_NAME}; then
-		su - postgres -s /bin/bash -c "psql -c \"CREATE DATABASE ${DS_DB_NAME};\""
 		su - postgres -s /bin/bash -c "psql -c \"CREATE USER ${DS_DB_USER} WITH password '${DS_DB_PWD}';\""
-		su - postgres -s /bin/bash -c "psql -c \"GRANT ALL privileges ON DATABASE ${DS_DB_NAME} TO ${DS_DB_USER};\""
+		su - postgres -s /bin/bash -c "psql -c \"CREATE DATABASE ${DS_DB_NAME} OWNER ${DS_DB_USER};\""
 	fi
-	
-	${package_manager} -y install ${package_sysname}-documentserver
+
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then	
+		${package_manager} -y install ${package_sysname}-documentserver
+	else
+		${package_manager} -y install ${package_sysname}-documentserver-ee
+	fi
 	
 expect << EOF
 	
@@ -105,6 +127,11 @@ expect << EOF
 	expect -re "Password"
 	send "\025$DS_DB_PWD\r"
 	
+	if { "${INSTALLATION_TYPE}" == "ENTERPRISE" } {
+		expect "Configuring redis access..."
+		send "\025$DS_REDIS_HOST\r"
+	}
+	
 	expect "Configuring AMQP access... "
 	expect -re "Host"
 	send "\025$DS_RABBITMQ_HOST\r"
@@ -118,9 +145,6 @@ expect << EOF
 	expect eof
 	
 EOF
-	DOCUMENT_SERVER_INSTALLED="true";
-elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
-	${package_manager} -y update ${package_sysname}-documentserver
 fi
 
 { ${package_manager} check-update ${product}; PRODUCT_CHECK_UPDATE=$?; } || true
@@ -131,39 +155,21 @@ if [ "$PRODUCT_INSTALLED" = "false" ]; then
 		-mysqld ${MYSQL_SERVER_DB_NAME} \
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
-elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
-	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
-	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
-
+elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE || $RECONFIGURE_PRODUCT = "true" ]]; then
+	ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /usr/lib/systemd/system/${product}-api.service)
+	CONNECTION_STRING=$(json -f /etc/${package_sysname}/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	${package_manager} -y update ${product}
 	${product}-configuration \
-		-e ${ENVIRONMENT} \
-		-mysqlh ${MYSQL_SERVER_HOST} \
-		-mysqld ${MYSQL_SERVER_DB_NAME} \
-		-mysqlu ${MYSQL_SERVER_USER} \
-		-mysqlp ${MYSQL_ROOT_PASS}
+		-e $ENVIRONMENT \
+		-mysqlh $(grep -oP 'Server=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqld $(grep -oP 'Database=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqlu $(grep -oP 'User ID=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqlp $(grep -oP 'Password=\K[^;]*' <<< "$CONNECTION_STRING")
 fi
 
-NGINX_ROOT_DIR="/etc/nginx"
-
-NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-
-if rpm -q "firewalld"; then
-	firewall-cmd --permanent --zone=public --add-service=http
-	firewall-cmd --permanent --zone=public --add-service=https
-	systemctl restart firewalld.service
+if [ "$MAKESWAP" == "true" ]; then
+	make_swap
 fi
-
-systemctl restart nginx
 
 echo ""
 echo "$RES_INSTALL_SUCCESS"

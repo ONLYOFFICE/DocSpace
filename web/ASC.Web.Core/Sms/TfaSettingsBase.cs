@@ -62,9 +62,9 @@ public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>, new
         _userManager = userManager;
     }
 
-    public bool TfaEnabledForUser(Guid userGuid)
+    public async Task<bool> TfaEnabledForUserAsync(Guid userGuid)
     {
-        var settings = _settingsManager.Load<T>();
+        var settings = await _settingsManager.LoadAsync<T>();
 
         if (!settings.EnableSetting)
         {
@@ -75,7 +75,7 @@ public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>, new
         {
             foreach (var mandatory in settings.MandatoryGroups)
             {
-                if (_userManager.IsUserInGroup(userGuid, mandatory))
+                if (await _userManager.IsUserInGroupAsync(userGuid, mandatory))
                 {
                     return true;
                 }

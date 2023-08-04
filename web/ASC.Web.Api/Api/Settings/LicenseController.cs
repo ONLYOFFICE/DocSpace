@@ -28,8 +28,6 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class LicenseController : BaseSettingsController
 {
-    private Tenant Tenant { get { return ApiContext.Tenant; } }
-
     private readonly MessageService _messageService;
     private readonly FirstTimeTenantSettings _firstTimeTenantSettings;
     private readonly UserManager _userManager;
@@ -72,34 +70,52 @@ public class LicenseController : BaseSettingsController
         _tariffService = tariffService;
     }
 
+    /// <summary>
+    /// Refreshes the license.
+    /// </summary>
+    /// <short>Refresh the license</short>
+    /// <category>License</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/license/refresh</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("license/refresh")]
     [AllowNotPayment]
-    public bool RefreshLicense()
+    public async Task<bool> RefreshLicenseAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
             return false;
         }
 
-        _licenseReader.RefreshLicense();
+        await _licenseReader.RefreshLicenseAsync();
         return true;
     }
 
+    /// <summary>
+    /// Activates a license for the portal.
+    /// </summary>
+    /// <short>
+    /// Activate a license
+    /// </short>
+    /// <category>License</category>
+    /// <returns type="System.Object, System">Message about the result of activating license</returns>
+    /// <path>api/2.0/settings/license/accept</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("license/accept")]
-    public object AcceptLicense()
+    public async Task<object> AcceptLicenseAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
             return "";
         }
 
-        TariffSettings.SetLicenseAccept(_settingsManager);
-        _messageService.Send(MessageAction.LicenseKeyUploaded);
+        await TariffSettings.SetLicenseAcceptAsync(_settingsManager);
+        await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
         try
         {
-            _licenseReader.RefreshLicense();
+            await _licenseReader.RefreshLicenseAsync();
         }
         catch (BillingNotFoundException)
         {
@@ -121,22 +137,32 @@ public class LicenseController : BaseSettingsController
         return "";
     }
 
+    /// <summary>
+    /// Activates a trial license for the portal.
+    /// </summary>
+    /// <short>
+    /// Activate a trial license
+    /// </short>
+    /// <category>License</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/license/trial</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("license/trial")]
-    public bool ActivateTrial()
+    public async Task<bool> ActivateTrialAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException();
         }
 
-        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
+        if (!await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException();
         }
 
-        var curQuota = _tenantManager.GetCurrentTenantQuota();
-        if (curQuota.Tenant != Tenant.DefaultTenant)
+        var curQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        if (curQuota.TenantId != Tenant.DefaultTenant)
         {
             return false;
         }
@@ -146,7 +172,7 @@ public class LicenseController : BaseSettingsController
             return false;
         }
 
-        var curTariff = _tenantExtra.GetCurrentTariff();
+        var curTariff = await _tenantExtra.GetCurrentTariffAsync();
         if (curTariff.DueDate.Date != DateTime.MaxValue.Date)
         {
             return false;
@@ -162,23 +188,34 @@ public class LicenseController : BaseSettingsController
         };
         quota.Trial = true;
 
-        _tenantManager.SaveTenantQuota(quota);
+        await _tenantManager.SaveTenantQuotaAsync(quota);
 
         const int DEFAULT_TRIAL_PERIOD = 30;
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        await _tariffService.SetTariffAsync(Tenant.DefaultTenant, tariff, new List<TenantQuota>() { quota });
 
-        _messageService.Send(MessageAction.LicenseKeyUploaded);
+        await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
         return true;
     }
 
+    /// <summary>
+    /// Requests a portal license if necessary.
+    /// </summary>
+    /// <short>
+    /// Request a license
+    /// </short>
+    /// <category>License</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the license is required</returns>
+    /// <path>api/2.0/settings/license/required</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("license/required")]
@@ -188,17 +225,33 @@ public class LicenseController : BaseSettingsController
     }
 
 
+    /// <summary>
+    /// Uploads a portal license specified in the request.
+    /// </summary>
+    /// <short>
+    /// Upload a license
+    /// </short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api" name="inDto">Request parameters to upload a license</param>
+    /// <category>License</category>
+    /// <returns type="System.Object, System">License</returns>
+    /// <path>api/2.0/settings/license</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("license")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
-    public object UploadLicense([FromForm] UploadLicenseRequestsDto inDto)
+    public async Task<object> UploadLicenseAsync([FromForm] UploadLicenseRequestsDto inDto)
     {
         try
         {
-            ApiContext.AuthByClaim();
-            if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed)
+            await ApiContext.AuthByClaimAsync();
+            if (!_authContext.IsAuthenticated && (await _settingsManager.LoadAsync<WizardSettings>()).Completed)
             {
                 throw new SecurityException(Resource.PortalSecurity);
+            }
+
+            if (!_coreBaseSettings.Standalone)
+            {
+                throw new NotSupportedException();
             }
 
             if (!inDto.Files.Any())
@@ -212,7 +265,7 @@ public class LicenseController : BaseSettingsController
             return dueDate >= DateTime.UtcNow.Date
                                     ? Resource.LicenseUploaded
                                     : string.Format(
-                                        _tenantManager.GetCurrentTenantQuota().Update
+                                        (await _tenantManager.GetCurrentTenantQuotaAsync()).Update
                                             ? Resource.LicenseUploadedOverdueSupport
                                             : Resource.LicenseUploadedOverdue,
                                                     "",

@@ -10,11 +10,16 @@ export default {
         component: "Input field for single-line strings",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=633-3686&mode=dev",
+    },
   },
   argTypes: {
     onBlur: { action: "onBlur" },
     onFocus: { action: "onFocus" },
     onChange: { action: "onChange" },
+    scale: { description: "Indicates that the input field has scaled" },
   },
 };
 
@@ -45,7 +50,7 @@ Default.args = {
   isReadOnly: false,
   hasError: false,
   hasWarning: false,
-  scaled: false,
+  scale: false,
   autoComplete: "off",
   tabIndex: 1,
   withBorder: true,

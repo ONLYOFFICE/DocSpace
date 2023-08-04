@@ -2,6 +2,7 @@
 import EmptyScreenFilterAltDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt_dark.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import EmptyContainer from "./EmptyContainer";
@@ -15,18 +16,22 @@ const EmptyFilterContainer = ({
   t,
   selectedFolderId,
   setIsLoading,
-  fetchFiles,
-  fetchRooms,
+
   linkStyles,
   isRooms,
   isArchiveFolder,
   isRoomsFolder,
   setClearSearch,
   theme,
+  isPublicRoom,
+  publicRoomKey,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = isRooms
-    ? t("EmptyFilterDescriptionTextRooms")
+    ? t("Common:SearchEmptyRoomsDescription")
     : t("EmptyFilterDescriptionText");
 
   const onResetFilter = () => {
@@ -39,14 +44,20 @@ const EmptyFilterContainer = ({
 
     if (isRoomsFolder) {
       const newFilter = RoomsFilter.getDefault();
-      fetchRooms(selectedFolderId, newFilter)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+
+      navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
     } else {
       const newFilter = FilesFilter.getDefault();
-      fetchFiles(selectedFolderId, newFilter)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+
+      newFilter.folder = selectedFolderId;
+
+      if (isPublicRoom) {
+        navigate(
+          `${location.pathname}?key=${publicRoomKey}&${newFilter.toUrlParams()}`
+        );
+      } else {
+        navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
+      }
     }
   };
 
@@ -80,21 +91,30 @@ const EmptyFilterContainer = ({
 };
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    clientLoadingStore,
+    publicRoomStore,
+  }) => {
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     return {
-      fetchFiles: filesStore.fetchFiles,
-      fetchRooms: filesStore.fetchRooms,
       selectedFolderId: selectedFolderStore.id,
-      setIsLoading: filesStore.setIsLoading,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
       isRooms,
       isArchiveFolder,
       isRoomsFolder,
       setClearSearch: filesStore.setClearSearch,
       theme: auth.settingsStore.theme,
+
+      isPublicRoom,
+      publicRoomKey,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

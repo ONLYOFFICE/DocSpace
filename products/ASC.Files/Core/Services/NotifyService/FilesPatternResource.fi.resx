@@ -99,9 +99,57 @@ $Message</value>
     <value>Asiakirjoja. Sähköpostilähetys on valmis.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Asiakirjat. Pääsy tiedostoon $DocumentTitle myönnetty.</value>
+    <value>Asiakirjat. Pääsy tiedostoon $DocumentTitle myönnetty</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Asiakirjat. Pääsy kansioon $DocumentTitle myönnetty.</value>
+    <value>Asiakirjat. Pääsy kansioon $DocumentTitle myönnetty</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__TekijänNimi mainitsi sinut dokumentin kommentissa
+
+$__TekijänNimi mainitsi sinut "$ DocumentTitle":"$DocumentURL " kommentissa huoneen asiakirjassa "$ RoomTitle":"$RoomURL ":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName poisti huoneen
+
+$__AuthorName poisti huoneen: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Kaikki allekirjoittajat täyttivät $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Allekirjoituksen tila muuttunut</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Asiakirjoja. Kaikki allekirjoittajat täyttivät [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace-ilmoitus. Mainittu dokumentissa</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Mainittu dokumentissa</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Postitus on suoritettu.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace-ilmoitus. Huone poistettu</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Pääsy asiakirjaan myönnetty: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Asiakirjoja. Pääsy asiakirjaan myönnetty: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Pääsy asiakirjaan myönnetty: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Pääsy kansioon myönnetty: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Asiakirjoja. Pääsy kansioon myönnetty: [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

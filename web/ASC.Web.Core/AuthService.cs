@@ -49,7 +49,7 @@ public class AuthService
         Consumer = consumer;
         Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
         Description = ConsumerExtension.GetResourceString(consumer.Name + "Description");
-        Instruction = ConsumerExtension.GetResourceString(consumer.Name + "InstructionV11");
+        Instruction = ConsumerExtension.GetResourceString(consumer.Name + "Instruction");
         Props = new List<AuthKey>();
 
         foreach (var item in consumer.ManagedKeys)

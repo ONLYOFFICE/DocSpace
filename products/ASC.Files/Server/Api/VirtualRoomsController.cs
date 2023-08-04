@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+﻿﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -33,9 +33,9 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<int> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -56,20 +56,14 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     }
 
     /// <summary>
-    /// Create a room in the virtual rooms section
+    /// Creates a room in the "Rooms" section.
     /// </summary>
-    /// <short>
-    /// Create room
-    /// </short>
-    /// <param name="title">
-    /// Room name
-    /// </param>
-    /// <param name="roomType">
-    /// Room preset type
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Create a room</short>
+    /// <category>Rooms</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms")]
     public async Task<FolderDto<int>> CreateRoomAsync(CreateRoomRequestDto inDto)
     {
@@ -87,9 +81,9 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<string> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<string> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -110,23 +104,15 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
     }
 
     /// <summary>
-    /// Creates a room in the virtual rooms section stored in a third-party storage
+    /// Creates a room in the "Rooms" section stored in a third-party storage.
     /// </summary>
-    /// <short>
-    /// Create third-party room
-    /// </short>
-    /// <param name="id">
-    /// ID of the folder in the third-party storage in which the contents of the room will be stored
-    /// </param>
-    /// <param name="title">
-    /// Room name
-    /// </param>
-    /// <param name="roomType">
-    /// Room preset type
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Create a third-party room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.String, System" method="url" name="id">ID of the folder in the third-party storage in which the contents of the room will be stored</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/thirdparty/{id}</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/thirdparty/{id}")]
     public async Task<FolderDto<string>> CreateRoomAsync(string id, CreateRoomRequestDto inDto)
     {
@@ -143,9 +129,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly CustomTagsService<T> _customTagsService;
+    private readonly CustomTagsService _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
-    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileStorageService _fileStorageService;
     private readonly FileShareDtoHelper _fileShareDtoHelper;
     private readonly IMapper _mapper;
     private readonly SocketManager _socketManager;
@@ -154,9 +140,9 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         CoreBaseSettings coreBaseSettings,
-        CustomTagsService<T> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
@@ -175,14 +161,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Getting virtual room information
+    /// Returns the room information.
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Get room information</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}</path>
+    /// <httpMethod>GET</httpMethod>
+    [AllowAnonymous]
     [HttpGet("rooms/{id}")]
     public async Task<FolderDto<T>> GetRoomInfoAsync(T id)
     {
@@ -194,17 +181,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Renaming a virtual room
+    /// Renames a room with the ID specified in  the request.
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="title">
-    /// New room name
-    /// </param>
-    /// <returns>
-    /// Updated room info
-    /// </returns>
+    /// <short>Rename a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for updating a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Updated room information</returns>
+    /// <path>api/2.0/files/rooms/{id}</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}")]
     public async Task<FolderDto<T>> UpdateRoomAsync(T id, UpdateRoomRequestDto inDto)
     {
@@ -216,46 +201,36 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Permanent deletion of a virtual room
+    /// Removes a room with the ID specified in the request.
     /// </summary>
-    /// <short>
-    /// Deleting room
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="deleteAfter">
-    /// Delete after finished
-    /// </param>
-    /// <returns>
-    /// Result of the operation
-    /// </returns>
+    /// <short>Remove a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for deleting a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation</returns>
+    /// <path>api/2.0/files/rooms/{id}</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}")]
     public async Task<FileOperationDto> DeleteRoomAsync(T id, DeleteRoomRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        var operationResult = _fileStorageService.DeleteFolder("delete", id, false, inDto.DeleteAfter, true)
+        var operationResult = (await _fileStorageService.DeleteFolderAsync("delete", id, false, inDto.DeleteAfter, true))
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
     /// <summary>
-    /// Moving a room to the archive section
+    /// Moves a room with the ID specified in the request to the "Archive" section.
     /// </summary>
-    /// <short>
-    /// Archiving room
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="deleteAfter">
-    /// Archive after finished
-    /// </param>
-    /// <returns>
-    /// Result of the operation
-    /// </returns>
+    /// <short>Archive a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for archiving a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation</returns>
+    /// <path>api/2.0/files/rooms/{id}/archive</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/archive")]
     public async Task<FileOperationDto> ArchiveRoomAsync(T id, ArchiveRoomRequestDto inDto)
     {
@@ -264,27 +239,22 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderArchiveAsync);
         var movableRoom = JsonSerializer.SerializeToElement(id);
 
-        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter)
+        var operationResult = (await _fileStorageService.MoveOrCopyItemsAsync(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter))
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
     /// <summary>
-    /// Moving a room to the virtual room section
+    /// Moves a room with the ID specified in the request from the "Archive" section to the "Rooms" section.
     /// </summary>
-    /// <short>
-    /// Unarchiving room
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="deleteAfter">
-    /// Unarchive after finished
-    /// </param>
-    /// <returns>
-    /// Result of the operation
-    /// </returns>
+    /// <short>Unarchive a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for unarchiving a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation</returns>
+    /// <path>api/2.0/files/rooms/{id}/unarchive</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/unarchive")]
     public async Task<FileOperationDto> UnarchiveRoomAsync(T id, ArchiveRoomRequestDto inDto)
     {
@@ -293,36 +263,22 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         var destFolder = JsonSerializer.SerializeToElement(await _globalFolderHelper.FolderVirtualRoomsAsync);
         var movableRoom = JsonSerializer.SerializeToElement(id);
 
-        var operationResult = _fileStorageService.MoveOrCopyItems(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter)
+        var operationResult = (await _fileStorageService.MoveOrCopyItemsAsync(new List<JsonElement> { movableRoom }, new List<JsonElement>(), destFolder, FileConflictResolveType.Skip, false, inDto.DeleteAfter))
             .FirstOrDefault();
 
         return await _fileOperationDtoHelper.GetAsync(operationResult);
     }
 
     /// <summary>
-    /// Setting access rights for a virtual room
+    /// Sets the access rights to a room with the ID specified in the request.
     /// </summary>
-    /// <short>
-    /// Set access
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="shareTo">
-    /// ID of the user to whom access will be assigned
-    /// </param>
-    /// <param name="access">
-    /// Access level
-    /// </param>
-    /// <param name="notify">
-    /// Notifying users about access
-    /// </param>
-    /// <param name="sharingMessage">
-    /// Notification message
-    /// </param>
-    /// <returns>
-    /// Room security info
-    /// </returns>
+    /// <short>Set room access rights</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.RoomInvitationRequestDto, ASC.Files.Core" name="inDto">Request parameters for inviting users to a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.RoomSecurityDto, ASC.Files.Core">Room security information</returns>
+    /// <path>api/2.0/files/rooms/{id}/share</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/share")]
     public async Task<RoomSecurityDto> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
     {
@@ -351,12 +307,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Setting access rights for a virtual room
+    /// Returns the access rights of a room with the ID specified in the request.
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <returns>Room security info</returns>
+    /// <short>Get room access rights</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room files</returns>
+    /// <path>api/2.0/files/rooms/{id}/share</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("rooms/{id}/share")]
     public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfoAsync(T id)
     {
@@ -369,25 +328,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Setting an external invite link
+    /// Sets an external link to invite the users to a room with the ID specified in the request.
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="linkId">
-    /// Link ID
-    /// </param>
-    /// <param name="title">
-    /// External link name
-    /// </param>
-    /// /// <param name="access">
-    /// Access level
-    /// </param>
-    /// <returns>Room security info</returns>
+    /// <short>Set an external invitation link</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LinkRequestDto, ASC.Files.Core" name="inDto">Invitation link request parameters</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Security information of room files</returns>
+    /// <path>api/2.0/files/rooms/{id}/links</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("rooms/{id}/links")]
-    public async IAsyncEnumerable<FileShareDto> SetInvintationLinkAsync(T id, InvintationLinkRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
     {
-        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.LinkId, inDto.Title, inDto.Access);
+        var fileShares = inDto.LinkType switch
+        {
+            LinkType.Invitation => await _fileStorageService.SetInvitationLinkAsync(id, inDto.LinkId, inDto.Title, inDto.Access),
+            LinkType.External => await _fileStorageService.SetExternalLinkAsync(id, FileEntryType.Folder, inDto.LinkId, inDto.Title, 
+                inDto.Access is not (FileShare.Read or FileShare.None) ? FileShare.Read : inDto.Access , inDto.ExpirationDate ?? default, inDto.Password, inDto.Disabled, inDto.DenyDownload),
+            _ => throw new InvalidOperationException()
+        };
 
         foreach (var fileShareDto in fileShares)
         {
@@ -396,20 +356,46 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Add tags for a virtual room
+    /// Getting room links
     /// </summary>
-    /// <short>
-    /// Add tags
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="names">
-    /// Tag names
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Set an external invitation link</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.ResponseDto.LinkType, ASC.Files.Core" name="type">Link type</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">Room security info</returns>
+    /// <path>api/2.0/files/rooms/{id}/links</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
+    [HttpGet("rooms/{id}/links")]
+    public async IAsyncEnumerable<FileShareDto> GetLinksAsync(T id, LinkType? type)
+    {
+        var subjectTypes = type.HasValue
+            ? type.Value switch
+            {
+                LinkType.Invitation => new[] { SubjectType.InvitationLink },
+                LinkType.External => new[] { SubjectType.ExternalLink },
+                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink }
+            }
+            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink };
+
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id }, subjectTypes, true);
+
+        foreach (var fileShareDto in fileShares)
+        {
+            yield return await _fileShareDtoHelper.Get(fileShareDto);
+        }
+    }
+
+    /// <summary>
+    /// Adds the tags to a room with the ID specified in the request.
+    /// </summary>
+    /// <short>Add room tags</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Request parameters for adding tags</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/tags</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/tags")]
     public async Task<FolderDto<T>> AddTagsAsync(T id, BatchTagsRequestDto inDto)
     {
@@ -421,20 +407,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Attaching a tag to a virtual room
+    /// Removes the tags from a room with the ID specified in the request.
     /// </summary>
-    /// <short>
-    /// Add tags
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="names">
-    /// Tag names
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Remove room tags</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Request parameters for removing tags</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/tags</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}/tags")]
     public async Task<FolderDto<T>> DeleteTagsAsync(T id, BatchTagsRequestDto inDto)
     {
@@ -446,32 +427,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Creating a logo for a virtual room
+    /// Creates a logo for a room with the ID specified in the request.
     /// </summary>
-    /// <short>
-    /// Create room logo
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="tmpFile">
-    /// The path to the temporary image file
-    /// </param>
-    /// <param name="x">
-    /// The coordinate X of the rectangle's starting point
-    /// </param>
-    /// <param name="y">
-    /// The coordinate Y of the rectangle's starting point
-    /// </param>
-    /// <param name="width">
-    /// Rectangle width
-    /// </param>
-    /// <param name="height">
-    /// Rectangle height
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Create a room logo</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LogoRequestDto, ASC.Files.Core" name="inDto">Logo request parameters</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/logo</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/{id}/logo")]
     public async Task<FolderDto<T>> CreateRoomLogoAsync(T id, LogoRequestDto inDto)
     {
@@ -485,17 +449,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Removing the virtual room logo
+    /// Removes a logo from a room with the ID specified in the request.
     /// </summary>
-    /// <short>
-    /// Remove room logo
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Remove a room logo</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/logo</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}/logo")]
     public async Task<FolderDto<T>> DeleteRoomLogoAsync(T id)
     {
@@ -509,17 +470,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Pins a virtual room to the list
+    /// Pins a room with the ID specified in the request to the top of the list.
     /// </summary>
-    /// <short>
-    /// Pin room
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Pin a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/pin</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/pin")]
     public async Task<FolderDto<T>> PinRoomAsync(T id)
     {
@@ -531,17 +489,14 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Unpins a virtual room to the list
+    /// Unpins a room with the ID specified in the request from the top of the list.
     /// </summary>
-    /// <short>
-    /// Unpin room
-    /// </short>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <returns>
-    /// Room info
-    /// </returns>
+    /// <short>Unpin a room</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information</returns>
+    /// <path>api/2.0/files/rooms/{id}/unpin</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/unpin")]
     public async Task<FolderDto<T>> UnpinRoomAsync(T id)
     {
@@ -553,17 +508,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Resend room invitations
+    /// Resends the email invitations to a room with the ID specified in the request to the selected users.
     /// </summary>
-    /// <param name="id">
-    /// Room ID
-    /// </param>
-    /// <param name="usersIds">
-    /// User IDs
-    /// </param>
-    /// <returns>
-    /// Void
-    /// </returns>
+    /// <short>Resend room invitations</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UserInvintationRequestDto, ASC.Files.Core" name="inDto">User invitation request parameters</param>
+    /// <returns></returns>
+    /// <path>api/2.0/files/rooms/{id}/resend</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/{id}/resend")]
     public async Task ResendEmailInvitationsAsync(T id, UserInvintationRequestDto inDto)
     {
@@ -581,37 +534,34 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 
 public class VirtualRoomsCommonController : ApiControllerBase
 {
-    private readonly FileStorageService<int> _fileStorageServiceInt;
-    private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileStorageService _fileStorageService;
     private readonly FolderContentDtoHelper _folderContentDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
-    private readonly CustomTagsService<int> _customTagsService;
+    private readonly CustomTagsService _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
     private readonly SetupInfo _setupInfo;
     private readonly FileSizeComment _fileSizeComment;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
     private readonly AuthContext _authContext;
 
     public VirtualRoomsCommonController(
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageService,
         FolderContentDtoHelper folderContentDtoHelper,
         GlobalFolderHelper globalFolderHelper,
         CoreBaseSettings coreBaseSettings,
         ApiContext apiContext,
-        CustomTagsService<int> customTagsService,
+        CustomTagsService customTagsService,
         RoomLogoManager roomLogoManager,
         SetupInfo setupInfo,
         FileSizeComment fileSizeComment,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
-        RoomLinkService roomLinkService,
+        InvitationLinkService invitationLinkService,
         AuthContext authContext) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
         _folderContentDtoHelper = folderContentDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _coreBaseSettings = coreBaseSettings;
@@ -620,69 +570,45 @@ public class VirtualRoomsCommonController : ApiControllerBase
         _roomLogoManager = roomLogoManager;
         _setupInfo = setupInfo;
         _fileSizeComment = fileSizeComment;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
         _authContext = authContext;
     }
 
     /// <summary>
-    /// Getting the contents of the virtual rooms section
+    /// Returns the contents of the "Rooms" section by the parameters specified in the request.
     /// </summary>
-    /// <short>
-    /// Get rooms
-    /// </short>
-    /// <param name="startIndex">
-    /// The value of the beginning of the enumeration
-    /// </param>
-    /// <param name="count">
-    /// Quantity
-    /// </param>
-    /// <param name="filterValue">
-    /// Filter by name
-    /// </param>
-    /// <param name="types">
-    /// Filter by room type
-    /// </param>
-    /// <param name="subjectId">
-    /// Filter by user ID
-    /// </param>
-    /// <param name="searchInContent">
-    /// Full-text content search
-    /// </param>
-    /// <param name="withSubfolders">
-    /// Search by subfolders
-    /// </param>
-    /// <param name="searchArea">
-    /// Room search area
-    /// </param>
-    /// <param name="withoutTags">
-    /// Search by rooms without tags
-    /// </param>
-    /// <param name="tags">
-    /// Filter by tags
-    /// </param>
-    /// <param name="excludeSubject">
-    /// Exclude subject from search
-    /// </param>
-    /// <returns>
-    /// Virtual Rooms content
-    /// </returns>
+    /// <short>Get rooms</short>
+    /// <category>Rooms</category>
+    /// <param type="System.Nullable{ASC.Files.Core.ApiModels.RequestDto.RoomType}, System" name="type">Filter by room type</param>
+    /// <param type="System.String, System" name="subjectId">Filter by user ID</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="withSubfolders">Specifies whether to return sections with or without subfolders</param>
+    /// <param type="System.Nullable{ASC.Files.Core.VirtualRooms.SearchArea}, System" name="searchArea">Room search area (Active, Archive, Any)</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="withoutTags">Specifies whether to search by tags or not</param>
+    /// <param type="System.String, System" name="tags">Tags in the serialized format</param>
+    /// <param type="System.Nullable{System.Boolean}, System" name="excludeSubject">Specifies whether to exclude a subject or not</param>
+    /// <param type="System.Nullable{ASC.Files.Core.ProviderFilter}, System" name="provider">Filter by provider name (None, Box, DropBox, GoogleDrive, kDrive, OneDrive, SharePoint, WebDav, Yandex)</param>
+    /// <param type="System.Nullable{ASC.Files.Core.Core.SubjectFilter}, System" name="subjectFilter">Filter by subject (Owner - 1, Member - 1)</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">Rooms contents</returns>
+    /// <path>api/2.0/files/rooms</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
         ProviderFilter? provider, SubjectFilter? subjectFilter)
     {
         ErrorIfNotDocSpace();
 
-        var parentId = searchArea != SearchArea.Archive ? await _globalFolderHelper.GetFolderVirtualRooms<int>()
-            : await _globalFolderHelper.GetFolderArchive<int>();
+        var parentId = searchArea != SearchArea.Archive ? await _globalFolderHelper.GetFolderVirtualRooms()
+            : await _globalFolderHelper.GetFolderArchive();
 
         var filter = type switch
         {
-            RoomFilterType.FillingFormsRoomOnly => FilterType.FillingFormsRooms,
-            RoomFilterType.ReadOnlyRoomOnly => FilterType.ReadOnlyRooms,
-            RoomFilterType.EditingRoomOnly => FilterType.EditingRooms,
-            RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
-            RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
-            RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
+            RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
+            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
+            RoomType.EditingRoom => FilterType.EditingRooms,
+            RoomType.ReviewRoom => FilterType.ReviewRooms,
+            RoomType.CustomRoom => FilterType.CustomRooms,
+            RoomType.PublicRoom => FilterType.PublicRooms,
             _ => FilterType.None
         };
 
@@ -698,7 +624,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, default, withoutTags ?? false, tagNames, excludeSubject ?? false,
             provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
@@ -708,17 +634,14 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     /// <summary>
-    /// Create a custom tag
+    /// Creates a custom tag with the parameters specified in the request.
     /// </summary>
-    /// <short>
-    /// Create tag
-    /// </short>
-    /// <param name="name">
-    /// Tag name
-    /// </param>
-    /// <returns>
-    /// Tag name
-    /// </returns>
+    /// <short>Create a tag</short>
+    /// <category>Rooms</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTagRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a tag</param>
+    /// <returns type="System.Object, System">New tag name</returns>
+    /// <path>api/2.0/files/tags</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("tags")]
     public async Task<object> CreateTagAsync(CreateTagRequestDto inDto)
     {
@@ -728,23 +651,14 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     /// <summary>
-    /// Getting a list of custom tags
+    /// Returns a list of custom tags.
     /// </summary>
-    /// <short>
-    /// Get tags
-    /// </short>
-    /// <param name="startIndex">
-    /// The value of the beginning of the enumeration
-    /// </param>
-    /// <param name="count">
-    /// Quantity
-    /// </param>
-    /// <param name="filterValue">
-    /// Filter by name
-    /// </param>
-    /// <returns>
-    /// Tag names
-    /// </returns>
+    /// <short>Get tags</short>
+    /// <category>Rooms</category>
+    /// <returns type="System.Object, System">List of tag names</returns>
+    /// <path>api/2.0/files/tags</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("tags")]
     public async IAsyncEnumerable<object> GetTagsInfoAsync()
     {
@@ -753,41 +667,38 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var from = Convert.ToInt32(_apiContext.StartIndex);
         var count = Convert.ToInt32(_apiContext.Count);
 
-        await foreach (var tag in _customTagsService.GetTagsInfoAsync(_apiContext.FilterValue, TagType.Custom, from, count))
+        await foreach (var tag in _customTagsService.GetTagsInfoAsync<int>(_apiContext.FilterValue, TagType.Custom, from, count))
         {
             yield return tag;
         }
     }
 
     /// <summary>
-    /// Delete a bunch of custom tags
+    /// Deletes a bunch of custom tags specified in the request.
     /// </summary>
-    /// <short>
-    /// Delete tags
-    /// </short>
-    /// <returns>
-    /// Void
-    /// </returns>
+    /// <short>Delete tags</short>
+    /// <category>Rooms</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Batch tags request parameters</param>
+    /// <returns></returns>
+    /// <path>api/2.0/files/tags</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("tags")]
     public async Task DeleteTagsAsync(BatchTagsRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        await _customTagsService.DeleteTagsAsync(inDto.Names);
+        await _customTagsService.DeleteTagsAsync<int>(inDto.Names);
     }
 
     /// <summary>
-    /// Upload a temporary image to create a virtual room logo
+    /// Uploads a temporary image to create a room logo.
     /// </summary>
-    /// <short>
-    /// Upload image for room logo
-    /// </short>
-    /// <param name="formCollection">
-    /// Image data
-    /// </param>
-    /// <returns>
-    /// Upload result
-    /// </returns>
+    /// <short>Upload an image for room logo</short>
+    /// <category>Rooms</category>
+    /// <param type="Microsoft.AspNetCore.Http.IFormCollection, Microsoft.AspNetCore.Http" name="formCollection">Image data</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.UploadResultDto, ASC.Files.Core">Upload result</returns>
+    /// <path>api/2.0/files/logos</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("logos")]
     public async Task<UploadResultDto> UploadRoomLogo(IFormCollection formCollection)
     {
@@ -808,7 +719,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
                 }
 
                 var data = new byte[roomLogo.Length];
-                using var inputStream = roomLogo.OpenReadStream();
+                await using var inputStream = roomLogo.OpenReadStream();
 
                 var br = new BinaryReader(inputStream);
 
@@ -835,29 +746,29 @@ public class VirtualRoomsCommonController : ApiControllerBase
     }
 
     /// <summary>
-    /// Accept an invitation in a room via an external link
+    /// Accepts an invitation to a room via an external link.
     /// </summary>
-    /// <param name="key">
-    /// Link key
-    /// </param>
-    /// <returns>
-    /// Void
-    /// </returns>
+    /// <short>Accept an invitation</short>
+    /// <category>Rooms</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.AcceptInvitationDto, ASC.Files.Core" name="inDto">Request parameters for accepting invitations</param>
+    /// <returns></returns>
+    /// <path>api/2.0/files/rooms/accept</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/accept")]
     public async Task SetSecurityByLink(AcceptInvitationDto inDto)
     {
-        var options = await _roomLinkService.GetOptionsAsync(inDto.Key, null);
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, null);
 
-        if (!options.IsCorrect)
+        if (!linkData.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
         var aces = new List<AceWrapper>
         {
-            new AceWrapper
+            new()
             {
-                Access = options.Share,
+                Access = linkData.Share,
                 Id = _authContext.CurrentAccount.ID
             }
         };
@@ -867,7 +778,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             InvitationLink = true
         };
 
-        if (int.TryParse(options.RoomId, out var id))
+        if (int.TryParse(linkData.RoomId, out var id))
         {
             var aceCollection = new AceCollection<int>
             {
@@ -877,7 +788,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
                 AdvancedSettings = settings
             };
 
-            await _fileStorageServiceInt.SetAceObjectAsync(aceCollection, false);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, false);
         }
         else
         {
@@ -885,11 +796,11 @@ public class VirtualRoomsCommonController : ApiControllerBase
             {
                 Aces = aces,
                 Files = Array.Empty<string>(),
-                Folders = new[] { options.RoomId },
+                Folders = new[] { linkData.RoomId },
                 AdvancedSettings = settings
             };
 
-            await _fileStorageServiceString.SetAceObjectAsync(aceCollection, false);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, false);
         }
     }
 

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@docspace/components/button";
@@ -53,7 +52,7 @@ const DeleteDialogComponent = (props) => {
 
   const onKeyUp = (e) => {
     if (e.keyCode === 27) onClose();
-    if (e.keyCode === 13 || e.which === 13) onDelete();
+    if (e.keyCode === 13 || e.which === 13) onDeleteAction();
   };
 
   const onDelete = () => {
@@ -96,11 +95,13 @@ const DeleteDialogComponent = (props) => {
       successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
-    const itemId = selection.map((s) => s.id);
-
     onClose();
 
-    await deleteRoomsAction(itemId, translations);
+    const itemsIdDeleteHaveRights = selection
+      .filter((select) => select.security.Delete === true)
+      .map((select) => select.id);
+
+    await deleteRoomsAction(itemsIdDeleteHaveRights, translations);
   };
 
   const onClose = () => {
@@ -127,23 +128,25 @@ const DeleteDialogComponent = (props) => {
 
     if (isRecycleBinFolder) {
       return isSingle
-        ? t(isFolder ? "DeleteFolder" : "DeleteFile")
+        ? isFolder
+          ? t("DeleteFolder")
+          : t("DeleteFile")
         : t("DeleteItems");
     }
 
     if (isPersonalRoom) {
       return isSingle
-        ? t(
-            isFolder
-              ? "MoveToTrashFolderFromPersonal"
-              : "MoveToTrashFileFromPersonal"
-          )
-        : t("MoveToTrashItemsFromPersonal");
+        ? isFolder
+          ? t("MoveToTrashFolderFromPersonal")
+          : t("DeleteFile")
+        : t("DeleteItems");
     }
 
     if (isRoom) {
       return isSingle
-        ? t(isFolder ? "MoveToTrashFolder" : "MoveToTrashFile")
+        ? isFolder
+          ? t("MoveToTrashFolder")
+          : t("MoveToTrashFile")
         : t("MoveToTrashItems");
     }
   };
@@ -166,6 +169,12 @@ const DeleteDialogComponent = (props) => {
       ? t("UnsubscribeButton")
       : t("MoveToTrashButton");
 
+  const onDeleteAction = () => {
+    if (isRoomDelete) onDeleteRoom();
+    else if (unsubscribe) onUnsubscribe();
+    else onDelete();
+  };
+
   return (
     <StyledDeleteDialog isLoading={!tReady} visible={visible} onClose={onClose}>
       <ModalDialog.Header>{title}</ModalDialog.Header>
@@ -182,9 +191,7 @@ const DeleteDialogComponent = (props) => {
           size="normal"
           primary
           scale
-          onClick={
-            isRoomDelete ? onDeleteRoom : unsubscribe ? onUnsubscribe : onDelete
-          }
+          onClick={onDeleteAction}
           isLoading={isLoading}
           isDisabled={!selection.length}
         />
@@ -212,23 +219,12 @@ const DeleteDialog = withTranslation([
 
 export default inject(
   ({ filesStore, dialogsStore, filesActionsStore, treeFoldersStore, auth }) => {
-    const {
-      selection,
-      isLoading,
-      bufferSelection,
-      setBufferSelection,
-    } = filesStore;
-    const {
-      deleteAction,
-      unsubscribeAction,
-      deleteRoomsAction,
-    } = filesActionsStore;
-    const {
-      isPrivacyFolder,
-      isRecycleBinFolder,
-      isPersonalRoom,
-      isRoom,
-    } = treeFoldersStore;
+    const { selection, isLoading, bufferSelection, setBufferSelection } =
+      filesStore;
+    const { deleteAction, unsubscribeAction, deleteRoomsAction } =
+      filesActionsStore;
+    const { isPrivacyFolder, isRecycleBinFolder, isPersonalRoom, isRoom } =
+      treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -266,4 +262,4 @@ export default inject(
       isRoom,
     };
   }
-)(withRouter(observer(DeleteDialog)));
+)(observer(DeleteDialog));

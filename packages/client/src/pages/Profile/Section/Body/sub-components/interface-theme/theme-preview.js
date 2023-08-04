@@ -20,6 +20,7 @@ const ThemePreview = (props) => {
     <StyledWrapper>
       <div className="card-header">
         <RadioButton
+          classNameInput={`theme-${theme.toLowerCase()}`}
           name={`theme-option-${value}`}
           label={label}
           onClick={onChangeTheme}
@@ -29,6 +30,7 @@ const ThemePreview = (props) => {
         />
       </div>
       <Preview
+        appliedColorAccent={accentColor}
         floatingButtonClass="floating-btn"
         selectThemeId={themeId}
         previewAccent={accentColor}

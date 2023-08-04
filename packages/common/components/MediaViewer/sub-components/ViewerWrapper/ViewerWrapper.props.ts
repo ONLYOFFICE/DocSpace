@@ -1,10 +1,11 @@
-import { ContextMenuModel, PlaylistType } from "../../types";
+import type { ContextMenuModel, IFile, PlaylistType } from "../../types";
 
 interface ViewerWrapperProps {
+  targetFile?: IFile;
   userAccess: boolean;
   visible: boolean;
   title: string;
-  images: { src: string; alt: string }[];
+  fileUrl?: string;
   inactive: boolean;
   playlist: PlaylistType[];
   playlistPos: number;
@@ -13,6 +14,7 @@ interface ViewerWrapperProps {
   isImage: boolean;
   isAudio: boolean;
   isVideo: boolean;
+  isPdf: boolean;
   isPreviewFile: boolean;
 
   archiveRoom: boolean;

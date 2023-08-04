@@ -53,20 +53,38 @@ public class ReassignController : ApiControllerBase
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the reassignment progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID whose data is reassigned</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
+    /// <path>api/2.0/people/reassign/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("reassign/progress")]
-    public ReassignProgressItem GetReassignProgress(Guid userId)
+    public async Task<ReassignProgressItem> GetReassignProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
+    /// <summary>
+    /// Starts the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People" name="inDto">Request parameters for starting the reassignment process</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
+    /// <path>api/2.0/people/reassign/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("reassign/start")]
-    public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
+    public async Task<ReassignProgressItem> StartReassignAsync(StartReassignRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var fromUser = _userManager.GetUsers(inDto.FromUserId);
+        var fromUser = await _userManager.GetUsersAsync(inDto.FromUserId);
 
         if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
         {
@@ -78,14 +96,14 @@ public class ReassignController : ApiControllerBase
             throw new ArgumentException("Can not delete user with id = " + inDto.FromUserId);
         }
 
-        var toUser = _userManager.GetUsers(inDto.ToUserId);
+        var toUser = await _userManager.GetUsersAsync(inDto.ToUserId);
 
         if (toUser == null || toUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
         }
 
-        if (_userManager.IsUser(toUser) || toUser.Status == EmployeeStatus.Terminated)
+        if (await _userManager.IsUserAsync(toUser) || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }
@@ -93,10 +111,19 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
     }
 
+    /// <summary>
+    /// Terminates the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the reassignment process</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/reassign/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("reassign/terminate")]
-    public void TerminateReassign(TerminateRequestDto inDto)
+    public async Task TerminateReassignAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
     }

@@ -1,0 +1,21 @@
+{
+  "Ascending": "Vzostupne",
+  "CopyWindowCode": "Kopírovať kód na vloženie okna",
+  "DataDisplay": "Nastavenia zobrazovania údajov",
+  "Descending": "Zostupne",
+  "Destroy": "Zničiť",
+  "EnterCount": "Zadajte počet",
+  "EnterHeight": "Zadajte výšku",
+  "EnterId": "Zadajte id",
+  "EnterPage": "Zadajte číslo strany",
+  "EnterWidth": "Zadajte šírku",
+  "FolderId": "ID priečinka",
+  "FrameId": "ID rámu",
+  "Header": "Hlavička",
+  "ItemsCount": "Počet položiek",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "Menu",
+  "Page": "Strana",
+  "SearchTerm": "Hľadať termín",
+  "SortOrder": "Zoradiť objednávku"
+}

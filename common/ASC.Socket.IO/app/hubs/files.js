@@ -28,7 +28,7 @@
       return;
     }
 
-    if (!session.user) {
+    if (!session.user && !session.anonymous) {
       logger.error("invalid session: unknown user");
       return;
     }
@@ -45,21 +45,25 @@
       return `${tenantId}-${roomPart}`;
     };
 
-    logger.info(
-      `connect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}'`
-    );
+    const connectMessage = !session.anonymous ? 
+      `connect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}'` : 
+      `connect anonymous user by share key on tenant='${tenantId}' socketId='${socket.id}'`;
+
+    logger.info(connectMessage);
 
     socket.on("disconnect", (reason) => {
-      logger.info(
-        `disconnect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}`
-      );
+      const disconnectMessage = !session.anonymous ? 
+        `disconnect user='${userId}' on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}` :
+        `disconnect anonymous user by share key on tenant='${tenantId}' socketId='${socket.id}' due to ${reason}`;
+
+      logger.info(disconnectMessage)
     });
 
-    socket.on("subscribe", ({roomParts, individual}) => {
+    socket.on("subscribe", ({ roomParts, individual }) => {
       changeSubscription(roomParts, individual, subscribe);
     });
 
-    socket.on("unsubscribe", ({roomParts, individual}) => {
+    socket.on("unsubscribe", ({ roomParts, individual }) => {
       changeSubscription(roomParts, individual, unsubscribe);
     });
 
@@ -80,7 +84,7 @@
 
       changeFunc(roomParts);
 
-      if(individual){
+      if (individual && !session.anonymous) {
         if (Array.isArray(roomParts)) {
           changeFunc(roomParts.map((p) => `${p}-${userId}`));
         } else {
@@ -116,7 +120,6 @@
         socket.leave(room);
       }
     }
-
   });
 
   function startEdit({ fileId, room } = {}) {
@@ -167,11 +170,34 @@
     logger.info(`markAsNewFile ${fileId} in room ${room}:${count}`);
     filesIO.to(room).emit("s:markasnew-file", { fileId, count });
   }
-  
+
   function markAsNewFolder({ folderId, count, room } = {}) {
     logger.info(`markAsNewFolder ${folderId} in room ${room}:${count}`);
     filesIO.to(room).emit("s:markasnew-folder", { folderId, count });
   }
 
-  return { startEdit, stopEdit, createFile, createFolder, deleteFile, deleteFolder, updateFile, updateFolder, markAsNewFile, markAsNewFolder };
+  function changeQuotaUsedValue({ featureId, value, room } = {}) {
+    logger.info(`changeQuotaUsedValue in room ${room}`, { featureId, value });
+    filesIO.to(room).emit("s:change-quota-used-value", { featureId, value });
+  }
+
+  function changeQuotaFeatureValue({ featureId, value, room } = {}) {
+    logger.info(`changeQuotaFeatureValue in room ${room}`, { featureId, value });
+    filesIO.to(room).emit("s:change-quota-feature-value", { featureId, value });
+  }
+
+  return {
+    startEdit,
+    stopEdit,
+    createFile,
+    createFolder,
+    deleteFile,
+    deleteFolder,
+    updateFile,
+    updateFolder,
+    markAsNewFile,
+    markAsNewFolder,
+    changeQuotaUsedValue,
+    changeQuotaFeatureValue,
+  };
 };

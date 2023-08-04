@@ -6,7 +6,7 @@ import Avatar from "@docspace/components/avatar";
 import TextInput from "@docspace/components/text-input";
 import DropDownItem from "@docspace/components/drop-down-item";
 import toastr from "@docspace/components/toast/toastr";
-
+import { ShareAccessRights } from "@docspace/common/constants";
 import { parseAddresses } from "@docspace/components/utils/email";
 
 import { AddUsersPanel } from "../../index";
@@ -36,6 +36,7 @@ const InviteInput = ({
   roomUsers,
   t,
   isOwner,
+  inputsRef,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -44,7 +45,6 @@ const InviteInput = ({
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
-  const inputsRef = useRef();
   const searchRef = useRef();
 
   const inRoom = (id) => {
@@ -129,7 +129,11 @@ const InviteInput = ({
     item.access = selectedAccess;
 
     const addUser = () => {
+      if (item.isOwner || item.isAdmin)
+        item.access = ShareAccessRights.RoomManager;
+
       const items = removeExist([item, ...inviteItems]);
+
       setInviteItems(items);
       closeInviteInputPanel();
       setInputValue("");
@@ -216,6 +220,17 @@ const InviteInput = ({
     }
   };
 
+  const onKeyDown = (event) => {
+    const keyCode = event.code;
+
+    const isAcceptableEvents =
+      keyCode === "ArrowUp" || keyCode === "ArrowDown" || keyCode === "Enter";
+
+    if (isAcceptableEvents && inputValue.length > 2) return;
+
+    event.stopPropagation();
+  };
+
   useEffect(() => {
     document.addEventListener("keyup", onKeyPress);
     return () => document.removeEventListener("keyup", onKeyPress);
@@ -227,6 +242,7 @@ const InviteInput = ({
         {t("AddManually")}
         {!hideSelector && (
           <StyledLink
+            className="link-list"
             fontWeight="600"
             type="action"
             isHovered
@@ -245,6 +261,7 @@ const InviteInput = ({
       <StyledInviteInputContainer ref={inputsRef}>
         <StyledInviteInput ref={searchRef}>
           <TextInput
+            className="invite-input"
             scale
             onChange={onChange}
             placeholder={
@@ -254,6 +271,8 @@ const InviteInput = ({
             }
             value={inputValue}
             onFocus={openInviteInputPanel}
+            isAutoFocussed={true}
+            onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
         {inputValue.length > 2 && (
@@ -264,12 +283,14 @@ const InviteInput = ({
             manualX="16px"
             showDisabledItems
             clickOutsideAction={closeInviteInputPanel}
+            eventTypes="click"
             {...dropDownMaxHeight}
           >
             {!!usersList.length ? (
               foundUsers
             ) : (
               <DropDownItem
+                className="add-item"
                 style={{ width: "inherit" }}
                 textOverflow
                 onClick={addEmail}
@@ -282,6 +303,7 @@ const InviteInput = ({
         )}
 
         <AccessSelector
+          className="add-manually-access"
           t={t}
           roomType={roomType}
           defaultAccess={selectedAccess}

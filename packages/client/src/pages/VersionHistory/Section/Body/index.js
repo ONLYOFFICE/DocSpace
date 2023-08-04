@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { withRouter } from "react-router";
+
 import Loaders from "@docspace/common/components/Loaders";
 import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";
@@ -20,8 +20,9 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    const { match, setFirstLoad } = this.props;
-    const fileId = match.params.fileId || this.props.fileId;
+    const { setFirstLoad } = this.props;
+
+    const fileId = this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
       this.getFileVersions(fileId, this.props.fileSecurity);
@@ -44,7 +45,7 @@ class SectionBodyContent extends React.Component {
           this.setState({
             isRestoreProcess: restoring,
           }),
-        100
+        100,
       );
     } else {
       clearTimeout(this.timerId);
@@ -64,7 +65,7 @@ class SectionBodyContent extends React.Component {
     this.setState((prevState) => ({
       rowSizes: {
         ...prevState.rowSizes,
-        [i]: itemHeight + 24, //composed of itemHeight = clientHeight of div and padding-top = 12px and padding-bottom = 12px
+        [i]: itemHeight + 27, //composed of itemHeight = clientHeight of div and padding-top = 13px and padding-bottom = 12px
       },
     }));
   };
@@ -74,7 +75,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderRow = memo(({ index, style }) => {
-    const { versions, culture } = this.props;
+    const { versions, culture, onClose } = this.props;
 
     const prevVersion = versions[index > 0 ? index - 1 : index].versionGroup;
     let isVersion = true;
@@ -85,8 +86,9 @@ class SectionBodyContent extends React.Component {
     return (
       <div style={style}>
         <VersionRow
+          onClose={onClose}
           getFileVersions={this.getFileVersions}
-          isVersion={isVersion}
+          isVersion={true}
           key={`${versions[index].id}-${index}`}
           info={versions[index]}
           versionsListLength={versions.length}
@@ -112,8 +114,7 @@ class SectionBodyContent extends React.Component {
             itemSize={this.getSize}
             itemCount={versions.length}
             itemData={versions}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
+            outerElementType={CustomScrollbarsVirtualList}>
             {this.renderRow}
           </List>
         </StyledVersionList>
@@ -128,7 +129,7 @@ class SectionBodyContent extends React.Component {
           </div>
         ) : (
           <div className="loader-history-rows">
-            <Loaders.HistoryRows title="version-history-body-loader" />
+            <Loaders.HistoryRows />
           </div>
         )}
       </StyledBody>
@@ -136,8 +137,12 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-export default inject(({ auth, filesStore, versionHistoryStore }) => {
-  const { setFirstLoad, setIsLoading, isLoading } = filesStore;
+export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
+  const {
+    setFirstLoad,
+    isLoading,
+    setIsSectionBodyLoading,
+  } = clientLoadingStore;
   const {
     versions,
     fetchFileVersions,
@@ -152,7 +157,7 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     fileId,
     fileSecurity,
     setFirstLoad,
-    setIsLoading,
+    setIsLoading: setIsSectionBodyLoading,
     fetchFileVersions,
   };
-})(withRouter(observer(SectionBodyContent)));
+})(observer(SectionBodyContent));

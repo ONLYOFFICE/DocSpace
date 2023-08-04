@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { isMobile } from "react-device-detect";
+import React, { useEffect, useState } from "react";
+import { isMobile, isDesktop } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -17,16 +17,40 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 
+const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
+const SP_METADATA = "spMetadata";
+
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
+
+  useEffect(() => {
+    isSSOAvailable && load();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => window.removeEventListener("resize", onCheckView);
+  }, []);
+
+  const onCheckView = () => {
+    if (isDesktop && window.innerWidth < 795) {
+      setIsSmallWindow(true);
+    } else {
+      setIsSmallWindow(false);
+    }
+  };
+
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning
+        sectionName={t("Settings:SingleSignOn")}
+        isSmallWindow
+      />
+    );
 
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
-
-  useEffect(() => {
-    load();
-  }, []);
 
   return (
     <StyledSsoPage
@@ -37,8 +61,9 @@ const SingleSignOn = (props) => {
       <ToggleSSO isSSOAvailable={isSSOAvailable} />
 
       <HideButton
+        id="sp-settings-hide-button"
         text={t("ServiceProviderSettings")}
-        label="serviceProviderSettings"
+        label={SERVICE_PROVIDER_SETTINGS}
         value={serviceProviderSettings}
         isDisabled={!isSSOAvailable}
       />
@@ -58,8 +83,9 @@ const SingleSignOn = (props) => {
       <StyledSettingsSeparator />
 
       <HideButton
+        id="sp-metadata-hide-button"
         text={t("SpMetadata")}
-        label="spMetadata"
+        label={SP_METADATA}
         value={spMetadata}
         isDisabled={!isSSOAvailable}
       />

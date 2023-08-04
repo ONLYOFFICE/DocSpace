@@ -161,10 +161,10 @@
     <value>Non puoi selezionare questo utente</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>La conversione sta impiegando troppo tempo</value>
+    <value>La conversione sta impiegando troppo tempo.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Si è verificato un errore nel servizio di conversione </value>
+    <value>Si è verificato un errore nel servizio di conversione</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Il file risulta aperto per la modifica da {0}. Attualmente il co-editing non è ancora supportato per questo formato di file.</value>
@@ -206,7 +206,7 @@
     <value>Non è stato possibile eseguire l'invio di almeno {0} mail. Si prega di controllare il Modulo mail per conoscere il motivo del errore.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Molti download</value>
+    <value>Molti download.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Scusa, questo formato file non è supportato</value>
@@ -299,7 +299,7 @@
     <value>File creato nella cartella "{0}"</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>Il documento compilabile OFORM è pronto. È salvato in</value>
+    <value>Il documento compilabile OFORM è pronto. È salvato in {0}</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>La copia di OFORM è creata nella cartella {0}. Compila il modulo e scarica il risultato come file PDF o DOCX.</value>
@@ -334,5 +334,86 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
     <value>Il file è sbloccato</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Amministratore di DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editore</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Amministratore di stanza</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Utente</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Spettatore</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Commentatore</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Compilatore di moduli</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Recensore</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collaboratore</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaboratore</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editore</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Amministratore di stanza</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nuova versione non può essere uguale a quella attuale</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Non hai autorizzazioni sufficienti per copiare il file</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Non hai autorizzazioni sufficienti per copiare la cartella</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Fornitore non valido</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Non è possibile utilizzare questa cartella per archiviare la stanza</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Il link di invito non è valido o scaduto</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Questo provider è già connesso alla stanza</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Il ruolo non è disponibile per questo tipo di utente</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per archiviare la stanza</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per copiare in questa cartella</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per modificare la stanza</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per spostarti in questa cartella</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per eliminare la stanza dall'archivio</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Non puoi modificare le stanze archiviate</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Non puoi fissare una stanza</value>
   </data>
 </root>

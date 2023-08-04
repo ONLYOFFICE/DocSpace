@@ -45,25 +45,25 @@ public class LdapNotifyService : BackgroundService
         _ldapSaveSyncOperation = ldapSaveSyncOperation;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
         var dbHelper = scope.ServiceProvider.GetRequiredService<DbHelper>();
 
-        var tenants = tenantManager.GetTenants(dbHelper.GetTenants());
+        var tenants = await tenantManager.GetTenantsAsync(await dbHelper.TenantsAsync());
         foreach (var t in tenants)
         {
             var tId = t.Id;
 
-            var ldapSettings = settingsManager.Load<LdapSettings>(tId);
+            var ldapSettings = await settingsManager.LoadAsync<LdapSettings>(tId);
             if (!ldapSettings.EnableLdapAuthentication)
             {
                 continue;
             }
 
-            var cronSettings = settingsManager.Load<LdapCronSettings>(tId);
+            var cronSettings = await settingsManager.LoadAsync<LdapCronSettings>(tId);
             if (string.IsNullOrEmpty(cronSettings.Cron))
             {
                 continue;
@@ -71,8 +71,6 @@ public class LdapNotifyService : BackgroundService
 
             RegisterAutoSync(t, cronSettings.Cron);
         }
-
-        return Task.CompletedTask;
     }
 
     public void RegisterAutoSync(Tenant tenant, string cron)
@@ -84,7 +82,7 @@ public class LdapNotifyService : BackgroundService
             var notifyEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
             source.Init(tenant);
             var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, source);
-            _workContext.RegisterSendMethod(source.AutoSync, cron);
+            _workContext.RegisterSendMethod(source.AutoSyncAsync, cron);
             _clients.TryAdd(tenant.Id, new Tuple<INotifyClient, LdapNotifySource>(client, source));
         }
     }
@@ -94,27 +92,27 @@ public class LdapNotifyService : BackgroundService
         if (_clients.ContainsKey(tenant.Id))
         {
             var client = _clients[tenant.Id];
-            _workContext.UnregisterSendMethod(client.Item2.AutoSync);
+            _workContext.UnregisterSendMethod(client.Item2.AutoSyncAsync);
             _clients.TryRemove(tenant.Id, out _);
         }
     }
 
-    public void AutoSync(Tenant tenant)
+    public async Task AutoSyncAsync(Tenant tenant)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
-        var ldapSettings = settingsManager.Load<LdapSettings>(tenant.Id);
+        var ldapSettings = await settingsManager.LoadAsync<LdapSettings>(tenant.Id);
 
         if (!ldapSettings.EnableLdapAuthentication)
         {
-            var cronSettings = settingsManager.Load<LdapCronSettings>(tenant.Id);
+            var cronSettings = await settingsManager.LoadAsync<LdapCronSettings>(tenant.Id);
             cronSettings.Cron = "";
-            settingsManager.Save(cronSettings, tenant.Id);
+            await settingsManager.SaveAsync(cronSettings, tenant.Id);
             UnregisterAutoSync(tenant);
             return;
         }
 
-        _ldapSaveSyncOperation.RunJob(ldapSettings, tenant, LdapOperationType.Sync);
+        await _ldapSaveSyncOperation.RunJobAsync(ldapSettings, tenant, LdapOperationType.Sync);
     }
 }
 

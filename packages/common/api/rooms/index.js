@@ -1,11 +1,20 @@
 import { request } from "../client";
-import { decodeDisplayName } from "../../utils";
+import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { FolderType } from "../../constants";
+import RoomsFilter from "./filter";
 
 export function getRooms(filter, signal) {
+  let params;
+
+  if (filter) {
+    checkFilterInstance(filter, RoomsFilter);
+
+    params = `?${filter.toApiUrlParams()}`;
+  }
+
   const options = {
     method: "get",
-    url: `/files/rooms?${filter.toApiUrlParams()}`,
+    url: `/files/rooms${params}`,
     signal,
   };
 
@@ -59,10 +68,11 @@ export function updateRoomMemberRole(id, data) {
   });
 }
 
-export function getHistory(module, id) {
+export function getHistory(module, id, signal = null) {
   const options = {
     method: "get",
     url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+    signal,
   };
 
   return request(options).then((res) => {
@@ -136,7 +146,7 @@ export function unpinRoom(id) {
   });
 }
 
-export function deleteRoom(id, deleteAfter = true) {
+export function deleteRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {
@@ -323,3 +333,55 @@ export const acceptInvitationByLink = async () => {
 
   return await request(options);
 };
+
+export function editExternalLink(
+  roomId,
+  linkId,
+  title,
+  access,
+  expirationDate,
+  linkType,
+  password,
+  disabled,
+  denyDownload
+) {
+  return request({
+    method: "put",
+
+    url: `/files/rooms/${roomId}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+      expirationDate,
+      linkType,
+      password,
+      disabled,
+      denyDownload,
+    },
+  });
+}
+
+export function getExternalLinks(roomId, type) {
+  const linkType = `?type=${type}`;
+
+  return request({
+    method: "get",
+    url: `files/rooms/${roomId}/links${linkType}`,
+  });
+}
+
+export function validatePublicRoomKey(key) {
+  return request({
+    method: "get",
+    url: `files/share/${key}`,
+  });
+}
+
+export function validatePublicRoomPassword(key, passwordHash) {
+  return request({
+    method: "post",
+    url: `files/share/${key}/password`,
+    data: { password: passwordHash },
+  });
+}

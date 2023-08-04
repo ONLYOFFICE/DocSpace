@@ -361,7 +361,7 @@
     <value>It is not possible to use this folder to store the room</value>
   </data>
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
-    <value>The invitation link is invalid or it's validity has expired</value>
+    <value>The invitation link is invalid or its validity has expired</value>
   </data>
   <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
     <value>The role is not available for this user type</value>
@@ -375,8 +375,8 @@
   <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
     <value>You don't have permission to move to this folder</value>
   </data>
-  <data name="ErrorMessage_UnarchiveRoom" xml:space="preserve">
-    <value>You don't have enough permission to archive the room</value>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>You don't have enough permission to unarchive the room</value>
   </data>
   <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
     <value>You cannot edit archived rooms</value>
@@ -409,11 +409,11 @@
     <value>Do the same as a user|Link Dropbox, Box and other accounts in the 'Common' section|Set up access rights to the documents and folders in the 'Common' section</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed. </value>
+    <value>Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
-Highest compatibility with docx, xlsx, pptx. </value>
+Highest compatibility with docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>View and download shared documents. Upload files to shared folders. Highest compatibility with docx, xlsx, pptx guaranteed.</value>
@@ -441,5 +441,47 @@ Highest compatibility with docx, xlsx, pptx. </value>
   </data>
   <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
     <value>You don't have permission to edit the room</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Administrator</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Room Administrator</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Viewer</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Сommenter</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Form filler</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Reviewer</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>You don't have enough permission to archive the room</value>
+  </data>
+  <data name="ErrorMessage_MaxLinksCount" xml:space="preserve">
+    <value>The maximum number of links may not exceed {0}</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>External link</value>
+  </data>
+  <data name="ErrorMessage_SharePasswordManyAttempts" xml:space="preserve">
+    <value>You have tried too many times to enter your password. Please try again later</value>
   </data>
 </root>

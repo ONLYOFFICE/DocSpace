@@ -1,7 +1,14 @@
 {
-  "BackupPortal": "Varmuuskopioi portaalin tiedot",
-  "ChangeOwner": "Nimeä moduulin järjestelmänvalvojat",
-  "DeactivateOrDeletePortal": "Määritä moduulien käyttöoikeudet",
-  "ManagePortal": " Hallitse portaalin asetuksia",
-  "ManageUser": " Hallitse käyttäjätilejä"
+  "AppointAdmin": "Nimeä ylläpitäjät",
+  "BackupPortal": "Varmuuskopioi DocSpacen tiedot",
+  "ChangeInstruction": "Ole hyvä ja valitse omistajan nimi alta vaihtaaksesi DocSpacen omistajan.",
+  "ChangeOwner": "Vaihda DocSpace-omistaja",
+  "ChangeUser": "Vaihda käyttäjä",
+  "DeactivateOrDeletePortal": "Poista DocSpace käytöstä tai poista se kokonaan",
+  "DoTheSame": "Tee sama kuin järjestelmänvalvojat",
+  "ManagePortal": "Hallitse DocSpacen asetuksia",
+  "ManageUser": " Hallitse käyttäjätilejä",
+  "NewPortalOwner": "Uusi DocSpace-omistaja",
+  "PortalOwnerCan": "DocSpace omistaja voi:",
+  "SetAccessRights": "Aseta pääsyoikeudet"
 }

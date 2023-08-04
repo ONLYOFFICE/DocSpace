@@ -18,7 +18,7 @@ import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 let selectedStorageType = "";
@@ -102,6 +102,20 @@ class ManualBackup extends React.Component {
 
   componentDidMount() {
     const { fetchTreeFolders, rootFoldersTitles, isNotPaidPeriod } = this.props;
+    const valueFromLocalStorage = getFromLocalStorage("LocalCopyStorageType");
+
+    if (valueFromLocalStorage) {
+      let newStateObj = {};
+      const name = valueFromLocalStorage;
+      newStateObj[name] = true;
+      const newState = this.switches.filter((el) => el !== name);
+      newState.forEach((name) => (newStateObj[name] = false));
+      this.setState({
+        ...newStateObj,
+      });
+    } else {
+      saveToLocalStorage("LocalCopyStorageType", "isCheckedTemporaryStorage");
+    }
 
     if (isNotPaidPeriod) {
       this.setState({
@@ -136,7 +150,6 @@ class ManualBackup extends React.Component {
     const { TemporaryModuleType } = BackupStorageType;
 
     clearLocalStorage();
-    saveToLocalStorage("LocalCopyStorageType", "TemporaryStorage");
 
     try {
       await startBackup(`${TemporaryModuleType}`, null);
@@ -162,6 +175,7 @@ class ManualBackup extends React.Component {
     this.setState({
       ...newStateObj,
     });
+    saveToLocalStorage("LocalCopyStorageType", name);
   };
   onMakeCopy = async (
     selectedFolder,
@@ -264,13 +278,14 @@ class ManualBackup extends React.Component {
           <Text isBold fontSize="16px">
             {t("DataBackup")}
           </Text>
-          {renderTooltip(t("ManualBackupHelp"))}
+          {renderTooltip(t("ManualBackupHelp"), "data-backup")}
         </div>
         <Text className="backup_modules-description">
           {t("ManualBackupDescription")}
         </Text>
         <StyledModules>
           <RadioButton
+            id="temporary-storage"
             label={t("TemporaryStorage")}
             name={"isCheckedTemporaryStorage"}
             key={0}
@@ -284,7 +299,8 @@ class ManualBackup extends React.Component {
           {isCheckedTemporaryStorage && (
             <div className="manual-backup_buttons">
               <Button
-                label={t("Common:CreateCopy")}
+                id="create-button"
+                label={t("Common:Create")}
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}
@@ -292,6 +308,7 @@ class ManualBackup extends React.Component {
               />
               {temporaryLink?.length > 0 && isMaxProgress && (
                 <Button
+                  id="download-copy"
                   label={t("DownloadCopy")}
                   onClick={this.onClickDownloadBackup}
                   isDisabled={false}
@@ -312,6 +329,7 @@ class ManualBackup extends React.Component {
         </StyledModules>
         <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
+            id="backup-room"
             label={t("RoomsModule")}
             name={"isCheckedDocuments"}
             key={1}
@@ -334,6 +352,7 @@ class ManualBackup extends React.Component {
 
         <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
+            id="third-party-resource"
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
             key={2}
@@ -348,7 +367,8 @@ class ManualBackup extends React.Component {
         </StyledModules>
         <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
-            label={t("ThirdPartyStorage")}
+            id="third-party-storage"
+            label={t("Common:ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}

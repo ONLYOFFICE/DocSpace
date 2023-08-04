@@ -1,5 +1,6 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { decode } from "he";
 
 import Link from "@docspace/components/link";
 import { StyledUserNameLink } from "../../styles/history";
@@ -12,21 +13,21 @@ const HistoryBlockUser = ({
   isCollaborator,
 }) => {
   const username = user.displayName;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onUserClick = () => {
-    openUser(user, history);
+    openUser(user, navigate);
   };
 
   return (
     <StyledUserNameLink key={user.id} className="user">
       {isVisitor || isCollaborator ? (
         <Text as="span" fontWeight={600}>
-          {username}
+          {decode(username)}
         </Text>
       ) : (
         <Link className="username link" onClick={onUserClick}>
-          {username}
+          {decode(username)}
         </Link>
       )}
       {withComma ? "," : ""}

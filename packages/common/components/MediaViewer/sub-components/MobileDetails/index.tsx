@@ -34,16 +34,7 @@ function MobileDetails(
   return (
     <StyledMobileDetails>
       <BackArrow className="mobile-close" onClick={onMaskClick} />
-      <Text
-        fontSize="14px"
-        color="#fff"
-        className="title"
-        as={undefined}
-        tag={undefined}
-        title={undefined}
-        textAlign={undefined}
-        fontWeight={undefined}
-      >
+      <Text fontSize="14px" color="#fff" className="title">
         {title}
       </Text>
       {!isPreviewFile && !isError && (

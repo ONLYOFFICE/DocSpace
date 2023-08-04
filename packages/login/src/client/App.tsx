@@ -1,6 +1,6 @@
 import React from "react";
 import Login from "./components/Login";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import InvalidRoute from "./components/Invalid";
 import CodeLogin from "./components/CodeLogin";
 import initLoginStore from "../store";
@@ -10,7 +10,10 @@ import { wrongPortalNameUrl } from "@docspace/common/constants";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
 }
+
 const App: React.FC<ILoginProps> = (props) => {
   const loginStore = initLoginStore(props?.currentColorScheme || {});
 
@@ -19,9 +22,9 @@ const App: React.FC<ILoginProps> = (props) => {
       const { status, standalone, message } = props.error;
 
       if (status === 404 && !standalone) {
-        window.location.replace(
-          `${wrongPortalNameUrl}?url=${window.location.hostname}`
-        );
+        const url = new URL(wrongPortalNameUrl);
+        url.searchParams.append("url", window.location.hostname);
+        window.location.replace(url);
       }
 
       throw new Error(message);
@@ -31,17 +34,11 @@ const App: React.FC<ILoginProps> = (props) => {
   return (
     <MobxProvider {...loginStore}>
       <SimpleNav {...props} />
-      <Switch>
-        <Route path="/login/error">
-          <InvalidRoute />
-        </Route>
-        <Route path="/login/code">
-          <CodeLogin {...props} />
-        </Route>
-        <Route path="/login">
-          <Login {...props} />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path="/login/error" element={<InvalidRoute {...props} />} />
+        <Route path="/login/code" element={<CodeLogin {...props} />} />
+        <Route path="/login" element={<Login {...props} />} />
+      </Routes>
     </MobxProvider>
   );
 };

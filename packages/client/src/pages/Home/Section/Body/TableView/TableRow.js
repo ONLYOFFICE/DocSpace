@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -160,6 +159,7 @@ const FilesTableRow = (props) => {
           <RowDataComponent
             element={element}
             dragStyles={dragStyles}
+            selectionProp={selectionProp}
             {...props}
           />
         )}
@@ -168,8 +168,9 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Files", "Common", "InfoPanel"])(
-  withRouter(
-    withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
-  )
-);
+export default withTranslation([
+  "Files",
+  "Common",
+  "InfoPanel",
+  "Notifications",
+])(withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow)))));

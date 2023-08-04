@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const Error520 = ({ match }) => {
   const { t } = useTranslation(["Common"]);
-  const { error } = (match && match.params) || {};
+  const params = useParams();
+  const { error } = (params && params) || {};
 
   return (
     <ErrorContainer headerText={t("SomethingWentWrong")} bodyText={error} />

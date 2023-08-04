@@ -1,7 +1,14 @@
 {
-  "BackupPortal": "Portal məlumatlarını yedəkləyin",
-  "ChangeOwner": "Modul administratorlarını təyin edin",
-  "DeactivateOrDeletePortal": " Modullara giriş hüquqlarını təyin edin",
-  "ManagePortal": " Portal konfiqurasiyasını idarə edin",
-  "ManageUser": "İstifadəçi hesablarını idarə edin"
+  "AppointAdmin": "Administratorları təyin edin",
+  "BackupPortal": "DocSpace məlumatlarını yedəkləyin",
+  "ChangeInstruction": "DocSpace sahibini dəyişmək üçün lütfən, aşağıda yeni sahibin adını seçin.",
+  "ChangeOwner": "DocSpace sahibini dəyişdirin",
+  "ChangeUser": "İstifadəçini dəyişdirin",
+  "DeactivateOrDeletePortal": "DocSpace-i deaktiv edin və ya silin",
+  "DoTheSame": "Administratorlarla da eyni şeyi edin",
+  "ManagePortal": "DocSpace konfiqurasiyasını idarə edin",
+  "ManageUser": "İstifadəçi hesablarını idarə edin",
+  "NewPortalOwner": "Yeni DocSpace sahibi",
+  "PortalOwnerCan": "DocSpace sahibi edə bilər:",
+  "SetAccessRights": "Giriş hüquqlarını təyin edin"
 }

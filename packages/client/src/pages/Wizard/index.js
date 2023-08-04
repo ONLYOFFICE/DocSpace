@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import { isMobileOnly } from "react-device-detect";
 
@@ -54,7 +54,7 @@ const Wizard = (props) => {
     isWizardLoaded,
     setIsWizardLoaded,
     wizardToken,
-    history,
+
     getPortalPasswordSettings,
     getMachineName,
     getIsRequiredLicense,
@@ -67,12 +67,13 @@ const Wizard = (props) => {
     hashSettings,
     setPortalOwner,
     setWizardComplete,
-    getPortalSettings,
     isLicenseRequired,
     setLicense,
     licenseUpload,
     resetLicenseUploaded,
   } = props;
+
+  const navigate = useNavigate();
   const { t } = useTranslation(["Wizard", "Common"]);
 
   const [email, setEmail] = useState("");
@@ -154,7 +155,7 @@ const Wizard = (props) => {
 
   useEffect(() => {
     if (!wizardToken)
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
+      navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     else fetchData();
   }, []);
 
@@ -253,12 +254,20 @@ const Wizard = (props) => {
         analytics
       );
       setWizardComplete();
-      getPortalSettings();
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+
+      // navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+      );
     } catch (error) {
       console.error(error);
       setIsCreated(false);
     }
+  };
+
+  const onClickRetry = () => {
+    window.location.href = "/";
   };
 
   if (!isWizardLoaded)
@@ -270,7 +279,7 @@ const Wizard = (props) => {
         headerText={t("Common:SomethingWentWrong")}
         bodyText={t("ErrorInitWizard")}
         buttonText={t("ErrorInitWizardButton")}
-        buttonUrl="/"
+        onClickButton={onClickRetry}
       />
     );
 
@@ -280,7 +289,12 @@ const Wizard = (props) => {
       <StyledContent>
         <WizardContainer>
           <DocspaceLogo className="docspace-logo" />
-          <Text fontWeight={700} fontSize="23px" className="welcome-text">
+          <Text
+            as="div"
+            fontWeight={700}
+            fontSize="23px"
+            className="welcome-text"
+          >
             {t("WelcomeTitle")}
           </Text>
           <FormWrapper>
@@ -349,7 +363,7 @@ const Wizard = (props) => {
               </Link>
             </StyledLink>
 
-            {/*isLicenseRequired && (
+            {isLicenseRequired && (
               <FieldContainer
                 className="license-filed"
                 isVertical={true}
@@ -370,7 +384,7 @@ const Wizard = (props) => {
                   hasError={hasErrorLicense}
                 />
               </FieldContainer>
-              )*/}
+            )}
             <StyledInfo>
               <Text color="#A3A9AE" fontWeight={400}>
                 {t("Domain")}
@@ -407,6 +421,7 @@ const Wizard = (props) => {
                 {t("Timezone")}
               </Text>
               <ComboBox
+                textOverflow
                 withoutPadding
                 directionY="both"
                 options={timezones}
@@ -478,7 +493,6 @@ export default inject(({ auth, wizard }) => {
     timezone,
     urlLicense,
     hashSettings,
-    getPortalSettings,
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
@@ -512,7 +526,6 @@ export default inject(({ auth, wizard }) => {
     machineName,
     isLicenseRequired,
     licenseUpload,
-    getPortalSettings,
     setWizardComplete,
     getPortalPasswordSettings,
     getPortalTimezones,
@@ -523,4 +536,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(withCultureNames(observer(Wizard))));
+})(withCultureNames(observer(Wizard)));

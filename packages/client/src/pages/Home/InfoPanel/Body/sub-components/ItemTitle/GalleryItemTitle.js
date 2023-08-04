@@ -5,11 +5,11 @@ import { ReactSVG } from "react-svg";
 import { Text } from "@docspace/components";
 import { StyledTitle } from "../../styles/common";
 
-const GalleryItemTitle = ({ selection, getIcon }) => {
+const GalleryItemTitle = ({ gallerySelected, getIcon }) => {
   return (
     <StyledTitle>
       <ReactSVG className="icon" src={getIcon(32, ".docxf")} />
-      <Text className="text">{selection?.attributes?.name_form}</Text>
+      <Text className="text">{gallerySelected?.attributes?.name_form}</Text>
     </StyledTitle>
   );
 };

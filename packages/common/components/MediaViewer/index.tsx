@@ -1,5 +1,11 @@
 import { isMobile } from "react-device-detect";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+} from "react";
 
 import ViewerWrapper from "./sub-components/ViewerWrapper";
 
@@ -11,14 +17,13 @@ import {
   mapSupplied,
   mediaTypes,
 } from "./helpers";
+import { getFileExtension } from "@docspace/common/utils";
 
-import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
-import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
-import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
-import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
-import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
-import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
-import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
+import {
+  getDesktopMediaContextModel,
+  getMobileMediaContextModel,
+  getPDFContextModel,
+} from "./helpers/contextModel";
 
 function MediaViewer({
   playlistPos,
@@ -26,13 +31,15 @@ function MediaViewer({
   prevMedia,
   ...props
 }: MediaViewerProps): JSX.Element {
+  const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
+
   const [title, setTitle] = useState<string>("");
-  const [fileUrl, setFileUrl] = useState<string>(() => {
+  const [fileUrl, setFileUrl] = useState<string | undefined>(() => {
     const { playlist, currentFileId } = props;
     const item = playlist.find(
       (file) => file.fileId.toString() === currentFileId.toString()
     );
-    return item?.src ?? "";
+    return item?.src;
   });
 
   const [targetFile, setTargetFile] = useState(() => {
@@ -56,6 +63,12 @@ function MediaViewer({
       props.onChangeUrl(fileId);
     }
   }, [props.playlist.length]);
+
+  useEffect(() => {
+    return () => {
+      props.onClose();
+    };
+  }, []);
 
   useEffect(() => {
     const { playlist, files, setBufferSelection } = props;
@@ -89,10 +102,12 @@ function MediaViewer({
     if (!src) return onEmptyPlaylistError();
 
     if (ext !== ".tif" && ext !== ".tiff" && src !== fileUrl) {
+      TiffXMLHttpRequestRef.current?.abort();
       setFileUrl(src);
     }
 
     if (ext === ".tiff" || ext === ".tif") {
+      setFileUrl(undefined);
       fetchAndSetTiffDataURL(src);
     }
 
@@ -108,18 +123,14 @@ function MediaViewer({
       (playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
         FileStatus.IsFavorite
     );
-  }, [
-    props.playlist.length,
-    props.files.length,
-    props.currentFileId,
-    playlistPos,
-  ]);
+  }, [props.playlist, props.files.length, props.currentFileId, playlistPos]);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeydown);
 
     return () => {
       document.removeEventListener("keydown", onKeydown);
+      TiffXMLHttpRequestRef.current?.abort();
     };
   }, [
     props.playlist.length,
@@ -131,103 +142,55 @@ function MediaViewer({
   const getContextModel = () => {
     const {
       t,
+      onClickDownloadAs,
+      onClickLinkEdit,
       onClickDownload,
+      onPreviewClick,
       onClickRename,
       onClickDelete,
       onShowInfoPanel,
       onMoveAction,
       onCopyAction,
       onDuplicate,
+      onCopyLink,
     } = props;
 
     if (!targetFile) return [];
 
-    const desktopModel = [
+    const desktopModel = getDesktopMediaContextModel(
+      t,
+      targetFile,
+      archiveRoom,
       {
-        key: "download",
-        label: t("Common:Download"),
-        icon: DownloadReactSvgUrl,
-        onClick: () => onClickDownload(targetFile, t),
-        disabled: false,
-      },
-      {
-        key: "rename",
-        label: t("Rename"),
-        icon: RenameReactSvgUrl,
-        onClick: () => onClickRename(targetFile),
-        disabled: archiveRoom,
-      },
-      {
-        key: "delete",
-        label: t("Common:Delete"),
-        icon: TrashReactSvgUrl,
-        onClick: () => onClickDelete(targetFile, t),
-        disabled: archiveRoom,
-      },
-    ];
+        onClickDownload,
+        onClickRename,
+        onClickDelete,
+      }
+    );
 
-    const model = [
-      {
-        id: "option_room-info",
-        key: "room-info",
-        label: t("Common:Info"),
-        icon: InfoOutlineReactSvgUrl,
-        onClick: () => {
-          return onShowInfoPanel(targetFile);
-        },
-        disabled: false,
-      },
-      {
-        key: "download",
-        label: t("Common:Download"),
-        icon: DownloadReactSvgUrl,
-        onClick: () => onClickDownload(targetFile, t),
-        disabled: false,
-      },
-      {
-        key: "move-to",
-        label: t("MoveTo"),
-        icon: MoveReactSvgUrl,
-        onClick: onMoveAction,
-        disabled: !targetFile.security.Move,
-      },
-      {
-        id: "option_copy-to",
-        key: "copy-to",
-        label: t("Translations:Copy"),
-        icon: CopyReactSvgUrl,
-        onClick: onCopyAction,
-        disabled: !targetFile.security.Copy,
-      },
-      {
-        id: "option_create-copy",
-        key: "copy",
-        label: t("Common:Duplicate"),
-        icon: DuplicateReactSvgUrl,
-        onClick: () => onDuplicate(targetFile, t),
-        disabled: !targetFile.security.Duplicate,
-      },
-      {
-        key: "rename",
-        label: t("Rename"),
-        icon: RenameReactSvgUrl,
-        onClick: () => onClickRename(targetFile),
-        disabled: !targetFile.security.Rename,
-      },
+    const model = getMobileMediaContextModel(t, targetFile, {
+      onShowInfoPanel,
+      onClickDownload,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
+      onClickRename,
+      onClickDelete,
+    });
 
-      {
-        key: "separator0",
-        isSeparator: true,
-        disabled: !targetFile.security.Delete,
-      },
-      {
-        key: "delete",
-        label: t("Common:Delete"),
-        icon: TrashReactSvgUrl,
-        onClick: () => onClickDelete(targetFile, t),
-        disabled: !targetFile.security.Delete,
-      },
-    ];
+    if (isPdf)
+      return getPDFContextModel(t, targetFile, {
+        onClickDownloadAs,
+        onMoveAction,
+        onCopyAction,
+        onClickRename,
+        onDuplicate,
+        onClickDelete,
+        onClickDownload,
+        onClickLinkEdit,
+        onPreviewClick,
+        onCopyLink,
+      });
 
     return isMobile
       ? model
@@ -258,22 +221,14 @@ function MediaViewer({
     [props.extsMediaPreviewed]
   );
 
-  const getFileExtension = useCallback((fileTitle: string) => {
-    if (!fileTitle) {
-      return "";
-    }
-    fileTitle = fileTitle.trim();
-    const posExt = fileTitle.lastIndexOf(".");
-    return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
-  }, []);
-
   let lastRemovedFileId: null | number = null;
 
   const onDelete = () => {
     const { playlist, onDelete } = props;
 
-    let currentFileId = playlist.find((file) => file.id === playlistPos)
-      ?.fileId;
+    let currentFileId = playlist.find(
+      (file) => file.id === playlistPos
+    )?.fileId;
 
     if (currentFileId === lastRemovedFileId) return;
 
@@ -290,55 +245,41 @@ function MediaViewer({
   const onDownload = () => {
     const { playlist, onDownload } = props;
 
-    let currentFileId = playlist.find((file) => file.id === playlistPos)
-      ?.fileId;
+    if (!targetFile?.security.Download) return;
+
+    let currentFileId = playlist.find(
+      (file) => file.id === playlistPos
+    )?.fileId;
 
     if (!isNullOrUndefined(currentFileId)) onDownload(currentFileId);
   };
 
   const onKeydown = (event: KeyboardEvent) => {
     const { code, ctrlKey } = event;
+    if (props.deleteDialogVisible) return;
 
     if (code in KeyboardEventKeys) {
-      event.preventDefault();
+      const includesKeyboardCode = [
+        KeyboardEventKeys.KeyS,
+        KeyboardEventKeys.Numpad1,
+        KeyboardEventKeys.Digit1,
+        KeyboardEventKeys.Space,
+      ].includes(code as KeyboardEventKeys);
+
+      if (!includesKeyboardCode || ctrlKey) event.preventDefault();
     }
-    if (props.deleteDialogVisible) return;
 
     switch (code) {
       case KeyboardEventKeys.ArrowLeft:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateLeftElement = document.getElementsByClassName(
-            "iconContainer rotateLeft"
-          )?.[0] as HTMLElement | undefined;
-          rotateLeftElement?.click();
-        } else {
-          prevMedia();
-        }
-
+        if (!ctrlKey) prevMedia();
         break;
 
       case KeyboardEventKeys.ArrowRight:
         if (document.fullscreenElement) return;
 
-        if (ctrlKey) {
-          const rotateRightElement = document.getElementsByClassName(
-            "iconContainer rotateRight"
-          )?.[0] as HTMLElement | undefined;
-          rotateRightElement?.click();
-        } else {
-          nextMedia();
-        }
-
-        break;
-
-      case KeyboardEventKeys.Space:
-        const videoPlayElement = document.getElementsByClassName(
-          "video-play"
-        )?.[0] as HTMLElement | undefined;
-
-        videoPlayElement?.click();
+        if (!ctrlKey) nextMedia();
 
         break;
 
@@ -348,16 +289,6 @@ function MediaViewer({
 
       case KeyboardEventKeys.KeyS:
         if (ctrlKey) onDownload();
-        break;
-
-      case KeyboardEventKeys.Digit1:
-      case KeyboardEventKeys.Numpad1:
-        if (ctrlKey) {
-          const resetElement = document.getElementsByClassName(
-            "iconContainer reset"
-          )?.[0] as HTMLElement | undefined;
-          resetElement?.click();
-        }
         break;
 
       case KeyboardEventKeys.Delete:
@@ -376,7 +307,10 @@ function MediaViewer({
   const fetchAndSetTiffDataURL = useCallback((src: string) => {
     if (!window.Tiff) return;
 
+    TiffXMLHttpRequestRef.current?.abort();
+
     const xhr = new XMLHttpRequest();
+    TiffXMLHttpRequestRef.current = xhr;
     xhr.responseType = "arraybuffer";
 
     xhr.open("GET", src);
@@ -399,7 +333,6 @@ function MediaViewer({
   }, [targetFile]);
 
   const ext = getFileExtension(title);
-  const images = useMemo(() => [{ src: fileUrl, alt: "" }], [fileUrl]);
   const audioIcon = useMemo(() => props.getIcon(96, ext), [ext]);
   const headerIcon = useMemo(() => props.getIcon(24, ext), [ext]);
 
@@ -407,6 +340,7 @@ function MediaViewer({
   let isAudio = false;
   let canOpen = true;
   let isImage = false;
+  let isPdf = false;
 
   const archiveRoom =
     props.archiveRoomsId === targetFile?.rootFolderId ||
@@ -421,23 +355,28 @@ function MediaViewer({
     isImage = true;
   } else {
     isImage = false;
+
     isVideo = mapSupplied[ext]
       ? mapSupplied[ext]?.type == mediaTypes.video
       : false;
+
     isAudio = mapSupplied[ext]
       ? mapSupplied[ext]?.type == mediaTypes.audio
       : false;
+
+    isPdf = mapSupplied[ext] ? mapSupplied[ext]?.type == mediaTypes.pdf : false;
   }
 
   return (
     <>
       {canOpen && (
         <ViewerWrapper
+          targetFile={targetFile}
           userAccess={props.userAccess}
           visible={props.visible}
           title={title}
           onClose={onClose}
-          images={images}
+          fileUrl={fileUrl}
           inactive={props.playlist.length <= 1}
           playlist={props.playlist}
           playlistPos={playlistPos}
@@ -450,10 +389,11 @@ function MediaViewer({
           isImage={isImage}
           isAudio={isAudio}
           isVideo={isVideo}
+          isPdf={isPdf}
           isPreviewFile={props.isPreviewFile}
           onDownloadClick={onDownload}
           archiveRoom={archiveRoom}
-          errorTitle={props.t("Files:MediaError")}
+          errorTitle={props.t("Common:MediaError")}
           headerIcon={headerIcon}
           audioIcon={audioIcon}
         />

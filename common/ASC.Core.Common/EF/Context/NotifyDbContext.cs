@@ -41,6 +41,7 @@ public class NotifyDbContext : DbContext
         ModelBuilderWrapper
             .From(modelBuilder, Database)
             .AddNotifyInfo()
-            .AddNotifyQueue();
+            .AddNotifyQueue()
+            .AddDbTenant();
     }
 }

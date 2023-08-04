@@ -7,25 +7,25 @@ import DataManagementIconUrl from "PUBLIC_DIR/images/data-management.react.svg?u
 import RestoreIconUrl from "PUBLIC_DIR/images/restore.react.svg?url";
 import TrashIconUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import DeveloperReactSvgUrl from "PUBLIC_DIR/images/catalog.developer.react.svg?url";
-
+import GiftReactSvgUrl from "PUBLIC_DIR/images/gift.react.svg?url";
 /**
  * Array for generation current settings tree.
  */
 
 export const settingsTree = [
   {
-    id: "portal-settings_catalog-common",
+    id: "portal-settings_catalog-customization",
     key: "0",
     icon: CommonSettingsSvgUrl,
-    link: "common",
+    link: "customization",
     tKey: "Customization",
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-customization",
+        id: "portal-settings_catalog-general",
         key: "0-0",
         icon: "",
-        link: "customization",
+        link: "general",
         tKey: "SettingsGeneral",
         isCategory: true,
         children: [
@@ -278,21 +278,45 @@ export const settingsTree = [
         tKey: "Plugins",
         isCategory: true,
       },
+      {
+        id: "portal-settings_catalog-smtp-settings",
+        key: "4-3",
+        icon: "",
+        link: "smtp-settings",
+        tKey: "SMTPSettings",
+        isCategory: true,
+      },
     ],
   },
   {
-    id: "portal-settings_catalog-developer",
+    id: "portal-settings_catalog-developer-tools",
     key: "5",
     icon: DeveloperReactSvgUrl,
-    link: "developer",
+    link: "developer-tools",
     tKey: "DeveloperTools",
     isHeader: true,
     children: [
       {
-        id: "portal-settings_catalog-developer-tools",
+        id: "portal-settings_catalog-api",
         key: "5-0",
         icon: "",
-        link: "tools",
+        link: "api",
+        tKey: "Api",
+        isCategory: true,
+      },
+      {
+        id: "portal-settings_catalog-javascript-sdk",
+        key: "5-1",
+        icon: "",
+        link: "javascript-sdk",
+        tKey: "DeveloperTools",
+        isCategory: true,
+      },
+      {
+        id: "portal-settings_catalog-webhooks",
+        key: "5-2",
+        icon: "",
+        link: "webhooks",
         tKey: "DeveloperTools",
         isCategory: true,
       },
@@ -327,7 +351,7 @@ export const settingsTree = [
     key: "7",
     icon: PaymentIconUrl,
     link: "payments",
-    tKey: "Payments",
+    tKey: "Common:PaymentsTitle",
     isHeader: true,
     children: [
       {
@@ -335,7 +359,25 @@ export const settingsTree = [
         key: "7-0",
         icon: "",
         link: "portal-payments",
-        tKey: "Payments",
+        tKey: "Common:PaymentsTitle",
+        isCategory: true,
+      },
+    ],
+  },
+  {
+    id: "portal-settings_catalog-bonus",
+    key: "8",
+    icon: GiftReactSvgUrl,
+    link: "bonus",
+    tKey: "Common:Bonus",
+    isHeader: true,
+    children: [
+      {
+        id: "portal-settings_catalog-portal-bonus",
+        key: "8-0",
+        icon: "",
+        link: "",
+        tKey: "Common:FreeProFeatures",
         isCategory: true,
       },
     ],

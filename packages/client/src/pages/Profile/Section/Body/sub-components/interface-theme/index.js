@@ -11,7 +11,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import { smallTablet } from "@docspace/components/utils/device";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import { showLoader, getSystemTheme } from "@docspace/common/utils";
 
 import ThemePreview from "./theme-preview";
 
@@ -20,13 +20,17 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 
+  .system-theme-checkbox {
+    display: inline-flex;
+  }
+
   .checkbox {
     height: 20px;
     margin-right: 8px !important;
   }
 
   .system-theme-description {
-    padding: 4px 0 4px 24px;
+    padding: 0px 0 4px 24px;
     max-width: 295px;
     color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
@@ -85,11 +89,7 @@ const InterfaceTheme = (props) => {
   };
 
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
-  const systemThemeValue =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? ThemeKeys.DarkStr
-      : ThemeKeys.BaseStr;
+  const systemThemeValue = getSystemTheme();
 
   return (
     <StyledWrapper>
@@ -99,6 +99,7 @@ const InterfaceTheme = (props) => {
 
       <div>
         <Checkbox
+          className="system-theme-checkbox"
           value={ThemeKeys.SystemStr}
           label={t("SystemTheme")}
           isChecked={isSystemTheme}
@@ -110,8 +111,8 @@ const InterfaceTheme = (props) => {
       </div>
       <div className="themes-container">
         <ThemePreview
+          className="light-theme"
           label={t("LightTheme")}
-          isDisabled={isSystemTheme}
           theme="Light"
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
@@ -123,8 +124,8 @@ const InterfaceTheme = (props) => {
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
+          className="dark-theme"
           label={t("DarkTheme")}
-          isDisabled={isSystemTheme}
           theme="Dark"
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
@@ -163,7 +164,7 @@ export default inject(({ auth }) => {
 
   return {
     changeTheme,
-    theme: user.theme,
+    theme: user.theme || "System",
     currentColorScheme,
     selectedThemeId,
   };

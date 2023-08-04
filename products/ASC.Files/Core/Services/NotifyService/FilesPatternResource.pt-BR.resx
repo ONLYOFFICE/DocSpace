@@ -68,13 +68,6 @@ Esta é uma notificação por e-mail para informá-lo de que todos os signatári
 
 Entre em sua conta do DocuSign para mais informações.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" mencionou você no comentário do documento
-
-Esta é uma mensagem de correio para notificar que você foi mencionado por "$__AuthorName":"$__AuthorUrl" no comentário para o documento "$DocumentTitle":"$DocumentURL":
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Mala direta concluída
 
@@ -105,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Documentos. Status da assinatura alterado</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documentos. Mencionado no documento</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documentos. Mala direta está concluída.</value>
   </data>
@@ -122,5 +112,44 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Documentos. Acesso concedido à pasta: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Acesso concedido à pasta: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Acesso concedido ao documento: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Acesso concedido ao documento criptografado: $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Todos os signatários completaram $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Status do sinal alterado</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Mencionado no documento</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>O envio está concluído.</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName mencionou você no comentário do documento
+ 
+$__AuthorName mencionou você no comentário para o "$DocumentTitle":"$DocumentURL" documento na sala "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName excluindo uma sala
+ 
+$__AuthorName deletando a sala:$RoomTitle</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notificação do DocSpace. Mencionado no documento</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notificação do DocSpace. Sala deletada</value>
   </data>
 </root>

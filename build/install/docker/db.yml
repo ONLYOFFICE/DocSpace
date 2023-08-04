@@ -3,7 +3,7 @@ version: "3.8"
 services:
   onlyoffice-mysql-server:
     image: ${MYSQL_IMAGE}
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=caching_sha2_password
     cap_add:
       - SYS_NICE
     container_name: ${MYSQL_HOST}
@@ -24,7 +24,6 @@ services:
       - ./config/mysql/conf.d/:/etc/mysql/conf.d
     networks:
       - ${NETWORK_NAME}
-    tmpfs: /var/log/mysql/
 
 networks:
   onlyoffice:

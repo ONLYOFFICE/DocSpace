@@ -24,18 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Billing;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 public class FileData<T>
 {
-    public readonly int TenantId;
-    public readonly T FileId;
-    public readonly string BaseUri;
+    public TariffState TariffState { get; private set; }
+    public int TenantId { get; private set; }
+    public T FileId { get; private set; }
+    public string BaseUri { get; private set; }
 
-    public FileData(int tenantId, T fileId, string baseUri)
+    public FileData(int tenantId, T fileId, string baseUri, TariffState tariffState)
     {
         TenantId = tenantId;
         FileId = fileId;
         BaseUri = baseUri;
+        TariffState = tariffState;
     }
 }

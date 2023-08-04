@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -48,11 +48,14 @@ const StyledForm = styled(Box)`
 `;
 
 const TfaAuthForm = withLoader((props) => {
-  const { t, loginWithCode, loginWithCodeAndCookie, location, history } = props;
+  const { t, loginWithCode, loginWithCodeAndCookie } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onSubmit = async () => {
     try {
@@ -63,16 +66,27 @@ const TfaAuthForm = withLoader((props) => {
 
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
-        history.push(url || "/");
+        navigate(url || "/");
       } else {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
-        history.push(url || "/");
+        navigate(url || "/");
       }
-    } catch (e) {
-      setError(e);
-      toastr.error(e);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          err?.response?.data?.error?.message ||
+          err?.statusText ||
+          err?.message ||
+          "";
+      } else {
+        errorMessage = err;
+      }
+      setError(errorMessage);
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const onKeyPress = (target) => {
@@ -106,7 +120,7 @@ const TfaAuthForm = withLoader((props) => {
                     id="code"
                     name="code"
                     type="text"
-                    size="huge"
+                    size="large"
                     scale
                     isAutoFocussed
                     tabIndex={1}
@@ -150,7 +164,7 @@ const TfaAuthForm = withLoader((props) => {
 const TfaAuthFormWrapper = (props) => {
   const { setIsLoaded, setIsLoading } = props;
 
-  useEffect(async () => {
+  useEffect(() => {
     setIsLoaded(true);
     setIsLoading(false);
   }, []);
@@ -163,8 +177,4 @@ export default inject(({ auth, confirm }) => ({
   setIsLoading: confirm.setIsLoading,
   loginWithCode: auth.loginWithCode,
   loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
-}))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(observer(TfaAuthFormWrapper))
-  )
-);
+}))(withTranslation(["Confirm", "Common"])(observer(TfaAuthFormWrapper)));

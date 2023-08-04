@@ -29,5 +29,5 @@ namespace ASC.Core.Notify.Senders;
 public interface INotifySender
 {
     void Init(IDictionary<string, string> properties);
-    Task<NoticeSendResult> Send(NotifyMessage m);
+    Task<NoticeSendResult> SendAsync(NotifyMessage m);
 }

@@ -59,17 +59,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
-    <value>h1. Alle ondertekenaars hebben ondertekend</value>
+    <value>h1. Alle ondertekenaars hebben ondertekend.</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
-    <value>h1. $Message</value>
-  </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" heeft u vermeld de commentaar van het document
+    <value>h1. $Message: $DocumentTitle
 
-Dit is een mailboodschap om u te verwittigen dat u vermeld bent door "$__AuthorName":"$__AuthorUrl" in de commentaar van het "$DocumentTitle":"$DocumentURL" document:
-
-$Message</value>
+Log in op uw DocuSign account voor meer informatie.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Mailing voltooid
@@ -93,13 +88,10 @@ $__DateTime "$__AuthorName":"$__AuthorUrl" heeft je toegang gegeven tot de map "
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Bestanden. Alle ondertekenaars</value>
+    <value>Documenten. Alle ondertekenaars</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Bestanden. Ondertekenings status</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documenten. Vermeld in document</value>
+    <value>Documenten. Ondertekenings status</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documenten. Mailing is voltooid.</value>
@@ -108,6 +100,54 @@ $Message</value>
     <value>Documenten. Toegang verleend tot Document: $DocumentTitle</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Documenten. Toegang verleend tot Map: $DocumentTitle</value>
+    <value>Documenten. Toegang verleend tot map: $DocumentTitel</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName heeft u vermeld in het commentaar op het document
+
+$__AuthorName heeft u vermeld in het commentaar bij het "$DocumentTitle":"$DocumentURL" document in de kamer "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName heeft een kamer verwijderd
+
+$__AuthorName verwijderde de kamer: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Tekenstatus gewijzigd</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Vermeld in document</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Mailing is voltooid.</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Documenten. Alle ondertekenaars ingevuld [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Documenten. Toegang verleend tot map: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Documenten. Toegang verleend tot document: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace melding. Kamer verwijderd</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace melding. Vermeld in document</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Alle ondertekenaars ingevuld $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Toegang verleend tot het versleutelde document: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Toegang verleend tot map: $DocumentTitel</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Toegang verleend tot document: $DocumentTitle</value>
   </data>
 </root>

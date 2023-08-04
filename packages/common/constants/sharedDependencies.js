@@ -118,10 +118,10 @@ module.exports = {
     singleton: true,
     requiredVersion: deps["react-player"],
   },
-  "react-resize-detector": {
-    singleton: true,
-    requiredVersion: deps["react-resize-detector"],
-  },
+  // "react-resize-detector": {
+  //   singleton: true,
+  //   requiredVersion: deps["react-resize-detector"],
+  // },
   "react-svg": {
     singleton: true,
     requiredVersion: compDeps["react-svg"],
@@ -161,5 +161,9 @@ module.exports = {
   "query-string": {
     singleton: true,
     requiredVersion: deps["query-string"],
+  },
+  "@loadable/component": {
+    singleton: true,
+    requiredVersion: deps["@loadable/component"],
   },
 };

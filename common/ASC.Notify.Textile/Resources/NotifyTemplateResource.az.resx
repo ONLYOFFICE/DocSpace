@@ -126,8 +126,8 @@
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #fff; height: 65px; padding: 20px 0 0 30px;"&gt;
             &lt;div style="text-align: left; height: 65px; width: 570px; margin: 0; padding: 0;"&gt;
-                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 216px; height: 35px; margin: 0; padding: 0;" target="_blank"&gt;
-                    &lt;img src="%LOGO%" style="border: 0px none; width: 216px; height: 35px; margin: 0; padding: 0;" alt="%LOGOTEXT%" /&gt;
+                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
+                    &lt;img src="%LOGO%" style="border: 0px none; width: 386px; height: 44px; margin: 0; padding: 0;" alt="%LOGOTEXT%" /&gt;
                 &lt;/a&gt;
             &lt;/div&gt;
           &lt;/td&gt;
@@ -191,5 +191,10 @@
               &lt;/a&gt;
           &lt;/td&gt;
         &lt;/tr&gt;</value>
+  </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Bu e-poçt avtomatik olaraq yaradılır və ona cavab vermək lazım deyil. &lt;br /&gt;Siz &lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;-nin qeydiyyatdan keçmiş istifadəçisi olduğunuz üçün bu e-poçtu alırsınız. 
+&lt;br /&gt; Bu DocSpace e-poçtların artıq sizə göndərilməsini istəmirsinizsə, aşağıdakı linkə klikləyin: &lt;a href="{1}"  target="_blank"&gt;Abunəlikdən çıxın&lt;/a&gt;
+&lt;br /&gt;</value>
   </data>
 </root>

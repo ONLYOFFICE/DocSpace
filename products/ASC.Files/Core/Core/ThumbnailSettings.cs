@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using SixLabors.ImageSharp.Processing;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
@@ -43,22 +45,6 @@ public class ThumbnailSettings
         set => _serverRoot = value;
     }
 
-    private int _boundedChannelCapacity;
-
-    public int BoundedChannelCapacity
-    {
-        get => _boundedChannelCapacity != 0 ? _boundedChannelCapacity : MaxDegreeOfParallelism * 10;
-        set => _boundedChannelCapacity = value;
-    }
-
-    private int _batchSize;
-
-    public int BatchSize
-    {
-        get => _batchSize != 0 ? _batchSize : MaxDegreeOfParallelism * 10;
-        set => _batchSize = value;
-    }
-
     #endregion
 
 
@@ -74,7 +60,7 @@ public class ThumbnailSettings
     private string _formats;
     public string Formats
     {
-        get => _formats ?? ".pptx|.pptm|.ppt|.ppsx|.ppsm|.pps|.potx|.potm|.pot|.odp|.fodp|.otp|.gslides|.xlsx|.xlsm|.xls|.xltx|.xltm|.xlt|.ods|.fods|.ots|.gsheet|.csv|.docx|.docxf|.oform|.docm|.doc|.dotx|.dotm|.dot|.odt|.fodt|.ott|.gdoc|.txt|.rtf|.mht|.html|.htm|.fb2|.epub|.pdf|.djvu|.xps|.oxps";
+        get => _formats ?? ".dps|.dpt|.fodp|.odp|.otp|.pot|.potm|.potx|.pps|.ppsm|.ppsx|.ppt|.pptm|.pptx|.sxi|.csv|.et|.ett|.fods|.ods|.ots|.sxc|.xls|.xlsb|.xlsm|.xlsx|.xlt|.xltm|.xltx|.xml|.djvu|.doc|.docm|.docx|.docxf|.oform|.dot|.dotm|.dotx|.epub|.fb2|.fodt|.htm|.html|.mht|.mhtml|.odt|.ott|.oxps|.pdf|.rtf|.stw|.sxw|.txt|.wps|.wpt|.xml|.xps";
         set => _formats = value;
     }
 
@@ -109,16 +95,24 @@ public class ThumbnailSettings
     private int _maxDegreeOfParallelism;
     public int MaxDegreeOfParallelism
     {
-        get => _maxDegreeOfParallelism != 0 ? _maxDegreeOfParallelism : 10;
+        get => _maxDegreeOfParallelism != 0 ? _maxDegreeOfParallelism : 1;
         set => _maxDegreeOfParallelism = value;
     }
 
-    private long? _availableFileSize;
-    public long? AvailableFileSize
+    private long? _maxImageFileSize;
+    public long? MaxImageFileSize
     {
-        get => _availableFileSize ?? 100L * 1024L * 1024L;
-        set => _availableFileSize = value;
+        get => _maxImageFileSize ?? 30L * 1024L * 1024L;
+        set => _maxImageFileSize = value;
     }
+
+    private long? _maxVideoFileSize;
+    public long? MaxVideoFileSize
+    {
+        get => _maxVideoFileSize ?? 1000L * 1024L * 1024L;
+        set => _maxVideoFileSize = value;
+    }
+
 
     private int? _attemptsLimit;
     public int? AttemptsLimit
@@ -143,4 +137,5 @@ public class ThumbnailSize
 {
     public int Height { get; set; }
     public int Width { get; set; }
+    public ResizeMode ResizeMode { get; set; } = ResizeMode.Crop;
 }

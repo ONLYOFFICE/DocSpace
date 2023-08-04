@@ -24,28 +24,91 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FileDto<T> : FileEntryDto<T>
 {
+    /// <summary>Folder ID</summary>
+    /// <type>System.Int32, System</type>
     public T FolderId { get; set; }
+
+    /// <summary>Version</summary>
+    /// <type>System.Int32, System</type>
     public int Version { get; set; }
+
+    /// <summary>Version group</summary>
+    /// <type>System.Int32, System</type>
     public int VersionGroup { get; set; }
+
+    /// <summary>Content length</summary>
+    /// <type>System.String, System</type>
     public string ContentLength { get; set; }
+
+    /// <summary>Pure content length</summary>
+    /// <type>System.Nullable{System.Int64}, System</type>
     public long? PureContentLength { get; set; }
+
+    /// <summary>File status</summary>
+    /// <type>ASC.Files.Core.FileStatus, ASC.Files.Core</type>
     public FileStatus FileStatus { get; set; }
+
+    /// <summary>Muted or not</summary>
+    /// <type>System.Boolean, System</type>
+    public bool Mute { get; set; }
+
+    /// <summary>URL to view a file</summary>
+    /// <type>System.String, System</type>
     public string ViewUrl { get; set; }
+
+    /// <summary>Web URL</summary>
+    /// <type>System.String, System</type>
     public string WebUrl { get; set; }
+
+    /// <summary>File type</summary>
+    /// <type>ASC.Web.Core.Files.FileType, ASC.Web.Core</type>
     public FileType FileType { get; set; }
+
+    /// <summary>File extension</summary>
+    /// <type>System.String, System</type>
     public string FileExst { get; set; }
+
+    /// <summary>Comment</summary>
+    /// <type>System.String, System</type>
     public string Comment { get; set; }
+
+    /// <summary>Encrypted or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Encrypted { get; set; }
+
+    /// <summary>Thumbnail URL</summary>
+    /// <type>System.String, System</type>
     public string ThumbnailUrl { get; set; }
+
+    /// <summary>Thumbnail status</summary>
+    /// <type>ASC.Files.Core.Thumbnail, ASC.Files.Core</type>
     public Thumbnail ThumbnailStatus { get; set; }
+
+    /// <summary>Locked or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Locked { get; set; }
+
+    /// <summary>User ID who locked a file</summary>
+    /// <type>System.String, System</type>
     public string LockedBy { get; set; }
+
+    /// <summary>Denies file downloading or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DenyDownload { get; set; }
+
+    /// <summary>Denies file sharing or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DenySharing { get; set; }
+
+    /// <summary>File accessibility</summary>
+    /// <type>System.Collections.IDictionary{ASC.Files.Core.Helpers.Accessability, System.Boolean}, System.Collections</type>
     public IDictionary<Accessability, bool> ViewAccessability { get; set; }
 
     protected internal override FileEntryType EntryType { get => FileEntryType.File; }
@@ -86,6 +149,7 @@ public class FileDtoHelper : FileEntryDtoHelper
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FileDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -97,7 +161,8 @@ public class FileDtoHelper : FileEntryDtoHelper
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FileUtility fileUtility,
-        FileSharingHelper fileSharingHelper)
+        FileSharingHelper fileSharingHelper,
+        BadgesSettingsHelper badgesSettingsHelper)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
@@ -106,6 +171,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         _commonLinkUtility = commonLinkUtility;
         _filesLinkUtility = filesLinkUtility;
         _fileUtility = fileUtility;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public async Task<FileDto<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -146,6 +212,7 @@ public class FileDtoHelper : FileEntryDtoHelper
     private async Task<FileDto<T>> GetFileWrapperAsync<T>(File<T> file)
     {
         var result = await GetAsync<FileDto<T>, T>(file);
+        var isEnabledBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
 
         result.FileExst = FileUtility.GetFileExtension(file.Title);
         result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);
@@ -153,6 +220,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.VersionGroup = file.VersionGroup;
         result.ContentLength = file.ContentLengthString;
         result.FileStatus = file.FileStatus;
+        result.Mute = !isEnabledBadges;
         result.PureContentLength = file.ContentLength.NullIfDefault();
         result.Comment = file.Comment;
         result.Encrypted = file.Encrypted.NullIfDefault();

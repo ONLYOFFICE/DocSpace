@@ -1,8 +1,9 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
 
 import SettingsStore from "./SettingsStore";
+import BannerStore from "./BannerStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
@@ -11,7 +12,9 @@ import { isAdmin, setCookie, getCookie } from "../utils";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
+
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR, TenantStatus } from "../constants";
+import { getPortalTenantExtra } from "../api/portal";
 
 class AuthStore {
   userStore = null;
@@ -27,14 +30,10 @@ class AuthStore {
   capabilities = [];
   isInit = false;
 
-  quota = {};
-  portalPaymentQuotas = {};
-  portalQuota = {};
-  portalTariff = {};
-  pricePerManager = null;
-  currencies = [];
-
   isLogout = false;
+  isUpdatingTariff = false;
+
+  tenantExtra = {};
   constructor() {
     this.userStore = new UserStore();
 
@@ -44,9 +43,46 @@ class AuthStore {
     this.currentQuotaStore = new CurrentQuotasStore();
     this.currentTariffStatusStore = new CurrentTariffStatusStore();
     this.paymentQuotasStore = new PaymentQuotasStore();
+    this.bannerStore = new BannerStore();
+
     makeAutoObservable(this);
+
+    const { socketHelper } = this.settingsStore;
+
+    socketHelper.on("s:change-quota-used-value", ({ featureId, value }) => {
+      console.log(`[WS] change-quota-used-value ${featureId}:${value}`);
+
+      runInAction(() => {
+        this.currentQuotaStore.updateQuotaUsedValue(featureId, value);
+      });
+    });
+
+    socketHelper.on("s:change-quota-feature-value", ({ featureId, value }) => {
+      console.log(`[WS] change-quota-feature-value ${featureId}:${value}`);
+
+      runInAction(() => {
+        if (featureId === "free") {
+          this.updateTariff();
+          return;
+        }
+
+        this.currentQuotaStore.updateQuotaFeatureValue(featureId, value);
+      });
+    });
   }
 
+  setIsUpdatingTariff = (isUpdatingTariff) => {
+    this.isUpdatingTariff = isUpdatingTariff;
+  };
+
+  updateTariff = async () => {
+    this.setIsUpdatingTariff(true);
+
+    await this.getTenantExtra();
+    await this.currentTariffStatusStore.setPayerInfo();
+
+    this.setIsUpdatingTariff(false);
+  };
   init = async (skipRequest = false) => {
     if (this.isInit) return;
     this.isInit = true;
@@ -57,25 +93,33 @@ class AuthStore {
 
     const requests = [];
 
-    if (this.settingsStore.isLoaded && this.settingsStore.socketUrl) {
-      requests.push(this.userStore.init());
+    if (
+      this.settingsStore.isLoaded &&
+      this.settingsStore.socketUrl &&
+      !this.settingsStore.isPublicRoom
+    ) {
+      requests.push(
+        this.userStore.init().then(() => {
+          if (
+            this.isQuotaAvailable &&
+            this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
+          ) {
+            this.getTenantExtra();
+          }
+        })
+      );
     } else {
       this.userStore.setIsLoaded(true);
     }
 
     if (this.isAuthenticated && !skipRequest) {
-      if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
-        requests.push(
-          this.currentQuotaStore.init(),
-          this.currentTariffStatusStore.init()
-        );
-      }
+      this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
+        requests.push(this.settingsStore.getAdditionalResources());
 
       if (!this.settingsStore.passwordSettings) {
         if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
           requests.push(
             this.settingsStore.getPortalPasswordSettings(),
-            this.settingsStore.getAdditionalResources(),
             this.settingsStore.getCompanyInfoSettings()
           );
         }
@@ -83,6 +127,34 @@ class AuthStore {
     }
 
     return Promise.all(requests);
+  };
+
+  get isEnterprise() {
+    return this.tenantExtra.enterprise;
+  }
+  get isCommunity() {
+    return this.tenantExtra.opensource;
+  }
+
+  getTenantExtra = async () => {
+    let refresh = false;
+    if (window.location.search === "?complete=true") {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      refresh = true;
+    }
+
+    const result = await getPortalTenantExtra(refresh);
+
+    if (!result) return;
+
+    const { tariff, quota, ...tenantExtra } = result;
+
+    runInAction(() => {
+      this.tenantExtra = { ...tenantExtra };
+    });
+
+    this.currentQuotaStore.setPortalQuotaValue(quota);
+    this.currentTariffStatusStore.setPortalTariffValue(tariff);
   };
   setLanguage() {
     if (this.userStore.user?.cultureName) {
@@ -96,6 +168,7 @@ class AuthStore {
       });
     }
   }
+
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
@@ -117,6 +190,15 @@ class AuthStore {
     );
   }
 
+  get languageBaseName() {
+    try {
+      const intl = new Intl.Locale(this.language);
+      return intl.minimize().baseName;
+    } catch {
+      return "en";
+    }
+  }
+
   get isAdmin() {
     const { user } = this.userStore;
     const { currentProductId } = this.settingsStore;
@@ -131,7 +213,47 @@ class AuthStore {
 
     if (!user) return false;
 
-    return !user.isAdmin && !user.isOwner && !user.isVisitor;
+    return (
+      !user.isAdmin && !user.isOwner && !user.isVisitor && !user.isCollaborator
+    );
+  }
+
+  get isQuotaAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin || this.isRoomAdmin;
+  }
+
+  get isPaymentPageAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin;
+  }
+
+  get isTeamTrainingAlertAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return (
+      !!this.settingsStore.bookTrainingEmail &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
+  }
+
+  get isLiveChatAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return (
+      !!this.settingsStore.zendeskKey &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
   }
 
   login = async (user, hash, session = true) => {
@@ -212,28 +334,13 @@ class AuthStore {
     this.reset(true);
     this.userStore.setUser(null);
     this.init();
-
-    // if (redirectToLogin) {
-    //   if (redirectPath) {
-    //     return window.location.replace(redirectPath);
-    //   }
-    //   if (personal) {
-    //     return window.location.replace("/");
-    //   } else {
-    //     this.reset(true);
-    //     this.userStore.setUser(null);
-    //     this.init();
-    //     return history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
-    //   }
-    // } else {
-    //   this.reset();
-    //   this.init();
-    // }
   };
 
   get isAuthenticated() {
     return (
-      this.settingsStore.isLoaded && !!this.settingsStore.socketUrl
+      this.settingsStore.isLoaded &&
+      !!this.settingsStore.socketUrl &&
+      !this.settingsStore.isPublicRoom
       //|| //this.userStore.isAuthenticated
     );
   }
@@ -342,11 +449,6 @@ class AuthStore {
     });
 
     return promise;
-  };
-
-  setQuota = async () => {
-    const res = await api.settings.getPortalQuota();
-    if (res) this.quota = res;
   };
 
   getAuthProviders = async () => {

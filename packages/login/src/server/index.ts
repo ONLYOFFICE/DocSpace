@@ -51,6 +51,10 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
   let assets: assetsType;
   let standalone = false;
 
+  if (url === "/health") {
+    return res.send({ status: "Healthy" });
+  }
+
   initSSR(headers);
 
   try {
@@ -58,7 +62,12 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
-      next();
+      return next();
+    }
+
+    if (initialState?.portalSettings?.wizardToken) {
+      res.redirect("/wizard");
+      return next();
     }
 
     let currentLanguage: string = initialState?.portalSettings?.culture || "en";
@@ -102,7 +111,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       t
     );
 
-    res.send(htmlString);
+    return res.send(htmlString);
   } catch (e) {
     let message: string | unknown = e;
     if (e instanceof Error) {
@@ -143,7 +152,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     winston.error(message);
 
-    res.send(htmlString);
+    return res.send(htmlString);
   }
 });
 

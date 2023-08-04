@@ -1,141 +1,33 @@
 import React, { useEffect } from "react";
-import { Router, Switch, Route, Redirect } from "react-router-dom";
-import { inject, observer } from "mobx-react";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
-import PrivateRoute from "@docspace/common/components/PrivateRoute";
-import PublicRoute from "@docspace/common/components/PublicRoute";
-import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
+
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
-import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
-import { Provider as MobxProvider } from "mobx-react";
+
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
 
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
-import AppLoader from "@docspace/common/components/AppLoader";
+
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile, isIOS, isFirefox } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
-
-const Error404 = React.lazy(() => import("client/Error404"));
-const Error401 = React.lazy(() => import("client/Error401"));
-const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
-
-const About = React.lazy(() => import("./pages/About"));
-const Wizard = React.lazy(() => import("./pages/Wizard"));
-const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
-
-const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
-// const MyProfile = React.lazy(() => import("./pages/My"));
-const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
-const FormGallery = React.lazy(() => import("./pages/FormGallery"));
-
-const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
-
-const PortalSettingsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const Error404Route = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Error404 {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const Error401Route = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Error401 {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-const FilesRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Files {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const ConfirmRoute =
-  !IS_PERSONAL &&
-  ((props) => (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <Confirm {...props} />
-      </ErrorBoundary>
-    </React.Suspense>
-  ));
-
-const PreparationPortalRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PreparationPortal {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const PortalUnavailableRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PortalUnavailable {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const AboutRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <About {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const WizardRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Wizard {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-// const MyProfileRoute = (props) => (
-//   <React.Suspense fallback={<AppLoader />}>
-//     <ErrorBoundary>
-//       <MyProfile {...props} />
-//     </ErrorBoundary>
-//   </React.Suspense>
-// );
-
-const FormGalleryRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <FormGallery {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-// const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
+import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
+import { IndexedDBStores } from "@docspace/common/constants";
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -157,6 +49,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
+    standalone,
+    userId,
   } = rest;
 
   useEffect(() => {
@@ -196,6 +90,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
+
+    !standalone && // unlimited quota (standalone)
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: "quota" },
+      });
+
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });
@@ -295,10 +196,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
-        productName: "ONLYOFFICE Personal",
+        productName: "ONLYOFFICE DocSpace",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
-      clickAction: () => {
+      onAction: () => {
         setMaintenanceExist(false);
         setSnackbarExist(false);
         Snackbar.close();
@@ -359,6 +260,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       });
   };
 
+  const initIndexedDb = React.useCallback(async () => {
+    await indexedDbHelper.init(userId, [IndexedDBStores.images]);
+  }, [userId]);
+
+  useEffect(() => {
+    if (!userId || !window.DocSpaceConfig.imageThumbnails) return;
+    initIndexedDb();
+
+    return () => {
+      indexedDbHelper.deleteDatabase(userId);
+    };
+  }, [userId, initIndexedDb]);
+
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -383,6 +297,21 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       clearSnackBarTimer();
     };
   }, [isLoaded]);
+
+  // fix night mode for IOS firefox
+  useEffect(() => {
+    if (isIOS && isMobile && isFirefox) {
+      Array.from(document.querySelectorAll("style")).forEach((sheet) => {
+        if (
+          sheet?.textContent?.includes(
+            "-webkit-filter: hue-rotate(180deg) invert(100%) !important;"
+          )
+        ) {
+          sheet.parentNode?.removeChild(sheet);
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     console.log("Current page ", page);
@@ -412,93 +341,19 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   return (
     <Layout>
-      <Router history={history}>
-        {toast}
-        <ReactSmartBanner t={t} ready={ready} />
-        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
-        {isMobileOnly && <MainBar />}
-        <IndicatorLoader />
-        <ScrollToTop />
-        <DialogsWrapper t={t} />
-        <Main isDesktop={isDesktop}>
-          {!isMobileOnly && <MainBar />}
-          <div className="main-container">
-            <Switch>
-              <Redirect
-                exact
-                sensitive
-                from="/Products/Files/"
-                to="/rooms/shared"
-              />
-              <PrivateRoute
-                exact
-                path={[
-                  "/",
-
-                  "/rooms/personal",
-                  "/rooms/personal/filter",
-
-                  "/rooms/shared",
-                  "/rooms/shared/filter",
-                  "/rooms/shared/:room",
-                  "/rooms/shared/:room/filter",
-
-                  "/rooms/archived",
-                  "/rooms/archived/filter",
-                  "/rooms/archived/:room",
-                  "/rooms/archived/:room/filter",
-
-                  "/files/favorite",
-                  "/files/favorite/filter",
-
-                  "/files/recent",
-                  "/files/recent/filter",
-
-                  "/files/trash",
-                  "/files/trash/filter",
-
-                  "/accounts",
-                  "/accounts/filter",
-
-                  "/accounts/create/:type",
-                  "/accounts/edit/:userId",
-                  "/accounts/view/:userId",
-                  "/accounts/view/@self",
-
-                  "/settings",
-                  "/settings/common",
-                  "/settings/admin",
-                  "/products/files",
-                  //"/settings/connected-clouds",
-                ]}
-                component={FilesRoute}
-              />
-              <PrivateRoute
-                path={"/form-gallery/:folderId"}
-                component={FormGalleryRoute}
-              />
-              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-              <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute
-                restricted
-                path={"/portal-settings"}
-                component={PortalSettingsRoute}
-              />
-              <PublicRoute
-                path={"/preparation-portal"}
-                component={PreparationPortalRoute}
-              />
-              <PrivateRoute
-                path={"/portal-unavailable"}
-                component={PortalUnavailableRoute}
-              />
-              <PrivateRoute path={"/error401"} component={Error401Route} />
-              <PrivateRoute component={Error404Route} />
-            </Switch>
-          </div>
-        </Main>
-      </Router>
+      {toast}
+      <ReactSmartBanner t={t} ready={ready} />
+      {isEditor ? <></> : <NavMenu />}
+      {isMobileOnly && <MainBar />}
+      <IndicatorLoader />
+      <ScrollToTop />
+      <DialogsWrapper t={t} />
+      <Main isDesktop={isDesktop}>
+        {!isMobileOnly && <MainBar />}
+        <div className="main-container">
+          <Outlet />
+        </div>
+      </Main>
     </Layout>
   );
 };
@@ -518,9 +373,18 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
+    standalone,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
+
+  const userTheme = isDesktopClient
+    ? auth?.userStore?.user?.theme
+      ? auth?.userStore?.user?.theme
+      : window.RendererProcessVariable?.theme?.type === "dark"
+      ? "Dark"
+      : "Base"
+    : auth?.userStore?.user?.theme;
 
   return {
     loadBaseInfo: async () => {
@@ -547,19 +411,24 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setTheme,
     roomsMode,
     setSnackbarExist,
-    userTheme: isDesktopClient
-      ? window.RendererProcessVariable?.theme?.type === "dark"
-        ? "Dark"
-        : "Base"
-      : auth?.userStore?.user?.theme,
+    userTheme: userTheme,
+    userId: auth?.userStore?.user?.id,
     whiteLabelLogoUrls,
+    standalone,
   };
 })(observer(Shell));
 
-const ThemeProviderWrapper = inject(({ auth }) => {
+const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
   const { settingsStore } = auth;
+  let currentColorScheme = false;
 
-  return { theme: settingsStore.theme };
+  if (loginStore) {
+    currentColorScheme = loginStore.currentColorScheme;
+  } else if (auth) {
+    currentColorScheme = settingsStore.currentColorScheme || false;
+  }
+
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default () => (

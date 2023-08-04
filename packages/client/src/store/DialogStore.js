@@ -1,9 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
 class DialogStore {
-  changeName = false;
-  changeEmail = false;
-  changePassword = false;
   changeOwner = false;
   deleteSelfProfile = false;
   deleteProfileEver = false;
@@ -15,22 +12,11 @@ class DialogStore {
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
   deleteDialogVisible = false;
+  resetAuthDialogVisible = false;
 
   constructor() {
     makeAutoObservable(this);
   }
-
-  setChangeNameDialogVisible = (visible) => {
-    this.changeName = visible;
-  };
-
-  setChangeEmailDialogVisible = (visible) => {
-    this.changeEmail = visible;
-  };
-
-  setChangePasswordDialogVisible = (visible) => {
-    this.changePassword = visible;
-  };
 
   setChangeOwnerDialogVisible = (visible) => {
     this.changeOwner = visible;
@@ -64,9 +50,11 @@ class DialogStore {
     this.deleteDialogVisible = visible;
   };
 
+  setResetAuthDialogVisible = (visible) => {
+    this.resetAuthDialogVisible = visible;
+  };
+
   closeDialogs = () => {
-    this.setChangeEmailDialogVisible(false);
-    this.setChangePasswordDialogVisible(false);
     this.setChangeOwnerDialogVisible(false);
     this.setDeleteSelfProfileDialogVisible(false);
     this.setDeleteProfileDialogVisible(false);
@@ -77,6 +65,7 @@ class DialogStore {
 
     this.setSendInviteDialogVisible(false);
     this.setDeleteDialogVisible(false);
+    this.setResetAuthDialogVisible(false);
   };
 }
 

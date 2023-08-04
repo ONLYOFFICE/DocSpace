@@ -44,6 +44,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
         icon = SpreadSheetIcoUrl;
         break;
       default:
+        icon = TextIcoUrl;
         break;
     }
 
@@ -55,19 +56,26 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
   }, [rest?.config?.documentType]);
 
   useEffect(() => {
-    const tempElm = document.getElementById("loader");
-    const userTheme = rest.user?.theme;
-    if (userTheme) setTheme(userTheme);
+    if (rest?.error?.errorStatus === 402) {
+      const portalUrl = window.location.origin;
 
-    const isLoadingDocumentError = rest.error !== null;
-    const isLoadedDocument = !rest.error && rest?.config?.editorUrl;
+      history.pushState({}, null, portalUrl);
+      document.location.reload();
+    } else {
+      const tempElm = document.getElementById("loader");
+      const userTheme = rest.user?.theme;
+      if (userTheme) setTheme(userTheme);
 
-    if (
-      tempElm &&
-      !rest.props?.needLoader &&
-      (isLoadingDocumentError || isLoadedDocument)
-    )
-      tempElm.outerHTML = "";
+      const isLoadingDocumentError = rest.error !== null;
+      const isLoadedDocument = !rest.error && rest?.config?.editorUrl;
+
+      if (
+        tempElm &&
+        !rest.props?.needLoader &&
+        (isLoadingDocumentError || isLoadedDocument)
+      )
+        tempElm.outerHTML = "";
+    }
 
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });

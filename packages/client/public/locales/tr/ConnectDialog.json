@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Klasör başlığı",
   "ConnectionUrl": "Bağlantı url'si",
   "Login": "Giriş",
-  "Reconnect": "Yeniden bağlan"
+  "Reconnect": "Yeniden bağlan",
+  "SuccessfulConnectionOfAThirdParty": "Üçüncü taraf hizmeti başarıyla bağlandı."
 }

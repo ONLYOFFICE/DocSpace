@@ -38,7 +38,6 @@ public class IPSecurity
     private readonly IPRestrictionsService _ipRestrictionsService;
     private readonly string _currentIpForTest;
     private readonly string _myNetworks;
-    private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
 
     public IPSecurity(
@@ -47,7 +46,6 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
-        SecurityContext securityContext,
         UserManager userManager,
         ILogger<IPSecurity> logger)
     {
@@ -56,7 +54,6 @@ public class IPSecurity
         _authContext = authContext;
         _tenantManager = tenantManager;
         _ipRestrictionsService = iPRestrictionsService;
-        _securityContext = securityContext;
         _userManager = userManager;
         _currentIpForTest = configuration["ipsecurity:test"];
         _myNetworks = configuration["ipsecurity:mynetworks"];
@@ -64,9 +61,9 @@ public class IPSecurity
         IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
     }
 
-    public bool Verify()
+    public async Task<bool> VerifyAsync()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (!IpSecurityEnabled)
         {
@@ -86,7 +83,7 @@ public class IPSecurity
         string requestIps = null;
         try
         {
-            var restrictions = _ipRestrictionsService.Get(tenant.Id).ToList();
+            var restrictions = (await _ipRestrictionsService.GetAsync(tenant.Id)).ToList();
 
             if (restrictions.Count == 0)
             {
@@ -97,15 +94,14 @@ public class IPSecurity
 
             if (string.IsNullOrWhiteSpace(requestIps))
             {
-                var request = _httpContextAccessor.HttpContext.Request;
-                requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
+                requestIps = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
             var ips = string.IsNullOrWhiteSpace(requestIps)
                           ? Array.Empty<string>()
                           : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            var isDocSpaceAdmin = _userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
+            var isDocSpaceAdmin = await _userManager.IsUserInGroupAsync(_authContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
 
             if (ips.Any(requestIp => restrictions.Any(restriction => (restriction.ForAdmin ? isDocSpaceAdmin : true) && MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {
@@ -131,7 +127,7 @@ public class IPSecurity
     public static bool MatchIPs(string requestIp, string restrictionIp)
     {
         var dividerIdx = restrictionIp.IndexOf('-');
-        if (dividerIdx > -1)
+        if (dividerIdx > 0)
         {
             var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
             var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());
@@ -141,7 +137,7 @@ public class IPSecurity
             return range.IsInRange(IPAddress.Parse(requestIp));
         }
 
-        if (restrictionIp.IndexOf('/') > -1)
+        if (restrictionIp.IndexOf('/') > 0)
         {
             return IPAddressRange.IsInRange(requestIp, restrictionIp);
         }

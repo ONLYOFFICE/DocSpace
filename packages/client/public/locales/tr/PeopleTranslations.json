@@ -1,16 +1,21 @@
 {
-  "AddMembers": "Üyeler ekle",
+  "AccountLoginType": "Hesap giriş türü",
   "DeleteSelfProfile": "Profili sil",
-  "DisableUserButton": "Devre dışı bırak",
   "DisabledEmployeeStatus": "Devre dışı bırakıldı",
+  "DisableUserButton": "Devre dışı bırak",
   "EmailChangeButton": "E-postayı değiştir",
   "EnableUserButton": "Etkinleştir",
+  "InviteLinkTitle": "Davet Bağlantısı",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "İsmi değiştir",
   "PasswordChangeButton": "Şifreyi değiştir",
   "PendingTitle": "Bekliyor",
   "RemoveData": "Kişisel bilgileri sil",
+  "ResetAuth": "Kimlik doğrulamayı sıfırlayın",
   "SendInviteAgain": "Bir kez daha davetiye gönder",
+  "StandardLogin": "Standart giriş",
   "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
   "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
-  "SuccessSentInvitation": "Davetiye başarıyla gönderildi"
+  "SuccessSentInvitation": "Davetiye başarıyla gönderildi",
+  "SuccessSentMultipleInvitatios": "Davetiyeler başarıyla gönderildi"
 }

@@ -26,7 +26,11 @@
 
 namespace ASC.Web.Api.Controllers;
 
-[DefaultRoute]
+/// <summary>
+/// Portal capabilities API.
+/// </summary>
+/// <name>capabilities</name>
+[DefaultRoute, DefaultRoute("{.format}")]
 [ApiController]
 [AllowAnonymous]
 public class CapabilitiesController : ControllerBase
@@ -53,20 +57,23 @@ public class CapabilitiesController : ControllerBase
     }
 
     ///<summary>
-    ///Returns the information about portal capabilities
+    ///Returns the information about portal capabilities.
     ///</summary>
     ///<short>
     ///Get portal capabilities
     ///</short>
-    ///<returns>CapabilitiesData</returns>
+    ///<returns type="ASC.Web.Api.ApiModel.ResponseDto.CapabilitiesDto, ASC.Web.Api">Portal capabilities</returns>
+    ///<path>api/2.0/capabilities</path>
+    ///<httpMethod>GET</httpMethod>
     [HttpGet] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
     [AllowNotPayment]
-    public CapabilitiesDto GetPortalCapabilities()
+    public async Task<CapabilitiesDto> GetPortalCapabilitiesAsync()
     {
+        var quota = await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync());
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,
-            OauthEnabled = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth,
+            OauthEnabled = _coreBaseSettings.Standalone || quota.Oauth,
             Providers = new List<string>(0),
             SsoLabel = string.Empty,
             SsoUrl = string.Empty
@@ -76,7 +83,7 @@ public class CapabilitiesController : ControllerBase
         {
             if (_coreBaseSettings.Standalone
                     || SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Ldap)
+                        && quota.Ldap)
             {
                 //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -115,9 +122,9 @@ public class CapabilitiesController : ControllerBase
         {
             if (_coreBaseSettings.Standalone
                     || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                        && _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Sso)
+                        && quota.Sso)
             {
-                var settings = _settingsManager.Load<SsoSettingsV2>();
+                var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
                 if (settings.EnableSso)
                 {

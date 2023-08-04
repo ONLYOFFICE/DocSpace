@@ -93,6 +93,8 @@ const Avatar = (props) => {
 
   const roleIcon = getRoleIcon(role);
 
+  const uniqueTooltipId = withTooltip ? `roleTooltip_${Math.random()}` : "";
+
   return (
     <StyledAvatar {...props}>
       <AvatarWrapper source={source} userName={userName}>
@@ -113,14 +115,15 @@ const Avatar = (props) => {
             <>
               <RoleWrapper
                 size={size}
-                data-for="roleTooltip"
+                data-for={uniqueTooltipId}
                 data-tip={tooltipContent}
+                className="avatar_role-wrapper"
               >
-                {roleIcon}
+                {props.roleIcon ? props.roleIcon : roleIcon}
               </RoleWrapper>
               {withTooltip && (
                 <Tooltip
-                  id="roleTooltip"
+                  id={uniqueTooltipId}
                   getContent={(dataTip) => (
                     <Text fontSize="12px">{dataTip}</Text>
                   )}
@@ -139,7 +142,7 @@ const Avatar = (props) => {
 Avatar.propTypes = {
   /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "base", "small", "min"]),
-  /** Adds a user role table */
+  /** Adds a table of user roles */
   role: PropTypes.oneOf([
     "owner",
     "admin",
@@ -149,16 +152,17 @@ Avatar.propTypes = {
     "collaborator",
     "",
   ]),
-  /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
+  /** Displays as `Picture` in case the url is specified and as `Icon` in case the path to the .svg file is specified */
   source: PropTypes.string,
-  /** Provide this and leave `source` empty to display as initials */
+  /** Allows to display a user name as initials when `source` is set to blank */
   userName: PropTypes.string,
+  /** Enables avatar editing */
   editing: PropTypes.bool,
-  /** Provide this and leave `source` empty to display as default icon */
+  /** Allows to display as a default icon when `source` is set to blank */
   isDefaultSource: PropTypes.bool,
   /** Function called when the avatar change button is pressed */
   editAction: PropTypes.func,
-  /** Hide user role */
+  /** Hides user role */
   hideRoleIcon: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,

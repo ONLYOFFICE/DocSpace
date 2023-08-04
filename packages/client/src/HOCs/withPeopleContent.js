@@ -18,6 +18,7 @@ export default function withContent(WrappedContent) {
 
       theme,
       getModel,
+      itemIndex,
     } = props;
 
     const { mobilePhone, email, role, displayName, avatar } = item;
@@ -106,11 +107,16 @@ export default function withContent(WrappedContent) {
       "Translations",
       "Files",
       "ChangeUserTypeDialog",
+      "RoomSelector",
     ]);
 
     const contextOptionsProps = {
       contextOptions: getModel(item, t),
     };
+
+    let value = `folder_${item.id}`;
+    value += "_false";
+    value += `_index_${itemIndex}`;
 
     return (
       <WrappedContent
@@ -122,6 +128,7 @@ export default function withContent(WrappedContent) {
         checkedProps={checkedProps}
         element={element}
         contextOptionsProps={contextOptionsProps}
+        value={value}
         {...props}
       />
     );

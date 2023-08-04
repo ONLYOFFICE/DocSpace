@@ -26,66 +26,43 @@
 
 namespace ASC.Web.Core.Utility;
 
+[Scope(Additional = typeof(UrlShortenerExtension))]
 public interface IUrlShortener
 {
     Task<string> GetShortenLinkAsync(string shareLink);
 }
 
 [Scope]
-public class UrlShortener
+public class BaseUrlShortener: IUrlShortener
 {
-    public bool Enabled { get { return Instance is not NullShortener; } }
+    private readonly ConsumerFactory _consumerFactory;
+    private readonly IServiceProvider _serviceProvider;
 
-    private IUrlShortener _instance;
-    public IUrlShortener Instance
+    public BaseUrlShortener(
+        ConsumerFactory consumerFactory,
+        IServiceProvider serviceProvider)
     {
-        get
-        {
-            if (_instance == null)
-            {
-                if (_consumerFactory.Get<BitlyLoginProvider>().Enabled)
-                {
-                    _instance = new BitLyShortener(_consumerFactory);
-                }
-                else if (!string.IsNullOrEmpty(_configuration["web:url-shortener:value"]))
-                {
-                    _instance = new OnlyoShortener(_configuration, _commonLinkUtility, _machinePseudoKeys, _clientFactory);
-                }
-                else
-                {
-                    _instance = new NullShortener();
-                }
-            }
-
-            return _instance;
-        }
-        set
-        {
-            _instance = value;
-        }
+        _consumerFactory = consumerFactory;
+        _serviceProvider = serviceProvider;
     }
 
-    private readonly IConfiguration _configuration;
-    private readonly ConsumerFactory _consumerFactory;
-    private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly MachinePseudoKeys _machinePseudoKeys;
-    private readonly IHttpClientFactory _clientFactory;
-
-    public UrlShortener(
-        IConfiguration configuration,
-        ConsumerFactory consumerFactory,
-        CommonLinkUtility commonLinkUtility,
-        MachinePseudoKeys machinePseudoKeys,
-        IHttpClientFactory clientFactory)
+    public Task<string> GetShortenLinkAsync(string shareLink)
     {
-        _configuration = configuration;
-        _consumerFactory = consumerFactory;
-        _commonLinkUtility = commonLinkUtility;
-        _machinePseudoKeys = machinePseudoKeys;
-        _clientFactory = clientFactory;
+        IUrlShortener shortener;
+        if (_consumerFactory.Get<BitlyLoginProvider>().Enabled)
+        {
+            shortener = _serviceProvider.GetRequiredService<BitLyShortener>();
+        }
+        else
+        {
+            shortener = _serviceProvider.GetRequiredService<OnlyoShortener>();
+        }
+
+        return shortener.GetShortenLinkAsync(shareLink);
     }
 }
 
+[Scope]
 public class BitLyShortener : IUrlShortener
 {
     public BitLyShortener(ConsumerFactory consumerFactory)
@@ -101,63 +78,92 @@ public class BitLyShortener : IUrlShortener
     }
 }
 
+[Scope]
 public class OnlyoShortener : IUrlShortener
 {
-    private readonly string _url;
-    private readonly string _internalUrl;
-    private readonly byte[] _sKey;
-
-    private CommonLinkUtility CommonLinkUtility { get; }
-    private IHttpClientFactory ClientFactory { get; }
-
-    public OnlyoShortener(
-        IConfiguration configuration,
-        CommonLinkUtility commonLinkUtility,
-        MachinePseudoKeys machinePseudoKeys,
-        IHttpClientFactory clientFactory)
+    private readonly IDbContextFactory<UrlShortenerDbContext> _contextFactory;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    public OnlyoShortener(IDbContextFactory<UrlShortenerDbContext> contextFactory,
+        CommonLinkUtility commonLinkUtility)
     {
-        _url = configuration["web:url-shortener:value"];
-        _internalUrl = configuration["web:url-shortener:internal"];
-        _sKey = machinePseudoKeys.GetMachineConstant();
-
-        if (!_url.EndsWith('/'))
-        {
-            _url += '/';
-        }
-
-        CommonLinkUtility = commonLinkUtility;
-        ClientFactory = clientFactory;
+        _contextFactory = contextFactory;
+        _commonLinkUtility = commonLinkUtility;
     }
 
     public async Task<string> GetShortenLinkAsync(string shareLink)
     {
-        var request = new HttpRequestMessage
+        if (Uri.IsWellFormedUriString(shareLink, UriKind.Absolute))
         {
-            RequestUri = new Uri(_internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))
-        };
-        request.Headers.Add("Authorization", CreateAuthToken());
-        request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
-
-        var httpClient = ClientFactory.CreateClient();
-        using var response = await httpClient.SendAsync(request);
-        using var stream = await response.Content.ReadAsStreamAsync();
-        using var rs = new StreamReader(stream);
-        return CommonLinkUtility.GetFullAbsolutePath(_url + await rs.ReadToEndAsync());
-    }
-
-    private string CreateAuthToken(string pkey = "urlShortener")
-    {
-        using var hasher = new HMACSHA1(_sKey);
-        var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-        var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-        return $"ASC {pkey}:{now}:{hash}";
+            var context = _contextFactory.CreateDbContext();
+            var link = await context.ShortLinks.FirstOrDefaultAsync(q=> q.Link == shareLink);
+            if (link != null)
+            {
+                return _commonLinkUtility.GetFullAbsolutePath(UrlShortRewriter.BasePath + link.Short);
+            }
+            else
+            {
+                while (true)
+                {
+                    var key = ShortUrl.GenerateRandomKey();
+                    var id = ShortUrl.Decode(key);
+                    var existId = await context.ShortLinks.AnyAsync(q => q.Id == id);
+                    if (!existId)
+                    {
+                        var newShortLink = new ShortLink()
+                        {
+                            Id = id,
+                            Link = shareLink,
+                            Short = key
+                        };
+                        await context.ShortLinks.AddAsync(newShortLink);
+                        await context.SaveChangesAsync();
+                        return _commonLinkUtility.GetFullAbsolutePath(UrlShortRewriter.BasePath + key);
+                    }
+                }
+            }
+        }
+        else
+        {
+            return shareLink;
+        }
     }
 }
 
-public class NullShortener : IUrlShortener
+public static class ShortUrl
 {
-    public Task<string> GetShortenLinkAsync(string shareLink)
+    private const string Alphabet = "5XzpDt6wZRdsTrJkSY_cgPyxN4j-fnb9WKBF8vh3GH72QqmLVCM";
+    private static readonly int _base = Alphabet.Length;
+
+    public static string GenerateRandomKey()
     {
-        return null;
+        var rand = new Random();
+        var length = rand.Next(5, 8);
+        var result = "";
+        for (var i = 0; i < length; i++)
+        {
+            var x = rand.Next(0, 51);
+            result += Alphabet.ElementAt(x);
+        }
+        return result;
+    }
+
+    public static long Decode(string str)
+    {
+        long num = 0;
+        for (var i = 0; i < str.Length; i++)
+        {
+            num = num * _base + Alphabet.IndexOf(str.ElementAt(i));
+        }
+        return num;
+    }
+}
+
+public static class UrlShortenerExtension
+{
+    public static void Register(DIHelper dIHelper)
+    {
+        dIHelper.TryAdd<IUrlShortener, BaseUrlShortener>();
+        dIHelper.TryAdd<BitLyShortener>();
+        dIHelper.TryAdd<OnlyoShortener>();
     }
 }

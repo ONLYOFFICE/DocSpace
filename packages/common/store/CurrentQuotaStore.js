@@ -1,7 +1,9 @@
 import { makeAutoObservable } from "mobx";
+import toastr from "@docspace/components/toast/toastr";
 
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
+import authStore from "./AuthStore";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -9,6 +11,10 @@ const FILE_SIZE = "file_size";
 const ROOM = "room";
 const USERS = "users";
 const USERS_IN_ROOM = "usersInRoom";
+
+const COUNT_FOR_SHOWING_BAR = 2;
+const PERCENTAGE_FOR_SHOWING_BAR = 90;
+
 class QuotasStore {
   currentPortalQuota = {};
   currentPortalQuotaFeatures = [];
@@ -19,20 +25,16 @@ class QuotasStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalQuota();
-
-    this.setIsLoaded(true);
-  };
-
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
   };
 
   get isFreeTariff() {
     return this.currentPortalQuota.free;
+  }
+
+  get isTrial() {
+    return this.currentPortalQuota.trial;
   }
 
   get currentPlanCost() {
@@ -113,6 +115,22 @@ class QuotasStore {
     return result?.value;
   }
 
+  get isOAuthAvailable() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "oauth"
+    );
+
+    return result?.value;
+  }
+
+  get isThirdPartyAvailable() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "thirdparty"
+    );
+
+    return result?.value;
+  }
+
   get isSSOAvailable() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === "sso"
@@ -165,26 +183,62 @@ class QuotasStore {
 
   get showRoomQuotaBar() {
     return (
-      (this.usedRoomsCount / this.maxCountRoomsByQuota) * 100 >= 90 ||
-      this.maxCountRoomsByQuota - this.usedRoomsCount === 1
+      this.maxCountRoomsByQuota - this.usedRoomsCount <=
+        COUNT_FOR_SHOWING_BAR &&
+      this.maxCountRoomsByQuota > 0 &&
+      this.maxCountRoomsByQuota >= this.usedRoomsCount
     );
   }
 
   get showStorageQuotaBar() {
     return (
-      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >= 90
+      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >=
+      PERCENTAGE_FOR_SHOWING_BAR
     );
+  }
+
+  get showUserQuotaBar() {
+    return (
+      this.addedManagersCount > 1 &&
+      this.maxCountManagersByQuota - this.addedManagersCount <=
+        COUNT_FOR_SHOWING_BAR &&
+      this.maxCountManagersByQuota >= this.addedManagersCount
+    );
+  }
+
+  get isNonProfit() {
+    return this.currentPortalQuota?.nonProfit;
   }
 
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
+
+    this.setIsLoaded(true);
+  };
+
+  updateQuotaUsedValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId && elem.used) elem.used.value = value;
+    });
+  };
+  updateQuotaFeatureValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId) elem.value = value;
+    });
   };
   setPortalQuota = async () => {
-    const res = await api.portal.getPortalQuota();
-    if (!res) return;
+    try {
+      const res = await api.portal.getPortalQuota();
 
-    this.setPortalQuotaValue(res);
+      if (!res) return;
+
+      this.setPortalQuotaValue(res);
+
+      this.setIsLoaded(true);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 }
 

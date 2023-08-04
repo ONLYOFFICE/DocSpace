@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
 import { isMobileOnly, isMobile } from "react-device-detect";
-import history from "@docspace/common/history";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isDesktop, tablet, mobile } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
@@ -121,9 +121,13 @@ const HeaderComponent = ({
   theme,
   toggleArticleOpen,
   logoUrl,
+
   ...props
 }) => {
   const { t } = useTranslation("Common");
+
+  const location = useLocation();
+
   //const isNavAvailable = mainModules.length > 0;
 
   // const onLogoClick = () => {
@@ -190,13 +194,13 @@ const HeaderComponent = ({
   });
 
   const [isFormGallery, setIsFormGallery] = useState(
-    history.location.pathname.includes("/form-gallery")
+    location.pathname.includes("/form-gallery")
   );
   useEffect(() => {
-    return history.listen((location) => {
+    return () => {
       setIsFormGallery(location.pathname.includes("/form-gallery"));
-    });
-  }, [history]);
+    };
+  }, [location]);
 
   const logo = getLogoFromPath(
     !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light

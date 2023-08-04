@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import {
-  StyledCircle,
   StyledLoadingButton,
-} from "@docspace/common/components/StyledLoadingButton";
-
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+  StyledCircle,
+} from "@docspace/components/ColorTheme/styled/sub-components/StyledLoadingButton";
 
 const LoadingButton = (props) => {
-  const {
-    id,
-    className,
-    style,
-    percent,
-    onClick,
-    isConversion,
-    inConversion,
-  } = props;
+  const { id, className, style, percent, onClick, isConversion, inConversion } =
+    props;
   const [isAnimation, setIsAnimation] = useState(true);
 
   const stopAnimation = () => {
@@ -52,7 +44,10 @@ const LoadingButton = (props) => {
           <div className="circle__fill"></div>
         </div>
 
-        <StyledLoadingButton isConversion={isConversion}>
+        <StyledLoadingButton
+          className="loading-button"
+          isConversion={isConversion}
+        >
           {!inConversion && <>&times;</>}
         </StyledLoadingButton>
       </StyledCircle>

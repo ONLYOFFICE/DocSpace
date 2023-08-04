@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject } from "mobx-react";
@@ -26,7 +25,10 @@ const LoginHistory = (props) => {
   useEffect(() => {
     setDocumentTitle(t("LoginHistoryTitle"));
 
-    getLoginHistory();
+    if (isAuditAvailable) {
+      getLoginHistory();
+    }
+
     getLifetimeAuditSettings();
   }, []);
 
@@ -72,7 +74,8 @@ const LoginHistory = (props) => {
           securityLifetime={securityLifetime}
           setLifetimeAuditSettings={setLifetimeAuditSettings}
           content={getContent()}
-          downloadReport={t("DownloadReportBtn")}
+          downloadReport={t("DownloadReportBtnText")}
+          downloadReportDescription={t("DownloadReportDescription")}
           getReport={getLoginHistoryReport}
           isSettingNotPaid={!isAuditAvailable}
         />
@@ -106,4 +109,4 @@ export default inject(({ setup, auth }) => {
     getLoginHistoryReport,
     isAuditAvailable,
   };
-})(withTranslation("Settings")(withRouter(LoginHistory)));
+})(withTranslation("Settings")(LoginHistory));

@@ -46,18 +46,18 @@ public class TopSubscriptionProvider : ISubscriptionProvider
     }
 
 
-    public virtual string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+    public virtual async Task<string[]> GetSubscriptionMethodAsync(INotifyAction action, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var senders = _subscriptionProvider.GetSubscriptionMethod(action, recipient);
+        var senders = await _subscriptionProvider.GetSubscriptionMethodAsync(action, recipient);
         if (senders == null || senders.Length == 0)
         {
-            var parents = WalkUp(recipient);
+            var parents = await WalkUpAsync(recipient);
             foreach (var parent in parents)
             {
-                senders = _subscriptionProvider.GetSubscriptionMethod(action, parent);
+                senders = await _subscriptionProvider.GetSubscriptionMethodAsync(action, parent);
                 if (senders != null && senders.Length != 0)
                 {
                     break;
@@ -68,91 +68,91 @@ public class TopSubscriptionProvider : ISubscriptionProvider
         return senders != null && 0 < senders.Length ? senders : _defaultSenderMethods;
     }
 
-    public virtual IRecipient[] GetRecipients(INotifyAction action, string objectID)
+    public virtual async Task<IRecipient[]> GetRecipientsAsync(INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
 
         var recipents = new List<IRecipient>(5);
-        var directRecipients = _subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
+        var directRecipients = await _subscriptionProvider.GetRecipientsAsync(action, objectID) ?? new IRecipient[0];
         recipents.AddRange(directRecipients);
 
         return recipents.ToArray();
     }
 
-    public virtual bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
+    public virtual async Task<bool> IsUnsubscribeAsync(IDirectRecipient recipient, INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        return _subscriptionProvider.IsUnsubscribe(recipient, action, objectID);
+        return await _subscriptionProvider.IsUnsubscribeAsync(recipient, action, objectID);
     }
 
 
-    public virtual void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
+    public virtual async Task SubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        _subscriptionProvider.Subscribe(action, objectID, recipient);
+        await _subscriptionProvider.SubscribeAsync(action, objectID, recipient);
     }
 
-    public virtual void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
+    public virtual async Task UnSubscribeAsync(INotifyAction action, string objectID, IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        _subscriptionProvider.UnSubscribe(action, objectID, recipient);
+        await _subscriptionProvider.UnSubscribeAsync(action, objectID, recipient);
     }
 
-    public void UnSubscribe(INotifyAction action, string objectID)
+    public async Task UnSubscribeAsync(INotifyAction action, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        _subscriptionProvider.UnSubscribe(action, objectID);
+        await _subscriptionProvider.UnSubscribeAsync(action, objectID);
     }
 
-    public void UnSubscribe(INotifyAction action)
+    public async Task UnSubscribeAsync(INotifyAction action)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        _subscriptionProvider.UnSubscribe(action);
+        await _subscriptionProvider.UnSubscribeAsync(action);
     }
 
-    public virtual void UnSubscribe(INotifyAction action, IRecipient recipient)
+    public virtual async Task UnSubscribeAsync(INotifyAction action, IRecipient recipient)
     {
-        var objects = GetSubscriptions(action, recipient);
+        var objects = await GetSubscriptionsAsync(action, recipient);
         foreach (var objectID in objects)
         {
-            _subscriptionProvider.UnSubscribe(action, objectID, recipient);
+            await _subscriptionProvider.UnSubscribeAsync(action, objectID, recipient);
         }
     }
 
-    public virtual void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
+    public virtual async Task UpdateSubscriptionMethodAsync(INotifyAction action, IRecipient recipient, params string[] senderNames)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.ThrowIfNull(senderNames);
 
-        _subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
+        await _subscriptionProvider.UpdateSubscriptionMethodAsync(action, recipient, senderNames);
     }
 
-    public virtual object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+    public virtual async Task<object> GetSubscriptionRecordAsync(INotifyAction action, IRecipient recipient, string objectID)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        var subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
+        var subscriptionRecord = await _subscriptionProvider.GetSubscriptionRecordAsync(action, recipient, objectID);
 
         if (subscriptionRecord != null)
         {
             return subscriptionRecord;
         }
 
-        var parents = WalkUp(recipient);
+        var parents = await WalkUpAsync(recipient);
 
         foreach (var parent in parents)
         {
-            subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, parent, objectID);
+            subscriptionRecord = await _subscriptionProvider.GetSubscriptionRecordAsync(action, parent, objectID);
 
             if (subscriptionRecord != null)
             {
@@ -163,23 +163,23 @@ public class TopSubscriptionProvider : ISubscriptionProvider
         return subscriptionRecord;
     }
 
-    public virtual string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
+    public virtual async Task<string[]> GetSubscriptionsAsync(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
     {
         ArgumentNullException.ThrowIfNull(action);
         ArgumentNullException.ThrowIfNull(recipient);
 
         var objects = new List<string>();
-        var direct = _subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? Array.Empty<string>();
+        var direct = await _subscriptionProvider.GetSubscriptionsAsync(action, recipient, checkSubscription) ?? Array.Empty<string>();
         MergeObjects(objects, direct);
-        var parents = WalkUp(recipient);
+        var parents = await WalkUpAsync(recipient);
         foreach (var parent in parents)
         {
-            direct = _subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? Array.Empty<string>();
+            direct = await _subscriptionProvider.GetSubscriptionsAsync(action, parent, checkSubscription) ?? Array.Empty<string>();
             if (recipient is IDirectRecipient)
             {
                 foreach (var groupsubscr in direct)
                 {
-                    if (!objects.Contains(groupsubscr) && !_subscriptionProvider.IsUnsubscribe(recipient as IDirectRecipient, action, groupsubscr))
+                    if (!objects.Contains(groupsubscr) && !await _subscriptionProvider.IsUnsubscribeAsync(recipient as IDirectRecipient, action, groupsubscr))
                     {
                         objects.Add(groupsubscr);
                     }
@@ -195,14 +195,14 @@ public class TopSubscriptionProvider : ISubscriptionProvider
     }
 
 
-    private List<IRecipient> WalkUp(IRecipient recipient)
+    private async Task<List<IRecipient>> WalkUpAsync(IRecipient recipient)
     {
         var parents = new List<IRecipient>();
-        var groups = _recipientProvider.GetGroups(recipient) ?? new IRecipientsGroup[0];
+        var groups = await _recipientProvider.GetGroupsAsync(recipient) ?? new IRecipientsGroup[0];
         foreach (var group in groups)
         {
             parents.Add(group);
-            parents.AddRange(WalkUp(group));
+            parents.AddRange(await WalkUpAsync(group));
         }
 
         return parents;

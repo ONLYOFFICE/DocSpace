@@ -14,7 +14,9 @@ const StyledTooltip = styled.div`
     display: inline;
   }
   .display-block {
+    margin-top: 10px;
     display: block;
+    margin-top: 10px;
   }
 `;
 
@@ -23,7 +25,6 @@ export const LanguageTimeSettingsTooltip = ({
   theme,
   helpLink,
   organizationName,
-  currentColorScheme,
 }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
@@ -48,11 +49,13 @@ export const LanguageTimeSettingsTooltip = ({
           <div className="bold display-inline font-size"> {{ save }}</div>
           button at the bottom of the section.
           <Link
-            color={currentColorScheme.main.accent}
-            className="display-block font-size"
-            isHovered={true}
+            className="display-block"
+            color="#333333"
+            fontSize="13px"
+            isHovered
+            isBold
             target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+            href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}
           >
             {{ learnMore }}
           </Link>
@@ -102,42 +105,34 @@ export const CustomTitlesTooltip = ({ t }) => {
 
 export const DNSSettingsTooltip = ({
   t,
-  theme,
   helpLink,
   organizationName,
+  standalone,
 }) => {
-  const text = t("Settings:DNSSettingsTooltip");
-  const learnMore = t("Common:LearnMore");
-
   return (
     <StyledTooltip>
       <div className="font-size">
-        <Trans
-          ns="Settings"
-          i18nKey="DNSSettingsTooltip"
-          text={text}
-          learnMore={learnMore}
+        {t("DNSSettingsTooltipMain", { organizationName })}{" "}
+        {standalone
+          ? t("DNSSettingsTooltipStandalone", { organizationName })
+          : t("DNSSettingsMobile")}
+        <Link
+          color="#333333"
+          className="display-block"
+          fontSize="13px"
+          isBold
+          isHovered
+          target="_blank"
+          href={`${helpLink}/administration/docspace-settings.aspx#alternativeurl`}
         >
-          DNS Settings allow you to set an alternative URL address for your
-          {{ organizationName }} portal. Send your request to our support team,
-          and our specialists will help you with the settings.
-          <div className="display-inline font-size"> {{ text }}</div>
-          <Link
-            color={theme.client.settings.common.linkColorHelp}
-            className="display-block font-size"
-            isHovered={true}
-            target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
-          >
-            {{ learnMore }}
-          </Link>
-        </Trans>
+          {t("Common:LearnMore")}
+        </Link>
       </div>
     </StyledTooltip>
   );
 };
 
-export const PortalRenamingTooltip = ({ t }) => {
+export const PortalRenamingTooltip = ({ t, domain }) => {
   const text = t("Settings:PortalRenamingDescription");
   const pleaseNote = t("Settings:PleaseNote");
   const save = t("Common:SaveButton");
@@ -149,10 +144,11 @@ export const PortalRenamingTooltip = ({ t }) => {
           ns="Settings"
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
+          domain={domain}
         >
           <div className="display-inline font-size"> {{ text }}</div>
           Enter the part that will appear next to the
-          onlyoffice.com/onlyoffice.eu portal address.
+          {{ domain }} portal address.
         </Trans>
       </div>
       <div className="font-size">

@@ -4,8 +4,12 @@ import { ReactSVG } from "react-svg";
 
 import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
 
-import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
-import { isNull } from "lodash";
+import {
+  StyledDropdownItem,
+  IconWrapper,
+  WrapperToggle,
+} from "./styled-drop-down-item";
+import ToggleButton from "../toggle-button";
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
@@ -15,7 +19,6 @@ const DropDownItem = (props) => {
     icon,
     children,
     disabled,
-    onClick,
     className,
     theme,
     fillIcon,
@@ -24,20 +27,36 @@ const DropDownItem = (props) => {
     withoutIcon,
     noHover,
     height,
+    isSelected,
+    isActiveDescendant,
   } = props;
+
+  const { withToggle, checked, onClick, ...rest } = props;
 
   const onClickAction = (e) => {
     onClick && !disabled && onClick(e);
   };
 
+  const stopPropagation = (event) => {
+    event.stopPropagation();
+  };
+
+  const onChange = (event) => {
+    stopPropagation(event);
+    onClickAction(event);
+  };
+
   return (
     <StyledDropdownItem
-      {...props}
+      {...rest}
       noHover={noHover}
       className={className}
       onClick={onClickAction}
       disabled={disabled}
       isActive={isActive}
+      isSelected={isSelected}
+      withToggle={withToggle}
+      isActiveDescendant={isActiveDescendant}
     >
       {icon && (
         <IconWrapper className="drop-down-icon">
@@ -64,26 +83,32 @@ const DropDownItem = (props) => {
           />
         </IconWrapper>
       )}
+
+      {withToggle && (
+        <WrapperToggle onClick={stopPropagation}>
+          <ToggleButton isChecked={checked} onChange={onChange} noAnimation />
+        </WrapperToggle>
+      )}
     </StyledDropdownItem>
   );
 };
 
 DropDownItem.propTypes = {
-  /** Tells when the dropdown item should display like separator */
+  /** Sets the dropdown item to display as a separator */
   isSeparator: PropTypes.bool,
-  /** Tells when the dropdown item should display like header */
+  /** Sets the dropdown to display as a header */
   isHeader: PropTypes.bool,
   /** Accepts tab-index */
   tabIndex: PropTypes.number,
   /** Dropdown item text */
   label: PropTypes.string,
-  /** Tells when the dropdown item should display like disabled */
+  /** Sets the dropdown item to display as disabled */
   disabled: PropTypes.bool,
   /** Dropdown item icon */
   icon: PropTypes.string,
-  /** Disable default style hover effect */
+  /** Disables default style hover effect */
   noHover: PropTypes.bool,
-  /** What the dropdown item will trigger when clicked */
+  /** Sets an action that will be triggered when the dropdown item is clicked */
   onClick: PropTypes.func,
   /** Children elements */
   children: PropTypes.any,
@@ -94,14 +119,21 @@ DropDownItem.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
-  customHeight: PropTypes.number,
-  customHeightTablet: PropTypes.number,
   textOverflow: PropTypes.bool,
+  /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
+  /** Enables the submenu */
   isSubMenu: PropTypes.bool,
+  /**  Sets drop down item active  */
   isActive: PropTypes.bool,
+  /** Disables the element icon */
   withoutIcon: PropTypes.bool,
+  /** Sets the padding to the minimum value */
   isModern: PropTypes.bool,
+  /** Facilitates highlighting a selected element with the keyboard */
+  isActiveDescendant: PropTypes.bool,
+  /** Facilitates selecting an element from the context menu */
+  isSelected: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {

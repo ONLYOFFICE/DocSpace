@@ -9,6 +9,7 @@ import fs from "fs";
 import config from "../config";
 
 let logPath = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 
 if (logPath != null) {
   if (!path.isAbsolute(logPath)) {
@@ -27,7 +28,10 @@ const accessKeyId = aws.accessKeyId;
 const secretAccessKey = aws.secretAccessKey; 
 const awsRegion = aws.region; 
 const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName;
+const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
+                                      .replace("${applicationContext}", "Editor")                  
+                                      .replace("${guid}", randomUUID())
+                                      .replace("${date}", date.format(new Date(), 'YYYY/MM/DDTHH.mm.ss'));      
 
 
 if (!fs.existsSync(dirName)) {
@@ -37,6 +41,7 @@ if (!fs.existsSync(dirName)) {
 const options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -46,25 +51,15 @@ const options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: 'aws',
-    level: "debug",
-    logStreamName: () => {
-      const hostname = os.hostname();
-      const now = new Date();
-      const guid = randomUUID();
-      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
-      
-      return logStreamName.replace("${hostname}", hostname)
-                          .replace("${applicationContext}", "Editor")                  
-                          .replace("${guid}", guid)
-                          .replace("${date}", dateAsString);      
-    },
+    level: logLevel,
+    logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,

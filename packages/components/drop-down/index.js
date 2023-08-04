@@ -1,20 +1,21 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { VariableSizeList } from "react-window";
+
 import onClickOutside from "react-onclickoutside";
 import { isMobile } from "react-device-detect";
 import Portal from "../portal";
 import DomHelpers from "../utils/domHelpers";
 
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import StyledDropdown from "./styled-drop-down";
-
+import VirtualList from "./VirtualList";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
-  const option = data.children[index];
+  const { children, theme, activedescendant, handleMouseMove } = data;
+
+  const option = children[index];
 
   const separator = option?.props?.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
@@ -23,10 +24,15 @@ const Row = memo(({ data, index, style }) => {
 
   return (
     <DropDownItem
-      theme={data.theme}
+      theme={theme}
       // eslint-disable-next-line react/prop-types
       {...option?.props}
+      noHover
       style={newStyle}
+      onMouseMove={() => {
+        handleMouseMove(index);
+      }}
+      isActiveDescendant={activedescendant === index}
     />
   );
 });
@@ -75,7 +81,10 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
-    e.preventDefault();
+    if (e.type !== "touchstart") {
+      e.preventDefault();
+    }
+
     this.toggleDropDown(e);
   };
 
@@ -159,7 +168,7 @@ class DropDown extends React.PureComponent {
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
-    if (!parent.current || this.props.fixedDirection) return;
+    if (!parent?.current || this.props.fixedDirection) return;
 
     const rects = parent.current.getBoundingClientRect();
 
@@ -248,11 +257,19 @@ class DropDown extends React.PureComponent {
       showDisabledItems,
       theme,
       isMobileView,
+      isNoFixedHeightOptions,
+      open,
+      enableKeyboardEvents,
     } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
     let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+    let itemCount = children.length;
+
+    if (!showDisabledItems) {
+      cleanChildren = this.hideDisabledItems();
+      if (cleanChildren) itemCount = cleanChildren.length;
+    }
 
     const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
@@ -272,27 +289,24 @@ class DropDown extends React.PureComponent {
         directionX={directionX}
         directionY={directionY}
         manualY={manualY}
-        isExternalLink={this.props.isExternalLink}
-        isPersonal={this.props.isPersonal}
         isMobileView={isMobileView}
+        itemCount={itemCount}
         {...dropDownMaxHeightProp}
       >
-        {maxHeight ? (
-          <VariableSizeList
-            height={calculatedHeight}
-            width={width}
-            itemSize={getItemSize}
-            itemCount={children.length}
-            itemData={{ children: cleanChildren, theme: theme }}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Row}
-          </VariableSizeList>
-        ) : cleanChildren ? (
-          cleanChildren
-        ) : (
-          children
-        )}
+        <VirtualList
+          Row={Row}
+          theme={theme}
+          width={width}
+          itemCount={itemCount}
+          maxHeight={maxHeight}
+          cleanChildren={cleanChildren}
+          calculatedHeight={calculatedHeight}
+          isNoFixedHeightOptions={isNoFixedHeightOptions}
+          getItemSize={getItemSize}
+          children={children}
+          isOpen={open}
+          enableKeyboardEvents={enableKeyboardEvents}
+        />
       </StyledDropdown>
     );
   }
@@ -320,8 +334,13 @@ class DropDownContainer extends React.Component {
       open,
       isAside,
       withBackground,
+      eventTypes,
     } = this.props;
-    const eventTypesProp = isMobile ? { eventTypes: ["click, touchend"] } : {};
+    const eventTypesProp = isMobile
+      ? { eventTypes: ["click, touchend"] }
+      : eventTypes
+      ? { eventTypes }
+      : {};
 
     return (
       <>
@@ -348,8 +367,6 @@ class DropDownContainer extends React.Component {
 DropDown.propTypes = {
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
-  isExternalLink: PropTypes.bool,
-  isPersonal: PropTypes.bool,
 };
 
 DropDownContainer.propTypes = {
@@ -365,15 +382,15 @@ DropDownContainer.propTypes = {
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Accepts id */
   id: PropTypes.string,
-  /** Required if you need to specify the exact width of the component, for example 100% */
+  /** Required for specifying the exact width of the component, for example, 100% */
   manualWidth: PropTypes.string,
-  /** Required if you need to specify the exact distance from the parent component */
+  /** Required for specifying the exact distance from the parent component */
   manualX: PropTypes.string,
-  /** Required if you need to specify the exact distance from the parent component */
+  /** Required for specifying the exact distance from the parent component */
   manualY: PropTypes.string,
   /** Required if the scrollbar is displayed */
   maxHeight: PropTypes.number,
-  /** Tells when the dropdown should be opened */
+  /** Sets the dropdown to be opened */
   open: PropTypes.bool,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -381,18 +398,18 @@ DropDownContainer.propTypes = {
   withBackdrop: PropTypes.bool,
   /** Count of columns */
   columnCount: PropTypes.number,
-  /** Display disabled items or not */
+  /** Sets the disabled items to display */
   showDisabledItems: PropTypes.bool,
   forwardedRef: PropTypes.shape({ current: PropTypes.any }),
-  /** Defines the operation mode of the component, by default with the portal */
+  /** Sets the operation mode of the component. The default option is set to portal mode */
   isDefaultMode: PropTypes.bool,
-  /** Needed to open correctly people and group selector when the section width is small */
+  /** Used to open people and group selectors correctly when the section width is small */
   smallSectionWidth: PropTypes.bool,
-  /** It is necessary when we explicitly set the direction, disables check position */
+  /** Disables check position. Used to set the direction explicitly */
   fixedDirection: PropTypes.bool,
-  /**Enable blur for backdrop */
+  /** Enables blur for backdrop */
   withBlur: PropTypes.bool,
-
+  /** Specifies the offset */
   offsetLeft: PropTypes.number,
 };
 
@@ -404,6 +421,7 @@ DropDownContainer.defaultProps = {
   isDefaultMode: true,
   fixedDirection: false,
   offsetLeft: 0,
+  enableKeyboardEvents: true,
 };
 
 export default DropDownContainer;

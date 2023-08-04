@@ -11,7 +11,7 @@
   "InternalLink": "ລິ້ງພາຍໃນ",
   "Notify users": "ແຈ້ງເຕືອນຜູ້ໃຊ້",
   "ReadOnly": "ອ່ານຢ່າງດຽງວ",
-  "ShareEmailBody": "ທ່ານໄດ້ຮັບອະນຸຍາດເຂົ້າເຖິງເອກະສານ {{itemName}}. ກົດທີ່ລິ້ງດ້ານລຸ່ມເພື່ອເປີດເອກະສານດຽວນີ້: {{shareLink}}",
+  "ShareEmailBody": "ທ່ານໄດ້ຮັບອະນຸຍາດເຂົ້າເຖິງເອກະສານ {{itemName}}. ກົດທີ່ລິ້ງດ້ານລຸ່ມເພື່ອເປີດເອກະສານດຽວນີ້: {{shareLink}}.",
   "ShareEmailSubject": "ທ່ານໄດ້ຮັບອະນຸຍາດເຂົ້າເຖິງເອກະສານ {{itemName}}",
   "ShareVia": "ແບ່ງປັນຜ່ານ",
   "SharingSettingsTitle": "ຕັ້ງຄ່າການແບ່ງປັນ"

@@ -32,7 +32,6 @@ public abstract class FeedModule : IFeedModule
     public abstract string Product { get; }
     public abstract Guid ProductID { get; }
     protected abstract string DbId { get; }
-    protected int Tenant => _tenantManager.GetCurrentTenant().Id;
 
     protected readonly TenantManager _tenantManager;
     protected readonly WebItemSecurity _webItemSecurity;
@@ -47,26 +46,25 @@ public abstract class FeedModule : IFeedModule
 
     public abstract Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime);
 
-    public virtual Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public virtual async Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var tuple in feed)
         {
-            if (VisibleFor(tuple.Item1.Feed, tuple.Item2, userId))
+            if (await VisibleForAsync(tuple.Item1.Feed, tuple.Item2, userId))
             {
                 tuple.Item1.Users.Add(userId);
             }
         }
-        return Task.CompletedTask;
     }
 
-    public virtual bool VisibleFor(Feed feed, object data, Guid userId)
+    public virtual async Task<bool> VisibleForAsync(Feed feed, object data, Guid userId)
     {
-        return _webItemSecurity.IsAvailableForUser(ProductID, userId);
+        return await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId);
     }
 
     protected static Guid ToGuid(object guid)
@@ -82,38 +80,20 @@ public abstract class FeedModule : IFeedModule
         }
     }
 
-    protected string GetGroupId(string item, Guid author, string rootId = null, int action = -1)
+    protected string GetGroupId(string item, Guid author, DateTime date, string rootId = null, int action = -1)
     {
-        const int interval = 2;
-
-        var now = DateTime.UtcNow;
-        var hours = now.Hour;
-        var groupIdHours = hours - (hours % interval);
+        var time = date.ToString("g");
 
         if (rootId == null)
         {
-            // groupId = {item}_{author}_{date}
-            return string.Format("{0}_{1}_{2}",
-                                 item,
-                                 author,
-                                 now.ToString("yyyy.MM.dd.") + groupIdHours);
+            return $"{item}_{author}_{time}";
         }
+        
         if (action == -1)
         {
-            // groupId = {item}_{author}_{date}_{rootId}_{action}
-            return string.Format("{0}_{1}_{2}_{3}",
-                                 item,
-                                 author,
-                                 now.ToString("yyyy.MM.dd.") + groupIdHours,
-                                 rootId);
+            return $"{item}_{author}_{time}_{rootId}";
         }
-
-        // groupId = {item}_{author}_{date}_{rootId}_{action}
-        return string.Format("{0}_{1}_{2}_{3}_{4}",
-                             item,
-                             author,
-                             now.ToString("yyyy.MM.dd.") + groupIdHours,
-                             rootId,
-                             action);
+        
+        return $"{item}_{author}_{time}_{rootId}_{action}";
     }
 }

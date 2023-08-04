@@ -41,15 +41,16 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger<SharpBoxFolderDao> monitor,
+        ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharpBoxDaoSelector sharpBoxDaoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _crossDao = crossDao;
         _sharpBoxDaoSelector = sharpBoxDaoSelector;
@@ -64,7 +65,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
     public Task<Folder<string>> GetFolderAsync(string title, string parentId)
     {
-        var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+        var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
 
         return Task.FromResult(ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase))));
     }
@@ -79,8 +80,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(ToFolder(RootFolder()));
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
-        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
+        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.kDrive && provider != ProviderFilter.WebDav && provider != ProviderFilter.Yandex))
         {
@@ -97,23 +98,24 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             rooms = rooms.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-    {
+        {
             yield return room;
         }
-        }
+    }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
-        var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+        var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
 
         return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -125,8 +127,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -160,8 +162,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 
@@ -198,7 +200,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             if (folder.Id != null)
             {
                 //Create with id
-                var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.Id));
+                var savedfolder = SharpBoxProviderInfo.Storage.CreateFolder(MakePath(folder.Id));
 
                 return MakeId(savedfolder);
             }
@@ -208,7 +210,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                 folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync);
 
-                var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
+                var newFolder = SharpBoxProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
 
                 return MakeId(newFolder);
             }
@@ -238,45 +240,31 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         var folder = GetFolderById(folderId);
         var id = MakeId(folder);
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using (var tx = await filesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-               .Where(r => r.Id.StartsWith(id))
-               .Select(r => r.HashId)
-               .ToListAsync()
-               ;
-
-                var link = await Query(filesDbContext.TagLink)
-                .Where(r => hashIDs.Any(h => h == r.EntryId))
-                .ToListAsync()
-                ;
+                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, id).ToListAsync();
 
                 filesDbContext.TagLink.RemoveRange(link);
                 await filesDbContext.SaveChangesAsync();
 
-                var tagsToRemove = from ft in filesDbContext.Tag
-                                   join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
+                var tagsToRemove = await Queries.TagsAsync(filesDbContext).ToListAsync();
 
-                filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+                filesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var securityToDelete = Query(filesDbContext.Security)
-                .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+                filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
 
-                var mappingToDelete = Query(filesDbContext.ThirdpartyIdMapping)
-                .Where(r => hashIDs.Any(h => h == r.HashId));
+                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                filesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+                filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await filesDbContext.SaveChangesAsync();
 
                 await tx.CommitAsync();
@@ -288,7 +276,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         if (folder is not ErrorEntry)
         {
-            ProviderInfo.Storage.DeleteFileSystemEntry(folder);
+            SharpBoxProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }
     }
 
@@ -296,7 +284,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         try
         {
-            return Task.FromResult(ProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
+            return Task.FromResult(SharpBoxProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
         }
         catch (ArgumentException)
         {
@@ -314,12 +302,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFolderAsync(folderId, tId, cancellationToken));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFolderAsync(folderId, tsId, cancellationToken));
         }
 
         throw new NotImplementedException();
@@ -343,7 +331,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         var oldFolderId = MakeId(entry);
 
-        if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+        if (!SharpBoxProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
         {
             throw new Exception("Error while moving");
         }
@@ -384,7 +372,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     public Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
         var folder = GetFolderById(folderId);
-        if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
+        if (!SharpBoxProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
         {
             throw new Exception("Error while copying");
         }
@@ -392,29 +380,29 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name)));
     }
 
-    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public async Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, string to)
     {
-        return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
+        return Task.FromResult((IDictionary<string, TTo>)new Dictionary<string, TTo>());
     }
 
-    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
+    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, int to)
     {
-        return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
+        return Task.FromResult((IDictionary<string, TTo>)new Dictionary<string, TTo>());
     }
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
@@ -427,7 +415,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         if ("/".Equals(MakePath(folder.Id)))
         {
             //It's root folder
-            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+            await DaoSelector.RenameProviderAsync(SharpBoxProviderInfo, newTitle);
             //rename provider customer title
         }
         else
@@ -436,23 +424,23 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync);
 
             //rename folder
-            if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
+            if (SharpBoxProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
             {
                 //Folder data must be already updated by provider
                 //We can't search google folders by title because root can have multiple folders with the same name
-                //var newFolder = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
+                //var newFolder = SharpBox_providerInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
                 newId = MakeId(entry);
 
-                if (DocSpaceHelper.IsRoom(ProviderInfo.FolderType) && ProviderInfo.FolderId != null)
+                if (DocSpaceHelper.IsRoom(SharpBoxProviderInfo.FolderType) && SharpBoxProviderInfo.FolderId != null)
                 {
-                    await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+                    await DaoSelector.RenameProviderAsync(SharpBoxProviderInfo, newTitle);
 
-                    if (ProviderInfo.FolderId == oldId)
+                    if (SharpBoxProviderInfo.FolderId == oldId)
                     {
-                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                        await DaoSelector.UpdateProviderFolderId(SharpBoxProviderInfo, newId);
+                    }
                 }
             }
-        }
         }
 
         await UpdatePathInDBAsync(oldId, newId);
@@ -499,8 +487,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         var storageMaxUploadSize =
             chunkedUpload
-                ? ProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
-                : ProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
+                ? SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
+                : SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
 
         if (storageMaxUploadSize == -1)
         {
@@ -510,11 +498,54 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             string folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return null;
+        return Task.FromResult<IDataWriteOperator>(null);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> TagLinksAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>> TagsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                from ft in ctx.Tag
+                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                {
+                    TenantId = ftl.TenantId,
+                    Id = ftl.TagId
+                }
+                where ftl == null
+                select ft);
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.ThirdpartyIdMapping
+                        .Where(m => m.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart))
+                        .Select(m => m.HashId).Any(h => h == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync =
+            EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, string idStart) =>
+                    ctx.ThirdpartyIdMapping
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(m => m.Id.StartsWith(idStart)));
 }

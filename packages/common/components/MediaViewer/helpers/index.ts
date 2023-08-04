@@ -8,9 +8,12 @@ import {
 export const mediaTypes = Object.freeze({
   audio: 1,
   video: 2,
+  pdf: 3,
 });
 
 export enum KeyboardEventKeys {
+  ArrowUp = "ArrowUp",
+  ArrowDown = "ArrowDown",
   ArrowRight = "ArrowRight",
   ArrowLeft = "ArrowLeft",
   Escape = "Escape",
@@ -19,6 +22,21 @@ export enum KeyboardEventKeys {
   KeyS = "KeyS",
   Numpad1 = "Numpad1",
   Digit1 = "Digit1",
+}
+
+export enum ToolbarActionType {
+  Panel = 0,
+  ZoomIn = 1,
+  ZoomOut = 2,
+  Prev = 3,
+  Next = 4,
+  RotateLeft = 5,
+  RotateRight = 6,
+  Reset = 7,
+  Close = 8,
+  ScaleX = 9,
+  ScaleY = 10,
+  Download = 11,
 }
 
 export const mapSupplied = {
@@ -40,7 +58,12 @@ export const mapSupplied = {
   ".avi": { supply: "m4v", type: mediaTypes.video, convertable: true },
   ".mpeg": { supply: "m4v", type: mediaTypes.video, convertable: true },
   ".mpg": { supply: "m4v", type: mediaTypes.video, convertable: true },
+  ".pdf": { supply: "pdf", type: mediaTypes.pdf },
 } as Record<string, { supply: string; type: number } | undefined>;
+
+export function isVideo(fileExst: string): boolean {
+  return mapSupplied[fileExst]?.type === mediaTypes.video;
+}
 
 export const isNullOrUndefined = (arg: unknown): arg is NullOrUndefined => {
   return arg === undefined || arg === null;
@@ -65,4 +88,29 @@ export const findNearestIndex = (
 
 export const isSeparator = (arg: ContextMenuModel): arg is SeparatorType => {
   return arg?.isSeparator !== undefined && arg.isSeparator;
+};
+
+export const convertToTwoDigitString = (time: number): string => {
+  return time < 10 ? `0${time}` : time.toString();
+};
+
+export const formatTime = (time: number): string => {
+  if (isNullOrUndefined(time) || isNaN(time) || time <= 0) return "00:00";
+
+  let seconds: number = Math.floor(time % 60);
+  let minutes: number = Math.floor(time / 60) % 60;
+  let hours: number = Math.floor(time / 3600);
+
+  const convertedHours = convertToTwoDigitString(hours);
+  const convertedMinutes = convertToTwoDigitString(minutes);
+  const convertedSeconds = convertToTwoDigitString(seconds);
+
+  if (hours === 0) {
+    return `${convertedMinutes}:${convertedSeconds}`;
+  }
+  return `${convertedHours}:${convertedMinutes}:${convertedSeconds}`;
+};
+
+export const compareTo = (a: number, b: number) => {
+  return Math.trunc(a) > Math.trunc(b);
 };

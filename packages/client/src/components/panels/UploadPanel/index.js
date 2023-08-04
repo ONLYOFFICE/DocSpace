@@ -7,7 +7,6 @@ import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
 import { withTranslation } from "react-i18next";
-import SharingPanel from "../SharingPanel";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -67,6 +66,10 @@ class UploadPanelComponent extends React.Component {
     this.onClose();
   };
 
+  onCancelUpload = () => {
+    this.props.cancelUpload(this.props.t);
+  };
+
   render() {
     //console.log("UploadPanel render");
     const {
@@ -75,7 +78,6 @@ class UploadPanelComponent extends React.Component {
       /* sharingPanelVisible, */ uploaded,
       converted,
       uploadDataFiles,
-      cancelUpload,
       cancelConversion,
       isUploading,
       isUploadingAndConversion,
@@ -89,7 +91,7 @@ class UploadPanelComponent extends React.Component {
       ? t("Uploads")
       : isUploadingAndConversion
       ? t("UploadAndConvert")
-      : t("Home:Convert");
+      : t("Files:Convert");
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -126,7 +128,9 @@ class UploadPanelComponent extends React.Component {
                       iconName={ButtonCancelReactSvgUrl}
                       // color={theme.filesPanels.upload.color}
                       isClickable
-                      onClick={uploaded ? cancelConversion : cancelUpload}
+                      onClick={
+                        uploaded ? cancelConversion : this.onCancelUpload
+                      }
                     />
                   )}
                 </div>
@@ -144,7 +148,6 @@ class UploadPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-        {/* sharingPanelVisible && <SharingPanel /> */}
       </StyledAsidePanel>
     );
   }

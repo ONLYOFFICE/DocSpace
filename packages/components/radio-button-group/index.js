@@ -45,6 +45,7 @@ class RadioButtonGroup extends React.Component {
             );
           return (
             <RadioButton
+              id={option.id}
               key={option.value}
               name={this.props.name}
               value={option.value}
@@ -68,11 +69,11 @@ class RadioButtonGroup extends React.Component {
 }
 
 RadioButtonGroup.propTypes = {
-  /** Disabling all radiobutton in group */
+  /** Disables all radiobuttons in the group */
   isDisabled: PropTypes.bool,
-  /** Used as HTML `name` property for `<input>` tag. Used for identification RadioButtonGroup */
+  /** Used as HTML `value` property for `<input>` tag. Facilitates identification of each RadioButtonGroup */
   name: PropTypes.string.isRequired,
-  /** Allow you to handle clicking events on `<RadioButton />` component */
+  /** Allows handling clicking events on `<RadioButton />` component */
   onClick: PropTypes.func,
   /** Array of objects, contains props for each `<RadioButton />` component */
   options: PropTypes.arrayOf(
@@ -84,8 +85,8 @@ RadioButtonGroup.propTypes = {
   ).isRequired,
   /** Value of the selected radiobutton */
   selected: PropTypes.string.isRequired,
-  /** Margin between radiobutton. If orientation `horizontal`, it is `margin-left`(apply for all radiobuttons,
-   * except first), if orientation `vertical`, it is `margin-bottom`(apply for all radiobuttons, except last) */
+  /** Sets margin between radiobuttons. In case the orientation is `horizontal`, `margin-left` is applied for all radiobuttons,
+   * except the first one. If the orientation is `vertical`, `margin-bottom` is applied for all radiobuttons, except the last one */
   spacing: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
@@ -97,9 +98,9 @@ RadioButtonGroup.propTypes = {
   orientation: PropTypes.oneOf(["horizontal", "vertical"]),
   /** Width of RadioButtonGroup container */
   width: PropTypes.string,
-  /** Font size of link */
+  /** Link font size */
   fontSize: PropTypes.string,
-  /** Font weight of link  */
+  /** Link font weight  */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 

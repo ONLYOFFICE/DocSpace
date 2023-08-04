@@ -60,9 +60,9 @@ public class QuotaUsageManager
 
     public async Task<QuotaUsageDto> Get()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
-        var quota = _tenantManager.GetCurrentTenantQuota();
-        var quotaRows = _tenantManager.FindTenantQuotaRows(tenant.Id)
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
+        var quota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        var quotaRows = (await _tenantManager.FindTenantQuotaRowsAsync(tenant.Id))
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
             .ToList();
 
@@ -71,9 +71,9 @@ public class QuotaUsageManager
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
             MaxRoomAdminsCount = quota.CountRoomAdmin,
-            RoomAdminCount = _coreBaseSettings.Personal ? 1 : await _countPaidUserStatistic.GetValue(),
+            RoomAdminCount = _coreBaseSettings.Personal ? 1 : await _countPaidUserStatistic.GetValueAsync(),
             MaxUsers = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
-            UsersCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
+            UsersCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValueAsync(),
 
             StorageUsage = quotaRows
                 .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
@@ -82,7 +82,7 @@ public class QuotaUsageManager
 
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            result.UserStorageSize = _configuration.PersonalMaxSpace(_settingsManager);
+            result.UserStorageSize = await _configuration.PersonalMaxSpaceAsync(_settingsManager);
 
             var webItem = _webItemManager[WebItemManager.DocumentsProductID];
             if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
@@ -97,42 +97,84 @@ public class QuotaUsageManager
     }
 }
 
+/// <summary>
+/// </summary>
 public class QuotaUsageDto
 {
+    /// <summary>Storage size</summary>
+    /// <type>System.UInt64, System</type>
     public ulong StorageSize { get; set; }
+
+    /// <summary>Maximum file size</summary>
+    /// <type>System.UInt64, System</type>
     public ulong MaxFileSize { get; set; }
+
+    /// <summary>Used size</summary>
+    /// <type>System.UInt64, System</type>
     public ulong UsedSize { get; set; }
+
+    /// <summary>maximum number of room administrators</summary>
+    /// <type>System.Int32, System</type>
     public int MaxRoomAdminsCount { get; set; }
+
+    /// <summary>Number of room administrators</summary>
+    /// <type>System.Int32, System</type>
     public int RoomAdminCount { get; set; }
 
+    /// <summary>Available size</summary>
+    /// <type>System.UInt64, System</type>
     public ulong AvailableSize
     {
         get { return Math.Max(0, StorageSize > UsedSize ? StorageSize - UsedSize : 0); }
         set { throw new NotImplementedException(); }
     }
 
+    /// <summary>Available number of users</summary>
+    /// <type>System.Int32, System</type>
     public int AvailableUsersCount
     {
         get { return Math.Max(0, MaxRoomAdminsCount - RoomAdminCount); }
         set { throw new NotImplementedException(); }
     }
 
+    /// <summary>Storage usage</summary>
+    /// <type>System.Collections.Generic.IList{ASC.Web.Api.ApiModel.ResponseDto.QuotaUsage}, System.Collections.Generic</type>
     public IList<QuotaUsage> StorageUsage { get; set; }
+
+    /// <summary>User storage size</summary>
+    /// <type>System.Int64, System</type>
     public long UserStorageSize { get; set; }
+
+    /// <summary>User used size</summary>
+    /// <type>System.Int64, System</type>
     public long UserUsedSize { get; set; }
 
+    /// <summary>User available size</summary>
+    /// <type>System.Int64, System</type>
     public long UserAvailableSize
     {
         get { return Math.Max(0, UserStorageSize - UserUsedSize); }
         set { throw new NotImplementedException(); }
     }
 
+    /// <summary>Maximum number of users</summary>
+    /// <type>System.Int64, System</type>
     public long MaxUsers { get; set; }
+
+    /// <summary>Number of users</summary>
+    /// <type>System.Int64, System</type>
     public long UsersCount { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class QuotaUsage
 {
+    /// <summary>Path to the storage</summary>
+    /// <type>System.String, System</type>
     public string Path { get; set; }
+
+    /// <summary>Storage size</summary>
+    /// <type>System.Int64, System</type>
     public long Size { get; set; }
 }

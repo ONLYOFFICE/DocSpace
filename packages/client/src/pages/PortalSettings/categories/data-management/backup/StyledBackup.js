@@ -5,7 +5,12 @@ import {
 } from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
-import { hugeMobile, tablet, mobile } from "@docspace/components/utils/device";
+import {
+  hugeMobile,
+  tablet,
+  mobile,
+  smallTablet,
+} from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
 
@@ -183,6 +188,7 @@ const StyledAutoBackup = styled.div`
   .auto-backup_badge {
     height: 16px;
     margin-left: 8px;
+    cursor: auto;
   }
   ${(props) => !props.isEnableAuto && UnavailableStyles}
 `;
@@ -239,6 +245,10 @@ const StyledRestoreBackup = styled.div`
   .restore-backup_input {
     margin: 16px 0;
     max-width: ${INPUT_LENGTH};
+
+    @media ${smallTablet} {
+      max-width: none;
+    }
   }
   .restore-description {
     margin-bottom: 24px;
@@ -250,7 +260,9 @@ const StyledRestoreBackup = styled.div`
     margin-bottom: 16px;
   }
   .restore-backup_button {
-    ${isMobileOnly && "width:100%"}
+    @media ${smallTablet} {
+      width: 100%;
+    }
   }
   ${(props) => !props.isEnableRestore && UnavailableStyles}
 `;
@@ -400,7 +412,7 @@ const StyledBackup = styled.div`
 `;
 const StyledBackupList = styled.div`
   height: 100%;
-  width: calc(100% - 16px);
+  width: 100%;
   .loader {
     height: inherit;
   }
@@ -456,11 +468,17 @@ const StyledBackupList = styled.div`
     height: 48px;
     grid-template-areas: "trash icon-name full-name  radiobutton";
     grid-template-columns: 25px 32px auto 32px;
-    ${(props) => props.isChecked && `background: #F3F4F4;`}
+    ${(props) =>
+      props.isChecked &&
+      css`
+        background: ${(props) =>
+          props.theme.client.settings.backup.backupCheckedListItemBackground};
+      `}
     padding-left: 16px;
+    padding-right: 16px;
   }
   .backup-restore_dialog-scroll-body {
-    margin-left: -17px;
+    margin-left: -16px;
     margin-right: -17px;
     .nav-thumb-vertical {
       margin-left: -8px !important;

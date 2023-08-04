@@ -1,4 +1,4 @@
-﻿const winston = require("winston"),
+const winston = require("winston"),
       WinstonCloudWatch = require('winston-cloudwatch');
 
 require("winston-daily-rotate-file");
@@ -11,6 +11,7 @@ const { randomUUID } = require('crypto');
 const date = require('date-and-time');
 
 let logpath = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 if(logpath != null)
 {
     if(!path.isAbsolute(logpath))
@@ -28,7 +29,10 @@ const accessKeyId = aws.accessKeyId;
 const secretAccessKey = aws.secretAccessKey; 
 const awsRegion = aws.region; 
 const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName;
+const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
+                                      .replace("${applicationContext}", "SocketIO")                  
+                                      .replace("${guid}", randomUUID())
+                                      .replace("${date}", date.format(new Date(), 'YYYY/MM/DDTHH.mm.ss'));      
 
 if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName);
@@ -37,6 +41,7 @@ if (!fs.existsSync(dirName)) {
 var options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -46,25 +51,15 @@ var options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: 'aws',
-    level: "debug",
-    logStreamName: () => {
-      const hostname = os.hostname();
-      const now = new Date();
-      const guid = randomUUID();
-      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
-      
-      return logStreamName.replace("${hostname}", hostname)
-                          .replace("${applicationContext}", "SocketIO")                  
-                          .replace("${guid}", guid)
-                          .replace("${date}", dateAsString);      
-    },
+    level: logLevel,
+    logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,

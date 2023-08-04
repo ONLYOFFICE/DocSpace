@@ -75,8 +75,10 @@ public class DiscDataStore : BaseStorage
         ILogger<DiscDataStore> logger,
         EncryptionSettingsHelper encryptionSettingsHelper,
         EncryptionFactory encryptionFactory,
-        IHttpClientFactory clientFactory)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _encryptionFactory = encryptionFactory;
@@ -143,31 +145,25 @@ public class DiscDataStore : BaseStorage
     {
         return SaveAsync(domain, path, stream);
     }
-        private bool EnableQuotaCheck(string domain)
-        {
-            return (QuotaController != null) && !domain.EndsWith("_temp");
-        }
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
 
-    public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
+    public override async Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
         Logger.DebugSavePath(path);
 
         var buffered = _tempStream.GetBuffered(stream);
             
-            if (EnableQuotaCheck(domain))
+        if (EnableQuotaCheck(domain))
         {
-            QuotaController.QuotaUsedCheck(buffered.Length);
+            await QuotaController.QuotaUsedCheckAsync(buffered.Length);
         }
 
         ArgumentNullException.ThrowIfNull(path);
         ArgumentNullException.ThrowIfNull(stream);
 
-        //Try seek to start
-        return InternalSaveAsync(domain, path, buffered);
-    }
-
-    private async Task<Uri> InternalSaveAsync(string domain, string path, Stream buffered)
-    {
         //Try seek to start
         if (buffered.CanSeek)
         {
@@ -188,12 +184,12 @@ public class DiscDataStore : BaseStorage
         }
         else
         {
-            using var fs = File.Open(target, FileMode.Create);
+            await using var fs = File.Open(target, FileMode.Create);
             await buffered.CopyToAsync(fs);
             fslen = fs.Length;
         }
 
-        QuotaUsedAdd(domain, fslen);
+        await QuotaUsedAddAsync(domain, fslen);
 
         _crypt.EncryptFile(target);
 
@@ -218,7 +214,7 @@ public class DiscDataStore : BaseStorage
         var target = GetTarget(domain, path);
         var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 
-        using (var fs = new FileStream(target, mode))
+        await using (var fs = new FileStream(target, mode))
         {
             await stream.CopyToAsync(fs);
         }
@@ -226,7 +222,7 @@ public class DiscDataStore : BaseStorage
         return string.Format("{0}_{1}", chunkNumber, uploadId);
     }
 
-    public override Task<Uri> FinalizeChunkedUploadAsync(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+    public override async Task<Uri> FinalizeChunkedUploadAsync(string domain, string path, string uploadId, Dictionary<int, string> eTags)
     {
         var target = GetTarget(domain, path);
 
@@ -238,12 +234,12 @@ public class DiscDataStore : BaseStorage
             }
 
             var size = _crypt.GetFileSize(target);
-            QuotaUsedAdd(domain, size);
+            await QuotaUsedAddAsync(domain, size);
         }
 
         _crypt.EncryptFile(target);
 
-        return GetUriAsync(domain, path);
+        return await GetUriAsync(domain, path);
     }
 
     public override Task AbortChunkedUploadAsync(string domain, string path, string uploadId)
@@ -258,7 +254,7 @@ public class DiscDataStore : BaseStorage
 
     #endregion
 
-    public override Task DeleteAsync(string domain, string path)
+    public override async Task DeleteAsync(string domain, string path)
     {
         ArgumentNullException.ThrowIfNull(path);
 
@@ -269,8 +265,7 @@ public class DiscDataStore : BaseStorage
             var size = _crypt.GetFileSize(target);
             File.Delete(target);
 
-            QuotaUsedDelete(domain, size);
-            return Task.CompletedTask; ;
+            await QuotaUsedDeleteAsync(domain, size);
         }
         else
         {
@@ -278,7 +273,7 @@ public class DiscDataStore : BaseStorage
         }
     }
 
-    public override Task DeleteFilesAsync(string domain, List<string> paths)
+    public override async Task DeleteFilesAsync(string domain, List<string> paths)
     {
         ArgumentNullException.ThrowIfNull(paths);
 
@@ -294,13 +289,11 @@ public class DiscDataStore : BaseStorage
             var size = _crypt.GetFileSize(target);
             File.Delete(target);
 
-            QuotaUsedDelete(domain, size);
+            await QuotaUsedDeleteAsync(domain, size);
         }
-
-        return Task.CompletedTask;
     }
 
-    public override Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
+    public override async Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
     {
         ArgumentNullException.ThrowIfNull(folderPath);
 
@@ -313,9 +306,8 @@ public class DiscDataStore : BaseStorage
             {
                 var size = _crypt.GetFileSize(entry);
                 File.Delete(entry);
-                QuotaUsedDelete(domain, size);
+                await QuotaUsedDeleteAsync(domain, size);
             }
-            return Task.CompletedTask;
         }
         else
         {
@@ -323,7 +315,7 @@ public class DiscDataStore : BaseStorage
         }
     }
 
-    public override Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate)
+    public override async Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate)
     {
         ArgumentNullException.ThrowIfNull(folderPath);
 
@@ -339,7 +331,7 @@ public class DiscDataStore : BaseStorage
                 {
                     var size = _crypt.GetFileSize(entry);
                     File.Delete(entry);
-                    QuotaUsedDelete(domain, size);
+                    await QuotaUsedDeleteAsync(domain, size);
                 }
             }
         }
@@ -347,8 +339,6 @@ public class DiscDataStore : BaseStorage
         {
             throw new DirectoryNotFoundException($"Directory '{targetDir}' not found");
         }
-
-        return Task.CompletedTask;
     }
 
     public override Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
@@ -367,7 +357,7 @@ public class DiscDataStore : BaseStorage
         return Task.CompletedTask;
     }
 
-    public override Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+    public override async Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
     {
         ArgumentNullException.ThrowIfNull(srcpath);
         ArgumentNullException.ThrowIfNull(newpath);
@@ -392,14 +382,14 @@ public class DiscDataStore : BaseStorage
 
             File.Move(target, newtarget);
 
-            QuotaUsedDelete(srcdomain, flength);
-            QuotaUsedAdd(newdomain, flength, quotaCheckFileSize);
+            await QuotaUsedDeleteAsync(srcdomain, flength);
+            await QuotaUsedAddAsync(newdomain, flength, quotaCheckFileSize);
         }
         else
         {
             throw new FileNotFoundException("File not found", Path.GetFullPath(target));
         }
-        return GetUriAsync(newdomain, newpath);
+        return await GetUriAsync(newdomain, newpath);
     }
 
     public override Task<bool> IsDirectoryAsync(string domain, string path)
@@ -415,7 +405,7 @@ public class DiscDataStore : BaseStorage
         return Task.FromResult(!string.IsNullOrEmpty(targetDir) && Directory.Exists(targetDir));
     }
 
-    public override Task DeleteDirectoryAsync(string domain, string path)
+    public override async Task DeleteDirectoryAsync(string domain, string path)
     {
         ArgumentNullException.ThrowIfNull(path);
 
@@ -434,11 +424,19 @@ public class DiscDataStore : BaseStorage
 
         if (!Directory.Exists(targetDir))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
-        var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
+        var size = entries.Where(r =>
+        {
+            if (QuotaController == null || string.IsNullOrEmpty(QuotaController.ExcludePattern))
+            {
+                return true;
+            }
+            return !Path.GetFileName(r).StartsWith(QuotaController.ExcludePattern);
+        }
+        ).Select(_crypt.GetFileSize).Sum();
 
         var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
         subDirs.Reverse();
@@ -446,8 +444,7 @@ public class DiscDataStore : BaseStorage
 
         Directory.Delete(targetDir, true);
 
-        QuotaUsedDelete(domain, size);
-        return Task.CompletedTask;
+        await QuotaUsedDeleteAsync(domain, size);
     }
 
     public override Task<long> GetFileSizeAsync(string domain, string path)
@@ -476,10 +473,10 @@ public class DiscDataStore : BaseStorage
         throw new FileNotFoundException("directory not found " + target);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
-        return SaveAsync(domain, assignedPath, stream);
+        var assignedPath = Guid.NewGuid().ToString();
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
@@ -488,7 +485,7 @@ public class DiscDataStore : BaseStorage
         return result.ToString();
     }
 
-    public override Task DeleteExpiredAsync(string domain, string folderPath, TimeSpan oldThreshold)
+    public override async Task DeleteExpiredAsync(string domain, string folderPath, TimeSpan oldThreshold)
     {
         ArgumentNullException.ThrowIfNull(folderPath);
 
@@ -496,7 +493,7 @@ public class DiscDataStore : BaseStorage
         var targetDir = GetTarget(domain, folderPath);
         if (!Directory.Exists(targetDir))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.TopDirectoryOnly);
@@ -508,11 +505,9 @@ public class DiscDataStore : BaseStorage
                 var size = _crypt.GetFileSize(entry);
                 File.Delete(entry);
 
-                QuotaUsedDelete(domain, size);
+                await QuotaUsedDeleteAsync(domain, size);
             }
         }
-
-        return Task.CompletedTask;
     }
 
     public override string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize, string contentType, string contentDisposition, string submitLabel)
@@ -589,7 +584,7 @@ public class DiscDataStore : BaseStorage
         if (QuotaController != null)
         {
             var size = await GetUsedQuotaAsync(domain);
-            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
+            await QuotaController.QuotaUsedSetAsync(Modulename, domain, DataList.GetData(domain), size);
         }
 
         return 0;
@@ -608,7 +603,7 @@ public class DiscDataStore : BaseStorage
         return Task.FromResult(size);
     }
 
-    public override Task<Uri> CopyAsync(string srcdomain, string srcpath, string newdomain, string newpath)
+    public override async Task<Uri> CopyAsync(string srcdomain, string srcpath, string newdomain, string newpath)
     {
         ArgumentNullException.ThrowIfNull(srcpath);
         ArgumentNullException.ThrowIfNull(newpath);
@@ -626,16 +621,16 @@ public class DiscDataStore : BaseStorage
             File.Copy(target, newtarget, true);
 
             var flength = _crypt.GetFileSize(target);
-            QuotaUsedAdd(newdomain, flength);
+            await QuotaUsedAddAsync(newdomain, flength);
         }
         else
         {
             throw new FileNotFoundException("File not found", Path.GetFullPath(target));
         }
-        return GetUriAsync(newdomain, newpath);
+        return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task CopyDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
+    public override async Task CopyDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
     {
         var target = GetTarget(srcdomain, srcdir);
         var newtarget = GetTarget(newdomain, newdir);
@@ -643,8 +638,7 @@ public class DiscDataStore : BaseStorage
         var diSource = new DirectoryInfo(target);
         var diTarget = new DirectoryInfo(newtarget);
 
-        CopyAll(diSource, diTarget, newdomain);
-        return Task.CompletedTask;
+        await CopyAllAsync(diSource, diTarget, newdomain);
     }
 
 
@@ -684,7 +678,7 @@ public class DiscDataStore : BaseStorage
         return SaveAsync(domain, path, stream);
     }
 
-    private void CopyAll(DirectoryInfo source, DirectoryInfo target, string newdomain)
+    private async Task CopyAllAsync(DirectoryInfo source, DirectoryInfo target, string newdomain)
     {
         // Check if the target directory exists, if not, create it.
         if (!Directory.Exists(target.FullName))
@@ -698,14 +692,14 @@ public class DiscDataStore : BaseStorage
             var fp = CrossPlatform.PathCombine(target.ToString(), fi.Name);
             fi.CopyTo(fp, true);
             var size = _crypt.GetFileSize(fp);
-            QuotaUsedAdd(newdomain, size);
+            await QuotaUsedAddAsync(newdomain, size);
         }
 
         // Copy each subdirectory using recursion.
         foreach (var diSourceSubDir in source.GetDirectories())
         {
             var nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-            CopyAll(diSourceSubDir, nextTargetSubDir, newdomain);
+            await CopyAllAsync(diSourceSubDir, nextTargetSubDir, newdomain);
         }
     }
 
@@ -768,7 +762,7 @@ public class DiscDataStore : BaseStorage
     {
         ArgumentNullException.ThrowIfNull(path);
 
-        var target = GetTarget(domain, path);              
+        var target = GetTarget(domain, path);
         var lastModificationDate = File.Exists(target) ? File.GetLastWriteTimeUtc(target) : throw new FileNotFoundException("File not found" + target);
         var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 

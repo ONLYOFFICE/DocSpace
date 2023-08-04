@@ -1,19 +1,15 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-
 import toastr from "@docspace/components/toast/toastr";
-
-import { getTitleWithoutExst } from "../../helpers/files-helpers";
-
 import Dialog from "./sub-components/Dialog";
+import { getTitleWithoutExtension } from "SRC_DIR/helpers/filesUtils";
 
 const RenameEvent = ({
   type,
   item,
   onClose,
 
-  setIsLoading,
   addActiveItems,
 
   updateFile,
@@ -34,13 +30,13 @@ const RenameEvent = ({
   const { t } = useTranslation(["Files"]);
 
   React.useEffect(() => {
-    setStartValue(getTitleWithoutExst(item, false));
+    setStartValue(getTitleWithoutExtension(item, false));
 
     setEventDialogVisible(true);
   }, [item]);
 
   const onUpdate = React.useCallback((e, value) => {
-    const originalTitle = getTitleWithoutExst(item);
+    const originalTitle = getTitleWithoutExtension(item);
 
     let timerId;
 
@@ -52,7 +48,7 @@ const RenameEvent = ({
     if (isSameTitle) {
       setStartValue(originalTitle);
 
-      onClose();
+      onCancel();
 
       return completeAction(item, type);
     } else {
@@ -81,7 +77,7 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations([item.id]);
 
-            onClose();
+            onCancel();
           })
       : renameFolder(item.id, value)
           .then(() => completeAction(item, type))
@@ -105,26 +101,27 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations(null, [item.id]);
 
-            onClose();
+            onCancel();
           });
   }, []);
 
   const onCancel = React.useCallback(
     (e) => {
-      onClose && onClose();
+      onClose && onClose(e);
+      setEventDialogVisible(false);
     },
-    [onClose]
+    [onClose, setEventDialogVisible]
   );
 
   return (
     <Dialog
       t={t}
       visible={eventDialogVisible}
-      title={t("Files:Rename")}
+      title={t("Common:Rename")}
       startValue={startValue}
       onSave={onUpdate}
       onCancel={onCancel}
-      onClose={onClose}
+      onClose={onCancel}
     />
   );
 };
@@ -137,12 +134,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const {
-      setIsLoading,
-      addActiveItems,
-      updateFile,
-      renameFolder,
-    } = filesStore;
+    const { addActiveItems, updateFile, renameFolder } = filesStore;
 
     const { id, setSelectedFolder } = selectedFolderStore;
 
@@ -152,7 +144,6 @@ export default inject(
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
 
     return {
-      setIsLoading,
       addActiveItems,
       updateFile,
       renameFolder,

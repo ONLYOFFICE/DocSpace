@@ -1,6 +1,11 @@
 import React from "react";
 import EmailChips from ".";
 
+export default {
+  title: "Components/EmailChips",
+  component: EmailChips,
+};
+
 const Options = [
   { name: "Ivan Petrov", email: "myname@gmul.com", isValid: true },
   { name: "Donna Cross", email: "myname45@gmul.com", isValid: true },
@@ -44,7 +49,7 @@ const Template = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   options: Options,
-  onChange: (selected) => console.log(selected),
+  onChange: (selected) => {},
   placeholder: "Invite people by name or email",
   clearButtonLabel: "Clear list",
   existEmailText: "This email address has already been entered",

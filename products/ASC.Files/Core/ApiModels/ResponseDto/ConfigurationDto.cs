@@ -26,14 +26,43 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class ConfigurationDto<T>
 {
+    /// <summary>Document config</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.DocumentConfig, ASC.Files.Core</type>
     public DocumentConfig<T> Document { get; set; }
+
+    /// <summary>Document type</summary>
+    /// <type>System.String, System</type>
     public string DocumentType { get; set; }
+
+    /// <summary>Editor config</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.EditorConfiguration, ASC.Files.Core</type>
     public EditorConfiguration<T> EditorConfig { get; set; }
+
+    /// <summary>Editor type</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.EditorType, ASC.Files.Core</type>
     public EditorType EditorType { get; set; }
+
+    /// <summary>Editor URL</summary>
+    /// <type>System.String, System</type>
     public string EditorUrl { get; set; }
+
+    /// <summary>Token</summary>
+    /// <type>System.String, System</type>
     public string Token { get; set; }
+
+    /// <summary>Platform type</summary>
+    /// <type>System.String, System</type>
     public string Type { get; set; }
+
+    /// <summary>File parameters</summary>
+    /// <type>ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core</type>
     public FileDto<T> File { get; set; }
+
+    /// <summary>Error message</summary>
+    /// <type>System.String, System</type>
+    public string ErrorMessage { get; set; }
 }

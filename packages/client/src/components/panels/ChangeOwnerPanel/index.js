@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
@@ -29,13 +28,8 @@ class ChangeOwnerComponent extends React.Component {
 
   onOwnerChange = () => {
     const { owner } = this.state;
-    const {
-      selection,
-      setFolder,
-      setFile,
-      setIsLoading,
-      setFilesOwner,
-    } = this.props;
+    const { selection, setFolder, setFile, setIsLoading, setFilesOwner } =
+      this.props;
     const folderIds = [];
     const fileIds = [];
     const selectedItem = selection[0];
@@ -136,30 +130,31 @@ const ChangeOwnerPanel = withTranslation(["ChangeOwnerPanel", "Common"])(
   withLoader(ChangeOwnerComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
-export default inject(({ auth, filesStore, dialogsStore }) => {
-  const {
-    selection,
-    bufferSelection,
-    setFile,
-    setFolder,
-    setFilesOwner,
-    setIsLoading,
-    isLoading,
-    setBufferSelection,
-  } = filesStore;
-  const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
+export default inject(
+  ({ auth, filesStore, dialogsStore, clientLoadingStore }) => {
+    const {
+      selection,
+      bufferSelection,
+      setFile,
+      setFolder,
+      setFilesOwner,
 
-  return {
-    theme: auth.settingsStore.theme,
-    selection: selection.length ? selection : [bufferSelection],
-    isLoading,
-    visible: ownerPanelVisible,
+      setBufferSelection,
+    } = filesStore;
+    const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
-    setFile,
-    setFolder,
-    setIsLoading,
-    setChangeOwnerPanelVisible,
-    setFilesOwner,
-    setBufferSelection,
-  };
-})(withRouter(observer(ChangeOwnerPanel)));
+    return {
+      theme: auth.settingsStore.theme,
+      selection: selection.length ? selection : [bufferSelection],
+      isLoading: clientLoadingStore.isLoading,
+      visible: ownerPanelVisible,
+
+      setFile,
+      setFolder,
+      setIsLoading: clientLoadingStore.setIsSectionBodyLoading,
+      setChangeOwnerPanelVisible,
+      setFilesOwner,
+      setBufferSelection,
+    };
+  }
+)(observer(ChangeOwnerPanel));

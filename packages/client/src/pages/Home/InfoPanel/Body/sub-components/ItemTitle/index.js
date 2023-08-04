@@ -7,6 +7,7 @@ import GalleryItemTitle from "./GalleryItemTitle";
 
 const ItemTitle = ({
   selection,
+  gallerySelected,
   isRooms,
   isAccounts,
   isGallery,
@@ -30,7 +31,9 @@ const ItemTitle = ({
     );
 
   if (isGallery)
-    return <GalleryItemTitle selection={selection} getIcon={getIcon} />;
+    return (
+      <GalleryItemTitle gallerySelected={gallerySelected} getIcon={getIcon} />
+    );
 
   const filesItemSelection =
     isRooms &&
@@ -51,12 +54,14 @@ const ItemTitle = ({
   );
 };
 
-export default inject(({ auth, settingsStore, peopleStore }) => {
+export default inject(({ auth, settingsStore, peopleStore, oformsStore }) => {
   const { selectionParentRoom, roomsView } = auth.infoPanelStore;
   const { getIcon } = settingsStore;
   const { getUserContextOptions } = peopleStore.contextOptionsStore;
+  const { gallerySelected } = oformsStore;
 
   return {
+    gallerySelected,
     getUserContextOptions,
     selectionParentRoom,
     roomsView,

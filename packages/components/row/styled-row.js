@@ -9,17 +9,22 @@ const StyledRow = styled.div`
   position: relative;
   min-height: ${(props) => props.theme.row.minHeight};
   width: ${(props) => props.theme.row.width};
-  border-bottom: 2px solid transparent;
+  border-bottom: ${(props) =>
+    props.withoutBorder ? "none" : "2px solid transparent"};
 
-  ::after {
-    position: absolute;
-    display: block;
-    bottom: 0px;
-    width: 100%;
-    height: 1px;
-    background-color: ${(props) => props.theme.row.borderBottom};
-    content: "";
-  }
+  ${(props) =>
+    !props.withoutBorder &&
+    css`
+      ::after {
+        position: absolute;
+        display: block;
+        bottom: 0px;
+        width: 100%;
+        height: 1px;
+        background-color: ${(props) => props.theme.row.borderBottom};
+        content: "";
+      }
+    `}
 
   display: flex;
   flex-direction: row;
@@ -43,8 +48,8 @@ const StyledRow = styled.div`
     css`
       .checkbox {
         display: ${(props) => (props.checked ? "flex" : "none")};
-        margin-left: 4px;
-        padding-right: 2.5px;
+        margin-left: -4px;
+        padding: 10px 0px 10px 8px;
       }
 
       .styled-element {
@@ -88,7 +93,6 @@ const StyledCheckbox = styled.div`
           display: flex;
           opacity: 1;
           user-select: none;
-          padding-right: 2.5px;
         }
         .styled-element {
           display: none;

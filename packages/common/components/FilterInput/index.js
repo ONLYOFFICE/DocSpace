@@ -11,7 +11,7 @@ import Link from "@docspace/components/link";
 
 import FilterButton from "./sub-components/FilterButton";
 import SortButton from "./sub-components/SortButton";
-import SelectedItem from "./sub-components/SelectedItem";
+import SelectedItem from "@docspace/components/selected-item";
 
 import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 
@@ -44,11 +44,13 @@ const FilterInput = React.memo(
     isRooms,
     isAccounts,
     filterTitle,
+    sortByTitle,
 
     clearSearch,
     setClearSearch,
 
     onSortButtonClick,
+    onClearFilter,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -66,7 +68,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       if (clearSearch) {
         setInputValue("");
-        onClearSearch();
+        onClearFilter && onClearFilter();
         setClearSearch(false);
       }
     }, [clearSearch]);
@@ -120,7 +122,7 @@ const FilterInput = React.memo(
 
         removeSelectedItem({ key, group });
       },
-      [selectedItems, removeSelectedItem]
+      [selectedItems, removeSelectedItem],
     );
 
     React.useEffect(() => {
@@ -169,6 +171,7 @@ const FilterInput = React.memo(
                 viewSelectorVisible &&
                 (isMobile || isMobileUtils() || isTabletUtils())
               }
+              title={sortByTitle}
             />
           )}
           {((viewSettings &&
@@ -195,18 +198,18 @@ const FilterInput = React.memo(
                 propKey={item.key}
                 label={item.selectedLabel ? item.selectedLabel : item.label}
                 group={item.group}
-                removeSelectedItem={removeSelectedItemAction}
+                onClose={removeSelectedItemAction}
+                onClick={removeSelectedItemAction}
               />
             ))}
-            {selectedItems.length > 1 && (
+            {selectedItems.filter((item) => item.label).length > 1 && (
               <Link
                 className={"clear-all-link"}
                 isHovered
                 fontWeight={600}
                 isSemitransparent
                 type="action"
-                onClick={clearAll}
-              >
+                onClick={clearAll}>
                 {t("Common:ClearAll")}
               </Link>
             )}
@@ -214,7 +217,7 @@ const FilterInput = React.memo(
         )}
       </StyledFilterInput>
     );
-  }
+  },
 );
 
 FilterInput.defaultProps = {

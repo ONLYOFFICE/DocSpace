@@ -55,8 +55,10 @@ public class RackspaceCloudStorage : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider options,
         ILogger<RackspaceCloudStorage> logger,
-        IHttpClientFactory httpClient)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, httpClient)
+        IHttpClientFactory httpClient,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, httpClient, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
         _logger = logger;
         TempPath = tempPath;
@@ -187,20 +189,20 @@ public class RackspaceCloudStorage : BaseStorage
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
 
-        private bool EnableQuotaCheck(string domain)
-        {
-            return (QuotaController != null) && !domain.EndsWith("_temp");
-        }
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
 
-    public Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
+    public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                       string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
     DateTime? deleteAt = null, long? deleteAfter = null)
     {
         var buffered = _tempStream.GetBuffered(stream);
 
-            if (EnableQuotaCheck(domain))
+        if (EnableQuotaCheck(domain))
         {
-            QuotaController.QuotaUsedCheck(buffered.Length);
+            await QuotaController.QuotaUsedCheckAsync(buffered.Length);
         }
 
         var client = GetClient();
@@ -242,8 +244,7 @@ public class RackspaceCloudStorage : BaseStorage
         {
             try
             {
-
-                using (var emptyStream = _tempStream.Create())
+                await using (var emptyStream = _tempStream.Create())
                 {
 
                     var headers = new Dictionary<string, string>
@@ -282,9 +283,9 @@ public class RackspaceCloudStorage : BaseStorage
                             _region
                            );
 
-        QuotaUsedAdd(domain, buffered.Length);
+        await QuotaUsedAddAsync(domain, buffered.Length);
 
-        return GetUriAsync(domain, path);
+        return await GetUriAsync(domain, path);
 
     }
 
@@ -296,11 +297,11 @@ public class RackspaceCloudStorage : BaseStorage
 
         client.DeleteObject(_private_container, MakePath(domain, path));
 
-        QuotaUsedDelete(domain, size);
+        await QuotaUsedDeleteAsync(domain, size);
 
     }
 
-    public override Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
+    public override async Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
     {
         var client = GetClient();
 
@@ -309,7 +310,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         if (!files.Any())
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var file in files)
@@ -319,24 +320,17 @@ public class RackspaceCloudStorage : BaseStorage
 
         if (QuotaController != null)
         {
-            QuotaUsedDelete(domain, files.Select(x => x.Bytes).Sum());
+            await QuotaUsedDeleteAsync(domain, files.Select(x => x.Bytes).Sum());
         }
-
-        return Task.CompletedTask;
     }
 
-    public override Task DeleteFilesAsync(string domain, List<string> paths)
+    public override async Task DeleteFilesAsync(string domain, List<string> paths)
     {
         if (paths.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalDeleteFilesAsync(domain, paths);
-    }
-
-    private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
-    {
         var keysToDel = new List<string>();
 
         long quotaUsed = 0;
@@ -371,11 +365,11 @@ public class RackspaceCloudStorage : BaseStorage
 
         if (quotaUsed > 0)
         {
-            QuotaUsedDelete(domain, quotaUsed);
+            await QuotaUsedDeleteAsync(domain, quotaUsed);
         }
     }
 
-    public override Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate)
+    public override async Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate)
     {
         var client = GetClient();
 
@@ -384,7 +378,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         if (!files.Any())
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var file in files)
@@ -394,10 +388,8 @@ public class RackspaceCloudStorage : BaseStorage
 
         if (QuotaController != null)
         {
-            QuotaUsedDelete(domain, files.Select(x => x.Bytes).Sum());
+            await QuotaUsedDeleteAsync(domain, files.Select(x => x.Bytes).Sum());
         }
-
-        return Task.CompletedTask;
     }
 
     public override Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
@@ -429,17 +421,17 @@ public class RackspaceCloudStorage : BaseStorage
 
         await DeleteAsync(srcdomain, srcpath);
 
-        QuotaUsedDelete(srcdomain, size);
-        QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
+        await QuotaUsedDeleteAsync(srcdomain, size);
+        await QuotaUsedAddAsync(newdomain, size, quotaCheckFileSize);
 
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
+       var assignedPath = Guid.NewGuid().ToString();
 
-        return SaveAsync(domain, assignedPath, stream);
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)
@@ -475,7 +467,7 @@ public class RackspaceCloudStorage : BaseStorage
         return IsFileAsync(domain, path);
     }
 
-    public override Task DeleteDirectoryAsync(string domain, string path)
+    public override async Task DeleteDirectoryAsync(string domain, string path)
     {
         var client = GetClient();
 
@@ -484,9 +476,16 @@ public class RackspaceCloudStorage : BaseStorage
         foreach (var obj in objToDel)
         {
             client.DeleteObject(_private_container, obj.Name);
-            QuotaUsedDelete(domain, obj.Bytes);
+
+            if (QuotaController != null)
+            {
+                if (string.IsNullOrEmpty(QuotaController.ExcludePattern) ||
+                    !Path.GetFileName(obj.Name).StartsWith(QuotaController.ExcludePattern))
+                {
+                    await QuotaUsedDeleteAsync(domain, obj.Bytes);
+                }
+            }
         }
-        return Task.CompletedTask;
     }
 
     public override Task<long> GetFileSizeAsync(string domain, string path)
@@ -521,7 +520,7 @@ public class RackspaceCloudStorage : BaseStorage
         return Task.FromResult(result);
     }
 
-    public override Task<long> ResetQuotaAsync(string domain)
+    public override async Task<long> ResetQuotaAsync(string domain)
     {
         var client = GetClient();
 
@@ -537,12 +536,12 @@ public class RackspaceCloudStorage : BaseStorage
                 size += obj.Bytes;
             }
 
-            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
+            await QuotaController.QuotaUsedSetAsync(Modulename, domain, DataList.GetData(domain), size);
 
-            return Task.FromResult(size);
+            return size;
         }
 
-        return Task.FromResult<long>(0);
+        return 0;
     }
 
     public override Task<long> GetUsedQuotaAsync(string domain)
@@ -571,12 +570,12 @@ public class RackspaceCloudStorage : BaseStorage
 
         client.CopyObject(_private_container, srcKey, _private_container, dstKey);
 
-        QuotaUsedAdd(newdomain, size);
+        await QuotaUsedAddAsync(newdomain, size);
 
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task CopyDirectoryAsync(string srcdomain, string dir, string newdomain, string newdir)
+    public override async Task CopyDirectoryAsync(string srcdomain, string dir, string newdomain, string newdir)
     {
         var srckey = MakePath(srcdomain, dir);
         var dstkey = MakePath(newdomain, newdir);
@@ -588,9 +587,8 @@ public class RackspaceCloudStorage : BaseStorage
         {
             client.CopyObject(_private_container, file.Name, _private_container, file.Name.Replace(srckey, dstkey));
 
-            QuotaUsedAdd(newdomain, file.Bytes);
+            await QuotaUsedAddAsync(newdomain, file.Bytes);
         }
-        return Task.CompletedTask;
     }
 
     public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
@@ -634,7 +632,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 
-        using (var fs = new FileStream(filePath, mode))
+        await using (var fs = new FileStream(filePath, mode))
         {
             var buffer = new byte[BufferSize];
             int readed;
@@ -671,7 +669,7 @@ public class RackspaceCloudStorage : BaseStorage
         {
             var size = await GetFileSizeAsync(domain, path);
 
-            QuotaUsedAdd(domain, size);
+            await QuotaUsedAddAsync(domain, size);
         }
 
         return await GetUriAsync(domain, path);
@@ -759,7 +757,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         var obj = client.ListObjects(_private_container, null, null, null, prefix, _region).FirstOrDefault();
 
-        var lastModificationDate  =  obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
 
         var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 

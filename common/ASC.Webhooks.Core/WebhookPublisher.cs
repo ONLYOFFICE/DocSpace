@@ -30,14 +30,20 @@ namespace ASC.Webhooks.Core;
 public class WebhookPublisher : IWebhookPublisher
 {
     private readonly DbWorker _dbWorker;
-    private readonly ICacheNotify<WebhookRequest> _webhookNotify;
+    private readonly IEventBus _eventBus;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantManager _tenantManager;
 
     public WebhookPublisher(
         DbWorker dbWorker,
-        ICacheNotify<WebhookRequest> webhookNotify)
+        IEventBus eventBus,
+        SecurityContext securityContext,
+        TenantManager tenantManager)
     {
         _dbWorker = dbWorker;
-        _webhookNotify = webhookNotify;
+        _eventBus = eventBus;
+        _securityContext = securityContext;
+        _tenantManager = tenantManager;
     }
 
     public async Task PublishAsync(int webhookId, string requestPayload)
@@ -72,12 +78,12 @@ public class WebhookPublisher : IWebhookPublisher
 
         var webhook = await _dbWorker.WriteToJournal(webhooksLog);
 
-        var request = new WebhookRequest
+        _eventBus.Publish(new WebhookRequestIntegrationEvent(
+            _securityContext.CurrentAccount.ID,
+            _tenantManager.GetCurrentTenant().Id)
         {
-            Id = webhook.Id
-        };
-
-        _webhookNotify.Publish(request, CacheNotifyAction.Update);
+            WebhookId = webhook.Id
+        });
 
         return webhook;
     }

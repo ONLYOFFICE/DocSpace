@@ -26,6 +26,9 @@
 
 namespace ASC.Api.Settings;
 
+///<summary>
+/// SMTP settings API.
+///</summary>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -34,66 +37,52 @@ public class SmtpSettingsController : ControllerBase
     private readonly PermissionContext _permissionContext;
     private readonly CoreConfiguration _coreConfiguration;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly SecurityContext _securityContext;
     private readonly IMapper _mapper;
+    private readonly SmtpOperation _smtpOperation;
+    private readonly TenantManager _tenantManager;
 
 
     public SmtpSettingsController(
         PermissionContext permissionContext,
         CoreConfiguration coreConfiguration,
         CoreBaseSettings coreBaseSettings,
-        IMapper mapper)
+        IMapper mapper,
+        SecurityContext securityContext,
+        SmtpOperation smtpOperation,
+        TenantManager tenantManager)
     {
         _permissionContext = permissionContext;
         _coreConfiguration = coreConfiguration;
         _coreBaseSettings = coreBaseSettings;
         _mapper = mapper;
+        _securityContext = securityContext;
+        _smtpOperation = smtpOperation;
+        _tenantManager = tenantManager;
     }
 
 
+    /// <summary>
+    /// Returns the current portal SMTP settings.
+    /// </summary>
+    /// <short>
+    /// Get the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("smtp")]
-    public SmtpSettingsDto GetSmtpSettings()
+    public async Task<SmtpSettingsDto> GetSmtpSettingsAsync()
     {
         CheckSmtpPermissions();
 
-        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(_coreConfiguration.SmtpSettings);
-        settings.CredentialsUserPassword = "";
+        var current = await _coreConfiguration.GetDefaultSmtpSettingsAsync();
 
-        return settings;
-    }
-
-    [HttpPost("smtp")]
-    public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
-    {
-        CheckSmtpPermissions();
-
-        //TODO: Add validation check
-
-        ArgumentNullException.ThrowIfNull(inDto);
-
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        var settingConfig = ToSmtpSettingsConfig(inDto);
-
-        _coreConfiguration.SmtpSettings = settingConfig;
-
-        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(settingConfig);
-        settings.CredentialsUserPassword = "";
-
-        return settings;
-    }
-
-    [HttpDelete("smtp")]
-    public SmtpSettingsDto ResetSmtpSettings()
-    {
-        CheckSmtpPermissions();
-
-        if (!_coreConfiguration.SmtpSettings.IsDefaultSettings)
+        if (current.IsDefaultSettings && !_coreBaseSettings.Standalone)
         {
-            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            _coreConfiguration.SmtpSettings = null;
+            current = SmtpSettings.Empty;
         }
-
-        var current = _coreBaseSettings.Standalone ? _coreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";
@@ -101,72 +90,39 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
-    //[HttpGet("smtp/test")]
-    //public SmtpOperationStatus TestSmtpSettings()
-    //{
-    //    CheckSmtpPermissions();
+    /// <summary>
+    /// Saves the SMTP settings for the current portal.
+    /// </summary>
+    /// <short>
+    /// Save the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api" name="inDto">SMTP settings</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>POST</httpMethod>
+    [HttpPost("smtp")]
+    public async Task<SmtpSettingsDto> SaveSmtpSettingsAsync(SmtpSettingsDto inDto)
+    {
+        CheckSmtpPermissions();
 
-    //    var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
+        //TODO: Add validation check
 
-    //    //add resolve
-    //    var smtpTestOp = new SmtpOperation(settings, Tenant.Id, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
+        ArgumentNullException.ThrowIfNull(inDto);
 
-    //    SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-    //    return ToSmtpOperationStatus();
-    //}
+        var settingConfig = ToSmtpSettingsConfig(inDto);
 
-    //[HttpGet("smtp/test/status")]
-    //public SmtpOperationStatus GetSmtpOperationStatus()
-    //{
-    //    CheckSmtpPermissions();
+        await _coreConfiguration.SetSmtpSettingsAsync(settingConfig);
 
-    //    return ToSmtpOperationStatus();
-    //}
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(settingConfig);
+        settings.CredentialsUserPassword = "";
 
-    //private SmtpOperationStatus ToSmtpOperationStatus()
-    //{
-    //    var operations = SMTPTasks.GetTasks().ToList();
+        return settings;
+    }
 
-    //    foreach (var o in operations)
-    //    {
-    //        if (!string.IsNullOrEmpty(o.InstanseId) &&
-    //            Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
-    //            continue;
-
-    //        o.SetProperty(SmtpOperation.PROGRESS, 100);
-    //        SMTPTasks.RemoveTask(o.Id);
-    //    }
-
-    //    var operation =
-    //        operations
-    //            .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.Id);
-
-    //    if (operation == null)
-    //    {
-    //        return null;
-    //    }
-
-    //    if (DistributedTaskStatus.Running < operation.Status)
-    //    {
-    //        operation.SetProperty(SmtpOperation.PROGRESS, 100);
-    //        SMTPTasks.RemoveTask(operation.Id);
-    //    }
-
-    //    var result = new SmtpOperationStatus
-    //    {
-    //        Id = operation.Id,
-    //        Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
-    //        Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
-    //        Status = operation.GetProperty<string>(SmtpOperation.RESULT),
-    //        Error = operation.GetProperty<string>(SmtpOperation.ERROR),
-    //        Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
-    //    };
-
-    //    return result;
-    //}
-
-    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto inDto)
+    private SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto inDto)
     {
         var settingsConfig = new SmtpSettings(
             inDto.Host,
@@ -185,6 +141,83 @@ public class SmtpSettingsController : ControllerBase
 
         return settingsConfig;
     }
+
+    /// <summary>
+    /// Resets the SMTP settings of the current portal.
+    /// </summary>
+    /// <short>
+    /// Reset the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">Default SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>DELETE</httpMethod>
+    [HttpDelete("smtp")]
+    public async Task<SmtpSettingsDto> ResetSmtpSettingsAsync()
+    {
+        CheckSmtpPermissions();
+
+        if (!(await _coreConfiguration.GetDefaultSmtpSettingsAsync()).IsDefaultSettings)
+        {
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+            await _coreConfiguration.SetSmtpSettingsAsync(null);
+        }
+
+        var current = await _coreConfiguration.GetDefaultSmtpSettingsAsync();
+
+        if (current.IsDefaultSettings && !_coreBaseSettings.Standalone)
+        {
+            current = SmtpSettings.Empty;
+        }
+
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
+        settings.CredentialsUserPassword = "";
+
+        return settings;
+    }
+
+    // <summary>
+    // Tests the SMTP settings for the current portal (sends test message to the user email).
+    // </summary>
+    // <short>
+    // Test the SMTP settings
+    // </short>
+    // <category>SMTP settings</category>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test</path>
+    // <httpMethod>GET</httpMethod>
+    [HttpGet("smtp/test")]
+    public async Task<SmtpOperationStatusRequestsDto> TestSmtpSettings()
+    {
+        CheckSmtpPermissions();
+
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(await _coreConfiguration.GetDefaultSmtpSettingsAsync());
+
+        var tenant = _tenantManager.GetCurrentTenant();
+
+        _smtpOperation.StartSmtpJob(settings, tenant, _securityContext.CurrentAccount.ID);
+
+        return _smtpOperation.GetStatus(tenant);
+    }
+
+    // <summary>
+    // Returns the SMTP test process status.
+    // </summary>
+    // <short>
+    // Get the SMTP test process status
+    // </short>
+    // <category>SMTP settings</category>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test/status</path>
+    // <httpMethod>GET</httpMethod>
+    [HttpGet("smtp/test/status")]
+    public SmtpOperationStatusRequestsDto GetSmtpOperationStatus()
+    {
+        CheckSmtpPermissions();
+
+        return _smtpOperation.GetStatus(_tenantManager.GetCurrentTenant());
+    }
+
     private static void CheckSmtpPermissions()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))

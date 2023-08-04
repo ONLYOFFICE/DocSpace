@@ -26,18 +26,56 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FolderDto<T> : FileEntryDto<T>
 {
+    /// <summary>Parent folder ID</summary>
+    /// <type>System.Int32, System</type>
     public T ParentId { get; set; }
+
+    /// <summary>Number of files</summary>
+    /// <type>System.Int32, System</type>
     public int FilesCount { get; set; }
+
+    /// <summary>Number of folders</summary>
+    /// <type>System.Int32, System</type>
     public int FoldersCount { get; set; }
+
+    /// <summary>Specifies if a folder is shareable or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsShareable { get; set; }
+
+    /// <summary>Specifies if a folder is favorite or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsFavorite { get; set; }
+
+    /// <summary>Number for a new folder</summary>
+    /// <type>System.Int32, System</type>
     public int New { get; set; }
+
+    /// <summary>Specifies if a folder is muted or not</summary>
+    /// <type>System.Boolean, System</type>
+    public bool Mute { get; set; }
+
+    /// <summary>List of tags</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic</type>
     public IEnumerable<string> Tags { get; set; }
+
+    /// <summary>Logo</summary>
+    /// <type>ASC.Files.Core.VirtualRooms.Logo, ASC.Files.Core</type>
     public Logo Logo { get; set; }
+
+    /// <summary>Specifies if a folder is pinned or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Pinned { get; set; }
+
+    /// <summary>Room type</summary>
+    /// <type>System.Nullable{ASC.Files.Core.ApiModels.RequestDto.RoomType}, System</type>
     public RoomType? RoomType { get; set; }
+
+    /// <summary>Specifies if a folder is private or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Private { get; set; }
 
     protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
@@ -73,6 +111,8 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly RoomLogoManager _roomLogoManager;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -82,13 +122,17 @@ public class FolderDtoHelper : FileEntryDtoHelper
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper,
-        RoomLogoManager roomLogoManager)
+        RoomLogoManager roomLogoManager,
+        BadgesSettingsHelper badgesSettingsHelper,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
         _daoFactory = daoFactory;
         _globalFolderHelper = globalFolderHelper;
         _roomLogoManager = roomLogoManager;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public async Task<FolderDto<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -111,18 +155,15 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
 
             result.Logo = await _roomLogoManager.GetLogoAsync(folder);
-            result.RoomType = folder.FolderType switch
-            {
-                FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
-                FolderType.EditingRoom => RoomType.EditingRoom,
-                FolderType.ReviewRoom => RoomType.ReviewRoom,
-                FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
-                FolderType.CustomRoom => RoomType.CustomRoom,
-                _ => null,
-            };
+            result.RoomType = DocSpaceHelper.GetRoomType(folder.FolderType);
 
-            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
-                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
+            if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
+            {
+                result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
+
+                var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
+                result.Mute = isMuted;
+            }
         }
 
         if (folder.RootFolderType == FolderType.USER
@@ -157,12 +198,24 @@ public class FolderDtoHelper : FileEntryDtoHelper
 
     private async Task<FolderDto<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
     {
+        var newBadges = folder.NewForMe;
+
+        if (folder.RootFolderType == FolderType.VirtualRooms)
+        {
+            var isEnabledBadges = await _badgesSettingsHelper.GetEnabledForCurrentUserAsync();
+
+            if (!isEnabledBadges)
+            {
+                newBadges = 0;
+            }
+        }
+
         var result = await GetAsync<FolderDto<T>, T>(folder);
         result.FilesCount = folder.FilesCount;
         result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
-        result.New = folder.NewForMe;
+        result.New = newBadges;
         result.Pinned = folder.Pinned;
         result.Private = folder.Private;
 

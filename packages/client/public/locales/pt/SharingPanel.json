@@ -11,7 +11,7 @@
   "InternalLink": "Ligação interna",
   "Notify users": "Notificar os utilizadores",
   "ReadOnly": "Apenas leitura",
-  "ShareEmailBody": "Foi-lhe concedido acesso ao documento {{itemName}}. Clique na ligação abaixo para abrir o documento agora mesmo: {{shareLink}}",
+  "ShareEmailBody": "Foi-lhe concedido acesso ao documento {{itemName}}. Clique na ligação abaixo para abrir o documento agora mesmo: {{shareLink}}.",
   "ShareEmailSubject": "Obteve acesso ao documento {{itemName}}.",
   "ShareVia": "Partilhar via",
   "SharingSettingsTitle": "Definições de partilha"

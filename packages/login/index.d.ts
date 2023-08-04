@@ -25,6 +25,8 @@ declare global {
   type MatchType = {
     confirmedEmail?: string;
     message?: string;
+    messageKey?: string;
+    authError?: string;
   };
 
   type PasswordHashType = {
@@ -57,6 +59,7 @@ declare global {
     utcOffset: string;
     version: string;
     standalone: boolean;
+    trustedDomains: string[];
   }
 
   interface IBuildInfo {
@@ -70,7 +73,7 @@ declare global {
     provider: string;
     url: string;
   }
-  type ProvidersType = IProvider[];
+  type ProvidersType = IProvider[] | undefined;
 
   interface ICapabilities {
     ldapEnabled: boolean;
@@ -79,11 +82,16 @@ declare global {
     ssoUrl: string;
   }
 
+  type TThemeObj = {
+    accent: string;
+    buttons: string;
+  }
+
   interface ITheme {
     id: number;
-    accentColor: string;
-    buttonsMain: string;
-    textColor: string;
+    main: TThemeObj;
+    text: TThemeObj;
+    name: string;
   }
   interface IThemes {
     limit: number;
@@ -105,7 +113,7 @@ declare global {
     match?: MatchType;
     currentColorScheme?: ITheme;
     isAuth?: boolean;
-    logoUrls?: any;
+    logoUrls: ILogoUrl[];
     error?: IError;
   }
 
@@ -147,5 +155,27 @@ declare global {
   interface IAcceptLanguage {
     code?: string;
     quality?: number;
+  }
+
+  interface IUserTheme {
+    [key: string]: string;
+    isBase: boolean;
+  }
+
+  type TLogoPath = {
+    light: string;
+    dark?: string;
+  }
+
+  type TLogoSize = {
+    width: number;
+    height: number;
+    isEmpty: boolean;
+  }
+
+  interface ILogoUrl {
+    name: string;
+    path: TLogoPath;
+    size: TLogoSize;
   }
 }

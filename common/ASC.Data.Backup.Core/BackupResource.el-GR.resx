@@ -61,4 +61,7 @@
   <data name="BackupNotFound" xml:space="preserve">
     <value>Το αρχείο αντιγράφων ασφαλείας είναι μη έγκυρο. Παρακαλώ, χρησιμοποιείστε ένα αρχείο που έχει δημιουργηθεί σε ONLYOFFICE v11.5 ή επόμενο.</value>
   </data>
+  <data name="ButtonSetPassword" xml:space="preserve">
+    <value>Ορισμός Συνθηματικού</value>
+  </data>
 </root>

@@ -90,8 +90,17 @@ public class TfaappController : BaseSettingsController
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns the current two-factor authentication settings.
+    /// </summary>
+    /// <short>Get the TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.TfaSettingsDto, ASC.Web.Api">TFA settings</returns>
+    ///<path>api/2.0/settings/tfaapp</path>
+    ///<httpMethod>GET</httpMethod>
+    ///<collection>list</collection>
     [HttpGet("tfaapp")]
-    public IEnumerable<TfaSettingsDto> GetTfaSettings()
+    public async Task<IEnumerable<TfaSettingsDto>> GetTfaSettingsAsync()
     {
         var result = new List<TfaSettingsDto>();
 
@@ -99,8 +108,8 @@ public class TfaappController : BaseSettingsController
         var SmsEnable = SmsVisible && _smsProviderManager.Enabled();
         var TfaVisible = _tfaAppAuthSettingsHelper.IsVisibleSettings;
 
-        var tfaAppSettings = _settingsManager.Load<TfaAppAuthSettings>();
-        var tfaSmsSettings = _settingsManager.Load<StudioSmsNotificationSettings>();
+        var tfaAppSettings = await _settingsManager.LoadAsync<TfaAppAuthSettings>();
+        var tfaSmsSettings = await _settingsManager.LoadAsync<StudioSmsNotificationSettings>();
 
         if (SmsVisible)
         {
@@ -133,47 +142,73 @@ public class TfaappController : BaseSettingsController
         return result;
     }
 
+    /// <summary>
+    /// Validates the two-factor authentication code specified in the request.
+    /// </summary>
+    /// <short>Validate the TFA code</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api" name="inDto">TFA validation request parameters</param>
+    /// <returns type="System.Boolean, System">True if the code is valid</returns>
+    ///<path>api/2.0/settings/tfaapp/validate</path>
+    ///<httpMethod>POST</httpMethod>
     [HttpPost("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,TfaAuth,Everyone")]
-    public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
+    public async Task<bool> TfaValidateAuthCodeAsync(TfaValidateRequestsDto inDto)
     {
-        ApiContext.AuthByClaim();
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        await ApiContext.AuthByClaimAsync();
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
         _securityContext.Logout();
-        return _tfaManager.ValidateAuthCode(user, inDto.Code);
+        return await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code);
     }
 
+    /// <summary>
+    /// Returns the confirmation email URL for authorization via SMS or TFA application.
+    /// </summary>
+    /// <short>Get confirmation email</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
+    ///<path>api/2.0/settings/tfaapp/confirm</path>
+    ///<httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/confirm")]
-    public object TfaConfirmUrl()
+    public async Task<object> TfaConfirmUrlAsync()
     {
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))// && smsConfirm.ToLower() != "true")
+        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))// && smsConfirm.ToLower() != "true")
         {
             var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
                             user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
                                 ? ConfirmType.PhoneActivation
                                 : ConfirmType.PhoneAuth;
 
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, confirmType);
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
-            var confirmType = TfaAppUserSettings.EnableForUser(_settingsManager, _authContext.CurrentAccount.ID)
+            var confirmType = await TfaAppUserSettings.EnableForUserAsync(_settingsManager, _authContext.CurrentAccount.ID)
                 ? ConfirmType.TfaAuth
                 : ConfirmType.TfaActivation;
 
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, confirmType);
         }
 
         return string.Empty;
     }
 
+    /// <summary>
+    /// Updates the two-factor authentication settings with the parameters specified in the request.
+    /// </summary>
+    /// <short>Update the TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Boolean, System">True if the operation is successful</returns>
+    ///<path>api/2.0/settings/tfaapp</path>
+    ///<httpMethod>PUT</httpMethod>
     [HttpPut("tfaapp")]
-    public async Task<bool> TfaSettings(TfaRequestsDto inDto)
+    public async Task<bool> TfaSettingsAsync(TfaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var result = false;
 
@@ -182,7 +217,7 @@ public class TfaappController : BaseSettingsController
         switch (inDto.Type)
         {
             case "sms":
-                if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings())
+                if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync())
                 {
                     throw new Exception(Resource.SmsNotAvailable);
                 }
@@ -192,9 +227,9 @@ public class TfaappController : BaseSettingsController
                     throw new MethodAccessException();
                 }
 
-                var smsSettings = _settingsManager.Load<StudioSmsNotificationSettings>();
+                var smsSettings = await _settingsManager.LoadAsync<StudioSmsNotificationSettings>();
                 SetSettingsProperty(smsSettings);
-                _settingsManager.Save(smsSettings);
+                await _settingsManager.SaveAsync(smsSettings);
 
                 action = MessageAction.TwoFactorAuthenticationEnabledBySms;
 
@@ -213,14 +248,14 @@ public class TfaappController : BaseSettingsController
                     throw new Exception(Resource.TfaAppNotAvailable);
                 }
 
-                var appSettings = _settingsManager.Load<TfaAppAuthSettings>();
+                var appSettings = await _settingsManager.LoadAsync<TfaAppAuthSettings>();
                 SetSettingsProperty(appSettings);
-                _settingsManager.Save(appSettings);
+                await _settingsManager.SaveAsync(appSettings);
 
 
                 action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }
@@ -235,7 +270,7 @@ public class TfaappController : BaseSettingsController
                     _tfaAppAuthSettingsHelper.Enable = false;
                 }
 
-                if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+                if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.Enable)
                 {
                     _studioSmsNotificationSettingsHelper.Enable = false;
                 }
@@ -247,10 +282,10 @@ public class TfaappController : BaseSettingsController
 
         if (result)
         {
-            await _cookiesManager.ResetTenantCookie();
+            await _cookiesManager.ResetTenantCookieAsync();
         }
 
-        _messageService.Send(action);
+        await _messageService.SendAsync(action);
         return result;
 
         void SetSettingsProperty<T>(TfaSettingsBase<T> settings) where T : class, ISettings<T>
@@ -262,110 +297,154 @@ public class TfaappController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the confirmation email URL for updating TFA settings.
+    /// </summary>
+    /// <short>Get confirmation email for updating TFA settings</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
+    /// <path>api/2.0/settings/tfaappwithlink</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappwithlink")]
     public async Task<object> TfaSettingsLink(TfaRequestsDto inDto)
     {
-        if (await TfaSettings(inDto))
+        if (await TfaSettingsAsync(inDto))
         {
-            return TfaConfirmUrl();
+            return await TfaConfirmUrlAsync();
         }
 
         return string.Empty;
     }
 
+    /// <summary>
+    /// Generates the setup TFA code for the current user.
+    /// </summary>
+    /// <short>Generate setup code</short>
+    /// <category>TFA settings</category>
+    /// <returns type="Google.Authenticator.SetupCode, Google.Authenticator">Setup code</returns>
+    /// <path>api/2.0/settings/tfaapp/setup</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/setup")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
-    public SetupCode TfaAppGenerateSetupCode()
+    public async Task<SetupCode> TfaAppGenerateSetupCodeAsync()
     {
-        ApiContext.AuthByClaim();
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        await ApiContext.AuthByClaimAsync();
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings ||
-            !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
-            TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+            !(await _settingsManager.LoadAsync<TfaAppAuthSettings>()).EnableSetting ||
+            await TfaAppUserSettings.EnableForUserAsync(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
 
-        return _tfaManager.GenerateSetupCode(currentUser);
+        return await _tfaManager.GenerateSetupCodeAsync(currentUser);
     }
 
+    /// <summary>
+    /// Returns the two-factor authentication application codes.
+    /// </summary>
+    /// <short>Get the TFA codes</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">List of TFA application codes</returns>
+    /// <path>api/2.0/settings/tfaappcodes</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("tfaappcodes")]
-    public IEnumerable<object> TfaAppGetCodes()
+    public async Task<IEnumerable<object>> TfaAppGetCodesAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !await TfaAppUserSettings.EnableForUserAsync(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
 
-        return _settingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
+        return (await _settingsManager.LoadForCurrentUserAsync<TfaAppUserSettings>()).CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
     }
 
+    /// <summary>
+    /// Requests the new backup codes for the two-factor authentication application.
+    /// </summary>
+    /// <short>Update the TFA codes</short>
+    /// <category>TFA settings</category>
+    /// <returns type="System.Object, System">New backup codes</returns>
+    /// <path>api/2.0/settings/tfaappnewcodes</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("tfaappnewcodes")]
-    public IEnumerable<object> TfaAppRequestNewCodes()
+    public async Task<IEnumerable<object>> TfaAppRequestNewCodesAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !await TfaAppUserSettings.EnableForUserAsync(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
 
-        var codes = _tfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
-        _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, _displayUserSettingsHelper));
+        var codes = (await _tfaManager.GenerateBackupCodesAsync()).Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
+        await _messageService.SendAsync(MessageAction.UserConnectedTfaApp, _messageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, _displayUserSettingsHelper));
         return codes;
     }
 
+    /// <summary>
+    /// Unlinks the current two-factor authentication application from the user account specified in the request.
+    /// </summary>
+    /// <short>Unlink the TFA application</short>
+    /// <category>TFA settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Login URL</returns>
+    /// <path>api/2.0/settings/tfaappnewapp</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappnewapp")]
-    public async Task<object> TfaAppNewApp(TfaRequestsDto inDto)
+    public async Task<object> TfaAppNewAppAsync(TfaRequestsDto inDto)
     {
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty) || id.Equals(_authContext.CurrentAccount.ID);
 
-        var user = _userManager.GetUsers(id);
+        var user = await _userManager.GetUsersAsync(id);
 
-        if (!isMe && !_permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
+        if (!isMe && !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
         {
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
 
-        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(user) || _userManager.IsOutsider(user))
+        if (await _userManager.IsOutsiderAsync(user))
         {
             throw new NotSupportedException("Not available.");
         }
 
-        TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
-        _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        await TfaAppUserSettings.DisableForUserAsync(_settingsManager, user.Id);
+        await _messageService.SendAsync(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
         if (isMe)
         {
-            await _cookiesManager.ResetTenantCookie();
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation);
         }
 
-        _studioNotifyService.SendMsgTfaReset(user);
+        await _studioNotifyService.SendMsgTfaResetAsync(user);
         return string.Empty;
     }
 }

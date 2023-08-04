@@ -51,6 +51,7 @@ export const initDocEditor = async (req) => {
     }
 
     const doc = query?.doc || null;
+    const shareKey = query?.share ?? null;
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
@@ -79,7 +80,7 @@ export const initDocEditor = async (req) => {
 
     personal = settings?.personal;
 
-    if (!successAuth && !doc) {
+    if (!successAuth && !doc && !shareKey) {
       error = {
         unAuthorized: true,
         // redirectPath: combineUrl(
@@ -90,7 +91,7 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    const config = await openEdit(fileId, fileVersion, doc, view);
+    const config = await openEdit(fileId, fileVersion, doc, view, shareKey);
 
     //const sharingSettings = await getShareFiles([+fileId], []);
 
@@ -109,15 +110,32 @@ export const initDocEditor = async (req) => {
     //   logoUrls[index].path.light = getLogoFromPath(logo.path.dark);
     // });
 
-    config.editorConfig.customization.logo.image =
-      config.editorConfig.customization.logo.url +
-      getLogoFromPath(config.editorConfig.customization.logo.image);
+    // change only for default logo
+    if (
+      config?.editorConfig?.customization?.logo?.image.indexOf("images/logo/") >
+      -1
+    ) {
+      config.editorConfig.customization.logo.image =
+        config.editorConfig.customization.logo.url +
+        getLogoFromPath(config.editorConfig.customization.logo.image);
+    }
 
-    config.editorConfig.customization.logo.imageDark =
-      config.editorConfig.customization.logo.url +
-      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+    // change only for default logo
+    if (
+      config?.editorConfig?.customization?.logo?.imageDark.indexOf(
+        "images/logo/"
+      ) > -1
+    ) {
+      config.editorConfig.customization.logo.imageDark =
+        config.editorConfig.customization.logo.url +
+        getLogoFromPath(config.editorConfig.customization.logo.imageDark);
+    }
 
-    if (config.editorConfig.customization.customer) {
+    if (
+      config.editorConfig.customization.customer &&
+      config.editorConfig.customization.customer.logo.indexOf("images/logo/") >
+        -1
+    ) {
       config.editorConfig.customization.customer.logo =
         config.editorConfig.customization.logo.url +
         getLogoFromPath(config.editorConfig.customization.customer.logo);
@@ -147,8 +165,14 @@ export const initDocEditor = async (req) => {
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;
 
+    const errorStatus =
+      typeof err !== "string"
+        ? err?.response?.data?.statusCode || err?.response?.data?.status
+        : null;
+
     error = {
       errorMessage: message,
+      errorStatus,
     };
     return { error, user, logoUrls };
   }

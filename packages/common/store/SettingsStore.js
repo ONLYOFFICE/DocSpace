@@ -1,6 +1,12 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
-import { combineUrl, setCookie, getCookie } from "../utils";
+import {
+  combineUrl,
+  setCookie,
+  getCookie,
+  frameCallEvent,
+  getSystemTheme,
+} from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import {
   ThemeKeys,
@@ -13,6 +19,7 @@ import SocketIOHelper from "../utils/socket";
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 import { wrongPortalNameUrl } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const themes = {
   Dark: Dark,
@@ -24,7 +31,7 @@ const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
 class SettingsStore {
   isLoading = false;
   isLoaded = false;
-  isBurgerLoading = false;
+  isBurgerLoading = true;
 
   checkedMaintenance = false;
   maintenanceExist = false;
@@ -45,6 +52,7 @@ class SettingsStore {
   ipRestrictionEnable = false;
   ipRestrictions = [];
   sessionLifetime = "1440";
+  enabledSessionLifetime = false;
   timezone = "UTC";
   timezones = [];
   tenantAlias = "";
@@ -83,7 +91,7 @@ class SettingsStore {
   isHeaderVisible = false;
   isTabletView = false;
 
-  showText = false;
+  showText = JSON.parse(localStorage.getItem("showArticle")) ?? false;
   articleOpen = false;
   isMobileArticle = false;
 
@@ -122,6 +130,8 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  apiDocsLink = null;
+  bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
 
@@ -140,6 +150,14 @@ class SettingsStore {
   whiteLabelLogoUrls = [];
   standalone = false;
 
+  mainBarVisible = false;
+  zendeskKey = null;
+  bookTrainingEmail = null;
+  legalTerms = null;
+  baseDomain = "onlyoffice.io";
+  documentationEmail = null;
+  publicRoomKey = "";
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -148,21 +166,153 @@ class SettingsStore {
     this.tenantStatus = tenantStatus;
   };
 
-  get urlAuthKeys() {
-    return `${this.helpLink}/installation/groups-authorization-keys.aspx`;
+  get docspaceSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx`;
+  }
+
+  get integrationSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#AdjustingIntegrationSettings_block`;
+  }
+
+  get docuSignUrl() {
+    return `${this.helpLink}/administration/connect-docusign-docspace.aspx`;
+  }
+
+  get dropboxUrl() {
+    return `${this.helpLink}/administration/connect-dropbox-docspace.aspx`;
+  }
+
+  get boxUrl() {
+    return `${this.helpLink}/administration/connect-box-docspace.aspx`;
+  }
+
+  get mailRuUrl() {
+    return `${this.helpLink}/administration/connect-mail-ru-docspace.aspx`;
+  }
+
+  get oneDriveUrl() {
+    return `${this.helpLink}/administration/connect-onedrive-docspace.aspx`;
+  }
+
+  get microsoftUrl() {
+    return `${this.helpLink}/administration/connect-microsoft-docspace.aspx`;
+  }
+
+  get googleUrl() {
+    return `${this.helpLink}/administration/connect-google-docspace.aspx`;
+  }
+
+  get facebookUrl() {
+    return `${this.helpLink}/administration/connect-facebook-docspace.aspx`;
+  }
+
+  get linkedinUrl() {
+    return `${this.helpLink}/administration/connect-linkedin-docspace.aspx`;
+  }
+
+  get clickatellUrl() {
+    return `${this.helpLink}/administration/connect-clickatell-docspace.aspx`;
+  }
+
+  get smsclUrl() {
+    return `${this.helpLink}/administration/connect-smsc-docspace.aspx`;
+  }
+
+  get firebaseUrl() {
+    return `${this.helpLink}/administration/connect-firebase-docspace.aspx`;
+  }
+
+  get appleIDUrl() {
+    return `${this.helpLink}/administration/connect-apple-docspace.aspx`;
+  }
+
+  get telegramUrl() {
+    return `${this.helpLink}/administration/connect-telegram-docspace.aspx`;
+  }
+
+  get wordpressUrl() {
+    return `${this.helpLink}/administration/connect-wordpress-docspace.aspx`;
+  }
+
+  get awsUrl() {
+    return `${this.helpLink}/administration/connect-amazon-docspace.aspx`;
+  }
+
+  get googleCloudUrl() {
+    return `${this.helpLink}/administration/connect-google-cloud-storage-docspace.aspx`;
+  }
+
+  get rackspaceUrl() {
+    return `${this.helpLink}/administration/connect-rackspace-docspace.aspx`;
+  }
+
+  get selectelUrl() {
+    return `${this.helpLink}/administration/connect-selectel-docspace.aspx`;
+  }
+
+  get yandexUrl() {
+    return `${this.helpLink}/administration/connect-yandex-docspace.aspx`;
+  }
+
+  get vkUrl() {
+    return `${this.helpLink}/administration/connect-vk-docspace.aspx`;
+  }
+
+  get languageAndTimeZoneSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
+  }
+
+  get dnsSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get passwordStrengthSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#passwordstrength`;
+  }
+
+  get tfaSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-two-factor-authentication.aspx`;
+  }
+
+  get trustedMailDomainSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
+  }
+
+  get administratorMessageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get dataBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#CreatingBackup_block`;
+  }
+
+  get automaticBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#AutoBackup`;
+  }
+
+  get webhooksGuideUrl() {
+    return `${this.helpLink}/administration/docspace-webhooks.aspx`;
+  }
+
+  get sdkLink() {
+    return `${this.apiDocsLink}/docspace/jssdk`;
+  }
+
+  get apiBasicLink() {
+    return `${this.apiDocsLink}/docspace/basic`;
   }
 
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
 
-  get helpUrlCommonSettings() {
-    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
+  get isPublicRoom() {
+    return window.location.pathname === "/rooms/share";
   }
 
-  get helpUrlCreatingBackup() {
-    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
-  }
+  setMainBarVisible = (visible) => {
+    this.mainBarVisible = visible;
+  };
 
   setValue = (key, value) => {
     this[key] = value;
@@ -188,12 +338,23 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getSettings = async (withPassword) => {
+  getPortal = async () => {
+    try {
+      const res = await api.portal.getPortal();
+
+      if (!res) return;
+
+      return res;
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
+  getSettings = async () => {
     let newSettings = null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(withPassword);
+    else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(
@@ -242,9 +403,10 @@ class SettingsStore {
     const origSettings = await this.getSettings().catch((err) => {
       if (err?.response?.status === 404) {
         // portal not found
-        return window.location.replace(
-          `${wrongPortalNameUrl}?url=${window.location.hostname}`
-        );
+        const url = new URL(wrongPortalNameUrl);
+        url.searchParams.append("url", window.location.hostname);
+        url.searchParams.append("ref", window.location.href);
+        return window.location.replace(url);
       }
     });
 
@@ -255,7 +417,7 @@ class SettingsStore {
       this.pluginOptions = origSettings.plugins.allow;
     }
 
-    if (origSettings.tenantAlias) {
+    if (origSettings?.tenantAlias) {
       this.setTenantAlias(origSettings.tenantAlias);
     }
   };
@@ -452,9 +614,13 @@ class SettingsStore {
     this.currentProductId = currentProductId;
   };
 
+  setPortalOwner = (owner) => {
+    this.owner = owner;
+  };
+
   getPortalOwner = async () => {
     const owner = await api.people.getUserById(this.ownerId);
-    this.owner = owner;
+    this.setPortalOwner(owner);
     return owner;
   };
 
@@ -509,7 +675,11 @@ class SettingsStore {
   };
 
   toggleShowText = () => {
-    this.showText = !this.showText;
+    const reverseValue = !this.showText;
+
+    localStorage.setItem("showArticle", reverseValue);
+
+    this.showText = reverseValue;
   };
 
   setArticleOpen = (articleOpen) => {
@@ -529,8 +699,15 @@ class SettingsStore {
     return window.firebaseHelper;
   }
 
+  setPublicRoomKey = (key) => {
+    this.publicRoomKey = key;
+  };
+
   get socketHelper() {
-    return new SocketIOHelper(this.socketUrl);
+    const socketUrl =
+      this.isPublicRoom && !this.publicRoomKey ? null : this.socketUrl;
+
+    return new SocketIOHelper(socketUrl, this.publicRoomKey);
   }
 
   getBuildVersionInfo = async () => {
@@ -566,11 +743,7 @@ class SettingsStore {
       case ThemeKeys.System:
       case ThemeKeys.SystemStr:
       default:
-        theme =
-          window.matchMedia &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? ThemeKeys.DarkStr
-            : ThemeKeys.BaseStr;
+        theme = getSystemTheme();
     }
 
     this.theme = themes[theme];
@@ -594,7 +767,7 @@ class SettingsStore {
 
   setIpRestrictions = async (ips) => {
     const data = {
-      ips: ips,
+      IpRestrictions: ips,
     };
     const res = await api.settings.setIpRestrictions(data);
     this.ipRestrictions = res;
@@ -620,12 +793,18 @@ class SettingsStore {
 
   getSessionLifetime = async () => {
     const res = await api.settings.getCookieSettings();
-    this.sessionLifetime = res;
+
+    this.enabledSessionLifetime = res.enabled;
+    this.sessionLifetime = res.lifeTime;
   };
 
-  setSessionLifetimeSettings = async (lifeTime) => {
-    const res = await api.settings.setCookieSettings(lifeTime);
+  setSessionLifetimeSettings = async (lifeTime, enabled) => {
+    const res = await api.settings.setCookieSettings(lifeTime, enabled);
+
+    this.enabledSessionLifetime = enabled;
     this.sessionLifetime = lifeTime;
+
+    return res;
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {
@@ -636,8 +815,18 @@ class SettingsStore {
     this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
-  setFrameConfig = (frameConfig) => {
-    this.frameConfig = frameConfig;
+  setFrameConfig = async (frameConfig) => {
+    runInAction(() => {
+      this.frameConfig = frameConfig;
+    });
+
+    if (!!frameConfig) {
+      this.setTheme(frameConfig?.theme);
+      frameCallEvent({
+        event: "onAppReady",
+        data: { frameId: frameConfig.frameId },
+      });
+    }
     return frameConfig;
   };
 

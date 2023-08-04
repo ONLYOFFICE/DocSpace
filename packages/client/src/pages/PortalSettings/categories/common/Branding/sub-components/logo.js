@@ -12,6 +12,7 @@ const Logo = (props) => {
     isSettingPaid,
     onChangeText,
     inputId,
+    linkId,
     imageClass,
     isEditor,
   } = props;
@@ -22,7 +23,11 @@ const Logo = (props) => {
     <div>
       <div className="logo-item">
         {title && (
-          <Text fontSize="13px" fontWeight="600">
+          <Text
+            fontSize="13px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
             {title}
           </Text>
         )}
@@ -54,6 +59,7 @@ const Logo = (props) => {
           disabled={!isSettingPaid}
         />
         <Link
+          id={linkId}
           fontWeight="600"
           isHovered
           type="action"

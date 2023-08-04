@@ -27,7 +27,7 @@
 namespace ASC.Web.Files.Utils;
 
 [Singletone]
-public class FileMarkerHelper<T>
+public class FileMarkerHelper
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
     private readonly IServiceProvider _serviceProvider;
@@ -36,7 +36,7 @@ public class FileMarkerHelper<T>
 
     public FileMarkerHelper(
         IServiceProvider serviceProvider,
-        ILogger<FileMarkerHelper<T>> logger,
+        ILogger<FileMarkerHelper> logger,
         IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
@@ -44,12 +44,12 @@ public class FileMarkerHelper<T>
         Tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
-    internal void Add(AsyncTaskData<T> taskData)
+    internal void Add<T>(AsyncTaskData<T> taskData)
     {
         Tasks.EnqueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
     }
 
-    private async Task ExecMarkFileAsNewAsync(AsyncTaskData<T> obj)
+    private async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj)
     {
         try
         {
@@ -81,6 +81,8 @@ public class FileMarker
     private readonly IServiceProvider _serviceProvider;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
+
     public FileMarker(
         TenantManager tenantManager,
         UserManager userManager,
@@ -90,6 +92,7 @@ public class FileMarker
         AuthContext authContext,
         IServiceProvider serviceProvider,
         FilesSettingsHelper filesSettingsHelper,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
         ICache cache)
     {
         _tenantManager = tenantManager;
@@ -100,12 +103,13 @@ public class FileMarker
         _authContext = authContext;
         _serviceProvider = serviceProvider;
         _filesSettingsHelper = filesSettingsHelper;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
         _cache = cache;
     }
 
     internal async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj, SocketManager socketManager)
     {
-        _tenantManager.SetCurrentTenant(obj.TenantID);
+        await _tenantManager.SetCurrentTenantAsync(obj.TenantID);
 
         var folderDao = _daoFactory.GetFolderDao<T>();
         T parentFolderId;
@@ -163,7 +167,7 @@ public class FileMarker
             }
             if (obj.FileEntry.ProviderEntry)
             {
-                userIDs = userIDs.Where(u => !_userManager.IsUser(u)).ToList();
+                userIDs = await userIDs.ToAsyncEnumerable().WhereAwait(async u => !await _userManager.IsUserAsync(u)).ToListAsync();
 
                 if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
                 {
@@ -356,28 +360,28 @@ public class FileMarker
         {
             await _semaphore.WaitAsync();
 
-            foreach (var userID in userEntriesData.Keys)
+        foreach (var userID in userEntriesData.Keys)
+        {
+            if (await tagDao.GetNewTagsAsync(userID, obj.FileEntry).AnyAsync())
             {
-                if (await tagDao.GetNewTagsAsync(userID, obj.FileEntry).AnyAsync())
-                {
-                    continue;
-                }
-
-                var entries = userEntriesData[userID].Distinct().ToList();
-
-                await GetNewTagsAsync(userID, entries.OfType<FileEntry<int>>().ToList());
-                await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
+                continue;
             }
 
-            if (updateTags.Count > 0)
-            {
-                await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
-            }
+            var entries = userEntriesData[userID].Distinct().ToList();
 
-            if (newTags.Count > 0)
-            {
-                await tagDao.SaveTags(newTags, obj.CurrentAccountId);
-            }
+            await GetNewTagsAsync(userID, entries.OfType<FileEntry<int>>().ToList());
+            await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
+        }
+
+        if (updateTags.Count > 0)
+        {
+            await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
+        }
+
+        if (newTags.Count > 0)
+        {
+            await tagDao.SaveTags(newTags, obj.CurrentAccountId);
+        }
         }
         catch
         {
@@ -408,18 +412,13 @@ public class FileMarker
         }
     }
 
-    public Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
+    public async ValueTask MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
     {
         if (fileEntry == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalMarkAsNewAsync(fileEntry, userIDs);
-    }
-
-    private async Task InternalMarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
-    {
         userIDs ??= new List<Guid>();
 
         var taskData = _serviceProvider.GetService<AsyncTaskData<T>>();
@@ -448,21 +447,16 @@ public class FileMarker
             taskData.UserIDs = projectTeam;
         }
 
-        _serviceProvider.GetService<FileMarkerHelper<T>>().Add(taskData);
+        _serviceProvider.GetService<FileMarkerHelper>().Add(taskData);
     }
 
-    public Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
+    public async ValueTask RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
     {
         if (fileEntry == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRemoveMarkAsNewAsync(fileEntry, userID);
-    }
-
-    public async Task InternalRemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
-    {
         userID = userID.Equals(default) ? _authContext.CurrentAccount.ID : userID;
 
         var tagDao = _daoFactory.GetTagDao<T>();
@@ -681,7 +675,7 @@ public class FileMarker
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
         }
 
-        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.Id, await _globalFolder.GetFolderTrashAsync<T>(_daoFactory)))
+        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.Id, await _globalFolder.GetFolderTrashAsync(_daoFactory)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
         }
@@ -696,7 +690,7 @@ public class FileMarker
             yield break;
         }
 
-        if (Equals(folder.Id, _globalFolder.GetFolderMy(this, _daoFactory)) ||
+        if (Equals(folder.Id, await _globalFolder.GetFolderMyAsync(this, _daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory)))
@@ -836,6 +830,24 @@ public class FileMarker
 
         totalTags = totalTags.Where(e => e != parentFolderTag).ToList();
 
+        foreach (var e in entries)
+        {
+            if (e is FileEntry<int> entry)
+            {
+                SetTagNewForEntry(entry);
+            }
+            else if (e is FileEntry<string> thirdPartyEntry)
+            {
+                SetTagNewForEntry(thirdPartyEntry);
+            }
+        }
+
+        if (parent.FolderType == FolderType.VirtualRooms)
+        {
+            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
+            totalTags = totalTags.Where(e => !disabledRooms.Contains(e.EntryId.ToString())).ToList();
+        }
+
         var countSubNew = 0;
         totalTags.ForEach(tag =>
         {
@@ -859,14 +871,32 @@ public class FileMarker
 
         if (parentFolderTag.Count != countSubNew)
         {
-            if (countSubNew > 0)
+            if(parent.FolderType == FolderType.VirtualRooms)
+            {
+                parentFolderTag.Count = countSubNew;
+                if (parentFolderTag.Id == -1)
+                {
+                    await tagDao.SaveTagsAsync(parentFolderTag);
+                }
+                else
+                {
+                    await tagDao.UpdateNewTags(parentFolderTag);
+                }
+
+                var cacheFolderId = parent.Id;
+                if (cacheFolderId != null)
+                {
+                    RemoveFromCahce(cacheFolderId);
+                }
+            }
+            else if (countSubNew > 0)
             {
                 var diff = parentFolderTag.Count - countSubNew;
 
                 parentFolderTag.Count -= diff;
                 if (parentFolderTag.Id == -1)
                 {
-                    await tagDao.SaveTags(parentFolderTag);
+                    await tagDao.SaveTagsAsync(parentFolderTag);
                 }
                 else
                 {
@@ -886,13 +916,13 @@ public class FileMarker
                     {
                         cacheFolderId = rootFolderId = await _globalFolder.GetFolderProjectsAsync<T>(_daoFactory);
                     }
-                    else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
+                    else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, await _globalFolder.GetFolderMyAsync(this, _daoFactory)))
                     {
                         cacheFolderId = rootFolderId = shareFolder;
                     }
                     else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
                     {
-                        rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<T>(_daoFactory);
+                        rootFolderId = IdConverter.Convert<T>(await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory));
                     }
 
                     if (rootFolderId != null)
@@ -908,7 +938,7 @@ public class FileMarker
                         {
                             if (await _fileSecurity.CanReadAsync(folderFromList))
                             {
-                                await tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
+                                await tagDao.SaveTagsAsync(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
                             }
                         }
                         else
@@ -930,19 +960,7 @@ public class FileMarker
             }
         }
 
-        foreach (var e in entries)
-        {
-            if (e is FileEntry<int> entry)
-            {
-                SatTagNewForEntry(entry);
-            }
-            else if (e is FileEntry<string> thirdPartyEntry)
-            {
-                SatTagNewForEntry(thirdPartyEntry);
-            }
-        }
-
-        void SatTagNewForEntry<TEntry>(FileEntry<TEntry> entry)
+        void SetTagNewForEntry<TEntry>(FileEntry<TEntry> entry)
         {
             var curTag = totalTags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.Id));
 
@@ -991,11 +1009,11 @@ public class FileMarker
         {
             if (t.EntryType == FileEntryType.File)
             {
-                yield return socketManager.ExecMarkAsNewFile(t.EntryId, t.Count, t.Owner);
+                yield return socketManager.ExecMarkAsNewFileAsync(t.EntryId, t.Count, t.Owner);
             }
             else if (t.EntryType == FileEntryType.Folder)
             {
-                yield return socketManager.ExecMarkAsNewFolder(t.EntryId, t.Count, t.Owner);
+                yield return socketManager.ExecMarkAsNewFolderAsync(t.EntryId, t.Count, t.Owner);
             }
         }
     }
@@ -1021,9 +1039,8 @@ public static class FileMarkerExtention
     public static void Register(DIHelper services)
     {
         services.TryAdd<AsyncTaskData<int>>();
-        services.TryAdd<FileMarkerHelper<int>>();
+        services.TryAdd<FileMarkerHelper>();
 
         services.TryAdd<AsyncTaskData<string>>();
-        services.TryAdd<FileMarkerHelper<string>>();
     }
 }

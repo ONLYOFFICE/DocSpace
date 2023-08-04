@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isMobile } from "react-device-detect";
+import { isMobile, isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./Branding/whitelabel";
@@ -15,6 +15,7 @@ import LoaderBrandingDescription from "./sub-components/loaderBrandingDescriptio
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
 import { UnavailableStyles } from "../../utils/commonSettingsStyles";
+import { resetSessionStorage } from "../../utils";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -53,51 +54,70 @@ const StyledComponent = styled.div`
   ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
-const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
-  const [viewDesktop, setViewDesktop] = useState(false);
+const Branding = ({
+  t,
+  isLoadedCompanyInfoSettingsData,
+  isSettingPaid,
+  standalone,
+}) => {
+  // const [viewDesktop, setViewDesktop] = useState(false);
 
   useEffect(() => {
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
-
-    return () => window.removeEventListener("resize", onCheckView);
+    return () => {
+      if (!window.location.pathname.includes("customization")) {
+        resetSessionStorage();
+      }
+    };
   }, []);
 
-  const onCheckView = () => {
-    if (!isMobile && window.innerWidth > 1024) {
-      setViewDesktop(true);
-    } else {
-      setViewDesktop(false);
-    }
-  };
+  // useEffect(() => {
+  //   onCheckView();
+  //   window.addEventListener("resize", onCheckView);
 
-  if (!viewDesktop)
+  //   return () => window.removeEventListener("resize", onCheckView);
+  // }, []);
+
+  // const onCheckView = () => {
+  //   if (!isMobile && window.innerWidth > 1024) {
+  //     setViewDesktop(true);
+  //   } else {
+  //     setViewDesktop(false);
+  //   }
+  // };
+
+  if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (
     <StyledComponent isSettingPaid={isSettingPaid}>
       <Whitelabel isSettingPaid={isSettingPaid} />
-      <hr />
-      {isLoadedCompanyInfoSettingsData ? (
-        <div className="section-description settings_unavailable">
-          {t("Settings:BrandingSectionDescription")}
-        </div>
-      ) : (
-        <LoaderBrandingDescription />
+      {standalone && (
+        <>
+          <hr />
+          {isLoadedCompanyInfoSettingsData ? (
+            <div className="section-description settings_unavailable">
+              {t("Settings:BrandingSectionDescription")}
+            </div>
+          ) : (
+            <LoaderBrandingDescription />
+          )}
+          <CompanyInfoSettings isSettingPaid={isSettingPaid} />
+          <AdditionalResources isSettingPaid={isSettingPaid} />
+        </>
       )}
-      <CompanyInfoSettings isSettingPaid={isSettingPaid} />
-      <AdditionalResources isSettingPaid={isSettingPaid} />
     </StyledComponent>
   );
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { currentQuotaStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   const { isLoadedCompanyInfoSettingsData } = common;
+  const { standalone } = settingsStore;
 
   return {
     isLoadedCompanyInfoSettingsData,
     isSettingPaid: isBrandingAndCustomizationAvailable,
+    standalone,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

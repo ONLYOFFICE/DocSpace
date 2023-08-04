@@ -33,8 +33,8 @@ export const getAccessOptions = (
     },
     collaborator: {
       key: "collaborator",
-      label: t("Common:Collaborator"),
-      description: t("Translations:RoleCollaboratorDescription"),
+      label: t("Common:PowerUser"),
+      description: t("Translations:RolePowerUserDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
       access:
@@ -128,6 +128,9 @@ export const getAccessOptions = (
         accesses.commentator,
         accesses.viewer,
       ];
+      break;
+    case RoomsType.PublicRoom:
+      options = [accesses.roomAdmin, accesses.collaborator];
       break;
     case -1:
       if (isOwner) options.push(accesses.docSpaceAdmin);

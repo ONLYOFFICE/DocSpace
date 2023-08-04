@@ -28,7 +28,7 @@ namespace ASC.Notify.Engine;
 
 public interface INotifyEngineAction
 {
-    void BeforeTransferRequest(NotifyRequest request);
+    Task BeforeTransferRequestAsync(NotifyRequest request);
     void AfterTransferRequest(NotifyRequest request);
 }
 
@@ -56,8 +56,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = options.CreateLogger("ASC.Notify");
         _serviceScopeFactory = serviceScopeFactory;
-        _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
-        _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
+        _notifyScheduler = new Thread(NotifySchedulerAsync) { IsBackground = true, Name = "NotifyScheduler" };
+        _notifySender = new Thread(NotifySenderAsync) { IsBackground = true, Name = "NotifySender" };
     }
 
     public void AddAction<T>() where T : INotifyEngineAction
@@ -80,8 +80,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _requestsEvent.Set();
     }
 
-
-    internal void RegisterSendMethod(Action<DateTime> method, string cron)
+    internal void RegisterSendMethod(Func<DateTime, Task> method, string cron)
     {
         ArgumentNullException.ThrowIfNull(method);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(cron);
@@ -100,7 +99,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _methodsEvent.Set();
     }
 
-    internal void UnregisterSendMethod(Action<DateTime> method)
+    internal void UnregisterSendMethod(Func<DateTime, Task> method)
     {
         ArgumentNullException.ThrowIfNull(method);
 
@@ -110,7 +109,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private async void NotifyScheduler(object state)
+    private async void NotifySchedulerAsync()
     {
         try
         {
@@ -124,9 +123,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     copy = _sendMethods.ToList();
                 }
 
-                for (var i = 0; i < copy.Count; i++)
+                foreach (var w in copy)
                 {
-                    using var w = copy[i];
                     if (!w.ScheduleDate.HasValue)
                     {
                         lock (_sendMethods)
@@ -178,7 +176,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private async void NotifySender(object state)
+    private async void NotifySenderAsync()
     {
         try
         {
@@ -230,7 +228,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     {
         var sendResponces = new List<SendResponse>();
 
-        var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
+        var response = await CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
         if (response != null)
         {
             sendResponces.Add(response);
@@ -254,9 +252,9 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return result;
     }
 
-    private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
+    private async Task<SendResponse> CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
     {
-        return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
+        return await request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
     }
 
     private async Task<List<SendResponse>> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
@@ -272,12 +270,12 @@ public class NotifyEngine : INotifyEngine, IDisposable
         if (request.Recipient is IDirectRecipient)
         {
             var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
-            if (!request._isNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
+            if (!request._isNeedCheckSubscriptions || !await subscriptionSource.IsUnsubscribeAsync(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
             {
                 var directresponses = new List<SendResponse>(1);
                 try
                 {
-                    directresponses = await SendDirectNotify(request, serviceScope);
+                    directresponses = await SendDirectNotifyAsync(request, serviceScope);
                 }
                 catch (Exception exc)
                 {
@@ -292,7 +290,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         {
             if (request.Recipient is IRecipientsGroup)
             {
-                var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
+                var checkresp = await CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
                 if (checkresp != null)
                 {
                     responces.Add(checkresp);
@@ -303,7 +301,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
                     try
                     {
-                        var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
+                        var recipients = await recipientProvider.GetGroupEntriesAsync(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
                         foreach (var recipient in recipients)
                         {
                             try
@@ -335,7 +333,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private async Task<List<SendResponse>> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
+    private async Task<List<SendResponse>> SendDirectNotifyAsync(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request.Recipient is not IDirectRecipient)
         {
@@ -343,7 +341,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
 
         var responses = new List<SendResponse>();
-        var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
+        var response = await CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
         if (response != null)
         {
             responses.Add(response);
@@ -353,7 +351,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         try
         {
-            PrepareRequestFillSenders(request, serviceScope);
+            await PrepareRequestFillSendersAsync(request, serviceScope);
             PrepareRequestFillPatterns(request, serviceScope);
             PrepareRequestFillTags(request, serviceScope);
         }
@@ -406,14 +404,14 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         request.CurrentSender = channel.SenderName;
 
-        var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
+        (var oops, var noticeMessage) = await CreateNoticeMessageFromNotifyRequestAsync(request, channel.SenderName, serviceScope);
         if (oops != null)
         {
             return oops;
         }
 
         request.CurrentMessage = noticeMessage;
-        var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
+        var preventresponse = await CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
         if (preventresponse != null)
         {
             return preventresponse;
@@ -424,34 +422,34 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
     }
 
-    private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
+    private async Task<(SendResponse, NoticeMessage)> CreateNoticeMessageFromNotifyRequestAsync(NotifyRequest request, string sender, IServiceScope serviceScope)
     {
         ArgumentNullException.ThrowIfNull(request);
-
+        NoticeMessage noticeMessage = null;
         var recipientProvider = request.GetRecipientsProvider(serviceScope);
         var recipient = request.Recipient as IDirectRecipient;
 
         var addresses = recipient.Addresses;
         if (addresses == null || addresses.Length == 0)
         {
-            addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
+            addresses = await recipientProvider.GetRecipientAddressesAsync(request.Recipient as IDirectRecipient, sender);
             recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
         }
 
-        recipient = recipientProvider.FilterRecipientAddresses(recipient);
+        recipient = await recipientProvider.FilterRecipientAddressesAsync(recipient);
         noticeMessage = request.CreateMessage(recipient);
 
         addresses = recipient.Addresses;
         if (addresses == null || !addresses.Any(a => !string.IsNullOrEmpty(a)))
         {
             //checking addresses
-            return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender)));
+            return (new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender))), noticeMessage);
         }
 
         var pattern = request.GetSenderPattern(sender);
         if (pattern == null)
         {
-            return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+            return (new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender))), noticeMessage);
         }
 
         noticeMessage.Pattern = pattern;
@@ -483,10 +481,10 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         catch (Exception exc)
         {
-            return new SendResponse(request.NotifyAction, sender, recipient, exc);
+            return (new SendResponse(request.NotifyAction, sender, recipient, exc), noticeMessage);
         }
 
-        return null;
+        return (null, noticeMessage);
     }
 
     private void StyleMessage(IServiceScope scope, NoticeMessage message)
@@ -508,14 +506,14 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillSendersAsync(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request._senderNames == null)
         {
             var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
             var senderNames = new List<string>();
-            senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
+            senderNames.AddRange(await subscriptionProvider.GetSubscriptionMethodAsync(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
             senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
             request._senderNames = senderNames.ToArray();
@@ -591,6 +589,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         private readonly SemaphoreSlim _semaphore;
         private readonly CronExpression _cronExpression;
         private readonly Action<DateTime> _method;
+        private readonly Func<DateTime, Task> _asyncMethod;
         private readonly ILogger _logger;
 
         public DateTime? ScheduleDate { get; private set; }
@@ -607,6 +606,11 @@ public class NotifyEngine : INotifyEngine, IDisposable
             }
 
             UpdateScheduleDate(DateTime.UtcNow);
+        }
+
+        public SendMethodWrapper(Func<DateTime, Task> method, string cron, ILogger log) : this((Action<DateTime>)null, cron, log)
+        {
+            _asyncMethod = method;
         }
 
         public void UpdateScheduleDate(DateTime d)
@@ -627,11 +631,18 @@ public class NotifyEngine : INotifyEngine, IDisposable
         public async Task InvokeSendMethod(DateTime d)
         {
             await _semaphore.WaitAsync();
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 try
                 {
-                    _method(d);
+                    if (_method != null)
+                    {
+                        _method(d);
+                    }
+                    else if (_asyncMethod != null)
+                    {
+                        await _asyncMethod(d);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -643,7 +654,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         public override bool Equals(object obj)
         {
-            return obj is SendMethodWrapper w && _method.Equals(w._method);
+            return obj is SendMethodWrapper w && ((_method != null && _method.Equals(w._method)) || (_asyncMethod != null && _asyncMethod.Equals(w._asyncMethod)));
         }
 
         public override int GetHashCode()
@@ -683,11 +694,11 @@ public class NotifyEngineQueue
         _serviceProvider = serviceProvider;
     }
 
-    public void QueueRequest(NotifyRequest request)
+    public async Task QueueRequestAsync(NotifyRequest request)
     {
         foreach (var action in _notifyEngine.Actions)
         {
-            ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequest(request);
+            await ((INotifyEngineAction)_serviceProvider.GetRequiredService(action)).BeforeTransferRequestAsync(request);
         }
 
         _notifyEngine.QueueRequest(request);

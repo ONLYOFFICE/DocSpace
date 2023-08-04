@@ -11,7 +11,7 @@ import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import { LANGUAGE } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 //import EditingWrapperComponent from "../components/EditingWrapperComponent";
-import { getTitleWithoutExst } from "../helpers/files-helpers";
+import { getTitleWithoutExtension } from "SRC_DIR/helpers/filesUtils";
 //import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
 //import ItemIcon from "../components/ItemIcon";
 import { getCookie } from "@docspace/common/utils";
@@ -57,6 +57,8 @@ export default function withContent(WrappedContent) {
         t,
         viewer,
         titleWithoutExt,
+        isPublicRoom,
+        publicRoomKey,
       } = this.props;
 
       const { access, createdBy, fileStatus, href } = item;
@@ -66,7 +68,7 @@ export default function withContent(WrappedContent) {
 
       const fileOwner =
         createdBy &&
-        ((viewer.id === createdBy.id && t("Common:MeLabel")) ||
+        ((viewer?.id === createdBy.id && t("Common:MeLabel")) ||
           createdBy.displayName);
 
       const accessToEdit =
@@ -78,7 +80,9 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
-        linkStyles.href = href;
+        linkStyles.href = isPublicRoom
+          ? `${href}&share=${publicRoomKey}`
+          : href;
       }
 
       const newItems =
@@ -106,7 +110,14 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
+      {
+        filesStore,
+        treeFoldersStore,
+        auth,
+        dialogsStore,
+        uploadDataStore,
+        publicRoomStore,
+      },
       { item }
     ) => {
       const {
@@ -124,21 +135,16 @@ export default function withContent(WrappedContent) {
         setCreatedItem,
       } = filesStore;
 
+      const { isPublicRoom, publicRoomKey } = publicRoomStore;
+
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
-      const {
-        isRecycleBinFolder,
-        isPrivacyFolder,
-        isArchiveFolder,
-      } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolder } =
+        treeFoldersStore;
 
       const { replaceFileStream, setEncryptionAccess } = auth;
 
-      const {
-        culture,
-        personal,
-        folderFormValidation,
-        isDesktopClient,
-      } = auth.settingsStore;
+      const { culture, personal, folderFormValidation, isDesktopClient } =
+        auth.settingsStore;
 
       const {
         setConvertPasswordDialogVisible,
@@ -146,7 +152,7 @@ export default function withContent(WrappedContent) {
         setFormCreationInfo,
       } = dialogsStore;
 
-      const titleWithoutExt = getTitleWithoutExst(item, false);
+      const titleWithoutExt = getTitleWithoutExtension(item, false);
 
       return {
         createFile,
@@ -181,6 +187,8 @@ export default function withContent(WrappedContent) {
 
         setCreatedItem,
         personal,
+        isPublicRoom,
+        publicRoomKey,
       };
     }
   )(observer(WithContent));

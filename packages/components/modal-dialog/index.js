@@ -43,8 +43,10 @@ const ModalDialog = ({
   containerVisible,
   isDoubleFooterLine,
   isCloseable,
+  embedded,
 }) => {
   const onCloseEvent = () => {
+    if (embedded) return;
     isCloseable && onClose();
   };
   const [currentDisplayType, setCurrentDisplayType] = useState(
@@ -115,7 +117,8 @@ const ModalDialog = ({
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
           containerVisible={containerVisible}
-          isCloseable={isCloseable}
+          isCloseable={isCloseable && !embedded}
+          embedded={embedded}
         />
       }
     />
@@ -123,26 +126,31 @@ const ModalDialog = ({
 };
 
 ModalDialog.propTypes = {
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** CSS z-index   */
   zIndex: PropTypes.number,
+  /** Accepts css */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Displays the child elements */
   children: PropTypes.any,
 
-  /** Display dialog or not */
+  /** Sets the dialog to display */
   visible: PropTypes.bool,
-  /** Will be triggered when a close button is clicked */
+  /** Sets a callback function that is triggered when the close button is clicked */
   onClose: PropTypes.func,
 
-  /** Display type */
+  /** Displays type */
   displayType: PropTypes.oneOf(["modal", "aside"]),
   /** Detailed display type for each dimension */
   displayTypeDetailed: PropTypes.object,
 
-  /** Show loader in body */
+  /** Shows loader in body */
   isLoading: PropTypes.bool,
 
-  /**The displayed dialog can be closed or not */
+  /** Sets the displayed dialog to be closed or open */
   isCloseable: PropTypes.bool,
 
   /** **`MODAL-ONLY`**  
@@ -172,14 +180,16 @@ ModalDialog.propTypes = {
 
   /** **`ASIDE-ONLY`**  
 
-  Gets bool to lock or unlock body scroll */
+  Enables body scroll */
   isScrollLocked: PropTypes.bool,
 
   /** **`ASIDE-ONLY`**  
 
   Sets modal dialog size equal to window */
   scale: PropTypes.bool,
+  /** **`ASIDE-ONLY`**  
 
+  Allows you to embed a modal window as an aside dialog inside the parent container without applying a dialog layout to it */
   containerVisible: PropTypes.bool,
 };
 

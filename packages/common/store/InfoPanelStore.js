@@ -21,12 +21,16 @@ class InfoPanelStore {
   isMobileHidden = false;
 
   selection = null;
+  selectionHistory = null;
   selectionParentRoom = null;
+  selectionHistory = null;
 
   roomsView = "info_details";
   fileView = "info_history";
 
   updateRoomMembers = null;
+  isScrollLocked = false;
+  historyWithFileList = false;
 
   authStore = null;
   settingsStore = null;
@@ -44,7 +48,9 @@ class InfoPanelStore {
   setIsVisible = (bool) => {
     this.setView("info_details");
     this.isVisible = bool;
+    this.isScrollLocked = false;
   };
+
   setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
   setSelection = (selection) => {
@@ -55,16 +61,29 @@ class InfoPanelStore {
       return;
     }
     this.selection = selection;
+    this.isScrollLocked = false;
   };
+
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
+  setSelectionHistory = (obj) => (this.selectionHistory = obj);
+
+  setSelectionHistory = (obj) => {
+    this.selectionHistory = obj;
+    this.historyWithFileList = this.selection.isFolder || this.selection.isRoom;
+  };
 
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
+    this.isScrollLocked = false;
   };
 
   setUpdateRoomMembers = (updateRoomMembers) => {
     this.updateRoomMembers = updateRoomMembers;
+  };
+
+  setIsScrollLocked = (isScrollLocked) => {
+    this.isScrollLocked = isScrollLocked;
   };
 
   // Selection helpers //
@@ -208,29 +227,29 @@ class InfoPanelStore {
 
   // User link actions //
 
-  openUser = async (user, history) => {
+  openUser = async (user, navigate) => {
     if (user.id === this.authStore.userStore.user.id) {
-      this.openSelfProfile(history);
+      this.openSelfProfile(navigate);
       return;
     }
 
     const fetchedUser = await this.fetchUser(user.id);
-    this.openAccountsWithSelectedUser(fetchedUser, history);
+    this.openAccountsWithSelectedUser(fetchedUser, navigate);
   };
 
-  openSelfProfile = (history) => {
+  openSelfProfile = (navigate) => {
     const path = [
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
       "/accounts",
-      "/view/@self",
+      "/profile",
     ];
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);
-    history.push(combineUrl(...path));
+    navigate(combineUrl(...path));
   };
 
-  openAccountsWithSelectedUser = async (user, history) => {
+  openAccountsWithSelectedUser = async (user, navigate) => {
     const { getUsersList } = this.peopleStore.usersStore;
     const { setSelection } = this.peopleStore.selectionStore;
 
@@ -246,17 +265,15 @@ class InfoPanelStore {
     path.push(`filter?${newFilter.toUrlParams()}`);
     const userList = await getUsersList(newFilter);
 
-    history.push(combineUrl(...path));
+    navigate(combineUrl(...path));
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts"]);
     setSelection([user]);
   };
 
   fetchUser = async (userId) => {
-    const {
-      getStatusType,
-      getUserContextOptions,
-    } = this.peopleStore.usersStore;
+    const { getStatusType, getUserContextOptions } =
+      this.peopleStore.usersStore;
 
     const fetchedUser = await getUserById(userId);
     fetchedUser.role = getUserRole(fetchedUser);
@@ -306,6 +323,11 @@ class InfoPanelStore {
   getIsGallery = (givenPathName) => {
     const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
+  };
+
+  getIsTrash = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
+    return pathname.indexOf("files/trash") !== -1;
   };
 }
 

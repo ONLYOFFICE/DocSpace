@@ -1,5 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
+import { useLocation } from "react-router-dom";
+
 import RootFolderContainer from "./RootFolderContainer";
 import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
@@ -18,12 +20,17 @@ const linkStyles = {
 
 const EmptyContainer = ({
   isFiltered,
+  isLoading,
   parentId,
   theme,
-  setCreateRoomDialogVisible,
+
   sectionWidth,
   isRoomNotFoundOrMoved,
+  isGracePeriod,
+  setInviteUsersWarningDialogVisible,
 }) => {
+  const location = useLocation();
+
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -41,6 +48,11 @@ const EmptyContainer = ({
   };
 
   const onCreateRoom = (e) => {
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };
@@ -54,9 +66,12 @@ const EmptyContainer = ({
     );
   }
 
+  const isRootEmptyPage =
+    isLoading && location?.state ? location.state?.isRoot : parentId === 0;
+
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
-  ) : parentId === 0 ? (
+  ) : isRootEmptyPage ? (
     <RootFolderContainer
       onCreate={onCreate}
       linkStyles={linkStyles}
@@ -77,52 +92,16 @@ export default inject(
     auth,
     filesStore,
     dialogsStore,
-    treeFoldersStore,
+
     selectedFolderStore,
+    clientLoadingStore,
   }) => {
-    const { filter, roomsFilter, isErrorRoomNotAvailable } = filesStore;
+    const { isErrorRoomNotAvailable, isFiltered } = filesStore;
+    const { isLoading } = clientLoadingStore;
 
-    const {
-      authorType,
-      search,
-      withSubfolders,
-      filterType,
-      searchInContent,
-    } = filter;
-    const {
-      subjectId,
-      filterValue,
-      type,
-      withSubfolders: withRoomsSubfolders,
-      searchInContent: searchInContentRooms,
-      tags,
-      withoutTags,
-    } = roomsFilter;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const {
-      isPrivacyFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = treeFoldersStore;
-
-    const isRooms = isRoomsFolder || isArchiveFolder;
-
-    const { setCreateRoomDialogVisible } = dialogsStore;
-
-    const isFiltered = isRooms
-      ? filterValue ||
-        type ||
-        withRoomsSubfolders ||
-        searchInContentRooms ||
-        subjectId ||
-        tags ||
-        withoutTags
-      : (authorType ||
-          search ||
-          !withSubfolders ||
-          filterType ||
-          searchInContent) &&
-        !(isPrivacyFolder && isMobile);
+    const { setInviteUsersWarningDialogVisible } = dialogsStore;
 
     const isRoomNotFoundOrMoved =
       isFiltered === null &&
@@ -132,10 +111,12 @@ export default inject(
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
-      setCreateRoomDialogVisible,
+      isLoading,
 
       parentId: selectedFolderStore.parentId,
       isRoomNotFoundOrMoved,
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
     };
   }
 )(observer(EmptyContainer));

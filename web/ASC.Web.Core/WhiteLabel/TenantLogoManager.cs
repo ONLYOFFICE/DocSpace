@@ -36,8 +36,7 @@ public class TenantLogoManager
 
     public bool WhiteLabelEnabled { get; private set; }
 
-    private readonly ICache _cache;
-    private readonly ICacheNotify<TenantLogoCacheItem> _cacheNotify;
+    private readonly IDistributedCache _distributedCache;
 
     public TenantLogoManager(
         TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -46,8 +45,7 @@ public class TenantLogoManager
         TenantManager tenantManager,
         AuthContext authContext,
         IConfiguration configuration,
-        ICacheNotify<TenantLogoCacheItem> cacheNotify,
-        ICache cache)
+        IDistributedCache distributedCache)
     {
         _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
         _settingsManager = settingsManager;
@@ -57,17 +55,16 @@ public class TenantLogoManager
         _configuration = configuration;
         var hideSettings = (_configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
         WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-        _cache = cache;
-        _cacheNotify = cacheNotify;
+        _distributedCache = distributedCache;
     }
 
-    public async Task<string> GetFavicon(bool timeParam, bool dark)
+    public async Task<string> GetFaviconAsync(bool timeParam, bool dark)
     {
         string faviconPath;
-        var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
         if (WhiteLabelEnabled)
         {
-            faviconPath = await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, dark);
+            faviconPath = await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, dark);
             if (timeParam)
             {
                 var now = DateTime.Now;
@@ -76,66 +73,66 @@ public class TenantLogoManager
         }
         else
         {
-            faviconPath = await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, dark);
+            faviconPath = await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum.Favicon, dark);
         }
 
         return faviconPath;
     }
 
-    public async Task<string> GetTopLogo(bool dark)//LogoLightSmall
+    public async Task<string> GetTopLogoAsync(bool dark)//LogoLightSmall
     {
-        var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         if (WhiteLabelEnabled)
         {
-            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, dark);
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, dark);
         }
-        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, dark);
+        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum.LightSmall, dark);
     }
 
-    public async Task<string> GetLogoDark(bool dark)
+    public async Task<string> GetLogoDarkAsync(bool dark)
     {
         if (WhiteLabelEnabled)
         {
-            var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
-            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LoginPage, dark);
+            var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification, dark);
         }
 
         /*** simple scheme ***/
-        return _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(await _settingsManager.LoadAsync<TenantInfoSettings>());
         /***/
     }
 
-    public async Task<string> GetLogoDocsEditor(bool dark)
+    public async Task<string> GetLogoDocsEditorAsync(bool dark)
     {
-        var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         if (WhiteLabelEnabled)
         {
-            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, dark);
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, dark);
         }
-        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, dark);
+        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum.DocsEditor, dark);
     }
 
-    public async Task<string> GetLogoDocsEditorEmbed(bool dark)
+    public async Task<string> GetLogoDocsEditorEmbedAsync(bool dark)
     {
-        var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         if (WhiteLabelEnabled)
         {
-            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditorEmbed, dark);
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditorEmbed, dark);
         }
-        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditorEmbed, dark);
+        return await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum.DocsEditorEmbed, dark);
     }
 
 
-    public string GetLogoText()
+    public async Task<string> GetLogoTextAsync()
     {
         if (WhiteLabelEnabled)
         {
-            var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+            var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
-            return tenantWhiteLabelSettings.GetLogoText(_settingsManager) ?? TenantWhiteLabelSettings.DefaultLogoText;
+            return await tenantWhiteLabelSettings.GetLogoTextAsync(_settingsManager) ?? TenantWhiteLabelSettings.DefaultLogoText;
         }
         return TenantWhiteLabelSettings.DefaultLogoText;
     }
@@ -156,12 +153,9 @@ public class TenantLogoManager
         return !_authContext.IsAuthenticated;
     }
 
-    public bool WhiteLabelPaid
+    public async Task<bool> GetWhiteLabelPaidAsync()
     {
-        get
-        {
-            return _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).WhiteLabel;
-        }
+        return (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).WhiteLabel;
     }
 
     private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
@@ -174,32 +168,89 @@ public class TenantLogoManager
     /// <summary>
     /// Get logo stream or null in case of default logo
     /// </summary>
-    public async Task<Stream> GetWhitelabelMailLogo()
+    public async Task<Stream> GetWhitelabelMailLogoAsync()
     {
         if (WhiteLabelEnabled)
         {
-            var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
-            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LoginPage, true);
+            var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
+            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification);
         }
 
         /*** simple scheme ***/
-        return await _tenantInfoSettingsHelper.GetStorageLogoData(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetStorageLogoData(await _settingsManager.LoadAsync<TenantInfoSettings>());
         /***/
     }
 
-
-    public byte[] GetMailLogoDataFromCache()
+    public async Task<NotifyMessageAttachment> GetMailLogoAsAttacmentAsync()
     {
-        return _cache.Get<byte[]>(CacheKey);
+        var logoData = await GetMailLogoDataFromCacheAsync();
+
+        if (logoData == null)
+        {
+            var logoStream = await GetWhitelabelMailLogoAsync();
+            logoData = await ReadStreamToByteArrayAsync(logoStream) ?? await GetDefaultMailLogoAsync();
+
+            if (logoData != null)
+            {
+                await InsertMailLogoDataToCacheAsync(logoData);
+            }
+        }
+
+        if (logoData != null)
+        {
+            var attachment = new NotifyMessageAttachment
+            {
+                FileName = "logo.png",
+                Content = logoData,
+                ContentId = MimeUtils.GenerateMessageId()
+            };
+
+            return attachment;
+        }
+
+        return null;
     }
 
-    public void InsertMailLogoDataToCache(byte[] data)
+    public async Task RemoveMailLogoDataFromCacheAsync()
     {
-        _cache.Insert(CacheKey, data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        await _distributedCache.RemoveAsync(CacheKey);
     }
 
-    public void RemoveMailLogoDataFromCache()
+
+    private async Task<byte[]> GetMailLogoDataFromCacheAsync()
     {
-        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+        return await _distributedCache.GetAsync(CacheKey);
+    }
+
+    private async Task InsertMailLogoDataToCacheAsync(byte[] data)
+    {
+        await _distributedCache.SetAsync(CacheKey, data, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.UtcNow.Add(TimeSpan.FromDays(1))
+        });
+    }
+
+    private static async Task<byte[]> ReadStreamToByteArrayAsync(Stream inputStream)
+    {
+        if (inputStream == null)
+        {
+            return null;
+        }
+
+        await using (inputStream)
+        {
+            using var memoryStream = new MemoryStream();
+            await inputStream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
+    private static async Task<byte[]> GetDefaultMailLogoAsync()
+    {
+        var myAssembly = Assembly.GetExecutingAssembly();
+        await using var stream = myAssembly.GetManifestResourceStream("ASC.Web.Core.PublicResources.logo.png");
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
     }
 }

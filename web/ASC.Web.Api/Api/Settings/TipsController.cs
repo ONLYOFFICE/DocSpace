@@ -57,11 +57,20 @@ public class TipsController : BaseSettingsController
         _clientFactory = clientFactory;
     }
 
+    /// <summary>
+    /// Updates the tip settings with a parameter specified in the request.
+    /// </summary>
+    /// <short>Update the tip settings</short>
+    /// <category>Tips</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
+    /// <returns type="ASC.Web.Studio.Core.TipsSettings, ASC.Web.Core">Updated tip settings</returns>
+    /// <path>api/2.0/settings/tips</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tips")]
-    public TipsSettings UpdateTipsSettings(SettingsRequestsDto inDto)
+    public async Task<TipsSettings> UpdateTipsSettingsAsync(SettingsRequestsDto inDto)
     {
         var settings = new TipsSettings { Show = inDto.Show };
-        _settingsManager.SaveForCurrentUser(settings);
+        await _settingsManager.SaveForCurrentUserAsync(settings);
 
         if (!inDto.Show && !string.IsNullOrEmpty(_setupInfo.TipsAddress))
         {
@@ -93,15 +102,31 @@ public class TipsController : BaseSettingsController
         return settings;
     }
 
+    /// <summary>
+    /// Updates the tip subscription.
+    /// </summary>
+    /// <short>Update the tip subscription</short>
+    /// <category>Tips</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the user is subscribed to the tips</returns>
+    /// <path>api/2.0/settings/tips/change/subscription</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("tips/change/subscription")]
-    public bool UpdateTipsSubscription()
+    public async Task<bool> UpdateTipsSubscriptionAsync()
     {
-        return StudioPeriodicNotify.ChangeSubscription(_authContext.CurrentAccount.ID, _studioNotifyHelper);
+        return await StudioPeriodicNotify.ChangeSubscriptionAsync(_authContext.CurrentAccount.ID, _studioNotifyHelper);
     }
 
+    /// <summary>
+    /// Checks if the current user is subscribed to the tips or not.
+    /// </summary>
+    /// <short>Check the tip subscription</short>
+    /// <category>Tips</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the user is subscribed to the tips</returns>
+    /// <path>api/2.0/settings/tips/subscription</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("tips/subscription")]
-    public bool GetTipsSubscription()
+    public async Task<bool> GetTipsSubscriptionAsync()
     {
-        return _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
+        return await _studioNotifyHelper.IsSubscribedToNotifyAsync(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
     }
 }

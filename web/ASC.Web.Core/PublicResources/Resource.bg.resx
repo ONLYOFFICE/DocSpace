@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Полето за валидиране не може да бъде празно</value>
@@ -136,6 +136,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Неправилно първо име или фамилия</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Достъпът до портала е ограничен</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Вашият ценови план не поддържа тази опция</value>
   </data>
@@ -157,11 +160,17 @@
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифри</value>
   </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>няма интервали</value>
+  </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>специални символи</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>главни букви</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>само латински букви</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Ограничението на заявката е превишено</value>
@@ -187,11 +196,143 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Връзката за потвърждаване на профила ви е изпратена на посочения имейл</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Първо име</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Грешка при свързването</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Потребителите не могат да бъдат създадени, получените данни са неправилни.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Сървърът не можа да получи настройки.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Сървърът не може да запази настройки.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Грешно име или парола.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP домейнът не е намерен.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Не бяха намерени групи.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Невалидна стойност на потребителския филтър.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Опитали сте се да отнемете админ права от себе си. Вашите администраторски права не бяха засегнати.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Профилът ви не е свързан с LDAP директорията и вашата LDAP парола вече не е активна. Моля, променете или задайте паролата за профила си на страницата с настройки на подпрофила.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Неизвестна грешка.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Не бяха намерени потребители.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Не можа да се получи групов атрибут за една или няколко групи.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Неправилен групов филтър.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Не можа да се получи атрибут на име на група за една или няколко групи.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Не можа да се получи атрибут за вход за един или няколко потребители.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Не може да се свърже с LDAP сървър. Моля, проверете дали адресът на сървъра и номерът на порта са верни.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Потребителският атрибут не можа да се получи за един или няколко потребители.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Вътрешна грешка на сървъра.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Промяна на LDAP потребителите на обикновените потребители на портала</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>добавяне на потребител</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Проверка на сертификата</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Проверка на настройките за поддръжка на LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Прекъсване на LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Извличане на списъка от групи от LDAP сървъра</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Извличане на потребителския списък от LDAP сървъра</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Задаване на потребител {0} като {1} admin</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Зареждане на база данни за LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>премахване на потребителя</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Премахване на остарели групи, които са били заредени през LDAP по-рано</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Премахване на остарели права за достъп, които са били заредени чрез LDAP по-рано</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Деактивиране на остарели потребителски профили, които са били заредени през LDAP по-рано</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Запазване на групи</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Запазване на настройките</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Запазване на снимка</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Запазване на потребители</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Синхронизиране на потребителите</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Актуализиране на правата за достъп на потребителите</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Актуализиране на потребителските снимки</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Изисква се по-сигурен тип удостоверяване. Моля, използвайте encripted връзка или разрешете обикновена идентификация на сървъра.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Досега е достигнат лимитът на текущия потребителски план</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS не се поддържа за текущия LDAP сървър.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Твърде много LDAP операции.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Не може да се получи уникален идентификатор за обекти на потребител/група. По подразбиране системата ще се опита да съответства на един от следните идентификатори: entryUUID, nsuniqueid, GUID, objectSid. Ако никой от атрибутите не съответства на вашия LDAP сървър, моля посочете необходимия атрибут в настройката ldap.unique.id на файла web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Лицензът не е правилен</value>
@@ -288,5 +429,566 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Какво ново</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Следене на вписванията и действията на потребителите</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Макс размер на файловете</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Размерът на файловете не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Броят администратори не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Брой администратори</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Автоматичен бекъп и възстановяване</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Неограничен брой активни стаи</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Броят стаи не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>Единично вписване</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} пространство в хранилището</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Използваното пространство в хранилището не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Място за съхранение</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Стаи:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Използвано пространство:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Потребители в стаята:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Неограничен брой потребители</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Броят потребители не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Потребители в стаята</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Броят потребители не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Брандинг и персонализиране</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Брой администратори/опитни потребители:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>влизам</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Свържете услугата Bitly, за да съкратите връзките с покани за портала и споделените връзки в модула Документи.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>ID на кутия</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Клавиш Box</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Свържете приложението, за да управлявате файловете и папките на Box.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Активирайте приложението за двуфакторно удостоверяване чрез Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Свържете приложението, за да добавите електронния знак DocuSign към документите.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Крайна точка за удостоверяване на DocuSign</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Клавиш App</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Свържете приложението EasyBib, за да създадете библиографски списъци.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Токен на приложението</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Ключ Facebook</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в Facebook.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Ключ за уеб API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Ключ на сървъра</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Свържете услугата Firebase Cloud Messaging, за да получавате известия за изпратените до вас съобщения.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID на подателя</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID на проекта</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Свържете услугата Google Cloud Storage за архивиране и съхраняване на данни от портала.</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Свържете проекта, за да влезете в портала с помощта на профил в Google и да управлявате файлове и папки на Google Диск.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Ключ на Linkedin</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Свържете услугата Rackspace Cloud Storage, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Частни контейнери</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Област</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Свържете Amazon AWS S3, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 секретен ключ за достъп</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Свържете услугата Selectel Cloud Storage, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Частни контейнери</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Свържете приложението, за да управлявате OneDrive файлове и папки.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Активирайте приложението за двуфакторно удостоверяване чрез SMS Center.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Парола или паролата MD5 hash в малки букви</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Добавете Twilio, за да можете да извиквате CRM контакти направо от браузъра.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Телефонен номер от Twilio (изисква се за SMS разрешение)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в Twitter и потърсете контакти.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Свържете приложението за публикуване на документи в WordPress.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Активирайте приложението за импортиране на контакти в Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестен тип файл с изображение</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размерът на изображението надвишава разрешените параметри</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Ключ Google</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Кофа</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>ID на Linkedin</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Упълномощен потребител</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS център</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Влизам</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Сметка Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Означение за удостоверяване</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Парола</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Ключ DocuSign</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Ключ DropBox</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Ключ WordPress</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Бизнес</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Стартъп</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID на клиента на приложението</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Разрешете на приложението да влезе в портала с помощта на Apple ID акаунт.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE с Apple ID. {0}Отидете на девелъпър портала на Apple и създайте нова ONLYOFFICE интеграция. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Идентифициращ ключ от 10 знака, генериран за вписване с личния Apple ключ</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Личен ключ, изтеглен от Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID на екипа на девелъпър акаунта от 10 символа</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Изберете authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Изберете authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да съкратите поканата и линковете към документи. {0}Въведете данните си за вход в Bitly и API ключа по-долу:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да свържете Box акаунта си към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Box с потребители на ONLYOFFICE. {0}Влезте в акаунта си от девелъпър страницата на Box и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Използвайте това приложение, за да активирате двуфакторно удостоверяване с услугата Clickatell. {0}Влезте в акаунта си в SMS Platform и създайте нова интеграция за ONLYOFFICE. Копирайте apiKey и го поставете по-долу:</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Secret</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Разрешете това приложение за цифрово подписване на документи с помощта на DocuSign. {0}Отидете на вашата DocuSign администраторска конзола и добавете интеграция за ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да свържете вашия Dropbox акаунт към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Dropbox с потребители на ONLYOFFICE. {0}Влезте в акаунта си на уебсайта за девелъпъри на Dropbox и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE с помощта на Facebook и да свържат Facebook акаунтите на своите клиенти към CRM модула. {0}Отидете в девелъпър портала на Facebook и създайте ново приложение ONLYOFFICE интеграция. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Въведете името на Google Cloud bucket за съхраняване на резервни копия.</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да свържете Google Drive акаунта си с модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Google Drive с потребители на ONLYOFFICE. {0}Отидете в API конзолата на Google и създайте нов проект за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE, използвайки своите LinkedIn акаунти. {0}Отидете на уебсайта за разработчици на LinkedIn и създайте нова интеграция на ONLYOFFICE приложението. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Таен ключ</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Разрешете на приложението да влезе в портала с Mail.ru акаунт.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Когато добавите Mail.ru приложението, можете да активирате влизането в портала, като използвате Mail.ru акаунта на страницата на вашия профил.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID на клиента на приложението</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Разрешете на приложението да се вписва в портала с Microsoft акаунт.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE с Microsoft акаунтите си. {0}Отидете в Microsoft Azure и създайте нова интеграция за приложението на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloud Storage</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Въведете URL адреса на частния контейнер на Rackspace за съхранение на резервни копия.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Обществен контейнер</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Въведете URL адреса на публичния Rackspace контейнер, за да съхранявате резервни копия.</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Въведете региона, където се намират вашите Rackspace контейнери.</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Кофа</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Въведете уникалното име на кофата на Amazon за съхранение на резервни копия.</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Област</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Въведете региона на AWS, където се намира вашата Amazon кофа.</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Парола за достъп до хранилището</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Въведете името на частния Selectel контейнер за съхранение на архиви.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Обществен контейнер</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Въведете името на публичния Selectel контейнер за съхранение на архиви.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID на приложението</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да свържете вашия OneDrive акаунт към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от OneDrive с потребители на ONLYOFFICE. {0}Влезте в акаунта си в Microsoft Azure и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Използвайте това приложение, за да активирате двуфакторно удостоверяване с услугата SMS Center. {0}Въведете вашето име за вход в smsc акаунта и вашата парола (или парола MD5 хеш) с малки букви:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Потребителско име на бот</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Бот токен</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Свържете Telegram акаунт, за да получавате известия за портала си през Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>За да получавате известия за портала си през Telegram, активирайте Telegram bot. Можете да създадете нов бот с помощта на BotFather в Telegram Desktop. За да използват този бот, потребителите на портала трябва да активират известията на Telegram на страницата на своя профил. {0}Поставете потребителското име на бота и токена, който сте получили, в полетата по-долу.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да се обаждат на своите контакти от CRM модула с помощта на Twilio. {0}Отидете на Twilio Console и поставете следните данни по-долу:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID на клиента</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE, ползвайки техния Twitter и да свържат Twitter акаунтите на своите клиенти към CRM модула. {0}Отидете на портала за разработчици на Twitter и създайте нова интеграция за ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API ключ</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Key Secret</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace потребителско име</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID на приложението</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Сигурен ключ</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Активирайте приложението, за да влезете в портала с помощта на VK акаунт.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Когато добавите приложението VK, можете да активирате влизането в портал с VK акаунт от страницата на вашия профил.</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress тайна</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID на клиента</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Тайна на клиента</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да добавите нови потребители на портала от вашия списък с контакти в Yahoo. {0}Отидете на страницата за създаване на приложение в Yahoo Developer Network и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Разрешете на приложението да се вписва в портала с Yandex акаунт.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Когато добавите Yandex приложението, можете да активирате влизането в портала Yandex акаунта на страницата на вашия профил.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Неправилен идентификатор на екземпляр.</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Домейнът на клиента не може да бъде празен.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Името на домейна трябва да е с дължина между {0} и {1} знака.</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Успешно качено. {0}Не е налична поддръжка за този лиценз от {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Ако съществува потребител с имейл {0}, инструкцията за промяна на паролата е изпратена на този имейл адрес.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Облачно пространство за вашите офис документи</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Невалидна Recaptcha</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Активирайте приложението за управление на файлове и папки на Dropbox.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да създавате библиографии в ONLYOFFICE редакторите. {0}Отидете на страницата за регистрация на EasyBib и попълнете формуляра, за да добавите интеграция на ONLYOFFICE. След като получите ключ за приложението, поставете го по-долу:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Активирайте това приложение, за да позволите на вашите потребители да получават известия за съобщения дори o офлайн. {0}Отидете в конзолата на Firebase и добавете нов проект за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Свържете Google Cloud Storage услугата, за да архивирате и съхранявате данни от вашия портал. {0}Отидете на Google Cloud Platform Console и създайте нов акаунт за услуги за ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Свържете услугата Rackspace Cloud Storage, за да архивирате и съхранявате данни от вашия портал. {0}В настройките за сигурност на Rackspace Cloud Control Panel щракнете върху Show линка до Rackspace API Key. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Свържете Amazon AWS S3, за да архивирате и съхранявате данни от вашия портал. {0}Отидете до конзолата за управление на AWS и създайте ключове за достъп за ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Свържете услугата Selectel Cloud Storage, за да архивирате и съхранявате данни от вашия портал. {0}Вземете данните за достъп за потребител с права за Четене/Писане за контейнерите, където планирате да съхранявате резервните си копия, и ги поставете по-долу:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Активирайте приложението за лесно публикуване на документи на вашия WordPress уебсайт. {0}На страницата за разработчици на Wordpress създайте ново приложение за интегриране на ONLYOFFICE. Поставете данните, които сте получили по-долу:</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Интеграции на трети страни</value>
   </data>
 </root>

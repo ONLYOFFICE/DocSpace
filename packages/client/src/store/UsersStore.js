@@ -33,10 +33,6 @@ class UsersStore {
       filterData.pageCount = 100;
     }
 
-    if (filterData.employeeStatus === EmployeeStatus.Active) {
-      filterData.employeeStatus = null;
-    }
-
     if (filterData.group && filterData.group === "root")
       filterData.group = undefined;
 
@@ -126,13 +122,17 @@ class UsersStore {
         toType = EmployeeType.User;
     }
 
+    let users = null;
+
     try {
-      await api.people.updateUserType(toType, userIds);
+      users = await api.people.updateUserType(toType, userIds);
     } catch (e) {
       throw new Error(e);
     }
 
     await this.getUsersList(filter);
+
+    return users;
   };
 
   updateProfileInUsers = async (updatedProfile) => {
@@ -192,12 +192,8 @@ class UsersStore {
   };
 
   getUserContextOptions = (isMySelf, statusType, userRole, status) => {
-    const {
-      isOwner,
-      isAdmin,
-      isVisitor,
-      isCollaborator,
-    } = this.peopleStore.authStore.userStore.user;
+    const { isOwner, isAdmin, isVisitor, isCollaborator } =
+      this.peopleStore.authStore.userStore.user;
 
     const options = [];
 
@@ -379,6 +375,7 @@ class UsersStore {
       title,
       firstName,
       lastName,
+      isSSO,
     } = user;
     const statusType = this.getStatusType(user);
     const role = this.getUserRole(user);
@@ -417,6 +414,7 @@ class UsersStore {
       position: title,
       firstName,
       lastName,
+      isSSO,
     };
   };
 

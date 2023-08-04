@@ -26,10 +26,17 @@
 
 namespace ASC.Files.Core.ApiModels;
 
+/// <summary>
+/// </summary>
 public class FileShareParams
 {
+    /// <summary>ID of the user with whom we want to share a file</summary>
     public Guid ShareTo { get; set; }
+
+    /// <summary>User email address</summary>
     public string Email { get; set; }
+
+    /// <summary>Sharing rights</summary>
     public FileShare Access { get; set; }
 }
 
@@ -43,14 +50,14 @@ public class FileShareParamsHelper
         _userManager = userManager;
     }
 
-    public AceWrapper ToAceObject(FileShareParams fileShareParams)
+    public async Task<AceWrapper> ToAceObjectAsync(FileShareParams fileShareParams)
     {
         return new AceWrapper
         {
             Access = fileShareParams.Access,
             Id = fileShareParams.ShareTo,
             Email = fileShareParams.Email,
-            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !_userManager.UserExists(fileShareParams.ShareTo)
+            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !await _userManager.UserExistsAsync(fileShareParams.ShareTo)
         };
     }
 }

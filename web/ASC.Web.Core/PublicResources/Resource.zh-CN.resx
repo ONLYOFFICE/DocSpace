@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>请输入验证码</value>
@@ -69,6 +69,12 @@
   </data>
   <data name="AdminMessageSent" xml:space="preserve">
     <value>您的信息已成功发送。稍后工作站管理员会与您联系。</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>通过短信</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>使用授权应用</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>系统已发送通知到：email（本工作站主要负责人的Email），等待其确认此操作。</value>
@@ -130,6 +136,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>名字或姓氏不正确</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>对门户的访问受到限制</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>您的定价方案不支持该选项</value>
   </data>
@@ -151,11 +160,17 @@
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>数字</value>
   </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>没有空格</value>
+  </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>特殊字符</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>大写字母</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>只有拉丁字母</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>超过请求限制</value>
@@ -181,17 +196,134 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>通知邮件已发送。请查收并按邮件中的提示完成账户激活操作</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>名字</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>姓氏</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>连接错误</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>无法创建用户，收到的数据有误。</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>服务器无法获取设置。</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>服务器无法保存设置。</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>用户名或密码有误。</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>找不到LDAP域名。</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>找不到小组。</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>用户筛选值无效。</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>未知错误。</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>未找到用户。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>无法获取一个或多个小组的小组属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>错误的小组筛选条件。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>无法获取一个或多个小组的小组名称属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>无法获取一个或多个用户的登录属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>无法连接到LDAP服务器。请检查服务器的地址和端口号是否正确。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>无法获取一个或多个用户的用户属性。</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>服务器内部错误。</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>修改普通门户用户上的LDAP用户</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>正在添加用户</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>证书验证</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>检查LDAP支持设置</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>从LDAP服务器检索小组列表</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>从LDAP服务器检索用户列表</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>加载LDAP基本信息</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>正在删除用户</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>删除之前经通过LDAP加载的过期小组</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>删除先前通过LDAP加载的过期访问权限</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>删除之前通过LDAP加载的过期用户</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>保存小组</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>保存设置</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>保存照片</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>保存用户</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>同步用户</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>更新用户照片</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>需更安全的身份验证类型。请使用加密连接或在服务器上启用纯认证。</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>已达到目前的定价计划用户限制</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>当前LDAP服务器不支持StartTLS。</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>LDAP操作太多</value>
+    <value>LDAP操作太多。</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>无法获取用户/组对象的唯一ID。默认情况下，系统将尝试匹配以下标识符之一：entryUUID，nsuniqueid，GUID，objectSid。若没有属性对应于您的LDAP服务器，请在web.appsettings.config文件的ldap.unique.id设置中指定必要的属性。</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>许可证有误</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>许可证已过期</value>
+    <value>许可证已过期。</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>门户数量超过许可证允许的数量</value>
@@ -203,7 +335,7 @@
     <value>上传成功</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>详细的email地址变更指引已发送到{0}的电子邮箱</value>
+    <value>详细的email地址变更指引已发送到的电子邮箱</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>若想更改号码，您需要删除当前的电话号码</value>
@@ -260,13 +392,13 @@
     <value>字段映射无效</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
-    <value>问候区设置已保存！</value>
+    <value>问候区设置已保存</value>
   </data>
   <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
     <value>设置已更新</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>有关删除个人账号的详细指引已发送到您提供的Email地址中</value>
+    <value>有关删除个人账号的详细指引已发送到您提供的 {0} 邮件地址中</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>验证码有误</value>
@@ -276,5 +408,587 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>新鲜事</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>跟踪用户登录与活动</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>文件最大大小</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>文件大小不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>管理员的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>管理员的数量</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>自动备份与恢复</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>不限激活的房间数量</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>房间的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO单点登录</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} 存储空间</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>使用的存储空间大小不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>储存空间</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>房间数量：</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>已使用储存空间：</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量：</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>不限用户数量</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>用户的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>房间里的用户数量不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>品牌化&amp;个性定制</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>管理员/高级用户数量:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>比特利</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>连接Bitly服务，以缩短文档模块中的门户网站邀请链接和共享链接。</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>盒子ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>盒子秘钥</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Box文件和文件夹。</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>通过Clickatell启用双因素身份验证应用程序。</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign秘钥</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>连接应用程序，将DocuSign电子标志添加到文档。</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign身份验证端点</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Dropbox文件和文件夹。</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>应用程序密钥</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>APP令牌</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>专业</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>初创</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook秘钥</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>连接应用程序，以使用Facebook账户登录门户并搜索联系人。</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>网络API密钥</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>服务器秘钥</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>连接Firebase Cloud Messaging服务，以接收关于发送给您的邮件的通知。</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign密码</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>发件人ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>项目ID</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>输入用于存储备份的Google Cloud桶的名称。</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>使用谷歌账户连接项目以登录门户，并管理Google云端硬盘文件和文件夹。</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>连接应用程序，以使用领英账户登录门户。</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>领英秘钥</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>机架空间云存储</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>专用容器</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>地区</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>输入用于存储备份的Amazon桶的唯一名称。</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>输入Amazon bucket所在的AWS区域。</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>选择云存储</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>专用容器</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的Selectel专用容器的名称。</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的Selectel公共容器的名称。</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>连接应用程序，以管理OneDrive文件和文件夹。</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>通过短信中心启用双因素身份验证应用程序。</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>MD5散列为小写的密码</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>添加Twilio，以直接从浏览器呼叫CRM联系人。</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>来自Twilio的电话号码（需短信授权）</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>连接应用程序，以使用Twitter账户登录门户并搜索联系人。</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>启用雅虎联系人导入的应用程序。</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>未知的图片类型</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>图像尺寸超过允许的参数</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox秘钥</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google秘钥</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>领英ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>短信中心</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>账户Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>授权令牌</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>验证码字段不能为空</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 AccessKey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>应用程序客户端 ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>启用应用程序以使用 Apple ID 账户登录门户。</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>启用该应用以允许用户使用 Apple ID 登录 ONLYOFFICE。{0}前往 Apple 开发者门户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>为使用 Apple 私钥进行登录而生成的的密钥标识符（10 个字符）</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>从 Apple 开发者网站中下载的私钥</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>开发者账户团队 ID（10 个字符）</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>启用此应用以对邀请和文档链接进行缩短。{0}在下方输入您的 Bitly 登录信息与 API Key：</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>启用此应用以将您的 Box 账户连接至文档模块。您将可在 Box 中管理和编辑文件并同 ONLYOFFICE 用户进行分享。{0}在 Box 开发者页面中登录账户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>使用此应用以启用 Clickatell 服务双因素身份认证功能。{0}登录您的短信平台账户并为 ONLYOFFICE 集成创建新应用。复制 apiKey 并在下方填入：</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>启用此应用以通过 DocuSign 对文档进行数字化签署。{0}请前往您的 DocuSign 管理控制台并添加 ONLYOFFICE 集成。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>启用此应用以将您的 Dropbox 账户连接至文档模块。您将可在 Dropbox 中管理和编辑文件并同 ONLYOFFICE 用户进行分享。{0}在 Dropbox 开发者网站中登录账户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>启用此应用程序以使用 EasyBib 在文档中创建书目列表。</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>启用此应用以在 ONLYOFFICE 编辑器中创建书目列表。{0}前往 EasyBib 注册页面并填写表单以添加 ONLYOFFICE 集成。获得 App Key 后将其粘贴至下方即可：</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>启用此应用以允许用户使用 Facebook 登录 ONLYOFFICE 并在 CRM 模块中链接客户的 Facebook 账户。{0}前往 Facebook 开发者门户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>连接 Google Cloud Storage 服务以备份和存储门户数据。</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>连接 Google Cloud Storage 服务以备份和存储门户数据。{0}前往 Google 云平台控制台并为 ONLYOFFICE 创建新的服务账户。请将获得的信息粘贴至下方：</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>启用此应用以将您的 Google Drive 账户连接至文档模块。您将可在 Google Drive 中管理和编辑文件并同 ONLYOFFICE 用户进行分享。{0}前往 Google API 控制台并为 ONLYOFFICE 集成创建新项目。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>启用该应用以允许用户使用领英账户登录 ONLYOFFICE。{0}前往领英开发者网站并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>密钥</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>启用应用程序以使用 Mail.ru 账户登录门户。</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>在添加 Mail.ru 应用程序时，您可在档案页面中启用通过 Mail.ru 账户进行登录的功能。</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>应用程序客户端 ID</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>启用应用程序以使用 Microsoft 账户登录门户。</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>启用该应用以允许用户使用 Microsoft 登录 ONLYOFFICE。{0}前往 Microsoft Azure 并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>连接 Rackspace Cloud Storage 服务以备份和存储门户数据。</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>连接 Rackspace Cloud Storage 服务以备份和存储门户数据。{0}在 Rackspace 云控制面板的安全设置中点击 Rackspace API Key 旁的“Show link”（显示链接），然后将获得的信息粘贴至下方即可：</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的 Rackspace 私有容器 URL 地址。</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>公开容器</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的 Rackspace 公开容器 URL 地址。</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>输入 Rackspace 容器的所在区域。</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>连接 Amazon AWS S3 以备份和存储门户数据。</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>连接 Amazon AWS S3 以备份和存储门户数据。{0}前往 AWS 管理控制台并为 ONLYOFFICE 创建访问密钥。然后将获得的信息粘贴至下方即可：</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>地区</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 secret access key</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>存储访问密码</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>连接 Selectel Cloud Storage 服务以备份和存储门户数据。</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>连接 Selectel Cloud Storage 服务以备份和存储门户数据。{0}为具有目标备份存储容器读/写权限的用户获取访问权限信息并在下方粘贴：</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>公开容器</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>应用 ID</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>启用此应用以将您的 OneDrive 账户连接至文档模块。您将可在 OneDrive 中管理和编辑文件并同 ONLYOFFICE 用户进行分享。{0}登录 Microsoft Azure 账户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>使用此应用以启用短信中心服务双因素身份认证功能。{0}以小写形式填入您的 SMSC 账户登录信息和密码（或密码 MD5 哈希值）：</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot 用户名</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot Token</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>连接 Telegram 账户以通过 Telegram 接收门户消息通知。</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>如需通过 Telegram 接收门户消息通知，请启用 Telegram 机器人。您可在 Telegram Desktop 中使用 BotFather 创建新的机器人。如需使用此机器人，门户用户需要在档案页面中启用 Telegram 消息通知。{0}在下方的字段中粘贴收到的机器人用户名与 Token。</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>启用此应用以允许用户从 CRM 模块中使用 Twillio 呼叫联系人。{0}前往 Twilio 控制台并粘贴以下信息：</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>客户端 ID</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>启用此应用以允许用户使用 Twitter 登录 ONLYOFFICE 并在 CRM 模块中链接客户的 Twitter 账户。{0}前往 Twitter 开发者门户并为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Key Secret</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace 用户名</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>应用 ID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>安全密钥</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>启用应用程序以使用 VK 账户登录门户。</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>在添加 VK 应用程序时，您可在档案页面中启用通过 VK 账户进行登录的功能。</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>启用应用程序以直接在 WordPress 中发布文档。</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>启用应用程序以在 WordPress 网站中轻松发布文档。{0}在 WordPress 开发者页面中为 ONLYOFFICE 集成创建新应用。然后将获得的信息粘贴至下方即可：</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress Key</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress Secret</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>客户端 ID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>客户端 Secret</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>启用此应用以从 Yahoo 联系人列表中添加新的门户用户。{0}前往 Yahoo 开发人员网络中的应用程序页面为 ONLYOFFICE 集成创建新应用。请在下方填写获得的信息：</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>启用应用程序以使用 Yandex 账户登录门户。</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>在添加 Yandex 应用程序时，您可在档案页面中启用通过 Yandex 账户进行登录的功能。</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>租户域不能为空。</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>域名长度必须介于 {0} 到 {1} 个字符之间。</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>您正在尝试从自己处取回管理员权限。您的管理员权限将不受影响。</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>您的账户未链接至 LDAP 目录且 LDAP 密码不再活动。请在档案设置页面中更改或设置账户密码。</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP 断开连接</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>将用户 {0} 设置为 {1} 管理员</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>更新用户访问权限</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>上传成功。{0}自 {2} 开始此许可已无法获得支持服务与更新。{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>上传成功。{0}自 {2} 开始此许可已无法获得支持服务。{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>如果存在使用邮箱 {0} 的用户，则密码更改指示已发送至此邮箱。</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>办公文档云空间</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA 应用程序设置不可用</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>您发送了太多文本消息。请稍后再试。</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>让您的用户即使在离线状态下也能接收此应用程序的消息通知。 {0}转到 Firebase 控制台并为 ONLYOFFICE 集成添加一个新项目。 插入您收到的以下数据：</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>第三方集成</value>
   </data>
 </root>

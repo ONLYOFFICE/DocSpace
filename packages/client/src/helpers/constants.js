@@ -32,6 +32,8 @@ export const ValidationResult = Object.freeze({
   Ok: 0,
   Invalid: 1,
   Expired: 2,
+  Password: 3,
+  InvalidPassword: 4,
 });
 
 export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";
@@ -51,6 +53,9 @@ export const CategoryType = Object.freeze({
   Favorite: 5,
   Recent: 6,
   Trash: 7,
+  Settings: 8,
+  Accounts: 9,
+  PublicRoom: 10,
 });
 
 /**
@@ -64,9 +69,30 @@ export const TableVersions = Object.freeze({
   Trash: "4",
 });
 
+/**
+ * Enum for quotas bar
+ * @readonly
+ */
+export const QuotaBarTypes = Object.freeze({
+  ConfirmEmail: "confirm-email",
+  RoomQuota: "room-quota",
+  StorageQuota: "storage-quota",
+  UserQuota: "user-quota",
+  UserAndStorageQuota: "user-storage-quota",
+  RoomAndStorageQuota: "room-storage-quota",
+});
+
 export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 export const BINDING_REDIRECT =
   "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
+export const SSO_NAME_ID_FORMAT =
+  "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
+export const SSO_GIVEN_NAME = "givenName";
+export const SSO_SN = "sn";
+export const SSO_EMAIL = "email";
+export const SSO_LOCATION = "location";
+export const SSO_TITLE = "title";
+export const SSO_PHONE = "phone";
 
 export const DEFAULT_SELECT_TIMEZONE = {
   key: "UTC",
@@ -78,3 +104,26 @@ export const DEFAULT_SELECT_LANGUAGE = {
   label: "English (United States)",
   icon: EnUSReactSvgUrl,
 };
+
+/**
+ * Enum for sort by field name
+ * @readonly
+ */
+export const SortByFieldName = Object.freeze({
+  Name: "AZ",
+  ModifiedDate: "DateAndTime",
+  CreationDate: "DateAndTimeCreation",
+  Author: "Author",
+  Size: "Size",
+  Type: "Type",
+  Room: "Room",
+  Tags: "Tags",
+  RoomType: "roomType",
+});
+
+export const LinkType = Object.freeze({
+  Invite: 0,
+  External: 1,
+});
+
+export const SSO_LABEL = "SSO";

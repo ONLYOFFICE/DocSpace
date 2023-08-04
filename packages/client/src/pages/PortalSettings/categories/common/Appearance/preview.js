@@ -10,9 +10,11 @@ import {
 } from "./StyledPreview";
 
 import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
+import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 
 const Preview = (props) => {
   const {
+    appliedColorAccent,
     previewAccent,
     themePreview,
     selectThemeId,
@@ -21,7 +23,6 @@ const Preview = (props) => {
     floatingButtonClass,
     colorCheckImg,
   } = props;
-
   const [colorPreview, setColorPreview] = useState(previewAccent);
   const [isViewTablet, setIsViewTablet] = useState(false);
 
@@ -31,9 +32,24 @@ const Preview = (props) => {
     setIsViewTablet(tablet);
   };
 
+  const getSettings = () => {
+    const selectColorAccent = getFromSessionStorage("selectColorAccent");
+    saveToSessionStorage("defaultColorAccent", appliedColorAccent);
+
+    if (selectColorAccent) {
+      setColorPreview(selectColorAccent);
+    } else {
+      setColorPreview(appliedColorAccent);
+    }
+  };
+
   useEffect(() => {
-    setColorPreview(previewAccent);
+    getSettings();
   }, [previewAccent]);
+
+  useEffect(() => {
+    saveToSessionStorage("selectColorAccent", colorPreview);
+  }, [colorPreview]);
 
   useEffect(() => {
     onCheckView();

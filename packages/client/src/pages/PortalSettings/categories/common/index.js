@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -10,17 +10,28 @@ import Branding from "./branding";
 import Appearance from "./appearance";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import LoaderSubmenu from "./sub-components/loaderSubmenu";
+import { resetSessionStorage } from "../../utils";
 
 const SubmenuCommon = (props) => {
   const {
     t,
-    history,
+
     tReady,
     setIsLoadedSubmenu,
     loadBaseInfo,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   } = props;
   const [currentTab, setCurrentTab] = useState(0);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      resetSessionStorage();
+      getWhiteLabelLogoUrls();
+    };
+  }, []);
 
   useEffect(() => {
     const path = location.pathname;
@@ -43,7 +54,7 @@ const SubmenuCommon = (props) => {
 
   const data = [
     {
-      id: "customization",
+      id: "general",
       name: t("Common:SettingsGeneral"),
       content: <Customization />,
     },
@@ -60,11 +71,11 @@ const SubmenuCommon = (props) => {
   ];
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/common/${e.id}`
+        `/portal-settings/customization/${e.id}`
       )
     );
   };
@@ -86,6 +97,7 @@ export default inject(({ common }) => {
     setIsLoadedSubmenu,
     initSettings,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   } = common;
   return {
     loadBaseInfo: async () => {
@@ -94,7 +106,6 @@ export default inject(({ common }) => {
     isLoaded,
     setIsLoadedSubmenu,
     isLoadedSubmenu,
+    getWhiteLabelLogoUrls,
   };
-})(
-  withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))
-);
+})(withLoading(withTranslation("Settings")(observer(SubmenuCommon))));

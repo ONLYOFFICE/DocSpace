@@ -70,7 +70,8 @@ public class ChunkZipWriteOperator : IDataWriteOperator
             _fileStream = _tempStream.Create();
             _gZipOutputStream.baseOutputStream_ = _fileStream;
         }
-        using (var buffered = _tempStream.GetBuffered(stream))
+
+        await using (var buffered = _tempStream.GetBuffered(stream))
         {
             var entry = TarEntry.CreateTarEntry(key);
             entry.Size = buffered.Length;
@@ -102,7 +103,7 @@ public class ChunkZipWriteOperator : IDataWriteOperator
                 theMemStream.Position = 0;
                 if (bytesRead == chunkUploadSize || last)
                 {
-                    if (_fileStream.Position == _fileStream.Length)
+                    if (_fileStream.Position == _fileStream.Length && last)
                     {
                         _chunkedUploadSession.LastChunk = true;
                     }

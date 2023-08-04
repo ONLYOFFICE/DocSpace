@@ -29,6 +29,7 @@ global using System.Reflection;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
+global using ASC.Core;
 global using ASC.Core.Encryption;
 global using ASC.Data.Encryption;
 global using ASC.Data.Storage.Encryption;

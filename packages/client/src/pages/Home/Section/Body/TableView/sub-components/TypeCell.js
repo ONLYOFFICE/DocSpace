@@ -1,6 +1,7 @@
 import React from "react";
 import { StyledText } from "./CellStyles";
-import { FileType, RoomsType } from "@docspace/common/constants";
+import { FileType } from "@docspace/common/constants";
+import { getDefaultRoomName } from "../../../../../../helpers/filesUtils";
 
 const TypeCell = ({ t, item, sideColor }) => {
   const { fileExst, fileType, roomType } = item;
@@ -30,29 +31,19 @@ const TypeCell = ({ t, item, sideColor }) => {
     }
   };
 
-  const getRoomType = () => {
-    switch (roomType) {
-      case RoomsType.CustomRoom:
-        return `Custom`;
-      case RoomsType.FillingFormsRoom:
-        return `Filling form`;
-      case RoomsType.EditingRoom:
-        return `Collaboration`;
-      case RoomsType.ReadOnlyRoom:
-        return `View-only`;
-      case RoomsType.ReviewRoom:
-        return `Review`;
-      default:
-        return ``;
-    }
-  };
-
-  const type = item.isRoom ? getRoomType() : getItemType();
+  const type = item.isRoom ? getDefaultRoomName(roomType, t) : getItemType();
   const Exst = fileExst ? fileExst.slice(1).toUpperCase() : "";
+  const data = `${type} ${Exst}`;
 
   return (
-    <StyledText fontSize="12px" fontWeight="600" color={sideColor} truncate>
-      {type} {Exst}
+    <StyledText
+      fontSize="12px"
+      fontWeight="600"
+      color={sideColor}
+      truncate
+      title={data}
+    >
+      {data}
     </StyledText>
   );
 };

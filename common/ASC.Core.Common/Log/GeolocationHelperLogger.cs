@@ -27,6 +27,9 @@
 namespace ASC.Core.Common.Log;
 internal static partial class GeolocationHelperLogger
 {
+    [LoggerMessage(Level = LogLevel.Trace, Message = "This is remote ip address {remoteIp}")]
+    public static partial void TraceRemoteIpAddress(this ILogger<GeolocationHelper> logger, string remoteIp);
+
     [LoggerMessage(Level = LogLevel.Error, Message = "GetIPGeolocation")]
     public static partial void ErrorGetIPGeolocation(this ILogger<GeolocationHelper> logger, Exception exception);
 

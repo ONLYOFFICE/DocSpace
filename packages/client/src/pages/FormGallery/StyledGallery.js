@@ -5,7 +5,7 @@ import Headline from "@docspace/common/components/Headline";
 import { Base } from "@docspace/components/themes";
 
 const StyledHeadline = styled(Headline)`
-  width: calc(100% + 1px);
+  width: 100%;
   font-weight: 700;
   font-size: ${isMobile ? "21px !important" : "18px"};
   line-height: ${isMobile ? "28px !important" : "24px"};
@@ -57,6 +57,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-left: auto;
 
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  align-items: center;
+  justify-content: center;
+
   @media ${tablet} {
     display: none;
   }
@@ -68,6 +71,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-bottom: 1px;
+
     background-color: ${(props) =>
       props.isInfoPanelVisible
         ? props.theme.infoPanel.sectionHeaderToggleBgActive

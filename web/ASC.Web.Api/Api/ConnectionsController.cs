@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api;
 
+/// <summary>
+/// Security API.
+/// </summary>
+/// <name>security</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -76,12 +80,23 @@ public class ConnectionsController : ControllerBase
         _geolocationHelper = geolocationHelper;
     }
 
+    /// <summary>
+    /// Returns all the active connections to the portal.
+    /// </summary>
+    /// <short>
+    /// Get active connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">Active portal connections</returns>
+    /// <path>api/2.0/security/activeconnections</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("activeconnections")]
     public async Task<object> GetAllActiveConnections()
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.Tenant, user.Id);
-        var listLoginEvents = loginEvents.ConvertAll(Convert);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var loginEvents = await _dbLoginEventsManager.GetLoginEventsAsync(user.TenantId, user.Id);
+        var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
+        var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
         var loginEventId = GetLoginEventIdFromCookie();
         if (loginEventId != 0)
         {
@@ -112,7 +127,7 @@ public class ConnectionsController : ControllerBase
                     IP = ip
                 };
 
-                listLoginEvents.Add(Convert(baseEvent));
+                listLoginEvents.Add(await ConvertAsync(baseEvent));
             }
         }
 
@@ -124,12 +139,22 @@ public class ConnectionsController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Logs out from all the active connections of the current user and changes their password.
+    /// </summary>
+    /// <short>
+    /// Log out and change password
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">URL to the confirmation message for changing a password</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallchangepassword</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallchangepassword")]
     public async Task<object> LogOutAllActiveConnectionsChangePassword()
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
             await LogOutAllActiveConnections(user.Id);
@@ -140,9 +165,9 @@ public class ConnectionsController : ControllerBase
             auditEventDate = auditEventDate.AddTicks(-(auditEventDate.Ticks % TimeSpan.TicksPerSecond));
 
             var hash = auditEventDate.ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
+            var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-            _messageService.Send(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
+            await _messageService.SendAsync(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
 
             return confirmationUrl;
         }
@@ -153,11 +178,22 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from all the active connections of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out for the user by ID
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param type="System.Guid, System" method="url" name="userId">User ID</param>
+    /// <path>api/2.0/security/activeconnections/logoutall/{userId}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("activeconnections/logoutall/{userId}")]
-    public async Task LogOutAllActiveConnectionsForUser(Guid userId)
+    public async Task LogOutAllActiveConnectionsForUserAsync(Guid userId)
     {
-        if (!_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID)
-            && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
+        if (!await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID)
+            && !await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
         {
             throw new SecurityException("Method not available");
         }
@@ -165,18 +201,28 @@ public class ConnectionsController : ControllerBase
         await LogOutAllActiveConnections(userId);
     }
 
+    /// <summary>
+    /// Logs out from all the active connections except the current connection.
+    /// </summary>
+    /// <short>
+    /// Log out from all connections
+    /// </short>
+    /// <category>Active connections</category>
+    /// <returns type="System.Object, System">Current user name</returns>
+    /// <path>api/2.0/security/activeconnections/logoutallexceptthis</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logoutallexceptthis")]
     public async Task<object> LogOutAllExceptThisConnection()
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
             var loginEventFromCookie = GetLoginEventIdFromCookie();
 
-            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThis(loginEventFromCookie, user.Tenant, user.Id);
+            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThisAsync(loginEventFromCookie, user.TenantId, user.Id);
 
-            _messageService.Send(MessageAction.UserLogoutActiveConnections, userName);
+            await _messageService.SendAsync(MessageAction.UserLogoutActiveConnections, userName);
             return userName;
         }
         catch (Exception ex)
@@ -186,17 +232,28 @@ public class ConnectionsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Logs out from the connection with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Log out from the connection
+    /// </short>
+    /// <category>Active connections</category>
+    /// <param type="System.Int32, System" method="url" name="loginEventId">Login event ID</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/security/activeconnections/logout/{loginEventId}</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("activeconnections/logout/{loginEventId}")]
     public async Task<bool> LogOutActiveConnection(int loginEventId)
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
-            await _dbLoginEventsManager.LogOutEvent(loginEventId);
+            await _dbLoginEventsManager.LogOutEventAsync(loginEventId);
 
-            _messageService.Send(MessageAction.UserLogoutActiveConnection, userName);
+            await _messageService.SendAsync(MessageAction.UserLogoutActiveConnection, userName);
             return true;
         }
         catch (Exception ex)
@@ -209,12 +266,12 @@ public class ConnectionsController : ControllerBase
     private async Task LogOutAllActiveConnections(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
-        var user = _userManager.GetUsers(userId ?? currentUserId);
+        var user = await _userManager.GetUsersAsync(userId ?? currentUserId);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         var auditEventDate = DateTime.UtcNow;
 
-        _messageService.Send(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
-        await _cookiesManager.ResetUserCookie(user.Id);
+        await _messageService.SendAsync(auditEventDate, currentUserId.Equals(user.Id) ? MessageAction.UserLogoutActiveConnections : MessageAction.UserLogoutActiveConnectionsForUser, _messageTarget.Create(user.Id), userName);
+        await _cookiesManager.ResetUserCookieAsync(user.Id);
     }
 
     private int GetLoginEventIdFromCookie()
@@ -224,9 +281,9 @@ public class ConnectionsController : ControllerBase
         return loginEventId;
     }
 
-    private CustomEvent Convert(BaseEvent baseEvent)
+    private async Task<CustomEvent> ConvertAsync(BaseEvent baseEvent)
     {
-        var location = GetGeolocation(baseEvent.IP);
+        var location = await GetGeolocationAsync(baseEvent.IP);
         return new CustomEvent
         {
             Id = baseEvent.Id,
@@ -239,11 +296,11 @@ public class ConnectionsController : ControllerBase
         };
     }
 
-    private string[] GetGeolocation(string ip)
+    private async Task<string[]> GetGeolocationAsync(string ip)
     {
         try
         {
-            var location = _geolocationHelper.GetIPGeolocation(ip);
+            var location = await _geolocationHelper.GetIPGeolocationAsync(IPAddress.Parse(ip));
             if (string.IsNullOrEmpty(location.Key))
             {
                 return new string[] { string.Empty, string.Empty };

@@ -28,5 +28,5 @@ namespace ASC.MessagingSystem.Core.Sender;
 
 public interface IMessageSender
 {
-    int Send(EventMessage message);
+    Task<int> SendAsync(EventMessage message);
 }

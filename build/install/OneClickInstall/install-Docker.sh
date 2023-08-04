@@ -36,9 +36,15 @@ PRODUCT="docspace"
 BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
+INSTALLATION_TYPE="ENTERPRISE"
+IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
+CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
-NETWORK=${PACKAGE_SYSNAME}
+NETWORK_NAME=${PACKAGE_SYSNAME}
+
+SWAPFILE="/${PRODUCT}_swapfile";
+MAKESWAP="true";
 
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
@@ -70,7 +76,8 @@ DATABASE_MIGRATION="true"
 ELK_VERSION=""
 ELK_HOST=""
 
-DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/4testing-documentserver-ee:latest"
+DOCUMENT_SERVER_IMAGE_NAME=""
+DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
@@ -84,7 +91,6 @@ HELP_TARGET="install-Docker.sh";
 SKIP_HARDWARE_CHECK="false";
 
 EXTERNAL_PORT="80"
-SERVICE_PORT="5050"
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -124,7 +130,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-idocs | --installdocumentserver )
+		-idocs | --installdocs )
 			if [ "$2" != "" ]; then
 				INSTALL_DOCUMENT_SERVER=$2
 				shift
@@ -138,14 +144,14 @@ while [ "$1" != "" ]; do
 			fi
 		;;		
 		
-		-irb | --installrabbitmq )
+		-irbt | --installrabbitmq )
 			if [ "$2" != "" ]; then
 				INSTALL_RABBITMQ=$2
 				shift
 			fi
 		;;
 
-		-ird | --installredis )
+		-irds | --installredis )
 			if [ "$2" != "" ]; then
 				INSTALL_REDIS=$2
 				shift
@@ -194,7 +200,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-esh | --elasticsearchhost )
+		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
 				shift
@@ -208,13 +214,6 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ip | --internalport )
-			if [ "$2" != "" ]; then
-				SERVICE_PORT=$2
-				shift
-			fi
-		;;
-
 		-ep | --externalport )
 			if [ "$2" != "" ]; then
 				EXTERNAL_PORT=$2
@@ -224,7 +223,7 @@ while [ "$1" != "" ]; do
 
 		-dsh | --docspacehost )
 			if [ "$2" != "" ]; then
-				APP_CORE_BASE_DOMAIN=$2
+				APP_URL_PORTAL=$2
 				shift
 			fi
 		;;
@@ -246,6 +245,7 @@ while [ "$1" != "" ]; do
 		-s | --status )
 			if [ "$2" != "" ]; then
 				STATUS=$2
+				IMAGE_NAME="${PACKAGE_SYSNAME}/${STATUS}${PRODUCT}-api"
 				shift
 			fi
 		;;
@@ -256,7 +256,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-tag | --dockertag )
+		-dsv | --docspaceversion )
 			if [ "$2" != "" ]; then
 				DOCKER_TAG=$2
 				shift
@@ -271,9 +271,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-di | --documentserverimage )
+		-docsi | --docsimage )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_IMAGE_NAME=$2
+				shift
+			fi
+		;;
+		
+		-docsv | --docsversion )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_VERSION=$2
 				shift
 			fi
 		;;
@@ -285,6 +292,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_HEADER=$2
+				shift
+			fi
+		;;
+
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_SECRET=$2
+				shift
+			fi
+		;;
+
+		-it | --installation_type )
+			if [ "$2" != "" ]; then
+				INSTALLATION_TYPE=$(echo "$2" | awk '{print toupper($0)}');
+				shift
+			fi
+		;;
+
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -292,43 +327,48 @@ while [ "$1" != "" ]; do
 			echo "      -hub, --hub                       dockerhub name"
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
+			echo "      -it, --installation_type          installation type (community|enterprise)"
+			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
+			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -ids, --installdocspace           install or update $PRODUCT (true|false)"
-			echo "      -tag, --dockertag                 select the version to install $PRODUCT (latest|develop|version number)"
-			echo "      -idocs, --installdocumentserver   install or update document server (true|false)"
-			echo "      -di, --documentserverimage        document server image name"
-			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
-			echo "      -irb, --installrabbitmq           install or update rabbitmq (true|false)"	
-			echo "      -ird, --installredis              install or update redis (true|false)"
+			echo "      -dsv, --docspaceversion           select the $PRODUCT version"
+			echo "      -dsh, --docspacehost              $PRODUCT host"
+			echo "      -env, --environment               $PRODUCT environment"
+			echo "      -mk, --machinekey                 setting for core.machinekey"
+			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
+			echo "      -idocs, --installdocs             install or update document server (true|false)"
+			echo "      -docsi, --docsimage               document server image name"
+			echo "      -docsv, --docsversion             document server version"
+			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
+			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
+			echo "      -irds, --installredis             install or update redis (true|false)"
+			echo "      -esh, --elastichost               elasticsearch host"
+			echo "      -imysql, --installmysql           install or update mysql (true|false)"		
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
-			echo "      -dsh, --docspdcehost              $PRODUCT host"
-			echo "      -esh, --elasticsearchhost         elasticsearch host"
-			echo "      -env, --environment               $PRODUCT environment"
-			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
-			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
-			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
-			echo "      -mk, --machinekey                 setting for core.machinekey"
-			echo "      -ls, --local_scripts              run the installation from local scripts"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
 			echo "      bash $HELP_TARGET -idocs false"
 			echo
-			echo "    Install Document Server only. Skip the installation of MYSQL and $PRODUCT:"
-			echo "      bash $HELP_TARGET -ids false -idocs true -imysql false -irb false -ird false"
+			echo "    Install Document Server only. Skip the installation of mysql, $PRODUCT, rabbitmq, redis:"
+			echo "      bash $HELP_TARGET -ids false -idocs true -imysql false -irbt false -irds false"
 			echo
-			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components. The portal data should be picked up automatically:"
+			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components."
+			echo "    The portal data should be picked up automatically:"
 			echo "      bash $HELP_TARGET -u true"
 			echo
 			echo "    Update Document Server only to version 7.2.1.34 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -di onlyoffice/documentserver-ee:7.2.1.34 -ids false"
+			echo "      bash $HELP_TARGET -u true -docsi ${PACKAGE_SYSNAME}/documentserver-ee -docsv 7.2.1.34 -idocs true -ids false -irbt false -irds false"
 			echo
 			echo "    Update $PRODUCT only to version 1.2.0 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -tag rc-v1.2.0 -idocs false"
+			echo "      bash $HELP_TARGET -u true -dsv v1.2.0 -idocs false -irbt false -irds false"
 			echo
 			exit 0
 		;;
@@ -416,7 +456,7 @@ get_os_info () {
 				CONTAINS=$(cat /etc/redhat-release | { grep -sw release || true; });
 				if [[ -n ${CONTAINS} ]]; then
 					DIST=`cat /etc/redhat-release |sed s/\ release.*//`
-					REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+					REV=`cat /etc/redhat-release | grep -oP '(?<=release )\d+'`
 				else
 					DIST=`cat /etc/os-release | grep -sw 'ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
 					REV=`cat /etc/os-release | grep -sw 'VERSION_ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
@@ -450,6 +490,10 @@ check_os_info () {
 		echo "$KERNEL, $DIST, $REV";
 		echo "Not supported OS";
 		exit 1;
+	fi
+
+	if [ -f /etc/needrestart/needrestart.conf ]; then
+		sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
 	fi
 }
 
@@ -519,31 +563,12 @@ install_service () {
 }
 
 install_docker_compose () {
-	if ! command_exists python3; then
-		install_service python3
-	fi
-
-	if command_exists apt-get; then
-		apt-get -y update -qq
-		apt-get -y -q install python3-pip
-	elif command_exists yum; then
-		curl -O https://bootstrap.pypa.io/get-pip.py
-		python3 get-pip.py || true
-		rm get-pip.py
-	fi	
-
-	python3 -m pip install --upgrade pip
-	python3 -m pip install docker-compose
-	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-	if ! command_exists docker-compose; then
-		echo "command docker-compose not found"
-		exit 1;
-	fi
+	curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+	chmod +x /usr/bin/docker-compose
 }
 
 check_ports () {
-	RESERVED_PORTS=(443 2181 2888 3306 3888 8081 8099 9092 9200 9300 9800 9899 9999 33060);
+	RESERVED_PORTS=(3306);
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -556,11 +581,6 @@ check_ports () {
 		do
 			if [ "$RESERVED_PORT" -eq "$EXTERNAL_PORT" ] ; then
 				echo "External port $EXTERNAL_PORT is reserved. Select another port"
-				exit 1;
-			fi
-
-			if [ "$RESERVED_PORT" -eq "$SERVICE_PORT" ] ; then
-				echo "Internal port $SERVICE_PORT is reserved. Select another port"
 				exit 1;
 			fi
 		done
@@ -693,18 +713,59 @@ docker_login () {
 	fi
 }
 
-create_network () {
-	EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK} || true; });
+read_continue_installation () {
+	read -p "Continue installation [Y/N]? " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y )
+			return 0
+		;;
 
-	if [[ -z ${EXIST} ]]; then
-		docker network create --driver bridge ${NETWORK}
+		n|N )
+			exit 0;
+		;;
+
+		* )
+			echo "Please, enter Y or N";
+			read_continue_installation
+		;;
+	esac
+}
+
+domain_check () {
+	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
+
+	if [[ -n "$DOMAINS" ]]; then
+		while IFS= read -r DOMAIN; do
+			IP_ADDRESS=$(ping -c 1 -W 1 $DOMAIN | grep -oP '(\d+\.\d+\.\d+\.\d+)' | head -n 1)
+			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
+				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
+			elif [[ -n "$IP_ADDRESS" ]]; then
+				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+			fi
+		done <<< "$DOMAINS"
+	fi
+	
+	if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
+		DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
+		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
+			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
+			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			if read_continue_installation; then
+				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
+					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
+				else
+					echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
+				fi
+				systemctl restart docker
+			fi
+		fi
 	fi
 }
 
 get_container_env_parameter () {
 	local CONTAINER_NAME=$1;
 	local PARAMETER_NAME=$2;
-	VALUE="";
 
 	if [[ -z ${CONTAINER_NAME} ]]; then
 		echo "Empty container name"
@@ -722,9 +783,80 @@ get_container_env_parameter () {
 		if [[ -n ${CONTAINER_EXIST} ]]; then
 			VALUE=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' ${CONTAINER_NAME} | grep "${PARAMETER_NAME}=" | sed 's/^.*=//');
 		fi
+
+		if [ -z $VALUE ] && [ -f $BASE_DIR/.env ]; then
+			VALUE=$(sed -n "/.*${PARAMETER_NAME}=/s///p" $BASE_DIR/.env)
+		fi
 	fi
 
 	echo "$VALUE"
+}
+
+get_available_version () {
+	if [[ -z "$1" ]]; then
+		echo "image name is empty";
+		exit 1;
+	fi
+
+	if ! command_exists curl ; then
+		install_curl;
+	fi
+
+	CREDENTIALS="";
+	AUTH_HEADER="";
+	TAGS_RESP="";
+
+	if [[ -n ${HUB} ]]; then
+		DOCKER_CONFIG="$HOME/.docker/config.json";
+
+		if [[ -f "$DOCKER_CONFIG" ]]; then
+			CREDENTIALS=$(jq -r '.auths."'$HUB'".auth' < "$DOCKER_CONFIG");
+			if [ "$CREDENTIALS" == "null" ]; then
+				CREDENTIALS="";
+			fi
+		fi
+
+		if [[ -z ${CREDENTIALS} && -n ${USERNAME} && -n ${PASSWORD} ]]; then
+			CREDENTIALS=$(echo -n "$USERNAME:$PASSWORD" | base64);
+		fi
+
+		if [[ -n ${CREDENTIALS} ]]; then
+			AUTH_HEADER="Authorization: Basic $CREDENTIALS";
+		fi
+
+		REPO=$(echo $1 | sed "s/$HUB\///g");
+		TAGS_RESP=$(curl -s -H "$AUTH_HEADER" -X GET https://$HUB/v2/$REPO/tags/list);
+		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.tags')
+	else
+		if [[ -n ${USERNAME} && -n ${PASSWORD} ]]; then
+			CREDENTIALS="{\"username\":\"$USERNAME\",\"password\":\"$PASSWORD\"}";
+		fi
+
+		if [[ -n ${CREDENTIALS} ]]; then
+			LOGIN_RESP=$(curl -s -H "Content-Type: application/json" -X POST -d "$CREDENTIALS" https://hub.docker.com/v2/users/login/);
+			TOKEN=$(echo $LOGIN_RESP | jq -r '.token');
+			AUTH_HEADER="Authorization: JWT $TOKEN";
+			sleep 1;
+		fi
+
+		TAGS_RESP=$(curl -s -H "$AUTH_HEADER" -X GET https://hub.docker.com/v2/repositories/$1/tags/);
+		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.results[].name')
+	fi
+
+	VERSION_REGEX="[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
+	
+	TAG_LIST=""
+
+	for item in $TAGS_RESP
+	do
+		if [[ $item =~ $VERSION_REGEX ]]; then
+			TAG_LIST="$item,$TAG_LIST"
+		fi
+	done
+
+	LATEST_TAG=$(echo $TAG_LIST | tr ',' '\n' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | awk '/./{line=$0} END{print line}');
+
+	echo "$LATEST_TAG" | sed "s/\"//g"
 }
 
 set_jwt_secret () {
@@ -739,43 +871,101 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
 		fi
 	fi
 
-	if [[ -z ${JWT_SECRET} ]] && [[ "$UPDATE" != "true" ]]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 12);
+	if [[ -z ${JWT_SECRET} ]]; then
+		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
+	fi
+}
+
+set_jwt_header () {
+	CURRENT_JWT_HEADER="";
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi	
+	
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
 	fi
 }
 
 set_core_machinekey () {
-	CURRENT_CORE_MACHINEKEY="";
-
-	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		if file_exists ${BASE_DIR}/.private/machinekey; then
-			CURRENT_CORE_MACHINEKEY=$(cat ${BASE_DIR}/.private/machinekey);
-
-			if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
-				APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
-			fi
-		fi
-	fi
-
-	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "$APP_CORE_MACHINEKEY");
+	if [[ -z ${APP_CORE_MACHINEKEY} ]]; then
+		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_MACHINEKEY");
 
 		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
 			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
 		fi
 	fi
 
-	if [[ -z ${CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
+	if [[ -z ${APP_CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
 		APP_CORE_MACHINEKEY=$(get_random_str 12);
-		mkdir -p ${BASE_DIR}/.private/
-		echo $APP_CORE_MACHINEKEY > ${BASE_DIR}/.private/machinekey
+	fi
+}
+
+set_mysql_params () {
+	if [[ -z ${MYSQL_PASSWORD} ]]; then
+		MYSQL_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PASSWORD");
+
+		if [[ -z ${MYSQL_PASSWORD} ]]; then
+			MYSQL_PASSWORD=$(get_random_str 20);
+		fi
+	fi
+	
+	if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+		MYSQL_ROOT_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_ROOT_PASSWORD");
+
+		if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+			MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-$(get_random_str 20)};
+		fi
+	fi
+	
+	if [[ -z ${MYSQL_DATABASE} ]]; then
+		MYSQL_DATABASE=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_DATABASE");
+	fi
+
+	if [[ -z ${MYSQL_USER} ]]; then
+		MYSQL_USER=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_USER");
+	fi
+
+	if [[ -z ${MYSQL_HOST} ]]; then
+		MYSQL_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_HOST");
+	fi
+}
+
+set_docspace_params() {
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
+	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	
+	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
+}
+
+set_installation_type_data () {
+	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver"}
+	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver-ee"}
 	fi
 }
 
@@ -784,14 +974,32 @@ download_files () {
 		install_service svn subversion
 	fi
 
-	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	if ! command_exists jq ; then
+		if command_exists yum; then 
+			rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm
+		fi
+		install_service jq
+	fi
+
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+
+	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
+	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
+	reconfigure NETWORK_NAME ${NETWORK_NAME}
+	
+	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
+	reconfigure MYSQL_USER ${MYSQL_USER}
+	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
+	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 }
 
 reconfigure () {
-	local VARIABLE_NAME=$1
-	local VARIABLE_VALUE=$2
+	local VARIABLE_NAME="$1"
+	local VARIABLE_VALUE="$2"
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
 		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
@@ -799,172 +1007,105 @@ reconfigure () {
 }
 
 install_mysql_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
-	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
-		MYSQL_ROOT_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
-	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
-		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
-	fi
-
 	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
-	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
-	reconfigure MYSQL_USER ${MYSQL_USER}
-	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
-	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
-	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
 	docker-compose -f $BASE_DIR/db.yml up -d
 }
 
 install_document_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
-	reconfigure DOCUMENT_SERVER_IMAGE_NAME ${DOCUMENT_SERVER_IMAGE_NAME}
+	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
-	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 
 	docker-compose -f $BASE_DIR/ds.yml up -d
 }
 
 install_rabbitmq () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
 }
 
 install_redis () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/redis.yml up -d
 }
 
 install_product () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
+	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
+	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
+
+	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
+		docker-compose -f $BASE_DIR/build.yml pull
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
 	fi
+
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure ELK_HOST ${ELK_HOST}
 	reconfigure ELK_VERSION ${ELK_VERSION}
-	reconfigure SERVICE_PORT ${SERVICE_PORT}
+	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
+	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
-	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	
+	if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
+		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
+	else
+		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
 	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
+	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
 
-get_local_image_RepoDigests() {
-   local CONTAINER_IMAGE=$1;
-   LOCAL_IMAGE_RepoDigest=$(docker inspect --format='{{index .RepoDigests 0}}' $CONTAINER_IMAGE)
-   if [ -z ${LOCAL_IMAGE_RepoDigest} ]; then
-        echo "Local docker image not found, check the name of docker image $CONTAINER_IMAGE"
-        exit 1 
-   fi
-   echo $LOCAL_IMAGE_RepoDigest
-}
+make_swap () {
+	DISK_REQUIREMENTS=6144; #6Gb free space
+	MEMORY_REQUIREMENTS=11000; #RAM ~12Gb
 
-check_pull_image() {
-    local CONTAINER_IMAGE=$1;
-    CHECK_STATUS_IMAGE="$(docker pull  $CONTAINER_IMAGE | grep Status | awk '{print $2" "$3" "$4" "$5" "$6}')"
-    if [ "${CHECK_STATUS_IMAGE}" == "Image is up to date" ]; then
-        echo "No updates required"
-    fi
-}
+	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	EXIST=$(swapon -s | awk '{ print $1 }' | { grep -x ${SWAPFILE} || true; });
 
-check_image_RepoDigest() {
-    local OLD_LOCAL_IMAGE_RepoDigest=$1
-    local NEW_LOCAL_IMAGE_RepoDigest=$2
-    if [ "${OLD_LOCAL_IMAGE_RepoDigest}" == "${NEW_LOCAL_IMAGE_RepoDigest}" ]; then
-       CHECK_RepoDigest="false";
-    else
-       CHECK_RepoDigest="true";
-    fi
-}
+	if [[ -z $EXIST ]] && [ ${TOTAL_MEMORY} -lt ${MEMORY_REQUIREMENTS} ] && [ ${AVAILABLE_DISK_SPACE} -gt ${DISK_REQUIREMENTS} ]; then
 
-docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/${PRODUCT}.yml down --volumes
-    docker-compose -f $BASE_DIR/build.yml pull
-}
+		if [ "${DIST}" == "Ubuntu" ] || [ "${DIST}" == "Debian" ]; then
+			fallocate -l 6G ${SWAPFILE}
+		else
+			dd if=/dev/zero of=${SWAPFILE} count=6144 bs=1MiB
+		fi
 
-update_product () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-	
-	IMAGE_NAME="onlyoffice-api"
-	CONTAINER_IMAGE=$(docker inspect --format='{{.Config.Image}}' $IMAGE_NAME)
-	
-	OLD_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
-	check_pull_image "${CONTAINER_IMAGE}"
-	NEW_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
-	check_image_RepoDigest ${OLD_LOCAL_IMAGE_RepoDigest} ${NEW_LOCAL_IMAGE_RepoDigest}
-
-	if [ ${CHECK_RepoDigest} == "true" ]; then
-		docker_image_update
+		chmod 600 ${SWAPFILE}
+		mkswap ${SWAPFILE}
+		swapon ${SWAPFILE}
+		echo "$SWAPFILE none swap sw 0 0" >> /etc/fstab
 	fi
 }
 
-save_parameter() {
-	local VARIABLE_NAME=$1
-	local VARIABLE_VALUE=$2
-
-	if [[ -z ${VARIABLE_VALUE} ]]; then
-		sed -n "/.*${VARIABLE_NAME}=/s///p" $BASE_DIR/.env
-	else
-		echo $VARIABLE_VALUE
-	fi
-}
-
-save_parameters_from_configs() {
-	MYSQL_DATABASE=$(save_parameter MYSQL_DATABASE $MYSQL_DATABASE)
-	MYSQL_USER=$(save_parameter MYSQL_USER $MYSQL_USER)
-	MYSQL_PASSWORD=$(save_parameter MYSQL_PASSWORD $MYSQL_PASSWORD)
-	MYSQL_ROOT_PASSWORD=$(save_parameter MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD)
-	MYSQL_HOST=$(save_parameter MYSQL_HOST $MYSQL_HOST)
-	DOCUMENT_SERVER_JWT_SECRET=$(save_parameter DOCUMENT_SERVER_JWT_SECRET $DOCUMENT_SERVER_JWT_SECRET)
-	DOCUMENT_SERVER_JWT_HEADER=$(save_parameter DOCUMENT_SERVER_JWT_HEADER $DOCUMENT_SERVER_JWT_HEADER)
-	DOCUMENT_SERVER_HOST=$(save_parameter DOCUMENT_SERVER_HOST $DOCUMENT_SERVER_HOST)
-	ELK_HOST=$(save_parameter ELK_HOST $ELK_HOST)
-	SERVICE_PORT=$(save_parameter SERVICE_PORT $SERVICE_PORT)
-	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
-	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
-	if [ ${EXTERNAL_PORT} = "8092" ]; then 
-		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/${PRODUCT}.yml)
-	fi
-}
 
 start_installation () {
 	root_checking
 
-	get_os_info
+	set_installation_type_data
 
+	get_os_info
 	check_os_info
-	
+	check_kernel
+
 	if [ "$UPDATE" != "true" ]; then
 		check_ports
 	fi
 
 	if [ "$SKIP_HARDWARE_CHECK" != "true" ]; then
 		check_hardware
+	fi
+
+	if [ "$MAKESWAP" == "true" ]; then
+		make_swap
 	fi
 
 	if command_exists docker ; then
@@ -976,21 +1117,20 @@ start_installation () {
 
 	docker_login
 
+	domain_check
+
 	if [ "$UPDATE" = "true" ]; then
-		save_parameters_from_configs
+		set_docspace_params
 	fi
 
-	download_files
-
 	set_jwt_secret
+	set_jwt_header
 
 	set_core_machinekey
 
-	create_network
+	set_mysql_params
 
-	if [ "$UPDATE" = "true" ]; then
-		update_product
-	fi
+	download_files
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
 		install_mysql_server
@@ -1013,8 +1153,8 @@ start_installation () {
 	fi
 
 	echo ""
-	echo "Thank you for installing ONLYOFFICE ${PRODUCT^^}."
-	echo "In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
+	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT^^}."
+	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://dev.${PACKAGE_SYSNAME}.org"
 	echo ""
 
 	exit 0;

@@ -68,11 +68,6 @@
 
 登录您的DocuSign账户，获取更多信息。</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__作者名字":"$__作者Url地址" 在文档注释中提到您
-这是一封邮件，用于通知“$文档标题”：“$文档URL地址”文档的注释中“$__作者名字”：“$__作者Url名字”提到了您：
-$信息</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. 邮件发送已完成
 
@@ -83,18 +78,14 @@ $信息</value>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.获得文档访问权限: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" 向您开发了访问文档 "$DocumentTitle":"$DocumentURL" 的权限。
-
-同时，您还有以下权限： "$AccessRights"。
+$__DateTime "$__AuthorName":"$__AuthorUrl" 向您开发了访问文档 "$DocumentTitle":"$DocumentURL" 的权限。同时，您还有以下权限： "$AccessRights"。
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.获得文件夹访问权限: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" 向您开放了访问文件夹 "$DocumentTitle":"$DocumentURL" 的权限。
-
-同时，您还拥有以下权限: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" 向您开放了访问文件夹 "$DocumentTitle":"$DocumentURL" 的权限。同时，您还拥有以下权限: "$AccessRights".
 
 $Message</value>
   </data>
@@ -106,9 +97,6 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>文档。 签名状态已更改</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>文档。文档中提及</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文档。 邮件发送已完成。</value>
@@ -124,5 +112,44 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>文件。已授予文件夹访问权限: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName 在文档评论中提到了你
+
+$__AuthorName 在房间 "$RoomTitle":"$RoomURL" 中的文档"$DocumentTitle":"$DocumentURL"的评论中提到了你：
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName 删除了一个房间
+ 
+$__AuthorName 删除了房间：$RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>所有签署者均已签署 $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>签名状态已变更</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>协作空间消息通知。已在文档中提及</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>已在文档中提及</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>邮件发送完成。</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>协作空间消息通知。房间已删除</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>已提供文档访问权限：$DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>已提供加密文档访问权限：$DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>已提供文件夹访问权限：$DocumentTitle</value>
   </data>
 </root>

@@ -60,6 +60,21 @@ public class PathProvider
         return _webImageSupplier.GetAbsoluteWebPath(imgFileName, ProductEntryPoint.ID);
     }
 
+    public string RoomUrlString
+    {
+        get { return $"/rooms/shared/{{0}}/filter?withSubfolders=true&folder={{0}}&count=100&page=1&sortby=DateAndTime&sortorder=descending"; }
+    }
+
+    public string GetRoomsUrl(int roomId)
+    {
+        return _commonLinkUtility.GetFullAbsolutePath(string.Format(RoomUrlString, roomId));//ToDo
+    }
+
+    public string GetRoomsUrl(string roomId)
+    {
+        return _commonLinkUtility.GetFullAbsolutePath(string.Format(RoomUrlString, roomId));//ToDo
+    }
+
     public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)
     {
         if (folder == null)
@@ -99,7 +114,35 @@ public class PathProvider
         return await GetFolderUrlAsync(folder);
     }
 
-    public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
+    public async Task<string> GetFileStreamUrlAsync<T>(File<T> file, string doc = null, bool lastVersion = false)
+    {
+        if (file == null)
+        {
+            throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        //NOTE: Always build path to handler!
+        var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
+        var query = uriBuilder.Query;
+        query += FilesLinkUtility.Action + "=stream&";
+        query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(file.Id.ToString()) + "&";
+        var version = 0;
+        if (!lastVersion)
+        {
+            version = file.Version;
+            query += FilesLinkUtility.Version + "=" + file.Version + "&";
+        }
+
+        query += FilesLinkUtility.AuthKey + "=" + await _emailValidationKeyProvider.GetEmailKeyAsync(file.Id.ToString() + version);
+        if (!string.IsNullOrEmpty(doc))
+        {
+            query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
+        }
+
+        return uriBuilder.Uri + "?" + query;
+    }
+
+    public string GetFileStreamUrl<T>(File<T> file, string key = null, string keyName = null, bool lastVersion = false)
     {
         if (file == null)
         {
@@ -119,15 +162,13 @@ public class PathProvider
         }
 
         query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(file.Id.ToString() + version);
-        if (!string.IsNullOrEmpty(doc))
-        {
-            query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
-        }
+
+        query += GetExternalShareKey(keyName, key);
 
         return uriBuilder.Uri + "?" + query;
     }
 
-    public string GetFileChangesUrl<T>(File<T> file, string doc = null)
+    public async Task<string> GetFileChangesUrlAsync<T>(File<T> file, string key = null, string keyName = null)
     {
         if (file == null)
         {
@@ -139,11 +180,9 @@ public class PathProvider
         query += $"{FilesLinkUtility.Action}=diff&";
         query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.Id.ToString())}&";
         query += $"{FilesLinkUtility.Version}={file.Version}&";
-        query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(file.Id + file.Version.ToString(CultureInfo.InvariantCulture))}";
-        if (!string.IsNullOrEmpty(doc))
-        {
-            query += $"&{FilesLinkUtility.DocShareKey}={HttpUtility.UrlEncode(doc)}";
-        }
+        query += $"{FilesLinkUtility.AuthKey}={await _emailValidationKeyProvider.GetEmailKeyAsync(file.Id + file.Version.ToString(CultureInfo.InvariantCulture))}";
+        
+        query += GetExternalShareKey(keyName, key);
 
         return $"{uriBuilder.Uri}?{query}";
     }
@@ -152,7 +191,7 @@ public class PathProvider
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        var store = _globalStore.GetStore();
+        var store = await _globalStore.GetStoreAsync();
         var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
         var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
@@ -172,7 +211,7 @@ public class PathProvider
         var query = uriBuilder.Query;
         query += $"{FilesLinkUtility.Action}=tmp&";
         query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(fileName)}&";
-        query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(fileName)}";
+        query += $"{FilesLinkUtility.AuthKey}={await _emailValidationKeyProvider.GetEmailKeyAsync(fileName)}";
 
         return $"{uriBuilder.Uri}?{query}";
     }
@@ -185,5 +224,20 @@ public class PathProvider
         query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
         return $"{uriBuilder.Uri}?{query}";
+    }
+    
+    private static string GetExternalShareKey(string keyName, string keyValue)
+    {
+        if (string.IsNullOrEmpty(keyValue))
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrEmpty(keyName))
+        {
+            return "&" + keyName + '=' + HttpUtility.UrlEncode(keyValue);
+        }
+
+        return "&" + FilesLinkUtility.DocShareKey + '=' + HttpUtility.UrlEncode(keyValue);
     }
 }

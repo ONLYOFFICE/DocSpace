@@ -1,3 +1,4 @@
+%define         _binaries_in_noarch_packages_terminate_build   0
 %define         _build_id_links none
 
 %global         product docspace
@@ -12,8 +13,10 @@ Release:        %{release}
 
 AutoReqProv:    no
 
+BuildArch:      noarch
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
+Packager:       %{packager}
 License:        AGPLv3
 
 Source0:        https://github.com/ONLYOFFICE/%{product}/archive/%GIT_BRANCH.tar.gz#/%{sourcename}.tar.gz
@@ -28,6 +31,7 @@ BuildRequires:  dotnet-sdk-7.0
 BuildRoot:      %_tmppath/%name-%version-%release.%arch
 
 Requires:       %name-api = %version-%release
+Requires:       %name-api-system = %version-%release
 Requires:       %name-backup = %version-%release
 Requires:       %name-backup-background = %version-%release
 Requires:       %name-clear-events = %version-%release
@@ -95,10 +99,7 @@ if ! which python3; then
    fi
 fi
 
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade requests
-python3 -m pip install --upgrade setuptools 
-python3 -m pip install --upgrade radicale==3.0.5
+python3 -m pip install --upgrade radicale
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_auth_plugin/.
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_store_plugin/.
 python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_rights_plugin/.

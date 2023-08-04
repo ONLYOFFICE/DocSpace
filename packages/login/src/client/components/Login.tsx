@@ -1,14 +1,22 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect
+} from"react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { ButtonsWrapper, LoginFormWrapper, LoginContent } from "./StyledLogin";
+import {
+  ButtonsWrapper,
+  LoginFormWrapper,
+  LoginContent
+} from "./StyledLogin";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
   getProviderTranslation,
   getOAuthToken,
   getLoginLink,
-  checkIsSSR,
+  checkIsSSR
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
@@ -18,7 +26,10 @@ import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import {
+  ColorTheme,
+  ThemeType
+} from "@docspace/components/ColorTheme";
 import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
@@ -27,12 +38,15 @@ import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import { getLogoFromPath } from "@docspace/common/utils";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 import { TenantStatus } from "@docspace/common/constants";
+
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
 }
+
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
-  buildInfo,
   providers,
   capabilities,
   isDesktopEditor,
@@ -52,14 +66,20 @@ const Login: React.FC<ILoginProps> = ({
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings || {
+  const {
+    enabledJoin,
+    greetingSettings,
+    enableAdmMess,
+    cookieSettingsEnabled,
+  } = portalSettings || {
     enabledJoin: false,
     greetingSettings: false,
     enableAdmMess: false,
+    cookieSettingsEnabled: false,
   };
 
-  const ssoLabel = capabilities?.ssoLabel;
-  const ssoUrl = capabilities?.ssoUrl;
+  const ssoLabel = capabilities?.ssoLabel || "";
+  const ssoUrl = capabilities?.ssoUrl || "";
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
   const systemTheme = typeof window !== "undefined" && useThemeDetector();
@@ -82,6 +102,7 @@ const Login: React.FC<ILoginProps> = ({
     if (ssoUrl) return true;
     else return false;
   };
+
   const ssoButton = () => {
     const onClick = () => (window.location.href = ssoUrl);
     return (
@@ -98,6 +119,8 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   const oauthDataExists = () => {
+    if (!capabilities?.oauthEnabled) return false;
+
     let existProviders = 0;
     providers && providers.length > 0;
     providers?.map((item) => {
@@ -211,7 +234,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <div className="bg-cover"></div>
-      <LoginContent>
+      <LoginContent enabledJoin={enabledJoin}>
         <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
           <img src={logoUrl} className="logo-wrapper" />
           <Text
@@ -233,7 +256,7 @@ const Login: React.FC<ILoginProps> = ({
                     type="action"
                     fontSize="13px"
                     fontWeight="600"
-                    color="#3B72A7"
+                    color={currentColorScheme?.main?.accent}
                     className="more-label"
                     onClick={moreAuthOpen}
                   >
@@ -255,6 +278,7 @@ const Login: React.FC<ILoginProps> = ({
               onRecoverDialogVisible={onRecoverDialogVisible}
               match={match}
               enableAdmMess={enableAdmMess}
+              cookieSettingsEnabled={cookieSettingsEnabled}
             />
           </FormWrapper>
           <Toast />
@@ -276,14 +300,17 @@ const Login: React.FC<ILoginProps> = ({
             id="recover-access-modal"
           />
         </ColorTheme>
-        {!checkIsSSR() && enabledJoin && (
-          <Register
-            id="login_register"
-            enabledJoin={enabledJoin}
-            currentColorScheme={currentColorScheme}
-          />
-        )}
-      </LoginContent>{" "}
+      </LoginContent>
+
+      {!checkIsSSR() && enabledJoin && (
+        <Register
+          id="login_register"
+          enabledJoin={enabledJoin}
+          currentColorScheme={currentColorScheme}
+          trustedDomains={portalSettings?.trustedDomains}
+          trustedDomainsType={portalSettings?.trustedDomainsType}
+        />
+      )}
     </LoginFormWrapper>
   );
 };

@@ -27,9 +27,13 @@
 namespace ASC.Files.Core;
 
 
+/// <summary>
+/// </summary>
 [DebuggerDisplay("")]
 public class EntryProperties
 {
+    /// <summary>Form filling properties</summary>
+    /// <type>ASC.Files.Core.FormFillingProperties, ASC.Files.Core</type>
     public FormFillingProperties FormFilling { get; set; }
 
     public static EntryProperties Deserialize(string data, ILogger logger)
@@ -59,6 +63,8 @@ public class EntryProperties
     }
 }
 
+/// <summary>
+/// </summary>
 [Transient]
 public class FormFillingProperties
 {
@@ -69,10 +75,24 @@ public class FormFillingProperties
     private readonly TenantUtil _tenantUtil;
     private readonly CustomNamingPeople _customNamingPeople;
 
+    /// <summary>Specifies whether to collect the data from the filled forms or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool CollectFillForm { get; set; }
+
+    /// <summary>Folder ID where a file will be saved</summary>
+    /// <type>System.String, System</type>
     public string ToFolderId { get; set; }
+
+    /// <summary>Folder path where a file will be savedt</summary>
+    /// <type>System.String, System</type>
     public string ToFolderPath { get; set; }
+
+    /// <summary>New folder title</summary>
+    /// <type>System.String, System</type>
     public string CreateFolderTitle { get; set; }
+
+    /// <summary>File name mask</summary>
+    /// <type>System.String, System</type>
     public string CreateFileMask { get; set; }
 
     public FormFillingProperties(
@@ -125,7 +145,7 @@ public class FormFillingProperties
         }
     }
 
-    public string GetTitleByMask(string sourceFileName)
+    public async Task<string> GetTitleByMaskAsync(string sourceFileName)
     {
         FixFileMask();
 
@@ -136,7 +156,7 @@ public class FormFillingProperties
         }
 
         string userName;
-        var userInfo = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var userInfo = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         if (userInfo.Equals(Constants.LostUser))
         {
             userName = _customNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");

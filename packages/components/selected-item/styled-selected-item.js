@@ -1,68 +1,55 @@
-import styled from "styled-components";
+import React from "react";
+import { Base } from "@docspace/components/themes";
+import styled, { css } from "styled-components";
 
-import Text from "../text";
-import Base from "../themes/base";
+import NoUserSelect from "@docspace/components/utils/commonStyles";
 
 const StyledSelectedItem = styled.div`
-  position: relative;
-  display: ${(props) => (props.isInline ? "inline-grid" : "grid")};
-  grid-template-columns: 1fr auto;
+  width: ${(props) => (props.isInline ? "fit-content" : "100%")};
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+
   box-sizing: border-box;
-  background: ${(props) => props.theme.selectedItem.background};
-  border: ${(props) => props.theme.selectedItem.border};
-  border-radius: ${(props) => props.theme.selectedItem.borderRadius};
+
+  border-radius: 3px;
+
+  padding: 6px 8px;
+
+  margin-right: 4px;
+  margin-bottom: 4px;
+
+  background: ${(props) => props.theme.filterInput.selectedItems.background};
+
+  ${(props) =>
+    !props.isDisabled &&
+    css`
+      :hover {
+        background: ${(props) =>
+          props.theme.filterInput.selectedItems.hoverBackground};
+      }
+    `}
 `;
+
+const StyledLabel = styled.div`
+  line-height: 20px;
+  margin-right: 10px;
+  max-width: 23ch;
+  color: ${(props) => props.isDisabled && props.theme.text.disableColor};
+
+  ${() => NoUserSelect}
+
+  ${(props) =>
+    props.truncate &&
+    css`
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    `}
+`;
+
 StyledSelectedItem.defaultProps = { theme: Base };
 
-const StyledSelectedTextBox = styled.div`
-  display: grid;
-  padding: ${(props) => props.theme.selectedItem.textBox.padding};
-  height: ${(props) => props.theme.selectedItem.textBox.height};
-  align-items: ${(props) => props.theme.selectedItem.textBox.alignItems};
-  border-right: ${(props) => props.theme.selectedItem.textBox.borderRight};
-  cursor: default;
-`;
-StyledSelectedTextBox.defaultProps = { theme: Base };
-
-const StyledCloseButton = styled.div`
-  display: flex;
-  align-items: ${(props) => props.theme.selectedItem.closeButton.alignItems};
-  padding: ${(props) => props.theme.selectedItem.closeButton.padding};
-  cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
-
-  path {
-    ${(props) =>
-      !props.isDisabled &&
-      `fill: ${props.theme.selectedItem.closeButton.color};`}
-  }
-
-  &:hover {
-    path {
-      ${(props) =>
-        !props.isDisabled &&
-        `fill: ${props.theme.selectedItem.closeButton.colorHover};`}
-    }
-  }
-
-  &:active {
-    ${(props) =>
-      !props.isDisabled &&
-      `background-color: ${props.theme.selectedItem.closeButton.backgroundColor};`}
-  }
-`;
-StyledCloseButton.defaultProps = { theme: Base };
-
-const StyledText = styled(Text)`
-  color: ${(props) =>
-    props.isDisabled
-      ? props.theme.selectedItem.text.disabledColor
-      : props.theme.selectedItem.text.color};
-`;
-StyledText.defaultProps = { theme: Base };
-
-export {
-  StyledCloseButton,
-  StyledSelectedTextBox,
-  StyledSelectedItem,
-  StyledText,
-};
+export { StyledSelectedItem, StyledLabel };

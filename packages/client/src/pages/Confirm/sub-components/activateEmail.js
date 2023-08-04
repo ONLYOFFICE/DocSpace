@@ -1,22 +1,22 @@
 import React from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { combineUrl } from "@docspace/common/utils";
 import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
 import { inject, observer } from "mobx-react";
+import { EmployeeActivationStatus } from "@docspace/common/constants";
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
-    const { logout, changeEmail, linkData } = this.props;
+    const { logout, updateEmailActivationStatus, linkData } = this.props;
     const [email, uid, key] = [
       linkData.email,
       linkData.uid,
       linkData.confirmHeader,
     ];
     logout().then(() =>
-      changeEmail(uid, email, key)
+      updateEmailActivationStatus(EmployeeActivationStatus.Activated, uid, key)
         .then((res) => {
           tryRedirectTo(
             combineUrl(
@@ -56,7 +56,6 @@ class ActivateEmail extends React.PureComponent {
 
 ActivateEmail.propTypes = {
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 const ActivateEmailForm = (props) => (
   <Section>
@@ -70,6 +69,6 @@ export default inject(({ auth }) => {
   const { logout, userStore } = auth;
   return {
     logout,
-    changeEmail: userStore.changeEmail,
+    updateEmailActivationStatus: userStore.updateEmailActivationStatus,
   };
-})(withRouter(observer(ActivateEmailForm)));
+})(observer(ActivateEmailForm));

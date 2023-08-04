@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -128,12 +129,17 @@ const Table = ({
   const ref = useRef(null);
   const tagRef = useRef(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
+    const width = window.innerWidth;
+
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
     // 400 - it is desktop info panel width
     if (
-      (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+      (width < 1025 && !infoPanelVisible) ||
+      ((width < 625 || (viewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {
@@ -174,6 +180,10 @@ const Table = ({
       elementResizeDetector.listenTo(node, onResize);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (!isRooms) setTagCount(0);
+  }, [isRooms]);
 
   const filesListNode = useMemo(() => {
     return filesList.map((item, index) => (
@@ -217,6 +227,8 @@ const Table = ({
         containerRef={ref}
         tagRef={onSetTagRef}
         setHideColumns={setHideColumns}
+        navigate={navigate}
+        location={location}
       />
 
       <TableBody
@@ -266,7 +278,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     setFirsElemChecked,
     setHeaderBorder,
     theme,
-    userId: auth.userStore.user.id,
+    userId: auth.userStore.user?.id,
     infoPanelVisible,
     fetchMoreFiles,
     hasMoreFiles,

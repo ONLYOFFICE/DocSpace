@@ -1,30 +1,27 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { withRouter } from "react-router";
 import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { checkConfirmLink } from "@docspace/common/api/user"; //TODO: Move AuthStore
 import { combineUrl, getObjectByLocation } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 
-class ConfirmRoute extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      linkData: {},
-      isLoaded: false,
-    };
-  }
+const ConfirmRoute = (props) => {
+  const [state, setState] = React.useState({
+    linkData: {},
+    isLoaded: false,
+  });
 
-  componentDidMount() {
-    const { forUnauthorized, history, isAuthenticated } = this.props;
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const { forUnauthorized, isAuthenticated } = props;
 
     if (forUnauthorized && isAuthenticated) {
-      this.props.logout();
+      props.logout();
     }
 
-    const { location } = this.props;
     const { search } = location;
 
     const queryParams = getObjectByLocation(location);
@@ -42,18 +39,22 @@ class ConfirmRoute extends React.Component {
       .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `${confirmLinkData}&${search.slice(1)}`;
+            const confirmHeader = search.slice(1);
             const linkData = {
               ...confirmLinkData,
               confirmHeader,
             };
-            this.setState({
-              isLoaded: true,
+
+            console.log("checkConfirmLink", {
+              confirmLinkData,
+              validationResult,
               linkData,
             });
+
+            setState((val) => ({ ...val, isLoaded: true, linkData }));
             break;
           case ValidationResult.Invalid:
-            console.error("invlid link");
+            console.error("invlid link", { confirmLinkData, validationResult });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -61,7 +62,10 @@ class ConfirmRoute extends React.Component {
             );
             break;
           case ValidationResult.Expired:
-            console.error("expired link");
+            console.error("expired link", {
+              confirmLinkData,
+              validationResult,
+            });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -69,7 +73,10 @@ class ConfirmRoute extends React.Component {
             );
             break;
           default:
-            console.error("unknown link");
+            console.error("unknown link", {
+              confirmLinkData,
+              validationResult,
+            });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -79,40 +86,29 @@ class ConfirmRoute extends React.Component {
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error("FAILED checkConfirmLink", { error, confirmLinkData });
         window.location.href = combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           path,
           "/error"
         );
       });
-  }
+  }, []);
 
-  render() {
-    const { component: Component, ...rest } = this.props;
+  // console.log(`ConfirmRoute render`, this.props, this.state);
 
-    // console.log(`ConfirmRoute render`, this.props, this.state);
-
-    return (
-      <Route
-        {...rest}
-        render={(props) =>
-          !this.state.isLoaded ? (
-            <Section>
-              <Section.SectionBody>
-                <Loader className="pageLoader" type="rombs" size="40px" />
-              </Section.SectionBody>
-            </Section>
-          ) : (
-            <Component
-              {...(props = { ...props, linkData: this.state.linkData })}
-            />
-          )
-        }
-      />
-    );
-  }
-}
+  return !state.isLoaded ? (
+    <Section>
+      <Section.SectionBody>
+        <Loader className="pageLoader" type="rombs" size="40px" />
+      </Section.SectionBody>
+    </Section>
+  ) : (
+    React.cloneElement(props.children, {
+      linkData: state.linkData,
+    })
+  );
+};
 
 export default inject(({ auth }) => {
   const { isAuthenticated, logout } = auth;
@@ -120,4 +116,4 @@ export default inject(({ auth }) => {
     isAuthenticated,
     logout,
   };
-})(observer(withRouter(ConfirmRoute)));
+})(observer(ConfirmRoute));

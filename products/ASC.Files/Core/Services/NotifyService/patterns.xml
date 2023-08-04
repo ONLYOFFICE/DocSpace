@@ -129,4 +129,9 @@ $Message
 $DocumentURL
     </body>
   </pattern>
+	
+  <pattern id="RoomRemoved" sender="email.sender">
+	<subject resource="|subject_RoomRemoved|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_RoomRemoved|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+  </pattern>  
 </patterns>

@@ -20,78 +20,48 @@ export default {
 
 const Template = (args) => {
   return (
-    <>
+    <div>
       <HelpButton {...args} />
-    </>
+    </div>
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  displayType: "auto",
   offsetTop: 0,
   offsetRight: 0,
   offsetBottom: 0,
   offsetLeft: 0,
   tooltipContent: <Text fontSize="13px">Paste you tooltip content here</Text>,
+  place: "right",
 };
-
-const DropDownTemplate = (args) => {
-  return (
-    <HelpButton
-      displayType="dropdown"
-      offsetTop={0}
-      offsetRight={0}
-      offsetBottom={0}
-      offsetLeft={0}
-      tooltipContent={
-        <Text fontSize="13px">Paste you tooltip content here</Text>
-      }
-    />
-  );
-};
-
-export const DropDownPosition = DropDownTemplate.bind({});
-
-const AsideTemplate = (args) => {
-  return (
-    <HelpButton
-      displayType="aside"
-      helpButtonHeaderContent="Aside position HelpButton"
-      tooltipContent={
-        <Text>
-          You tooltip content with{" "}
-          <Link
-            isHovered={true}
-            href="http://localhost:6006/?path=/story/components-helpbutton--default"
-          >
-            link
-          </Link>
-        </Text>
-      }
-    />
-  );
-};
-
-export const AsidePosition = AsideTemplate.bind({});
 
 const AutoTemplate = (args) => {
   return (
-    <HelpButton
-      displayType="auto"
-      helpButtonHeaderContent="Auto position HelpButton"
-      tooltipContent={
-        <>
-          <p>You can put every thing here</p>
-          <ul style={{ marginBottom: 0 }}>
-            <li>Word</li>
-            <li>Chart</li>
-            <li>Else</li>
-          </ul>
-        </>
-      }
-    />
+    <div style={{ marginTop: "20px", marginLeft: "100px" }}>
+      <HelpButton
+        style={{ left: "20px" }}
+        helpButtonHeaderContent="Auto position HelpButton"
+        tooltipContent={
+          <>
+            <p>You can put every thing here</p>
+            <ul style={{ marginBottom: 0 }}>
+              <li>Word</li>
+              <li>Chart</li>
+              <li>Else</li>
+            </ul>
+          </>
+        }
+        {...args}
+      />
+    </div>
   );
 };
 
 export const AutoPosition = AutoTemplate.bind({});
+AutoPosition.args = {
+  offsetTop: 0,
+  offsetRight: 0,
+  offsetBottom: 0,
+  offsetLeft: 0,
+};

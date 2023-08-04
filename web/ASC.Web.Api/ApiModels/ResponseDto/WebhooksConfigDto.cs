@@ -26,10 +26,44 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksConfigDto : IMapFrom<WebhooksConfig>
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
+    public string Name { get; set; }
+
+    /// <summary>URI</summary>
+    /// <type>System.String, System</type>
     public string Uri { get; set; }
+
+    /// <summary>Secret key</summary>
+    /// <type>System.String, System</type>
     public string SecretKey { get; set; }
+
+    /// <summary>Specifies if the webhooks are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
+
+    /// <summary>SSL</summary>
+    /// <type>System.Boolean, System</type>
+    public bool SSL { get; set; }
+}
+
+public class WebhooksConfigWithStatusDto : IMapFrom<WebhooksConfigWithStatus>
+{
+    public WebhooksConfigDto Configs { get; set; }
+    public int Status { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<WebhooksConfigWithStatus, WebhooksConfigWithStatusDto>()
+            .ForMember(src => src.Configs, ex => ex
+                .MapFrom(map => map.WebhooksConfig));
+    }
 }

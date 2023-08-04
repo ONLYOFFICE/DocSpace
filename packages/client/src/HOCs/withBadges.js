@@ -21,7 +21,7 @@ export default function withBadges(WrappedComponent) {
         item,
         setIsVerHistoryPanel,
         fetchFileVersions,
-        history,
+
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
@@ -82,14 +82,18 @@ export default function withBadges(WrappedComponent) {
         isPrivacyFolder,
         onFilesClick,
         isAdmin,
+        isVisitor,
         isDesktopClient,
         sectionWidth,
         viewAs,
+        isMutedBadge,
+        isArchiveFolderRoot,
       } = this.props;
-      const { fileStatus, access } = item;
+      const { fileStatus, access, mute } = item;
 
       const newItems =
-        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
+        item.new ||
+        (!mute && (fileStatus & FileStatus.IsNew) === FileStatus.IsNew);
       const showNew = !!newItems;
 
       const accessToEdit =
@@ -102,11 +106,13 @@ export default function withBadges(WrappedComponent) {
           theme={theme}
           item={item}
           isAdmin={isAdmin}
+          isVisitor={isVisitor}
           showNew={showNew}
           newItems={newItems}
           sectionWidth={sectionWidth}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
+          isArchiveFolderRoot={isArchiveFolderRoot}
           isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
           onShowVersionHistory={this.onShowVersionHistory}
@@ -115,6 +121,7 @@ export default function withBadges(WrappedComponent) {
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
+          isMutedBadge={isMutedBadge}
         />
       );
 
@@ -136,7 +143,8 @@ export default function withBadges(WrappedComponent) {
       },
       { item }
     ) => {
-      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolderRoot } =
+        treeFoldersStore;
       const { markAsRead, setPinAction } = filesActionsStore;
       const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -145,12 +153,17 @@ export default function withBadges(WrappedComponent) {
         setConvertDialogVisible,
         setConvertItem,
       } = dialogsStore;
-      const { setIsLoading } = filesStore;
+      const { setIsLoading, isMuteCurrentRoomNotifications } = filesStore;
+      const { roomType, mute } = item;
+
+      const isRoom = !!roomType;
+      const isMutedBadge = isRoom ? mute : isMuteCurrentRoomNotifications;
 
       return {
+        isArchiveFolderRoot,
         theme,
         isAdmin: auth.isAdmin,
-
+        isVisitor: auth?.userStore?.user?.isVisitor,
         isTrashFolder: isRecycleBinFolder,
         isPrivacyFolder,
         homepage: config.homepage,
@@ -164,6 +177,7 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
         setPinAction,
+        isMutedBadge,
       };
     }
   )(observer(WithBadges));

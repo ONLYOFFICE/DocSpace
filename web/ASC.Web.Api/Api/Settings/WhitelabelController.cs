@@ -66,15 +66,26 @@ public class WhitelabelController : BaseSettingsController
         _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
     }
 
+    /// <summary>
+    /// Saves the white label settings specified in the request.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelRequestsDto, ASC.Web.Api" name="inDto">Request parameters for white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is sucessful</returns>
+    /// <path>api/2.0/settings/whitelabel/save</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
-    public async Task<bool> SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
+    public async Task<bool> SaveWhiteLabelSettingsAsync(WhiteLabelRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        DemandWhiteLabelPermission();
+        await DemandWhiteLabelPermissionAsync();
 
-        var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         if (inDto.Logo != null)
         {
@@ -83,10 +94,6 @@ public class WhitelabelController : BaseSettingsController
             foreach (var l in inDto.Logo)
             {
                 var key = Int32.Parse(l.Key);
-                if (key == (int)WhiteLabelLogoTypeEnum.Favicon && !(l.Value.Light.EndsWith("ico") || l.Value.Light.EndsWith("svg")))
-                {
-                    throw new InvalidOperationException("Favicon must have .ico or .svg extension");
-                }
 
                 logoDict.Add(key, new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
@@ -95,25 +102,35 @@ public class WhitelabelController : BaseSettingsController
         }
 
         settings.SetLogoText(inDto.LogoText);
-        _tenantWhiteLabelSettingsHelper.Save(settings, Tenant.Id, _tenantLogoManager);
+        await _tenantWhiteLabelSettingsHelper.SaveAsync(settings, Tenant.Id, _tenantLogoManager);
 
         return true;
     }
 
+    /// <summary>
+    /// Saves the white label settings from files.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings from files
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/savefromfiles</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
-    public async Task<bool> SaveWhiteLabelSettingsFromFiles()
+    public async Task<bool> SaveWhiteLabelSettingsFromFilesAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        DemandWhiteLabelPermission();
+        await DemandWhiteLabelPermissionAsync();
 
         if (HttpContext.Request.Form?.Files == null || HttpContext.Request.Form.Files.Count == 0)
         {
             throw new InvalidOperationException("No input files");
         }
 
-        var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         foreach (var f in HttpContext.Request.Form.Files)
         {
@@ -147,7 +164,7 @@ public class WhitelabelController : BaseSettingsController
             }
         }
 
-        _settingsManager.Save(settings, Tenant.Id);
+        await _settingsManager.SaveAsync(settings, Tenant.Id);
 
         return true;
     }
@@ -159,15 +176,33 @@ public class WhitelabelController : BaseSettingsController
         fileExt = parts.Last();
     }
 
-    ///<visible>false</visible>
-    [AllowNotPayment, AllowAnonymous]
+    /// <summary>
+    /// Returns the white label logos.
+    /// </summary>
+    /// <short>
+    /// Get the white label logos
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelQueryRequestsDto, ASC.Web.Api" name="inDto">White label request parameters</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemDto, ASC.Web.Api">White label logos</returns>
+    /// <path>api/2.0/settings/whitelabel/logos</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
+    /// <visible>false</visible>
+    [AllowNotPayment, AllowAnonymous, AllowSuspended]
     [HttpGet("whitelabel/logos")]
     public async IAsyncEnumerable<WhiteLabelItemDto> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var _tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
         {
+            if (logoType == WhiteLabelLogoTypeEnum.Notification)
+            {
+                continue;
+            }
+
             var result = new WhiteLabelItemDto
             {
                 Name = logoType.ToString(),
@@ -176,7 +211,7 @@ public class WhitelabelController : BaseSettingsController
 
             if (inDto.IsDark.HasValue)
             {
-                var path = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, inDto.IsDark.Value));
+                var path = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(_tenantWhiteLabelSettings, logoType, inDto.IsDark.Value));
 
                 if (inDto.IsDark.Value)
                 {
@@ -195,8 +230,8 @@ public class WhitelabelController : BaseSettingsController
             }
             else
             {
-                var lightPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, false));
-                var darkPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, true));
+                var lightPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(_tenantWhiteLabelSettings, logoType, false));
+                var darkPath = _commonLinkUtility.GetFullAbsolutePath(await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(_tenantWhiteLabelSettings, logoType, true));
 
                 if (lightPath == darkPath)
                 {
@@ -214,44 +249,73 @@ public class WhitelabelController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the white label logo text.
+    /// </summary>
+    /// <short>
+    /// Get the white label logo text
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Object, System">Logo text</returns>
+    /// <path>api/2.0/settings/whitelabel/logotext</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [AllowNotPayment]
     [HttpGet("whitelabel/logotext")]
-    public object GetWhiteLabelLogoText()
+    public async Task<object> GetWhiteLabelLogoTextAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         return settings.LogoText ?? TenantWhiteLabelSettings.DefaultLogoText;
     }
 
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Restores the white label options.
+    /// </summary>
+    /// <short>
+    /// Restore the white label options
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/restore</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("whitelabel/restore")]
-    public async Task<bool> RestoreWhiteLabelOptions()
+    public async Task<bool> RestoreWhiteLabelOptionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandWhiteLabelPermissionAsync();
 
-        var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
 
         await _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
 
-        var tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
-        await _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
-        _settingsManager.Save(tenantInfoSettings);
+        var tenantInfoSettings = await _settingsManager.LoadAsync<TenantInfoSettings>();
+        await _tenantInfoSettingsHelper.RestoreDefaultLogoAsync(tenantInfoSettings, _tenantLogoManager);
+        await _settingsManager.SaveAsync(tenantInfoSettings);
 
         return true;
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Returns the licensor data.
+    /// </summary>
+    /// <short>Get the licensor data</short>
+    /// <category>Rebranding</category>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">List of company white label settings</returns>
+    /// <path>api/2.0/settings/companywhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpGet("companywhitelabel")]
-    public List<CompanyWhiteLabelSettings> GetLicensorData()
+    public async Task<List<CompanyWhiteLabelSettings>> GetLicensorDataAsync()
     {
         var result = new List<CompanyWhiteLabelSettings>();
 
-        var instance = _companyWhiteLabelSettingsHelper.Instance();
+        var instance = await _companyWhiteLabelSettingsHelper.InstanceAsync();
 
         result.Add(instance);
 
@@ -263,12 +327,21 @@ public class WhitelabelController : BaseSettingsController
         return result;
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Saves the company white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the company white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettingsWrapper, ASC.Web.Core" name="companyWhiteLabelSettingsWrapper">Company white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("rebranding/company")]
-    public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
+    public async Task<bool> SaveCompanyWhiteLabelSettingsAsync(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
@@ -277,133 +350,227 @@ public class WhitelabelController : BaseSettingsController
 
         companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false;
 
-        _settingsManager.Save(companyWhiteLabelSettingsWrapper.Settings);
+        await _settingsManager.SaveAsync(companyWhiteLabelSettingsWrapper.Settings);
 
         return true;
     }
 
+    /// <summary>
+    /// Returns the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the company white label settings</short>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CompanyWhiteLabelSettingsDtov, ASC.Web.Api">Company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/company")]
-    public CompanyWhiteLabelSettingsDto GetCompanyWhiteLabelSettings()
+    public async Task<CompanyWhiteLabelSettingsDto> GetCompanyWhiteLabelSettingsAsync()
     {
-        return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(_settingsManager.Load<CompanyWhiteLabelSettings>());
+        return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(await _settingsManager.LoadAsync<CompanyWhiteLabelSettings>());
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Deletes the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the company white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">Default company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <visible>false</visible>
     [HttpDelete("rebranding/company")]
-    public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
+    public async Task<CompanyWhiteLabelSettings> DeleteCompanyWhiteLabelSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
-        _settingsManager.Save(defaultSettings);
+        await _settingsManager.SaveAsync(defaultSettings);
 
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the additional white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the additional white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettingsWrapper, ASC.Web.Core" name="wrapper">Additional white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/additional")]
-    public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
+    public async Task<bool> SaveAdditionalWhiteLabelSettingsAsync(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         if (wrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
 
-        _settingsManager.Save(wrapper.Settings);
+        await _settingsManager.SaveAsync(wrapper.Settings);
 
         return true;
     }
 
+    /// <summary>
+    /// Returns the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the additional white label settings</short>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.AdditionalWhiteLabelSettingsDto, ASC.Web.Api">Additional white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/additional")]
-    public AdditionalWhiteLabelSettingsDto GetAdditionalWhiteLabelSettings()
+    public async Task<AdditionalWhiteLabelSettingsDto> GetAdditionalWhiteLabelSettingsAsync()
     {
-        return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(_settingsManager.Load<AdditionalWhiteLabelSettings>());
+        return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(await _settingsManager.LoadAsync<AdditionalWhiteLabelSettings>());
     }
 
+    /// <summary>
+    /// Deletes the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the additional white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettings, ASC.Web.Core">Default additional white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/additional")]
-    public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
+    public async Task<AdditionalWhiteLabelSettings> DeleteAdditionalWhiteLabelSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
-        _settingsManager.Save(defaultSettings);
+        await _settingsManager.SaveAsync(defaultSettings);
 
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the mail white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the mail white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core" name="settings">Mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/mail")]
-    public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
+    public async Task<bool> SaveMailWhiteLabelSettingsAsync(MailWhiteLabelSettings settings)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         ArgumentNullException.ThrowIfNull(settings);
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
         return true;
     }
 
+    /// <summary>
+    /// Updates the mail white label settings with a paramater specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Update the mail white label settings</short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailWhiteLabelSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("rebranding/mail")]
-    public bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
+    public async Task<bool> UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
-        _settingsManager.Manage<MailWhiteLabelSettings>(settings =>
+        await _settingsManager.ManageAsync<MailWhiteLabelSettings>(settings =>
         {
-            settings.FooterEnabled = inDto.FooterEnabled;
+        settings.FooterEnabled = inDto.FooterEnabled;
         });
 
         return true;
     }
 
+    /// <summary>
+    /// Returns the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the mail white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Mail white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("rebranding/mail")]
-    public MailWhiteLabelSettings GetMailWhiteLabelSettings()
+    public async Task<MailWhiteLabelSettings> GetMailWhiteLabelSettingsAsync()
     {
-        return _settingsManager.Load<MailWhiteLabelSettings>();
+        return await _settingsManager.LoadAsync<MailWhiteLabelSettings>();
     }
 
+    /// <summary>
+    /// Deletes the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the mail white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Default mail white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/mail")]
-    public MailWhiteLabelSettings DeleteMailWhiteLabelSettings()
+    public async Task<MailWhiteLabelSettings> DeleteMailWhiteLabelSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        await DemandRebrandingPermissionAsync();
 
         var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
 
-        _settingsManager.Save(defaultSettings);
+        await _settingsManager.SaveAsync(defaultSettings);
 
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Checks if the white label is enabled or not.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Check the white label availability</short>
+    /// <returns type="System.Boolean, System">Boolean value: true if the white label is enabled</returns>
+    /// <path>api/2.0/settings/enableWhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("enableWhitelabel")]
-    public bool GetEnableWhitelabel()
+    public async Task<bool> GetEnableWhitelabelAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        return _coreBaseSettings.Standalone || _tenantLogoManager.WhiteLabelEnabled && _tenantLogoManager.WhiteLabelPaid;
+        return _coreBaseSettings.Standalone || _tenantLogoManager.WhiteLabelEnabled && await _tenantLogoManager.GetWhiteLabelPaidAsync();
     }
 
-    private void DemandWhiteLabelPermission()
+    private async Task DemandWhiteLabelPermissionAsync()
     {
-        if (!_coreBaseSettings.Standalone && (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid))
+        if (!_coreBaseSettings.Standalone && (!_tenantLogoManager.WhiteLabelEnabled || !await _tenantLogoManager.GetWhiteLabelPaidAsync()))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
         }
+    }
+
+    private async Task DemandRebrandingPermissionAsync()
+    {
+        if (!_coreBaseSettings.Standalone || _coreBaseSettings.CustomMode)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
+        }
+        await DemandWhiteLabelPermissionAsync();
     }
 }

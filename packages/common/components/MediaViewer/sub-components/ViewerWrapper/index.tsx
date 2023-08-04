@@ -3,29 +3,26 @@ import equal from "fast-deep-equal/react";
 
 import Viewer from "../Viewer";
 import { isSeparator } from "../../helpers";
-import { getCustomToolbar } from "../../helpers/getCustomToolbar";
+import {
+  getCustomToolbar,
+  getPDFToolbar,
+} from "../../helpers/getCustomToolbar";
 import { ContextMenuModel } from "../../types";
 
 import { StyledDropDown } from "../StyledDropDown";
 import { StyledDropDownItem } from "../StyledDropDownItem";
 import ViewerWrapperProps from "./ViewerWrapper.props";
 
-const DefaultSpeedZoom = 0.25;
-
 function ViewerWrapper(props: ViewerWrapperProps) {
-  const onClickContextItem = useCallback(
-    (item: ContextMenuModel) => {
-      if (isSeparator(item)) return;
-      item.onClick();
-      props.onClose();
-    },
-    [props.onClose]
-  );
+  const onClickContextItem = useCallback((item: ContextMenuModel) => {
+    if (isSeparator(item)) return;
+    item.onClick();
+  }, []);
 
   const generateContextMenu = (
     isOpen: boolean,
-    right: string,
-    bottom: string
+    right?: string,
+    bottom?: string
   ) => {
     const model = props.contextModel();
 
@@ -58,7 +55,7 @@ function ViewerWrapper(props: ViewerWrapperProps) {
     );
   };
 
-  const toolbars = useMemo(() => {
+  const toolbar = useMemo(() => {
     const {
       onDeleteClick,
       onDownloadClick,
@@ -67,7 +64,20 @@ function ViewerWrapper(props: ViewerWrapperProps) {
       userAccess,
     } = props;
 
-    const customToolbar = getCustomToolbar(onDeleteClick, onDownloadClick);
+    const file = props.targetFile;
+    const isEmptyContextMenu =
+      props.contextModel().filter((item) => !item.disabled).length === 0;
+
+    const customToolbar = props.isPdf
+      ? getPDFToolbar()
+      : file
+      ? getCustomToolbar(
+          file,
+          isEmptyContextMenu,
+          onDeleteClick,
+          onDownloadClick
+        )
+      : [];
 
     const canShare = playlist[playlistPos].canShare;
     const toolbars =
@@ -79,28 +89,31 @@ function ViewerWrapper(props: ViewerWrapperProps) {
 
     return toolbars;
   }, [
+    props.isPdf,
     props.onDeleteClick,
     props.onDownloadClick,
     props.playlist,
     props.playlistPos,
     props.userAccess,
+    props.targetFile,
   ]);
 
   return (
     <Viewer
       title={props.title}
-      images={props.images}
+      fileUrl={props.fileUrl}
       isAudio={props.isAudio}
       isVideo={props.isVideo}
+      isPdf={props.isPdf}
       visible={props.visible}
       isImage={props.isImage}
       playlist={props.playlist}
       inactive={props.inactive}
       audioIcon={props.audioIcon}
-      zoomSpeed={DefaultSpeedZoom}
       errorTitle={props.errorTitle}
       headerIcon={props.headerIcon}
-      customToolbar={() => toolbars}
+      targetFile={props.targetFile}
+      toolbar={toolbar}
       playlistPos={props.playlistPos}
       archiveRoom={props.archiveRoom}
       isPreviewFile={props.isPreviewFile}

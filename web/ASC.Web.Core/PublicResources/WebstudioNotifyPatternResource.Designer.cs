@@ -70,146 +70,128 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blog was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateBlog {
+        public static string ActionFileCreated {
             get {
-                return ResourceManager.GetString("ActionCreateBlog", resourceCulture);
+                return ResourceManager.GetString("ActionFileCreated", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bookmark was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; edited the document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;.
         /// </summary>
-        public static string ActionCreateBookmark {
+        public static string ActionFileEdited {
             get {
-                return ResourceManager.GetString("ActionCreateBookmark", resourceCulture);
+                return ResourceManager.GetString("ActionFileEdited", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CRM case was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; uploaded a new document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;.
         /// </summary>
-        public static string ActionCreateCase {
+        public static string ActionFileUploaded {
             get {
-                return ResourceManager.GetString("ActionCreateCase", resourceCulture);
+                return ResourceManager.GetString("ActionFileUploaded", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comment was added at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; added a new comment to the document version: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateComment {
+        public static string ActionNewComment {
             get {
-                return ResourceManager.GetString("ActionCreateComment", resourceCulture);
+                return ResourceManager.GetString("ActionNewComment", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CRM contact was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to archive - &lt;b&gt;{3}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateContact {
+        public static string ActionRoomArchived {
             get {
-                return ResourceManager.GetString("ActionCreateContact", resourceCulture);
+                return ResourceManager.GetString("ActionRoomArchived", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CRM opportunity was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateDeal {
+        public static string ActionRoomCreated {
             get {
-                return ResourceManager.GetString("ActionCreateDeal", resourceCulture);
+                return ResourceManager.GetString("ActionRoomCreated", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Discussion was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; deleted the room: &lt;b&gt;{1}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateDiscussion {
+        public static string ActionRoomRemoved {
             get {
-                return ResourceManager.GetString("ActionCreateDiscussion", resourceCulture);
+                return ResourceManager.GetString("ActionRoomRemoved", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Event was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; renamed the room: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateEvent {
+        public static string ActionRoomRenamed {
             get {
-                return ResourceManager.GetString("ActionCreateEvent", resourceCulture);
+                return ResourceManager.GetString("ActionRoomRenamed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document was created/uploaded at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was assigned the role of &lt;b&gt;{1}&lt;/b&gt; in the room: &lt;a href={2}&gt;{3}&lt;/a&gt;.
         /// </summary>
-        public static string ActionCreateFile {
+        public static string ActionRoomUpdateAccessForUser {
             get {
-                return ResourceManager.GetString("ActionCreateFile", resourceCulture);
+                return ResourceManager.GetString("ActionRoomUpdateAccessForUser", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Folder was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt;  was added to the room: &lt;a href={1}&gt;{2}&lt;/a&gt;.
         /// </summary>
-        public static string ActionCreateFolder {
+        public static string ActionUserAddedToRoom {
             get {
-                return ResourceManager.GetString("ActionCreateFolder", resourceCulture);
+                return ResourceManager.GetString("ActionUserAddedToRoom", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Forum was created at.
+        ///   Looks up a localized string similar to New DocSpace user added: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateForum {
+        public static string ActionUserCreated {
             get {
-                return ResourceManager.GetString("ActionCreateForum", resourceCulture);
+                return ResourceManager.GetString("ActionUserCreated", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Poll was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was removed from the room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateForumPoll {
+        public static string ActionUserRemovedFromRoom {
             get {
-                return ResourceManager.GetString("ActionCreateForumPoll", resourceCulture);
+                return ResourceManager.GetString("ActionUserRemovedFromRoom", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Post was created at.
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; changed the access level of the users &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateForumPost {
+        public static string ActionUsersUpdatedType {
             get {
-                return ResourceManager.GetString("ActionCreateForumPost", resourceCulture);
+                return ResourceManager.GetString("ActionUsersUpdatedType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Milestone was created at.
+        ///   Looks up a localized string similar to DocSpace user updated: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
         /// </summary>
-        public static string ActionCreateMilestone {
+        public static string ActionUserUpdated {
             get {
-                return ResourceManager.GetString("ActionCreateMilestone", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project was created at.
-        /// </summary>
-        public static string ActionCreateProject {
-            get {
-                return ResourceManager.GetString("ActionCreateProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Task was created at.
-        /// </summary>
-        public static string ActionCreateTask {
-            get {
-                return ResourceManager.GetString("ActionCreateTask", resourceCulture);
+                return ResourceManager.GetString("ActionUserUpdated", resourceCulture);
             }
         }
         
@@ -475,11 +457,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn More &gt;&gt;.
+        ///   Looks up a localized string similar to Visit Payments Section.
         /// </summary>
-        public static string LinkLearnMore {
+        public static string ButtonVisitPaymentsSection {
             get {
-                return ResourceManager.GetString("LinkLearnMore", resourceCulture);
+                return ResourceManager.GetString("ButtonVisitPaymentsSection", resourceCulture);
             }
         }
         
@@ -507,12 +489,10 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///A backup file containing data from your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal has been created.
         ///
-        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx&quot; user guide.
+        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block&quot; user guide.
         ///
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support.onlyoffice.com&quot;
-        ///
-        ///Best  [rest of string was truncated]&quot;;.
+        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support. [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_backup_created {
             get {
@@ -653,16 +633,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
-        ///
-        ///* 1 manager
-        ///* Up to 12 rooms
-        ///* Up to 3 users in each room
-        ///* 2 GB disk space
-        ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
         public static string pattern_enterprise_admin_activation_v1 {
             get {
@@ -694,11 +669,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_user_docs_tips_v1 {
             get {
@@ -745,27 +718,24 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///1. Edit your profile. 
-        ///2. View and comment the content available in the Community and Projects.
-        ///3. Add and download files available for you in the Documents.
-        ///4. Organize your schedule with the built-in Calendar.
-        ///5. Use Chat to exchange instant messages.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///To access your web-office, follow the link
-        ///$GreenButton.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_guest_welcome_v10 {
+        public static string pattern_enterprise_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_guest_welcome_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -784,11 +754,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, c [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_user_welcome_v1 {
             get {
@@ -805,16 +775,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
-        ///
-        ///* 1 manager
-        ///* Up to 12 rooms
-        ///* Up to 3 users in each room
-        ///* 2 GB disk space
-        ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
@@ -861,23 +826,24 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///# Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///# View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_guest_welcome_v10 {
+        public static string pattern_enterprise_whitelabel_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_welcome_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;o. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -896,11 +862,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, c [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_welcome_v1 {
             get {
@@ -969,13 +935,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
         ///
         ///      Use the following settings for other email clients:
-        ///
         ///      Login: &lt;b&gt;$Login&lt;/b&gt;
         ///      Password: &quot;&lt;b&gt;set password&lt;/b&gt;&quot;:&quot;$MyStaffLink&quot;
         ///
@@ -986,7 +950,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///      Outgoing Mail (SMTP): 
         ///      Server: &lt;b&gt;$Server&lt;/b&gt;
-        ///      Port: &lt;b&gt;$Smt [rest of string was truncated]&quot;;.
+        ///      Port: &lt;b&gt;$SmtpPort&lt;/b&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_mailbox_created {
             get {
@@ -995,13 +959,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      The password for the &lt;b&gt;$Address&lt;/b&gt; mailbox has been changed.
         ///
-        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-        ///    .
+        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details..
         /// </summary>
         public static string pattern_mailbox_password_changed {
             get {
@@ -1010,13 +972,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
         ///
-        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-        ///    .
+        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details..
         /// </summary>
         public static string pattern_mailbox_without_settings_created {
             get {
@@ -1031,12 +991,11 @@ namespace ASC.Web.Core.PublicResources {
         ///Your portal is now available at the old address &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot;
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
-        ///
         ///Best regards,
         ///ONLYOFFICE™ Support Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^To change the notification type, please manage your &quot;subscription [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription s [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_migration_error {
             get {
@@ -1110,16 +1069,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///$GreenButton
         ///
-        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
-        ///
-        ///* 1 manager
-        ///* Up to 12 rooms
-        ///* Up to 3 users in each room
-        ///* 2 GB disk space
-        ///
         ///Enjoy a new way of document collaboration!
         ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
         public static string pattern_opensource_admin_activation_v1 {
             get {
@@ -1132,11 +1086,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_docs_tips_v1 {
             get {
@@ -1183,21 +1135,17 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You are now a guest user at&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*Introduce yourself* to the team by editing your profile.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*View shared documents* as well as download them and upload new files to shared folders.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*View and comment projects* you’ve been invited to as well as blog and forum posts.
-        ///
-        ///*Exchange instant messages* and quickly share files using Talk.
-        ///
-        ///*Use personal and shared calendars* to arrange meetings, set reminders, and create to-do lists [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_guest_welcome_v11 {
+        public static string pattern_opensource_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_guest_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -1223,11 +1171,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_user_docs_tips_v1 {
             get {
@@ -1240,11 +1186,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, c [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_user_welcome_v1 {
             get {
@@ -1284,7 +1230,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///- Work with all popular formats. Highest compatibility with MS Office files.
         ///
-        ///- Create and co-edit &quot;ready-to-fill-out forms&quot;:&quot;https://www.only [rest of string was truncated]&quot;;.
+        ///- Create and co-edit &quot;ready-to-fill-out forms&quot;:&quot;http [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration1 {
             get {
@@ -1383,7 +1329,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
         ///
-        ///&quot;Read more about account termination&quot;:&quot; [rest of string was truncated]&quot;;.
+        ///&quot;Read more about account terminati [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_profile_delete {
             get {
@@ -1403,7 +1349,7 @@ namespace ASC.Web.Core.PublicResources {
         ///*Note*: this link is valid for 7 days only. Please complete the portal deactivation process within that period.
         ///
         ///You can reactivate your portal any time by clicking the following link:
-        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this link has no [rest of string was truncated]&quot;;.
+        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_deactivate {
             get {
@@ -1432,16 +1378,16 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Deletion of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
+        ///   Looks up a localized string similar to h1.Deletion of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; space
         ///
         ///Dear $OwnerName,
         ///
-        ///You have requested to permanently delete your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
+        ///You have requested to permanently delete your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; space.
         ///
-        ///*Important! All the data stored on your portal, as well as your registration details will be lost and cannot be recovered.*
+        ///*Important! All the data stored in your space, as well as your registration details will be lost and cannot be recovered.*
         ///
         ///#if($AutoRenew == &quot;True&quot;)
-        ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https://se [rest of string was truncated]&quot;;.
+        ///Before you delete the space, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_delete {
             get {
@@ -1493,7 +1439,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your $PortalUrl portal address was changed to the new &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; address.
         ///
-        ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them..
+        ///*Note*: DNS settings and single sign-on options stop working until you change them..
         /// </summary>
         public static string pattern_portal_rename {
             get {
@@ -1743,14 +1689,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_activation_v1 {
             get {
@@ -1824,11 +1768,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v1 {
             get {
@@ -1896,16 +1838,93 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.  Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///1. Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///2. View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///3. Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///4. Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPa [rest of string was truncated]&quot;;.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_guest_welcome_v115 {
+        public static string pattern_saas_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_guest_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_guest_welcome_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay‎ days for your ONLYOFFICE DocSpace is activated.
+        ///
+        ///Make sure to pay your Business subscription before the grace period is due. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that your ONLYOFFICE DocSpace subscription expires in three days. After that, the grace period of $PaymentDelay days will be activated.
+        ///
+        ///We recommend paying your Business subscription now and continue to use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace is over.
+        ///
+        ///Make sure to pay your Business subscription as soon as possible. Thus, you will be able to use all the benefits of your ONLYOFFICE DocSpace as before.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace will expire tomorrow.
+        ///
+        ///Make sure to pay your Business subscription today. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
             }
         }
         
@@ -1950,11 +1969,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, c [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_user_welcome_v1 {
             get {
@@ -1988,24 +2007,12 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.What&apos;s new on &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal for $Date
+        ///   Looks up a localized string similar to h1.Here is what’s new in your DocSpace on $Date
         ///
         ///#foreach($activity in $Activities)
+        ///$activity
         ///
-        ///h2.$activity.Key
-        ///
-        ///#foreach($whatsNewActivity in $activity.Value)
-        ///#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-        ///#end &quot;$whatsNewActivity.Title&quot;:&quot;$whatsNewActivity.URL&quot;
-        ///*Author*: &quot;$whatsNewActivity.UserName&quot;:&quot;$whatsNewActivity.UserAbsoluteURL&quot;, $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-        ///
-        ///
-        ///#end
-        ///
-        ///#end
-        ///
-        ///
-        ///^If you do not want to receive the notificatio [rest of string was truncated]&quot;;.
+        ///#end.
         /// </summary>
         public static string pattern_send_whats_new {
             get {
@@ -2175,6 +2182,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        /// </summary>
+        public static string subject_change_password {
+            get {
+                return ResourceManager.GetString("subject_change_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
         public static string subject_change_password_v115 {
@@ -2238,7 +2254,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_enterprise_admin_user_docs_tips_v1 {
             get {
@@ -2265,11 +2281,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_guest_welcome_v10 {
+        public static string subject_enterprise_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2319,11 +2335,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_whitelabel_guest_welcome_v10 {
+        public static string subject_enterprise_whitelabel_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2427,7 +2443,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_opensource_admin_docs_tips_v1 {
             get {
@@ -2454,11 +2470,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_opensource_guest_welcome_v11 {
+        public static string subject_opensource_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_guest_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2472,7 +2488,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_opensource_user_docs_tips_v1 {
             get {
@@ -2715,7 +2731,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_saas_admin_user_docs_tips_v1 {
             get {
@@ -2751,11 +2767,47 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your ONLYOFFICE.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_saas_guest_welcome_v115 {
+        public static string subject_saas_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_guest_welcome_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace activated.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ONLYOFFICE DocSpace subscription is about to expire.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expired.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expires tomorrow.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
             }
         }
         

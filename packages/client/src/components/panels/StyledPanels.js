@@ -65,8 +65,8 @@ const StyledAsidePanel = styled.div`
     width: calc(100% - 32px);
   }
   .upload-panel_body {
-    padding-top: ${isMobile ? "55px" : "48px"};
-    height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
+    padding-top: ${isMobile ? "67px" : "60px"};
+    height: ${isMobile ? "calc(100vh - 67px)" : "calc(100vh - 60px)"};
   }
 
   .modal-dialog-aside {
@@ -96,6 +96,7 @@ const StyledVersionHistoryPanel = styled.div`
   }
 
   .version-history-panel-header {
+    margin-bottom: 12px;
     height: 53px;
     margin-left: 0px;
     .version-history-panel-heading {
@@ -113,11 +114,11 @@ const StyledVersionHistoryPanel = styled.div`
     box-sizing: border-box;
 
     .version-comment-wrapper {
-      margin-left: 79px;
+      margin-left: 85px;
     }
 
     .version_edit-comment {
-      padding-left: 2px;
+      padding-left: 7px;
     }
   }
 `;
@@ -138,13 +139,6 @@ const StyledContent = styled.div`
 
   .upload-panel_header-content {
     margin-right: 0 !important;
-  }
-
-  .header_aside-panel-header {
-    max-width: 500px;
-    margin: 0 0 0 16px;
-    line-height: 57px;
-    font-weight: 700;
   }
 
   .header_aside-panel-plus-icon {

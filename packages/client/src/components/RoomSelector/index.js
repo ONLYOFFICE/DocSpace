@@ -40,7 +40,7 @@ const convertToItems = (folders) => {
   const items = folders.map((folder) => {
     const { id, title, roomType, logo } = folder;
 
-    const icon = logo.original ? logo.original : getRoomLogo(roomType);
+    const icon = logo.medium ? logo.medium : getRoomLogo(roomType);
 
     return { id, label: title, icon };
   });
@@ -69,6 +69,7 @@ const RoomSelector = ({
   acceptButtonLabel,
   onAccept,
 
+  withHeader,
   withSelectAll,
   selectAllLabel,
   selectAllIcon,
@@ -183,6 +184,7 @@ const RoomSelector = ({
       items={items}
       acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
       onAccept={onAccept}
+      withHeader={withHeader}
       withCancelButton={withCancelButton}
       cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
       onCancel={onCancel}
@@ -208,7 +210,7 @@ const RoomSelector = ({
         searchEmptyScreenHeader || t("Common:NotFoundTitle")
       }
       searchEmptyScreenDescription={
-        searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")
+        searchEmptyScreenDescription || t("Common:SearchEmptyRoomsDescription")
       }
       totalItems={total}
       hasNextPage={hasNextPage}

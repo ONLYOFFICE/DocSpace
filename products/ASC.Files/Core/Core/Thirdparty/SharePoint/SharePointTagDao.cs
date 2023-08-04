@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -27,20 +27,96 @@
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
-internal class SharePointTagDao : SharePointDaoBase, ITagDao<string>
+internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
 {
-    public SharePointTagDao(
-        IServiceProvider serviceProvider,
+    public SharePointTagDao(IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
-        ILogger<SharePointTagDao> monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
+
+    public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
+    {
+        var folderId = DaoSelector.ConvertId(parentFolder.Id);
+
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        var entryIds = await Queries.HashIdsAsync(filesDbContext, PathPrefix).ToListAsync();
+
+        if (!entryIds.Any())
+        {
+            yield break;
+        }
+
+        var qList = await Queries.TagLinkTagPairAsync(filesDbContext, _tenantId, entryIds, subject).ToListAsync();
+
+        var tags = new List<Tag>();
+
+        foreach (var r in qList)
+        {
+            tags.Add(new Tag
+            {
+                Name = r.Tag.Name,
+                Type = r.Tag.Type,
+                Owner = r.Tag.Owner,
+                EntryId = await MappingIDAsync(r.TagLink.EntryId),
+                EntryType = r.TagLink.EntryType,
+                Count = r.TagLink.Count,
+                Id = r.Tag.Id
+            });
+        }
+
+
+        if (deepSearch)
+        {
+            foreach (var e in tags)
+            {
+                yield return e;
+            }
+            yield break;
+        }
+
+        var folderFileIds = new[] { parentFolder.Id }
+            .Concat(await GetChildrenAsync(folderId));
+
+        foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
+        {
+            yield return e;
+        }
+    }
+}
+
+file class TagLinkTagPair
+{
+    public DbFilesTag Tag { get; set; }
+    public DbFilesTagLink TagLink { get; set; }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, string, IAsyncEnumerable<string>> HashIdsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.Id.StartsWith(idStart))
+                    .Select(r => r.HashId));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Guid, IAsyncEnumerable<TagLinkTagPair>>
+        TagLinkTagPairAsync =
+            EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIds, Guid owner) =>
+                    (from r in ctx.Tag
+                     from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                     where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
+                           entryIds.Contains(l.EntryId)
+                     select new TagLinkTagPair { Tag = r, TagLink = l })
+                    .Where(r => owner == Guid.Empty || r.Tag.Owner == owner)
+                    .Distinct());
 }

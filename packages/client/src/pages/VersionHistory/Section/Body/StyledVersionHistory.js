@@ -118,7 +118,7 @@ StyledVersionList.defaultProps = { theme: Base };
 const StyledVersionRow = styled(Row)`
   .row_content {
     position: relative;
-    padding-top: 12px;
+    padding-top: 13px;
     padding-bottom: 12px;
     height: auto;
     ${(props) => !props.isTabletView && "padding-right:16px"};
@@ -143,10 +143,9 @@ const StyledVersionRow = styled(Row)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    @media ${tablet} {
-      margin-top: -1px;
-    }
+  }
+  .version-link-file:first-child {
+    margin-bottom: 4px;
   }
 
   .icon-link {
@@ -163,8 +162,9 @@ const StyledVersionRow = styled(Row)`
     display: block;
   }
 
-  .textarea-desktop {
-    margin: 9px 23px 1px -7px;
+  .textarea-wrapper {
+    margin: 6px 31px 1px -7px;
+    width: 100%;
   }
 
   .version_content-length {
@@ -193,15 +193,22 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     margin-left: -7px;
     margin-top: 5px;
 
     @media ${tablet} {
-      display: ${(props) => (props.showEditPanel ? "none" : "inline-block")};
       margin-left: -7px;
       margin-top: 5px;
     }
+
+    word-break: break-word;
+    display: ${(props) => (props.showEditPanel ? "none" : "-webkit-box")};
+    display: ${(props) => (props.showEditPanel ? "none" : "-moz-box")};
+    display: ${(props) => (props.showEditPanel ? "none" : "-ms-box")};
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .version-comment-wrapper {
@@ -211,7 +218,7 @@ const StyledVersionRow = styled(Row)`
   .row_context-menu-wrapper {
     display: block;
     position: absolute;
-    right: 16px !important;
+    right: 13px !important;
     top: 6px;
 
     .expandButton {

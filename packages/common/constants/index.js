@@ -6,6 +6,8 @@ import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg
 export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
+export const LIVE_CHAT_LOCAL_STORAGE_KEY = "live_chat_state";
+export const MAX_FILE_COMMENT_LENGTH = 255;
 
 /**
  * Enum for employee activation status.
@@ -47,6 +49,33 @@ export const EmployeeType = Object.freeze({
 export const PaymentsType = Object.freeze({
   Paid: "0",
   Free: "1",
+});
+/**
+ * Enum for account login type.
+ * @readonly
+ */
+export const AccountLoginType = Object.freeze({
+  SSO: "0",
+  LDAP: "1",
+  STANDART: "2",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const ApplyFilterOption = Object.freeze({
+  All: "All",
+  Files: "Files",
+  Folder: "Folder",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const FilesSelectorFilterTypes = Object.freeze({
+  DOCX: "DOCX",
+  IMG: "IMG",
+  GZ: "GZ",
 });
 /**
  * Enum for filter subject.
@@ -98,12 +127,19 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  FillingFormsRoom: 1,
+  // FillingFormsRoom: 1, //TODO: Restore when certs will be done
   EditingRoom: 2,
-  ReviewRoom: 3,
-  ReadOnlyRoom: 4,
+  // ReviewRoom: 3, //TODO: Restore when certs will be done
+  // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
+  PublicRoom: 6,
 });
+
+export const RoomsTypeValues = Object.freeze(
+  Object.values(RoomsType).reduce((acc, current) => {
+    return { ...acc, [current]: current };
+  }, {})
+);
 
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
@@ -111,6 +147,7 @@ export const RoomsTypeTranslations = Object.freeze({
   3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
+  6: "Files:PublicRoom",
 });
 /**
  * Enum for room provider type.
@@ -304,6 +341,7 @@ export const FileStatus = Object.freeze({
  * @readonly
  */
 export const TenantStatus = Object.freeze({
+  PortalDeactivate: 1,
   PortalRestore: 4,
 });
 
@@ -379,4 +417,51 @@ export const PortalFeaturesLimitations = Object.freeze({
 
 export const EDITOR_ID = "docspace_editor";
 
-export const wrongPortalNameUrl = `https://www.onlyoffice.com/wrongportalname.aspx`;
+export const wrongPortalNameUrl =
+  (typeof window !== "undefined" &&
+    window.DocSpaceConfig?.wrongPortalNameUrl) ||
+  `https://www.onlyoffice.com/wrongportalname.aspx`;
+
+/**
+ * Enum for notifications.
+ * @readonly
+ */
+export const NotificationsType = Object.freeze({
+  Badges: 0,
+  RoomsActivity: 1,
+  DailyFeed: 2,
+  UsefulTips: 3,
+});
+
+export const FilterGroups = Object.freeze({
+  filterType: "filter-filterType",
+  filterAuthor: "filter-author",
+  filterFolders: "filter-folders",
+  filterRoom: "filter-room",
+  filterContent: "filter-withContent",
+  roomFilterProviderType: "filter-provider-type",
+  roomFilterType: "filter-type",
+  roomFilterSubject: "filter-subject",
+  roomFilterOwner: "filter-owner",
+  roomFilterTags: "filter-tags",
+  roomFilterFolders: "filter-withSubfolders",
+  roomFilterContent: "filter-content",
+});
+
+export const FilterKeys = Object.freeze({
+  withSubfolders: "withSubfolders",
+  excludeSubfolders: "excludeSubfolders",
+  withContent: "withContent",
+  me: "me",
+  other: "other",
+  user: "user",
+});
+
+export const IndexedDBStores = Object.freeze({
+  images: "images",
+});
+
+export const FilterSelectorTypes = Object.freeze({
+  people: "people-selector",
+  rooms: "rooms-selector",
+});

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
+
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import TextInput from "@docspace/components/text-input";
@@ -64,6 +64,4 @@ const ChangePhoneForm = (props) => {
 
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
-}))(
-  withRouter(withTranslation("Confirm")(withLoader(observer(ChangePhoneForm))))
-);
+}))(withTranslation("Confirm")(withLoader(observer(ChangePhoneForm))));

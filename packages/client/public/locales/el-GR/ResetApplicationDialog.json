@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Η διαμόρφωση της εφαρμογής Επαληθευτής θα μηδενιστεί.",
-  "ResetApplicationTitle": "Επαναφορά διαμόρφωσης εφαρμογής"
+  "ResetApplicationTitle": "Επαναφορά διαμόρφωσης εφαρμογής",
+  "SuccessResetApplication": "Η επαναφορά ρυθμίσεων της εφαρμογής για τον έλεγχο ταυτότητας έγινε επιτυχώς."
 }

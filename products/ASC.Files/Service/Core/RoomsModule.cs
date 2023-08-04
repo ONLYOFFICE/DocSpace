@@ -37,18 +37,21 @@ public class RoomsModule : FeedModule
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
+    private readonly TenantUtil _tenantUtil;
 
     public RoomsModule(
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        TenantUtil tenantUtil)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
+        _tenantUtil = tenantUtil;
     }
 
     public override string Name => Constants.RoomsModule;
@@ -56,9 +59,9 @@ public class RoomsModule : FeedModule
     public override Guid ProductID => WebItemManager.DocumentsProductID;
     protected override string DbId => Constants.FilesDbId;
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override async Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!await _webItemSecurity.IsAvailableForUserAsync(ProductID, userId))
         {
             return false;
         }
@@ -76,7 +79,7 @@ public class RoomsModule : FeedModule
             }
 
             var owner = (Guid)feed.Target;
-            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
+            var groupUsers = (await _userManager.GetUsersByGroupAsync(owner)).Select(x => x.Id).ToList();
             if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);
@@ -89,7 +92,7 @@ public class RoomsModule : FeedModule
             targetCond = true;
         }
 
-        return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
+        return targetCond && await _fileSecurity.CanReadAsync(folder, userId);
     }
 
     public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
@@ -106,45 +109,48 @@ public class RoomsModule : FeedModule
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)
     {
-        var folder = folderWithSecurity.Folder;
+        var room = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
 
-        if (shareRecord != null)
+        if (shareRecord == null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
+            var roomCreatedUtc = _tenantUtil.DateTimeToUtc(room.CreateOn);
+
+            return new Feed.Aggregator.Feed(room.CreateBy, roomCreatedUtc)
             {
-                Item = SharedRoomItem,
-                ItemId = string.Format("{0}_{1}_{2}", folder.Id, shareRecord.Subject, shareRecord.TimeStamp.Ticks),
+                Item = RoomItem,
+                ItemId = room.Id.ToString(),
                 Product = Product,
                 Module = Name,
-                Title = folder.Title,
+                Title = room.Title,
                 ExtraLocationTitle = FilesUCResource.VirtualRooms,
-                ExtraLocation = folder.ParentId.ToString(),
-                Keywords = folder.Title,
-                AdditionalInfo = ((int)folder.FolderType).ToString(),
-                AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
-                AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
-                AdditionalInfo4 = folder.Private ? "private" : null,
-                Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, folder.ParentId.ToString())
+                ExtraLocation = room.ParentId.ToString(),
+                Keywords = room.Title,
+                AdditionalInfo = ((int)room.FolderType).ToString(),
+                AdditionalInfo4 = room.Private ? "private" : null,
+                GroupId = GetGroupId(RoomItem, room.CreateBy, roomCreatedUtc, room.ParentId.ToString())
             };
-
-            return feed;
         }
 
-        return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
+        var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
         {
-            Item = RoomItem,
-            ItemId = folder.Id.ToString(),
+            Item = SharedRoomItem,
+            ItemId = $"{shareRecord.Subject}_{Guid.NewGuid()}",
             Product = Product,
             Module = Name,
-            Title = folder.Title,
+            Title = room.Title,
             ExtraLocationTitle = FilesUCResource.VirtualRooms,
-            ExtraLocation = folder.ParentId.ToString(),
-            Keywords = folder.Title,
-            AdditionalInfo = ((int)folder.FolderType).ToString(),
-            AdditionalInfo4 = folder.Private ? "private" : null,
-            GroupId = GetGroupId(RoomItem, folder.CreateBy, folder.ParentId.ToString())
+            ExtraLocation = room.ParentId.ToString(),
+            Keywords = room.Title,
+            AdditionalInfo = ((int)room.FolderType).ToString(),
+            AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
+            AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
+            AdditionalInfo4 = room.Private ? "private" : null,
+            Target = shareRecord.Subject,
+            GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, shareRecord.TimeStamp, room.ParentId.ToString()),
+            ContextId = $"{RoomItem}_{room.Id}"
         };
+
+        return feed;
     }
 }

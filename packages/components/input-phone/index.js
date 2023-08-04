@@ -14,6 +14,8 @@ import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
 
+const PLUS = "+";
+
 const InputPhone = ({
   defaultCountry,
   onChange,
@@ -132,13 +134,13 @@ const InputPhone = ({
         noBorder={true}
         opened={isOpen}
         data="country"
-        toggleAction={handleClick}
+        onToggle={handleClick}
         displayType="toggle"
         className="country-box"
         fillIcon={true}
         selectedOption={country}
       />
-      <Label text="+" className="prefix" />
+      <Label text={PLUS} className="prefix" />
       <TextInput
         type="tel"
         className="input-phone"
@@ -204,19 +206,19 @@ const InputPhone = ({
 };
 
 InputPhone.propTypes = {
-  /** Default selected country Russia */
+  /** Default selected country */
   defaultCountry: PropTypes.object.isRequired,
   /** Text displayed on the Input placeholder */
   phonePlaceholderText: PropTypes.string,
   /** Text displayed on the SearchInput placeholder */
   searchPlaceholderText: PropTypes.string,
-  /** Indicates the input field has scaled */
+  /** Indicates that the input field has scaled */
   scaled: PropTypes.bool,
-  /** Called when value is changed */
+  /** The callback function that is called when the value is changed */
   onChange: PropTypes.func,
   /** Gets the country mask  */
   searchEmptyMessage: PropTypes.string,
-  /** Text is displayed when invalid country dial code */
+  /** Text displayed in case of the invalid country dial code */
   errorMessage: PropTypes.string,
 };
 

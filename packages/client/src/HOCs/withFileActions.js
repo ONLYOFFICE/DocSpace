@@ -82,6 +82,8 @@ export default function withFileActions(WrappedFileItem) {
         setBufferSelection,
         isActive,
         inProgress,
+        isSelected,
+        setSelection,
       } = this.props;
 
       const { isThirdPartyFolder } = item;
@@ -119,7 +121,11 @@ export default function withFileActions(WrappedFileItem) {
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
-      !isActive && setBufferSelection(null);
+
+      if (isFileName && !isSelected) {
+        setSelection([]);
+        setBufferSelection(item);
+      }
     };
 
     onMouseClick = (e) => {
@@ -221,7 +227,7 @@ export default function withFileActions(WrappedFileItem) {
         isPrivacy,
 
         sectionWidth,
-        checked,
+        isSelected,
         dragging,
         isFolder,
 
@@ -249,7 +255,7 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const checkedProps = id <= 0 ? false : checked;
+      const checkedProps = id <= 0 ? false : isSelected;
 
       return (
         <WrappedFileItem
@@ -311,6 +317,7 @@ export default function withFileActions(WrappedFileItem) {
         dragging,
         setDragging,
         selection,
+        setSelection,
         setTooltipPosition,
         setStartDrag,
 
@@ -326,7 +333,7 @@ export default function withFileActions(WrappedFileItem) {
         withCtrlSelect,
         withShiftSelect,
       } = filesStore;
-
+      const { id } = selectedFolderStore;
       const { startUpload } = uploadDataStore;
 
       const selectedItem = selection.find(
@@ -337,13 +344,26 @@ export default function withFileActions(WrappedFileItem) {
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
-      const inProgress =
-        activeFiles.findIndex((x) => x === item.id) !== -1 ||
-        activeFolders.findIndex(
-          (x) =>
-            x === item.id &&
-            (item.isFolder || (!item.fileExst && item.id === -1))
-        ) !== -1;
+      const isProgress = (index, items) => {
+        if (index === -1) return false;
+        const destFolderId = items[index].destFolderId;
+
+        if (!destFolderId) return true;
+
+        return destFolderId != id;
+      };
+
+      const activeFileIndex = activeFiles.findIndex((x) => x.id === item.id);
+      const activeFolderIndex = activeFolders.findIndex(
+        (x) =>
+          x.id === item.id &&
+          (item.isFolder || (!item.fileExst && item.id === -1))
+      );
+
+      const isFileProgress = isProgress(activeFileIndex, activeFiles);
+      const isFolderProgress = isProgress(activeFolderIndex, activeFolders);
+
+      const inProgress = isFileProgress || isFolderProgress;
 
       let isActive = false;
 
@@ -379,7 +399,7 @@ export default function withFileActions(WrappedFileItem) {
         isFolder,
         allowShareIn: filesStore.canShare,
 
-        checked: !!selectedItem,
+        isSelected: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
         isTrashFolder: isRecycleBinFolder,
@@ -396,6 +416,8 @@ export default function withFileActions(WrappedFileItem) {
         setSelected,
         withCtrlSelect,
         withShiftSelect,
+
+        setSelection,
       };
     }
   )(observer(WithFileActions));

@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Helpers;
 
-public class SecurityControllerHelper<T> : FilesHelperBase<T>
+public class SecurityControllerHelper : FilesHelperBase
 {
     private readonly FileShareDtoHelper _fileShareDtoHelper;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
@@ -37,7 +37,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         SocketManager socketManager,
         FileDtoHelper fileDtoHelper,
         ApiContext apiContext,
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
@@ -58,7 +58,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         _fileShareParamsHelper = fileShareParamsHelper;
     }
 
-    public async Task<string> GenerateSharedLinkAsync(T fileId, FileShare share)
+    public async Task<string> GenerateSharedLinkAsync<T>(T fileId, FileShare share)
     {
         var file = await GetFileInfoAsync(fileId);
 
@@ -93,17 +93,17 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return sharedInfo.Link;
     }
 
-    public IAsyncEnumerable<FileShareDto> GetFileSecurityInfoAsync(T fileId)
+    public IAsyncEnumerable<FileShareDto> GetFileSecurityInfoAsync<T>(T fileId)
     {
         return GetSecurityInfoAsync(new List<T> { fileId }, new List<T> { });
     }
 
-    public IAsyncEnumerable<FileShareDto> GetFolderSecurityInfoAsync(T folderId)
+    public IAsyncEnumerable<FileShareDto> GetFolderSecurityInfoAsync<T>(T folderId)
     {
         return GetSecurityInfoAsync(new List<T> { }, new List<T> { folderId });
     }
 
-    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
         var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds);
 
@@ -113,23 +113,23 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<bool> RemoveSecurityInfoAsync(List<T> fileIds, List<T> folderIds)
+    public async Task<bool> RemoveSecurityInfoAsync<T>(List<T> fileIds, List<T> folderIds)
     {
         await _fileStorageService.RemoveAceAsync(fileIds, folderIds);
 
         return true;
     }
 
-    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync<T>(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
     }
 
-    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         if (share != null && share.Any())
         {
-            var list = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject));
+            var list = await share.ToAsyncEnumerable().SelectAwait(async s => await _fileShareParamsHelper.ToAceObjectAsync(s)).ToListAsync();
 
             var aceCollection = new AceCollection<T>
             {

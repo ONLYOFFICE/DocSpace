@@ -53,7 +53,7 @@ public class ApiSystemHelper
         using var hasher = new HMACSHA1(_skey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-        return $"ASC {pkey}:{now}:{hash}";
+        return $"ASC {pkey}:{now}:{hash}1"; //hack for .net
     }
 
     #region system
@@ -75,7 +75,7 @@ public class ApiSystemHelper
             var response = exception.Response;
             try
             {
-                using var stream = response.GetResponseStream();
+                await using var stream = response.GetResponseStream();
                 using var reader = new StreamReader(stream, Encoding.UTF8);
                 var result = await reader.ReadToEndAsync();
 
@@ -152,7 +152,7 @@ public class ApiSystemHelper
 
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using var stream = await response.Content.ReadAsStreamAsync();
+        await using var stream = await response.Content.ReadAsStreamAsync();
         using var reader = new StreamReader(stream, Encoding.UTF8);
         return await reader.ReadToEndAsync();
     }

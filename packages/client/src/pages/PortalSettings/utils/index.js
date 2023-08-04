@@ -11,3 +11,4 @@ export { getSettingsIndex } from "./getSettingsIndex";
 export { getFromLocalStorage } from "./getFromLocalStorage.js";
 export { saveToLocalStorage } from "./saveToLocalStorage.js";
 export { removeLocalStorage } from "./removeLocalStorage.js";
+export { resetSessionStorage } from "./resetSessionStorage";

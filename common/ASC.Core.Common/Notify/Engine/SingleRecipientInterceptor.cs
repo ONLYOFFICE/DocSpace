@@ -46,16 +46,16 @@ class SingleRecipientInterceptor : ISendInterceptor
         Name = name;
     }
 
-    public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+    public Task<bool> PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
     {
         var sendTo = request.Recipient;
         if (!_sendedTo.Exists(rec => Equals(rec, sendTo)))
         {
             _sendedTo.Add(sendTo);
 
-            return false;
+            return Task.FromResult(false);
         }
 
-        return true;
+        return Task.FromResult(true);
     }
 }

@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SettingsController : BaseSettingsController
 {
-    private static readonly object locked = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
@@ -51,7 +51,6 @@ public class SettingsController : BaseSettingsController
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
-    private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
@@ -61,6 +60,7 @@ public class SettingsController : BaseSettingsController
     private readonly QuotaUsageManager _quotaUsageManager;
     private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly QuotaSyncOperation _quotaSyncOperation;
+    private readonly ExternalShare _externalShare;
 
     public SettingsController(
         ILoggerProvider option,
@@ -88,7 +88,6 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
-        UrlShortener urlShortener,
         PasswordHasher passwordHasher,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
@@ -96,7 +95,8 @@ public class SettingsController : BaseSettingsController
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager,
-        TenantDomainValidator tenantDomainValidator
+        TenantDomainValidator tenantDomainValidator, 
+        ExternalShare externalShare
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -121,7 +121,6 @@ public class SettingsController : BaseSettingsController
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
         _passwordHasher = passwordHasher;
-        _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
@@ -129,13 +128,27 @@ public class SettingsController : BaseSettingsController
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
         _quotaUsageManager = quotaUsageManager;
         _tenantDomainValidator = tenantDomainValidator;
+        _externalShare = externalShare;
     }
 
+    /// <summary>
+    /// Returns a list of all the available portal settings with the current values for each parameter.
+    /// </summary>
+    /// <short>
+    /// Get the portal settings
+    /// </short>
+    /// <category>Common settings</category>
+    /// <param type="System.Boolean, System" name="withpassword">Specifies if the password hasher settings will be returned or not</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SettingsDto, ASC.Web.Api">Settings</returns>
+    /// <path>api/2.0/settings</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [HttpGet("")]
     [AllowNotPayment, AllowSuspended, AllowAnonymous]
-    public SettingsDto GetSettings(bool? withpassword)
+    public async Task<SettingsDto> GetSettingsAsync(bool? withpassword)
     {
-        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+        var studioAdminMessageSettings = await _settingsManager.LoadAsync<StudioAdminMessageSettings>();
+        var tenantCookieSettings = _settingsManager.Load<TenantCookieSettings>();
 
         var settings = new SettingsDto
         {
@@ -144,11 +157,19 @@ public class SettingsController : BaseSettingsController
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Standalone = _coreBaseSettings.Standalone,
+            BaseDomain = _coreBaseSettings.Basedomain,
             Version = _configuration["version:number"] ?? "",
-            TenantStatus = _tenantManager.GetCurrentTenant().Status,
+            TenantStatus = (await _tenantManager.GetCurrentTenantAsync()).Status,
             TenantAlias = Tenant.Alias,
-            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
+            EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync(),
+            LegalTerms = _setupInfo.LegalTerms,
+            CookieSettingsEnabled = tenantCookieSettings.Enabled
         };
+
+        if (!_authContext.IsAuthenticated && await _externalShare.GetLinkIdAsync() != default)
+        {
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
+        }
 
         if (_authContext.IsAuthenticated)
         {
@@ -160,8 +181,11 @@ public class SettingsController : BaseSettingsController
             settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
-            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
             settings.DomainValidator = _tenantDomainValidator;
+            settings.ZendeskKey = _setupInfo.ZendeskKey;
+            settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
+            settings.DocumentationEmail = _setupInfo.DocumentationEmail;
+            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
 
             settings.Firebase = new FirebaseDto
             {
@@ -171,10 +195,12 @@ public class SettingsController : BaseSettingsController
                 StorageBucket = _configuration["firebase:storageBucket"] ?? "",
                 MessagingSenderId = _configuration["firebase:messagingSenderId"] ?? "",
                 AppId = _configuration["firebase:appId"] ?? "",
-                MeasurementId = _configuration["firebase:measurementId"] ?? ""
+                MeasurementId = _configuration["firebase:measurementId"] ?? "",
+                DatabaseURL = _configuration["firebase:databaseURL"] ?? ""
             };
 
-            settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.HelpLink = await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.ApiDocsLink = _configuration["web:api-docs"];
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))
@@ -194,7 +220,7 @@ public class SettingsController : BaseSettingsController
         }
         else
         {
-            if (!_settingsManager.Load<WizardSettings>().Completed)
+            if (!(await _settingsManager.LoadAsync<WizardSettings>()).Completed)
             {
                 settings.WizardToken = _commonLinkUtility.GetToken(Tenant.Id, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
             }
@@ -223,10 +249,21 @@ public class SettingsController : BaseSettingsController
         return settings;
     }
 
+    /// <summary>
+    /// Saves the mail domain settings specified in the request to the portal.
+    /// </summary>
+    /// <short>
+    /// Save the mail domain settings
+    /// </short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailDomainSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for mail domain settings</param>
+    /// <returns type="System.Object, System">Message about the result of saving the mail domain settings</returns>
+    /// <path>api/2.0/settings/maildomainsettings</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("maildomainsettings")]
-    public object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
+    public async Task<object> SaveMailDomainSettingsAsync(MailDomainSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (inDto.Type == TenantTrustedDomainsType.Custom)
         {
@@ -250,31 +287,62 @@ public class SettingsController : BaseSettingsController
 
         Tenant.TrustedDomainsType = inDto.Type;
 
-        _settingsManager.Save(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
+        await _settingsManager.SaveAsync(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
 
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
-        _messageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.TrustedMailDomainSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Returns the space usage quota for the portal.
+    /// </summary>
+    /// <short>
+    /// Get the space usage
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.QuotaUsageDto, ASC.Web.Api">Space usage and limits for upload</returns>
+    /// <path>api/2.0/settings/quota</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("quota")]
     public async Task<QuotaUsageDto> GetQuotaUsed()
     {
         return await _quotaUsageManager.Get();
     }
 
+    /// <summary>
+    /// Saves the user quota settings specified in the request to the current portal.
+    /// </summary>
+    /// <short>
+    /// Save the user quota settings
+    /// </short>
+    /// <category>Quota</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UserQuotaSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for the user quota settings</param>
+    /// <returns type="System.Object, System">Message about the result of saving the user quota settings</returns>
+    /// <path>api/2.0/settings/userquotasettings</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("userquotasettings")]
-    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    public async Task<object> SaveUserQuotaSettingsAsync(UserQuotaSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+        await _settingsManager.SaveAsync(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Returns a list of all the available portal languages in the format of a two-letter or four-letter language code (e.g. "de", "en-US", etc.).
+    /// </summary>
+    /// <short>Get supporrted languages</short>
+    /// <category>Common settings</category>
+    /// <returns type="System.Object, System">List of all the available portal languages</returns>
+    /// <path>api/2.0/settings/cultures</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("cultures")]
@@ -283,12 +351,21 @@ public class SettingsController : BaseSettingsController
         return _setupInfo.EnabledCultures.Select(r => r.Name).OrderBy(s => s).ToArray();
     }
 
+    /// <summary>
+    /// Returns a list of all the available portal time zones.
+    /// </summary>
+    /// <short>Get time zones</short>
+    /// <category>Common settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.TimezonesRequestsDto, ASC.Web.Api">List of all the available time zones with their IDs and display names</returns>
+    /// <path>api/2.0/settings/timezones</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
     [HttpGet("timezones")]
     [AllowNotPayment]
-    public List<TimezonesRequestsDto> GetTimeZones()
+    public async Task<List<TimezonesRequestsDto>> GetTimeZonesAsyncAsync()
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
         var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
         if (timeZones.All(tz => tz.Id != "UTC"))
@@ -310,6 +387,14 @@ public class SettingsController : BaseSettingsController
         return listOfTimezones;
     }
 
+    /// <summary>
+    /// Returns the portal hostname.
+    /// </summary>
+    /// <short>Get hostname</short>
+    /// <category>Common settings</category>
+    /// <returns type="System.Object, System">Portal hostname</returns>
+    /// <path>api/2.0/settings/machine</path>
+    /// <httpMethod>GET</httpMethod>
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
     [HttpGet("machine")]
     [AllowNotPayment]
@@ -318,78 +403,153 @@ public class SettingsController : BaseSettingsController
         return Dns.GetHostName().ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Saves the DNS settings specified in the request to the current portal.
+    /// </summary>
+    /// <short>Save the DNS settings</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api" name="inDto">DNS settings request parameters</param>
+    /// <returns type="System.Object, System">Message about changing DNS</returns>
+    /// <path>api/2.0/settings/dns</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsRequestsDto model)
+    public async Task<object> SaveDnsSettingsAsync(DnsSettingsRequestsDto inDto)
     {
-        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        return await _dnsSettings.SaveDnsSettingsAsync(inDto.DnsName, inDto.Enable);
     }
 
+    /// <summary>
+    /// Starts the process of quota recalculation.
+    /// </summary>
+    /// <short>
+    /// Recalculate quota 
+    /// </short>
+    /// <category>Quota</category>
+    /// <path>api/2.0/settings/recalculatequota</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns></returns>
     [HttpGet("recalculatequota")]
-    public void RecalculateQuota()
+    public async Task RecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        _quotaSyncOperation.RecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
+    /// <summary>
+    /// Checks the process of quota recalculation.
+    /// </summary>
+    /// <short>
+    /// Check quota recalculation
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="System.Boolean, System">Boolean value: true - quota recalculation process is enabled, false - quota recalculation process is disabled</returns>
+    /// <path>api/2.0/settings/checkrecalculatequota</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("checkrecalculatequota")]
-    public bool CheckRecalculateQuota()
+    public async Task<bool> CheckRecalculateQuotaAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(await _tenantManager.GetCurrentTenantAsync());
     }
 
+    /// <summary>
+    /// Returns the portal logo image URL.
+    /// </summary>
+    /// <short>
+    /// Get a portal logo
+    /// </short>
+    /// <category>Common settings</category>
+    /// <returns type="System.Object, System">Portal logo image URL</returns>
+    /// <path>api/2.0/settings/logo</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("logo")]
-    public object GetLogo()
+    public async Task<object> GetLogoAsync()
     {
-        return _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(await _settingsManager.LoadAsync<TenantInfoSettings>());
     }
 
+    /// <summary>
+    /// Completes the Wizard settings.
+    /// </summary>
+    /// <short>Complete the Wizard settings</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api" name="inDto">Wizard settings request parameters</param>
+    /// <returns type="ASC.Web.Core.Utility.Settings.WizardSettings, ASC.Web.Core">Wizard settings</returns>
+    /// <path>api/2.0/settings/wizard/complete</path>
+    /// <httpMethod>PUT</httpMethod>
     [AllowNotPayment]
     [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
+    public async Task<WizardSettings> CompleteWizardAsync(WizardRequestsDto inDto)
     {
-        ApiContext.AuthByClaim();
+        await ApiContext.AuthByClaimAsync();
 
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(inDto);
+        return await _firstTimeTenantSettings.SaveDataAsync(inDto);
     }
 
+    /// <summary>
+    /// Closes the welcome pop-up notification.
+    /// </summary>
+    /// <short>Close the welcome pop-up notification</short>
+    /// <category>Common settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/settings/welcome/close</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("welcome/close")]
-    public void CloseWelcomePopup()
+    public async Task CloseWelcomePopupAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
+        var collaboratorPopupSettings = await _settingsManager.LoadForCurrentUserAsync<CollaboratorSettings>();
 
-        if (!(_userManager.IsUser(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
+        if (!(await _userManager.IsUserAsync(currentUser) && collaboratorPopupSettings.FirstVisit && !await _userManager.IsOutsiderAsync(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
 
         collaboratorPopupSettings.FirstVisit = false;
-        _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
+        await _settingsManager.SaveForCurrentUserAsync(collaboratorPopupSettings);
     }
 
+    /// <summary>
+    /// Returns the portal color theme.
+    /// </summary>
+    /// <short>Get a color theme</short>
+    /// <category>Common settings</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Settings of the portal themes</returns>
+    /// <path>api/2.0/settings/colortheme</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous, AllowNotPayment, AllowSuspended]
     [HttpGet("colortheme")]
-    public CustomColorThemesSettingsDto GetColorTheme()
+    public async Task<CustomColorThemesSettingsDto> GetColorThemeAsync()
     {
-        return new CustomColorThemesSettingsDto(_settingsManager.Load<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
+        return new CustomColorThemesSettingsDto(await _settingsManager.LoadAsync<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
     }
 
+    /// <summary>
+    /// Saves the portal color theme specified in the request.
+    /// </summary>
+    /// <short>Save a color theme</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.CustomColorThemesSettingsRequestsDto, ASC.Web.Api" name="inDto">Portal theme settings</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings</returns>
+    /// <path>api/2.0/settings/colortheme</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("colortheme")]
-    public CustomColorThemesSettingsDto SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
+    public async Task<CustomColorThemesSettingsDto> SaveColorThemeAsync(CustomColorThemesSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        var settings = await _settingsManager.LoadAsync<CustomColorThemesSettings>();
 
         if (inDto.Theme != null)
         {
-            lock (locked)
+            try
             {
+                await _semaphore.WaitAsync();
                 var theme = inDto.Theme;
 
                 if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == theme.Id))
@@ -432,26 +592,43 @@ public class SettingsController : BaseSettingsController
                 }
 
 
-                _settingsManager.Save(settings);
+                await _settingsManager.SaveAsync(settings);
+            }
+            catch
+            {
+                throw;
+        }
+            finally
+            {
+                _semaphore.Release();
             }
         }
 
         if (inDto.Selected.HasValue && settings.Themes.Any(r => r.Id == inDto.Selected.Value))
         {
             settings.Selected = inDto.Selected.Value;
-            _settingsManager.Save(settings);
-            _messageService.Send(MessageAction.ColorThemeChanged);
+            await _settingsManager.SaveAsync(settings);
+            await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
         return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
+    /// <summary>
+    /// Deletes the portal color theme with the ID specified in the request.
+    /// </summary>
+    /// <short>Delete a color theme</short>
+    /// <category>Common settings</category>
+    /// <param ype="System.Int32, System" name="id">Portal theme ID</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings: custom color theme settings, selected or not, limit</returns>
+    /// <path>api/2.0/settings/colortheme</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("colortheme")]
-    public CustomColorThemesSettingsDto DeleteColorTheme(int id)
+    public async Task<CustomColorThemesSettingsDto> DeleteColorThemeAsync(int id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+        var settings = await _settingsManager.LoadAsync<CustomColorThemesSettings>();
 
         if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
         {
@@ -463,32 +640,49 @@ public class SettingsController : BaseSettingsController
         if (settings.Selected == id)
         {
             settings.Selected = settings.Themes.Min(r => r.Id);
-            _messageService.Send(MessageAction.ColorThemeChanged);
+           await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
+    /// <summary>
+    /// Closes the admin helper notification.
+    /// </summary>
+    /// <short>Close the admin helper notification</short>
+    /// <category>Common settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/settings/closeadminhelper</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("closeadminhelper")]
-    public void CloseAdminHelper()
+    public async Task CloseAdminHelperAsync()
     {
-        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }
 
-        var adminHelperSettings = _settingsManager.LoadForCurrentUser<AdminHelperSettings>();
+        var adminHelperSettings = await _settingsManager.LoadForCurrentUserAsync<AdminHelperSettings>();
         adminHelperSettings.Viewed = true;
-        _settingsManager.SaveForCurrentUser(adminHelperSettings);
+        await _settingsManager.SaveForCurrentUserAsync(adminHelperSettings);
     }
 
+    /// <summary>
+    /// Sets the portal time zone and language specified in the request.
+    /// </summary>
+    /// <short>Set time zone and language</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Object, System">Message about saving settings successfully</returns>
+    /// <path>api/2.0/settings/timeandlanguage</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("timeandlanguage")]
-    public object TimaAndLanguage(SettingsRequestsDto inDto)
+    public async Task<object> TimaAndLanguageAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var culture = CultureInfo.GetCultureInfo(inDto.Lng);
 
@@ -510,47 +704,75 @@ public class SettingsController : BaseSettingsController
         }
         Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == inDto.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
 
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
         if (!Tenant.TimeZone.Equals(oldTimeZone) || changelng)
         {
             if (!Tenant.TimeZone.Equals(oldTimeZone))
             {
-                _messageService.Send(MessageAction.TimeZoneSettingsUpdated);
+                await _messageService.SendAsync(MessageAction.TimeZoneSettingsUpdated);
             }
             if (changelng)
             {
-                _messageService.Send(MessageAction.LanguageSettingsUpdated);
+                await _messageService.SendAsync(MessageAction.LanguageSettingsUpdated);
             }
         }
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Sets the default product page.
+    /// </summary>
+    /// <short>Set the default product page</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Object, System">Message about saving settings successfully</returns>
+    /// <path>api/2.0/settings/defaultpage</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("defaultpage")]
-    public object SaveDefaultPageSetting(SettingsRequestsDto inDto)
+    public async Task<object> SaveDefaultPageSettingAsync(SettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
+        await _settingsManager.SaveAsync(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
 
-        _messageService.Send(MessageAction.DefaultStartPageSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.DefaultStartPageSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
+    /// <summary>
+    /// Updates the email activation settings.
+    /// </summary>
+    /// <short>Update the email activation settings</short>
+    /// <category>Common settings</category>
+    /// <param type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core" name="inDto">Email activation settings</param>
+    /// <returns type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core">Updated email activation settings</returns>
+    /// <path>api/2.0/settings/emailactivation</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("emailactivation")]
-    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
+    public async Task<EmailActivationSettings> UpdateEmailActivationSettingsAsync(EmailActivationSettings inDto)
     {
-        _settingsManager.SaveForCurrentUser(settings);
-        return settings;
+        await _settingsManager.SaveForCurrentUserAsync(inDto);
+        return inDto;
     }
 
+    /// <summary>
+    /// Returns the space usage statistics of the module with the ID specified in the request.
+    /// </summary>
+    /// <category>Statistics</category>
+    /// <short>Get the space usage statistics</short>
+    /// <param ype="System.Guid, System" method="url" name="id">Module ID</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.UsageSpaceStatItemDto, ASC.Web.Api">Module space usage statistics</returns>
+    /// <path>api/2.0/settings/statistics/spaceusage/{id}</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("statistics/spaceusage/{id}")]
-    public Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
+    public async Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var webitem = _webItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                    .FirstOrDefault(item =>
@@ -561,14 +783,9 @@ public class SettingsController : BaseSettingsController
 
         if (webitem == null)
         {
-            return Task.FromResult(new List<UsageSpaceStatItemDto>());
+            return new List<UsageSpaceStatItemDto>();
         }
 
-        return InternalGetSpaceUsageStatistics(webitem);
-    }
-
-    private async Task<List<UsageSpaceStatItemDto>> InternalGetSpaceUsageStatistics(IWebItem webitem)
-    {
         var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
 
         return statData.ConvertAll(it => new UsageSpaceStatItemDto
@@ -581,10 +798,21 @@ public class SettingsController : BaseSettingsController
         });
     }
 
+    /// <summary>
+    /// Returns the user visit statistics for the period specified in the request.
+    /// </summary>
+    /// <category>Statistics</category>
+    /// <short>Get the visit statistics</short>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="fromDate">Start period date</param>
+    /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="toDate">End period date</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.ChartPointDto, ASC.Web.Api">List of point charts</returns>
+    /// <path>api/2.0/settings/statistics/visit</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("statistics/visit")]
-    public List<ChartPointDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
+    public async Task<List<ChartPointDto>> GetVisitStatisticsAsync(ApiDateTime fromDate, ApiDateTime toDate)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var from = _tenantUtil.DateTimeFromUtc(fromDate);
         var to = _tenantUtil.DateTimeFromUtc(toDate);
@@ -607,8 +835,8 @@ public class SettingsController : BaseSettingsController
             });
         }
 
-        var hits = _statisticManager.GetHitsByPeriod(Tenant.Id, from, to);
-        var hosts = _statisticManager.GetHostsByPeriod(Tenant.Id, from, to);
+        var hits = await _statisticManager.GetHitsByPeriodAsync(Tenant.Id, from, to);
+        var hosts = await _statisticManager.GetHostsByPeriodAsync(Tenant.Id, from, to);
 
         if (hits.Count == 0 || hosts.Count == 0)
         {
@@ -635,6 +863,14 @@ public class SettingsController : BaseSettingsController
         return points;
     }
 
+    /// <summary>
+    /// Returns the socket settings.
+    /// </summary>
+    /// <category>Common settings</category>
+    /// <short>Get the socket settings</short>
+    /// <path>api/2.0/settings/socket</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="System.Object, System">Socket settings: hub URL</returns>
     [HttpGet("socket")]
     public object GetSocketSettings()
     {
@@ -650,13 +886,30 @@ public class SettingsController : BaseSettingsController
         return new { Url = hubUrl };
     }
 
-    /*///<visible>false</visible>
+    /*/// <summary>
+    /// Returns the tenant Control Panel settings.
+    /// </summary>
+    /// <category>Common settings</category>
+    /// <short>Get the tenant Control Panel settings</short>
+    /// <returns type="ASC.Core.Tenants.TenantControlPanelSettings, ASC.Core.Common">Tenant Control Panel settings</returns>
+    /// <path>api/2.0/settings/controlpanel</path>
+    /// <httpMethod>GET</httpMethod>
+    ///<visible>false</visible>
     [HttpGet("controlpanel")]
     public TenantControlPanelSettings GetTenantControlPanelSettings()
     {
         return _settingsManager.Load<TenantControlPanelSettings>();
     }*/
 
+    /// <summary>
+    /// Returns the authorization services.
+    /// </summary>
+    /// <category>Authorization</category>
+    /// <short>Get the authorization services</short>
+    /// <path>api/2.0/settings/authservice</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api">Authorization services</returns>
+    /// <collection>list</collection>
     [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()
     {
@@ -667,12 +920,21 @@ public class SettingsController : BaseSettingsController
             .ToList();
     }
 
+    /// <summary>
+    /// Saves the authorization keys.
+    /// </summary>
+    /// <category>Authorization</category>
+    /// <short>Save the authorization keys</short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api" name="inDto">Request parameters for authorization service</param>
+    /// <path>api/2.0/settings/authservice</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns type="System.Boolean, System">Boolean value: true if the authorization keys are changed</returns>
     [HttpPost("authservice")]
-    public bool SaveAuthKeys(AuthServiceRequestsDto inDto)
+    public async Task<bool> SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var saveAvailable = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ThirdParty;
+        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
         {
@@ -683,21 +945,6 @@ public class SettingsController : BaseSettingsController
         var consumer = _consumerFactory.GetByKey<Consumer>(inDto.Name);
 
         var validateKeyProvider = consumer as IValidateKeysProvider;
-
-        if (validateKeyProvider != null)
-        {
-            try
-            {
-                if (validateKeyProvider is BitlyLoginProvider bitly)
-                {
-                    _urlShortener.Instance = null;
-                }
-            }
-            catch (Exception e)
-            {
-                _log.ErrorSaveAuthKeys(e);
-            }
-        }
 
         if (inDto.Props.All(r => string.IsNullOrEmpty(r.Value)))
         {
@@ -718,7 +965,7 @@ public class SettingsController : BaseSettingsController
             ? consumer.ManagedKeys.All(key => string.IsNullOrEmpty(consumer[key]))
             : consumer.All(r => string.IsNullOrEmpty(r.Value));
 
-        if (validateKeyProvider != null && !validateKeyProvider.ValidateKeys() && !allPropsIsEmpty)
+        if (validateKeyProvider != null && !await validateKeyProvider.ValidateKeysAsync() && !allPropsIsEmpty)
         {
             consumer.Clear();
             throw new ArgumentException(Resource.ErrorBadKeys);
@@ -726,19 +973,27 @@ public class SettingsController : BaseSettingsController
 
         if (changed)
         {
-            _messageService.Send(MessageAction.AuthorizationKeysSetting);
+            await _messageService.SendAsync(MessageAction.AuthorizationKeysSetting);
         }
 
         return changed;
     }
 
+    /// <summary>
+    /// Returns the portal payment settings.
+    /// </summary>
+    /// <category>Common settings</category>
+    /// <short>Get the payment settings</short>
+    /// <path>api/2.0/settings/payment</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="System.Object, System">Payment settings: sales email, feedback and support URL, link to pay for a portal, Standalone or not, current license, maximum quota quantity</returns>
     [AllowNotPayment]
     [HttpGet("payment")]
-    public object PaymentSettings()
+    public async Task<object> PaymentSettingsAsync()
     {
-        var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        var currentQuota = _tenantManager.GetCurrentTenantQuota();
-        var currentTariff = _tenantExtra.GetCurrentTariff();
+        var settings = await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>();
+        var currentQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        var currentTariff = await _tenantExtra.GetCurrentTariffAsync();
 
         if (!int.TryParse(_configuration["core:payment:max-quantity"], out var maxQuotaQuantity))
         {
@@ -761,12 +1016,15 @@ public class SettingsController : BaseSettingsController
             };
     }
 
-    /// <visible>false</visible>
     /// <summary>
-    /// Gets a link that will connect TelegramBot to your account
+    /// Returns a link that will connect TelegramBot to your account.
     /// </summary>
-    /// <returns>url</returns>
-    /// 
+    /// <category>Telegram</category>
+    /// <short>Get the Telegram link</short>
+    /// <path>api/2.0/settings/telegramlink</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="System.Object, System">Telegram link</returns>
+    /// <visible>false</visible>
     [HttpGet("telegramlink")]
     public object TelegramLink()
     {
@@ -784,21 +1042,30 @@ public class SettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Checks if user has connected TelegramBot
+    /// Checks if the user has connected to TelegramBot.
     /// </summary>
-    /// <returns>0 - not connected, 1 - connected, 2 - awaiting confirmation</returns>
+    /// <category>Telegram</category>
+    /// <short>Check the Telegram connection</short>
+    /// <path>api/2.0/settings/telegramisconnected</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="System.Object, System">Operation result: 0 - not connected, 1 - connected, 2 - awaiting confirmation</returns>
     [HttpGet("telegramisconnected")]
-    public object TelegramIsConnected()
+    public async Task<object> TelegramIsConnectedAsync()
     {
-        return (int)_telegramHelper.UserIsConnected(_authContext.CurrentAccount.ID, Tenant.Id);
+        return (int) await _telegramHelper.UserIsConnectedAsync(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 
     /// <summary>
-    /// Unlinks TelegramBot from your account
+    /// Unlinks TelegramBot from your account.
     /// </summary>
+    /// <category>Telegram</category>
+    /// <short>Unlink Telegram</short>
+    /// <path>api/2.0/settings/telegramdisconnect</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("telegramdisconnect")]
-    public void TelegramDisconnect()
+    public async Task TelegramDisconnectAsync()
     {
-        _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
+        await _telegramHelper.DisconnectAsync(_authContext.CurrentAccount.ID, Tenant.Id);
     }
 }

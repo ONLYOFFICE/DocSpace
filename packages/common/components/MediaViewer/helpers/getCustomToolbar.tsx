@@ -6,10 +6,16 @@ import MediaRotateLeftIcon from "PUBLIC_DIR/images/media.rotateleft.react.svg";
 import MediaRotateRightIcon from "PUBLIC_DIR/images/media.rotateright.react.svg";
 import MediaDeleteIcon from "PUBLIC_DIR/images/media.delete.react.svg";
 import MediaDownloadIcon from "PUBLIC_DIR/images/download.react.svg";
-import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
+// import MediaFavoriteIcon from "PUBLIC_DIR/images/favorite.react.svg";
 import ViewerSeparator from "PUBLIC_DIR/images/viewer.separator.react.svg";
+import PanelReactSvg from "PUBLIC_DIR/images/panel.react.svg";
+
+import { ToolbarActionType } from ".";
+import type { IFile } from "../types";
 
 export const getCustomToolbar = (
+  targetFile: IFile,
+  isEmptyContextMenu: boolean,
   onDeleteClick: VoidFunction,
   onDownloadClick: VoidFunction
 ) => {
@@ -17,7 +23,7 @@ export const getCustomToolbar = (
     {
       key: "zoomOut",
       percent: true,
-      actionType: 2,
+      actionType: ToolbarActionType.ZoomOut,
       render: (
         <div className="iconContainer zoomOut">
           <MediaZoomOutIcon size="scale" />
@@ -26,11 +32,11 @@ export const getCustomToolbar = (
     },
     {
       key: "percent",
-      actionType: 999,
+      actionType: ToolbarActionType.Reset,
     },
     {
       key: "zoomIn",
-      actionType: 1,
+      actionType: ToolbarActionType.ZoomIn,
       render: (
         <div className="iconContainer zoomIn">
           <MediaZoomInIcon size="scale" />
@@ -39,7 +45,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateLeft",
-      actionType: 5,
+      actionType: ToolbarActionType.RotateLeft,
       render: (
         <div className="iconContainer rotateLeft">
           <MediaRotateLeftIcon size="scale" />
@@ -48,7 +54,7 @@ export const getCustomToolbar = (
     },
     {
       key: "rotateRight",
-      actionType: 6,
+      actionType: ToolbarActionType.RotateRight,
       render: (
         <div className="iconContainer rotateRight">
           <MediaRotateRightIcon size="scale" />
@@ -64,16 +70,18 @@ export const getCustomToolbar = (
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: !targetFile.security.Download,
     },
     {
       key: "download",
-      actionType: 102,
+      actionType: ToolbarActionType.Download,
       render: (
         <div className="iconContainer download" style={{ height: "16px" }}>
           <MediaDownloadIcon size="scale" />
         </div>
       ),
       onClick: onDownloadClick,
+      disabled: !targetFile.security.Download,
     },
     {
       key: "context-separator",
@@ -84,10 +92,12 @@ export const getCustomToolbar = (
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: isEmptyContextMenu,
     },
     {
       key: "context-menu",
       actionType: -1,
+      disabled: isEmptyContextMenu,
     },
     {
       key: "delete",
@@ -98,15 +108,98 @@ export const getCustomToolbar = (
         </div>
       ),
       onClick: onDeleteClick,
+      disabled: !targetFile.security.Delete,
     },
+  ];
+};
+
+export const getPDFToolbar = (): ReturnType<typeof getCustomToolbar> => {
+  return [
     {
-      key: "favorite",
-      actionType: 104,
+      key: "panel",
+      actionType: ToolbarActionType.Panel,
       render: (
-        <div className="iconContainer viewer-favorite">
-          <MediaFavoriteIcon size="scale" />
+        <div className="iconContainer zoomOut">
+          <PanelReactSvg size="scale" transform="rotate(180)" />
         </div>
       ),
+    },
+    {
+      key: "context-separator-panel",
+      actionType: -1,
+      noHover: true,
+      render: (
+        <div className="separator" style={{ height: "16px" }}>
+          <ViewerSeparator size="scale" />
+        </div>
+      ),
+      disabled: false,
+    },
+    {
+      key: "zoomOut",
+      percent: true,
+      actionType: ToolbarActionType.ZoomOut,
+      render: (
+        <div className="iconContainer zoomOut">
+          <MediaZoomOutIcon size="scale" />
+        </div>
+      ),
+    },
+    {
+      key: "percent",
+      actionType: ToolbarActionType.Reset,
+    },
+    {
+      key: "zoomIn",
+      actionType: ToolbarActionType.ZoomIn,
+      render: (
+        <div className="iconContainer zoomIn">
+          <MediaZoomInIcon size="scale" />
+        </div>
+      ),
+    },
+    // {
+    //   key: "context-separator-zoom",
+    //   actionType: -1,
+    //   noHover: true,
+    //   render: (
+    //     <div className="separator" style={{ height: "16px" }}>
+    //       <ViewerSeparator size="scale" />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   key: "rotateLeft",
+    //   actionType: ToolbarActionType.RotateLeft,
+    //   render: (
+    //     <div className="iconContainer rotateLeft">
+    //       <MediaRotateLeftIcon size="scale" />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   key: "rotateRight",
+    //   actionType: ToolbarActionType.RotateRight,
+    //   render: (
+    //     <div className="iconContainer rotateRight">
+    //       <MediaRotateRightIcon size="scale" />
+    //     </div>
+    //   ),
+    // },
+    {
+      key: "context-separator-rotate",
+      actionType: -1,
+      noHover: true,
+      render: (
+        <div className="separator" style={{ height: "16px" }}>
+          <ViewerSeparator size="scale" />
+        </div>
+      ),
+      disabled: false,
+    },
+    {
+      key: "context-menu",
+      actionType: -1,
     },
   ];
 };

@@ -12,8 +12,14 @@ import { Dark, Base } from "@docspace/components/themes";
 import { getBgPattern, getLogoFromPath } from "@docspace/common/utils";
 import { useMounted } from "../helpers/useMounted";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-import LoginContainer from "@docspace/common/components/LoginContainer";
+import LoginContainer from "@docspace/components/ColorTheme/styled/sub-components/LoginContainer";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
+
+interface ILoginProps extends IInitialState {
+  isDesktopEditor?: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
+}
 
 interface IBarProp {
   t: TFuncType;
@@ -33,7 +39,7 @@ const Bar: React.FC<IBarProp> = (props) => {
   );
 };
 
-const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
+const Form: React.FC<ILoginProps> = ({ theme, setTheme, logoUrls }) => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -71,10 +77,12 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
     setInvalidCode(false);
   };
 
-  const logo = Object.values(logoUrls)[1];
-  const logoUrl = !theme?.isBase
-    ? getLogoFromPath(logo?.path?.dark)
-    : getLogoFromPath(logo?.path?.light);
+  const logo = logoUrls && Object.values(logoUrls)[1];
+  const logoUrl = !logo
+    ? undefined
+    : !theme?.isBase
+    ? getLogoFromPath(logo.path.dark)
+    : getLogoFromPath(logo.path.light);
 
   return (
     <LoginContainer id="code-page" theme={theme}>
@@ -105,7 +113,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
         <CodeInput
           theme={theme}
           onSubmit={onSubmit}
-          handleChange={handleChange}
+          onChange={handleChange}
           isDisabled={isLoading}
         />
         {(expiredCode || invalidCode) && <Bar t={t} expired={expiredCode} />}

@@ -1,0 +1,21 @@
+{
+  "Ascending": "Възходящ",
+  "CopyWindowCode": "Копирайте кода за вграждане на прозореца",
+  "DataDisplay": "Настройки за дисплей на данните",
+  "Descending": "Низходящ",
+  "Destroy": "Унищожи",
+  "EnterCount": "Въведете броят",
+  "EnterHeight": "Въведете височината",
+  "EnterId": "Въведете id",
+  "EnterPage": "Въведете номера на страницата",
+  "EnterWidth": "Въведете широчината",
+  "FolderId": "Id на папката",
+  "FrameId": "Id на рамката",
+  "Header": "Заглавие",
+  "ItemsCount": "Брой елементи",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "Меню",
+  "Page": "Страница",
+  "SearchTerm": "Термин за търсене",
+  "SortOrder": "Ред на сортиране"
+}

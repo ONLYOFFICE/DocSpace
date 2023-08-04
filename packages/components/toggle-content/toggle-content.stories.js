@@ -26,22 +26,33 @@ export default {
     },
   },
   argTypes: {
-    Children: {
-      control: {
-        type: "multi-select",
-        options: optionsChildren,
+    children: {
+      table: {
+        disable: true,
       },
     },
     buttonLabel: {
+      description: "Button text",
       control: "text",
     },
     onClickButton: {
       action: "button clicked!",
       table: { disable: true },
     },
-    text: { control: "text" },
+    text: {
+      table: {
+        disable: true,
+      },
+    },
+    onChange: {
+      control: "action",
+      description:
+        "The change event is triggered when the element's value is modified",
+    },
     textInnerToggleContent: {
-      control: "text",
+      table: {
+        disable: true,
+      },
     },
   },
 };
@@ -53,33 +64,33 @@ const Template = ({
   textInnerToggleContent,
   onChangeTextInput,
   isOpen,
-  Children,
+  children,
   textInputValue,
   ...args
 }) => {
   const [opened, setOpened] = useState(isOpen);
-  let children = [];
+  let childrenItems = [];
 
-  Children.map((item, indx) => {
+  children.map((item, indx) => {
     switch (item) {
       case "button":
-        children.push(
+        childrenItems.push(
           <Button label={buttonLabel} key={indx} onClick={onClickButton} />
         );
         break;
       case "icon":
-        children.push(<CheckReactSvg key={indx} />);
+        childrenItems.push(<CheckReactSvg key={indx} />);
         break;
       case "text":
-        children.push(<Text key={indx}>{text}</Text>);
+        childrenItems.push(<Text key={indx}>{text}</Text>);
         break;
       case "toggleContent":
-        children.push(
+        childrenItems.push(
           <ToggleContent key={indx}>{textInnerToggleContent}</ToggleContent>
         );
         break;
       case "textInput":
-        children.push(
+        childrenItems.push(
           <TextInput
             key={indx}
             value="text"
@@ -102,17 +113,16 @@ const Template = ({
         setOpened(checked);
       }}
     >
-      {children}
+      {childrenItems}
     </ToggleContent>
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  Children: ["text"],
+  children: ["text"],
   buttonLabel: "OK",
-  text:
-    "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.",
+  text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.",
   textInnerToggleContent:
     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
   isOpen: true,

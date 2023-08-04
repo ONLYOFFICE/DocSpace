@@ -10,14 +10,16 @@ import Text from "./text";
 import ControlButtons from "./control-btn";
 import Item from "./item";
 import StyledContainer from "../StyledNavigation";
+import NavigationLogo from "./logo-block";
 
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   tablet,
   mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+import { ReactSVG } from "react-svg";
 
 import { Base } from "@docspace/components/themes";
 
@@ -25,6 +27,11 @@ const StyledBox = styled.div`
   position: absolute;
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
+  ${({ withLogo }) =>
+    withLogo &&
+    css`
+      left: 207px;
+    `};
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
@@ -43,6 +50,11 @@ const StyledBox = styled.div`
 
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
+
+  .title-container {
+    display: grid;
+    grid-template-columns: minmax(1px, max-content) auto;
+  }
 
   @media ${tablet} {
     width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
@@ -82,6 +94,7 @@ const Row = React.memo(({ data, index, style }) => {
       isRootRoom={data[0][index].isRootRoom}
       isRoot={isRoot}
       onClick={data[1]}
+      withLogo={data[2].withLogo}
       style={{ ...style }}
     />
   );
@@ -109,6 +122,10 @@ const DropBox = React.forwardRef(
       isOpen,
       isDesktop,
       isDesktopClient,
+      showRootFolderNavigation,
+      withLogo,
+      burgerLogo,
+      titleIcon,
     },
     ref
   ) => {
@@ -139,10 +156,32 @@ const DropBox = React.forwardRef(
 
       setDropBoxHeight(
         currentHeight + navHeight > sectionHeight
-          ? sectionHeight - navHeight
+          ? sectionHeight - navHeight - 20
           : currentHeight
       );
     }, [sectionHeight]);
+
+    const navigationTitleNode = (
+      <div className="title-block">
+        {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+        <Text title={title} isOpen={true} onClick={toggleDropBox} />
+      </div>
+    );
+
+    const navigationTitleContainerNode = showRootFolderNavigation ? (
+      <div className="title-container">
+        <Text
+          title={navigationItems[navigationItems.length - 2].title}
+          isOpen={true}
+          isRootFolderTitle
+        />
+        {navigationTitleNode}
+      </div>
+    ) : (
+      navigationTitleNode
+    );
+
+    const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
     return (
       <>
@@ -153,18 +192,29 @@ const DropBox = React.forwardRef(
           showText={showText}
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
+          withLogo={withLogo}
         >
           <StyledContainer
             canCreate={canCreate}
             isDropBoxComponent={true}
             isInfoPanelVisible={isInfoPanelVisible}
             isDesktopClient={isDesktopClient}
+            withLogo={!!withLogo && isTabletView}
           >
+            {withLogo && (
+              <NavigationLogo
+                logo={withLogo}
+                burgerLogo={burgerLogo}
+                className="navigation-logo drop-box-logo"
+              />
+            )}
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text title={title} isOpen={true} onClick={toggleDropBox} />
+
+            {navigationTitleContainerNode}
+
             <ControlButtons
               isDesktop={isDesktop}
               personal={personal}
@@ -184,7 +234,11 @@ const DropBox = React.forwardRef(
             width={"auto"}
             itemCount={countItems}
             itemSize={getItemSize}
-            itemData={[navigationItems, onClickAvailable]}
+            itemData={[
+              navigationItems,
+              onClickAvailable,
+              { withLogo: !!withLogo },
+            ]}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}

@@ -44,6 +44,7 @@ public class Startup : BaseStartup
             services.AddHostedService<LdapNotifyService>();
             DIHelper.TryAdd<LdapNotifyService>();
         }
+
         services.AddBaseDbContextPool<FilesDbContext>();
         services.AddBaseDbContextPool<BackupsContext>();
 
@@ -65,6 +66,20 @@ public class Startup : BaseStartup
             appBranch =>
             {
                 appBranch.UseLogoUploader();
+            });
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("payment.ashx"),
+            appBranch =>
+            {
+                appBranch.UseAccountHandler();
+            });
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().StartsWith(UrlShortRewriter.BasePath),
+            appBranch =>
+            {
+                appBranch.UseUrlShortRewriter();
             });
     }
 }

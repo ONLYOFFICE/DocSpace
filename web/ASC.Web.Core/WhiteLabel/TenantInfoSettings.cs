@@ -72,24 +72,24 @@ public class TenantInfoSettingsHelper
         _tenantManager = tenantManager;
         _configuration = configuration;
     }
-    public async Task RestoreDefault(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task RestoreDefaultAsync(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        RestoreDefaultTenantName();
-        await RestoreDefaultLogo(tenantInfoSettings, tenantLogoManager);
+        await RestoreDefaultTenantNameAsync();
+        await RestoreDefaultLogoAsync(tenantInfoSettings, tenantLogoManager);
     }
 
-    public void RestoreDefaultTenantName()
+    public async Task RestoreDefaultTenantNameAsync()
     {
-        var currentTenant = _tenantManager.GetCurrentTenant();
+        var currentTenant = await _tenantManager.GetCurrentTenantAsync();
         currentTenant.Name = _configuration["web:portal-name"] ?? "";
-        _tenantManager.SaveTenant(currentTenant);
+        await _tenantManager.SaveTenantAsync(currentTenant);
     }
 
-    public async Task RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task RestoreDefaultLogoAsync(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
         tenantInfoSettings.IsDefault = true;
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
+        var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "logo");
         try
         {
             await store.DeleteFilesAsync("", "*", false);
@@ -99,12 +99,12 @@ public class TenantInfoSettingsHelper
         }
         tenantInfoSettings.CompanyLogoSize = default;
 
-        tenantLogoManager.RemoveMailLogoDataFromCache();
+        await tenantLogoManager.RemoveMailLogoDataFromCacheAsync();
     }
 
-    public async Task SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task SetCompanyLogoAsync(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
+        var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "logo");
 
         if (!tenantInfoSettings.IsDefault)
         {
@@ -119,25 +119,26 @@ public class TenantInfoSettingsHelper
         using (var memory = new MemoryStream(data))
         using (var image = Image.Load(memory))
         {
-            tenantInfoSettings.CompanyLogoSize = image.Size();
+            tenantInfoSettings.CompanyLogoSize = image.Size;
+
             memory.Seek(0, SeekOrigin.Begin);
             await store.SaveAsync(companyLogoFileName, memory);
             tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
         }
         tenantInfoSettings.IsDefault = false;
 
-        tenantLogoManager.RemoveMailLogoDataFromCache();
+        await tenantLogoManager.RemoveMailLogoDataFromCacheAsync();
     }
 
-    public string GetAbsoluteCompanyLogoPath(TenantInfoSettings tenantInfoSettings)
+    public async Task<string> GetAbsoluteCompanyLogoPathAsync(TenantInfoSettings tenantInfoSettings)
     {
         if (tenantInfoSettings.IsDefault)
         {
-            return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
+            return _webImageSupplier.GetAbsoluteWebPath("notifications/logo.png");
         }
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
-        return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
+        var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "logo");
+        return (await store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "")).ToString();
     }
 
     /// <summary>
@@ -150,7 +151,7 @@ public class TenantInfoSettingsHelper
             return null;
         }
 
-        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
+        var storage = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "logo");
 
         if (storage == null)
         {

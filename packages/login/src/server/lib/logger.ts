@@ -9,6 +9,7 @@ import config from "../config";
 import { randomUUID } from "crypto";
 
 let logPath: string = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 
 if (logPath != null) {
   if (!path.isAbsolute(logPath)) {
@@ -31,11 +32,15 @@ const accessKeyId = aws.accessKeyId;
 const secretAccessKey = aws.secretAccessKey; 
 const awsRegion = aws.region; 
 const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName;
+const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
+                                      .replace("${applicationContext}", "Login")                  
+                                      .replace("${guid}", randomUUID())
+                                      .replace("${date}", date.format(new Date(), 'YYYY/MM/DDTHH.mm.ss'));      
 
 const options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -45,26 +50,16 @@ const options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: 'aws',
-    level: "debug",
-    logStreamName: () => {
-      const hostname = os.hostname();
-      const now = new Date();
-      const guid = randomUUID();
-      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
-      
-      return logStreamName.replace("${hostname}", hostname)
-                          .replace("${applicationContext}", "Login")                  
-                          .replace("${guid}", guid)
-                          .replace("${date}", dateAsString);      
-    },
-    logGroupName:logGroupName,
+    level: logLevel,
+    logStreamName: logStreamName,
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {

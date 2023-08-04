@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Text from "@docspace/components/text";
 
@@ -14,10 +14,11 @@ import {
   tablet,
   isTablet,
   isMobile as IsMobileUtils,
+  hugeMobile,
 } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledItem = styled.div`
   height: auto;
@@ -27,6 +28,25 @@ const StyledItem = styled.div`
   align-items: ${(props) => (props.isRoot ? "baseline" : "end")};
   grid-template-columns: 17px auto;
   cursor: pointer;
+
+  margin-left: 0;
+
+  @media ${tablet} {
+    ${({ withLogo }) =>
+      withLogo &&
+      css`
+        margin-left: 44px;
+      `};
+  }
+
+  ${isMobile &&
+  css`
+    margin-left: 0;
+  `};
+
+  @media ${hugeMobile} {
+    margin-left: 0;
+  }
 `;
 
 const StyledText = styled(Text)`
@@ -35,13 +55,27 @@ const StyledText = styled(Text)`
   bottom: ${(props) => (props.isRoot ? "2px" : "-1px")};
 `;
 
-const Item = ({ id, title, isRoot, isRootRoom, onClick, ...rest }) => {
+const Item = ({
+  id,
+  title,
+  isRoot,
+  isRootRoom,
+  onClick,
+  withLogo,
+  ...rest
+}) => {
   const onClickAvailable = () => {
     onClick && onClick(id, isRootRoom);
   };
 
   return (
-    <StyledItem id={id} isRoot={isRoot} onClick={onClickAvailable} {...rest}>
+    <StyledItem
+      id={id}
+      isRoot={isRoot}
+      onClick={onClickAvailable}
+      withLogo={withLogo}
+      {...rest}
+    >
       <ColorTheme isRoot={isRoot} themeId={ThemeType.IconWrapper}>
         {isMobile || isTablet() || IsMobileUtils() ? (
           isRoot ? (

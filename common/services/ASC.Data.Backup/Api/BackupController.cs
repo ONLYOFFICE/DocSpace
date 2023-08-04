@@ -26,6 +26,10 @@
 
 namespace ASC.Data.Backup.Controllers;
 
+/// <summary>
+/// Backup API.
+/// </summary>
+/// <name>backup</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -48,65 +52,71 @@ public class BackupController : ControllerBase
         _eventBus = eventBus;
     }
     /// <summary>
-    /// Returns the backup schedule of the current portal
+    /// Returns the backup schedule of the current portal.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup Schedule</returns>
+    /// <short>Get the backup schedule</short>
+    /// <returns type="ASC.Data.Backup.BackupAjaxHandler.Schedule, ASC.Data.Backup">Backup schedule</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackupschedule</path>
     [HttpGet("getbackupschedule")]
-    public BackupAjaxHandler.Schedule GetBackupSchedule()
+    public async Task<BackupAjaxHandler.Schedule> GetBackupSchedule()
     {
-        return _backupHandler.GetSchedule();
+        return await _backupHandler.GetScheduleAsync();
     }
 
     /// <summary>
-    /// Create the backup schedule of the current portal
+    /// Creates the backup schedule of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="storageType">Storage type</param>
-    /// <param name="storageParams">Storage parameters</param>
-    /// <param name="backupsStored">Max of the backup's stored copies</param>
-    /// <param name="cronParams">Cron parameters</param>
-    /// <category>Backup</category>
+    /// <short>Create the backup schedule</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup" name="inDto">Backup schedule parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/createbackupschedule</path>
     [HttpPost("createbackupschedule")]
-    public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
+    public async Task<bool> CreateBackupScheduleAsync(BackupScheduleDto inDto)
     {
-        var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
-        var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        var backupStored = backupSchedule.BackupsStored == null ? 0 : Int32.Parse(backupSchedule.BackupsStored);
+        var storageType = inDto.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(inDto.StorageType);
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var backupStored = inDto.BackupsStored == null ? 0 : Int32.Parse(inDto.BackupsStored);
         var cron = new CronParams()
         {
-            Period = backupSchedule.CronParams.Period == null ? BackupPeriod.EveryDay : (BackupPeriod)Int32.Parse(backupSchedule.CronParams.Period),
-            Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
-            Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
+            Period = inDto.CronParams.Period == null ? BackupPeriod.EveryDay : (BackupPeriod)Int32.Parse(inDto.CronParams.Period),
+            Hour = inDto.CronParams.Hour == null ? 0 : Int32.Parse(inDto.CronParams.Hour),
+            Day = inDto.CronParams.Day == null ? 0 : Int32.Parse(inDto.CronParams.Day),
         };
-        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron);
+        await _backupHandler.CreateScheduleAsync(storageType, storageParams, backupStored, cron);
         return true;
     }
 
     /// <summary>
-    /// Delete the backup schedule of the current portal
+    /// Deletes the backup schedule of the current portal.
     /// </summary>
-    /// <category>Backup</category>
+    /// <short>Delete the backup schedule</short>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackupschedule</path>
     [HttpDelete("deletebackupschedule")]
-    public bool DeleteBackupSchedule()
+    public async Task<bool> DeleteBackupSchedule()
     {
-        _backupHandler.DeleteSchedule();
+        await _backupHandler.DeleteScheduleAsync();
 
         return true;
     }
 
     /// <summary>
-    /// Start a backup of the current portal
+    /// Starts the backup of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="storageType">Storage Type</param>
-    /// <param name="storageParams">Storage Params</param>
-    /// <category>Backup</category>
-    /// <returns>Backup Progress</returns>
+    /// <short>Start the backup</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup" name="inDto">Backup parameters</param>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/startbackup</path>
     [AllowNotPayment]
     [HttpPost("startbackup")]
-    public BackupProgress StartBackup(BackupDto backup)
+    public async Task<BackupProgress> StartBackupAsync(BackupDto inDto)
     {
-        var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
-        var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var storageType = inDto.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(inDto.StorageType);
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRequestIntegrationEvent(
              tenantId: _tenantId,
@@ -115,26 +125,31 @@ public class BackupController : ControllerBase
              createBy: _currentUserId
         ));
 
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
-    /// Returns the progress of the started backup
+    /// Returns the progress of the started backup.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup Progress</returns>
+    /// <short>Get the backup progress</short>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackupprogress</path>
     [AllowNotPayment]
     [HttpGet("getbackupprogress")]
-    public BackupProgress GetBackupProgress()
+    public async Task<BackupProgress> GetBackupProgressAsync()
     {
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
-    /// Returns the backup history of the started backup
+    /// Returns the history of the started backup.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup History</returns>
+    /// <short>Get the backup history</short>
+    /// <returns type="ASC.Data.Backup.Contracts.BackupHistoryRecord, ASC.Data.Backup.Core">List of backup history records</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackuphistory</path>
+    /// <collection>list</collection>
     [HttpGet("getbackuphistory")]
     public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
@@ -142,68 +157,83 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Delete the backup with the specified id
+    /// Deletes the backup with the ID specified in the request.
     /// </summary>
-    /// <category>Backup</category>
+    /// <short>Delete the backup</short>
+    /// <param type="System.Guid, System" method="url" name="id">Backup ID</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackup/{id}</path>
     [HttpDelete("deletebackup/{id}")]
     public async Task<bool> DeleteBackup(Guid id)
     {
-        await _backupHandler.DeleteBackup(id);
+        await _backupHandler.DeleteBackupAsync(id);
         return true;
     }
 
     /// <summary>
-    /// Delete all backups of the current portal
+    /// Deletes the backup history of the current portal.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup History</returns>
+    /// <short>Delete the backup history</short>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackuphistory</path>
     [HttpDelete("deletebackuphistory")]
     public async Task<bool> DeleteBackupHistory()
     {
-        await _backupHandler.DeleteAllBackups();
+        await _backupHandler.DeleteAllBackupsAsync();
         return true;
     }
 
     /// <summary>
-    /// Start a data restore of the current portal
+    /// Starts the data restoring process of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="backupId">Backup Id</param>
-    /// <param name="storageType">Storage Type</param>
-    /// <param name="storageParams">Storage Params</param>
-    /// <param name="notify">Notify about backup to users</param>
-    /// <category>Backup</category>
-    /// <returns>Restore Progress</returns>
+    /// <short>Start the restoring process</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup" name="inDto">Restoring parameters</param>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/startrestore</path>
     [HttpPost("startrestore")]
-    public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
+    public async Task<BackupProgress> StartBackupRestoreAsync(BackupRestoreDto inDto)
     {
-        var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
                              tenantId: _tenantId,
                              createBy: _currentUserId,
                              storageParams: storageParams,
-                             storageType: (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()),
-                             notify: backupRestore.Notify,
-                             backupId: backupRestore.BackupId
+                             storageType: (BackupStorageType)Int32.Parse(inDto.StorageType.ToString()),
+                             notify: inDto.Notify,
+                             backupId: inDto.BackupId
                         ));
 
 
-        return _backupHandler.GetBackupProgress();
+        return await _backupHandler.GetBackupProgressAsync();
     }
 
     /// <summary>
-    /// Returns the progress of the started restore
+    /// Returns the progress of the started restoring process.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Restore Progress</returns>
+    /// <short>Get the restoring progress</short>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getrestoreprogress</path>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
     [AllowAnonymous]
     [AllowNotPayment]
-    public BackupProgress GetRestoreProgress()
+    public async Task<BackupProgress> GetRestoreProgressAsync()
     {
-        return _backupHandler.GetRestoreProgress();
+        return await _backupHandler.GetRestoreProgressAsync();
     }
 
+    /// <summary>
+    /// Returns a path to the temporary folder with the stored backup.
+    /// </summary>
+    /// <short>Get the temporary backup folder</short>
+    /// <returns type="System.Object, System">Path to the temporary folder with the stored backup</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/backuptmp</path>
     ///<visible>false</visible>
     [HttpGet("backuptmp")]
     public object GetTempPath()

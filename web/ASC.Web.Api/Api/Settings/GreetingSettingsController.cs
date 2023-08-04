@@ -51,37 +51,70 @@ public class GreetingSettingsController : BaseSettingsController
         _permissionContext = permissionContext;
     }
 
+    /// <summary>
+    /// Returns the greeting settings for the current portal.
+    /// </summary>
+    /// <short>Get greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns type="System.Object, System">Greeting settings: tenant name</returns>
+    /// <path>api/2.0/settings/greetingsettings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings")]
     public ContentResult GetGreetingSettings()
     {
         return new ContentResult { Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name };
     }
 
+    /// <summary>
+    /// Checks if the greeting settings of the current portal are set to default or not.
+    /// </summary>
+    /// <short>Check the default greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the greeting settings of the current portal are set to default</returns>
+    /// <path>api/2.0/settings/greetingsettings/isdefault</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings/isdefault")]
     public bool IsDefault()
     {
         return Tenant.Name == "";
     }
 
+    /// <summary>
+    /// Saves the greeting settings specified in the request to the current portal.
+    /// </summary>
+    /// <short>Save the greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api" name="inDto">Greeting settings</param>
+    /// <returns type="System.Object, System">Message about saving greeting settings successfully</returns>
+    /// <path>api/2.0/settings/greetingsettings</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings")]
-    public ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
+    public async Task<ContentResult> SaveGreetingSettingsAsync(GreetingSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         Tenant.Name = inDto.Title;
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
-        _messageService.Send(MessageAction.GreetingSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.GreetingSettingsUpdated);
 
         return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
     }
 
+    /// <summary>
+    /// Restores the current portal greeting settings.
+    /// </summary>
+    /// <short>Restore the greeting settings</short>
+    /// <category>Greeting settings</category>
+    /// <returns type="System.Object, System">Greeting settings: tenant name</returns>
+    /// <path>api/2.0/settings/greetingsettings/restore</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings/restore")]
-    public ContentResult RestoreGreetingSettings()
+    public async Task<ContentResult> RestoreGreetingSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _tenantInfoSettingsHelper.RestoreDefaultTenantName();
+        await _tenantInfoSettingsHelper.RestoreDefaultTenantNameAsync();
 
         return new ContentResult
         {

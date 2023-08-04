@@ -29,12 +29,11 @@ namespace ASC.Resource.Manager;
 [Scope]
 public class ResourceData
 {
-    private const string Dbid = "tmresource";
+    private readonly IDbContextFactory<ResourceDbContext> _dbContextFactory;
 
-    private ResourceDbContext DbContext { get; }
-    public ResourceData(DbContextManager<ResourceDbContext> dbContext)
+    public ResourceData(IDbContextFactory<ResourceDbContext> dbContextFactory)
     {
-        DbContext = dbContext.Get(Dbid);
+        _dbContextFactory = dbContextFactory;
     }
 
     /* public DateTime GetLastUpdate()
@@ -82,6 +81,8 @@ public class ResourceData
 
     public void AddResource(string cultureTitle, string resType, DateTime date, ResWord word, bool isConsole, string authorLogin, bool updateIfExist = true)
     {
+        using var DbContext = _dbContextFactory.CreateDbContext();
+
         var resData = DbContext.ResData
             .Where(r => r.FileId == word.ResFile.FileID)
             .Where(r => r.CultureTitle == cultureTitle)
@@ -251,6 +252,8 @@ public class ResourceData
             fileName = fileNameWithoutExtension.Split('.')[0] + Path.GetExtension(fileName);
         }
 
+        using var DbContext = _dbContextFactory.CreateDbContext();
+
         var count = DbContext.ResFiles
             .Where(r => r.ResName == fileName)
             .Where(r => r.ProjectName == projectName)
@@ -291,6 +294,7 @@ public class ResourceData
 
     public IEnumerable<ResCulture> GetCultures()
     {
+        using var DbContext = _dbContextFactory.CreateDbContext();
         return DbContext.ResCultures
             .OrderBy(r => r.Title)
             .Select(GetCultureFromDB)
@@ -321,6 +325,8 @@ public class ResourceData
     }
     public List<ResFile> GetAllFiles()
     {
+        using var DbContext = _dbContextFactory.CreateDbContext();
+
         return DbContext.ResFiles.Select(r => new ResFile
         {
             FileID = r.Id,
@@ -332,6 +338,8 @@ public class ResourceData
 
     public IEnumerable<ResWord> GetListResWords(ResCurrent current, string search)
     {
+        using var DbContext = _dbContextFactory.CreateDbContext();
+
         IQueryable<TempResData> exist = DbContext.ResData
             .Where(r => r.Flag != 4)
             .Where(r => r.ResourceType == "text")
@@ -521,6 +529,8 @@ public class ResourceData
 
     public void GetValueByKey(ResWord word, string to)
     {
+        using var DbContext = _dbContextFactory.CreateDbContext();
+
         var valueTo = DbContext.ResData
             .Where(r => r.FileId == word.ResFile.FileID)
             .Where(r => r.CultureTitle == to)

@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { combineUrl } from "@docspace/common/utils";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
-const PROXY_BASE_URL = combineUrl(
-  window.DocSpaceConfig?.proxy?.url,
-  "/portal-settings"
-);
+import { getDaysRemaining } from "@docspace/common/utils";
 
 const InviteUsersWarningDialog = (props) => {
   const {
     t,
     tReady,
-    history,
+
     language,
     dueDate,
     delayDueDate,
     visible,
     setIsVisible,
     isGracePeriod,
+    currentTariffPlanTitle,
+    isPaymentPageAvailable,
   } = props;
+
+  const navigate = useNavigate();
 
   const [datesData, setDatesData] = useState({});
 
@@ -43,7 +43,7 @@ const InviteUsersWarningDialog = (props) => {
     setDatesData({
       fromDate: fromDateMoment.format("LL"),
       byDate: byDateMoment.format("LL"),
-      delayDaysCount: fromDateMoment.to(byDateMoment, true),
+      delayDaysCount: getDaysRemaining(byDateMoment),
     });
   };
 
@@ -52,11 +52,9 @@ const InviteUsersWarningDialog = (props) => {
   const onUpgradePlan = () => {
     onClose();
 
-    const paymentPageUrl = combineUrl(
-      PROXY_BASE_URL,
-      "/payments/portal-payments"
-    );
-    history.push(paymentPageUrl);
+    const paymentPageUrl = "/portal-settings/payments/portal-payments";
+
+    navigate(paymentPageUrl);
   };
 
   return (
@@ -72,7 +70,9 @@ const InviteUsersWarningDialog = (props) => {
         {isGracePeriod ? (
           <>
             <Text fontWeight={700} noSelect>
-              {t("BusinessPlanPaymentOverdue")}
+              {t("BusinessPlanPaymentOverdue", {
+                planName: currentTariffPlanTitle,
+              })}
             </Text>
             <br />
             <Text noSelect as="div">
@@ -81,7 +81,7 @@ const InviteUsersWarningDialog = (props) => {
                 <strong>
                   from {{ fromDate }} to {{ byDate }}
                 </strong>
-                ({{ delayDaysCount }})
+                (days remaining: {{ delayDaysCount }})
               </Trans>
             </Text>
             <br />
@@ -102,30 +102,33 @@ const InviteUsersWarningDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={t("UpgradePlan")}
+          label={
+            isPaymentPageAvailable ? t("UpgradePlan") : t("Common:OKButton")
+          }
           size="normal"
           primary
-          onClick={onUpgradePlan}
-          scale
+          onClick={isPaymentPageAvailable ? onUpgradePlan : onClose}
+          scale={isPaymentPageAvailable}
         />
-        <Button
-          key="CancelButton"
-          label={t("Common:CancelButton")}
-          size="normal"
-          onClick={onClose}
-          scale
-        />
+        {isPaymentPageAvailable && (
+          <Button
+            key="CancelButton"
+            label={t("Common:CancelButton")}
+            size="normal"
+            onClick={onClose}
+            scale
+          />
+        )}
       </ModalDialog.Footer>
     </ModalDialog>
   );
 };
 
 export default inject(({ auth, dialogsStore }) => {
-  const {
-    dueDate,
-    delayDueDate,
-    isGracePeriod,
-  } = auth.currentTariffStatusStore;
+  const { isPaymentPageAvailable } = auth;
+  const { dueDate, delayDueDate, isGracePeriod } =
+    auth.currentTariffStatusStore;
+  const { currentTariffPlanTitle } = auth.currentQuotaStore;
 
   const {
     inviteUsersWarningDialogVisible,
@@ -133,6 +136,8 @@ export default inject(({ auth, dialogsStore }) => {
   } = dialogsStore;
 
   return {
+    isPaymentPageAvailable,
+    currentTariffPlanTitle,
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,
     setIsVisible: setInviteUsersWarningDialogVisible,
@@ -140,10 +145,4 @@ export default inject(({ auth, dialogsStore }) => {
     delayDueDate,
     isGracePeriod,
   };
-})(
-  observer(
-    withTranslation(["Payments", "Common"])(
-      withRouter(InviteUsersWarningDialog)
-    )
-  )
-);
+})(observer(withTranslation(["Payments", "Common"])(InviteUsersWarningDialog)));

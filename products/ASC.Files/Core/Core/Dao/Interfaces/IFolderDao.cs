@@ -60,12 +60,12 @@ public interface IFolderDao<T>
     IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
         bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
 
-    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> parentsIds, IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
+    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
+        bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null);
 
     IAsyncEnumerable<Folder<T>> GetFakeRoomsAsync(IEnumerable<T> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
         bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds);
-    
+
     IAsyncEnumerable<Folder<T>> GetFakeRoomsAsync(IEnumerable<T> parentsIds, IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags,
         Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter,
         IEnumerable<string> subjectEntriesIds);
@@ -86,9 +86,12 @@ public interface IFolderDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool exludeSubject = false);
+    IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
+        bool withSubfolders = false, bool exludeSubject = false, int offset = 0, int count = -1);
 
     /// <summary>
     /// Gets the folder (s) by ID (s)
@@ -100,7 +103,7 @@ public interface IFolderDao<T>
     /// <param name="searchText"></param>
     /// <param name="searchSubfolders"></param>
     /// <param name="checkShare"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool exludeSubject = false);
 
@@ -153,10 +156,10 @@ public interface IFolderDao<T>
     /// <returns>
     /// Returns pair of file ID, file name, in which the same name.
     /// </returns>
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, T to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, string to);
-    Task<IDictionary<T, string>> CanMoveOrCopyAsync(T[] folderIds, int to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, T to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, TTo to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, string to);
+    Task<IDictionary<T, TTo>> CanMoveOrCopyAsync<TTo>(T[] folderIds, int to);
 
     /// <summary>
     ///     Rename folder
@@ -211,19 +214,20 @@ public interface IFolderDao<T>
     /// <returns>Maximum size of file which can be uploaded to folder</returns>
     Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
-    IDataWriteOperator CreateDataWriteOperator(
+    Task<IDataWriteOperator> CreateDataWriteOperatorAsync(
             T folderId,
             CommonChunkedUploadSession chunkedUploadSession,
             CommonChunkedUploadSessionHolder sessionHolder);
+
 
     #region Only for TMFolderDao
 
     /// <summary>
     /// Set created by
     /// </summary>
-    /// <param name="folderIds"></param>
+    /// <param name="oldOwnerId"></param>
     /// <param name="newOwnerId"></param>
-    Task ReassignFoldersAsync(T[] folderIds, Guid newOwnerId);
+    Task ReassignFoldersAsync(Guid oldOwnerId, Guid newOwnerId);
 
 
     /// <summary>
@@ -280,8 +284,6 @@ public interface IFolderDao<T>
     Task<T> GetFolderIDRecentAsync(bool createIfNotExists);
 
     /// <summary>
-
-    /// <summary>
     /// Returns id folder "Favorites"
     /// Only in TMFolderDao
     /// </summary>
@@ -302,6 +304,7 @@ public interface IFolderDao<T>
     /// Only in TMFolderDao
     /// </summary>
     /// <param name="createIfNotExists"></param>
+    /// <param name="userId"></param>
     /// <returns></returns>
     Task<T> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null);
 
@@ -360,6 +363,15 @@ public interface IFolderDao<T>
     IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime);
     IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime);
     IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<T> entriesIds);
+
+    /// <summary>
+    /// Tries to return id of the parent virtual room
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="fileEntry"></param>
+    /// <returns></returns>
+    Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
+    Task<int> GetFoldersCountAsync(T parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool withSubfolders = false, bool excludeSubject = false);
 
     #endregion
 }

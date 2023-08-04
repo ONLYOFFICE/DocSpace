@@ -42,7 +42,7 @@ public class LogoUploader
         var result = new FileUploadResult();
         try
         {
-            permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            await permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
             var width = Convert.ToInt32(context.Request.Form["width"]);
             var height = Convert.ToInt32(context.Request.Form["height"]);
@@ -79,7 +79,7 @@ public class LogoUploader
                     using (var stream = new MemoryStream(data))
                     using (var image = Image.Load(stream))
                     {
-                        var actualSize = image.Size();
+                        var actualSize = image.Size;
                         if (actualSize.Height != size.Height && actualSize.Width != size.Width)
                         {
                             throw new ImageSizeLimitException();

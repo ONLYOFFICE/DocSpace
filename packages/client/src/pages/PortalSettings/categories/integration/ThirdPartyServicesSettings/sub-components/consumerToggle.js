@@ -53,15 +53,16 @@ class ConsumerToggle extends React.Component {
   };
 
   render() {
-    const { consumer } = this.props;
+    const { consumer, isDisabled } = this.props;
     const { toggleActive } = this.state;
     const { onToggleClick } = this;
 
     return (
       <>
         <StyledToggle
+          className={consumer.name}
           onChange={onToggleClick}
-          isDisabled={!consumer.canSet}
+          isDisabled={!consumer.canSet || isDisabled}
           isChecked={
             !consumer.canSet || consumer.props.find((p) => p.value)
               ? true

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
@@ -42,9 +42,13 @@ const CreateRoomEvent = ({
     }
   };
 
-  useEffect(async () => {
+  const fetchTagsAction = useCallback(async () => {
     let tags = await fetchTags();
     setFetchedTags(tags);
+  }, []);
+
+  useEffect(() => {
+    fetchTagsAction;
   }, []);
 
   useEffect(() => {
@@ -75,19 +79,16 @@ const CreateRoomEvent = ({
 
 export default inject(
   ({
-    auth,
     createEditRoomStore,
-    filesStore,
+
     tagsStore,
     dialogsStore,
     settingsStore,
   }) => {
     const { fetchTags } = tagsStore;
 
-    const {
-      deleteThirdParty,
-      fetchThirdPartyProviders,
-    } = settingsStore.thirdPartyStore;
+    const { deleteThirdParty, fetchThirdPartyProviders } =
+      settingsStore.thirdPartyStore;
     const { enableThirdParty } = settingsStore;
 
     const {

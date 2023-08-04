@@ -68,13 +68,6 @@ Questa è una email di notifica per informarti che tutti i firmatari hanno firma
 
 Accedi al tuo account DocuSign per maggiori informazioni.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$$__AuthorName":"$__AuthorUrl" ti ha menzionato nel commento al documento
-
-Hai ricevuto questo messaggio di posta elettronica per informarti che sei stato menzionato da "$__AuthorName":"$__AuthorUrl" nel commento al documento "$DocumentTitle":"$DocumentURL".
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Invio completato
 
@@ -87,9 +80,7 @@ Puoi controllare le mail inviate con successo possono nella cartella "Inviati":"
 
 $__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso al documento "$DocumentTitle":"$DocumentURL" con i seguenti diritti di accesso: "$AccessRights".
 
-$Message
-
-^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche relative ai documenti condivisi, si prega di gestire le "opzioni di iscrizione":"$RecipientSubscriptionConfigURL".^</value>
+$Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1. Accesso concesso alla cartella: "$DocumentTitle":"$DocumentURL"
@@ -107,9 +98,6 @@ $Message</value>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Documenti. Lo status della firma è cambiato</value>
   </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Documenti. Menzionato nel documento</value>
-  </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documenti. L'invio è stato completato.</value>
   </data>
@@ -124,5 +112,44 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Documenti. Accesso concesso alla cartella: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName ti ha menzionato nel commento al documento
+ 
+$__AuthorName ti ha menzionato nel commento al documento "$Document Title":"$Document URL" nella stanza "$RoomTitle":"$Room URL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName ha eliminato una stanza
+ 
+$__AuthorName ha eliminato una stanza: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Tutti i firmatari hanno completato il $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Lo stato della firma è cambiato</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Notifica di DocSpace. Menzionato nel documento</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Menzionato nel documento</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>L'invio è completato.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Notifica di DocSpace. La stanza e stata eliminata</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Accesso autorizzato al documento: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Accesso autorizzato al documento crittografato: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Accesso autorizzato alla cartella: $DocumentTitle</value>
   </data>
 </root>

@@ -11,7 +11,7 @@
   "InternalLink": "Sisäinen linkki",
   "Notify users": "Ilmoita käyttäjille",
   "ReadOnly": "Vain luku",
-  "ShareEmailBody": "Sinulle on myönnetty käyttöoikeus asiakirjaan {{itemName}}. Avaa asiakirja heti napsauttamalla alla olevaa linkkiä: {{shareLink}}",
+  "ShareEmailBody": "Sinulle on myönnetty käyttöoikeus asiakirjaan {{itemName}}. Avaa asiakirja heti napsauttamalla alla olevaa linkkiä: {{shareLink}}.",
   "ShareEmailSubject": "Sinulle on myönnetty käyttöoikeus asiakirjaan {{itemName}}",
   "ShareVia": "Jaa käyttämällä",
   "SharingSettingsTitle": "Jakamisen asetukset"

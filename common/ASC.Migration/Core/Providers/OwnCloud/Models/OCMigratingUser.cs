@@ -45,8 +45,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
     private UserInfo _userInfo;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
-    private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly OCUser _user;
@@ -55,8 +54,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
     public OCMigratingUser(
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
-        FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         TenantManager tenantManager,
         UserManager userManager,
         string key,
@@ -67,7 +65,6 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
         Key = key;
         _globalFolderHelper = globalFolderHelper;
         _daoFactory = daoFactory;
-        _fileSecurity = fileSecurity;
         _fileStorageService = fileStorageService;
         _tenantManager = tenantManager;
         _userManager = userManager;
@@ -126,7 +123,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
             ModulesList.Add(new MigrationModules(MigratingCalendar.ModuleName, MigrationResource.OnlyofficeModuleNameCalendar));
         }
 
-        MigratingFiles = new OCMigratingFiles(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, this, _user.Storages, _rootFolder, log);
+        MigratingFiles = new OCMigratingFiles(_globalFolderHelper, _daoFactory, _fileStorageService, this, _user.Storages, _rootFolder, log);
         MigratingFiles.Parse();
         if (MigratingFiles.FoldersCount != 0 || MigratingFiles.FilesCount != 0)
         {
@@ -152,7 +149,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -163,7 +160,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
             _userInfo.LastName = FilesCommonResource.UnknownLastName;
         }
 
-        var saved = _userManager.GetUserByEmail(_userInfo.Email);
+        var saved = await _userManager.GetUserByEmailAsync(_userInfo.Email);
         if (saved != Constants.LostUser)
         {
             saved.ContactsList = saved.ContactsList.Union(_userInfo.ContactsList).ToList();
@@ -181,7 +178,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
                 {
                     fs.CopyTo(ms);
                 }
-                _userManager.SaveUserPhoto(saved.Id, ms.ToArray());
+                await _userManager.SaveUserPhotoAsync(saved.Id, ms.ToArray());
             }
         }
     }

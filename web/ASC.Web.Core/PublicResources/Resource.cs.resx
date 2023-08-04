@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Pole s validačním kódem nemůže být prázdné</value>
@@ -116,10 +116,13 @@
     <value>Prosím vyplňte všechna pole</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Nebyl nalezen nahraný soubor.</value>
+    <value>Nebyl nalezen nahraný soubor</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Velikost obrázku je příliš velká</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Přístup do portálu je omezen</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Váš tarif nepodporuje tuto možnost</value>
@@ -169,17 +172,128 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Odkaz, na kterém potvrdíte účet, byl zaslán na vybraný email</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Křestní jméno</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Příjmení</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Chyba připojení</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Uživatele nemohli být vytvořeni, přijatá data nejsou správná.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Serveru se nepodařilo získat nastavení.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Server se nepodařilo uložit nastavení.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Špatné přihlašovací jméno nebo heslo.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP doména nebyla nalezena.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Nebyly nalezeny žádné skupiny.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Špatná hodnota uživatelského filtru.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Neznámá chyba.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Nebyli nalezeni žádní uživatelé.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Nelze získat atribut skupiny pro jednu nebo více skupin.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Nesprávný filter skupiny.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Nelze získat atribut názvu skupiny pro jednu nebo více skupin.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Nelze získat přihlašovací atribut pro jednoho nebo více uživatelů.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Nelze se připojit k LDAP serveru. Prosím zkontrolujte, zda je zadána adresa serveru a číslo portu správně.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Nelze získat atribut uživatele pro jednoho nebo více uživatelů.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Interní chyba Serveru.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Změnit LDAP uživatele na běžné uživatele portálu</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>Přidání uživatele</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Ověření Certifikátu</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Přezkoumání LDAP nastavení podpory</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Odpojení LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Získat seznam skupin z LDAP serveru</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Získat seznam uživatelů z LDAP serveru</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Načítání základních LDAP informací</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>Odstranění uživatele</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Odstraňování zastaralých skupin, které byly dříve nahrány pomocí LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Odstraňování zastaralých uživatelských profilů, které byly dříve nahrány pomocí LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Ukládání skupin</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Ukládání nastavení</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Ukládání uživatelů</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synchronizace uživatelů</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Je vyžadován bezpečnější typ autentizace. Prosím použijte šifrované připojení nebo povolte na serveru jednoduchou autentizaci.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>V současném cenovém plánu byl dosažen limit uživatelů</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS není podporováno pro aktuální LDAP server.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Příliš mnoho LDAP operací.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Nelze získat unikátní ID uživatele/skupiny objektů. Z výchozího nastavení zkouší systém porovnat jeden z následujících indentifikátorů: entryUUID, nsuniquieid, GUiD, objectSid. Pokud žádný z těchto atributů nesouhlasí s Vaším LDAP serverem, prosím specifikujte tento důležitý atribut v nastavení ldap.unique.id v souboru web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Licence není správná</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licence vypršela</value>
+    <value>Licence vypršela.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Počet portálů přesahuje počet, který dovoluje licence</value>
@@ -248,12 +362,633 @@
     <value>Nastavení bylo úspěšně aktualizováno</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Pokyny pro smazání Vašeho profilu byly zaslány na {0} emailovou adresu.</value>
+    <value>Pokyny pro smazání Vašeho profilu byly zaslány na {0} emailovou adresu</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Region Západní USA (Oregon)</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Co je nového</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Sledování přihlášení a akcí uživatelů</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maximální velikost souboru</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Velikost souboru by neměla překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Počet administrátorů by neměl překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Počet administrátorů</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatické zálohování a obnovení</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neomezený počet aktivních místností</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Počet místností by neměl překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} úložného prostoru</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Velikost použitého úložiště by neměla překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Úložný prostor</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Místnosti:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Využitý úložný prostor:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Uživatelé v místnosti:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neomezený počet uživatelů</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Počet uživatelů by neměl překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Uživatelé v místnosti</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Počet uživatelů v místnosti by neměl překročit {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding a přizpůsobení</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Počet správců/oprávněných uživatelů:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>Přihlásit se</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Povolením této aplikace můžete zkracovat odkazy na pozvánky na portál a sdílené odkazy v modulu Dokumenty pomocí služby Bitly.</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Schránka</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Klíč</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě Box souborů a složek.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Povolte aplikaci pro dvoufaktorovou autentizaci přes Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Klíč</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Připojte aplikaci pro přidání elektronického podpisu DocuSign do dokumentů.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Koncový bod autentizace DocuSign</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě Dropbox souborů a složek.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>ID služby DropBox</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook klíč</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálů pomocí Facebookového účtu.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API klíč</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Serverový klíč</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Připojte službu Firebase Cloud Messaging, abyste přijímali oznámení o odeslaných zprávách.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Tajný klíč DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID odesílatele</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID projektu</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Připojit projekt k přihlášení do portálu pomocí Google účtu a spravujte Google Drive soubory a složky.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálu pomocí LinkedIn účtu.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Klíč</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Tajemství klienta</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Klientské tajemství</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Připojte aplikaci ke správě OneDrive souborů a složek.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Povolte aplikaci pro dvoufaktorové ověřování přes SMS centrum.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Heslo nebo hash hesla MD5 malými písmeny</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Povolte této aplikaci volání kontaktů CRM pomocí služby Twilio.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Telefonní číslo od společnosti Twilio (vyžadováno pro autorizaci SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálu pomocí Twitteru a vyhledejte kontakty.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Povolte aplikaci importovat uživatele ze služby Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Neznámý typ souboru obrázku</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Velikost obrázku překročila povolené parametry</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Klíč DropBoxu</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Klíč</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS centrum</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Přihlášení</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Účet Sid</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Klientské tajemství</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Pole validačního kódu nemůže být prázdné</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Pomocí SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Pomocí aplikace authenticator</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID klienta aplikace</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Povolte aplikaci přihlášení k portálu pomocí účtu Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Povolením této aplikace umožníte uživatelům přihlásit se do ONLYOFFICE pomocí Apple ID. {0}Přejděte na portál Apple Developers Portal a vytvořte novou integraci aplikace ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Desetimístný identifikátor klíče vygenerovaný pro přihlášení pomocí soukromého klíče Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Soukromý klíč stažený ze stránek Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-znakový vývojářský účet ID týmu</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Povolením této aplikace zkrátíte odkazy na pozvánky a dokumenty. {0}Níže vložte přihlašovací jméno a klíč API služby Bitly:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Povolením této aplikace propojíte svůj účet služby Box s modulem Dokumenty. Budete moci spravovat, upravovat a sdílet soubory ze služby Box s uživateli služby ONLYOFFICE. {0}Přihlaste se ke svému účtu na stránce pro vývojáře aplikace Box a vytvořte novou aplikaci pro integraci s aplikací ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Pomocí této aplikace můžete povolit dvoufázové ověřování pomocí služby Clickatell. {0}Přihlaste se ke svému účtu SMS Platform a vytvořte novou integraci pro ONLYOFFICE. Zkopírujte apiKey a vložte jej níže:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Povolením této aplikace můžete digitálně podepisovat dokumenty pomocí služby DocuSign. {0}Přejděte do své konzoly pro správu DocuSign a přidejte integraci ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Povolením této aplikace propojíte svůj účet Dropbox s modulem Dokumenty. Budete moci spravovat, upravovat a sdílet soubory ze služby Dropbox s uživateli aplikace ONLYOFFICE. {0}Přihlaste se ke svému účtu na webu Dropbox Developers a vytvořte novou aplikaci pro integraci s ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Klíč k aplikaci</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Tato aplikace umožňuje vytvářet bibliografické seznamy v dokumentech s EasyBib.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Token aplikace</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Zapnutím této aplikace umožníte uživatelům přihlásit se do ONLYOFFICE pomocí Facebooku a propojit účty zákazníků na Facebooku s modulem CRM. {0}Přejděte na portál Facebook Developers Portal a vytvořte novou integraci aplikace ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Kbelík</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Zadejte název kbelíku služby Google Cloud pro ukládání záloh.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Připojení služby Google Cloud Storage k zálohování a ukládání dat z portálu.</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Povolením této aplikace připojíte svůj účet Disku Google k modulu Dokumenty. Budete moci spravovat, upravovat a sdílet soubory z Disku Google s uživateli aplikace ONLYOFFICE. {0}Přejděte do konzoly Google API a vytvořte nový projekt pro integraci ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Povolte tuto aplikaci, aby se vaši uživatelé mohli přihlásit do ONLYOFFICE pomocí svých účtů LinkedIn. {0}Přejděte na webové stránky LinkedIn Developers a vytvořte novou integraci aplikace ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Tajný klíč</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Povolte aplikaci přihlášení k portálu pomocí účtu Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Po přidání aplikace Mail.ru můžete na stránce svého profilu povolit přihlašování k portálu pomocí účtu Mail.ru.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID klienta aplikace</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Povolte aplikaci přihlášení k portálu pomocí účtu Microsoft.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Povolením této aplikace umožníte uživatelům přihlašovat se do ONLYOFFICE pomocí aplikace Microsoft. {0}Přejděte na Microsoft Azure a vytvořte novou aplikaci ONLYOFFICE integration. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Cloudové úložiště Rackspace Cloud Storage</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Připojení služby Rackspace Cloud Storage k zálohování a ukládání dat z portálu.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Soukromý kontejner</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Zadejte adresu URL soukromého kontejneru Rackspace pro ukládání záloh.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Veřejný kontejner</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Zadejte adresu URL veřejného kontejneru Rackspace pro ukládání záloh.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Zadejte oblast, ve které se nacházejí vaše kontejnery Rackspace.</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Kbelík</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Zadejte jedinečný název kbelíku Amazon pro ukládání záloh.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Připojte Amazon AWS S3 k zálohování a ukládání dat z portálu.</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Zadejte oblast AWS, ve které se nachází váš kbelík Amazon.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Tajný přístupový klíč S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Cloudové úložiště Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Heslo pro přístup k úložišti</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Auth User</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Připojte službu Selectel Cloud Storage a zálohujte a ukládejte data z portálu.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Soukromý kontejner</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Zadejte název soukromého kontejneru Selectel pro ukládání záloh.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Veřejný kontejner</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Zadejte název veřejného kontejneru Selectel pro ukládání záloh.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID aplikace</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Povolením této aplikace připojíte svůj účet OneDrive k modulu Dokumenty. Budete moci spravovat, upravovat a sdílet soubory ze služby OneDrive s uživateli služby ONLYOFFICE. {0}Přihlaste se ke svému účtu Microsoft Azure a vytvořte novou aplikaci pro integraci ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Pomocí této aplikace můžete povolit dvoufázové ověřování pomocí služby Centrum SMS. {0}Vložte přihlašovací jméno k účtu smsc a heslo (nebo hash MD5 hesla) psané malými písmeny:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Uživatelské jméno bota</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token bota</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Připojte účet Telegram a přijímejte oznámení portálu prostřednictvím Telegramu.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Chcete-li dostávat oznámení portálu prostřednictvím služby Telegram, povolte funkci bota Telegramu- Nového bota můžete vytvořit pomocí nástroje BotFather v aplikaci Telegram Desktop. Pro použití tohoto bota musí uživatelé portálu povolit oznámení Telegram na své profilové stránce. {0}Vložení uživatelského jména bota a tokenu, který jste obdrželi, do polí níže.</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Ověřovací token</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Povolením této aplikace umožníte uživatelům volat svým kontaktům z modulu CRM pomocí služby Twilio. {0}Přejděte do konzoly Twilio a vložte následující údaje:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID klienta</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Zapnutím této aplikace umožníte svým uživatelům přihlásit se do ONLYOFFICE pomocí Twitteru a propojit účty Twitter svých zákazníků s modulem CRM. {0}Přejděte na portál Twitter Developers Portal a vytvořte novou integraci aplikace ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>Klíč API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>Tajný klíč API</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Uživatelské jméno Rackspace</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID aplikace</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Zabezpečený klíč</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Povolte aplikaci přihlášení k portálu pomocí účtu VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Po přidání aplikace VK můžete na stránce svého profilu povolit přihlašování k portálu pomocí účtu VK.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Povolte aplikaci publikovat dokumenty přímo ve WordPressu.</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Klíč WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>Tajemství WordPressu</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID klienta</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Tajemství klienta</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Povolením této aplikace můžete přidávat nové uživatele portálu ze seznamu kontaktů Yahoo. {0}Přejděte na stránku Vytvořit aplikaci v síti Yahoo Developer Network a vytvořte novou aplikaci pro integraci ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Povolte aplikaci přihlášení k portálu pomocí účtu Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Po přidání aplikace Yandex můžete na stránce svého profilu povolit přihlašování k portálu pomocí účtu Yandex.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Nesprávné ID instance.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Text zprávy je prázdný</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Nesprávné jméno nebo příjmení</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>bez mezer</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>pouze písmena latinky</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Limit požadavků je překročen</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Doména nájemce nesmí být prázdná.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Název domény musí být dlouhý od {0} do {1} znaků.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Pokusili jste se sami sobě odebrat práva správce. Vaše práva správce nebyla ovlivněna.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Váš účet není propojen s adresářem LDAP a vaše heslo LDAP již není aktivní. Změňte nebo nastavte heslo ke svému účtu na stránce nastavení profilu.</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Nastavení uživatele {0} jako {1} admin</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Odstranění zastaralých skupin, které byly dříve načteny prostřednictvím LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Uložení fotografie</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Aktualizace přístupových práv uživatelů</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Aktualizace uživatelských fotografií</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloudový prostor pro vaše kancelářské dokumenty</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Nesprávný kód</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Nastavení aplikace TFA není k dispozici</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Odeslali jste příliš mnoho textových zpráv. Zkuste to prosím později.</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha je neplatná</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Povolte tuto aplikaci pro vytváření bibliografií v editorech ONLYOFFICE. {0}Přejděte na registrační stránku EasyBib a vyplňte formulář pro přidání integrace s ONLYOFFICE. Po získání klíče aplikace jej vložte níže:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Povolte tuto aplikaci, aby vaši uživatelé mohli dostávat oznámení o zprávách i offline. {0}Přejděte do konzole Firebase a přidejte nový projekt pro integraci ONLYOFFICE. Níže vložte údaje, které jste obdrželi:</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Připojte službu Google Cloud Storage pro zálohování a ukládání dat z vašeho portálu. {0}Přejděte do konzoly Google Cloud Platform a vytvořte nový účet služby pro ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Připojte službu Rackspace Cloud Storage k zálohování a ukládání dat z vašeho portálu. {0}V nastavení zabezpečení v ovládacím panelu služby Rackspace Cloud klikněte na odkaz Zobrazit vedle klíče Rackspace API. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Připojte službu Amazon AWS S3 k zálohování a ukládání dat z vašeho portálu. {0}Přejděte do konzoly pro správu AWS a vytvořte přístupové klíče pro ONLYOFFICE. Vložte údaje, které jste obdrželi níže:</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Připojte službu Selectel Cloud Storage k zálohování a ukládání dat z vašeho portálu. {0}Získejte přístupové údaje pro uživatele s právy čtení/zápisu pro kontejnery, do kterých plánujete ukládat zálohy, a vložte je níže:</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Povolte aplikaci pro snadné publikování dokumentů na vašem webu WordPress. {0}Na stránce Wordpress Developers vytvořte novou aplikaci pro integraci ONLYOFFICE. Níže vložte údaje, které jste obdrželi:</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrace třetích stran</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Úspěšně nahráno. {0}Podpora a aktualizace nejsou pro tuto licenci k dispozici od {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Nahráno úspěšně. {0}Podpora není pro tuto licenci dostupná od {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Pokud existuje uživatel s e-mailovou adresou {0}, byl na tuto e-mailovou adresu zaslán pokyn ke změně hesla.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Překročena kvóta místa na disku</value>
   </data>
 </root>

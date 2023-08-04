@@ -101,7 +101,7 @@ public class LdapUserImporter : IDisposable
         Resource = resource;
     }
 
-    public List<UserInfo> GetDiscoveredUsersByAttributes()
+    public async Task<List<UserInfo>> GetDiscoveredUsersByAttributesAsync()
     {
         var users = new List<UserInfo>();
 
@@ -110,7 +110,7 @@ public class LdapUserImporter : IDisposable
             return users;
         }
 
-        var usersToAdd = AllDomainUsers.Select(ldapObject => _ldapObjectExtension.ToUserInfo(ldapObject, this));
+        var usersToAdd = await AllDomainUsers.ToAsyncEnumerable().SelectAwait(async ldapObject => await _ldapObjectExtension.ToUserInfoAsync(ldapObject, this)).ToListAsync();
 
         users.AddRange(usersToAdd);
 
@@ -138,12 +138,12 @@ public class LdapUserImporter : IDisposable
         return groups;
     }
 
-    public List<UserInfo> GetGroupUsers(GroupInfo groupInfo)
+    public async Task<List<UserInfo>> GetGroupUsersAsync(GroupInfo groupInfo)
     {
-        return GetGroupUsers(groupInfo, true);
+        return await GetGroupUsersAsync(groupInfo, true);
     }
 
-    private List<UserInfo> GetGroupUsers(GroupInfo groupInfo, bool clearCache)
+    private async Task<List<UserInfo>> GetGroupUsersAsync(GroupInfo groupInfo, bool clearCache)
     {
         if (!LdapHelper.IsConnected)
         {
@@ -195,7 +195,7 @@ public class LdapUserImporter : IDisposable
 
                     var nestedGroupInfo = _ldapObjectExtension.ToGroupInfo(nestedLdapGroup, Settings);
 
-                    var nestedGroupUsers = GetGroupUsers(nestedGroupInfo, false);
+                    var nestedGroupUsers = await GetGroupUsersAsync(nestedGroupInfo, false);
 
                     foreach (var groupUser in nestedGroupUsers)
                     {
@@ -209,7 +209,7 @@ public class LdapUserImporter : IDisposable
                 continue;
             }
 
-            var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this);
+            var userInfo = await _ldapObjectExtension.ToUserInfoAsync(ldapUser, this);
 
             if (!users.Exists(u => u.Sid == userInfo.Sid))
             {
@@ -224,7 +224,7 @@ public class LdapUserImporter : IDisposable
 
             foreach (var ldapUser in ldapUsers)
             {
-                var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this);
+                var userInfo = await _ldapObjectExtension.ToUserInfoAsync(ldapUser, this);
 
                 if (!users.Exists(u => u.Sid == userInfo.Sid))
                 {
@@ -323,7 +323,7 @@ public class LdapUserImporter : IDisposable
         return ldapUserGroups;
     }
 
-    public IEnumerable<GroupInfo> GetAndCheckCurrentGroups(LdapObject ldapUser, IEnumerable<GroupInfo> portalGroups)
+    public async Task<IEnumerable<GroupInfo>> GetAndCheckCurrentGroupsAsync(LdapObject ldapUser, IEnumerable<GroupInfo> portalGroups)
     {
         var result = new List<GroupInfo>();
         try
@@ -347,7 +347,7 @@ public class LdapUserImporter : IDisposable
 
                 foreach (var group in stillExistingGroups)
                 {
-                    if (GetGroupUsers(group).Any(u => u.Sid == ldapUser.Sid))
+                    if ((await GetGroupUsersAsync(group)).Any(u => u.Sid == ldapUser.Sid))
                     {
                         result.Add(group);
                     }
@@ -376,7 +376,7 @@ public class LdapUserImporter : IDisposable
         var ldapUser = ldapUserInfo.Item2;
 
         var portalUserLdapGroups =
-            UserManager.GetUserGroups(userInfo.Id, IncludeType.All)
+            (await UserManager.GetUserGroupsAsync(userInfo.Id, IncludeType.All))
                 .Where(g => !string.IsNullOrEmpty(g.Sid))
                 .ToList();
 
@@ -389,24 +389,24 @@ public class LdapUserImporter : IDisposable
             LdapHelper.Connect();
         }
 
-        var actualPortalLdapGroups = GetAndCheckCurrentGroups(ldapUser, portalUserLdapGroups).ToList();
+        var actualPortalLdapGroups = (await GetAndCheckCurrentGroupsAsync(ldapUser, portalUserLdapGroups)).ToList();
 
         foreach (var ldapUserGroup in ldapUserGroupList)
         {
-            var groupInfo = UserManager.GetGroupInfoBySid(ldapUserGroup.Sid);
+            var groupInfo = await UserManager.GetGroupInfoBySidAsync(ldapUserGroup.Sid);
 
             if (Equals(groupInfo, Constants.LostGroupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipCreatingPortalGroup(ldapUserGroup.DistinguishedName, ldapUserGroup.Sid);
-                groupInfo = UserManager.SaveGroupInfo(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
+                 groupInfo = await UserManager.SaveGroupInfoAsync(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
 
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroupAsync(userInfo.Id, groupInfo.ID);
             }
             else if (!portalUserLdapGroups.Contains(groupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroupAsync(userInfo.Id, groupInfo.ID);
             }
 
             actualPortalLdapGroups.Add(groupInfo);
@@ -417,7 +417,7 @@ public class LdapUserImporter : IDisposable
             if (!actualPortalLdapGroups.Contains(portalUserLdapGroup))
             {
                 _logger.DebugTrySyncUserGroupMembershipRemovingUserFromGroup(userInfo.UserName, ldapUser.Sid, portalUserLdapGroup.Name, portalUserLdapGroup.Sid);
-                UserManager.RemoveUserFromGroup(userInfo.Id, portalUserLdapGroup.ID);
+                await UserManager.RemoveUserFromGroupAsync(userInfo.Id, portalUserLdapGroup.ID);
             }
         }
 
@@ -714,7 +714,7 @@ public class LdapUserImporter : IDisposable
             g.DistinguishedName.Equals(member, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public List<Tuple<UserInfo, LdapObject>> FindLdapUsers(string login)
+    public async Task<List<Tuple<UserInfo, LdapObject>>> FindLdapUsersAsync(string login)
     {
         var listResults = new List<Tuple<UserInfo, LdapObject>>();
 
@@ -747,9 +747,9 @@ public class LdapUserImporter : IDisposable
 
         var searchTerm = exps.Count > 1 ? Criteria.Any(exps.ToArray()).ToString() : exps.First().ToString();
 
-        var users = LdapHelper.GetUsers(searchTerm, !string.IsNullOrEmpty(email) ? -1 : 1)
+        var users = await LdapHelper.GetUsers(searchTerm, !string.IsNullOrEmpty(email) ? -1 : 1).ToAsyncEnumerable()
             .Where(user => user != null)
-            .ToLookup(lu =>
+            .ToLookupAwaitAsync(async lu =>
             {
                 var ui = Constants.LostUser;
 
@@ -760,7 +760,7 @@ public class LdapUserImporter : IDisposable
                         _ldapDomain = LdapUtils.DistinguishedNameToDomain(lu.DistinguishedName);
                     }
 
-                    ui = _ldapObjectExtension.ToUserInfo(lu, this);
+                    ui = await _ldapObjectExtension.ToUserInfoAsync(lu, this);
                 }
                 catch (Exception ex)
                 {
@@ -867,7 +867,7 @@ public class LdapUserImporter : IDisposable
         return AllDomainGroups.Where(g => !g.IsDisabled && value.Any(val => string.Equals(val, (string)g.GetValue(key), comparison))).ToList();
     }
 
-    public Tuple<UserInfo, LdapObject> Login(string login, string password)
+    public async Task<Tuple<UserInfo, LdapObject>> LoginAsync(string login, string password)
     {
         try
         {
@@ -876,7 +876,7 @@ public class LdapUserImporter : IDisposable
                 return null;
             }
 
-            var ldapUsers = FindLdapUsers(login);
+            var ldapUsers = await FindLdapUsersAsync(login);
 
             _logger.DebugFindLdapUsers(login, ldapUsers.Count);
 

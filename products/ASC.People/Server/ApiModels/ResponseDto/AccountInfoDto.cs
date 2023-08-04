@@ -26,10 +26,23 @@
 
 namespace ASC.People.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class AccountInfoDto
 {
+    /// <summary>Provider</summary>
+    /// <type>System.String, System</type>
     public string Provider { get; set; }
+
+    /// <summary>URL</summary>
+    /// <type>System.String, System</type>
     public string Url { get; set; }
+
+    /// <summary>Specifies if an account is linked or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Linked { get; set; }
+
+    /// <summary>Class</summary>
+    /// <type>System.String, System</type>
     public string Class { get; set; }
 }

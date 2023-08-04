@@ -3,7 +3,7 @@ import Loaders from "../../Loaders";
 import { isMobileOnly, isTablet } from "react-device-detect";
 import { size } from "@docspace/components/utils/device";
 
-const EmptyContainerLoader = ({ viewAs }) => {
+const EmptyContainerLoader = ({ viewAs, style, ...rest }) => {
   const [viewMobile, setViewMobile] = useState(false);
   const [viewTablet, setViewTablet] = useState(false);
 
@@ -33,7 +33,7 @@ const EmptyContainerLoader = ({ viewAs }) => {
   };
 
   return (
-    <>
+    <div {...rest} style={{ display: "contents", style }}>
       {viewAs === "tile" ? (
         !viewMobile && !viewTablet ? (
           <Loaders.Tiles filesCount={7} />
@@ -43,7 +43,7 @@ const EmptyContainerLoader = ({ viewAs }) => {
       ) : (
         <Loaders.Rows count={(viewMobile && 8) || (viewTablet && 12) || 9} />
       )}
-    </>
+    </div>
   );
 };
 

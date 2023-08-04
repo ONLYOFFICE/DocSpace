@@ -183,7 +183,7 @@ class SelectionArea extends React.Component {
     const removed = [];
     const newSelected = [];
 
-    const { selectableClass, onMove, viewAs } = this.props;
+    const { selectableClass, onMove, viewAs, itemClass } = this.props;
     const selectableItems = document.getElementsByClassName(selectableClass);
 
     const selectables = [...selectableItems, ...this.selectableNodes];
@@ -195,7 +195,7 @@ class SelectionArea extends React.Component {
         viewAs === "tile"
           ? node.getAttribute("value").split("_")
           : node
-              .getElementsByClassName("files-item")[0]
+              .getElementsByClassName(itemClass)[0]
               .getAttribute("value")
               .split("_");
 
@@ -266,7 +266,8 @@ class SelectionArea extends React.Component {
       e.target.closest(".table-row-selected") ||
       e.target.closest(".row-selected") ||
       !e.target.closest("#sectionScroll") ||
-      e.target.closest(".table-container_row-checkbox")
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".item-file-name")
     )
       return;
 

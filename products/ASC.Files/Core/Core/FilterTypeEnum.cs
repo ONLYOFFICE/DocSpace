@@ -47,4 +47,5 @@ public enum FilterType
     [EnumMember] CustomRooms = 17,
     [EnumMember] OFormTemplateOnly = 18,
     [EnumMember] OFormOnly = 19,
+    [EnumMember] PublicRooms = 20
 }

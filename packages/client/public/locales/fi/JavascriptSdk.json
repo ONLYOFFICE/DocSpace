@@ -1,0 +1,21 @@
+{
+  "Ascending": "Nouseva",
+  "CopyWindowCode": "Kopioi ikkunan upotuskoodi",
+  "DataDisplay": "Tietojen näyttöasetukset",
+  "Descending": "Laskeva",
+  "Destroy": "Tuhoa",
+  "EnterCount": "Syötä määrä",
+  "EnterHeight": "Syötä korkeus",
+  "EnterId": "Syötä tunnus",
+  "EnterPage": "Syötä numerosivu",
+  "EnterWidth": "Syötä leveys",
+  "FolderId": "Kansion tunnus",
+  "FrameId": "Kehyksen tunnus",
+  "Header": "Ylätunniste",
+  "ItemsCount": "Kohteiden määrä",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "Menu",
+  "Page": "Sivu",
+  "SearchTerm": "Hakusana",
+  "SortOrder": "Lajittelujärjestys"
+}

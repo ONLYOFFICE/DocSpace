@@ -11,7 +11,7 @@ const PlusButton = (props) => {
   const ref = useRef(null);
   const menuRef = useRef(null);
 
-  const { className, getData, withMenu, onPlusClick } = props;
+  const { className, getData, withMenu, onPlusClick, isFrame, ...rest } = props;
 
   const toggle = (e, isOpen) => {
     isOpen ? menuRef.current.show(e) : menuRef.current.hide(e);
@@ -30,7 +30,7 @@ const PlusButton = (props) => {
   const model = getData();
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} className={className} {...rest}>
       <IconButton
         onClick={onClick}
         iconName={PlusReactSvgUrl}
@@ -44,7 +44,8 @@ const PlusButton = (props) => {
         ref={menuRef}
         onHide={onHide}
         scaled={false}
-        leftOffset={150}
+        directionX="right"
+        leftOffset={isFrame ? 190 : 150}
       />
     </div>
   );

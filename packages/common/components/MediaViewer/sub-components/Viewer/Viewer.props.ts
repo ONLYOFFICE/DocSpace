@@ -1,22 +1,23 @@
 import { getCustomToolbar } from "../../helpers/getCustomToolbar";
-import { ContextMenuModel, PlaylistType } from "../../types";
+import type { ContextMenuModel, IFile, PlaylistType } from "../../types";
 
 interface ViewerProps {
+  targetFile?: IFile;
   title: string;
-  images: { src: string; alt: string }[];
+  fileUrl?: string;
   isAudio: boolean;
   isVideo: boolean;
   visible: boolean;
   isImage: boolean;
+  isPdf: boolean;
 
   playlist: PlaylistType[];
   inactive: boolean;
 
   audioIcon: string;
-  zoomSpeed: number;
   errorTitle: string;
   headerIcon: string;
-  customToolbar: () => ReturnType<typeof getCustomToolbar>;
+  toolbar: ReturnType<typeof getCustomToolbar>;
   playlistPos: number;
   archiveRoom: boolean;
   isPreviewFile: boolean;
@@ -27,8 +28,8 @@ interface ViewerProps {
   onDownloadClick: VoidFunction;
   generateContextMenu: (
     isOpen: boolean,
-    right: string,
-    bottom: string
+    right?: string,
+    bottom?: string
   ) => JSX.Element;
   onSetSelectionFile: VoidFunction;
 }

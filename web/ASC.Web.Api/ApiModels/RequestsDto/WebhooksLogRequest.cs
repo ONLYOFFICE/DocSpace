@@ -26,11 +26,35 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksLogRequest
 {
-    public DateTime? Delivery { get; set; }
+    /// <summary></summary>
+    /// <type>System.Nullable{System.DateTime}, System</type>
+    public DateTime? DeliveryFrom { get; set; }
 
+    /// <summary></summary>
+    /// <type>System.Nullable{System.DateTime}, System</type>
+    public DateTime? DeliveryTo { get; set; }
+
+    /// <summary>Hook URI</summary>
+    /// <type>System.String, System</type>
     public string HookUri { get; set; }
 
-    public int WebhookId { get; set; }
+    /// <summary>Webhook ID</summary>
+    /// <type>System.Int32, System</type>
+    public int? WebhookId { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Int32, System</type>
+    public int? ConfigId { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Int32, System</type>
+    public int? EventId { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Int32, System</type>
+    public WebhookGroupStatus? GroupStatus { get; set; }
 }

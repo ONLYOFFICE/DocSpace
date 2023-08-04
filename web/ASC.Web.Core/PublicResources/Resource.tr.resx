@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Doğrulama alanı boş olamaz</value>
@@ -71,7 +71,7 @@
     <value>Mesajınız başarıyla gönderildi. Portal yöneticisi sizinle iletişime geçecek.</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>Şifre kurtarma işlemi LDAP kullanıcıları için kullanılamaz</value>
@@ -83,7 +83,7 @@
     <value>Özel</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Yanlış eposta adresi</value>
@@ -92,7 +92,7 @@
     <value>Bu eylemi gerçekleştirmek için izin yok</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>Portala erişim sınırlandı</value>
+    <value>Portala erişim sınırlandı.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Hatalı anahtarlar</value>
@@ -120,6 +120,9 @@
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Resim dosyası boyutu çok büyük</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Portala erişim sınırlandı</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Fiyat planınız bu seçeneği desteklemiyor</value>
@@ -169,17 +172,128 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Hesabınızı onaylamak için bağlantı belirtilen e-posta adresine gönderildi</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Soyad</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Bağlantı hatası</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Kullanıcılar oluşturulamadı, alınan veri yanlış olabilir.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Sunucu ayarları alamadı.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Sunucu ayarları kaydedemedi.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Hatalı giriş bilgisi ya da şifre.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP alanı bulunamadı.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Grup bulunamadı.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Geçersiz Kullanıcı Filtre değeri.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Bilinmeyen hata.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Kullanıcı bulunamadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Grup Özelliği bir veya birçok grup için alınamadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Hatalı Grup Filtresi.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Grup Adı Özelliği bir veya daha fazla grup için getirilemedi.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Giriş Özelliği bir veya birçok kullanıcı için alınamadı.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>LDAP sunucusuna bağlanılamadı. Sunucu adresinin ve port numarasının doğru olup olmadığını kontrol ediniz.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Kullanıcı Özelliği bir veya birçok kullanıcı için alınamadı.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Sunucu dahili hatası.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Sıradan portal kullanıcıları üzerine LDAP kullanıcıları modifiye ediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>kullanıcı ekleniyor</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Sertifika doğrulaması</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAP destek ayarları kontrol ediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP bağlantısı kesiliyor</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>LDAP sunucusundan grup listesi alınıyor</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>LDAP sunucusundan kullanıcı listesi alınıyor</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAP temel bilgisi yükleniyor</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>kullanıcı kaldırılıyor</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Daha önce LDAP ile yüklenen süresi geçmiş gruplar kaldırılıyor</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Daha önce LDAP ile yüklenen süresi geçmiş kullanıcı profilleri kaldırılıyor</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Gruplar kaydediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Ayarlar kaydediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Kullanıcılar kaydediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Kullanıcılar senkronize ediliyor</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Daha güvenli bir yetkilendirme tipi gereklidir. Lütfen şifreli bağlantı kullanın veya sunucudaki yetkilendirmeyi aktifleştirin.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Mevcut fiyat planı kullanıcı limiti doldu</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS mevcut LADP sunucusu için desteklenmiyor.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Çok fazla LDAP işlemi.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Kullanıcı/grup öğeleri için tekil ID alınamadı. Varsayılan olarak sistem belirtilen tanımlayıcılardan biriyle eşleştirme yapacaktır: entryUUID, nsuniqueid, GUID, objectSid. Hiçbir özellik LDAP sunucunuz ile eşleşmiyorsa lütfen gerekli özelliği web.appsettings.config dosyasının ldap.unique.id ayarlarında belirtiniz.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Lisans hatalı</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Lisans süresi dolmuş</value>
+    <value>Lisans süresi dolmuş.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Portal sayısı bu lisans için geçerli maksimum sayıyı aşmaktadır</value>
@@ -255,5 +369,626 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Neler Yeni</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Kullanıcı girişlerini ve eylemlerini izleme</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maks. Dosya Boyutu</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Dosya boyutu {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Yönetici sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Yönetici sayısı</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Otomatik yedekleme ve kurtarma</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Sınırsız sayıda aktif oda</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Oda sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} depolama alanı</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Kullanılan depolama boyutu {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Depolama alanı</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Odalar:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Kullanılan depolama alanı:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Odadaki kullanıcılar:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Sınırsız sayıda kullanıcı</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Kullanıcı sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Odadaki kullanıcılar</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Odadaki kullanıcı sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Markalaşma ve özelleştirme</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Yönetici/uzman kullanıcı sayısı:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>giriş</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Bitly hizmetine bağlanarak portal davet linklerini ve Belgeler modülünde paylaşılmış linkleri kısalt.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Kutu ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Kutu Anahtarı</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Box belgelerini ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatell ile iki aşamalı yetkilendirme uygulamasını etkinleştir.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Anahtar</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Belgelerinize DocuSign elektronik imza eklemek için uygulamaya bağlanın.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign yetkilendirme</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropbox belge ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Facebook hesabı kullanarak uygulamaya bağlan ve kişileri ara.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook Anahtar</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API anahtarı</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Sunucu anahtarı</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Firebase Bulut Mesajlaşma servisine bağlanarak size gönderilen mesajlar için bildirim alabilirsiniz.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Gönderen ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Proje ID</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Google hesabı kullanarak portala bağlan ve Google Drive belge ve klasörlerini yönet.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>LinkedIn hesabı kullanarak uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Anahtar</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Müşteri gizli</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>OneDrive belge ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>SMS Center ile iki aşamalı yetkilendirme uygulamasını etkinleştir.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Şifre veya şifre MD5 hash, küçük harflerle</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>CRM kişilerini tarayıcıdan arayabilmek için Twilio ekle.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Twilio telefon numarası (SMS yetkilendirme için gereklidir)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Twitter hesabı kullanarak uygulamaya bağlan ve kişileri ara.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Yahoo kişi aktarımı uygulamasını etkinleştir.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Bilinmeyen resim dosyası tipi</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Resim boyutu izin verilenden büyük</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox Anahtar</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Anahtar</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS Merkezi</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Hesap Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Yetki Dizgeciği</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Şifre</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Üçüncü taraf entegrasyonları</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Hatalı kod</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA uygulama ayarları mevcut değildir</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Çok fazla metin mesajı gönderdiniz. Lütfen daha sonra tekrar deneyin.</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Doğrulama kodu alanı boş olamaz</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>SMS yoluyla</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Kimlik doğrulama uygulaması yoluyla</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 erişim anahtarı</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple Kimliği</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Uygulama Müşteri Kimliği</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Uygulamanın, bir Apple Kimliği hesabı kullanarak portalda oturum açmasını etkinleştirin.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın Apple Kimliği kullanarak ONLYOFFICE'te oturum açmasına izin vermek için bu uygulamayı etkinleştirin. {0}Apple Developers Portal'a gidin ve yeni uygulama ONLYOFFICE entegrasyonu oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Apple özel anahtarıyla Giriş yapmak için oluşturulan 10 karakterlik bir anahtar tanımlayıcı</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Apple Developer'dan indirilen özel anahtar</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10 karakterlik geliştirici hesabı Ekip Kimliği</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Daveti ve belge bağlantılarını kısaltmak için bu uygulamayı etkinleştirin. {0}Bitly giriş bilgilerinizi ve API anahtarınızı aşağıya girin:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Box hesabınızı Belgeler modülüne bağlamak için bu uygulamayı etkinleştirin. Box’taki dosyaları ONLYOFFICE kullanıcıları ile yönetebilecek, düzenleyebilecek ve paylaşabileceksiniz. {0}Box geliştiriciler sayfasında hesabınızla oturum açın ve ONLYOFFICE entegrasyonu için yeni bir uygulama oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Clickatell hizmetiyle iki faktörlü kimlik doğrulamayı etkinleştirmek için bu uygulamayı kullanın. {0}SMS Platform hesabınızda oturum açın ve ONLYOFFICE için yeni bir entegrasyon oluşturun. Bir apiKey kopyalayın ve aşağıya ekleyin:</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Gizli</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>DocuSign kullanarak belgeleri dijital olarak imzalamak için bu uygulamayı etkinleştirin. {0}DocuSign Yönetici Konsolunuza gidin ve ONLYOFFICE entegrasyonunu ekleyin. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Dropbox hesabınızı Belgeler modülüne bağlamak için bu uygulamayı etkinleştirin. Dropbox'taki dosyaları, ONLYOFFICE kullanıcılarıyla yönetebilecek, düzenleyebilecek ve paylaşabileceksiniz. {0}Dropbox Developers web sitesinde hesabınızda oturum açın ve ONLYOFFICE entegrasyonu için yeni bir uygulama oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Uygulama anahtarı</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBib ile belgelerde bibliyografik listeler oluşturmak için bu uygulamayı etkinleştirin.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>ONLYOFFICE editörlerinde kaynakça oluşturmak için bu uygulamayı etkinleştirin. {0}EasyBib kayıt sayfasına gidin ve ONLYOFFICE entegrasyonunu eklemek için formu doldurun. Bir uygulama anahtarı aldıktan sonra, onu aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>App Token</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın Facebook kullanarak ONLYOFFICE'te oturum açmasına ve müşterilerinin Facebook hesaplarını CRM modülüne bağlamasına izin vermek için bu uygulamayı etkinleştirin. {0}Facebook Developers Portal'a gidin ve yeni uygulama ONLYOFFICE entegrasyonu oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın çevrimdışıyken bile mesajlarla ilgili bildirimler almasına izin vermek için bu uygulamayı etkinleştirin. {0}Firebase konsoluna gidin ve ONLYOFFICE entegrasyonu için yeni bir proje ekleyin. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Depolama</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Yedeklemeleri depolamak için Google Cloud bucket adını girin.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Portalınızdaki verileri yedeklemek ve depolamak için Google Cloud Depolama hizmetini bağlayın.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Portalınızdaki verileri yedeklemek ve depolamak için Google Cloud Depolama hizmetini bağlayın. {0}Google Cloud Platform Konsolu'na gidin ve ONLYOFFICE için yeni bir hizmet hesabı oluşturun. Aldığınız verileri aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Google Drive hesabınızı Belgeler modülüne bağlamak için bu uygulamayı etkinleştirin. Google Drive'daki dosyaları ONLYOFFICE kullanıcılarıyla yönetebilecek, düzenleyebilecek ve paylaşabileceksiniz. {0}Google APIs konsoluna gidin ve ONLYOFFICE entegrasyonu için yeni bir proje oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın ONLYOFFICE'te LinkedIn hesaplarını kullanarak oturum açmasına izin vermek için bu uygulamayı etkinleştirin. {0}LinkedIn Developers web sitesine gidin ve yeni uygulama ONLYOFFICE entegrasyonu oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin Kimliği</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Gizli anahtar</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Bir Mail.ru hesabı kullanarak portalda oturum açmak için uygulamayı etkinleştirin.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Mail.ru uygulamasını eklediğinizde, profil sayfanızdaki Mail.ru hesabını kullanarak portalda oturum açmayı etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Uygulama Müşteri Kimliği</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Microsoft hesabı kullanarak portalda oturum açması için uygulamayı etkinleştirin.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın Microsoft kullanarak ONLYOFFICE'te oturum açmasına izin vermek için bu uygulamayı etkinleştirin. {0}Microsoft Azure'a gidin ve yeni uygulama ONLYOFFICE entegrasyonu oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Bulut Depolama</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Portalınızdaki verileri yedeklemek ve depolamak için Rackspace Bulut Depolama hizmetini bağlayın.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Portalınızdaki verileri yedeklemek ve depolamak için Rackspace Bulut Depolama hizmetini bağlayın. {0}Rackspace Bulut Denetim Masası'nın güvenlik ayarlarında, Rackspace API Anahtarı'nın yanındaki Göster bağlantısına tıklayın. Aldığınız verileri aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Özel Container</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Yedeklemeleri depolamak için Rackspace özel container’ının URL adresini girin.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Herkese Açık Container</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Yedeklemeleri depolamak için Rackspace herkese açık container’ının URL adresini girin.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Bölge</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Rackspace container’ınızı içeren bölgeyi girin.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Yedekleri depolamak için Amazon klasörünün benzersiz adını girin.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Portalınızdan verileri yedeklemek ve depolamak için Amazon AWS S3’ü bağlayın.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Portalınızdan verileri yedeklemek ve depolamak için Amazon AWS S3’ü bağlayın. {0}AWS Management Console’a gidin ve ONLY OFFICE için erişim anahtarları oluşturun. Aldığınız verileri aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Amazon klasörünüzün olduğu AWS bölgesini girin.</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Bölge</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 gizli erişim anahtarı</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Bulut Depolama</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Depolamaya erişim için şifre</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Yetkilendirilmiş Kullanıcı</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Portalınızdan verileri yedeklemek ve depolamak için Selectel Bulut Depolama hizmetini bağlayın.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Portalınızdan verileri yedeklemek ve depolamak için Selectel Bulut Depolama hizmetini bağlayın. {0}Yedeklerinizi depolamayı planladığınız container’lar için Okuma/Yazma yetkisine sahip bir kullanıcının erişim verilerini alın ve aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Özel container</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Yedekleri depolamakta kullanılacak Selectel özel container adını girin.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Yedekleri depolamakta kullanılacak Selectel herkese açık container adını girin.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Herkese Açık Container</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>Uygulama Kimliği</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Müşteri gizli</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Müşteri gizli</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Müşteri gizli</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>OneDrive hesabınızı Belgeler modülüne bağlamak için bu uygulamayı etkinleştirin. ONLYOFFICE kullanıcılarıyla OneDrive'daki dosyaları yönetebilecek, düzenleyebilecek ve paylaşabileceksiniz. {0}Microsoft Azure hesabınızda oturum açın ve ONLYOFFICE entegrasyonu için yeni bir uygulama oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>SMS Center hizmetiyle iki faktörlü kimlik doğrulamayı etkinleştirmek için bu uygulamayı kullanın. {0}Smsc hesabı oturum açma bilgilerinizi ve şifrenizi (veya şifre MD5 hash’ini) küçük harflerle girin:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot kullanıcı adı</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot belirteci</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Portal bildirimlerini, Telegram ile almak için Telegram hesabını bağlayın.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Telegram aracılığıyla portal bildirimleri almak için Telegram bot'unu etkinleştirin. Telegram Masaüstü sürümünde, BotFather'ı kullanarak yeni bir bot oluşturabilirsiniz. Bu botu kullanmak için, portal kullanıcılarının Profil Sayfalarında Telegram bildirimlerini etkinleştirmeleri gerekir. {0}Botun kullanıcı adını ve aldığınız belirteci aşağıdaki alanlara yapıştırın.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın, CRM modülündeki kişilerini Twilio'yu kullanarak aramasına izin vermek için bu uygulamayı etkinleştirin. {0}Twilio Console’a gidin ve aşağıdaki verileri yapıştırın:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Müşteri Kimliği</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Kullanıcılarınızın, Twitter'larını kullanarak ONLYOFFICE'te oturum açmalarına ve müşterilerinin Twitter hesaplarını CRM modülüne bağlamalarına izin vermek için bu uygulamayı etkinleştirin. {0}Twitter Developers Portal'a gidin ve yeni bir uygulama ONLYOFFICE entegrasyonu oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Anahtarı</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Anahtarı Gizli</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace kullanıcı adı</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Uygulama Kimliği</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Güvenli anahtar</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Uygulamanın bir VK hesabı kullanarak portalda oturum açmasını sağlayın.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>VK uygulamasını eklediğinizde, profil sayfanızda VK hesabını kullanarak portalda oturum açmayı etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Uygulamanın, belgeleri WordPress'te doğrudan yayınlamasını sağlayın.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Belgeleri WordPress web sitenizde kolayca yayınlamak için uygulamayı etkinleştirin. {0}Wordpress Developers sayfasında, ONLYOFFICE entegrasyonu için yeni bir uygulama oluşturun. Aldığınız verileri aşağıya yapıştırın:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress Anahtarı</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress Gizli</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Müşteri Kimliği</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Yahoo kişi listenizden yeni portal kullanıcıları eklemek için bu uygulamayı etkinleştirin. {0}Yahoo Geliştirici Ağı'ndaki Create Application (Uygulama Oluştur) sayfasına gidin ve ONLYOFFICE entegrasyonu için yeni bir uygulama oluşturun. Aldığınız verileri aşağıya girin:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Uygulamanın bir Yandex hesabı kullanarak portalda oturuma giriş yapmasını sağlayın.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Yandex uygulamasını eklediğinizde, profil sayfanızdaki Yandex hesabını kullanarak portalda oturum açmayı etkinleştirebilirsiniz.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Hatalı örnek kimliği.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Mesaj metni boş</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Hatalı ad veya soyad</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>boşluk yok</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>sadece Latin harfleri</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>İstek sınırı aşıldı</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Kiracı alanı boş olamaz.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Alan adı {0} ila {1} karakter arası uzunlukta olmalıdır.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Kendinizden yönetici haklarınızı almaya çalıştınız. Yönetici haklarınız etkilenmedi.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Hesabınız LDAP dizinine bağlı değildir ve LDAP şifreniz artık etkin değildir. Lütfen profil ayarları sayfasında hesabınızın şifresini değiştirin veya oluşturun.</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>{0} kullanıcısını,{1} yönetici olarak atama</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Daha önce LDAP ile yüklenmiş eski erişim hakları kaldırılıyor</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Fotoğraf kaydediliyor</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Kullanıcı erişim hakları güncelleniyor</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Kullanıcı fotoğrafları güncelleniyor</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Başarıyla yüklendi. {0}Bu lisans için, {2} tarihinden itibaren destek ve güncellemeler sağlanmamaktadır.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Başarıyla yüklendi. {0}Bu lisans için, {2} tarihinden itibaren destek sağlanmamaktadır.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>{0} e-posta adresli bir kullanıcı varsa, şifre değiştirme talimatı bu e-posta adresine gönderilmiştir.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Disk alanı kotası aşılı</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Ofis belgeleriniz için bulut alanı</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha geçersiz</value>
   </data>
 </root>

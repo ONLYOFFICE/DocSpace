@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 import { Events } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
@@ -9,7 +10,7 @@ const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
       t,
-      history,
+
       setSelected,
       viewAs,
       setViewAs,
@@ -56,7 +57,13 @@ const withHotkeys = (Component) => {
       isVisitor,
       deleteRooms,
       archiveRooms,
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
+
+      security,
     } = props;
+
+    const navigate = useNavigate();
 
     const hotkeysFilter = {
       filter: (ev) =>
@@ -80,7 +87,8 @@ const withHotkeys = (Component) => {
       isTrashFolder ||
       isArchiveFolder ||
       isRoomsFolder ||
-      isVisitor;
+      isVisitor ||
+      !security?.Create;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
@@ -97,7 +105,12 @@ const withHotkeys = (Component) => {
     };
 
     const onCreateRoom = () => {
-      if (!isVisitor && isRoomsFolder) {
+      if (!isVisitor && isRoomsFolder && security?.Create) {
+        if (isGracePeriod) {
+          setInviteUsersWarningDialogVisible(true);
+          return;
+        }
+
         const event = new Event(Events.ROOM_CREATE);
         window.dispatchEvent(event);
       }
@@ -323,7 +336,7 @@ const withHotkeys = (Component) => {
       "Shift+u",
       () => {
         if (folderWithNoAction) return;
-        uploadFile(false, history, t);
+        uploadFile(false, navigate, t);
       },
 
       hotkeysFilter
@@ -353,6 +366,7 @@ const withHotkeys = (Component) => {
       hotkeyStore,
       mediaViewerDataStore,
       treeFoldersStore,
+      selectedFolderStore,
     }) => {
       const {
         setSelected,
@@ -387,6 +401,7 @@ const withHotkeys = (Component) => {
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
+        setInviteUsersWarningDialogVisible,
       } = dialogsStore;
       const {
         isAvailableOption,
@@ -399,7 +414,9 @@ const withHotkeys = (Component) => {
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
-      const { isVisitor } = auth.userStore.user;
+      const { isGracePeriod } = auth.currentTariffStatusStore;
+
+      const isVisitor = auth.userStore.user?.isVisitor;
 
       const {
         isFavoritesFolder,
@@ -408,6 +425,8 @@ const withHotkeys = (Component) => {
         isArchiveFolder,
         isRoomsFolder,
       } = treeFoldersStore;
+
+      const security = selectedFolderStore.security;
 
       return {
         setSelected,
@@ -457,6 +476,11 @@ const withHotkeys = (Component) => {
         isVisitor,
         deleteRooms,
         archiveRooms,
+
+        isGracePeriod,
+        setInviteUsersWarningDialogVisible,
+
+        security,
       };
     }
   )(observer(WithHotkeys));

@@ -51,13 +51,24 @@ public class NotificationController : ApiControllerBase
         _studioNotifyService = studioNotifyService;
     }
 
+    /// <summary>
+    /// Sends a notification to the user with the ID specified in the request to change their phone number.
+    /// </summary>
+    /// <short>
+    /// Send a notification to change a phone
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user contacts</param>
+    /// <returns type="System.Object, System">Notification</returns>
+    /// <path>api/2.0/people/phone</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("phone")]
-    public object SendNotificationToChange(UpdateMemberRequestDto inDto)
+    public async Task<object> SendNotificationToChangeAsync(UpdateMemberRequestDto inDto)
     {
-        var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
+        var user = await _userManager.GetUsersAsync(string.IsNullOrEmpty(inDto.UserId)
             ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
 
-        var canChange = user.IsMe(_authContext) || _permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        var canChange = user.IsMe(_authContext) || await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!canChange)
         {
@@ -66,14 +77,14 @@ public class NotificationController : ApiControllerBase
 
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
 
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfoAsync(user);
 
         if (user.IsMe(_authContext))
         {
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PhoneActivation);
         }
 
-        _studioNotifyService.SendMsgMobilePhoneChange(user);
+        await _studioNotifyService.SendMsgMobilePhoneChangeAsync(user);
 
         return string.Empty;
     }

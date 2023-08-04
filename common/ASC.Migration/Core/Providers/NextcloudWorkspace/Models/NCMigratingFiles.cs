@@ -42,7 +42,7 @@ public class NCMigratingFiles : MigratingFiles
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly NCMigratingUser _user;
     private readonly string _rootFolder;
     private List<NCFileCache> _files;
@@ -55,7 +55,7 @@ public class NCMigratingFiles : MigratingFiles
     private Dictionary<string, NCMigratingGroups> _groups;
     private Dictionary<object, int> _matchingFileId;
     private string _folderCreation;
-    public NCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileSecurity fileSecurity, FileStorageService<int> fileStorageService, NCMigratingUser user, NCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
+    public NCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileSecurity fileSecurity, FileStorageService fileStorageService, NCMigratingUser user, NCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
     {
         _globalFolderHelper = globalFolderHelper;
         _daoFactory = daoFactory;
@@ -116,7 +116,7 @@ public class NCMigratingFiles : MigratingFiles
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (!ShouldImport)
         {
@@ -145,7 +145,7 @@ public class NCMigratingFiles : MigratingFiles
                         continue;
                     }
 
-                    var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
+                    var parentId = i == 0 ? await _globalFolderHelper.FolderMyAsync : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                     try
                     {
                         var newFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
@@ -178,7 +178,7 @@ public class NCMigratingFiles : MigratingFiles
                     var fileDao = _daoFactory.GetFileDao<int>();
                     var folderDao = _daoFactory.GetFolderDao<int>();
                     {
-                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(_globalFolderHelper.FolderMy) : foldersDict[parentPath];
+                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(await _globalFolderHelper.FolderMyAsync) : foldersDict[parentPath];
 
                         var newFile = new File<int>
                         {

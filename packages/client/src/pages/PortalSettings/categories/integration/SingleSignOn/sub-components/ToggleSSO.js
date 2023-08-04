@@ -32,7 +32,6 @@ const ToggleSSO = (props) => {
       <Text
         className="intro-text settings_unavailable"
         lineHeight="20px"
-        color="#657077"
         noSelect
       >
         {t("SsoIntro")}
@@ -48,7 +47,7 @@ const ToggleSSO = (props) => {
         paddingProp="12px"
       >
         <ToggleButton
-          className="toggle"
+          className="enable-sso toggle"
           isChecked={enableSso}
           onChange={
             isSsoEnabled && enableSso ? openConfirmationDisableModal : ssoToggle
@@ -69,8 +68,7 @@ const ToggleSSO = (props) => {
             {!isSSOAvailable && (
               <Badge
                 backgroundColor="#EDC409"
-                label="Paid"
-                maxWidth="31px"
+                label={t("Common:Paid")}
                 className="toggle-caption_title_badge"
                 isPaidBadge={true}
               />

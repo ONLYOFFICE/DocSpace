@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import TagHandler from "./handlers/TagHandler";
 import SetRoomParams from "./sub-components/SetRoomParams";
@@ -35,6 +35,10 @@ const EditRoomDialog = ({
       type: newRoomType,
     }));
 
+  const onKeyUpHandler = (e) => {
+    if (e.keyCode === 13) onEditRoom();
+  };
+
   const onEditRoom = () => {
     if (!roomParams.title.trim()) {
       setIsValidTitle(false);
@@ -44,7 +48,7 @@ const EditRoomDialog = ({
     onSave(roomParams);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (fetchedImage)
       setRoomParams({
         ...roomParams,
@@ -83,6 +87,7 @@ const EditRoomDialog = ({
           isDisabled={isLoading}
           isValidTitle={isValidTitle}
           setIsValidTitle={setIsValidTitle}
+          onKeyUp={onKeyUpHandler}
         />
       </ModalDialog.Body>
 

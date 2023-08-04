@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 import Loader from "@docspace/components/loader";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
@@ -15,7 +16,7 @@ export default function withLoader(WrappedComponent) {
       passwordSettings,
       getSettings,
       getPortalPasswordSettings,
-      history,
+
       getAuthProviders,
       getCapabilities,
     } = props;
@@ -24,11 +25,14 @@ export default function withLoader(WrappedComponent) {
     const type = linkData ? linkData.type : null;
     const confirmHeader = linkData ? linkData.confirmHeader : null;
 
+    const navigate = useNavigate();
+
     useEffect(() => {
       if (
         (type === "PasswordChange" ||
           type === "LinkInvite" ||
-          type === "Activation") &&
+          type === "Activation" ||
+          type === "EmpInvite") &&
         !passwordSettings
       ) {
         axios
@@ -46,7 +50,7 @@ export default function withLoader(WrappedComponent) {
             }
 
             console.error(errorMessage);
-            history.push(
+            navigate(
               combineUrl(
                 window.DocSpaceConfig?.proxy?.url,
                 `/login/error?message=${errorMessage}`
@@ -57,7 +61,7 @@ export default function withLoader(WrappedComponent) {
     }, [passwordSettings]);
 
     useEffect(() => {
-      if (type === "LinkInvite") {
+      if (type === "LinkInvite" || type === "EmpInvite") {
         axios.all([getAuthProviders(), getCapabilities()]).catch((error) => {
           let errorMessage = "";
           if (typeof error === "object") {
@@ -70,7 +74,7 @@ export default function withLoader(WrappedComponent) {
             errorMessage = error;
           }
           console.error(errorMessage);
-          history.push(
+          navigate(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               `/login/error?message=${errorMessage}`
@@ -85,7 +89,8 @@ export default function withLoader(WrappedComponent) {
         ? props.isLoaded
         : type === "PasswordChange" ||
           type === "LinkInvite" ||
-          type === "Activation"
+          type === "Activation" ||
+          type === "EmpInvite"
         ? !!passwordSettings
         : true;
 
@@ -121,11 +126,8 @@ export default function withLoader(WrappedComponent) {
 
   return inject(({ auth, confirm }) => {
     const { isLoaded, isLoading } = confirm;
-    const {
-      passwordSettings,
-      getSettings,
-      getPortalPasswordSettings,
-    } = auth.settingsStore;
+    const { passwordSettings, getSettings, getPortalPasswordSettings } =
+      auth.settingsStore;
     const { getAuthProviders, getCapabilities } = auth;
 
     return {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -12,13 +12,15 @@ import LoginHistory from "./login-history/index.js";
 import MobileSecurityLoader from "./sub-components/loaders/mobile-security-loader";
 import AccessLoader from "./sub-components/loaders/access-loader";
 import AuditTrail from "./audit-trail/index.js";
+import { resetSessionStorage } from "../../utils";
 
 import { isMobile } from "react-device-detect";
 
 const SecurityWrapper = (props) => {
-  const { t, history, loadBaseInfo } = props;
+  const { t, loadBaseInfo } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const data = [
     {
@@ -44,6 +46,12 @@ const SecurityWrapper = (props) => {
   };
 
   useEffect(() => {
+    return () => {
+      resetSessionStorage();
+    };
+  }, []);
+
+  useEffect(() => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
@@ -52,7 +60,7 @@ const SecurityWrapper = (props) => {
   }, []);
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -88,6 +96,4 @@ export default inject(({ setup }) => {
       await initSettings();
     },
   };
-})(
-  withTranslation(["Settings", "Common"])(withRouter(observer(SecurityWrapper)))
-);
+})(withTranslation(["Settings", "Common"])(observer(SecurityWrapper)));

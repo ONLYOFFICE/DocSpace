@@ -5,6 +5,7 @@ import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
+  hugeMobile,
 } from "@docspace/components/utils/device";
 
 import { Base } from "@docspace/components/themes";
@@ -31,14 +32,20 @@ const StyledArticle = styled.article`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
 
+    height: ${(props) =>
+      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
+
     //padding: 0 8px;
   }
 
-  ${isMobile &&
+  ${isTablet &&
   css`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
     //padding: 0 8px;
+
+    height: ${(props) =>
+      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
   `}
 
   @media ${mobile} {
@@ -75,36 +82,67 @@ const StyledArticle = styled.article`
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .article-body__scrollbar {
+    height: ${(props) =>
+      `calc(100% - ${props.$withMainButton ? "190px" : "150px"})`} !important;
+
+    ${!isMobileOnly &&
+    css`
+      @media ${tablet} {
+        height: calc(100% - 126px) !important;
+      }
+    `}
+
+    @media ${mobile} {
+      height: 100% !important;
+      margin-top: 32px;
+    }
+
+    @media ${hugeMobile} {
+      height: 100% !important;
+    }
+
+    ${isTablet &&
+    css`
+      height: calc(100% - 126px) !important;
+    `}
+
     ${isMobileOnly &&
     css`
+      height: 100% !important;
       margin-top: 32px !important;
     `}
 
     .scroll-body {
+      display: flex;
+      flex-direction: column;
+
       overflow-x: hidden !important;
-      height: ${(props) =>
-        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
+
       padding: 0 20px !important;
+      margin-bottom: 0px !important;
 
       @media ${tablet} {
-        height: calc(100% - 150px);
         padding: 0 8px !important;
+        height: calc(100% - 60px);
       }
 
       ${isTablet &&
       css`
         padding: 0 8px !important;
+        height: calc(100% - 60px);
       `}
 
       @media ${mobile} {
-        height: calc(100% - 20px) !important;
+        display: block;
         padding-bottom: 20px;
+        height: 100%;
       }
 
       ${isMobileOnly &&
       css`
-        height: calc(100% - 20px) !important;
+        display: block;
         padding-bottom: 20px;
+        height: 100%;
       `}
     }
   }
@@ -114,7 +152,7 @@ StyledArticle.defaultProps = { theme: Base };
 
 const StyledArticleHeader = styled.div`
   height: 24px;
-  padding: 24px 21px 21px 20px;
+  padding: 22px 21px 23px 20px;
   margin: 0;
   display: flex;
   justify-content: flex-start;
@@ -205,10 +243,10 @@ const StyledIconBox = styled.div`
   cursor: pointer;
   display: none;
   align-items: center;
-  height: 20px;
 
   img {
-    height: 24px;
+    height: 28px;
+    width: 28px;
   }
 
   @media ${tablet} {
@@ -361,25 +399,16 @@ const StyledProfileWrapper = styled.div`
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
   `}
 `;
-const StyledArticlePaymentAlert = styled.div`
-  border: ${(props) =>
-    props.isFreeTariff
-      ? props.theme.catalog.paymentAlert.border
-      : props.theme.catalog.paymentAlert.warningBorder};
 
-  border-radius: 6px;
-  margin: 32px 0px;
-  padding: 12px;
-  cursor: pointer;
-  display: grid;
+const StyledArticleAlertsComponent = styled.div`
+  margin: 32px 0;
 
-  grid-template-columns: 1fr 16px;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
 
-  .article-payment_border {
-    color: ${(props) =>
-      props.isFreeTariff
-        ? props.theme.catalog.paymentAlert.color
-        : props.theme.catalog.paymentAlert.warningColor};
+  &:empty {
+    display: none;
   }
 `;
 
@@ -395,5 +424,5 @@ export {
   StyledArticleProfile,
   StyledUserName,
   StyledProfileWrapper,
-  StyledArticlePaymentAlert,
+  StyledArticleAlertsComponent,
 };

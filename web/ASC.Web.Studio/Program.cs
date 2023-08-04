@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Webhooks.Extension;
-
 using NLog;
 
 var options = new WebApplicationOptions
@@ -52,6 +50,8 @@ var logger = LogManager.Setup()
 try
 {
     logger.Info("Configuring web host ({applicationContext})...", AppName);
+
+    builder.Logging.ClearProviders();
     builder.Host.ConfigureDefault();
     builder.WebHost.ConfigureDefaultKestrel();
 
@@ -64,6 +64,10 @@ try
     var app = builder.Build();
 
     startup.Configure(app, app.Environment);
+
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<RemovePortalIntegrationEvent, RemovePortalIntegrationEventHandler>();
 
     logger.Info("Starting web host ({applicationContext})...", AppName);
     await app.RunWithTasksAsync();

@@ -128,7 +128,7 @@
     <value>Anulēts</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Slikts pieprāsījums</value>
+    <value>Slikts pieprāsījums.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>Jūs nevarat izvēlēties šo lietotāju</value>
@@ -284,6 +284,135 @@
     <value>Uzvārds</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>The file is unlocked</value>
+    <value>Fails ir atbloķēts</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace administrators</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Redaktors</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Telpas administrators</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Lietotājs</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Skatītājs</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Komentētājs</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Veidlapas aizpildītājs</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Pārskatītājs</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Līdzstrādnieks</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Iesniegta veidlapa</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Jaunā versija nevar būt tāda pati kā pašreizējā versija</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai kopētu failu</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai kopētu mapi</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Nederīgs pakalpojuma sniedzējs</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Šo mapi nevar izmantot telpas uzglabāšanai</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Uzaicinājuma saite nav derīga vai tās derīguma termiņš ir beidzies</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Šis pakalpojuma sniedzējs jau ir savienots ar telpu</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Šim lietotāja tipam nav pieejama loma</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai arhivētu telpu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Jums nav atļaujas kopēt šajā mapē</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Jums nav atļaujas rediģēt telpu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Jums nav atļaujas pārvietot šajā mapē</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai atarhivētu telpu</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Jūs nevarat rediģēt arhivētās telpas</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Jūs nevarat piespraust telpu</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Telpas administrators</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Līdzstrādnieks</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redaktors</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Komentēt</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Pielāgots filtrs</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Veidlapas aizpildīšana</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Automātiski saglabāts</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Izveidots, lai aizpildītu veidlapu</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Rediģēts ar šifrēšanu</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Šifrēts</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Saglabāts</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai pārvietotu failu</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai pārvietotu mapi</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Meklēt dokumentu saturā</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Aizpildāmais OFORM dokuments ir gatavs. Tas ir saglabāts {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORM kopija tiek izveidota mapē {0}. Aizpildiet veidlapu un lejupielādējiet rezultātu kā PDF vai DOCX failu.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Fails vairs nav melnraksts, kas jāaizpilda veidlapā.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Skatiet un lejupielādējiet kopīgotos dokumentus. Augšupielādējiet failus koplietotajās mapēs. Visaugstākā saderība ar docx, xlsx, pptx garantēta.</value>
   </data>
 </root>

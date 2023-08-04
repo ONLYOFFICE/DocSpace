@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
@@ -54,6 +53,17 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
+  .item-file-name {
+    max-height: 100%;
+    line-height: 20px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+
   ${({ isRooms }) =>
     isRooms &&
     css`
@@ -79,7 +89,9 @@ const FilesTileContent = ({
   theme,
   isRooms,
 }) => {
-  const { fileExst, title } = item;
+  const { fileExst, title, viewAccessability } = item;
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>
@@ -115,10 +127,8 @@ export default inject(({ auth, treeFoldersStore }) => {
   return { theme: auth.settingsStore.theme, isRooms };
 })(
   observer(
-    withRouter(
-      withTranslation(["Files", "Translations"])(
-        withContent(withBadges(FilesTileContent))
-      )
+    withTranslation(["Files", "Translations", "Notifications"])(
+      withContent(withBadges(FilesTileContent))
     )
   )
 );

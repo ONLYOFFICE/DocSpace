@@ -1,21 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
-import Text from "@docspace/components/text";
-import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
-import { StyledArticlePaymentAlert } from "../styled-article";
-import styled from "styled-components";
-import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
-import Loaders from "../../Loaders";
 
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  margin: auto 0;
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
+import { combineUrl } from "@docspace/common/utils";
+
+import AlertComponent from "../../AlertComponent";
+import Loaders from "../../Loaders";
 
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
@@ -23,97 +14,71 @@ const PROXY_BASE_URL = combineUrl(
 );
 
 const ArticlePaymentAlert = ({
-  pricePerManager,
   isFreeTariff,
   theme,
-  currencySymbol,
-  setPortalPaymentQuotas,
   currentTariffPlanTitle,
   toggleArticleOpen,
-  tariffPlanTitle,
 }) => {
-  const { t, ready } = useTranslation("Payments");
+  const { t, ready } = useTranslation("Common");
 
-  useEffect(() => {
-    isFreeTariff && setPortalPaymentQuotas();
-  }, []);
+  const navigate = useNavigate();
 
   const onClick = () => {
     const paymentPageUrl = combineUrl(
       PROXY_BASE_URL,
       "/payments/portal-payments"
     );
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
     toggleArticleOpen();
   };
+
+  const title = isFreeTariff ? (
+    <Trans t={t} i18nKey="FreeStartupPlan" ns="Common">
+      {{ planName: currentTariffPlanTitle }}
+    </Trans>
+  ) : (
+    t("Common:LatePayment")
+  );
+
+  const description = isFreeTariff
+    ? t("Common:GetMoreOptions")
+    : t("Common:PayBeforeTheEndGracePeriod");
+
+  const additionalDescription = isFreeTariff
+    ? t("Common:ActivatePremiumFeatures")
+    : t("Common:GracePeriodActivated");
+
+  const color = isFreeTariff
+    ? theme.catalog.paymentAlert.color
+    : theme.catalog.paymentAlert.warningColor;
 
   const isShowLoader = !ready;
 
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
   ) : (
-    <StyledArticlePaymentAlert
-      onClick={onClick}
-      isFreeTariff={isFreeTariff}
-      theme={theme}
+    <AlertComponent
       id="document_catalog-payment-alert"
-    >
-      <div>
-        <Text className="article-payment_border">
-          {isFreeTariff ? (
-            <Trans t={t} i18nKey="FreeStartupPlan" ns="Payments">
-              {{ planName: currentTariffPlanTitle }}
-            </Trans>
-          ) : (
-            t("LatePayment")
-          )}
-        </Text>
-        <Text fontWeight={600}>
-          {isFreeTariff
-            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
-            : t("GracePeriodActivated")}
-        </Text>
-        <Text noSelect fontSize={"12px"}>
-          {isFreeTariff ? (
-            <>
-              {pricePerManager ? (
-                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
-                  From {{ currencySymbol }}
-                  {{ price: pricePerManager }} per admin/month
-                </Trans>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            t("PayBeforeTheEndGracePeriod")
-          )}
-        </Text>
-      </div>
-
-      <StyledArrowRightIcon />
-    </StyledArticlePaymentAlert>
+      borderColor={color}
+      titleColor={color}
+      onAlertClick={onClick}
+      title={title}
+      titleFontSize="11px"
+      description={description}
+      additionalDescription={additionalDescription}
+      needArrowIcon
+    />
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme } = auth;
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-    } = paymentQuotasStore;
+export default inject(({ auth }) => {
+  const { currentQuotaStore, settingsStore } = auth;
+  const { currentTariffPlanTitle } = currentQuotaStore;
+  const { theme, toggleArticleOpen } = settingsStore;
 
-    return {
-      setPortalPaymentQuotas,
-      pricePerManager: planCost.value,
-      theme,
-      currencySymbol: planCost.currencySymbol,
-      currentTariffPlanTitle,
-      tariffPlanTitle,
-    };
-  })(observer(ArticlePaymentAlert))
-);
+  return {
+    toggleArticleOpen,
+    theme,
+    currentTariffPlanTitle,
+  };
+})(observer(ArticlePaymentAlert));

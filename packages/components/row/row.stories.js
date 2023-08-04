@@ -20,7 +20,10 @@ export default {
         options: ["", "Avatar", "Icon", "ComboBox"],
       },
     },
-    content: { control: "text" },
+    content: { control: "text", description: "Displays the row content" },
+    contextButton: {
+      description: "Enables displaying the submenu",
+    },
     onSelectComboBox: { action: "onSelectComboBox", table: { disable: true } },
     contextItemClick: { action: "contextItemClick", table: { disable: true } },
     checkbox: { description: "Disable checkbox" },
@@ -77,6 +80,7 @@ const Template = ({
     <Row
       {...args}
       key="1"
+      style={{ width: "20%" }}
       {...checkedProps}
       {...elementProps}
       contextOptions={

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
-import { ComboBox } from "@docspace/components";
+import ComboBox from "@docspace/components/combobox";
 import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobileOnly } from "react-device-detect";
@@ -20,6 +20,7 @@ const User = ({
   selectionParentRoom,
   setSelectionParentRoom,
   changeUserType,
+  setIsScrollLocked,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -111,6 +112,10 @@ const User = ({
     }
   };
 
+  const onToggle = (e, isOpen) => {
+    setIsScrollLocked(isOpen);
+  };
+
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
   const role = getUserRole(user);
@@ -131,6 +136,7 @@ const User = ({
         userName={isExpect ? "" : user.displayName}
         withTooltip={withTooltip}
         tooltipContent={tooltipContent}
+        hideRoleIcon={!withTooltip}
       />
 
       <div className="name">
@@ -156,6 +162,8 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              directionY="both"
+              onToggle={onToggle}
               displaySelectedOption
             />
           ) : (

@@ -9,6 +9,7 @@ import EditingSvg32Url from "PUBLIC_DIR/images/icons/32/room/editing.svg?url";
 import FillingFormSvg32Url from "PUBLIC_DIR/images/icons/32/room/filling.form.svg?url";
 import ReviewSvg32Url from "PUBLIC_DIR/images/icons/32/room/review.svg?url";
 import ViewOnlySvg32Url from "PUBLIC_DIR/images/icons/32/room/view.only.svg?url";
+import PublicRoomSvg32Url from "PUBLIC_DIR/images/icons/32/room/public.svg?url";
 
 import { RoomsType } from "@docspace/common/constants";
 
@@ -44,6 +45,8 @@ const RoomLogo = ({
         return EditingSvg32Url;
       case RoomsType.CustomRoom:
         return CustomSvg32Url;
+      case RoomsType.PublicRoom:
+        return PublicRoomSvg32Url;
       default:
         return "";
     }
@@ -87,19 +90,19 @@ RoomLogo.defaultProps = {
 };
 
 RoomLogo.propTypes = {
-  /** Accepts type of the room */
+  /** Accepts room type */
   type: PropTypes.number,
-  /** Add privacy icon  */
+  /** Adds privacy icon  */
   isPrivacy: PropTypes.bool,
-  /** Add archive icon  */
+  /** Adds archive icon  */
   isArchive: PropTypes.bool,
-  /** Add checkbox when row/tile is hovered or checked  */
+  /** Adds checkbox when row/tile is hovered or checked  */
   withCheckbox: PropTypes.bool,
-  /** Add checked state to checkbox  */
+  /** Sets a checked state of the checkbox  */
   isChecked: PropTypes.bool,
-  /** Add indeterminate state to checkbox  */
+  /** Sets an indeterminate state of the checkbox  */
   isIndeterminate: PropTypes.bool,
-  /** Add onChange checkbox callback function  */
+  /** Sets onChange checkbox callback function */
   onChange: PropTypes.func,
   /** Accepts id  */
   id: PropTypes.string,

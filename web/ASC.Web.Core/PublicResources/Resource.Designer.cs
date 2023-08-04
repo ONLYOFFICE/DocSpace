@@ -151,6 +151,69 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apple ID.
+        /// </summary>
+        public static string ConsumersAppleId {
+            get {
+                return ResourceManager.GetString("ConsumersAppleId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Client ID.
+        /// </summary>
+        public static string ConsumersappleIdClientId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using an Apple ID account..
+        /// </summary>
+        public static string ConsumersAppleIdDescription {
+            get {
+                return ResourceManager.GetString("ConsumersAppleIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Apple ID. {0}Go to Apple Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersAppleIdInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersAppleIdInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A 10-character key identifier generated for the Sign in with Apple private key.
+        /// </summary>
+        public static string ConsumersappleIdKeyId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdKeyId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private key downloaded from Apple Developer.
+        /// </summary>
+        public static string ConsumersappleIdPrivateKey {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10-character developer account Team ID.
+        /// </summary>
+        public static string ConsumersappleIdTeamId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdTeamId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selectel authPwd.
         /// </summary>
         public static string ConsumersauthPwd {
@@ -205,20 +268,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users..
+        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
         /// </summary>
         public static string ConsumersBitlyInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBitlyInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
-        /// </summary>
-        public static string ConsumersBitlyInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersBitlyInstructionV11", resourceCulture);
             }
         }
         
@@ -259,20 +313,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBoxInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersBoxInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersBoxInstructionV11", resourceCulture);
             }
         }
         
@@ -304,20 +349,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal..
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
         /// </summary>
         public static string ConsumersClickatellInstruction {
             get {
                 return ResourceManager.GetString("ConsumersClickatellInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
-        /// </summary>
-        public static string ConsumersClickatellInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersClickatellInstructionV11", resourceCulture);
             }
         }
         
@@ -367,20 +403,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module..
+        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDocuSignInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDocuSignInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersDocuSignInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersDocuSignInstructionV11", resourceCulture);
             }
         }
         
@@ -403,20 +430,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDropBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersDropBoxInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersDropBoxInstructionV11", resourceCulture);
             }
         }
         
@@ -466,7 +484,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add the EasyBib application, you can easily create bibliographic lists in your documents..
+        ///   Looks up a localized string similar to Enable this app to create bibliographies in ONLYOFFICE editors. {0}Go to the EasyBib signup page and fill in the form to add ONLYOFFICE integration. After you get an app key, paste it below:.
         /// </summary>
         public static string ConsumersEasyBibInstruction {
             get {
@@ -520,20 +538,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the &apos;Edit person/company&apos; page..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersFacebookInstruction {
             get {
                 return ResourceManager.GetString("ConsumersFacebookInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersFacebookInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersFacebookInstructionV11", resourceCulture);
             }
         }
         
@@ -592,7 +601,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline..
+        ///   Looks up a localized string similar to Enable this app to allow your users to receive notifications about the messages even offline. {0}Go to Firebase console and add a new project for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersFirebaseInstruction {
             get {
@@ -664,7 +673,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Google Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Google Cloud Storage service to backup and store data from your portal. {0}Go to Google Cloud Platform Console and create a new service account for ONLYOFFICE. Paste the data you received below:.
         /// </summary>
         public static string ConsumersGoogleCloudInstruction {
             get {
@@ -691,20 +700,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersGoogleInstruction {
             get {
                 return ResourceManager.GetString("ConsumersGoogleInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersGoogleInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersGoogleInstructionV11", resourceCulture);
             }
         }
         
@@ -727,20 +727,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersLinkedInInstruction {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersLinkedInInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersLinkedInInstructionV11", resourceCulture);
             }
         }
         
@@ -808,6 +799,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Microsoft.
+        /// </summary>
+        public static string ConsumersMicrosoft {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Client ID.
+        /// </summary>
+        public static string ConsumersmicrosoftClientId {
+            get {
+                return ResourceManager.GetString("ConsumersmicrosoftClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client Secret.
+        /// </summary>
+        public static string ConsumersmicrosoftClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersmicrosoftClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Microsoft account..
+        /// </summary>
+        public static string ConsumersMicrosoftDescription {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoftDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Microsoft. {0}Go to Microsoft Azure and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersMicrosoftInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoftInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rackspace Cloud Storage.
         /// </summary>
         public static string ConsumersRackspace {
@@ -826,7 +862,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Rackspace Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Rackspace Cloud Storage service to backup and store data from your portal. {0}In the security settings of Rackspace Cloud Control Panel, click the Show link next to Rackspace API Key. Paste the data you received below:.
         /// </summary>
         public static string ConsumersRackspaceInstruction {
             get {
@@ -925,7 +961,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Amazon AWS S3 to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Amazon AWS S3 to backup and store data from your portal. {0}Go to the AWS Management Console and create access keys for ONLYOFFICE. Paste the data you received below:.
         /// </summary>
         public static string ConsumersS3Instruction {
             get {
@@ -997,7 +1033,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Selectel Cloud Storage service to backup and store data from your portal. {0}Get the access data for a user with Read/Write rights for containers where you plan to store your backups and paste it below:.
         /// </summary>
         public static string ConsumersSelectelInstruction {
             get {
@@ -1078,20 +1114,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersSkyDriveInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSkyDriveInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersSkyDriveInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersSkyDriveInstructionV11", resourceCulture);
             }
         }
         
@@ -1114,20 +1141,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries..
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
         /// </summary>
         public static string ConsumersSmscInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSmscInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
-        /// </summary>
-        public static string ConsumersSmscInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersSmscInstructionV11", resourceCulture);
             }
         }
         
@@ -1188,9 +1206,9 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below..
         /// </summary>
-        public static string ConsumersTelegramInstructionV11 {
+        public static string ConsumersTelegramInstruction {
             get {
-                return ResourceManager.GetString("ConsumersTelegramInstructionV11", resourceCulture);
+                return ResourceManager.GetString("ConsumersTelegramInstruction", resourceCulture);
             }
         }
         
@@ -1231,20 +1249,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to After you add Twilio, you will be able to call any CRM contact right from the browser..
+        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
         /// </summary>
         public static string ConsumersTwilioInstruction {
             get {
                 return ResourceManager.GetString("ConsumersTwilioInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
-        /// </summary>
-        public static string ConsumersTwilioInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersTwilioInstructionV11", resourceCulture);
             }
         }
         
@@ -1267,7 +1276,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Token.
+        ///   Looks up a localized string similar to Client ID.
         /// </summary>
         public static string ConsumerstwitterAccessToken_Default {
             get {
@@ -1276,7 +1285,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Token Secret.
+        ///   Looks up a localized string similar to Client Secret.
         /// </summary>
         public static string ConsumerstwitterAccessTokenSecret_Default {
             get {
@@ -1294,7 +1303,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the &apos;Edit person/company&apos; page and then view Twitter news feed..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersTwitterInstruction {
             get {
@@ -1303,16 +1312,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersTwitterInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersTwitterInstructionV11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Twitter ID.
+        ///   Looks up a localized string similar to API Key.
         /// </summary>
         public static string ConsumersTwitterKey {
             get {
@@ -1321,7 +1321,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Twitter Key.
+        ///   Looks up a localized string similar to API Key Secret.
         /// </summary>
         public static string ConsumersTwitterSecret {
             get {
@@ -1402,7 +1402,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the WordPress application you can easily publish the documents on your WordPress website, saving their formatting..
+        ///   Looks up a localized string similar to Enable the application to easily publish documents to your WordPress website. {0}On the Wordpress Developers page, create a new app for ONLYOFFICE integration. Paste the data you received below:.
         /// </summary>
         public static string ConsumersWordpressInstruction {
             get {
@@ -1465,20 +1465,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list..
+        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersYahooInstruction {
             get {
                 return ResourceManager.GetString("ConsumersYahooInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersYahooInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersYahooInstructionV11", resourceCulture);
             }
         }
         
@@ -1915,6 +1906,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First Name.
+        /// </summary>
+        public static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection error.
+        /// </summary>
+        public static string LdapSettingsConnectError {
+            get {
+                return ResourceManager.GetString("LdapSettingsConnectError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users could not be created, the received data are incorrect..
+        /// </summary>
+        public static string LdapSettingsErrorCantCreateUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCantCreateUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The server could not get settings..
+        /// </summary>
+        public static string LdapSettingsErrorCantGetLdapSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCantGetLdapSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The server could not save settings..
         /// </summary>
         public static string LdapSettingsErrorCantSaveLdapSettings {
@@ -1924,11 +1960,362 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect login or password..
+        /// </summary>
+        public static string LdapSettingsErrorCredentialsNotValid {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCredentialsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LDAP domain not found..
+        /// </summary>
+        public static string LdapSettingsErrorDomainNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorDomainNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No groups could be found..
+        /// </summary>
+        public static string LdapSettingsErrorGroupsNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorGroupsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid User Filter value..
+        /// </summary>
+        public static string LdapSettingsErrorIncorrectLdapFilter {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorIncorrectLdapFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights were unaffected..
+        /// </summary>
+        public static string LdapSettingsErrorLostRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorLostRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your account is not linked to the LDAP directory and your LDAP password is no longer active. Please change or set the password to your account at the profile settings page..
+        /// </summary>
+        public static string LdapSettingsErrorRemovedYourself {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorRemovedYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error..
+        /// </summary>
+        public static string LdapSettingsErrorUnknownError {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorUnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No users could be found..
+        /// </summary>
+        public static string LdapSettingsErrorUsersNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorUsersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get Group Attribute for one or several groups..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect Group Filter..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupFilter {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not obtain Group Name Attribute for one or several groups..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupNameAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupNameAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get Login Attribute for one or several users..
+        /// </summary>
+        public static string LdapSettingsErrorWrongLoginAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongLoginAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to connect to LDAP server. Please check if the server address and port number are correct..
+        /// </summary>
+        public static string LdapSettingsErrorWrongServerOrPort {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongServerOrPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get User Attribute for one or several users..
+        /// </summary>
+        public static string LdapSettingsErrorWrongUserAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongUserAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server internal error..
+        /// </summary>
+        public static string LdapSettingsInternalServerError {
+            get {
+                return ResourceManager.GetString("LdapSettingsInternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modifying LDAP users on ordinary portal users.
+        /// </summary>
+        public static string LdapSettingsModifyLdapUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsModifyLdapUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to adding user.
+        /// </summary>
+        public static string LdapSettingsStatusAddingGroupUser {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusAddingGroupUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate verification.
+        /// </summary>
+        public static string LdapSettingsStatusCertificateVerification {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusCertificateVerification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking LDAP support settings.
+        /// </summary>
+        public static string LdapSettingsStatusCheckingLdapSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusCheckingLdapSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LDAP disconnecting.
+        /// </summary>
+        public static string LdapSettingsStatusDisconnecting {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusDisconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving the group list from the LDAP server.
+        /// </summary>
+        public static string LdapSettingsStatusGettingGroupsFromLdap {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGettingGroupsFromLdap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving the user list from the LDAP server.
+        /// </summary>
+        public static string LdapSettingsStatusGettingUsersFromLdap {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGettingUsersFromLdap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting user {0} as {1} admin.
+        /// </summary>
+        public static string LdapSettingsStatusGivingRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGivingRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading LDAP base info.
+        /// </summary>
+        public static string LdapSettingsStatusLoadingBaseInfo {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusLoadingBaseInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to removing user.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingGroupUser {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingGroupUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing outdated groups that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldGroups {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing outdated access rights that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabling outdated user profiles that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving groups.
+        /// </summary>
+        public static string LdapSettingsStatusSavingGroups {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving settings.
+        /// </summary>
+        public static string LdapSettingsStatusSavingSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving photo.
+        /// </summary>
+        public static string LdapSettingsStatusSavingUserPhoto {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingUserPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving users.
+        /// </summary>
+        public static string LdapSettingsStatusSavingUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syncing users.
+        /// </summary>
+        public static string LdapSettingsStatusSyncingUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSyncingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating users access rights.
+        /// </summary>
+        public static string LdapSettingsStatusUpdatingAccessRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusUpdatingAccessRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating user photos.
+        /// </summary>
+        public static string LdapSettingsStatusUpdatingUserPhotos {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusUpdatingUserPhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A more secure authentication type is required. Please use encrypted connection or enable plain authentication on the server..
+        /// </summary>
+        public static string LdapSettingsStrongAuthRequired {
+            get {
+                return ResourceManager.GetString("LdapSettingsStrongAuthRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current pricing plan user limit has been reached.
+        /// </summary>
+        public static string LdapSettingsTenantQuotaSettled {
+            get {
+                return ResourceManager.GetString("LdapSettingsTenantQuotaSettled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StartTLS not supported for current LDAP server..
+        /// </summary>
+        public static string LdapSettingsTlsNotSupported {
+            get {
+                return ResourceManager.GetString("LdapSettingsTlsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Too many LDAP operations..
         /// </summary>
         public static string LdapSettingsTooManyOperations {
             get {
                 return ResourceManager.GetString("LdapSettingsTooManyOperations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file..
+        /// </summary>
+        public static string LdapSettingsWrongSidAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsWrongSidAttribute", resourceCulture);
             }
         }
         
@@ -1996,20 +2383,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
+        ///   Looks up a localized string similar to The email change instructions have been successfully sent.
         /// </summary>
         public static string MessageEmailChangeInstuctionsSentOnEmail {
             get {
                 return ResourceManager.GetString("MessageEmailChangeInstuctionsSentOnEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Virtual room {0} invitations sent successfully..
-        /// </summary>
-        public static string MessageRoomInvitationsSentOnEmail {
-            get {
-                return ResourceManager.GetString("MessageRoomInvitationsSentOnEmail", resourceCulture);
             }
         }
         
@@ -2073,33 +2451,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string PortalSecurity {
             get {
                 return ResourceManager.GetString("PortalSecurity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is greater than portals quota..
-        /// </summary>
-        public static string QuotaGreaterPortalError {
-            get {
-                return ResourceManager.GetString("QuotaGreaterPortalError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - some users cannot use this quota..
-        /// </summary>
-        public static string QuotaGroupError {
-            get {
-                return ResourceManager.GetString("QuotaGroupError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is less than used memory..
-        /// </summary>
-        public static string QuotaLessUsedMemoryError {
-            get {
-                return ResourceManager.GetString("QuotaLessUsedMemoryError", resourceCulture);
             }
         }
         
@@ -2347,6 +2698,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Third-party integrations.
+        /// </summary>
+        public static string TariffsFeature_thirdparty {
+            get {
+                return ResourceManager.GetString("TariffsFeature_thirdparty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} storage space.
         /// </summary>
         public static string TariffsFeature_total_size {
@@ -2374,7 +2734,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admins added:.
+        ///   Looks up a localized string similar to Number of admins/power users:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {

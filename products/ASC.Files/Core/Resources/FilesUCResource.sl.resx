@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Archive" xml:space="preserve">
+    <value>Arhiv</value>
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Pogosti dokumenti</value>
   </data>
@@ -72,5 +75,26 @@
   </data>
   <data name="Trash" xml:space="preserve">
     <value>Koš</value>
+  </data>
+  <data name="VirtualRooms" xml:space="preserve">
+    <value>Sobe</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Osebno</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Priljubljene</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Datoteke bodo kompresirane v {0}.tar.gz datoteko{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Datoteke bodo kompresirane v {0}.zip datoteko{1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Zasebna soba</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Zadnje</value>
   </data>
 </root>

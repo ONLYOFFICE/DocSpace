@@ -24,11 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.Classes;
-
 namespace ASC.Files.Core.Thirdparty;
 
-[Scope(Additional = typeof(CrossDaoExtension))]
+[Scope]
 internal class CrossDao //Additional SharpBox
 {
     private readonly IServiceProvider _serviceProvider;
@@ -84,9 +82,9 @@ internal class CrossDao //Additional SharpBox
         fromFile.Id = fromConverter(fromFile.Id);
 
         var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
-        using (var fromFileStream = mustConvert
-                                        ? await _fileConverter.ExecAsync(fromFile)
-                                        : await fromFileDao.GetFileStreamAsync(fromFile))
+        await using (var fromFileStream = mustConvert
+                         ? await _fileConverter.ExecAsync(fromFile)
+                         : await fromFileDao.GetFileStreamAsync(fromFile))
         {
             toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
             toFile = await toFileDao.SaveFileAsync(toFile, fromFileStream);
@@ -96,7 +94,7 @@ internal class CrossDao //Additional SharpBox
         {
             foreach (var size in _thumbnailSettings.Sizes)
             {
-                await globalStore.GetStore().CopyAsync(String.Empty,
+                await (await globalStore.GetStoreAsync()).CopyAsync(String.Empty,
                                       fromFileDao.GetUniqThumbnailPath(fromFile, size.Width, size.Height),
                                       String.Empty,
                                       toFileDao.GetUniqThumbnailPath(toFile, size.Width, size.Height));
@@ -243,18 +241,5 @@ internal class CrossDao //Additional SharpBox
         }
 
         return await toFolderDao.GetFolderAsync(toConverter(toFolderId));
-    }
-}
-
-public static class CrossDaoExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<SharpBoxDaoSelector>();
-        services.TryAdd<SharePointDaoSelector>();
-        services.TryAdd<OneDriveDaoSelector>();
-        services.TryAdd<GoogleDriveDaoSelector>();
-        services.TryAdd<DropboxDaoSelector>();
-        services.TryAdd<BoxDaoSelector>();
     }
 }

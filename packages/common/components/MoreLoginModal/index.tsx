@@ -23,6 +23,10 @@ const ProviderRow = styled.div`
     height: 24px;
     width: 24px;
     padding-left: 4px;
+
+    path {
+      fill: ${(props) => !props.theme.isBase && "#fff"};
+    }
   }
 
   .provider-name {
@@ -79,12 +83,17 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
       onClose={onClose}
       removeScroll={true}
     >
-      <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
+      <ModalDialog.Header>{t("Common:Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
         {ssoUrl && (
           <ProviderRow key={`ProviderItemSSO`}>
             <ReactSVG src={SsoReactSvgUrl} />
-            <Text fontSize="14px" fontWeight="600" className="provider-name">
+            <Text
+              fontSize="14px"
+              fontWeight="600"
+              className="provider-name"
+              noSelect
+            >
               {ssoLabel || getProviderTranslation("sso", t)}
             </Text>
             <Button
@@ -103,7 +112,12 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
           return (
             <ProviderRow key={`ProviderItem${index}`}>
               <ReactSVG src={icon} />
-              <Text fontSize="14px" fontWeight="600" className="provider-name">
+              <Text
+                fontSize="14px"
+                fontWeight="600"
+                className="provider-name"
+                noSelect
+              >
                 {getProviderTranslation(label, t)}
               </Text>
               <Button

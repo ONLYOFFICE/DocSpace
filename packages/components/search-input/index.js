@@ -4,6 +4,7 @@ import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import SearchIconReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 import InputBlock from "../input-block";
 import StyledSearchInput from "./styled-search-input";
+import { ReactSVG } from "react-svg";
 
 class SearchInput extends React.Component {
   constructor(props) {
@@ -69,6 +70,26 @@ class SearchInput extends React.Component {
         break;
     }
 
+    const showCrossIcon = !!this.state.inputValue || this.props.showClearButton;
+
+    const iconNode = (
+      <>
+        {showCrossIcon && (
+          <ReactSVG
+            className="icon-button_svg not-selectable"
+            src={CrossIconReactSvgUrl}
+          />
+        )}
+
+        {!showCrossIcon && (
+          <ReactSVG
+            className="icon-button_svg not-selectable"
+            src={SearchIconReactSvgUrl}
+          />
+        )}
+      </>
+    );
+
     return (
       <StyledSearchInput
         theme={this.props.theme}
@@ -82,11 +103,7 @@ class SearchInput extends React.Component {
           id={this.props.id}
           name={this.props.name}
           isDisabled={this.props.isDisabled}
-          iconName={
-            !!this.state.inputValue || this.props.showClearButton
-              ? CrossIconReactSvgUrl
-              : SearchIconReactSvgUrl
-          }
+          iconNode={iconNode}
           iconButtonClassName={
             !!this.state.inputValue || this.props.showClearButton
               ? "search-cross"
@@ -115,24 +132,29 @@ class SearchInput extends React.Component {
 SearchInput.propTypes = {
   /** Used as HTML `id` property */
   id: PropTypes.string,
+  /** Sets the unique element name */
   name: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
-  /** Value of the input */
+  /** Input value */
   value: PropTypes.string,
-  /** Indicates the input field has scale  */
+  /** Indicates that the input field has scale  */
   scale: PropTypes.bool,
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
-  /** Called with the new value. Required when input is not read only. Parent should pass it back as `value` */
+  /** Sets a callback function that allows handling the component's changing events */
   onChange: PropTypes.func,
+  /** Sets a callback function that is triggered when the clear icon of the search input is clicked */
   onClearSearch: PropTypes.func,
-  /** Indicates that the field cannot be used (e.g not authorized, or changes not saved) */
+  /** Indicates that the field cannot be used (e.g not authorized, or the changes have not been saved) */
   isDisabled: PropTypes.bool,
+  /** Displays the Clear Button */
   showClearButton: PropTypes.bool,
+  /** Sets the refresh timeout of the input  */
   refreshTimeout: PropTypes.number,
+  /** Sets the input to refresh automatically */
   autoRefresh: PropTypes.bool,
   /** Child elements */
   children: PropTypes.any,

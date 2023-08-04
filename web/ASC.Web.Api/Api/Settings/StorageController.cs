@@ -29,7 +29,7 @@ using ASC.EventBus.Abstractions;
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class StorageController : BaseSettingsController
+public class StorageController : BaseSettingsController, IDisposable
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -51,6 +51,7 @@ public class StorageController : BaseSettingsController
     private readonly ILogger _log;
     private readonly IEventBus _eventBus;
     private readonly SecurityContext _securityContext;
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
     public StorageController(
         ILoggerProvider option,
@@ -96,26 +97,43 @@ public class StorageController : BaseSettingsController
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns a list of all the portal storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage")]
-    public List<StorageDto> GetAllStorages()
+    public async Task<List<StorageDto>> GetAllStoragesAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone)
         {
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        var current = _settingsManager.Load<StorageSettings>();
+        var current = await _settingsManager.LoadAsync<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Returns the storage progress.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the storage progress</short>
+    /// <returns type="System.Double, System">Storage progress</returns>
+    /// <path>api/2.0/settings/storage/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("storage/progress")]
-    public double GetStorageProgress()
+    public async Task<double> GetStorageProgressAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone)
         {
@@ -125,29 +143,47 @@ public class StorageController : BaseSettingsController
         return _serviceClient.GetProgress(Tenant.Id);
     }
 
-    public readonly object Locker = new object();
-
+    /// <summary>
+    /// Starts the storage encryption process.
+    /// </summary>
+    /// <short>Start the storage encryption process</short>
+    /// <category>Encryption</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api" name="inDto">Storage encryption request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/encryption/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("encryption/start")]
-    public bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
+    public async Task<bool> StartStorageEncryptionAsync(StorageEncryptionRequestsDto inDto)
     {
         if (_coreBaseSettings.CustomMode)
         {
             return false;
         }
 
-        lock (Locker)
+        try
         {
-            var activeTenants = _tenantManager.GetTenants();
+            await _semaphore.WaitAsync();
+
+            var activeTenants = await _tenantManager.GetTenantsAsync();
 
             if (activeTenants.Count > 0)
             {
-                StartEncryption(inDto.NotifyUsers);
+                await StartEncryptionAsync(inDto.NotifyUsers);
             }
         }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+
         return true;
     }
 
-    private void StartEncryption(bool notifyUsers)
+    private async Task StartEncryptionAsync(bool notifyUsers)
     {
         if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
         {
@@ -159,27 +195,27 @@ public class StorageController : BaseSettingsController
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var storages = GetAllStorages();
+        var storages = await GetAllStoragesAsync();
 
         if (storages.Any(s => s.Current))
         {
             throw new NotSupportedException();
         }
 
-        var cdnStorages = GetAllCdnStorages();
+        var cdnStorages = await GetAllCdnStoragesAsync();
 
         if (cdnStorages.Any(s => s.Current))
         {
             throw new NotSupportedException();
         }
 
-        var tenants = _tenantManager.GetTenants();
+        var tenants = await _tenantManager.GetTenantsAsync();
 
         foreach (var tenant in tenants)
         {
-            var progress = _backupAjaxHandler.GetBackupProgress(tenant.Id);
+            var progress = await _backupAjaxHandler.GetBackupProgressAsync(tenant.Id);
             if (progress != null && !progress.IsCompleted)
             {
                 throw new Exception();
@@ -191,7 +227,7 @@ public class StorageController : BaseSettingsController
             _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, CacheNotifyAction.Insert);
         }
 
-        var settings = _encryptionSettingsHelper.Load();
+        var settings = await _encryptionSettingsHelper.LoadAsync();
 
         settings.NotifyUsers = notifyUsers;
 
@@ -205,7 +241,7 @@ public class StorageController : BaseSettingsController
             settings.Status = EncryprtionStatus.DecryptionStarted;
         }
 
-        _messageService.Send(settings.Status == EncryprtionStatus.EncryptionStarted ? MessageAction.StartStorageEncryption : MessageAction.StartStorageDecryption);
+        await _messageService.SendAsync(settings.Status == EncryprtionStatus.EncryptionStarted ? MessageAction.StartStorageEncryption : MessageAction.StartStorageDecryption);
 
         var serverRootPath = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 
@@ -217,19 +253,19 @@ public class StorageController : BaseSettingsController
             {
                 if (settings.Status == EncryprtionStatus.EncryptionStarted)
                 {
-                    _studioNotifyService.SendStorageEncryptionStart(serverRootPath);
+                    await _studioNotifyService.SendStorageEncryptionStartAsync(serverRootPath);
                 }
                 else
                 {
-                    _studioNotifyService.SendStorageDecryptionStart(serverRootPath);
+                    await _studioNotifyService.SendStorageDecryptionStartAsync(serverRootPath);
                 }
             }
 
             tenant.SetStatus(TenantStatus.Encryption);
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
         }
 
-        _encryptionSettingsHelper.Save(settings);
+        await _encryptionSettingsHelper.SaveAsync(settings);
 
         _eventBus.Publish(new EncryptionDataStorageRequestedIntegrationEvent
         (
@@ -241,18 +277,22 @@ public class StorageController : BaseSettingsController
               },
               serverRootPath: serverRootPath,
               createBy: _securityContext.CurrentAccount.ID,
-              tenantId: _tenantManager.GetCurrentTenant().Id
+              tenantId: await _tenantManager.GetCurrentTenantIdAsync()
 
         ));
     }
 
     /// <summary>
-    /// Get storage encryption settings
+    /// Returns the storage encryption settings.
     /// </summary>
-    /// <returns>EncryptionSettings</returns>
+    /// <short>Get the storage encryption settings</short>
+    /// <category>Encryption</category>
+    /// <returns type="ASC.Core.Encryption.EncryptionSettings, ASC.Core.Encryption">Storage encryption settings</returns>
+    /// <path>api/2.0/settings/encryption/settings</path>
+    /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
     [HttpGet("encryption/settings")]
-    public EncryptionSettings GetStorageEncryptionSettings()
+    public async Task<EncryptionSettings> GetStorageEncryptionSettingsAsync()
     {
         try
         {
@@ -271,9 +311,9 @@ public class StorageController : BaseSettingsController
                 throw new SecurityException(Resource.ErrorAccessDenied);
             }
 
-            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-            var settings = _encryptionSettingsHelper.Load();
+            var settings = await _encryptionSettingsHelper.LoadAsync();
 
             settings.Password = string.Empty; // Don't show password
 
@@ -286,6 +326,14 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the storage encryption progress.
+    /// </summary>
+    /// <short>Get the storage encryption progress</short>
+    /// <category>Encryption</category>
+    /// <returns type="System.Nullable{System.Double}, System">Storage encryption progress</returns>
+    /// <path>api/2.0/settings/encryption/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("encryption/progress")]
     public double? GetStorageEncryptionProgress()
     {
@@ -307,12 +355,21 @@ public class StorageController : BaseSettingsController
         return _encryptionWorker.GetEncryptionProgress();
     }
 
+    /// <summary>
+    /// Updates a storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update a storage</short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, ASC.Web.Api" name="inDto">Storage settings request parameters</param>
+    /// <returns type="ASC.Data.Storage.Configuration.StorageSettings, ASC.Data.Storage">Updated storage settings</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage")]
-    public StorageSettings UpdateStorage(StorageRequestsDto inDto)
+    public async Task<StorageSettings> UpdateStorageAsync(StorageRequestsDto inDto)
     {
         try
         {
-            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
             if (!_coreBaseSettings.Standalone)
             {
@@ -325,7 +382,7 @@ public class StorageController : BaseSettingsController
                 throw new ArgumentException("module");
             }
 
-            var settings = _settingsManager.Load<StorageSettings>();
+            var settings = await _settingsManager.LoadAsync<StorageSettings>();
             if (settings.Module == inDto.Module)
             {
                 return settings;
@@ -334,7 +391,7 @@ public class StorageController : BaseSettingsController
             settings.Module = inDto.Module;
             settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
 
-            StartMigrate(settings);
+            await StartMigrateAsync(settings);
             return settings;
         }
         catch (Exception e)
@@ -344,25 +401,33 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Resets the storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the storage settings</short>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage")]
-    public void ResetStorageToDefault()
+    public async Task ResetStorageToDefaultAsync()
     {
         try
         {
-            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
             if (!_coreBaseSettings.Standalone)
             {
                 throw new SecurityException(Resource.ErrorAccessDenied);
             }
 
-            var settings = _settingsManager.Load<StorageSettings>();
+            var settings = await _settingsManager.LoadAsync<StorageSettings>();
 
             settings.Module = null;
             settings.Props = null;
 
 
-            StartMigrate(settings);
+            await StartMigrateAsync(settings);
         }
         catch (Exception e)
         {
@@ -371,25 +436,43 @@ public class StorageController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns a list of all the CDN storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the CDN storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of the CDN storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/cdn")]
-    public List<StorageDto> GetAllCdnStorages()
+    public async Task<List<StorageDto>> GetAllCdnStoragesAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone)
         {
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        var current = _settingsManager.Load<CdnStorageSettings>();
+        var current = await _settingsManager.LoadAsync<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Updates the CDN storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update the CDN storage</short>
+    /// <returns type="ASC.Data.Storage.Configuration.CdnStorageSettings, ASC.Data.Storage">Updated CDN storage</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, ASC.Web.Api" name="inDto">CDN storage settings request parameters</param>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage/cdn")]
-    public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
+    public async Task<CdnStorageSettings> UpdateCdnAsync(StorageRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone)
         {
@@ -402,7 +485,7 @@ public class StorageController : BaseSettingsController
             throw new ArgumentException("module");
         }
 
-        var settings = _settingsManager.Load<CdnStorageSettings>();
+        var settings = await _settingsManager.LoadAsync<CdnStorageSettings>();
         if (settings.Module == inDto.Module)
         {
             return settings;
@@ -424,25 +507,42 @@ public class StorageController : BaseSettingsController
         return settings;
     }
 
+    /// <summary>
+    /// Resets the CDN storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the CDN storage settings</short>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage/cdn")]
-    public void ResetCdnToDefault()
+    public async Task ResetCdnToDefaultAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!_coreBaseSettings.Standalone)
         {
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        _storageSettingsHelper.Clear(_settingsManager.Load<CdnStorageSettings>());
+        await _storageSettingsHelper.ClearAsync(await _settingsManager.LoadAsync<CdnStorageSettings>());
     }
 
+    /// <summary>
+    /// Returns a list of all the backup storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the backup storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of the backup storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage/backup</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/backup")]
-    public List<StorageDto> GetAllBackupStorages()
+    public async Task<List<StorageDto>> GetAllBackupStorages()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var schedule = _backupAjaxHandler.GetSchedule();
+        var schedule = await _backupAjaxHandler.GetScheduleAsync();
         var current = new StorageSettings();
 
         if (schedule != null && schedule.StorageType == BackupStorageType.ThirdPartyConsumer)
@@ -458,23 +558,30 @@ public class StorageController : BaseSettingsController
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    private void StartMigrate(StorageSettings settings)
+    private async Task StartMigrateAsync(StorageSettings settings)
     {
         _serviceClient.Migrate(Tenant.Id, settings);
 
         Tenant.SetStatus(TenantStatus.Migrating);
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
     }
 
     /// <summary>
     /// Returns a list of all Amazon regions.
     /// </summary>
     /// <category>Storage</category>
-    /// <short>Get all Amazon regions</short>
-    /// <returns>List of the Amazon regions</returns>
+    /// <short>Get Amazon regions</short>
+    /// <returns type="System.Object, System">List of the Amazon regions</returns>
+    /// <path>api/2.0/settings/storage/s3/regions</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/s3/regions")]
     public object GetAmazonS3Regions()
     {
         return Amazon.RegionEndpoint.EnumerableAllRegions;
+    }
+
+    public void Dispose()
+    {
+        _semaphore.Dispose();
     }
 }

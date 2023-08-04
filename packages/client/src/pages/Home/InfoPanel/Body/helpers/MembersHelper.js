@@ -23,7 +23,7 @@ class MembersHelper {
       },
       collaborator: {
         key: "collaborator",
-        label: this.t("Common:Collaborator"),
+        label: this.t("Common:PowerUser"),
         access: ShareAccessRights.Collaborator,
       },
       viewer: {
@@ -114,6 +114,8 @@ class MembersHelper {
           options.viewer,
           ...deleteOption,
         ];
+      default:
+        return [];
     }
   };
 

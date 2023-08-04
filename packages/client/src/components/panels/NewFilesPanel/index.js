@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import Backdrop from "@docspace/components/backdrop";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
@@ -24,6 +23,11 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import {
+  getCategoryTypeByFolderType,
+  getCategoryUrl,
+} from "SRC_DIR/helpers/utils";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -82,8 +86,9 @@ class NewFilesPanel extends React.Component {
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.setState({ inProgress: false });
-        this.onClose();
+        this.setState({ inProgress: false }, () => {
+          this.onClose();
+        });
       });
   };
 
@@ -94,11 +99,8 @@ class NewFilesPanel extends React.Component {
 
     const { id, extension: fileExst } = e.target.dataset;
 
-    const {
-      /* updateFolderBadge, */ markAsRead,
-      newFiles,
-      refreshFiles,
-    } = this.props;
+    const { /* updateFolderBadge, */ markAsRead, newFiles, refreshFiles } =
+      this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
@@ -127,21 +129,42 @@ class NewFilesPanel extends React.Component {
   };
 
   onFileClick = (item) => {
-    const { id, fileExst, webUrl, fileType, providerKey } = item;
     const {
-      filter,
+      id,
+      fileExst,
+      webUrl,
+      fileType,
+      providerKey,
+      rootFolderType,
+
+      title,
+    } = item;
+    const {
       setMediaViewerData,
-      fetchFiles,
+
       addFileToRecentlyViewed,
       playlist,
-      setCurrentItem,
+
       currentFolderId,
+      setIsLoading,
     } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter)
-        .catch((err) => toastr.error(err))
-        .finally(() => this.onClose());
+      const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
+
+      const state = { title, rootFolderType, isRoot: false };
+      setIsLoading(true);
+
+      const url = getCategoryUrl(categoryType, id);
+
+      const filter = FilesFilter.getDefault();
+      filter.folder = id;
+
+      window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
+
+      this.setState({ inProgress: false }, () => {
+        this.onClose();
+      });
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
 
@@ -169,13 +192,32 @@ class NewFilesPanel extends React.Component {
 
       if (isMedia) {
         if (currentFolderId !== item.folderId) {
-          fetchFiles(item.folderId, null)
-            .then(() => {
-              const mediaItem = { visible: true, id };
-              setMediaViewerData(mediaItem);
-            })
-            .catch((err) => toastr.error(err))
-            .finally(() => this.onClose());
+          const categoryType = getCategoryTypeByFolderType(
+            rootFolderType,
+            item.folderId
+          );
+
+          const state = {
+            title: "",
+            rootFolderType,
+
+            isRoot: false,
+          };
+          setIsLoading(true);
+
+          const url = getCategoryUrl(categoryType, item.folderId);
+
+          const filter = FilesFilter.getDefault();
+          filter.folder = id;
+
+          window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
+
+          const mediaItem = { visible: true, id };
+          setMediaViewerData(mediaItem);
+
+          this.setState({ inProgress: false }, () => {
+            this.onClose();
+          });
         } else {
           const mediaItem = { visible: true, id };
           setMediaViewerData(mediaItem);
@@ -318,25 +360,24 @@ export default inject(
     selectedFolderStore,
     dialogsStore,
     settingsStore,
+    clientLoadingStore,
   }) => {
     const {
-      fetchFiles,
-      filter,
       addFileToRecentlyViewed,
-      //setIsLoading,
-      isLoading,
-      //updateFilesBadge,
-      //updateFolderBadge,
-      //updateFoldersBadge,
+
       hasNew,
       refreshFiles,
     } = filesStore;
+
+    const { setIsSectionFilterLoading, isLoading } = clientLoadingStore;
+
+    const setIsLoading = (param) => {
+      setIsSectionFilterLoading(param);
+    };
+
     //const { updateRootBadge } = treeFoldersStore;
-    const {
-      playlist,
-      setMediaViewerData,
-      setCurrentItem,
-    } = mediaViewerDataStore;
+    const { playlist, setMediaViewerData, setCurrentItem } =
+      mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts, id: currentFolderId } = selectedFolderStore;
@@ -349,7 +390,6 @@ export default inject(
     } = dialogsStore;
 
     return {
-      filter,
       pathParts,
       visible,
       newFiles,
@@ -360,28 +400,22 @@ export default inject(
       setCurrentItem,
       currentFolderId,
 
-      //setIsLoading,
-      fetchFiles,
       setMediaViewerData,
       addFileToRecentlyViewed,
       getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-      // updateRootBadge,
-      // updateFolderBadge,
-      // updateFoldersBadge,
-      // updateFilesBadge,
 
       theme: auth.settingsStore.theme,
       hasNew,
       refreshFiles,
+
+      setIsLoading,
     };
   }
 )(
-  withRouter(
-    withTranslation(["NewFilesPanel", "Common"])(
-      withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
-    )
+  withTranslation(["NewFilesPanel", "Common"])(
+    withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
   )
 );

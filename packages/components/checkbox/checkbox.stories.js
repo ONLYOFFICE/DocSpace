@@ -55,11 +55,11 @@ const AllCheckboxesTemplate = (args) => {
         alignItems: "center",
       }}
     >
-      <Checkbox />
-      <Checkbox isChecked={true} />
-      <Checkbox isDisabled={true} />
-      <Checkbox isIndeterminate={true} />
-      <Checkbox label="Some label" />
+      <Checkbox onChange={args.onChange} />
+      <Checkbox isChecked={true} onChange={args.onChange} />
+      <Checkbox isDisabled={true} onChange={args.onChange} />
+      <Checkbox isIndeterminate={true} onChange={args.onChange} />
+      <Checkbox label="Some label" onChange={args.onChange} />
     </div>
   );
 };

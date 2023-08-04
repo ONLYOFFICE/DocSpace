@@ -1,7 +1,14 @@
 {
-  "BackupPortal": "Créer une sauvegarde de DocSpace",
-  "ChangeOwner": "Nommer les administrateurs du module",
-  "DeactivateOrDeletePortal": "Définir les droits d'accès aux modules",
-  "ManagePortal": "Gérer la configuration du portail",
-  "ManageUser": "Gérer les comptes d'utilisateurs"
+  "AppointAdmin": "Nommer les administrateurs",
+  "BackupPortal": "Sauvegarde de données de DocSpace",
+  "ChangeInstruction": "Pour changer le propriétaire de DocSpace, veuillez choisir le nom du nouveau propriétaire ci-dessous.",
+  "ChangeOwner": "Changer le propriétaire de DocSpace",
+  "ChangeUser": "Modifier l’utilisateur",
+  "DeactivateOrDeletePortal": "Désactiver ou supprimer DocSpace",
+  "DoTheSame": "Faire la même chose que les administrateurs",
+  "ManagePortal": "Gérer la configuration de DocSpace",
+  "ManageUser": "Gérer les comptes d'utilisateurs",
+  "NewPortalOwner": "Nouveau propriétaire de DocSpace",
+  "PortalOwnerCan": "Le propriétaire de DocSpace peut :",
+  "SetAccessRights": "Définir les droits d’accès"
 }

@@ -66,10 +66,9 @@ public class LicenseReader
         _constants = constants;
     }
 
-    public string CustomerId
+    public async Task SetCustomerIdAsync(string value)
     {
-        get => _coreSettings.GetSetting(CustomerIdKey);
-        private set => _coreSettings.SaveSetting(CustomerIdKey, value);
+        await _coreSettings.SaveSettingAsync(CustomerIdKey, value);
     }
 
     private Stream GetLicenseStream(bool temp = false)
@@ -83,7 +82,7 @@ public class LicenseReader
         return File.OpenRead(path);
     }
 
-    public void RejectLicense()
+    public async Task RejectLicenseAsync()
     {
         if (File.Exists(_licensePathTemp))
         {
@@ -95,10 +94,10 @@ public class LicenseReader
             File.Delete(LicensePath);
         }
 
-        _tariffService.DeleteDefaultBillingInfo();
+        await _tariffService.DeleteDefaultBillingInfoAsync();
     }
 
-    public void RefreshLicense()
+    public async Task RefreshLicenseAsync()
     {
         try
         {
@@ -115,13 +114,13 @@ public class LicenseReader
                 temp = false;
             }
 
-            using (var licenseStream = GetLicenseStream(temp))
+            await using (var licenseStream = GetLicenseStream(temp))
             using (var reader = new StreamReader(licenseStream))
             {
                 var licenseJsonString = reader.ReadToEnd();
                 var license = License.Parse(licenseJsonString);
 
-                LicenseToDB(license);
+                await LicenseToDBAsync(license);
 
                 if (temp)
                 {
@@ -188,35 +187,41 @@ public class LicenseReader
         return license.DueDate.Date;
     }
 
-    private void LicenseToDB(License license)
+    private async Task LicenseToDBAsync(License license)
     {
         Validate(license);
 
-        CustomerId = license.CustomerId;
+        await SetCustomerIdAsync(license.CustomerId);
 
-        var defaultQuota = _tenantManager.GetTenantQuota(Tenant.DefaultTenant);
+        var defaultQuota = await _tenantManager.GetTenantQuotaAsync(Tenant.DefaultTenant);
 
         var quota = new TenantQuota(-1000)
         {
-            CountUser = _constants.MaxEveryoneCount,
+            Name = "license",
+            Trial = license.Trial,
+            Audit = true,
+            Ldap = true,
+            Sso = true,
+            WhiteLabel = true,
+            ThirdParty = true,
+            AutoBackupRestore = true,
+            Oauth = true,
+            ContentSearch = true,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
-            Name = "license",
             DocsEdition = true,
-            Customization = license.Customization,
-            Update = true,
-            Trial = license.Trial
+            Customization = license.Customization
         };
 
-        _tenantManager.SaveTenantQuota(quota);
+        await _tenantManager.SaveTenantQuotaAsync(quota);
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = license.DueDate,
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        await _tariffService.SetTariffAsync(Tenant.DefaultTenant, tariff, new List<TenantQuota> { quota });
     }
 
     private void LogError(Exception error)

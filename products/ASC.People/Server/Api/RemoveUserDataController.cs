@@ -59,36 +59,64 @@ public class RemoveUserDataController : ApiControllerBase
         _apiContext = apiContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the deletion progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("remove/progress")]
-    public RemoveProgressItem GetRemoveProgress(Guid userId)
+    public async Task<RemoveProgressItem> GetRemoveProgressAsync(Guid userId)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
+    /// <summary>
+    /// Sends instructions for deleting a user profile.
+    /// </summary>
+    /// <short>
+    /// Send the deletion instructions
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns type="System.Object, System">Information message</returns>
+    /// <path>api/2.0/people/self/delete</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("self/delete")]
-    public object SendInstructionsToDelete()
+    public async Task<object> SendInstructionsToDeleteAsync()
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
-        if (user.IsLDAP())
+        if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }
 
-        _studioNotifyService.SendMsgProfileDeletion(user);
-        _messageService.Send(MessageAction.UserSentDeleteInstructions);
+        await _studioNotifyService.SendMsgProfileDeletionAsync(user);
+        await _messageService.SendAsync(MessageAction.UserSentDeleteInstructions);
 
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
+    /// <summary>
+    /// Starts the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]
-    public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
+    public async Task<RemoveProgressItem> StartRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(inDto.UserId);
+        var user = await _userManager.GetUsersAsync(inDto.UserId);
 
         if (user == null || user.Id == Constants.LostUser.Id)
         {
@@ -103,10 +131,19 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
     }
 
+    /// <summary>
+    /// Terminates the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the deletion process</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/remove/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("remove/terminate")]
-    public void TerminateRemove(TerminateRequestDto inDto)
+    public async Task TerminateRemoveAsync(TerminateRequestDto inDto)
     {
-        _permissionContext.DemandPermissions(Constants.Action_EditUser);
+        await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
         _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }

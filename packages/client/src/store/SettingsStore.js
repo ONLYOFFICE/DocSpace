@@ -17,6 +17,7 @@ import {
 class SettingsStore {
   thirdPartyStore;
   treeFoldersStore;
+  publicRoomStore;
 
   isErrorSettings = null;
   expandedSetting = null;
@@ -31,6 +32,7 @@ class SettingsStore {
   recentSection = null;
   hideConfirmConvertSave = null;
   keepNewFileName = null;
+  thumbnails1280x720 = window.DocSpaceConfig?.thumbnails1280x720 || false;
   chunkUploadSize = 1024 * 1023; // 1024 * 1023; //~0.999mb
 
   settingsIsLoaded = false;
@@ -58,15 +60,17 @@ class SettingsStore {
   extsDocument = [];
   internalFormats = {};
   masterFormExtension = "";
+  canSearchByContent = false;
 
   html = [".htm", ".mht", ".html"];
   ebook = [".fb2", ".ibk", ".prc", ".epub"];
 
-  constructor(thirdPartyStore, treeFoldersStore) {
+  constructor(thirdPartyStore, treeFoldersStore, publicRoomStore) {
     makeAutoObservable(this);
 
     this.thirdPartyStore = thirdPartyStore;
     this.treeFoldersStore = treeFoldersStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -108,7 +112,8 @@ class SettingsStore {
         this.setFilesSettings(settings);
         this.setIsLoaded(true);
 
-        if (!settings.enableThirdParty) return;
+        if (!settings.enableThirdParty || this.publicRoomStore.isPublicRoom)
+          return;
 
         return axios
           .all([
@@ -149,6 +154,10 @@ class SettingsStore {
     api.files.storeForceSave(data).then((res) => this.setStoreForcesave(res));
 
   setStoreForcesave = (val) => (this.storeForcesave = val);
+
+  setThumbnails1280x720 = (enabled) => {
+    this.thumbnails1280x720 = enabled;
+  };
 
   setKeepNewFileName = (data) => {
     api.files
@@ -307,6 +316,9 @@ class SettingsStore {
           break;
         case RoomsType.ReviewRoom:
           path = "review.svg";
+          break;
+        case RoomsType.PublicRoom:
+          path = "public.svg";
           break;
       }
     }

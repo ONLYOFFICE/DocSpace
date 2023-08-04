@@ -68,6 +68,11 @@ public class EmailValidationKeyProvider
         _logger = logger;
     }
 
+    public async Task<string> GetEmailKeyAsync(string email)
+    {
+        return GetEmailKey(await _tenantManager.GetCurrentTenantIdAsync(), email);
+    }
+
     public string GetEmailKey(string email)
     {
         return GetEmailKey(_tenantManager.GetCurrentTenant().Id, email);
@@ -101,25 +106,25 @@ public class EmailValidationKeyProvider
         }
     }
 
-    public ValidationResult ValidateEmailKey(string email, string key)
+    public async Task<ValidationResult> ValidateEmailKeyAsync(string email, string key)
     {
-        return ValidateEmailKey(email, key, TimeSpan.MaxValue);
+        return await ValidateEmailKeyAsync(email, key, TimeSpan.MaxValue);
     }
 
-    public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
+    public async Task<ValidationResult> ValidateEmailKeyAsync(string email, string key, TimeSpan validInterval)
     {
-        var result = ValidateEmailKeyInternal(email, key, validInterval);
-        _logger.DebugValidationResult(result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
+        var result = await ValidateEmailKeyInternalAsync(email, key, validInterval);
+        _logger.DebugValidationResult(result, email, key, validInterval, await _tenantManager.GetCurrentTenantIdAsync());
 
         return result;
     }
 
-    private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
+    private async Task<ValidationResult> ValidateEmailKeyInternalAsync(string email, string key, TimeSpan validInterval)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(email);
         ArgumentNullException.ThrowIfNull(key);
 
-        email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
+        email = FormatEmail(await _tenantManager.GetCurrentTenantIdAsync(), email);
         var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length != 2)
         {
@@ -162,12 +167,28 @@ public class EmailValidationKeyProvider
     }
 }
 
+/// <summary>
+/// </summary>
 public class EmailValidationKeyModel
 {
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
+
+    /// <summary>Employee type</summary>
+    /// <type>System.Nullabel{ASC.Core.Users.EmployeeType}, System</type>
     public EmployeeType? EmplType { get; set; }
+
+    /// <summary>Email</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>User ID</summary>
+    /// <type>System.Nullabel{System.Guid}, System</type>
     public Guid? UiD { get; set; }
+
+    /// <summary>Confirmation email type</summary>
+    /// <type>System.Nullabel{ASC.Web.Studio.Utility.ConfirmType}, System</type>
     public ConfirmType? Type { get; set; }
 
     public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)

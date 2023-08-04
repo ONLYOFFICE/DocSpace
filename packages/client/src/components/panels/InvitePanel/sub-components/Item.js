@@ -2,21 +2,21 @@
 import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import React, { useState, useEffect } from "react";
 import Avatar from "@docspace/components/avatar";
+import Text from "@docspace/components/text";
 
 import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
 
 import {
-  StyledComboBox,
   StyledEditInput,
   StyledEditButton,
   StyledCheckIcon,
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
-  StyledText,
 } from "../StyledInvitePanel";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import AccessSelector from "./AccessSelector";
 
 const Item = ({
   t,
@@ -27,6 +27,8 @@ const Item = ({
   setHasErrors,
   roomType,
   isOwner,
+  inputsRef,
+  setIsOpenItemAccess,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -37,7 +39,7 @@ const Item = ({
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = getAccessOptions(t, roomType, true, false, isOwner);
+  const accesses = getAccessOptions(t, roomType, true, true, isOwner);
 
   const filteredAccesses = filterUserRoleOptions(accesses, item, true);
 
@@ -114,9 +116,9 @@ const Item = ({
 
   const displayBody = (
     <>
-      <StyledText {...textProps} truncate noSelect>
+      <Text {...textProps} truncate noSelect>
         {inputValue}
-      </StyledText>
+      </Text>
       {hasError ? (
         <>
           <StyledHelpButton
@@ -127,23 +129,24 @@ const Item = ({
             size={16}
             color="#F21C0E"
           />
-          <StyledDeleteIcon size="medium" onClick={removeItem} />
+          <StyledDeleteIcon
+            className="delete-icon"
+            size="medium"
+            onClick={removeItem}
+          />
         </>
       ) : (
-        <StyledComboBox
-          onSelect={selectItemAccess}
-          noBorder
-          options={filteredAccesses}
-          size="content"
-          scaled={false}
-          manualWidth="fit-content"
-          selectedOption={defaultAccess}
-          showDisabledItems
-          modernView
-          directionX="right"
-          directionY="bottom"
-          isDefaultMode={false}
-          fixedDirection={true}
+        <AccessSelector
+          className="user-access"
+          t={t}
+          roomType={roomType}
+          defaultAccess={defaultAccess?.access}
+          onSelectAccess={selectItemAccess}
+          containerRef={inputsRef}
+          isOwner={isOwner}
+          withRemove={true}
+          filteredAccesses={filteredAccesses}
+          setIsOpenItemAccess={setIsOpenItemAccess}
         />
       )}
     </>

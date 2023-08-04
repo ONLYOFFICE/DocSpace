@@ -16,7 +16,7 @@ import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
-import LoadingStore from "./LoadingStore";
+
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import {
   isMobile,
@@ -44,20 +44,14 @@ class PeopleStore {
   avatarEditorStore = null;
   inviteLinksStore = null;
   dialogStore = null;
-  loadingStore = null;
-  infoPanelStore = null;
   setupStore = null;
   accessRightsStore = null;
+  profileActionsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
+  isLoadedProfileSectionBody = false;
 
-  constructor(
-    authStore,
-    infoPanelStore,
-    setupStore,
-    accessRightsStore,
-    dialogsStore
-  ) {
+  constructor(authStore, setupStore, accessRightsStore, dialogsStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -70,8 +64,7 @@ class PeopleStore {
     this.avatarEditorStore = new AvatarEditorStore(this);
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
-    this.loadingStore = new LoadingStore();
-    this.infoPanelStore = infoPanelStore;
+
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
     this.dialogsStore = dialogsStore;
@@ -92,21 +85,17 @@ class PeopleStore {
     //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
-
-    this.loadingStore.setIsLoaded(true);
+    await this.authStore.tfaStore.getTfaType();
   };
 
   reset = () => {
     this.isInit = false;
-    this.loadingStore.setIsLoaded(false);
   };
 
   resetFilter = () => {
-    const { getUsersList } = this.usersStore;
-
     const filter = Filter.getDefault();
 
-    return getUsersList(filter, true);
+    window.DocSpace.navigate(`accounts/filter?${filter.toUrlParams()}`);
   };
 
   onChangeType = (e) => {
@@ -173,10 +162,8 @@ class PeopleStore {
   };
 
   changeStatus = (status, users) => {
-    const {
-      setChangeUserStatusDialogVisible,
-      setDialogData,
-    } = this.dialogStore;
+    const { setChangeUserStatusDialogVisible, setDialogData } =
+      this.dialogStore;
 
     const userIDs = users.map((user) => {
       return user?.id ? user.id : user;
@@ -188,7 +175,7 @@ class PeopleStore {
   };
 
   onOpenInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
@@ -201,14 +188,12 @@ class PeopleStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.selectionStore;
-    const {
-      setSendInviteDialogVisible,
-      setDeleteDialogVisible,
-    } = this.dialogStore;
+    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+      this.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { isVisible } = this.infoPanelStore;
+    const { isVisible } = this.authStore.infoPanelStore;
 
     const options = [];
 
@@ -305,6 +290,10 @@ class PeopleStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+  };
+
+  setIsLoadedProfileSectionBody = (isLoadedProfileSectionBody) => {
+    this.isLoadedProfileSectionBody = isLoadedProfileSectionBody;
   };
 }
 

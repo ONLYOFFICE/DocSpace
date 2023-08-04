@@ -26,14 +26,36 @@
 
 namespace ASC.People.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class GroupDto
 {
+    /// <summary>Description</summary>
+    /// <type>System.String, System</type>
     public string Description { get; set; }
+
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Parent</summary>
+    /// <type>System.Nullable{System.Guid}, System</type>
     public Guid? Parent { get; set; }
+
+    /// <summary>Category</summary>
+    /// <type>System.Guid, System</type>
     public Guid Category { get; set; }
+
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>Manager</summary>
+    /// <type>ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core</type>
     public EmployeeDto Manager { get; set; }
+
+    /// <summary>List of members</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Api.Models.EmployeeDto,}, System.Collections.Generic</type>
     public List<EmployeeDto> Members { get; set; }
 
     public static GroupDto GetSample()
@@ -70,16 +92,16 @@ public class GroupFullDtoHelper
             Category = group.CategoryID,
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
             Name = group.Name,
-            Manager = await _employeeWraperHelper.Get(_userManager.GetUsers(_userManager.GetDepartmentManager(group.ID)))
+            Manager = await _employeeWraperHelper.GetAsync(await _userManager.GetUsersAsync(await _userManager.GetDepartmentManagerAsync(group.ID)))
         };
 
         if (includeMembers)
         {
             result.Members = new List<EmployeeDto>();
 
-            foreach (var m in _userManager.GetUsersByGroup(group.ID))
+            foreach (var m in await _userManager.GetUsersByGroupAsync(group.ID))
             {
-                result.Members.Add(await _employeeWraperHelper.Get(m));
+                result.Members.Add(await _employeeWraperHelper.GetAsync(m));
             }
         }
 

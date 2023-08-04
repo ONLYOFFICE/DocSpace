@@ -1,6 +1,5 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import history from "../history";
 
 class TfaStore {
   tfaSettings = null;
@@ -35,6 +34,7 @@ class TfaStore {
   };
 
   setTfaSettings = async (type) => {
+    this.tfaSettings = type;
     return await api.settings.setTfaSettings(type);
   };
 
