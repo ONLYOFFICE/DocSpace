@@ -32,6 +32,7 @@ import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 
 import { resendInvitesAgain } from "@docspace/common/api/people";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledButton = styled(Button)`
   font-weight: 700;
@@ -75,7 +76,8 @@ const StyledButton = styled(Button)`
     justify-content: space-between;
     vertical-align: middle;
     box-sizing: border-box;
-    padding: 5px 14px 5px 12px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("5px 14px 5px 12px", theme.interfaceDirection)};
     line-height: 22px;
     border-radius: 3px;
 
