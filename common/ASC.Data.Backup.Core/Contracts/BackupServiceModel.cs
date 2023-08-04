@@ -46,12 +46,28 @@ public class StartBackupRequest
     public Dictionary<string, string> StorageParams { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class BackupHistoryRecord
 {
+    /// <summary>Backup ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>File name</summary>
+    /// <type>System.String, System</type>
     public string FileName { get; set; }
+
+    /// <summary>Storage type</summary>
+    /// <type>ASC.Data.Backup.Contracts.BackupStorageType, ASC.Data.Backup.Core</type>
     public BackupStorageType StorageType { get; set; }
+
+    /// <summary>Creation date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime CreatedOn { get; set; }
+
+    /// <summary>Expiration date</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime ExpiresOn { get; set; }
 }
 

@@ -93,7 +93,11 @@ class AuthStore {
 
     const requests = [];
 
-    if (this.settingsStore.isLoaded && this.settingsStore.socketUrl) {
+    if (
+      this.settingsStore.isLoaded &&
+      this.settingsStore.socketUrl &&
+      !this.settingsStore.isPublicRoom
+    ) {
       requests.push(
         this.userStore.init().then(() => {
           if (
@@ -334,7 +338,9 @@ class AuthStore {
 
   get isAuthenticated() {
     return (
-      this.settingsStore.isLoaded && !!this.settingsStore.socketUrl
+      this.settingsStore.isLoaded &&
+      !!this.settingsStore.socketUrl &&
+      !this.settingsStore.isPublicRoom
       //|| //this.userStore.isAuthenticated
     );
   }

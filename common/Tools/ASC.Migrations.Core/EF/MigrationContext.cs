@@ -98,6 +98,7 @@ public class MigrationContext : DbContext
     public DbSet<DbFilesLink> FilesLink { get; set; }
     public DbSet<DbFilesProperties> FilesProperties { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
+    public DbSet<ShortLink> ShortLink { get; set; }
     public MigrationContext(DbContextOptions<MigrationContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -159,6 +160,7 @@ public class MigrationContext : DbContext
             .AddDbWebhooks()
             .AddWebhooksConfig()
             .AddWebhooksLog()
+            .AddShortLinks()
             .AddDbFunctions();
     }
 }

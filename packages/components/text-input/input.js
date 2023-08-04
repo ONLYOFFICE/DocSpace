@@ -17,6 +17,7 @@ const Input = ({
   forwardedRef,
   className,
   theme,
+  dir = "auto",
   ...props
 }) => {
   const rest = {};
@@ -33,7 +34,12 @@ const Input = ({
       {...props}
     />
   ) : (
-    <input className={`${className} not-selectable`} {...props} {...rest} />
+    <input
+      className={`${className} not-selectable`}
+      dir={dir}
+      {...props}
+      {...rest}
+    />
   );
 };
 export default Input;

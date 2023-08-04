@@ -11,6 +11,7 @@ const FirstUrlKey = "isFirstUrl";
 class MediaViewerDataStore {
   filesStore;
   settingsStore;
+  publicRoomStore;
 
   id = null;
   visible = false;
@@ -18,10 +19,11 @@ class MediaViewerDataStore {
   currentItem = null;
   prevPostionIndex = 0;
 
-  constructor(filesStore, settingsStore) {
+  constructor(filesStore, settingsStore, publicRoomStore) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
     this.settingsStore = settingsStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setMediaViewerData = (mediaData) => {
@@ -72,6 +74,8 @@ class MediaViewerDataStore {
   };
 
   changeUrl = (id) => {
+    if (this.publicRoomStore.isPublicRoom) return;
+
     const url = "/products/files/#preview/" + id;
 
     window.DocSpace.navigate(url);

@@ -37,4 +37,10 @@ export const DownloadIconWrapper = styled.div`
   &:hover {
     cursor: pointer;
   }
+
+  svg {
+    path {
+      fill: #fff;
+    }
+  }
 `;

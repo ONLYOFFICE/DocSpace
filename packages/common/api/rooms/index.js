@@ -333,3 +333,55 @@ export const acceptInvitationByLink = async () => {
 
   return await request(options);
 };
+
+export function editExternalLink(
+  roomId,
+  linkId,
+  title,
+  access,
+  expirationDate,
+  linkType,
+  password,
+  disabled,
+  denyDownload
+) {
+  return request({
+    method: "put",
+
+    url: `/files/rooms/${roomId}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+      expirationDate,
+      linkType,
+      password,
+      disabled,
+      denyDownload,
+    },
+  });
+}
+
+export function getExternalLinks(roomId, type) {
+  const linkType = `?type=${type}`;
+
+  return request({
+    method: "get",
+    url: `files/rooms/${roomId}/links${linkType}`,
+  });
+}
+
+export function validatePublicRoomKey(key) {
+  return request({
+    method: "get",
+    url: `files/share/${key}`,
+  });
+}
+
+export function validatePublicRoomPassword(key, passwordHash) {
+  return request({
+    method: "post",
+    url: `files/share/${key}/password`,
+    data: { password: passwordHash },
+  });
+}

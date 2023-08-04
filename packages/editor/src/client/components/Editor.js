@@ -649,12 +649,18 @@ function Editor({
       let goBack;
       const url = window.location.href;
       const search = window.location.search;
+      const shareIndex = search.indexOf("share=");
+      const key = search.substring(shareIndex + 6);
 
       if (fileInfo) {
         let backUrl = "";
 
         if (fileInfo.rootFolderType === FolderType.Rooms) {
-          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+          if (key) {
+            backUrl = `/rooms/share?key=${key}`;
+          } else {
+            backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+          }
         } else {
           backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
         }

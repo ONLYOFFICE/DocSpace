@@ -26,27 +26,52 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class LoginEventDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
 
+    /// <summary>Date</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Date { get; set; }
 
+    /// <summary>User</summary>
+    /// <type>System.String, System</type>
     public string User { get; set; }
 
+    /// <summary>User ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid UserId { get; set; }
+
+    /// <summary>Login</summary>
+    /// <type>System.String, System</type>
     public string Login { get; set; }
 
+    /// <summary>Action</summary>
+    /// <type>System.String, System</type>
     public string Action { get; set; }
 
+    /// <summary>Action ID</summary>
+    /// <type>ASC.MessagingSystem.Core.MessageAction, ASC.Core.Common</type>
     public MessageAction ActionId { get; set; }
 
+    /// <summary>IP</summary>
+    /// <type>System.String, System</type>
     public string IP { get; set; }
 
+    /// <summary>Browser</summary>
+    /// <type>System.String, System</type>
     public string Browser { get; set; }
 
+    /// <summary>Platform</summary>
+    /// <type>System.String, System</type>
     public string Platform { get; set; }
 
+    /// <summary>Page</summary>
+    /// <type>System.String, System</type>
     public string Page { get; set; }
 
     public LoginEventDto(AuditTrail.Models.LoginEventDto loginEvent)

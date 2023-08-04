@@ -22,6 +22,7 @@ class FilesTableHeader extends React.Component {
       getColumns,
       columnStorageName,
       columnInfoPanelStorageName,
+      isPublicRoom,
     } = this.props;
 
     const defaultColumns = [];
@@ -153,6 +154,18 @@ class FilesTableHeader extends React.Component {
       ];
       defaultColumns.push(...columns);
     } else {
+      const authorBlock = !isPublicRoom
+        ? {
+            key: "Author",
+            title: t("ByAuthor"),
+            enable: this.props.authorColumnIsEnabled,
+            resizable: true,
+            sortBy: SortByFieldName.Author,
+            // onClick: this.onFilter,
+            onChange: this.onColumnChange,
+          }
+        : {};
+
       const columns = [
         {
           key: "Name",
@@ -164,15 +177,7 @@ class FilesTableHeader extends React.Component {
           minWidth: 210,
           onClick: this.onFilter,
         },
-        {
-          key: "Author",
-          title: t("ByAuthor"),
-          enable: this.props.authorColumnIsEnabled,
-          resizable: true,
-          sortBy: SortByFieldName.Author,
-          // onClick: this.onFilter,
-          onChange: this.onColumnChange,
-        },
+        { ...authorBlock },
         {
           key: "Created",
           title: t("ByCreation"),
@@ -337,7 +342,7 @@ class FilesTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, setIsLoading } = this.props;
+    const { filter, setIsLoading, isPublicRoom, publicRoomKey } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -349,9 +354,17 @@ class FilesTableHeader extends React.Component {
 
     setIsLoading(true);
 
-    window.DocSpace.navigate(
-      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
-    );
+    if (isPublicRoom) {
+      window.DocSpace.navigate(
+        `${
+          window.DocSpace.location.pathname
+        }?key=${publicRoomKey}&${newFilter.toUrlParams()}`
+      );
+    } else {
+      window.DocSpace.navigate(
+        `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+      );
+    }
   };
 
   onRoomsFilter = (sortBy) => {
@@ -428,6 +441,7 @@ export default inject(
     selectedFolderStore,
     treeFoldersStore,
     tableStore,
+    publicRoomStore,
     clientLoadingStore,
   }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
@@ -478,6 +492,8 @@ export default inject(
       setColumnEnable,
     } = tableStore;
 
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
+
     return {
       isHeaderChecked,
       filter,
@@ -523,10 +539,12 @@ export default inject(
       setColumnEnable,
       isRooms,
       isTrashFolder,
+      isPublicRoom,
+      publicRoomKey,
     };
   }
 )(
-  withTranslation(["Files", "Common", "Translations"])(
+  withTranslation(["Files", "Common", "Translations", "Notifications"])(
     observer(FilesTableHeader)
   )
 );
