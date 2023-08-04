@@ -8,6 +8,7 @@ import InputBlock from "@docspace/components/input-block";
 import TextInput from "@docspace/components/text-input";
 import copy from "copy-to-clipboard";
 import toastr from "@docspace/components/toast/toastr";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledDeleteDialog = styled(ModalDialog)`
   .modal-dialog-content-body {
@@ -20,8 +21,10 @@ const StyledDeleteDialog = styled(ModalDialog)`
   }
 
   .modal-dialog-aside-header {
-    margin: 0 -24px 0 -16px;
-    padding: 0 0 0 16px;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 -24px 0 -16px", theme.interfaceDirection)};
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 0 0 16px", theme.interfaceDirection)};
   }
 `;
 

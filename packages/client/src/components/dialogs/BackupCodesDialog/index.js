@@ -18,7 +18,11 @@ const StyledModal = styled(ModalDialogContainer)`
   .backup-codes-print-link-wrapper {
     display: flex;
     align-items: center;
-    padding-left: 8px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 8px;`
+        : `padding-left: 8px;`}
   }
 `;
 
@@ -55,14 +59,8 @@ class BackupCodesDialogComponent extends React.Component {
 
   render() {
     //console.log("Render BackupCodesDialog");
-    const {
-      t,
-      tReady,
-      visible,
-      onClose,
-      backupCodes,
-      backupCodesCount,
-    } = this.props;
+    const { t, tReady, visible, onClose, backupCodes, backupCodesCount } =
+      this.props;
 
     return (
       <StyledModal
@@ -95,7 +93,7 @@ class BackupCodesDialogComponent extends React.Component {
                 backupCodes.map((item) => {
                   if (!item.isUsed) {
                     return (
-                      <strong key={item.code}>
+                      <strong key={item.code} dir="auto">
                         {item.code} <br />
                       </strong>
                     );

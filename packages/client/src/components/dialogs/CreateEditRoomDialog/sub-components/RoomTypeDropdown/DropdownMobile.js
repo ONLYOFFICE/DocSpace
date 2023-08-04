@@ -13,7 +13,11 @@ const StyledDropdownMobile = styled.div`
   bottom: 0;
   z-index: 500;
   padding-top: 6px;
-  margin-left: -16px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: -16px;`
+      : `margin-left: -16px;`}
   box-shadow: 0px -4px 60px rgba(4, 15, 27, 0.12);
   border-radius: 6px 6px 0px 0px;
   background: ${(props) =>
