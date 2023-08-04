@@ -18,6 +18,11 @@ const StyledModalDialog = styled(ModalDialog)`
     gap: 12px;
   }
 
+  .sharing_panel-arrow svg {
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
+  }
+
   ${(props) =>
     props.isOauthWindowOpen &&
     css`
