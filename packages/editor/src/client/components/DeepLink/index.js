@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
@@ -21,9 +23,9 @@ const DeepLink = ({
   logoUrls,
   userEmail,
   setIsShowDeepLink,
-  userTheme,
   currentColorScheme,
   deepLinkUrl,
+  theme,
 }) => {
   const { t } = useTranslation(["DeepLink", "Common"]);
 
@@ -59,8 +61,9 @@ const DeepLink = ({
       : fileInfo.title;
   };
 
-  const logoPath =
-    userTheme === "Base" ? logoUrls[0]?.path?.light : logoUrls[0]?.path?.dark;
+  const logoPath = theme.isBase
+    ? logoUrls[0]?.path?.light
+    : logoUrls[0]?.path?.dark;
   const logo = getLogoFromPath(logoPath);
 
   return (
@@ -110,4 +113,10 @@ const DeepLink = ({
   );
 };
 
-export default DeepLink;
+export default inject(({ auth }) => {
+  const { theme } = auth.settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(DeepLink));

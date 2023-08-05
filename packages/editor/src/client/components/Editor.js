@@ -843,7 +843,6 @@ function Editor({
         logoUrls={logoUrls}
         userEmail={user.email}
         setIsShowDeepLink={setIsShowDeepLink}
-        userTheme={user.theme}
         currentColorScheme={currentColorScheme}
         deepLinkUrl={portalSettings.deepLink.url}
       />
