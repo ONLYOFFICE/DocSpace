@@ -394,7 +394,8 @@ class DialogsStore {
       this.unsavedChangesDialogVisible ||
       this.deleteLinkDialogVisible ||
       this.embeddingPanelIsVisible ||
-      this.moveToPublicRoomVisible
+      this.moveToPublicRoomVisible ||
+      this.changeRoomOwnerIsVisible
     );
   }
 
