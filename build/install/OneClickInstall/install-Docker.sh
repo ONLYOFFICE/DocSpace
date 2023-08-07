@@ -932,11 +932,11 @@ get_container_env_parameter () {
 		fi
 
 		if [ -z $VALUE ] && [ -f $BASE_DIR/.env ]; then
-			VALUE=$(sed -n "/.*${PARAMETER_NAME}=/s///p" $BASE_DIR/.env)
+			VALUE=$(awk -F= "/${PARAMETER_NAME}/ {print \$2}" $BASE_DIR/.env | tr -d '\r')
 		fi
 	fi
 
-	echo "$VALUE"
+	echo ${VALUE//\"}
 }
 
 get_available_version () {
@@ -1158,6 +1158,9 @@ download_files () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
+
+	HOSTS=("DOCUMENT_SERVER_HOST" "ELK_HOST" "REDIS_HOST" "RABBIT_HOST" "MYSQL_HOST"); 
+	for HOST in "${HOSTS[@]}"; do [[ "${!HOST}" == *CONTAINER_PREFIX* || "${!HOST}" == *$PACKAGE_SYSNAME* ]] && export "$HOST="; done
 
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
