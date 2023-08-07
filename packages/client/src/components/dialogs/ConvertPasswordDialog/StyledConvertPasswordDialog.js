@@ -6,7 +6,10 @@ const StyledComponent = styled.div`
   }
 
   .convert-password-dialog_button-accept {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 
   .conversation-password-wrapper {
@@ -31,7 +34,9 @@ const StyledComponent = styled.div`
         `
       : css`
           #convert-password-dialog_button-accept {
-            margin-right: 8px;
+            ${theme.interfaceDirection === "rtl"
+              ? `margin-left: 8px;`
+              : `margin-right: 8px;`}
           }
         `}
 `;

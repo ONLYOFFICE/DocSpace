@@ -84,7 +84,10 @@ const StyledStorageLocation = styled.div`
     &-checkbox {
       margin-top: 8px;
       .checkbox {
-        margin-right: 8px;
+        ${({ theme }) =>
+          theme.interfaceDirection === "rtl"
+            ? `margin-left: 8px;`
+            : `margin-right: 8px;`}
       }
       .checkbox-text {
         font-weight: 400;

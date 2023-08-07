@@ -22,7 +22,10 @@ const StyledTagList = styled.div`
         props.theme.createEditRoomDialog.tagInput.tagHoverBackground};
     }
     .tag-icon {
-      margin-left: 10px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: 10px;`
+          : `margin-left: 10px;`}
       svg {
         width: 10px;
         height: 10px;
