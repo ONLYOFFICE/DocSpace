@@ -23,11 +23,11 @@ const EmptyPageStyles = css`
 
   .empty-folder_link {
     ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+  props.theme.interfaceDirection === "rtl"
+    ? css`
             margin-left: 9px;
           `
-      : css`
+    : css`
             margin-right: 9px;
           `}
   }
@@ -45,11 +45,11 @@ const EmptyPageStyles = css`
 
   @media ${smallTablet} {
     ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+  props.theme.interfaceDirection === "rtl"
+    ? css`
             padding-left: 44px;
           `
-      : css`
+    : css`
             padding-right: 44px;
           `}
   }
@@ -58,7 +58,14 @@ const EmptyPageStyles = css`
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
     .empty-folder_link {
-      margin-right: 7px;
+      ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin-left: 7px;
+            `
+      : css`
+              margin-right: 7px;
+            `}
     }
 
     .empty-folder_container-links {
@@ -90,11 +97,11 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_up-image,
     .empty-folder_container_plus-image {
       ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+  props.theme.interfaceDirection === "rtl"
+    ? css`
               margin: 4px 0 0 8px;
             `
-      : css`
+    : css`
               margin: 4px 8px 0 0;
             `}
       cursor: pointer;
@@ -115,11 +122,11 @@ const EmptyFolderWrapper = styled.div`
       height: 20px;
       width: 12px;
       ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+  props.theme.interfaceDirection === "rtl"
+    ? css`
               margin: 4px 0 0 4px;
             `
-      : css`
+    : css`
               margin: 4px 4px 0 0;
             `}
 
@@ -138,11 +145,11 @@ const EmptyFolderWrapper = styled.div`
       isMobileOnly &&
       css`
         ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
                 padding: 20px 11px 64px 42px !important;
               `
-        : css`
+      : css`
                 padding: 20px 42px 64px 11px !important;
               `}
       `}
@@ -153,11 +160,11 @@ const EmptyFolderWrapper = styled.div`
       !isMobileOnly &&
       css`
         ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
                 padding-right: 12px !important;
               `
-        : css`
+      : css`
                 padding-left: 12px !important;
               `}
 
