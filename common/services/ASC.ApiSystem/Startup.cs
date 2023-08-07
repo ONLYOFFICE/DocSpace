@@ -73,7 +73,6 @@ public class Startup
         {
             options.JsonSerializerOptions.WriteIndented = false;
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
         };
 
         services.AddControllers()

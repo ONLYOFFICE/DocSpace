@@ -26,7 +26,7 @@
 
 namespace ASC.Api.Core;
 
-[TypeConverter(typeof(ApiDateTimeTypeConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(ApiDateTimeConverter))]
 public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 {
     public DateTime UtcTime { get; private set; }
@@ -342,33 +342,6 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     public static ApiDateTime GetSample()
     {
         return new ApiDateTime(DateTime.UtcNow, TimeSpan.Zero);
-    }
-}
-
-public class ApiDateTimeTypeConverter : DateTimeConverter
-{
-    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-    {
-        if (destinationType == typeof(string))
-        {
-            return value.ToString();
-        }
-
-        return base.ConvertTo(context, culture, value, destinationType);
-    }
-
-    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-    {
-        if (value is string @string)
-        {
-            return ApiDateTime.Parse(@string, null, null);
-        }
-        if (value is DateTime time)
-        {
-            return new ApiDateTime(null, null, time);
-        }
-
-        return base.ConvertFrom(context, culture, value);
     }
 }
 

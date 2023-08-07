@@ -147,19 +147,16 @@ public class SocketManager : SocketServiceClient
 
     private async Task<string> SerializeFolder<T>(Folder<T> folder)
     {
-        return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), GetSerializerSettings()); ;
+        return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), GetSerializerSettings());
     }
 
     public static JsonSerializerOptions GetSerializerSettings()
     {
-        var serializerSettings = new JsonSerializerOptions()
+        return new JsonSerializerOptions()
         {
             WriteIndented = false,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
-
-        serializerSettings.Converters.Add(new ApiDateTimeConverter());
-        return serializerSettings;
     }
 }

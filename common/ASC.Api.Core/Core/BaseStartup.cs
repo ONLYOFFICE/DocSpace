@@ -128,7 +128,6 @@ public abstract class BaseStartup
             {
                 options.JsonSerializerOptions.WriteIndented = false;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
 
                 if (Converters != null)
                 {
