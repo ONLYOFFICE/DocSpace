@@ -247,6 +247,9 @@ const SectionFilterContent = ({
 
   accountsFilter,
   showFilterLoader,
+  isPublicRoom,
+  publicRoomKey,
+  setRoomsFilter,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -254,6 +257,14 @@ const SectionFilterContent = ({
   const isAccountsPage = location.pathname.includes("accounts");
 
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
+  const onNavigate = (path, filter) => {
+    if (isPublicRoom) {
+      navigate(`${path}?key=${publicRoomKey}&${filter.toUrlParams()}`);
+    } else {
+      navigate(`${path}/filter?${filter.toUrlParams()}`);
+    }
+  };
 
   const onFilter = React.useCallback(
     (data) => {
@@ -340,7 +351,6 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const filterType = getFilterType(data) || null;
@@ -375,7 +385,7 @@ const SectionFilterContent = ({
           newFilter.roomId = roomId;
         }
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [
@@ -414,7 +424,7 @@ const SectionFilterContent = ({
 
       const path = location.pathname.split("/filter")[0];
 
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+      onNavigate(path, newFilter);
     }
   }, [
     isRooms,
@@ -456,7 +466,7 @@ const SectionFilterContent = ({
 
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [
@@ -494,12 +504,12 @@ const SectionFilterContent = ({
           newFilter.searchArea === RoomSearchArea.Active
             ? "rooms/shared"
             : "rooms/archived";
-
+        setRoomsFilter(newFilter);
         navigate(`${path}/filter?${newFilter.toUrlParams()}`);
       } else {
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [isRooms, isAccountsPage, setIsLoading, filter, roomsFilter, accountsFilter]
@@ -1108,7 +1118,8 @@ const SectionFilterContent = ({
       return filterOptions;
     }
 
-    const tags = await fetchTags();
+    let tags = null;
+    if (!isPublicRoom) tags = await fetchTags();
     const connectedThirdParty = [];
 
     providers.forEach((item) => {
@@ -1116,7 +1127,7 @@ const SectionFilterContent = ({
       connectedThirdParty.push(item.provider_key);
     });
 
-    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags.length;
+    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags?.length;
 
     const folders =
       !isFavoritesFolder && !isRecentFolder
@@ -1481,7 +1492,7 @@ const SectionFilterContent = ({
         },
       ];
 
-      filterOptions.push(...authorOption);
+      !isPublicRoom && filterOptions.push(...authorOption);
       filterOptions.push(...typeOptions);
 
       if (isTrash) {
@@ -1518,6 +1529,7 @@ const SectionFilterContent = ({
     isFavoritesFolder,
     isRecentFolder,
     isTrash,
+    isPublicRoom,
   ]);
 
   const getViewSettingsData = React.useCallback(() => {
@@ -1947,7 +1959,7 @@ const SectionFilterContent = ({
 
         const path = location.pathname.split("/filter")[0];
 
-        navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+        onNavigate(path, newFilter);
       }
     },
     [isRooms, isAccountsPage, setIsLoading, roomsFilter, filter, accountsFilter]
@@ -1983,7 +1995,7 @@ const SectionFilterContent = ({
 
       const path = location.pathname.split("/filter")[0];
 
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+      onNavigate(path, newFilter);
     }
   };
 
@@ -2031,6 +2043,7 @@ export default inject(
     clientLoadingStore,
     tagsStore,
     peopleStore,
+    publicRoomStore,
   }) => {
     const {
       filter,
@@ -2047,6 +2060,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       filesSettingsStore,
+      setRoomsFilter,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2078,12 +2092,13 @@ export default inject(
     const { groups } = groupsStore;
 
     const { filter: accountsFilter } = filterStore;
+    const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     const { canSearchByContent } = filesSettingsStore;
 
     return {
       user,
-      userId: user.id,
+      userId: user?.id,
 
       selectedItem: filter.selectedItem,
       filter,
@@ -2124,6 +2139,9 @@ export default inject(
       groups,
 
       accountsFilter,
+      isPublicRoom,
+      publicRoomKey,
+      setRoomsFilter,
     };
   }
 )(

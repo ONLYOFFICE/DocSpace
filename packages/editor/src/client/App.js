@@ -24,7 +24,14 @@ import PresentationIcoUrl from "PUBLIC_DIR/images/presentation.ico";
 import SpreadSheetIcoUrl from "PUBLIC_DIR/images/spreadsheet.ico";
 import TextIcoUrl from "PUBLIC_DIR/images/text.ico";
 
-const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
+const App = ({
+  initialLanguage,
+  initialI18nStoreASC,
+  setTheme,
+  getAppearanceTheme,
+  currentColorScheme,
+  ...rest
+}) => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
 
@@ -80,6 +87,8 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
     }
+
+    getAppearanceTheme();
   }, []);
 
   const onError = () => {
@@ -100,6 +109,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
         mfFailed={isErrorLoading}
         isDesktopEditor={isDesktopEditor}
         initDesktop={initDesktop}
+        currentColorScheme={currentColorScheme}
         {...rest}
       />
     </ErrorBoundary>
@@ -108,15 +118,20 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
 
 const AppWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { setTheme } = settingsStore;
+  const { setTheme, getAppearanceTheme, currentColorScheme } = settingsStore;
   return {
     setTheme,
+    getAppearanceTheme,
+    currentColorScheme,
   };
 })(observer(App));
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
+  let currentColorScheme = false;
+  currentColorScheme = settingsStore.currentColorScheme || false;
+
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default (props) => (

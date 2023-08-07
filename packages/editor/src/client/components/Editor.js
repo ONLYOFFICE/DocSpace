@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { isMobile, isIOS, deviceType } from "react-device-detect";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { isMobile, isIOS, deviceType, isMobileOnly } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { FolderType, EDITOR_ID } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
@@ -25,7 +26,9 @@ import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
-import styled from "styled-components";
+import DeepLink from "./DeepLink";
+import { getDeepLink } from "../helpers/deepLinkHelper";
+
 import { getEditorTheme } from "../helpers/utils";
 
 toast.configure();
@@ -93,7 +96,12 @@ function Editor({
   fileId,
   url,
   filesSettings,
+  logoUrls,
+  currentColorScheme,
+  portalSettings,
 }) {
+  const [isShowDeepLink, setIsShowDeepLink] = useState(false);
+
   const fileInfo = config?.file;
 
   isArchiveFolderRoot =
@@ -104,6 +112,48 @@ function Editor({
   if (fileInfo) {
     userAccessRights = fileInfo.security;
   }
+
+  useEffect(() => {
+    const androidID = portalSettings?.deepLink?.androidPackageName;
+    const iOSId = portalSettings?.deepLink?.iosPackageId;
+    const deepLinkUrl = portalSettings?.deepLink?.url;
+
+    const defaultOpenDocument = localStorage.getItem("defaultOpenDocument");
+
+    if (
+      isMobileOnly &&
+      !defaultOpenDocument &&
+      androidID &&
+      iOSId &&
+      deepLinkUrl
+    ) {
+      setIsShowDeepLink(true);
+    }
+
+    if (isMobileOnly && defaultOpenDocument === "app") {
+      const nav = navigator.userAgent;
+      const storeUrl =
+        nav.includes("iPhone;") || nav.includes("iPad;")
+          ? `https://apps.apple.com/app/id${iOSId}`
+          : `https://play.google.com/store/apps/details?id=${androidID}`;
+
+      window.location = getDeepLink(
+        window.location.origin,
+        user.email,
+        fileInfo,
+        deepLinkUrl
+      );
+
+      setTimeout(() => {
+        if (document.hasFocus()) {
+          window.location.replace(storeUrl);
+        } else {
+          history.goBack();
+        }
+      }, 3000);
+    }
+  }, []);
+
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized) {
@@ -605,12 +655,18 @@ function Editor({
       let goBack;
       const url = window.location.href;
       const search = window.location.search;
+      const shareIndex = search.indexOf("share=");
+      const key = search.substring(shareIndex + 6);
 
       if (fileInfo) {
         let backUrl = "";
 
         if (fileInfo.rootFolderType === FolderType.Rooms) {
-          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+          if (key) {
+            backUrl = `/rooms/share?key=${key}`;
+          } else {
+            backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+          }
         } else {
           backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
         }
@@ -778,6 +834,18 @@ function Editor({
         {selectFileDialog}
         {selectFolderDialog}
       </>
+    );
+
+  if (isShowDeepLink)
+    return (
+      <DeepLink
+        fileInfo={fileInfo}
+        logoUrls={logoUrls}
+        userEmail={user.email}
+        setIsShowDeepLink={setIsShowDeepLink}
+        currentColorScheme={currentColorScheme}
+        deepLinkUrl={portalSettings.deepLink.url}
+      />
     );
 
   return (

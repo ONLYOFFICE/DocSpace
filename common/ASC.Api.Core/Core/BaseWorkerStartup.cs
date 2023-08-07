@@ -52,6 +52,7 @@ public class BaseWorkerStartup
         services.AddBaseDbContextPool<TelegramDbContext>();
         services.AddBaseDbContextPool<FirebaseDbContext>();
         services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<UrlShortenerDbContext>();
         services.AddBaseDbContextPool<WebstudioDbContext>();
         services.AddBaseDbContextPool<InstanceRegistrationContext>();
         services.AddBaseDbContextPool<IntegrationEventLogContext>();

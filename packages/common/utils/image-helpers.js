@@ -169,6 +169,7 @@ import PptmSvg32Url from "PUBLIC_DIR/images/icons/32/pptm.svg?url";
 import PptxSvg32Url from "PUBLIC_DIR/images/icons/32/pptx.svg?url";
 import ArchiveSvg32Url from "PUBLIC_DIR/images/icons/32/room/archive.svg?url";
 import CustomSvg32Url from "PUBLIC_DIR/images/icons/32/room/custom.svg?url";
+import PublicSvg32Url from "PUBLIC_DIR/images/icons/32/room/public.svg?url";
 import EditingSvg32Url from "PUBLIC_DIR/images/icons/32/room/editing.svg?url";
 import FillingFormSvg32Url from "PUBLIC_DIR/images/icons/32/room/filling.form.svg?url";
 import ReviewSvg32Url from "PUBLIC_DIR/images/icons/32/room/review.svg?url";
@@ -420,6 +421,7 @@ export const iconSize32 = new Map([
   ["pptx.svg", PptxSvg32Url],
   ["archive.svg", ArchiveSvg32Url],
   ["custom.svg", CustomSvg32Url],
+  ["public.svg", PublicSvg32Url],
   ["editing.svg", EditingSvg32Url],
   ["filling.form.svg", FillingFormSvg32Url],
   ["review.svg", ReviewSvg32Url],

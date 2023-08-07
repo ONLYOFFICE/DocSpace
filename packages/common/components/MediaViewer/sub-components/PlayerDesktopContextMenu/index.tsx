@@ -12,6 +12,7 @@ const ContextRight = "9";
 const ContextBottom = "48";
 
 function PlayerDesktopContextMenu({
+  canDownload,
   isPreviewFile,
   hideContextMenu,
   onDownloadClick,
@@ -41,7 +42,7 @@ function PlayerDesktopContextMenu({
     };
   }, []);
 
-  if (hideContextMenu) {
+  if (hideContextMenu && canDownload) {
     return (
       <DownloadIconWrapper onClick={onDownloadClick}>
         <DownloadReactSvgUrl />

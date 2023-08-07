@@ -148,7 +148,9 @@ class HotkeyStore {
 
     if (filesList.length) {
       // scroll to first element
-      const scroll = document.querySelector("#sectionScroll > .scroll-body");
+      const scroll = document.querySelector(
+        "#sectionScroll > .scroll-wrapper > .scroller"
+      );
       scroll.scrollTo(0, 0);
 
       this.filesStore.setSelection([filesList[0]]);

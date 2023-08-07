@@ -30,11 +30,6 @@ if ! dpkg -l | grep -q "software-properties-common"; then
 fi
 
 locale-gen en_US.UTF-8
-if [ -f /etc/needrestart/needrestart.conf ]; then
-	sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
-fi
-
-locale-gen en_US.UTF-8
 
 # add elasticsearch repo
 ELASTIC_VERSION="7.10.0"
@@ -44,7 +39,8 @@ echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://
 chmod 644 /usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg
 
 # add nodejs repo
-curl -sL https://deb.nodesource.com/setup_16.x | bash - 
+[[ "$DISTRIB_CODENAME" =~ ^(bionic|stretch)$ ]] && NODE_VERSION="16" || NODE_VERSION="18"
+curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - 
 
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then

@@ -42,6 +42,11 @@ const StyledItemText = styled(Text)<{ isCurrent: boolean; isLoading: boolean }>`
 StyledItemText.defaultProps = { theme: Base };
 
 const StyledArrowRightSvg = styled(ArrowRightSvg)`
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      transform: scaleX(-1);
+    `}
   path {
     fill: ${(props) => props.theme.selector.breadCrumbs.arrowRightColor};
   }

@@ -104,7 +104,6 @@ const ListComponent = ({
             const width =
               document.getElementById(viewId)?.getBoundingClientRect().width ??
               0;
-
             return (
               <StyledList
                 autoHeight

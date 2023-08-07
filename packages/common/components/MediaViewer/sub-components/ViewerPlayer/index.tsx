@@ -46,6 +46,7 @@ function ViewerPlayer({
   errorTitle,
   isLastImage,
   isFistImage,
+  canDownload,
   isFullScreen,
   panelVisible,
   thumbnailSrc,
@@ -654,6 +655,7 @@ function ViewerPlayer({
                 />
                 {isDesktop && (
                   <PlayerDesktopContextMenu
+                    canDownload={canDownload}
                     isPreviewFile={isPreviewFile}
                     hideContextMenu={hideContextMenu}
                     onDownloadClick={onDownloadClick}

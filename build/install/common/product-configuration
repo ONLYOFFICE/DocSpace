@@ -222,8 +222,8 @@ set_core_machinekey () {
 		fi
 	fi
 
-	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", 'notify': { 'postman': \"services\" }}" >/dev/null 2>&1
+	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
@@ -239,7 +239,7 @@ install_json() {
 restart_services() {
 	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR /var/www/$PACKAGE_SYSNAME/Data
 
-	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
+	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /usr/lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	echo -n "Updating database... "
@@ -529,7 +529,6 @@ setup_docs() {
 }
 
 setup_enterprise() {
-	[ ! -d /var/www/$PACKAGE_SYSNAME/Data/ ] && mkdir -p /var/www/$PACKAGE_SYSNAME/Data/
 	$JSON $APP_DIR/appsettings.json -e "this.license.file={'path': \"/var/www/$PACKAGE_SYSNAME/Data/license.lic\"}" >/dev/null 2>&1
 }
 
@@ -607,8 +606,7 @@ setup_elasticsearch() {
 setup_redis() {
 	echo -n "Configuring redis... "
 
-	sed "s_\(\"Host\":\).*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
-	sed "s_\(\"Port\":\).*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
+	$JSON $APP_DIR/redis.$ENVIRONMENT.json -e "this.Redis={'Hosts': [ { Host: \"${REDIS_HOST}\", Port: \"${REDIS_PORT}\" } ] }" >/dev/null 2>&1
 
 	if [ -e /etc/redis/redis.conf ]; then
 		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
@@ -636,7 +634,7 @@ product_configuration(){
 	echo -n "Configuring ${PRODUCT}... "
 
 	#Creating environment configuration files 
-	enviromentFiles=("appsettings.$ENVIRONMENT.json" "apisystem.$ENVIRONMENT.json" "elastic.$ENVIRONMENT.json" "rabbitmq.$ENVIRONMENT.json")
+	enviromentFiles=("appsettings.$ENVIRONMENT.json" "apisystem.$ENVIRONMENT.json" "elastic.$ENVIRONMENT.json" "rabbitmq.$ENVIRONMENT.json" "redis.$ENVIRONMENT.json")
 
 	for i in "${!enviromentFiles[@]}"; do
 		if [ ! -e "$APP_DIR/${enviromentFiles[$i]}" ]; then

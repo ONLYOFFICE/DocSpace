@@ -37,6 +37,12 @@ const StyledItem = styled.div<{
     line-height: 18px;
 
     margin-left: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0;
+        margin-right: 8px;
+      `}
   }
 
   .checkbox {

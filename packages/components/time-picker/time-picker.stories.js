@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import TimePicker from "./";
-import moment from "moment";
 
 export default {
   title: "Components/TimePicker",
@@ -19,16 +18,7 @@ export default {
 };
 
 const Template = ({ ...args }) => {
-  const [selectedDate, setSelectedDate] = useState(moment());
-  return (
-    <TimePicker
-      date={selectedDate}
-      setDate={setSelectedDate}
-      hasError={false}
-      onChange={(date) => console.log(date)}
-      {...args}
-    />
-  );
+  return <TimePicker hasError={false} {...args} />;
 };
 
 export const Default = Template.bind({});

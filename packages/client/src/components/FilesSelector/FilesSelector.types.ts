@@ -149,4 +149,5 @@ export type FilesSelectorProps = {
   footerCheckboxLabel?: string;
 
   descriptionText?: string;
+  setSelectedItems: () => void;
 };

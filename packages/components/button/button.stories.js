@@ -226,6 +226,10 @@ const HoveredTemplate = (args) => {
   );
 };
 
+const InterfaceDirectionTemplate = (args) => {
+  return <Button label="أزرار" icon={<Icon />} {...args} />;
+};
+
 export const Default = Template.bind({});
 Default.args = {
   size: "extraSmall",
@@ -239,6 +243,7 @@ export const ScaleButtons = ScaleTemplate.bind({});
 export const DisabledButtons = DisabledTemplate.bind({});
 export const ClickedButtons = ClickedTemplate.bind({});
 export const HoveredButtons = HoveredTemplate.bind({});
+export const InterfaceDirection = InterfaceDirectionTemplate.bind({});
 HoveredButtons.argTypes = {
   isHovered: { table: { disable: true } },
 };

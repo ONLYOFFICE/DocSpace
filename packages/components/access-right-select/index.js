@@ -79,7 +79,6 @@ const AccessRightSelect = ({
   const formattedOptions = !!advancedOptions
     ? advancedOptions
     : formatToAccessRightItem(accessOptions);
-
   return (
     <StyledWrapper
       className={className}
