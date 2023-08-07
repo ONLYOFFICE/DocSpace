@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.ComponentModel;
 global using System.Globalization;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Linq.Expressions;
@@ -139,9 +138,6 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Net.Http.Headers;
-
-global using Newtonsoft.Json;
-global using Newtonsoft.Json.Serialization;
 
 global using NLog;
 global using NLog.AWS.Logger;
