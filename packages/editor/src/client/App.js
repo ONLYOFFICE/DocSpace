@@ -35,7 +35,7 @@ const App = ({
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
 
-  console.log(rest);
+  //console.log(rest);
 
   useEffect(() => {
     let icon = "";
