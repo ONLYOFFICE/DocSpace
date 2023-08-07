@@ -412,14 +412,21 @@ class PluginStore {
         messageActions(
           message,
           null,
-          null,
+
           plugin.id,
           this.setSettingsPluginDialogVisible,
           this.setCurrentSettingsDialogPlugin,
           this.updatePluginStatus,
           null,
           this.setPluginDialogVisible,
-          this.setPluginDialogProps
+          this.setPluginDialogProps,
+
+          this.updateContextMenuItems,
+          this.updateInfoPanelItems,
+          this.updateMainButtonItems,
+          this.updateProfileMenuItems,
+          this.updateEventListenerItems,
+          this.updateFileItems
         );
       };
 
@@ -471,14 +478,21 @@ class PluginStore {
           messageActions(
             message,
             null,
-            null,
+
             plugin.id,
             this.setSettingsPluginDialogVisible,
             this.setCurrentSettingsDialogPlugin,
             this.updatePluginStatus,
             null,
             this.setPluginDialogVisible,
-            this.setPluginDialogProps
+            this.setPluginDialogProps,
+
+            this.updateContextMenuItems,
+            this.updateInfoPanelItems,
+            this.updateMainButtonItems,
+            this.updateProfileMenuItems,
+            this.updateEventListenerItems,
+            this.updateFileItems
           );
         };
 
@@ -532,14 +546,21 @@ class PluginStore {
             messageActions(
               message,
               null,
-              null,
+
               plugin.id,
               this.setSettingsPluginDialogVisible,
               this.setCurrentSettingsDialogPlugin,
               this.updatePluginStatus,
               null,
               this.setPluginDialogVisible,
-              this.setPluginDialogProps
+              this.setPluginDialogProps,
+
+              this.updateContextMenuItems,
+              this.updateInfoPanelItems,
+              this.updateMainButtonItems,
+              this.updateProfileMenuItems,
+              this.updateEventListenerItems,
+              this.updateFileItems
             );
           };
 
@@ -559,14 +580,21 @@ class PluginStore {
         messageActions(
           message,
           null,
-          null,
+
           plugin.id,
           this.setSettingsPluginDialogVisible,
           this.setCurrentSettingsDialogPlugin,
           this.updatePluginStatus,
           null,
           this.setPluginDialogVisible,
-          this.setPluginDialogProps
+          this.setPluginDialogProps,
+
+          this.updateContextMenuItems,
+          this.updateInfoPanelItems,
+          this.updateMainButtonItems,
+          this.updateProfileMenuItems,
+          this.updateEventListenerItems,
+          this.updateFileItems
         );
       };
 
@@ -618,14 +646,21 @@ class PluginStore {
         messageActions(
           message,
           null,
-          null,
+
           plugin.id,
           this.setSettingsPluginDialogVisible,
           this.setCurrentSettingsDialogPlugin,
           this.updatePluginStatus,
           null,
           this.setPluginDialogVisible,
-          this.setPluginDialogProps
+          this.setPluginDialogProps,
+
+          this.updateContextMenuItems,
+          this.updateInfoPanelItems,
+          this.updateMainButtonItems,
+          this.updateProfileMenuItems,
+          this.updateEventListenerItems,
+          this.updateFileItems
         );
       };
 
@@ -704,14 +739,21 @@ class PluginStore {
         messageActions(
           message,
           null,
-          null,
+
           plugin.id,
           this.setSettingsPluginDialogVisible,
           this.setCurrentSettingsDialogPlugin,
           this.updatePluginStatus,
           null,
           this.setPluginDialogVisible,
-          this.setPluginDialogProps
+          this.setPluginDialogProps,
+
+          this.updateContextMenuItems,
+          this.updateInfoPanelItems,
+          this.updateMainButtonItems,
+          this.updateProfileMenuItems,
+          this.updateEventListenerItems,
+          this.updateFileItems
         );
       };
 

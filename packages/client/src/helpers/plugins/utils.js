@@ -10,14 +10,21 @@ import { Events } from "@docspace/common/constants";
 export const messageActions = (
   message,
   setElementProps,
-  setAcceptButtonProps,
+
   pluginId,
   setSettingsPluginDialogVisible,
   setCurrentSettingsDialogPlugin,
   updatePluginStatus,
   updatePropsContext,
   setPluginDialogVisible,
-  setPluginDialogProps
+  setPluginDialogProps,
+
+  updateContextMenuItems,
+  updateInfoPanelItems,
+  updateMainButtonItems,
+  updateProfileMenuItems,
+  updateEventListenerItems,
+  updateFileItems
 ) => {
   if (!message) return;
 
@@ -104,6 +111,31 @@ export const messageActions = (
       case PluginActions.closeModal:
         setPluginDialogVisible(false);
         setPluginDialogProps(null);
+        break;
+
+      case PluginActions.updateContextMenuItems:
+        updateContextMenuItems(pluginId);
+
+        break;
+      case PluginActions.updateInfoPanelItems:
+        updateInfoPanelItems(pluginId);
+
+        break;
+      case PluginActions.updateMainButtonItems:
+        updateMainButtonItems(pluginId);
+
+        break;
+      case PluginActions.updateProfileMenuItems:
+        updateProfileMenuItems(pluginId);
+
+        break;
+      case PluginActions.updateEventListenerItems:
+        updateEventListenerItems(pluginId);
+
+        break;
+      case PluginActions.updateFileItems:
+        updateFileItems(pluginId);
+
         break;
     }
   });

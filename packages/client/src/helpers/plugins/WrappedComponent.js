@@ -27,6 +27,13 @@ const ComponentPure = ({
   updatePluginStatus,
   setPluginDialogVisible,
   setPluginDialogProps,
+
+  updateContextMenuItems,
+  updateInfoPanelItems,
+  updateMainButtonItems,
+  updateProfileMenuItems,
+  updateEventListenerItems,
+  updateFileItems,
 }) => {
   const [elementProps, setElementProps] = React.useState(component.props);
 
@@ -77,14 +84,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -98,14 +112,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -119,14 +140,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -140,14 +168,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -166,14 +201,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
 
           setIsRequestRunning(false);
@@ -195,14 +237,21 @@ const ComponentPure = ({
           messageActions(
             message,
             setElementProps,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             updatePropsContext,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -235,6 +284,13 @@ const Component = inject(({ pluginStore }) => {
     setSettingsPluginDialogVisible,
     setPluginDialogVisible,
     setPluginDialogProps,
+
+    updateContextMenuItems,
+    updateInfoPanelItems,
+    updateMainButtonItems,
+    updateProfileMenuItems,
+    updateEventListenerItems,
+    updateFileItems,
   } = pluginStore;
   return {
     updatePluginStatus,
@@ -242,6 +298,13 @@ const Component = inject(({ pluginStore }) => {
     setSettingsPluginDialogVisible,
     setPluginDialogVisible,
     setPluginDialogProps,
+
+    updateContextMenuItems,
+    updateInfoPanelItems,
+    updateMainButtonItems,
+    updateProfileMenuItems,
+    updateEventListenerItems,
+    updateFileItems,
   };
 })(observer(ComponentPure));
 

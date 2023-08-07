@@ -23,6 +23,13 @@ const PluginDialog = ({
 
   setPluginDialogVisible,
   setPluginDialogProps,
+
+  updateContextMenuItems,
+  updateInfoPanelItems,
+  updateMainButtonItems,
+  updateProfileMenuItems,
+  updateEventListenerItems,
+  updateFileItems,
   ...rest
 }) => {
   const [dialogHeaderProps, setDialogHeaderProps] =
@@ -39,14 +46,21 @@ const PluginDialog = ({
     messageActions(
       message,
       null,
-      null,
+
       pluginId,
       setSettingsPluginDialogVisible,
       setCurrentSettingsDialogPlugin,
       updatePluginStatus,
       null,
       setPluginDialogVisible,
-      setPluginDialogProps
+      setPluginDialogProps,
+
+      updateContextMenuItems,
+      updateInfoPanelItems,
+      updateMainButtonItems,
+      updateProfileMenuItems,
+      updateEventListenerItems,
+      updateFileItems
     );
   };
 
@@ -59,14 +73,21 @@ const PluginDialog = ({
           messageActions(
             message,
             null,
-            null,
+
             pluginId,
             setSettingsPluginDialogVisible,
             setCurrentSettingsDialogPlugin,
             updatePluginStatus,
             null,
             setPluginDialogVisible,
-            setPluginDialogProps
+            setPluginDialogProps,
+
+            updateContextMenuItems,
+            updateInfoPanelItems,
+            updateMainButtonItems,
+            updateProfileMenuItems,
+            updateEventListenerItems,
+            updateFileItems
           );
         };
 
@@ -135,6 +156,13 @@ export default inject(({ pluginStore }) => {
 
     setPluginDialogVisible,
     setPluginDialogProps,
+
+    updateContextMenuItems,
+    updateInfoPanelItems,
+    updateMainButtonItems,
+    updateProfileMenuItems,
+    updateEventListenerItems,
+    updateFileItems,
   } = pluginStore;
 
   return {
@@ -145,5 +173,12 @@ export default inject(({ pluginStore }) => {
 
     setPluginDialogVisible,
     setPluginDialogProps,
+
+    updateContextMenuItems,
+    updateInfoPanelItems,
+    updateMainButtonItems,
+    updateProfileMenuItems,
+    updateEventListenerItems,
+    updateFileItems,
   };
 })(observer(PluginDialog));
