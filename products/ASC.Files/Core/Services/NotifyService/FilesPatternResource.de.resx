@@ -113,4 +113,43 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Dokumente. Zugriff auf das Verzeichnis [$DocumentTitle]($DocumentURL) erteilt</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName erwähnte Sie im Kommentar zum Dokument
+
+$__AuthorName hat Sie im Kommentar zum Dokument "$DocumentTitle":"$DocumentURL" im Raum "$RoomTitle":"$RoomURL" erwähnt:
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName hat einen Raum gelöscht
+
+$__AuthorName hat den Raum gelöscht: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Alle Unterzeichner haben $DocumentTitle unterschrieben</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Signierstatus geändert</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace-Benachrichtigung. Erwähnt im Dokument</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Erwähnt im Dokument</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Mailing ist abgeschlossen.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace-Benachrichtigung. Raum gelöscht</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Zugriffsberechtigung für das Dokument: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Zugriffsberechtigung für das verschlüsselte Dokument: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Zugriff auf den Ordner: $DocumentTitle</value>
+  </data>
 </root>

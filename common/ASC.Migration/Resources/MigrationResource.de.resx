@@ -117,34 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
-    <value>Stimate, $UserName!
- 
-Bun venit în spaţiu ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
- 
-* Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
- 
-* *Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
- 
-* *Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
- 
-* *Conectați orice serviciu de stocare în cloud* și să lucrați fără a comuta între aplicații. 
- 
-$GreenButton
- 
-Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați echipa "noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
- 
-Cu deosebită considerație, 
-Echipa ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com"</value>
+  <data name="ClearingTemporaryData" xml:space="preserve">
+    <value>Löschung temporärer Daten</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
-    <value>Doriți să modificați parola biroului dvs în cloud? Faceți clic pe butonul de mai jos pentru a confirma.
- 
-$GreenButton
- 
-Linkul este valabil timp de 7 zile.
- 
-Nu doriți să modificați parola? Atunci ignorați acest mesaj.</value>
+  <data name="DataProcessing" xml:space="preserve">
+    <value>Datenverarbeitung...</value>
+  </data>
+  <data name="DataProcessingCompleted" xml:space="preserve">
+    <value>Datenverarbeitung abgeschlossen</value>
+  </data>
+  <data name="DumpParse" xml:space="preserve">
+    <value>Datenbank-Parsing</value>
+  </data>
+  <data name="GoogleModuleNameContacts" xml:space="preserve">
+    <value>Mail-Kontakte</value>
+  </data>
+  <data name="GoogleModuleNameDocuments" xml:space="preserve">
+    <value>Dateien von Google Drive</value>
+  </data>
+  <data name="GroupMigration" xml:space="preserve">
+    <value>Gruppenmigration {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserContacts" xml:space="preserve">
+    <value>Migration von Nutzerkontakten {0} ({1}/{2})</value>
+  </data>
+  <data name="MigratingUserFiles" xml:space="preserve">
+    <value>Migration von Nutzerdateien {0} ({1}/{2})</value>
+  </data>
+  <data name="MigrationCanceled" xml:space="preserve">
+    <value>Migration abgebrochen</value>
+  </data>
+  <data name="MigrationCompleted" xml:space="preserve">
+    <value>Migration abgeschlossen</value>
+  </data>
+  <data name="ModuleNameCalendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="OnlyofficeModuleNameCalendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="ModuleNameGroups" xml:space="preserve">
+    <value>Gruppen</value>
+  </data>
+  <data name="ModuleNameMail" xml:space="preserve">
+    <value>Mail</value>
+  </data>
+  <data name="OnlyofficeModuleNameMail" xml:space="preserve">
+    <value>Mail</value>
+  </data>
+  <data name="ModuleNameUsers" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="NextcloudModuleNameContacts" xml:space="preserve">
+    <value>Kontakte</value>
+  </data>
+  <data name="NextcloudModuleNameDocuments" xml:space="preserve">
+    <value>Dateien der Benutzer</value>
+  </data>
+  <data name="OnlyofficeModuleNameDocuments" xml:space="preserve">
+    <value>Dokumente</value>
+  </data>
+  <data name="OnlyofficeModuleNamePeople" xml:space="preserve">
+    <value>Personen</value>
+  </data>
+  <data name="PreparingForMigration" xml:space="preserve">
+    <value>Vorbereitungen für die Migration</value>
+  </data>
+  <data name="StartOfDataProcessing" xml:space="preserve">
+    <value>Start der Datenverarbeitung...</value>
+  </data>
+  <data name="Unzipping" xml:space="preserve">
+    <value>Entpacken...</value>
+  </data>
+  <data name="UnzippingFinished" xml:space="preserve">
+    <value>Entpacken abgeschlossen...</value>
+  </data>
+  <data name="UserCalendarMigration" xml:space="preserve">
+    <value>Benutzerkalendermigration {0} ({1}/{2})</value>
+  </data>
+  <data name="UserMigration" xml:space="preserve">
+    <value>Benutzer-Migration {0} ({1}/{2})</value>
+  </data>
+  <data name="UserSkipped" xml:space="preserve">
+    <value>Importieren des Benutzers fehlgeschlagen: {0} ({1}/{2})</value>
   </data>
 </root>
