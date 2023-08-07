@@ -70,13 +70,14 @@ const StyledComponent = styled.div`
         ? css`
             margin-right: 16px;
             border-left: none !important;
+            border-radius: 12px 12px 12px 0 !important;
           `
         : css`
             margin-left: 16px;
             border-right: none !important;
+            border-radius: 12px 0 0 12px !important;
           `}
     width: 44% !important;
-    border-radius: 12px 0 0 12px !important;
   }
 
   .section {
@@ -87,8 +88,18 @@ const StyledComponent = styled.div`
       css`
         border-width: 1px;
         border-style: solid;
-        border-left-style: none;
-        border-radius: 0px 16px 16px 0px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 12px;
+                border-radius: 0px 0px 16px 16px;
+                border-right-style: none;
+              `
+            : css`
+                margin-left: 12px;
+                border-radius: 0px 16px 16px 0px;
+                border-left-style: none;
+              `}
       `}
     background: ${props =>
       props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
@@ -123,16 +134,17 @@ const StyledComponent = styled.div`
     height: 30px;
     border-width: 1px;
     border-style: solid;
-    border-radius: 3px 0px 0px 3px;
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin: 0px 20px 24px 0px;
             border-left-style: none;
+            border-radius: 3px 3px 0px 0px;
           `
         : css`
             margin: 0px 0px 24px 20px;
             border-right-style: none;
+            border-radius: 3px 0px 0px 3px;
           `}
   }
 
@@ -312,11 +324,12 @@ const StyledComponent = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 16px;
+            border-left: none !important;
           `
         : css`
             margin-left: 16px;
+            border-right: none !important;
           `}
-    border-right: none !important;
     border-radius: 12px 0 16px 0 !important;
   }
 
@@ -327,7 +340,14 @@ const StyledComponent = styled.div`
     border-left-width: 1px;
     border-style: solid;
     border-bottom: none;
-    border-radius: 12px 12px 0px 0px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            border-radius: 12px 0px 0px 12px;
+          `
+        : css`
+            border-radius: 12px 0px 0px 12px;
+          `}
   }
 
   .action-button {
