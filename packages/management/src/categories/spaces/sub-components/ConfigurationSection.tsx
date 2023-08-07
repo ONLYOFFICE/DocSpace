@@ -39,7 +39,6 @@ const ConfigurationSection = ({ t }) => {
         <div className="spaces-input-block">
           <div className="spaces-text-wrapper">
             <Text
-              color="#333"
               fontSize="13px"
               fontWeight="600"
               className="spaces-domain-text"
@@ -58,7 +57,7 @@ const ConfigurationSection = ({ t }) => {
           />
         </div>
         <div className="spaces-input-block">
-          <Text color="#333" fontSize="13px" fontWeight="600">
+          <Text fontSize="13px" fontWeight="600">
             {t("DocSpaceName")}
           </Text>
           <TextInput

@@ -36,7 +36,6 @@ const MultipleSpaces = ({ t }) => {
 
           <div className="spaces-input-block">
             <Text
-              color="#333"
               fontSize="13px"
               className="spaces-input-subheader"
               fontWeight="600"
