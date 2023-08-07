@@ -14,7 +14,7 @@ import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import toastr from "@docspace/components/toast/toastr";
 import SelectorAddButton from "@docspace/components/selector-add-button";
-import { Base } from "@docspace/components/themes";
+
 import { useNavigate } from "react-router-dom";
 import {
   StyledOwnerInfo,
@@ -30,7 +30,6 @@ import Progress from "./sub-components/Progress/Progress";
 import Loader from "./sub-components/Loader/Loader";
 
 import api from "@docspace/common/api";
-const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
 
 const StyledModalDialog = styled(ModalDialog)`
@@ -62,7 +61,7 @@ let timerId = null;
 
 const DataReassignmentDialog = ({
   visible,
-  users,
+  user,
   setDataReassignmentDialogVisible,
   dataReassignment,
   dataReassignmentProgress,
@@ -72,14 +71,9 @@ const DataReassignmentDialog = ({
   dataReassignmentDeleteAdministrator,
   t,
   tReady,
-  reassignDataIds,
 
   setFilter,
 
-  removeUser,
-  filter,
-
-  setSelected,
   setDataReassignmentDeleteAdministrator,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
@@ -101,48 +95,28 @@ const DataReassignmentDialog = ({
 
   const [percent, setPercent] = useState(0);
 
-  const onlyOneUser = users.length === 1;
   const navigate = useNavigate();
 
-  const onDeleteUser = (id) => {
+  const updateAccountsAfterDeleteUser = () => {
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
     const url = `/accounts/filter?${params}`;
 
-    console.log("onDeleteUser", id);
-    deleteUser(id)
-      .then((res) => {
-        toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
-        navigate(url, params);
-        setFilter(filter);
-        return;
-      })
-      .catch((error) => toastr.error(error))
-      .finally(() => {
-        // onClose();
-      });
-  };
-
-  const onDeleteUsers = (ids) => {
-    removeUser(ids, filter)
-      .then(() => {
-        toastr.success(t("DeleteGroupUsersSuccessMessage"));
-      })
-      .catch((error) => toastr.error(error))
-      .finally(() => {
-        setSelected("close");
-        // onClose();
-      });
+    navigate(url, params);
+    setFilter(filter);
+    return;
   };
 
   useEffect(() => {
     if (percent === 100) {
       clearInterval(timerId);
+
+      isDeleteProfile && updateAccountsAfterDeleteUser();
     }
-  }, [percent]);
+  }, [percent, isDeleteProfile]);
 
   useEffect(() => {
-    //If click Delete
+    //If click Delete user
     if (dataReassignmentDeleteAdministrator) {
       onReassign();
     }
@@ -191,38 +165,20 @@ const DataReassignmentDialog = ({
     setIsLoading(true);
     setShowProgress(true);
 
-    let reassignIds = [];
-    let deleteIds = [];
+    const fromUserIds = user.id;
 
-    if (!onlyOneUser) {
-      users.forEach((item) => {
-        item.isRoomAdmin ? reassignIds.push(item.id) : deleteIds.push(item.id);
-      });
-    }
-
-    const fromUserIds = onlyOneUser ? [users[0].id] : reassignIds;
-
-    // with simple delete
-    if (deleteIds.length && isDeleteProfile) {
-      if (deleteIds.length === 1) {
-        onDeleteUser(deleteIds);
-      } else onDeleteUsers(deleteIds);
-    }
-
-    dataReassignment(fromUserIds, selectedUser.id, isDeleteProfile)
+    dataReassignment([fromUserIds], selectedUser.id, isDeleteProfile)
       .then(() => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
 
-        if (onlyOneUser) {
-          timerId = setInterval(() => checkProgress(fromUserIds), 500);
-        }
+        timerId = setInterval(() => checkProgress(fromUserIds), 500);
       })
       .catch((error) => {
         toastr.error(error?.response?.data?.error?.message);
       });
 
     setIsLoading(false);
-  }, [onlyOneUser, users, selectedUser, isDeleteProfile]);
+  }, [user, selectedUser, isDeleteProfile]);
 
   return (
     <StyledModalDialog
@@ -237,7 +193,7 @@ const DataReassignmentDialog = ({
         <ModalDialog.Container>
           <PeopleSelector
             acceptButtonLabel={t("Common:SelectAction")}
-            excludeItems={[users[0].id]}
+            excludeItems={[user.id]}
             onAccept={onAccept}
             onCancel={onClose}
             onBackClick={onTogglePeopleSelector}
@@ -255,7 +211,7 @@ const DataReassignmentDialog = ({
         {tReady && showProgress && (
           <Progress
             isReassignCurrentUser={isReassignCurrentUser}
-            fromUser={users[0].displayName}
+            fromUser={user.displayName}
             toUser={selectedUser.label}
             percent={percent}
           />
@@ -263,35 +219,34 @@ const DataReassignmentDialog = ({
 
         {tReady && !showProgress && (
           <>
-            {onlyOneUser && !reassignDataIds && (
-              <StyledOwnerInfo>
-                <Avatar
-                  className="avatar"
-                  role="user"
-                  source={users[0].avatar}
-                  size={"big"}
-                  hideRoleIcon
-                />
-                <div className="info">
-                  <div className="avatar-name">
-                    <Text
-                      className="display-name"
-                      noSelect
-                      title={users[0].displayName}
-                    >
-                      {users[0].displayName}
-                    </Text>
-                    {users[0].statusType === "disabled" && (
-                      <StyledCatalogSpamIcon size="small" />
-                    )}
-                  </div>
-
-                  <Text className="status" noSelect>
-                    {firstLetterToUppercase(users[0].statusType)}
+            <StyledOwnerInfo>
+              <Avatar
+                className="avatar"
+                role="user"
+                source={user.avatar}
+                size={"big"}
+                hideRoleIcon
+              />
+              <div className="info">
+                <div className="avatar-name">
+                  <Text
+                    className="display-name"
+                    noSelect
+                    title={user.displayName}
+                  >
+                    {user.displayName}
                   </Text>
+                  {user.statusType === "disabled" && (
+                    <StyledCatalogSpamIcon size="small" />
+                  )}
                 </div>
-              </StyledOwnerInfo>
-            )}
+
+                <Text className="status" noSelect>
+                  {firstLetterToUppercase(user.statusType)}
+                </Text>
+              </div>
+            </StyledOwnerInfo>
+
             <StyledPeopleSelectorInfo>
               <Text className="new-owner" noSelect>
                 New data owner
@@ -362,9 +317,7 @@ const DataReassignmentDialog = ({
                 onClick={onToggleDeleteProfile}
               />
               <Text className="info" noSelect>
-                {onlyOneUser
-                  ? "Delete profile when reassignment is finished"
-                  : "Delete profiles when reassignment is finished"}
+                Delete profile when reassignment is finished
               </Text>
             </div>
           )}
@@ -411,7 +364,6 @@ export default inject(({ auth, peopleStore, setup }) => {
     dataReassignmentDialogVisible,
     setDataReassignmentDialogVisible,
     dataReassignmentDeleteProfile,
-    reassignDataIds,
     dataReassignmentDeleteAdministrator,
     setDataReassignmentDeleteAdministrator,
   } = peopleStore.dialogStore;
@@ -420,9 +372,7 @@ export default inject(({ auth, peopleStore, setup }) => {
 
   const { id: idCurrentUser } = peopleStore.authStore.userStore.user;
 
-  const { filter, setFilter } = peopleStore.filterStore;
-  const { removeUser } = peopleStore.usersStore;
-  const { setSelected } = peopleStore.selectionStore;
+  const { setFilterParams: setFilter } = peopleStore.filterStore;
 
   return {
     dataReassignmentDialogVisible,
@@ -433,11 +383,8 @@ export default inject(({ auth, peopleStore, setup }) => {
     idCurrentUser,
     dataReassignmentProgress,
     dataReassignmentDeleteProfile,
-    reassignDataIds,
-    filter,
+
     setFilter,
-    removeUser,
-    setSelected,
 
     dataReassignmentDeleteAdministrator,
     setDataReassignmentDeleteAdministrator,
