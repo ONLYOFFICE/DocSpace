@@ -183,7 +183,10 @@ const StyledContainerAction = styled.div`
   padding: 16px 0px;
 
   .sublevel {
-    padding-left: 48px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 48px;`
+        : `padding-left: 48px;`}
   }
 `;
 
