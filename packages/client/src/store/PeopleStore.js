@@ -284,7 +284,7 @@ class PeopleStore {
         key: "delete",
         label: t("Common:Delete"),
         disabled: !hasOnlyOneUserToRemove,
-        onClick: () => toggleDeleteProfileEverDialog(selection),
+        onClick: () => toggleDeleteProfileEverDialog(selection[0]),
         iconUrl: DeleteReactSvgUrl,
       },
     ];

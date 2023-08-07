@@ -17,7 +17,6 @@ class DialogStore {
   resetAuthDialogVisible = false;
   dataReassignmentDialogVisible = false;
   dataReassignmentDeleteProfile = false;
-  reassignDataIds = null;
   dataReassignmentDeleteAdministrator = null;
 
   constructor() {
@@ -61,10 +60,6 @@ class DialogStore {
 
   setDialogData = (data) => {
     this.data = data;
-  };
-
-  setReassignDataIds = (reassignDataIds) => {
-    this.reassignDataIds = reassignDataIds;
   };
 
   setChangeUserTypeDialogVisible = (visible) => {

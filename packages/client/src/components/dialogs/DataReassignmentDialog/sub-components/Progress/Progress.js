@@ -122,7 +122,6 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
         className="progress"
         themeId={ThemeType.MobileProgressBar}
         uploadPercent={percent}
-        //   error={error}
       />
 
       <Text className="description" noSelect>
