@@ -617,11 +617,8 @@
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_VerifyPrereq" Type="1" Source="Prereq.dll" Target="VerifyPrereq"/>
-    <ROW Action="ElasticSearchInstallPlugin" Type="1030" Source="utils.vbs" Target="ElasticSearchInstallPlugin"/>
-    <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
     <ROW Action="MySQLConfigure" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="PostgreSqlConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
-    <ROW Action="RedisSearchSetup" Type="6" Source="utils.vbs" Target="RedisSetup"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -680,11 +677,8 @@
     <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="DefaultBuild"/>
     <ROW Action="AI_ExtractFiles" Sequence="1399" Builds="DefaultBuild"/>
     <ROW Action="AI_DATA_SETTER" Sequence="1398"/>
-    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="6405"/>
-    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="6404"/>
-    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="6403"/>
-    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="6402"/>
-    <ROW Action="RedisSearchSetup" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="6402"/>
+    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="6401"/>
     <ROW Action="AI_PrepareChainers" Condition="VersionMsi &gt;= &quot;4.05&quot;" Sequence="5851"/>
     <ROW Action="AI_ConfigureChainer" Condition="((UILevel = 2) OR (UILevel = 3)) AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6598"/>
     <ROW Action="AI_LaunchChainer" Condition="AI_PREREQ_CHAINER AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6599"/>
