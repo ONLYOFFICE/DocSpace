@@ -69,12 +69,13 @@ const StyledComponent = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 16px;
+            border-left: none !important;
           `
         : css`
             margin-left: 16px;
+            border-right: none !important;
           `}
     width: 44% !important;
-    border-right: none !important;
     border-radius: 12px 0 0 12px !important;
   }
 
@@ -99,7 +100,7 @@ const StyledComponent = styled.div`
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            padding: 26px 0px 28px 20px;
+            padding: 26px 20px 28px 0px;
           `
         : css`
             padding: 26px 0px 28px 20px;
@@ -123,14 +124,15 @@ const StyledComponent = styled.div`
     border-width: 1px;
     border-style: solid;
     border-radius: 3px 0px 0px 3px;
-    border-right-style: none;
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin: 0px 20px 24px 0px;
+            border-left-style: none;
           `
         : css`
             margin: 0px 0px 24px 20px;
+            border-right-style: none;
           `}
   }
 
@@ -266,7 +268,16 @@ const StyledComponent = styled.div`
   }
 
   .section-tile {
-    padding: ${props => (props.isViewTablet ? "0 0 0 20px" : "0 20px 0")};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: ${props =>
+              props.isViewTablet ? "0 20px 0 0 " : "0 0 0 20px"};
+          `
+        : css`
+            padding: ${props =>
+              props.isViewTablet ? "0 0 0 20px" : "0 20px 0"};
+          `}
   }
 
   .border-color {
@@ -396,7 +407,14 @@ const StyledComponent = styled.div`
 
 const StyledFloatingButton = styled.div`
   bottom: 24px;
-  right: 24px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 24px;
+        `
+      : css`
+          right: 24px;
+        `}
   width: 48px;
   height: 48px;
   border-radius: 50%;
