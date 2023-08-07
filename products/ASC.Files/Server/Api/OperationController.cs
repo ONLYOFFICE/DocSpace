@@ -216,6 +216,17 @@ public class OperationController : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Checks a batch of files and folders for conflicts when moving or copying them to the folder with the ID specified in the request.
+    /// This method returns the entry information about both the initial and destination files.
+    /// </summary>
+    /// <short>Check files and folders for conflicts (full information)</short>
+    /// <category>Operations</category>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core" name="inDto">Request parameters for checking files and folders for conflicts</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.MoveDto, ASC.Files.Core">Entry information about initial and destination files</returns>
+    /// <path>api/2.0/files/fileops/move/full</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     /// <visible>false</visible>
     [HttpGet("fileops/move/full")]
     public async IAsyncEnumerable<MoveDto> MoveOrCopyBatchCheckFullAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)

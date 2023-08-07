@@ -34,7 +34,7 @@ public class CookieSettingsDto
     /// <type>System.Int32, System</type>
     public int LifeTime { get; set; }
 
-    /// <summary>Enabled or not</summary>
+    /// <summary>Specifies if the cookie settings are enabled or not</summary>
     /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
 }

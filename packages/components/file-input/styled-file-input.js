@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import { getCorrectBorderRadius } from "../utils/rtlUtils";
 
 const paddingRightStyle = (props) =>
   props.theme.fileInput.paddingRight[props.size];
@@ -34,8 +35,12 @@ const StyledFileInput = styled.div`
       props.theme.input.borderColor};
 
     text-overflow: ellipsis;
-    padding-right: 40px;
-    padding-right: ${(props) => paddingRightStyle(props)};
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `padding-left: ${paddingRightStyle(props) || "40px"};`
+        : `padding-right: ${paddingRightStyle(props) || "40px"};`}
+
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     margin: 0;
   }
@@ -66,7 +71,6 @@ const StyledFileInput = styled.div`
     justify-content: center;
 
     position: absolute;
-    right: 0;
 
     width: ${(props) => widthIconStyle(props)};
 
@@ -74,7 +78,6 @@ const StyledFileInput = styled.div`
 
     margin: 0;
     border: ${(props) => props.theme.fileInput.icon.border};
-    border-radius: ${(props) => props.theme.fileInput.icon.borderRadius};
 
     border-color: ${(props) =>
       (props.hasError && props.theme.input.errorBorderColor) ||
@@ -86,6 +89,21 @@ const StyledFileInput = styled.div`
     .loader {
       padding-top: 5px;
     }
+
+    border-radius: ${({ theme }) =>
+      getCorrectBorderRadius(
+        theme.fileInput.icon.borderRadius,
+        theme.interfaceDirection
+      )};
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 0;
+          `
+        : css`
+            right: 0;
+          `}
   }
 
   .icon-button {

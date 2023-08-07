@@ -20,6 +20,7 @@ const Text = ({
       textAlign={textAlign}
       as={!as && tag ? tag : as}
       title={title}
+      dir="auto"
       {...rest}
     />
   );

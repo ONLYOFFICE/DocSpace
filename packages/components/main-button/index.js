@@ -62,7 +62,7 @@ const MainButton = (props) => {
               containerRef={ref}
               ref={menuRef}
               onHide={onHide}
-              scaled={false}
+              scaled={true}
             />
           </>
         )}
