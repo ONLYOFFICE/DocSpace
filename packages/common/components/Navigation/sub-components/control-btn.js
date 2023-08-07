@@ -12,23 +12,37 @@ import ContextButton from "./context-btn";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 
 const StyledContainer = styled.div`
-  margin-left: 20px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 20px;
+        `
+      : css`
+          margin-left: 20px;
+        `}
   display: flex;
   align-items: center;
 
   height: 32px;
 
   .add-button {
-    margin-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+          `
+        : css`
+            margin-right: 16px;
+          `}
     min-width: 15px;
 
     @media ${tablet} {
-      display: ${(props) => (props.isFrame ? "flex" : "none")};
+      display: ${props => (props.isFrame ? "flex" : "none")};
     }
 
     ${isMobile &&
     css`
-      display: ${(props) => (props.isFrame ? "flex" : "none")};
+      display: ${props => (props.isFrame ? "flex" : "none")};
     `}
   }
 
@@ -37,16 +51,37 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+          `
+        : css`
+            margin-right: 16px;
+          `}
     min-width: 15px;
 
     @media ${tablet} {
-      margin-right: 9px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 9px;
+            `
+          : css`
+              margin-right: 9px;
+            `}
     }
   }
 
   .trash-button {
-    margin-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+          `
+        : css`
+            margin-right: 16px;
+          `}
     min-width: 15px;
   }
 `;
@@ -56,15 +91,36 @@ const StyledInfoPanelToggleWrapper = styled.div`
   align-items: center;
   align-self: center;
   justify-content: center;
-  margin-left: auto;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   @media ${tablet} {
-    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${props => (props.isRootFolder ? "auto" : "0")};
+          `
+        : css`
+            margin-left: ${props => (props.isRootFolder ? "auto" : "0")};
+          `}
   }
 
   ${isMobile &&
   css`
-    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${props => (props.isRootFolder ? "auto" : "0")};
+          `
+        : css`
+            margin-left: ${props => (props.isRootFolder ? "auto" : "0")};
+          `}
   `}
 
   .info-panel-toggle-bg {
@@ -74,13 +130,13 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: ${(props) =>
+    background-color: ${props =>
       props.isInfoPanelVisible
         ? props.theme.infoPanel.sectionHeaderToggleBgActive
         : props.theme.infoPanel.sectionHeaderToggleBg};
 
     path {
-      fill: ${(props) =>
+      fill: ${props =>
         props.isInfoPanelVisible
           ? props.theme.infoPanel.sectionHeaderToggleIconActive
           : props.theme.infoPanel.sectionHeaderToggleIcon};

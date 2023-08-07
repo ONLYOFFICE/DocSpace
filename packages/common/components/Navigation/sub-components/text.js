@@ -20,11 +20,11 @@ const StyledTextContainer = styled.div`
 
   position: relative;
 
-  ${(props) =>
+  ${props =>
     !props.isRootFolder && !props.isRootFolderTitle && "cursor: pointer"};
-  ${(props) => props.isRootFolderTitle && "padding-right: 3px"};
+  ${props => props.isRootFolderTitle && "padding-right: 3px"};
 
-  ${(props) =>
+  ${props =>
     !props.isRootFolderTitle &&
     css`
       white-space: nowrap;
@@ -40,7 +40,7 @@ const StyledHeading = styled(Heading)`
 
   margin: 0;
 
-  ${(props) =>
+  ${props =>
     props.isRootFolderTitle &&
     `color: ${props.theme.navigation.rootFolderTitleColor}`};
 
@@ -66,9 +66,16 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  padding: 0 2px 0 4px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding: 0 4px 0 2px;
+        `
+      : css`
+          padding: 0 2px 0 4px;
+        `}
   path {
-    fill: ${(props) => props.theme.navigation.expanderColor};
+    fill: ${props => props.theme.navigation.expanderColor};
   }
 
   ${commonIconsStyles};
@@ -77,10 +84,16 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
 const StyledArrowIcon = styled(ArrowIcon)`
   height: 12px;
   min-width: 12px;
-
-  padding-left: 6px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-right: 6px;
+        `
+      : css`
+          padding-left: 6px;
+        `}
   path {
-    fill: ${(props) => props.theme.navigation.rootFolderTitleColor};
+    fill: ${props => props.theme.navigation.rootFolderTitleColor};
   }
 `;
 
@@ -90,11 +103,18 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  padding: 0 4px 0 2px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding: 0 2px 0 4px;
+        `
+      : css`
+          padding: 0 4px 0 2px;
+        `}
   transform: rotate(-180deg);
 
   path {
-    fill: ${(props) => props.theme.navigation.expanderColor};
+    fill: ${props => props.theme.navigation.expanderColor};
   }
 
   ${commonIconsStyles};
@@ -116,14 +136,12 @@ const Text = ({
       onClick={onClick}
       isOpen={isOpen}
       isRootFolderTitle={isRootFolderTitle}
-      {...rest}
-    >
+      {...rest}>
       <StyledHeading
         type="content"
         title={title}
         truncate={true}
-        isRootFolderTitle={isRootFolderTitle}
-      >
+        isRootFolderTitle={isRootFolderTitle}>
         {title}
       </StyledHeading>
 
