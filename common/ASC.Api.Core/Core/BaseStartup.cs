@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
-
 namespace ASC.Api.Core;
 
 public abstract class BaseStartup
@@ -38,7 +36,6 @@ public abstract class BaseStartup
     private readonly IHostEnvironment _hostEnvironment;
     private readonly string _corsOrigin;
 
-    protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
     protected virtual bool AddAndUseSession { get; }
@@ -128,14 +125,6 @@ public abstract class BaseStartup
             {
                 options.JsonSerializerOptions.WriteIndented = false;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-
-                if (Converters != null)
-                {
-                    foreach (var c in Converters)
-                    {
-                        options.JsonSerializerOptions.Converters.Add(c);
-                    }
-                }
             };
 
         services.AddControllers().AddJsonOptions(jsonOptions);
