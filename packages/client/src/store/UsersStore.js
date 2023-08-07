@@ -259,7 +259,7 @@ class UsersStore {
           options.push("details");
         }
 
-        if (userRole === "manager") {
+        if (userRole === "manager" || userRole === "admin") {
           options.push("reassign-data");
         }
 
