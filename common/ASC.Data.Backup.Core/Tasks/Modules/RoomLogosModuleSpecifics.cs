@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -25,36 +25,40 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Data.Backup.Tasks.Modules;
-
-[Scope]
-public class ModuleProvider
+public class RoomLogosModuleSpecifics : ModuleSpecificsBase
 {
-    public List<IModuleSpecifics> AllModules { get; }
-    private IModuleSpecifics RoomLogosModule { get; }
-
-    public ModuleProvider(ILogger<ModuleProvider> logger, Helpers helpers, CoreSettings coreSettings)
+    public RoomLogosModuleSpecifics(Helpers helpers) : base(helpers)
     {
-        AllModules = new List<IModuleSpecifics>
-            {
-                new TenantsModuleSpecifics(coreSettings,helpers),
-                new AuditModuleSpecifics(helpers),
-                new FilesModuleSpecifics(logger,helpers),
-                new FilesModuleSpecifics2(helpers),
-                new WebStudioModuleSpecifics(helpers),
-                new CoreModuleSpecifics(helpers)
-            }
-        .ToList();
-
-        RoomLogosModule = new RoomLogosModuleSpecifics(helpers);
     }
 
-    public IModuleSpecifics GetByStorageModule(string storageModuleName, string storageDomainName = null)
+    public override ModuleName ModuleName => ModuleName.RoomLogos;
+
+    public override IEnumerable<TableInfo> Tables => new List<TableInfo>();
+
+    public override IEnumerable<RelationInfo> TableRelations => new List<RelationInfo>();
+
+    public override bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath)
     {
-        return storageModuleName switch
+        try
         {
-            "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
-            "room_logos" => RoomLogosModule,
-            _ => null,
-        };
+            var split = filePath.Split('_');
+            var roomId = columnMapper.GetMapping("files_folder", "id", split[0]);
+            if (roomId == null)
+            {
+                if (!dump)
+                {
+                    return false;
+                }
+
+                roomId = split[0];
+            }
+            filePath = roomId + "_" + split[1];
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
