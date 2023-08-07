@@ -481,6 +481,7 @@ ContextMenu.defaultProps = {
   scaled: false,
   containerRef: null,
   leftOffset: 0,
+  rightOffset: 0,
   fillIcon: true,
 };
 
