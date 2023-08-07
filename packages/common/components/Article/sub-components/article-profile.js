@@ -74,8 +74,8 @@ const ArticleProfile = (props) => {
             ref={menuRef}
             onHide={onHide}
             scaled={false}
-            leftOffset={!isRtl && -50}
-            rightOffset={isRtl && 54}
+            leftOffset={Number(!isRtl && -50)}
+            rightOffset={Number(isRtl && 54)}
           />
         </div>
         {(!isTabletView || showText) && (
