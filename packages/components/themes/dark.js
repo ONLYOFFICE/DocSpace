@@ -3136,6 +3136,11 @@ const Dark = {
     textDescriptionColor: "#858585",
   },
 
+  deepLink: {
+    navBackground: "#282828",
+    fileTileBackground: "#3D3D3D",
+  },
+
   emailChips: {
     borderColor: "#858585",
     dashedBorder: "1px dashed #fff",

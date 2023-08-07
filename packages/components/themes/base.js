@@ -3133,6 +3133,11 @@ const Base = {
     textDescriptionColor: "#A3A9AE",
   },
 
+  deepLink: {
+    navBackground: "#f8f9f9",
+    fileTileBackground: "#f3f4f4",
+  },
+
   emailChips: {
     borderColor: "#A3A9AE",
     dashedBorder: "1px dashed #5299E0",

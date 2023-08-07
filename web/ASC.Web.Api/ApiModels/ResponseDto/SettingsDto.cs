@@ -166,6 +166,8 @@ public class SettingsDto
     /// <type>ASC.Web.Api.ApiModel.ResponseDto.PluginsDto, ASC.Web.Api</type>
     public PluginsDto Plugins { get; set; }
 
+    public DeepLinkDto DeepLink { get; set; }
+
     public static SettingsDto GetSample()
     {
         return new SettingsDto
