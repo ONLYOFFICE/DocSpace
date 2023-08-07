@@ -7,7 +7,7 @@ import styled, { css } from "styled-components";
 import ContextMenu from "@docspace/components/context-menu";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
-import { useTheme } from "styled-components";
+import { withTheme } from 'styled-components'
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
@@ -52,12 +52,12 @@ const roomsStyles = css`
 
     border-bottom: ${props => props.theme.filesSection.tilesView.tile.border};
     background: ${props =>
-      props.theme.filesSection.tilesView.tile.backgroundColor};
+    props.theme.filesSection.tilesView.tile.backgroundColor};
 
     border-radius: ${({ theme, isRooms }) =>
-      isRooms
-        ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
-        : theme.filesSection.tilesView.tile.upperBorderRadius};
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
+      : theme.filesSection.tilesView.tile.upperBorderRadius};
   }
 
   .room-tile_bottom-content {
@@ -69,11 +69,11 @@ const roomsStyles = css`
 
     padding: 16px;
     background: ${props =>
-      props.theme.filesSection.tilesView.tile.backgroundColor};
+    props.theme.filesSection.tilesView.tile.backgroundColor};
     border-radius: ${({ theme, isRooms }) =>
-      isRooms
-        ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
-        : theme.filesSection.tilesView.tile.bottomBorderRadius};
+    isRooms
+      ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
+      : theme.filesSection.tilesView.tile.bottomBorderRadius};
   }
 `;
 
@@ -197,11 +197,11 @@ const StyledTile = styled.div`
     flex: 0 0 16px;
     margin-top: 8px;
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             margin-right: ${props => (props.isFolder ? "8px" : "7px")};
           `
-        : css`
+      : css`
             margin-left: ${props => (props.isFolder ? "8px" : "7px")};
           `}
   }
@@ -217,18 +217,18 @@ const StyledTile = styled.div`
     width: 32px;
     height: 32px;
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             margin-right: ${props =>
-              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+          props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
             margin-left: ${props =>
-              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+          props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
           `
-        : css`
+      : css`
             margin-left: ${props =>
-              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+          props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
             margin-right: ${props =>
-              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+          props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
           `}
   }
 
@@ -237,12 +237,12 @@ const StyledTile = styled.div`
     width: 32px;
     height: 32px;
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             margin-right: 21px;
             margin-left: 14px;
           `
-        : css`
+      : css`
             margin-left: 21px;
             margin-right: 14px;
           `}
@@ -250,10 +250,10 @@ const StyledTile = styled.div`
 
   .file-icon_container:hover {
     ${props =>
-      !props.dragging &&
-      !props.inProgress &&
-      !isMobile &&
-      css`
+    !props.dragging &&
+    !props.inProgress &&
+    !isMobile &&
+    css`
         .checkbox {
           opacity: 1;
         }
@@ -303,11 +303,11 @@ const StyledFileTileTop = styled.div`
     object-position: ${props => (props.isImageOrMedia ? "center" : "top")};
     z-index: 0;
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             border-radius: 6px 0 0 6px;
           `
-        : css`
+      : css`
             border-radius: 6px 6px 0 0;
           `}
   }
@@ -343,12 +343,12 @@ const StyledFileTileBottom = styled.div`
     width: 32px;
     height: 32px;
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             margin-right: 23px;
             margin-left: 14px;
           `
-        : css`
+      : css`
             margin-left: 23px;
             margin-right: 14px;
           `}
@@ -410,11 +410,11 @@ const StyledOptionButton = styled.div`
 
   .expandButton > div:first-child {
     ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    props.theme.interfaceDirection === "rtl"
+      ? css`
             padding: 8px 8px 8px 21px;
           `
-        : css`
+      : css`
             padding: 8px 21px 8px 8px;
           `}
   }
@@ -484,7 +484,7 @@ const StyledIcons = styled.div`
     justify-content: center;
     padding: 8px;
     background: ${props =>
-      props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
+    props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
@@ -644,9 +644,8 @@ class Tile extends React.PureComponent {
       }
       this.cm.current.show(e);
     };
-    const { interfaceDirection } = useTheme();
     const contextMenuDirection =
-      interfaceDirection === "rtl" ? "left" : "right";
+      this.props.theme.interfaceDirection === "rtl" ? "left" : "right";
     const icon = this.getIconFile();
     const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
@@ -969,4 +968,4 @@ Tile.defaultProps = {
   item: {},
 };
 
-export default Tile;
+export default withTheme(Tile);
