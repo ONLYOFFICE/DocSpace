@@ -570,6 +570,10 @@ const Base = {
     },
   },
 
+  rowContainer: {
+    borderColor: globalColors.grayLightMid,
+  },
+
   badge: {
     border: "1px solid transparent",
     padding: "1px",

@@ -564,6 +564,10 @@ const Dark = {
     },
   },
 
+  rowContainer: {
+    borderColor: "#474747",
+  },
+
   badge: {
     border: "1px solid transparent",
     padding: "1px",
