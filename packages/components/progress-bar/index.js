@@ -15,7 +15,6 @@ const ProgressBar = ({ percent, label, ...rest }) => {
         className="progress-bar_full-text"
         fontSize="12px"
         fontWeight="400"
-        color="#333"
         lineHeight="16px"
         title={label}
       >
@@ -26,7 +25,7 @@ const ProgressBar = ({ percent, label, ...rest }) => {
 };
 
 ProgressBar.propTypes = {
-  /** Progress value. */
+  /** Progress value in %. Max value 100% */
   percent: PropTypes.number.isRequired,
   /** Text in progress-bar. */
   label: PropTypes.string,

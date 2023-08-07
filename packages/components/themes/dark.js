@@ -1343,16 +1343,9 @@ const Dark = {
   },
 
   progressBar: {
-    height: "4px",
-    backgroundColor: "#A3A9AE",
-    marginLeft: "-100%",
+    backgroundColor: "#DADDDF",
 
     percent: {
-      float: "left",
-      overflow: "hidden",
-      maxHeight: "4px",
-      minHeight: "4px",
-      transition: "width 0.6s ease",
       background: "#4781D1",
     },
   },

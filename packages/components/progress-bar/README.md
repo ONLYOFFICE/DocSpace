@@ -9,13 +9,12 @@ import ProgressBar from "@docspace/components/progress-bar";
 ```
 
 ```jsx
-<ProgressBar value={10} maxValue={100} />
+<ProgressBar percent={25} />
 ```
 
 ### Properties
 
-|       Props       |   Type   | Required | Values | Default | Description           |
-| :---------------: | :------: | :------: | :----: | :-----: | --------------------- |
-|     `percent`     | `number` |    ✅    |   -    |    -    | Progress value.       |
-|      `label`      | `string` |    -     |   -    |    -    | Text in progress-bar. |
-| `dropDownContent` |  `any`   |    -     |   -    |    -    | Drop-down content.    |
+|   Props   |   Type   | Required | Values | Default | Description                         |
+| :-------: | :------: | :------: | :----: | :-----: | ----------------------------------- |
+| `percent` | `number` |    ✅    |   -    |    -    | Progress value in %. Max value 100% |
+|  `label`  | `string` |    -     |   -    |    -    | Text in progress-bar.               |

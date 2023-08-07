@@ -19,6 +19,6 @@ const Template = (args) => {
 };
 export const Default = Template.bind({});
 Default.args = {
-  label: "Uploading files: 20 of 100",
+  label: "Operation in progress...",
   percent: 20,
 };

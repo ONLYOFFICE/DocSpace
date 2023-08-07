@@ -2,10 +2,10 @@ import React from "react";
 import { mount } from "enzyme";
 import ProgressBar from ".";
 
-describe("<Box />", () => {
+describe("<ProgressBar />", () => {
   it("renders without error", () => {
     const wrapper = mount(
-      <ProgressBar percent={50} value={50} maxValue={100} />
+      <ProgressBar percent={50} label="Some work in progress" />
     );
 
     expect(wrapper).toExist();
