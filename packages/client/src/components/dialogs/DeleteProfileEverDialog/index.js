@@ -12,7 +12,7 @@ import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Link from "@docspace/components/link";
 import { inject, observer } from "mobx-react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { size } from "@docspace/components/utils/device";
 
 const { deleteUser } = api.people;
@@ -20,7 +20,12 @@ const { Filter } = api;
 
 const StyledModalDialogContainer = styled(ModalDialogContainer)`
   #modal-dialog {
-    width: auto;
+    ${(props) =>
+      props.needReassignData &&
+      css`
+        width: auto;
+      `}
+
     max-width: 520px;
     max-height: none;
   }
@@ -40,6 +45,12 @@ const StyledModalDialogContainer = styled(ModalDialogContainer)`
   .text-delete-description {
     line-height: 20px;
     padding: 8px 0;
+
+    ${(props) =>
+      !props.needReassignData &&
+      css`
+        padding-bottom: 0;
+      `}
   }
 
   .reassign-data {
@@ -146,6 +157,7 @@ const DeleteProfileEverDialogComponent = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
+      needReassignData={needReassignData}
     >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
