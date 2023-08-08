@@ -437,8 +437,8 @@ class SettingsSetupStore {
     return api.settings.sendOwnerChange(id);
   };
 
-  dataReassignment = (fromUserIds, toUserId, deleteProfile) => {
-    return api.settings.dataReassignment(fromUserIds, toUserId, deleteProfile);
+  dataReassignment = (fromUserId, toUserId, deleteProfile) => {
+    return api.settings.dataReassignment(fromUserId, toUserId, deleteProfile);
   };
 
   dataReassignmentProgress = (ids) => {

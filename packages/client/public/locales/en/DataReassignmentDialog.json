@@ -7,9 +7,10 @@
   "MoreAboutDataTransfer": "More about data transfer",
   "NewDataOwner": "New data owner",
   "NoteDataReassignment": "Note: this action cannot be undone.",
+  "ProcessComplete": "You can close this page. When the process is completed, the responsible administrator will be notified by email.",
   "Reassign": "Reassign",
   "ReassignData": "Reassign data",
   "ReassigningDataToAnother": "The process of data reassignment from user <0>{{fromUser}}</0> to user <1>{{toUser}}</1> has started. Please note that it may take a considerable time.",
-  "ReassigningDataToItself": "The process of data reassignment from user <0>{{fromUser}}</0> to user <1>{{toUser}}</1> <2>({{you}})</2> has started. Please note that it may take a considerable time.",
+  "ReassigningDataToItself": "The process of data reassignment from user <0>{{fromUser}}</0> to user <1>{{toUser}}</1> <2>{{you}}</2> has started. Please note that it may take a considerable time.",
   "UserToWhomTheDataWillBeTransferred": "User to whom the data will be transferred"
 }

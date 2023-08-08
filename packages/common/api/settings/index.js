@@ -376,8 +376,8 @@ export function sendOwnerChange(ownerId) {
   });
 }
 
-export function dataReassignment(fromUserIds, toUserId, deleteProfile) {
-  const data = { fromUserIds, toUserId, deleteProfile };
+export function dataReassignment(fromUserId, toUserId, deleteProfile) {
+  const data = { fromUserId, toUserId, deleteProfile };
   return request({
     method: "post",
     url: `/people/reassign/start`,

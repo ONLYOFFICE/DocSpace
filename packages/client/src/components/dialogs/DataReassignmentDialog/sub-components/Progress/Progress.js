@@ -5,6 +5,7 @@ import Loader from "@docspace/components/loader";
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
+import { withTranslation, Trans } from "react-i18next";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
@@ -68,40 +69,76 @@ const StyledProgress = styled.div`
   .check-icon {
     width: 16px;
   }
+
+  .user {
+    display: inline;
+    font-weight: 600;
+  }
 `;
-const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
+const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
   const inProgressNode = (
     <div className="in-progress">
       <Loader size="20px" type="track" />
-      <Text>In progress</Text>
+      <Text>{t("DataReassignmentDialog:InProgress")}</Text>
     </div>
   );
 
   const allDataTransferredNode = (
     <div className="all-data-transferred">
       <StyledCheckIcon size="medium" />
-      <Text>All data transferred</Text>
+      <Text>{t("DataReassignmentDialog:AllDataTransferred")}</Text>
     </div>
   );
 
-  console.log("percent", percent);
+  const you = `${`(` + t("Common:You") + `)`}`;
+
+  const reassigningDataToItself = (
+    <Trans
+      i18nKey="ReassigningDataToItself"
+      ns="DataReassignmentDialog"
+      t={t}
+      fromUser={fromUser}
+      toUser={toUser}
+      you={you}
+    >
+      The process of data reassignment from user
+      <div className="user"> {{ fromUser }}</div> to user
+      <div className="user"> {{ toUser }}</div>
+      <div className="user"> {{ you }}</div> has started. Please note that it
+      may take a considerable time.
+    </Trans>
+  );
+
+  const reassigningDataToAnother = (
+    <Trans
+      i18nKey="ReassigningDataToAnother"
+      ns="DataReassignmentDialog"
+      t={t}
+      fromUser={fromUser}
+      toUser={toUser}
+    >
+      The process of data reassignment from user
+      <div className="user"> {{ fromUser }}</div> to user
+      <div className="user"> {{ toUser }}</div> has started. Please note that it
+      may take a considerable time.
+    </Trans>
+  );
+
+  const reassigningDataStart = isReassignCurrentUser
+    ? reassigningDataToItself
+    : reassigningDataToAnother;
+
   return (
     <StyledProgress>
-      <Text noSelect>
-        The process of data reassignment from user
-        <span className="user-name"> {fromUser} </span> to user
-        <span className="user-name"> {toUser} </span>
-        {isReassignCurrentUser && " (You) "}
-        has started. Please note that it may take a considerable time.
-      </Text>
+      <div>{reassigningDataStart}</div>
 
       <div className="progress-container">
         <div className="progress-section">
           <Text className="progress-section-text" noSelect>
-            Rooms
+            {t("Common:Rooms")}
           </Text>
           <Text className="progress-section-text" noSelect>
-            Documents
+            {t("Common:Documents")}
           </Text>
         </div>
 
@@ -125,11 +162,10 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent }) => {
       />
 
       <Text className="description" noSelect>
-        You can close this page. When the process is completed, the responsible
-        administrator will be notified by email.
+        {t("DataReassignmentDialog:ProcessComplete")}
       </Text>
     </StyledProgress>
   );
 };
 
-export default Progress;
+export default withTranslation(["Common, DataReassignmentDialog"])(Progress);

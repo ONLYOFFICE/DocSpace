@@ -165,9 +165,7 @@ const DataReassignmentDialog = ({
     setIsLoading(true);
     setShowProgress(true);
 
-    const fromUserIds = user.id;
-
-    dataReassignment([fromUserIds], selectedUser.id, isDeleteProfile)
+    dataReassignment(user.id, selectedUser.id, isDeleteProfile)
       .then(() => {
         toastr.success(t("Common:ChangesSavedSuccessfully"));
 
