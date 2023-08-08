@@ -33,7 +33,7 @@ public class StartReassignRequestDto
     /// <summary>User ID whose data will be reassigned to another user</summary>
     /// <type>System.Guid, System</type>
     /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
-    public IEnumerable<Guid> FromUserIds { get; set; }
+    public Guid FromUserId { get; set; }
 
     /// <summary>User ID to whom all the data will be reassigned</summary>
     /// <type>System.Guid, System</type>
