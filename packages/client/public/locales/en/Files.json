@@ -141,7 +141,7 @@
   "PasswordSuccessfullyCopied": "Password successfully copied",
   "LinkAddedSuccessfully": "Link added successfully",
   "MoveToPublicRoomTitle": "Move to Public room",
-  "MoveToPublicRoom": "This room and all its contents are available to anyone with theLeaveTheRoom link. Do you want to continue?",
+  "MoveToPublicRoom": "This room and all its contents are available to anyone with the link. Do you want to continue?",
   "LinkDeletedSuccessfully": "Link deleted successfully",
   "Links": "Links",
   "WantToRestoreTheRoom": "All external links in this room will become active, and its contents will be available to everyone with the link. Do you want to restore the room?",
