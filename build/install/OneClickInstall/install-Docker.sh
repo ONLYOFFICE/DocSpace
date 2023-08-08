@@ -94,8 +94,7 @@ DOCUMENT_SERVER_IMAGE_NAME=""
 DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
-DOCUMENT_SERVER_HOST=""
-DOCUMENT_SERVER_PORT=""
+DOCUMENT_SERVER_URL_EXTERNAL=""
 
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
@@ -321,16 +320,9 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-docsh | --docshost )
+		-docsurl | --docsurl )
 			if [ "$2" != "" ]; then
-				DOCUMENT_SERVER_HOST=$2
-				shift
-			fi
-		;;
-		
-		-docsp | --docsport )
-			if [ "$2" != "" ]; then
-				DOCUMENT_SERVER_PORT=$2
+				DOCUMENT_SERVER_URL_EXTERNAL=$2
 				shift
 			fi
 		;;
@@ -459,8 +451,7 @@ while [ "$1" != "" ]; do
 			echo "      -idocs, --installdocs             install or update document server (true|false)"
 			echo "      -docsi, --docsimage               document server image name"
 			echo "      -docsv, --docsversion             document server version"
-			echo "      -docsh, --docshost                document server host"
-			echo "      -docsp, --docsport                document server port"
+			echo "      -docsurl, --docsurl               $PACKAGE_SYSNAME docs server address (example http://$PACKAGE_SYSNAME-docs-address:8083)"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
 			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
@@ -1015,6 +1006,16 @@ get_available_version () {
 	echo "$LATEST_TAG" | sed "s/\"//g"
 }
 
+set_url_external () {
+	DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_URL_EXTERNAL")};
+
+	if [[ ! -z ${DOCUMENT_SERVER_URL_EXTERNAL} ]] && [[ $DOCUMENT_SERVER_URL_EXTERNAL =~ ^(https?://)?([^:/]+)(:([0-9]+))?(/.*)?$ ]]; then
+		[[ -z ${BASH_REMATCH[1]} ]] && DOCUMENT_SERVER_URL_EXTERNAL="http://$DOCUMENT_SERVER_URL_EXTERNAL"
+		DOCUMENT_SERVER_HOST="${BASH_REMATCH[2]}"
+		DOCUMENT_SERVER_PORT="${BASH_REMATCH[4]:-"80"}"
+	fi
+}
+
 set_jwt_secret () {
 	CURRENT_JWT_SECRET="";
 
@@ -1124,9 +1125,6 @@ set_docspace_params() {
 	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
 
-	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
-	DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_PORT")};
-
 	ELK_SHEME=${ELK_SHEME:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_SHEME")};
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
@@ -1169,7 +1167,7 @@ download_files () {
 		install_docker_compose
 	fi
 
-	HOSTS=("DOCUMENT_SERVER_HOST" "ELK_HOST" "REDIS_HOST" "RABBIT_HOST" "MYSQL_HOST"); 
+	HOSTS=("ELK_HOST" "REDIS_HOST" "RABBIT_HOST" "MYSQL_HOST"); 
 	for HOST in "${HOSTS[@]}"; do [[ "${!HOST}" == *CONTAINER_PREFIX* || "${!HOST}" == *$PACKAGE_SYSNAME* ]] && export "$HOST="; done
 
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
@@ -1213,9 +1211,9 @@ install_document_server () {
 		docker-compose -f $BASE_DIR/ds.yml up -d
 	elif [ ! -z "$DOCUMENT_SERVER_HOST" ]; then
 		APP_URL_PORTAL=${APP_URL_PORTAL:-"http://$(curl -s ifconfig.me):${EXTERNAL_PORT}"}  
-		establish_conn ${DOCUMENT_SERVER_HOST} "${DOCUMENT_SERVER_PORT:-"8083"}" "${PACKAGE_SYSNAME^^} Docs"
-		reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
-		reconfigure DOCUMENT_SERVER_PORT "${DOCUMENT_SERVER_PORT:-"8083"}"
+		establish_conn ${DOCUMENT_SERVER_HOST} ${DOCUMENT_SERVER_PORT} "${PACKAGE_SYSNAME^^} Docs"
+		reconfigure DOCUMENT_SERVER_URL_EXTERNAL ${DOCUMENT_SERVER_URL_EXTERNAL}
+		reconfigure DOCUMENT_SERVER_URL_PUBLIC ${DOCUMENT_SERVER_URL_EXTERNAL}
 	fi
 }
 
@@ -1348,6 +1346,7 @@ start_installation () {
 		set_docspace_params
 	fi
 
+	set_url_external
 	set_jwt_secret
 	set_jwt_header
 
