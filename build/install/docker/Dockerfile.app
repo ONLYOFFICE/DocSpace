@@ -324,18 +324,14 @@ ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
-RUN mkdir -p /app/appserver/ASC.Files/server && \
-    mkdir -p /app/appserver/ASC.People/server/ && \
-    mkdir -p /app/appserver/ASC.CRM/server/ && \
-    mkdir -p /app/appserver/ASC.Projects/server/ && \
-    mkdir -p /app/appserver/ASC.Calendar/server/ && \
-    mkdir -p /app/appserver/ASC.Mail/server/ && \
+RUN mkdir -p /app/ASC.Files/server && \
+    mkdir -p /app/ASC.People/server && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY --from=base /var/www/products/ASC.Files/server/ /app/appserver/ASC.Files/server/
-COPY --from=base /var/www/products/ASC.People/server/ /app/appserver/ASC.People/server/
+COPY --from=base /var/www/products/ASC.Files/server/ /app/ASC.Files/server/
+COPY --from=base /var/www/products/ASC.People/server/ /app/ASC.People/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##
