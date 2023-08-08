@@ -13,10 +13,10 @@ import { Base } from "@docspace/components/themes";
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${props => props.theme.filesEditingWrapper.fill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: ${props => props.theme.filesEditingWrapper.hoverFill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
 
@@ -25,10 +25,10 @@ StyledCheckIcon.defaultProps = { theme: Base };
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${props => props.theme.filesEditingWrapper.fill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: ${props => props.theme.filesEditingWrapper.hoverFill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
 
@@ -44,18 +44,18 @@ const EditingWrapper = styled.div`
   display: inline-flex;
   align-items: center;
 
-  ${props =>
+  ${(props) =>
     props.viewAs === "table" &&
     css`
       grid-column-start: 1;
       grid-column-end: -1;
 
-      border-bottom: ${props => props.theme.filesEditingWrapper.borderBottom};
+      border-bottom: ${(props) => props.theme.filesEditingWrapper.borderBottom};
       padding-bottom: 4px;
       margin-top: 4px;
     `}
 
-  ${props =>
+  ${(props) =>
     props.viewAs === "tile" &&
     css`
       position: absolute;
@@ -63,11 +63,11 @@ const EditingWrapper = styled.div`
       z-index: 1;
       gap: 4px;
 
-      background-color: ${props =>
+      background-color: ${(props) =>
         props.theme.filesEditingWrapper.tile.background};
 
-      border: ${props => props.theme.filesEditingWrapper.border};
-      border-radius: ${props => (props.isFolder ? "6px" : "0 0 6px 6px")};
+      border: ${(props) => props.theme.filesEditingWrapper.border};
+      border-radius: ${(props) => (props.isFolder ? "6px" : "0 0 6px 6px")};
 
       height: 43px;
       bottom: 0;
@@ -78,50 +78,51 @@ const EditingWrapper = styled.div`
 
 
   @media ${tablet} {
-    height: ${props => (props.viewAs === "tile" ? "43px" : "56px")};
+    height: ${(props) => (props.viewAs === "tile" ? "43px" : "56px")};
   }
 
   .edit-text {
     height: 32px;
-    font-size: ${props =>
-    props.viewAs === "table"
-      ? "13px"
-      : props.viewAs === "tile"
+    font-size: ${(props) =>
+      props.viewAs === "table"
+        ? "13px"
+        : props.viewAs === "tile"
         ? "14px"
         : "15px"};
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
     font-family: "Open Sans", sans-serif, Arial;
-    text-align: left;
-    color: ${props => props.theme.filesEditingWrapper.color};
-    background: ${props =>
-    props.theme.filesEditingWrapper.row.itemBackground} !important;
+    text-align: ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right` : `left`};
+    color: ${(props) => props.theme.filesEditingWrapper.color};
+    background: ${(props) =>
+      props.theme.filesEditingWrapper.row.itemBackground} !important;
 
-    ${props =>
-    props.viewAs === "tile" &&
-    css`
-        ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
                 margin-left: 2px;
               `
-        : css`
+            : css`
                 margin-right: 2px;
               `}
         border: none;
         background: none;
       `};
 
-    ${props =>
-    props.isUpdatingRowItem &&
-    css`
-        ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    ${(props) =>
+      props.isUpdatingRowItem &&
+      css`
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
                 margin-right: 0;
               `
-        : css`
+            : css`
                 margin-left: 0;
               `}
         display: flex;
@@ -129,20 +130,20 @@ const EditingWrapper = styled.div`
         background: none !important;
       `}
 
-    ${props => props.viewAs === "table" && `padding-left: 12px`}
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
 
-    ${props =>
-    props.viewAs === "tile" &&
-    !props.isUpdatingRowItem &&
-    css`
-        background: ${props =>
-      props.theme.filesEditingWrapper.tile.itemBackground};
-        border: ${props =>
-      `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
+    ${(props) =>
+      props.viewAs === "tile" &&
+      !props.isUpdatingRowItem &&
+      css`
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
         &:focus {
-          border: ${props =>
-      `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
 
@@ -150,42 +151,42 @@ const EditingWrapper = styled.div`
   }
 
   .edit-button {
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-              margin-right: 8px;
-            `
-      : css`
-              margin-left: 8px;
-            `}
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 8px;
+          `
+        : css`
+            margin-left: 8px;
+          `}
     height: 32px;
     padding: 0px 7px 0px 7px;
 
-    ${props =>
-    props.viewAs === "tile" &&
-    css`
-        ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
                 margin-right: 0;
               `
-        : css`
+            : css`
                 margin-left: 0;
               `}
-        background: ${props =>
-      props.theme.filesEditingWrapper.tile.itemBackground};
-        border: ${props =>
-      `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
+        background: ${(props) =>
+          props.theme.filesEditingWrapper.tile.itemBackground};
+        border: ${(props) =>
+          `1px solid ${props.theme.filesEditingWrapper.tile.itemBorder}`};
 
         &:hover {
-          border: ${props =>
-      `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
+          border: ${(props) =>
+            `1px solid ${props.theme.filesEditingWrapper.tile.itemActiveBorder}`};
         }
       `};
 
-    ${props =>
-    props.viewAs === "table" &&
-    css`
+    ${(props) =>
+      props.viewAs === "table" &&
+      css`
         width: 24px;
         height: 24px;
         border: 1px transparent;
@@ -195,7 +196,7 @@ const EditingWrapper = styled.div`
         justify-content: center;
 
         &:hover {
-          border: ${props => props.theme.filesEditingWrapper.border};
+          border: ${(props) => props.theme.filesEditingWrapper.border};
         }
       `}
   }
@@ -214,7 +215,7 @@ const EditingWrapper = styled.div`
 
 EditingWrapper.defaultProps = { theme: Base };
 
-const EditingWrapperComponent = props => {
+const EditingWrapperComponent = (props) => {
   const {
     itemTitle,
     itemId,
@@ -240,7 +241,7 @@ const EditingWrapperComponent = props => {
 
   const inputRef = React.useRef(null);
 
-  const onKeyUpUpdateItem = e => {
+  const onKeyUpUpdateItem = (e) => {
     if (isLoading) return;
 
     var code = e.keyCode || e.which;
@@ -249,7 +250,7 @@ const EditingWrapperComponent = props => {
       return onClickUpdateItem(e);
     }
   };
-  const onEscapeKeyPress = e => {
+  const onEscapeKeyPress = (e) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
   };
 
@@ -261,8 +262,8 @@ const EditingWrapperComponent = props => {
     setIsHoveredCancel(!CancelIconIsHovered);
   };
 
-  const onFocus = e => e.target.select();
-  const onBlur = e => {
+  const onFocus = (e) => e.target.select();
+  const onBlur = (e) => {
     if (
       (e.relatedTarget && e.relatedTarget.classList.contains("edit-button")) ||
       OkIconIsHovered ||
@@ -282,7 +283,8 @@ const EditingWrapperComponent = props => {
       viewAs={viewAs}
       isUpdatingRowItem={isUpdatingRowItem && !isTable}
       isFolder={isFolder}
-      isDisabled={isLoading}>
+      isDisabled={isLoading}
+    >
       {isTable && elementIcon}
       {isUpdatingRowItem && !isTable ? (
         <Text className="edit-text">{itemTitle}</Text>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { Base } from "@docspace/components/themes";
@@ -8,38 +8,38 @@ const StyledTooltip = styled.div`
   position: fixed;
   padding: 8px;
   z-index: 250;
-  background: ${props => props.theme.filesDragTooltip.background};
+  background: ${(props) => props.theme.filesDragTooltip.background};
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
-  box-shadow: ${props => props.theme.filesDragTooltip.boxShadow};
-  -moz-box-shadow: ${props => props.theme.filesDragTooltip.boxShadow};
-  -webkit-box-shadow: ${props => props.theme.filesDragTooltip.boxShadow};
+  box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
+  -moz-box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
+  -webkit-box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
 
   .tooltip-moved-obj-wrapper {
     display: flex;
     align-items: center;
   }
   .tooltip-moved-obj-icon {
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
             margin-left: 6px;
           `
-      : css`
+        : css`
             margin-right: 6px;
           `}
   }
   .tooltip-moved-obj-extension {
-    color: ${props => props.theme.filesDragTooltip.color};
+    color: ${(props) => props.theme.filesDragTooltip.color};
   }
 `;
 
 StyledTooltip.defaultProps = { theme: Base };
 
-const DragTooltip = props => {
+const DragTooltip = (props) => {
   const tooltipRef = useRef(null);
   const {
     t,
@@ -100,8 +100,8 @@ const DragTooltip = props => {
         ? t("TooltipElementCopyMessage", { element: filesCount })
         : t("TooltipElementsCopyMessage", { element: filesCount })
       : isSingleItem
-        ? renderFileMoveTooltip()
-        : t("TooltipElementsMoveMessage", { element: filesCount })
+      ? renderFileMoveTooltip()
+      : t("TooltipElementsMoveMessage", { element: filesCount })
     : t("");
 
   return <StyledTooltip ref={tooltipRef}>{tooltipLabel}</StyledTooltip>;

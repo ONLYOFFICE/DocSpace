@@ -8,7 +8,7 @@ import {
 } from "@docspace/components/utils/device";
 
 const StyledContainer = styled.div`
-  ${props =>
+  ${(props) =>
     !props.isDropBoxComponent &&
     props.isDesktop &&
     css`
@@ -33,7 +33,7 @@ const StyledContainer = styled.div`
   .navigation-logo {
     display: flex;
     height: 24px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 16px;
@@ -50,7 +50,7 @@ const StyledContainer = styled.div`
 
     .header_separator {
       display: ${({ isRootFolder }) => (isRootFolder ? "block" : "none")};
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               border-right: 1px solid #dfe2e3;
@@ -103,7 +103,7 @@ const StyledContainer = styled.div`
   }
 
   height: 100%;
-  ${props =>
+  ${(props) =>
     props.isDesktopClient &&
     props.isDropBoxComponent &&
     css`
@@ -118,6 +118,11 @@ const StyledContainer = styled.div`
     padding-top: 2px;
     width: 17px;
     min-width: 17px;
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
+    }
   }
 
   .title-container {
@@ -130,16 +135,16 @@ const StyledContainer = styled.div`
 
   .navigation-header-separator {
     display: ${isMobileOnly ? "none" : "block"};
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 16px;
-            border-left: ${props =>
+            border-left: ${(props) =>
               `1px solid ${props.theme.navigation.icon.stroke}`};
           `
         : css`
             padding-left: 16px;
-            border-right: ${props =>
+            border-right: ${(props) =>
               `1px solid ${props.theme.navigation.icon.stroke}`};
           `}
 
@@ -189,7 +194,7 @@ const StyledContainer = styled.div`
       display: none;
     }
 
-    grid-template-columns: ${props =>
+    grid-template-columns: ${(props) =>
       props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
 `;
