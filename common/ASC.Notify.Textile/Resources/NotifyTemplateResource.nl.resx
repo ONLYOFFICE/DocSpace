@@ -192,4 +192,9 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Deze e-mail is automatisch gegenereerd en u hoeft deze niet te beantwoorden.&lt;br /&gt;U ontvangt deze e-mail omdat u een geregistreerde gebruiker bent van&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;
+&lt;br /&gt;Als u deze e-mails niet meer wilt ontvangen, klik dan op de volgende link: &lt;a href="{1}"  target="_blank"&gt;Afmelden&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

@@ -16,40 +16,44 @@ import {
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
-  changeEmail,
-  changePassword,
   changeOwner,
   deleteSelfProfile,
   deleteProfileEver,
   data,
   closeDialogs,
   changeUserTypeDialogVisible,
-  guestDialogVisible,
   changeUserStatusDialogVisible,
-  disableDialogVisible,
+
   sendInviteDialogVisible,
   resetAuthDialogVisible,
 
+  changeEmailVisible,
+  setChangeEmailVisible,
+
+  changePasswordVisible,
+  setChangePasswordVisible,
+
   changeNameVisible,
   setChangeNameVisible,
+
   profile,
   resetTfaApp,
   dataReassignmentDialogVisible,
 }) => {
   return (
     <>
-      {changeEmail && (
+      {changeEmailVisible && (
         <ChangeEmailDialog
-          visible={changeEmail}
-          onClose={closeDialogs}
-          user={data}
+          visible={changeEmailVisible}
+          onClose={() => setChangeEmailVisible(false)}
+          user={profile}
           fromList
         />
       )}
-      {changePassword && (
+      {changePasswordVisible && (
         <ChangePasswordDialog
-          visible={changePassword}
-          onClose={closeDialogs}
+          visible={changePasswordVisible}
+          onClose={() => setChangePasswordVisible(false)}
           email={data.email}
         />
       )}
@@ -121,8 +125,6 @@ const Dialogs = ({
 
 export default inject(({ auth, peopleStore }) => {
   const {
-    changeEmail,
-    changePassword,
     changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
@@ -140,16 +142,20 @@ export default inject(({ auth, peopleStore }) => {
 
   const { user: profile } = auth.userStore;
 
-  const { changeNameVisible, setChangeNameVisible } =
-    peopleStore.targetUserStore;
+  const {
+    changeEmailVisible,
+    setChangeEmailVisible,
+    changeNameVisible,
+    changePasswordVisible,
+    setChangePasswordVisible,
+    setChangeNameVisible,
+  } = peopleStore.targetUserStore;
 
   const { tfaStore } = auth;
 
   const { unlinkApp: resetTfaApp } = tfaStore;
 
   return {
-    changeEmail,
-    changePassword,
     changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
@@ -163,8 +169,15 @@ export default inject(({ auth, peopleStore }) => {
     sendInviteDialogVisible,
     resetAuthDialogVisible,
 
+    changeEmailVisible,
+    setChangeEmailVisible,
+
+    changePasswordVisible,
+    setChangePasswordVisible,
+
     changeNameVisible,
     setChangeNameVisible,
+
     profile,
 
     resetTfaApp,

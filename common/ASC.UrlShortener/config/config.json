@@ -1,7 +1,0 @@
-{
-	"app":{
-	  "port": 9999,
-	  "appsettings": "../../../config",
-	  "environment": "Development"
-	}
-}

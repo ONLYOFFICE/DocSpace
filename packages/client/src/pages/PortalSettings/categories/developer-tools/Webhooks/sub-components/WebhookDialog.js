@@ -38,8 +38,15 @@ function validateUrl(url) {
 }
 
 const WebhookDialog = (props) => {
-  const { visible, onClose, header, isSettingsModal, onSubmit, webhook } =
-    props;
+  const {
+    visible,
+    onClose,
+    header,
+    isSettingsModal,
+    onSubmit,
+    webhook,
+    additionalId,
+  } = props;
 
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
 
@@ -144,7 +151,7 @@ const WebhookDialog = (props) => {
         <StyledWebhookForm onSubmit={onFormSubmit}>
           {!isSettingsModal && <Hint>{t("WebhookCreationHint")}</Hint>}
           <LabledInput
-            id="webhook-name-input"
+            id={additionalId + "-name-input"}
             label={t("WebhookName")}
             placeholder={t("EnterWebhookName")}
             name="name"
@@ -155,7 +162,7 @@ const WebhookDialog = (props) => {
             required
           />
           <LabledInput
-            id="payload-url-input"
+            id={additionalId + "-payload-url-input"}
             label={t("PayloadUrl")}
             placeholder={t("EnterUrl")}
             name="uri"
@@ -174,6 +181,7 @@ const WebhookDialog = (props) => {
             setIsPasswordValid={setIsPasswordValid}
             setIsResetVisible={setIsResetVisible}
             passwordInputKey={passwordInputKey}
+            additionalId={additionalId}
           />
 
           <button type="submit" ref={submitButtonRef} hidden></button>

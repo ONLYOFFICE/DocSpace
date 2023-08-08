@@ -41,7 +41,10 @@ INSTALLATION_TYPE="ENTERPRISE"
 IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
 CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
-NETWORK=${PACKAGE_SYSNAME}
+NETWORK_NAME=${PACKAGE_SYSNAME}
+
+SWAPFILE="/${PRODUCT}_swapfile";
+MAKESWAP="true";
 
 DISK_REQUIREMENTS=40960;
 MEMORY_REQUIREMENTS=5500;
@@ -220,7 +223,7 @@ while [ "$1" != "" ]; do
 
 		-dsh | --docspacehost )
 			if [ "$2" != "" ]; then
-				APP_CORE_BASE_DOMAIN=$2
+				APP_URL_PORTAL=$2
 				shift
 			fi
 		;;
@@ -310,6 +313,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -341,6 +351,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
@@ -445,7 +456,7 @@ get_os_info () {
 				CONTAINS=$(cat /etc/redhat-release | { grep -sw release || true; });
 				if [[ -n ${CONTAINS} ]]; then
 					DIST=`cat /etc/redhat-release |sed s/\ release.*//`
-					REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+					REV=`cat /etc/redhat-release | grep -oP '(?<=release )\d+'`
 				else
 					DIST=`cat /etc/os-release | grep -sw 'ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
 					REV=`cat /etc/os-release | grep -sw 'VERSION_ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
@@ -479,6 +490,10 @@ check_os_info () {
 		echo "$KERNEL, $DIST, $REV";
 		echo "Not supported OS";
 		exit 1;
+	fi
+
+	if [ -f /etc/needrestart/needrestart.conf ]; then
+		sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
 	fi
 }
 
@@ -548,43 +563,12 @@ install_service () {
 }
 
 install_docker_compose () {
-	if ! command_exists python3; then
-		install_service python3
-	fi
-
-	if command_exists apt-get; then
-		apt-get -y update -qq
-		apt-get -y -q install python3-pip
-	elif command_exists yum; then
-		curl -O https://bootstrap.pypa.io/get-pip.py
-		python3 get-pip.py || true
-		rm get-pip.py
-	fi	
-
-	python3 -m pip install --upgrade pip
-	python3 -m pip install docker-compose
-	sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-	if ! command_exists docker-compose; then
-		echo "command docker-compose not found"
-		exit 1;
-	fi
-}
-
-install_jq () {
-	curl -s -o jq http://stedolan.github.io/jq/download/linux64/jq
-	chmod +x jq
-	cp jq /usr/bin
-	rm jq
-
-	if ! command_exists jq; then
-		echo "command jq not found"
-		exit 1;
-	fi
+	curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
+	chmod +x /usr/bin/docker-compose
 }
 
 check_ports () {
-	RESERVED_PORTS=(3306 8092);
+	RESERVED_PORTS=(3306);
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -729,11 +713,53 @@ docker_login () {
 	fi
 }
 
-create_network () {
-	EXIST=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK} || true; });
+read_continue_installation () {
+	read -p "Continue installation [Y/N]? " CHOICE_INSTALLATION
+	case "$CHOICE_INSTALLATION" in
+		y|Y )
+			return 0
+		;;
 
-	if [[ -z ${EXIST} ]]; then
-		docker network create --driver bridge ${NETWORK}
+		n|N )
+			exit 0;
+		;;
+
+		* )
+			echo "Please, enter Y or N";
+			read_continue_installation
+		;;
+	esac
+}
+
+domain_check () {
+	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
+
+	if [[ -n "$DOMAINS" ]]; then
+		while IFS= read -r DOMAIN; do
+			IP_ADDRESS=$(ping -c 1 -W 1 $DOMAIN | grep -oP '(\d+\.\d+\.\d+\.\d+)' | head -n 1)
+			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
+				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
+			elif [[ -n "$IP_ADDRESS" ]]; then
+				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+			fi
+		done <<< "$DOMAINS"
+	fi
+	
+	if [[ -n "$LOCAL_RESOLVED_DOMAINS" ]] || [[ $(ip route get 8.8.8.8 | awk '{print $7}') != $(curl -s ifconfig.me) ]]; then
+		DOCKER_DAEMON_FILE="/etc/docker/daemon.json"
+		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
+			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
+			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			if read_continue_installation; then
+				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
+					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
+				else
+					echo "{\"dns\": [\"8.8.8.8\", \"8.8.4.4\"]}" | tee "$DOCKER_DAEMON_FILE" >/dev/null
+				fi
+				systemctl restart docker
+			fi
+		fi
 	fi
 }
 
@@ -774,10 +800,6 @@ get_available_version () {
 
 	if ! command_exists curl ; then
 		install_curl;
-	fi
-
-	if ! command_exists jq ; then
-		install_jq
 	fi
 
 	CREDENTIALS="";
@@ -821,13 +843,13 @@ get_available_version () {
 		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.results[].name')
 	fi
 
-	VERSION_REGEX_1="[0-9]+\.[0-9]+\.[0-9]+"
-	VERSION_REGEX_2="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"
+	VERSION_REGEX="[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?$"
+	
 	TAG_LIST=""
 
 	for item in $TAGS_RESP
 	do
-		if [[ $item =~ $VERSION_REGEX_1 ]] || [[ $item =~ $VERSION_REGEX_2 ]]; then
+		if [[ $item =~ $VERSION_REGEX ]]; then
 			TAG_LIST="$item,$TAG_LIST"
 		fi
 	done
@@ -930,10 +952,12 @@ set_mysql_params () {
 }
 
 set_docspace_params() {
-	ENV_EXTENSION=$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION");
-	DOCUMENT_SERVER_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST");
-	ELK_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST");
-	APP_CORE_BASE_DOMAIN=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN");
+	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
+	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
+	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
+	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
+	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	
 	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
 }
 
@@ -950,9 +974,22 @@ download_files () {
 		install_service svn subversion
 	fi
 
+	if ! command_exists jq ; then
+		if command_exists yum; then 
+			rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm
+		fi
+		install_service jq
+	fi
+
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
+	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
+	reconfigure NETWORK_NAME ${NETWORK_NAME}
 	
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
@@ -961,8 +998,8 @@ download_files () {
 }
 
 reconfigure () {
-	local VARIABLE_NAME=$1
-	local VARIABLE_VALUE=$2
+	local VARIABLE_NAME="$1"
+	local VARIABLE_VALUE="$2"
 
 	if [[ -n ${VARIABLE_VALUE} ]]; then
 		sed -i "s~${VARIABLE_NAME}=.*~${VARIABLE_NAME}=${VARIABLE_VALUE}~g" $BASE_DIR/.env
@@ -970,10 +1007,6 @@ reconfigure () {
 }
 
 install_mysql_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
 	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
@@ -981,10 +1014,6 @@ install_mysql_server () {
 }
 
 install_document_server () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
@@ -993,26 +1022,14 @@ install_document_server () {
 }
 
 install_rabbitmq () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
 }
 
 install_redis () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	docker-compose -f $BASE_DIR/redis.yml up -d
 }
 
 install_product () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-
 	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
 	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
 
@@ -1029,15 +1046,46 @@ install_product () {
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	
+	if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
+		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
+	else
+		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
+	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
+
+make_swap () {
+	DISK_REQUIREMENTS=6144; #6Gb free space
+	MEMORY_REQUIREMENTS=11000; #RAM ~12Gb
+
+	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	EXIST=$(swapon -s | awk '{ print $1 }' | { grep -x ${SWAPFILE} || true; });
+
+	if [[ -z $EXIST ]] && [ ${TOTAL_MEMORY} -lt ${MEMORY_REQUIREMENTS} ] && [ ${AVAILABLE_DISK_SPACE} -gt ${DISK_REQUIREMENTS} ]; then
+
+		if [ "${DIST}" == "Ubuntu" ] || [ "${DIST}" == "Debian" ]; then
+			fallocate -l 6G ${SWAPFILE}
+		else
+			dd if=/dev/zero of=${SWAPFILE} count=6144 bs=1MiB
+		fi
+
+		chmod 600 ${SWAPFILE}
+		mkswap ${SWAPFILE}
+		swapon ${SWAPFILE}
+		echo "$SWAPFILE none swap sw 0 0" >> /etc/fstab
+	fi
+}
+
 
 start_installation () {
 	root_checking
@@ -1056,6 +1104,10 @@ start_installation () {
 		check_hardware
 	fi
 
+	if [ "$MAKESWAP" == "true" ]; then
+		make_swap
+	fi
+
 	if command_exists docker ; then
 		check_docker_version
 		service docker start
@@ -1065,14 +1117,16 @@ start_installation () {
 
 	docker_login
 
-	set_docspace_params
+	domain_check
+
+	if [ "$UPDATE" = "true" ]; then
+		set_docspace_params
+	fi
 
 	set_jwt_secret
 	set_jwt_header
 
 	set_core_machinekey
-
-	create_network
 
 	set_mysql_params
 

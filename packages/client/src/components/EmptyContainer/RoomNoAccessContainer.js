@@ -1,4 +1,4 @@
-﻿import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
+﻿import RoomsReactSvgUrl from "PUBLIC_DIR/images/rooms.react.svg?url";
 import ManageAccessRightsReactSvgUrl from "PUBLIC_DIR/images/manage.access.rights.react.svg?url";
 import ManageAccessRightsReactSvgDarkUrl from "PUBLIC_DIR/images/manage.access.rights.dark.react.svg?url";
 import React from "react";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 
+import IconButton from "@docspace/components/icon-button";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
@@ -23,6 +24,7 @@ const RoomNoAccessContainer = (props) => {
     isEmptyPage,
     sectionWidth,
     theme,
+    isFrame,
   } = props;
 
   const descriptionRoomNoAccess = t("NoAccessRoomDescription");
@@ -36,6 +38,7 @@ const RoomNoAccessContainer = (props) => {
   }, []);
 
   const onGoToShared = () => {
+    if (isFrame) return;
     setIsLoading(true);
 
     const filter = RoomsFilter.getDefault();
@@ -49,11 +52,12 @@ const RoomNoAccessContainer = (props) => {
 
   const goToButtons = (
     <div className="empty-folder_container-links">
-      <img
-        className="empty-folder_container-image"
-        src={EmptyFolderImageSvgUrl}
+      <IconButton
+        className="empty-folder_container-icon"
+        size="12"
         onClick={onGoToShared}
-        alt="folder_icon"
+        iconName={RoomsReactSvgUrl}
+        isFill
       />
       <Link onClick={onGoToShared} {...linkStyles}>
         {t("GoToMyRooms")}
@@ -63,11 +67,11 @@ const RoomNoAccessContainer = (props) => {
 
   const propsRoomNotFoundOrMoved = {
     headerText: titleRoomNoAccess,
-    descriptionText: descriptionRoomNoAccess,
+    descriptionText: isFrame ? "" : descriptionRoomNoAccess,
     imageSrc: theme.isBase
       ? ManageAccessRightsReactSvgUrl
       : ManageAccessRightsReactSvgDarkUrl,
-    buttons: goToButtons,
+    buttons: isFrame ? <></> : goToButtons,
   };
 
   return (
@@ -88,10 +92,12 @@ export default inject(({ auth, filesStore, clientLoadingStore }) => {
     setIsSectionFilterLoading(param);
   };
   const { isEmptyPage } = filesStore;
+  const { isFrame } = auth.settingsStore;
   return {
     setIsLoading,
 
     isEmptyPage,
     theme: auth.settingsStore.theme,
+    isFrame,
   };
 })(withTranslation(["Files"])(observer(RoomNoAccessContainer)));

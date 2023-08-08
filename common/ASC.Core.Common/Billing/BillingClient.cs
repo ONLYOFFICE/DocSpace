@@ -37,7 +37,7 @@ public class BillingClient
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
-        _configuration = configuration.GetSection("core:payment").Get<PaymentConfiguration>();
+        _configuration = configuration.GetSection("core:payment").Get<PaymentConfiguration>() ?? new PaymentConfiguration();
         _httpClientFactory = httpClientFactory;
 
         _configuration.Url = (_configuration.Url ?? "").Trim().TrimEnd('/');

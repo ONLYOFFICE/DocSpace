@@ -55,6 +55,7 @@ const Dark = {
   backgroundColor: black,
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "13px",
+  interfaceDirection: "ltr",
 
   text: {
     color: grayMaxLight,
@@ -491,7 +492,7 @@ const Dark = {
     testColor: grayMaxLight,
     textDisableColor: "#5c5c5c",
 
-    marginRight: "8px",
+    marginBeforeLabel: "8px",
 
     background: "#292929",
     disableBackground: "#545454",
@@ -679,6 +680,14 @@ const Dark = {
       big: "350px",
       huge: "500px",
       large: "550px",
+    },
+
+    height: {
+      base: "32px",
+      middle: "38px",
+      big: "38px",
+      huge: "39px",
+      large: "44px",
     },
 
     paddingRight: {
@@ -2069,10 +2078,9 @@ const Dark = {
     downloadAppList: {
       color: "#C4C4C4",
       winHoverColor: "#3785D3",
-      macHoverColor: white,
+      macHoverColor: "#000",
       linuxHoverColor: "#FFB800",
       androidHoverColor: "#9BD71C",
-      iosHoverColor: white,
     },
 
     thirdPartyList: {
@@ -2962,6 +2970,10 @@ const Dark = {
           iconButton: white,
           iconButtonDisabled: "#333",
         },
+
+        smtp: {
+          requirementColor: "#E06451",
+        },
       },
 
       backup: {
@@ -2996,7 +3008,12 @@ const Dark = {
         benefitsContainer: {
           iconsColor: "#858585",
         },
+        contactContainer: {
+          textColor: "#ADADAD",
+          linkColor: "#858585",
+        },
         warningColor: "#E06451",
+        color: "#E17415",
       },
     },
 
@@ -3119,6 +3136,11 @@ const Dark = {
     textDescriptionColor: "#858585",
   },
 
+  deepLink: {
+    navBackground: "#282828",
+    fileTileBackground: "#3D3D3D",
+  },
+
   emailChips: {
     borderColor: "#858585",
     dashedBorder: "1px dashed #fff",
@@ -3126,6 +3148,13 @@ const Dark = {
 
   dialogs: {
     disableText: "#858585",
+  },
+
+  editLink: {
+    text: {
+      color: "#A3A9AE",
+      errorColor: "#F21C0E",
+    },
   },
 };
 

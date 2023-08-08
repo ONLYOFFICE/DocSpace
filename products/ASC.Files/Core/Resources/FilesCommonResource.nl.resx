@@ -158,7 +158,7 @@
     <value>Er is een fout opgetreden in de Documenten Service</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>Het bestand is geopend voor bewerking.</value>
+    <value>Het bestand wordt geopend voor bewerking door {0}. Momenteel wordt de functionaliteit voor samen bewerken niet ondersteund voor dit bestandsformaat.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
     <value>Het bestand is geopend voor bewerken in een mobiele applicatie door {0}</value>
@@ -399,5 +399,20 @@
   </data>
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Editor</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Kamerbeheerder</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Gemaakt om het formulier in te vullen</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Het invulbare OFORM document is klaar. Het is opgeslagen in de {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>De OFORM kopie wordt gemaakt in de map {0}. Vul het formulier in en download het resultaat als PDF- of DOCX-bestand.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Het bestand is niet langer een concept om het formulier in te vullen.</value>
   </data>
 </root>

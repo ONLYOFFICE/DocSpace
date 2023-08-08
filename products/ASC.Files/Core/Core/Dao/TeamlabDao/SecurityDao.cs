@@ -111,8 +111,8 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
                 {
                     folders.Add(entryId);
                 }
-
-                filesDbContext.Security.RemoveRange(await Queries.ForSetShareAsync(filesDbContext, r, folders, FileEntryType.Folder).ToListAsync());
+                var forSetShare = await Queries.ForSetShareAsync(filesDbContext, r.TenantId, r.Subject, folders, FileEntryType.Folder).ToListAsync();
+                filesDbContext.Security.RemoveRange(forSetShare);
             }
             else
             {
@@ -121,7 +121,7 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
 
             if (files.Count > 0)
             {
-                filesDbContext.Security.RemoveRange(await Queries.ForSetShareAsync(filesDbContext, r, files, FileEntryType.File).ToListAsync());
+                filesDbContext.Security.RemoveRange(await Queries.ForSetShareAsync(filesDbContext, r.TenantId, r.Subject, files, FileEntryType.File).ToListAsync());
             }
 
             await filesDbContext.SaveChangesAsync();
@@ -342,12 +342,42 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
             q = q.Union(q1).ToList();
         }
 
-        return await q
+        var records = await q
             .ToAsyncEnumerable()
             .SelectAwait(async e => await ToFileShareRecordAsync(e))
             .OrderBy(r => r.Level)
             .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
             .ToListAsync();
+
+        await DeleteExpiredAsync(records, filesDbContext);
+
+        return records;
+    }
+
+    private async Task DeleteExpiredAsync(List<FileShareRecord> records, FilesDbContext filesDbContext)
+    {
+        var expired = new List<Guid>();
+
+        for (var i = 0; i < records.Count; i++)
+        {
+            var r = records[i];
+            if (r.SubjectType != SubjectType.InvitationLink || r.Options is not { IsExpired: true })
+            {
+                continue;
+            }
+
+            expired.Add(r.Subject);
+            records.RemoveAt(i);
+        }
+
+        if (expired.Count > 0)
+        {
+            var tenantId = TenantID;
+
+            await filesDbContext.Security
+                .Where(s => s.TenantId == tenantId && s.SubjectType == SubjectType.InvitationLink && expired.Contains(s.Subject))
+                .ExecuteDeleteAsync();
+        }
     }
 }
 
@@ -494,14 +524,14 @@ static file class Queries
                     .Select(r => r.Id.ToString()));
 
     public static readonly
-        Func<FilesDbContext, FileShareRecord, List<string>, FileEntryType, IAsyncEnumerable<DbFilesSecurity>>
+        Func<FilesDbContext, int, Guid, IEnumerable<string>, FileEntryType, IAsyncEnumerable<DbFilesSecurity>>
         ForSetShareAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, FileShareRecord record, List<string> entryIds, FileEntryType type) =>
+            (FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<string> entryIds, FileEntryType type) =>
                 ctx.Security
-                    .Where(a => a.TenantId == record.TenantId &&
+                    .Where(a => a.TenantId == tenantId &&
                                 entryIds.Contains(a.EntryId) &&
                                 a.EntryType == type &&
-                                a.Subject == record.Subject));
+                                a.Subject == subject));
 
     public static readonly Func<FilesDbContext, int, string, FileEntryType, Task<bool>> IsSharedAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

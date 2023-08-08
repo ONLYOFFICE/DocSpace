@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Тип входу до облікового запису",
   "DeleteSelfProfile": "Видалити профіль",
   "DisabledEmployeeStatus": "Відключено",
   "DisableUserButton": "Відключити",
@@ -12,6 +13,7 @@
   "RemoveData": "Видалити персональні дані",
   "ResetAuth": "Скинути автентифікацію",
   "SendInviteAgain": "Відправити запрошення знову",
+  "StandardLogin": "Стандартний вхід",
   "SuccessChangeUserStatus": "Статус користувача успішно змінено",
   "SuccessDeletePersonalData": "Персональні дані успішно видалено",
   "SuccessSentInvitation": "Запрошення успішно відправлено",

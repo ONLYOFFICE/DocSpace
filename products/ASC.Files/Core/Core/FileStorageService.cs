@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
-
 namespace ASC.Web.Files.Services.WCFService;
 
 [Scope]
@@ -68,7 +66,7 @@ public class FileStorageService //: IFileStorageService
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly FileSharing _fileSharing;
     private readonly NotifyClient _notifyClient;
-    private readonly UrlShortener _urlShortener;
+    private readonly IUrlShortener _urlShortener;
     private readonly IServiceProvider _serviceProvider;
     private readonly FileSharingAceHelper _fileSharingAceHelper;
     private readonly ConsumerFactory _consumerFactory;
@@ -88,6 +86,9 @@ public class FileStorageService //: IFileStorageService
     private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
     private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly ExternalShare _externalShare;
+    private readonly TenantUtil _tenantUtil;
+
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -120,7 +121,7 @@ public class FileStorageService //: IFileStorageService
         DocumentServiceConnector documentServiceConnector,
         FileSharing fileSharing,
         NotifyClient notifyClient,
-        UrlShortener urlShortener,
+        IUrlShortener urlShortener,
         IServiceProvider serviceProvider,
         FileSharingAceHelper fileSharingAceHelper,
         ConsumerFactory consumerFactory,
@@ -144,7 +145,9 @@ public class FileStorageService //: IFileStorageService
         InvitationLinkHelper invitationLinkHelper,
         StudioNotifyService studioNotifyService,
         TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
-        QuotaSocketManager quotaSocketManager)
+        QuotaSocketManager quotaSocketManager,
+        ExternalShare externalShare,
+        TenantUtil tenantUtil)
     {
         _global = global;
         _globalStore = globalStore;
@@ -202,6 +205,8 @@ public class FileStorageService //: IFileStorageService
         _studioNotifyService = studioNotifyService;
         _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
         _quotaSocketManager = quotaSocketManager;
+        _externalShare = externalShare;
+        _tenantUtil = tenantUtil;
     }
 
     public async Task<Folder<T>> GetFolderAsync<T>(T folderId)
@@ -232,7 +237,7 @@ public class FileStorageService //: IFileStorageService
         try
         {
             (entries, _) = await _entryManager.GetEntriesAsync(
-                await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly,
+                await folderDao.GetFolderAsync(parentId), 0, -1, FilterType.FoldersOnly,
                 false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
         }
         catch (Exception e)
@@ -510,7 +515,8 @@ public class FileStorageService //: IFileStorageService
         var room = roomType switch
         {
             RoomType.CustomRoom => await CreateCustomRoomAsync(title, parentId, @private),
-            RoomType.EditingRoom => await CreateEditingRoom(title, parentId, @private),
+            RoomType.EditingRoom => await CreateEditingRoomAsync(title, parentId, @private),
+            RoomType.PublicRoom => await CreatePublicRoomAsync(title, parentId, @private),
             _ => await CreateCustomRoomAsync(title, parentId, @private),
         };
 
@@ -518,6 +524,15 @@ public class FileStorageService //: IFileStorageService
         {
             await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
         }
+
+        return room;
+    }
+
+    private async Task<Folder<T>> CreatePublicRoomAsync<T>(string title, T parentId, bool @private)
+    {
+        var room = await InternalCreateNewFolderAsync(parentId, title, FolderType.PublicRoom, @private);
+
+        _ = await SetAceLinkAsync(room, SubjectType.ExternalLink, Guid.NewGuid(), FilesCommonResource.DefaultExternalLinkTitle, FileShare.Read, _actions[SubjectType.ExternalLink]);
 
         return room;
     }
@@ -552,7 +567,8 @@ public class FileStorageService //: IFileStorageService
         var result = roomType switch
         {
             RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
-            RoomType.EditingRoom => (await CreateEditingRoom(title, parentId, @private), FolderType.EditingRoom),
+            RoomType.EditingRoom => (await CreateEditingRoomAsync(title, parentId, @private), FolderType.EditingRoom),
+            RoomType.PublicRoom => (await CreatePublicRoomAsync(title, parentId, @private), FolderType.PublicRoom),
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
 
@@ -573,22 +589,7 @@ public class FileStorageService //: IFileStorageService
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.CustomRoom, privacy);
     }
 
-    private async Task<Folder<T>> CreateFillingFormsRoom<T>(string title, T parentId, bool privacy)
-    {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.FillingFormsRoom, privacy);
-    }
-
-    private async Task<Folder<T>> CreateReviewRoom<T>(string title, T parentId, bool privacy)
-    {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReviewRoom, privacy);
-    }
-
-    private async Task<Folder<T>> CreateReadOnlyRoom<T>(string title, T parentId, bool privacy)
-    {
-        return await InternalCreateNewFolderAsync(parentId, title, FolderType.ReadOnlyRoom, privacy);
-    }
-
-    private async Task<Folder<T>> CreateEditingRoom<T>(string title, T parentId, bool privacy)
+    private async Task<Folder<T>> CreateEditingRoomAsync<T>(string title, T parentId, bool privacy)
     {
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom, privacy);
     }
@@ -1649,7 +1650,8 @@ public class FileStorageService //: IFileStorageService
             return GetTasksStatuses();
         }
 
-        return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersId, filesId, GetHttpHeaders());
+        return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersId, filesId, GetHttpHeaders(),
+            await _externalShare.GetCurrentShareDataAsync());
     }
 
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAsync()
@@ -1949,15 +1951,11 @@ public class FileStorageService //: IFileStorageService
 
     public List<FileOperationResult> GetTasksStatuses()
     {
-        ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-
         return _fileOperationsManager.GetOperationResults(_authContext.CurrentAccount.ID);
     }
 
     public List<FileOperationResult> TerminateTasks()
     {
-        ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-
         return _fileOperationsManager.CancelOperations(_authContext.CurrentAccount.ID);
     }
 
@@ -1965,49 +1963,75 @@ public class FileStorageService //: IFileStorageService
     {
         ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
-        return _fileOperationsManager.Download(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, GetHttpHeaders());
+        return _fileOperationsManager.Download(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, GetHttpHeaders(),
+            await _externalShare.GetCurrentShareDataAsync());
     }
 
-    public async Task<(List<object>, List<object>)> MoveOrCopyFilesCheckAsync<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
+    public async Task<((List<object>, List<object>), (List<object>, List<object>))> MoveOrCopyFilesCheckAsync<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
     {
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(foldersId);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(filesId);
 
         var checkedFiles = new List<object>();
+        var conflictFiles = new List<object>();
         var checkedFolders = new List<object>();
+        var conflictFolders = new List<object>();
 
-        var (filesInts, folderInts) = await MoveOrCopyFilesCheckAsync(fileIntIds, folderIntIds, destFolderId);
+        var (filesInts, conflictFilesInts) = await MoveOrCopyFilesCheckFullAsync(fileIntIds, destFolderId);
+        var (fileString, conflictfileString) = await MoveOrCopyFilesCheckFullAsync(fileStringIds, destFolderId);
+
 
         foreach (var i in filesInts)
         {
             checkedFiles.Add(i);
         }
 
+        foreach (var i in conflictFilesInts)
+        {
+            conflictFiles.Add(i);
+        }
+
+        foreach (var i in fileString)
+        {
+            checkedFiles.Add(i);
+        }
+
+        foreach (var i in conflictfileString)
+        {
+            conflictFiles.Add(i);
+        }
+
+        var (folderInts, conflictFolderInts) = await MoveOrCopyFoldersCheckFullAsync(folderIntIds, destFolderId);
+        var (folderString, conflictFolderString) = await MoveOrCopyFoldersCheckFullAsync(folderStringIds, destFolderId);
+
+
         foreach (var i in folderInts)
         {
             checkedFolders.Add(i);
         }
 
-        var (filesStrings, folderStrings) = await MoveOrCopyFilesCheckAsync(fileStringIds, folderStringIds, destFolderId);
-
-        foreach (var i in filesStrings)
+        foreach (var i in conflictFolderInts)
         {
-            checkedFiles.Add(i);
+            conflictFolders.Add(i);
         }
 
-        foreach (var i in folderStrings)
+        foreach (var i in folderString)
         {
             checkedFolders.Add(i);
         }
 
-        return (checkedFiles, checkedFolders);
+        foreach (var i in conflictFolderString)
+        {
+            conflictFolders.Add(i);
+        }
+
+        return ((checkedFiles, conflictFiles), (checkedFolders, conflictFolders));
     }
 
-    private async Task<(List<TFrom>, List<TFrom>)> MoveOrCopyFilesCheckAsync<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId)
+    private async Task<(List<TFrom>, List<TTo>)> MoveOrCopyFilesCheckFullAsync<TFrom, TTo>(IEnumerable<TFrom> filesId, TTo destFolderId)
     {
         var checkedFiles = new List<TFrom>();
-        var checkedFolders = new List<TFrom>();
-        var folderDao = _daoFactory.GetFolderDao<TFrom>();
+        var destFiles = new List<TTo>();
         var fileDao = _daoFactory.GetFileDao<TFrom>();
         var destFolderDao = _daoFactory.GetFolderDao<TTo>();
         var destFileDao = _daoFactory.GetFileDao<TTo>();
@@ -2019,40 +2043,41 @@ public class FileStorageService //: IFileStorageService
         foreach (var id in filesId)
         {
             var file = await fileDao.GetFileAsync(id);
+            var destFile = await destFileDao.GetFileAsync(toFolder.Id, file.Title);
             if (file != null
                 && !file.Encrypted
-                && await destFileDao.IsExistAsync(file.Title, toFolder.Id))
+                && destFile != null)
             {
                 checkedFiles.Add(id);
+                destFiles.Add(destFile.Id);
             }
         }
+
+        return (checkedFiles, destFiles);
+    }
+
+    private async Task<(List<TFrom>, List<TTo>)> MoveOrCopyFoldersCheckFullAsync<TFrom, TTo>(IEnumerable<TFrom> foldersId, TTo destFolderId)
+    {
+        var checkedFolders = new List<TFrom>();
+        var destFolders = new List<TTo>();
+        var folderDao = _daoFactory.GetFolderDao<TFrom>();
+        var destFolderDao = _daoFactory.GetFolderDao<TTo>();
+
+        var toFolder = await destFolderDao.GetFolderAsync(destFolderId);
+        ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        ErrorIf(!await _fileSecurity.CanCreateAsync(toFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
 
         var folders = folderDao.GetFoldersAsync(foldersId);
         var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH);
         var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.Id);
-
-        await foreach (var folderProject in foldersProject)
-        {
-            var toSub = await toSubfolders.FirstOrDefaultAsync(to => Equals(to.Title, folderProject.Title));
-            if (toSub == null)
-            {
-                continue;
-            }
-
-            var filesPr = fileDao.GetFilesAsync(folderProject.Id).ToListAsync();
-            var foldersTmp = folderDao.GetFoldersAsync(folderProject.Id);
-            var foldersPr = foldersTmp.Select(d => d.Id).ToListAsync();
-
-            var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.Id);
-            checkedFiles.AddRange(cFiles);
-            checkedFolders.AddRange(cFolders);
-        }
 
         try
         {
             foreach (var pair in await folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.Id))
             {
                 checkedFolders.Add(pair.Key);
+                destFolders.Add(pair.Value);
+                //TODO: checkFiles
             }
         }
         catch (Exception e)
@@ -2060,7 +2085,7 @@ public class FileStorageService //: IFileStorageService
             throw GenerateException(e);
         }
 
-        return (checkedFiles, checkedFolders);
+        return (checkedFolders, destFolders);
     }
 
     public async Task<List<FileOperationResult>> MoveOrCopyItemsAsync(List<JsonElement> foldersId, List<JsonElement> filesId, JsonElement destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
@@ -2070,7 +2095,8 @@ public class FileStorageService //: IFileStorageService
         List<FileOperationResult> result;
         if (foldersId.Count > 0 || filesId.Count > 0)
         {
-            result = _fileOperationsManager.MoveOrCopy(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+            result = _fileOperationsManager.MoveOrCopy(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersId, filesId, destFolderId, ic, resolve,
+                !deleteAfter, GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync());
         }
         else
         {
@@ -2082,21 +2108,25 @@ public class FileStorageService //: IFileStorageService
 
     public async Task<List<FileOperationResult>> DeleteFileAsync<T>(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), new List<T>(), new List<T>() { fileId }, ignoreException,
+            !deleteAfter, immediately, GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync());
     }
     public async Task<List<FileOperationResult>> DeleteFolderAsync<T>(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), new List<T>() { folderId }, new List<T>(), ignoreException,
+            !deleteAfter, immediately, GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync());
     }
 
     public async Task<List<FileOperationResult>> DeleteItemsAsync(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, ignoreException, !deleteAfter, immediately,
+            GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync());
     }
 
     public async Task<List<FileOperationResult>> DeleteItemsAsync<T>(string action, List<T> files, List<T> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), folders, files, ignoreException, !deleteAfter, immediately,
+            GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync());
     }
 
     public async Task<List<FileOperationResult>> EmptyTrashAsync()
@@ -2107,7 +2137,8 @@ public class FileStorageService //: IFileStorageService
         var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.Id).ToListAsync();
         var filesIdTask = await fileDao.GetFilesAsync(trashId).ToListAsync();
 
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders(), true);
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantAsync(), foldersIdTask, filesIdTask, false, true,
+            false, GetHttpHeaders(), await _externalShare.GetCurrentShareDataAsync(), true);
     }
 
     public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync<T>(List<CheckConversionRequestDto<T>> filesInfoJSON, bool sync = false)
@@ -2137,7 +2168,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanConvert(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (fileInfo.StartConvert && _fileConverter.MustConvert(file))
             {
@@ -2472,9 +2503,10 @@ public class FileStorageService //: IFileStorageService
 
     #endregion
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<SubjectType> subjectTypes = null,
+        bool withoutTemplates = false)
     {
-        return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
+        return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds, subjectTypes, withoutTemplates);
     }
 
     public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync<T>(T fileId)
@@ -2627,7 +2659,7 @@ public class FileStorageService //: IFileStorageService
 
         try
         {
-            return await _urlShortener.Instance.GetShortenLinkAsync(shareLink);
+            return await _urlShortener.GetShortenLinkAsync(shareLink);
         }
         catch (Exception e)
         {
@@ -2635,58 +2667,22 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<List<AceWrapper>> SetInvitationLink<T>(T roomId, Guid linkId, string title, FileShare share)
+    public async Task<List<AceWrapper>> SetInvitationLinkAsync<T>(T roomId, Guid linkId, string title, FileShare share)
     {
-        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+        var expirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval);
 
-        var folderDao = GetFolderDao<T>();
-        var room = (await folderDao.GetFolderAsync(roomId)).NotFoundIfNull();
-        var messageAction = MessageAction.RoomLinkCreated;
+        var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
 
-        if (share == FileShare.None)
-        {
-            messageAction = MessageAction.RoomLinkDeleted;
-        }
-        else
-        {
-            var linkExist = (await _fileSecurity.GetSharesAsync(room))
-                .Any(r => r.Subject == linkId && r.SubjectType == SubjectType.InvitationLink);
+        return await SetAceLinkAsync(room, SubjectType.InvitationLink, linkId, title, share, _actions[SubjectType.InvitationLink], expirationDate);
+    }
 
-            if (linkExist)
-            {
-                messageAction = MessageAction.RoomLinkUpdated;
-            }
-        }
+    public async Task<List<AceWrapper>> SetExternalLinkAsync<T>(T entryId, FileEntryType entryType, Guid linkId, string title, FileShare share, DateTime expirationDate = default,
+        string password = null, bool disabled = false, bool denyDownload = false)
+    {
+        FileEntry<T> entry = entryType == FileEntryType.File ? (await GetFileDao<T>().GetFileAsync(entryId)).NotFoundIfNull()
+            : (await GetFolderDao<T>().GetFolderAsync(entryId)).NotFoundIfNull();
 
-        var aces = new List<AceWrapper>
-        {
-            new()
-            {
-                Access = share,
-                Id = linkId,
-                SubjectType = SubjectType.InvitationLink,
-                FileShareOptions = new FileShareOptions
-                {
-                    Title = title,
-                    ExpirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval)
-                }
-            }
-        };
-
-        try
-        {
-            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
-            if (changed)
-            {
-                _ = _filesMessageService.SendAsync(room, GetHttpHeaders(), messageAction, room.Title, GetAccessString(share));
-            }
-        }
-        catch (Exception e)
-        {
-            throw GenerateException(e);
-        }
-
-        return await GetSharedInfoAsync(Array.Empty<T>(), new[] { roomId });
+        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 10);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -2988,15 +2984,16 @@ public class FileStorageService //: IFileStorageService
     public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync<T>(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
     {
         var userInfo = await _userManager.GetUsersAsync(userId);
-        ErrorIf(Equals(userInfo, Constants.LostUser) || await _userManager.IsUserAsync(userInfo), FilesCommonResource.ErrorMassage_ChangeOwner);
+        ErrorIf(Equals(userInfo, Constants.LostUser) || await _userManager.IsUserAsync(userInfo) || await _userManager.IsCollaboratorAsync(userInfo), FilesCommonResource.ErrorMassage_ChangeOwner);
 
         var folderDao = GetFolderDao<T>();
         var folders = folderDao.GetFoldersAsync(foldersId);
 
         await foreach (var folder in folders)
         {
+            ErrorIf(folder.RootFolderType is not FolderType.COMMON and not FolderType.VirtualRooms, FilesCommonResource.ErrorMassage_SecurityException);
             ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
-            ErrorIf(folder.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
+
             if (folder.ProviderEntry)
             {
                 continue;
@@ -3213,6 +3210,11 @@ public class FileStorageService //: IFileStorageService
 
     public async Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(List<JsonElement> fileIds)
     {
+        if (!_authContext.IsAuthenticated && (await _externalShare.GetLinkIdAsync()) == default)
+        {
+            throw GenerateException(new SecurityException(FilesCommonResource.ErrorMassage_SecurityException));
+        }
+
         try
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
@@ -3403,6 +3405,85 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
+    private async Task<List<AceWrapper>> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, string title, FileShare share,
+        IReadOnlyDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false,
+        int maxLinksCount = int.MaxValue)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+
+        if (linkId == default)
+        {
+            linkId = Guid.NewGuid();
+        }
+
+        var action = EventType.Create;
+
+        var links = (await _fileSecurity.GetSharesAsync(entry))
+            .Where(r => r.SubjectType == subjectType).ToList();
+
+        if (share == FileShare.None)
+        {
+            action = EventType.Remove;
+        }
+        else if (links.Any(r => r.Subject == linkId))
+        {
+            action = EventType.Update;
+        }
+
+        if (action == EventType.Create && links.Count == maxLinksCount)
+        {
+            throw GenerateException(new InvalidOperationException(FilesCommonResource.ErrorMessage_MaxLinksCount));
+        }
+
+        var options = new FileShareOptions
+        {
+            Title = title,
+            Disabled = disabled,
+            DenyDownload = denyDownload
+        };
+
+        var expirationDateUtc = _tenantUtil.DateTimeToUtc(expirationDate);
+
+        if (expirationDateUtc != DateTime.MinValue && expirationDateUtc > DateTime.UtcNow)
+        {
+            options.ExpirationDate = expirationDateUtc;
+        }
+
+        if (!string.IsNullOrEmpty(password))
+        {
+            options.Password = await _externalShare.CreatePasswordKeyAsync(password);
+        }
+
+        var aces = new List<AceWrapper>
+        {
+            new()
+            {
+                Access = share,
+                Id = linkId,
+                SubjectType = subjectType,
+                FileShareOptions = options
+            }
+        };
+
+        try
+        {
+            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, entry, false, null, null);
+
+            if (changed)
+            {
+                _ = _filesMessageService.SendAsync(entry, GetHttpHeaders(), messageActions[action], entry.Title, GetAccessString(share));
+            }
+        }
+        catch (Exception e)
+        {
+            throw GenerateException(e);
+        }
+
+        return entry.FileEntryType == FileEntryType.File ?
+            await GetSharedInfoAsync(new[] { entry.Id }, Array.Empty<T>()) :
+            await GetSharedInfoAsync(Array.Empty<T>(), new[] { entry.Id });
+    }
+
     private async Task<List<AceWrapper>> GetFullAceWrappersAsync(IEnumerable<FileShareParams> share)
     {
         var dict = await share.ToAsyncEnumerable().SelectAwait(async s => await _fileShareParamsHelper.ToAceObjectAsync(s)).ToDictionaryAsync(k => k.Id, v => v);
@@ -3464,6 +3545,27 @@ public class FileStorageService //: IFileStorageService
         Create,
         Remove
     }
+
+    private static readonly IReadOnlyDictionary<SubjectType, IReadOnlyDictionary<EventType, MessageAction>> _actions =
+        new Dictionary<SubjectType, IReadOnlyDictionary<EventType, MessageAction>>
+        {
+            {
+                SubjectType.InvitationLink, new Dictionary<EventType, MessageAction>
+                {
+                    { EventType.Create, MessageAction.RoomInvitationLinkCreated },
+                    { EventType.Update, MessageAction.RoomInvitationLinkUpdated },
+                    { EventType.Remove, MessageAction.RoomInvitationLinkDeleted }
+                }
+            },
+            {
+                SubjectType.ExternalLink, new Dictionary<EventType, MessageAction>
+                {
+                    { EventType.Create, MessageAction.ExternalLinkCreated },
+                    { EventType.Update, MessageAction.ExternalLinkDeleted },
+                    { EventType.Remove, MessageAction.ExternalLinkUpdated }
+                }
+            }
+        };
 }
 
 public class FileModel<T, TTempate>

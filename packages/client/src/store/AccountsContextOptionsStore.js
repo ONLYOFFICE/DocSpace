@@ -74,7 +74,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: ChangeMailReactSvgUrl,
             label: t("PeopleTranslations:EmailChangeButton"),
-            onClick: () => this.toggleChangeEmailDialog(item),
+            onClick: this.toggleChangeEmailDialog,
           };
         case "change-password":
           return {
@@ -317,28 +317,20 @@ class AccountsContextOptionsStore {
     setChangeNameVisible(true);
   };
 
-  toggleChangeEmailDialog = (item) => {
-    const { setDialogData, setChangeEmailDialogVisible } =
-      this.peopleStore.dialogStore;
-    const { id, email } = item;
-
-    setDialogData({
-      email,
-      id,
-    });
-
-    setChangeEmailDialogVisible(true);
+  toggleChangeEmailDialog = () => {
+    const { setChangeEmailVisible } = this.peopleStore.targetUserStore;
+    setChangeEmailVisible(true);
   };
 
   toggleChangePasswordDialog = (item) => {
-    const { setDialogData, setChangePasswordDialogVisible } =
-      this.peopleStore.dialogStore;
+    const { setDialogData } = this.peopleStore.dialogStore;
+    const { setChangePasswordVisible } = this.peopleStore.targetUserStore;
     const { email } = item;
+
     setDialogData({
       email,
     });
-
-    setChangePasswordDialogVisible(true);
+    setChangePasswordVisible(true);
   };
 
   toggleChangeOwnerDialog = () => {

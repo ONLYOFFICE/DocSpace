@@ -53,6 +53,15 @@ public class ReassignController : ApiControllerBase
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the reassignment progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID whose data is reassigned</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
+    /// <path>api/2.0/people/reassign/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("reassign/progress/{userid}")]
     public async Task<TaskProgressResponseDto> GetReassignProgressAsync(Guid userId)
     {
@@ -63,6 +72,15 @@ public class ReassignController : ApiControllerBase
         return TaskProgressResponseDto.Get(progressItem);
     }
 
+    /// <summary>
+    /// Starts the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People" name="inDto">Request parameters for starting the reassignment process</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
+    /// <path>api/2.0/people/reassign/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("reassign/start")]
     public async Task<IEnumerable<TaskProgressResponseDto>> StartReassignAsync(StartReassignRequestDto inDto)
     {
@@ -103,6 +121,15 @@ public class ReassignController : ApiControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Terminates the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the reassignment process</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/reassign/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("reassign/terminate")]
     public async Task TerminateReassignAsync(TerminateRequestDto inDto)
     {

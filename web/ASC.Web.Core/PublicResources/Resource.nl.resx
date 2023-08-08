@@ -619,4 +619,376 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Validatiecode veld kan niet leeg zijn</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Per SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Met authenticator app</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Applicatie Klant ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Activeer dat deze toepassing zich met een Apple ID account aanmeldt bij het portaal.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers zich met Apple ID kunnen aanmelden bij ONLYOFFICE. {0}Ga naar Apple Developers Portal en maak een nieuwe app ONLYOFFICE integration. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Een sleutelcode van 10 tekens die is gegenereerd voor de privésleutel Aanmelden met Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Privé key gedownload van Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>Team-ID voor ontwikkelaarsaccount van 10 tekens</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Schakel deze app in om de uitnodigings- en documentkoppelingen in te korten. {0}Vul hieronder uw Bitly-inlognaam en API-sleutel in:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Schakel deze app in om uw Box account met de module Documenten te verbinden. U kunt bestanden uit Box beheren, bewerken en delen met gebruikers van ONLYOFFICE. {0}Meld u aan bij uw account op de Box ontwikkelaars pagina en maak een nieuwe app voor de ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Gebruik deze app om twee-factor authenticatie in te schakelen met de Clickatell service. {0}Meld u aan bij uw SMS Platform account en maak een nieuwe integratie voor ONLYOFFICE. Kopieer een apiKey en voeg deze hieronder in:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Schakel deze app in om documenten digitaal te ondertekenen met DocuSign. {0}Ga naar uw DocuSign beheerconsole en voeg de ONLYOFFICE integratie toe. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Schakel deze app in om uw Dropbox account met de module Documenten te verbinden. U kunt bestanden van Dropbox beheren, bewerken en delen met gebruikers van ONLYOFFICE. {0}Meld u aan bij uw account op de Dropbox Developers-website en maak een nieuwe app voor ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>App key</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Schakel deze toepassing in om bibliografische lijsten te maken in documenten met EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Schakel deze app in om bibliografieën te maken in ONLYOFFICE editors. {0}Ga naar de EasyBib aanmeldpagina en vul het formulier in om de ONLYOFFICE integratie toe te voegen. Nadat u een applicatie sleutel hebt ontvangen, kunt u deze hieronder plakken:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>App Token</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers zich met hun Facebook kunnen aanmelden bij ONLYOFFICE en de Facebook accounts van hun klanten kunnen koppelen aan de CRM module. {0}Ga naar de Facebook Developers Portal en maak een nieuwe app ONLYOFFICE integration. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Project ID</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Schakel deze app in om uw gebruikers zelfs offline meldingen over de berichten te laten ontvangen.{0}Ga naar de Firebase console en voeg een nieuw project toe voor de ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloudopslag</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Voer de naam in van de Google Cloud bucket voor het opslaan van back-ups.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Maak verbinding met Google Cloud Storage service om back-ups te maken en gegevens van uw portaal op te slaan.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Verbind Google Cloud Storage service om een back-up te maken van gegevens van uw portaal en deze op te slaan.{0}Ga naar Google Cloud Platform Console en maak een nieuwe serviceaccount aan voor ONLYOFFICE. Plak de gegevens die u ontvangen hebt hieronder:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Schakel deze app in om uw Google Drive account met de module Documenten te verbinden. U kunt bestanden van Google Drive beheren, bewerken en delen met gebruikers van ONLYOFFICE. {0}Ga naar de Google APIs console en maak een nieuw project aan voor de ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers zich met hun LinkedIn-accounts kunnen aanmelden bij ONLYOFFICE. {0}Ga naar de LinkedIn Developers website en maak een nieuwe app ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Secret key</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Activeer dat deze toepassing zich met een Mail.ru account aanmeldt bij het portaal.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Wanneer u de Mail.ru toepassing toevoegt, kunt u het aanmelden bij het portaal met de Mail.ru account op uw profielpagina inschakelen.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Applicatie Klant ID</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Activeer dat deze toepassing zich met een Microsoft account aanmeldt bij het portaal.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers zich bij ONLYOFFICE kunnen aanmelden met behulp van Microsoft. {0}Ga naar Microsoft Azure en maak een nieuwe app ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloudopslag</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Maak verbinding met Rackspace Cloud Storage service om back-ups te maken en gegevens van uw portaal op te slaan.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Verbind Rackspace Cloud Storage service om een back-up te maken van gegevens van uw portaal en deze op te slaan. {0} Klik in de beveiligingsinstellingen van het Rackspace Cloud Configuratiescherm op de koppeling Toon naast Rackspace API-sleutel. Plak de gegevens die u ontvangen hebt hieronder:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Privé Container</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Voer het URL-adres in van de Rackspace privé container voor het opslaan van back-ups.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Openbare Container</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Voer het URL-adres in van de Rackspace public container voor het opslaan van back-ups.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Regio</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Voer de regio in waar uw Rackspace containers zich bevinden.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Voer de unieke naam in van de Amazon bucket voor het opslaan van back-ups.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Verbind Amazon AWS S3 om back-ups te maken en gegevens van uw portaal op te slaan.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Verbind Amazon AWS S3 om een back-up te maken van gegevens van uw portaal en deze op te slaan.{0}Ga naar de AWS Management Console en maak toegangssleutels aan voor ONLYOFFICE. Plak de gegevens die u ontvangen hebt hieronder:</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Regio</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Voer de AWS-regio in waar uw Amazon bucket zich bevindt.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 secret access key</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloudopslag</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Wachtwoord voor toegang tot de opslagruimte</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Auth Gebruiker</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Maak verbinding met Selectel Cloud Storage service om back-ups te maken en gegevens van uw portaal op te slaan.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Verbind Selectel Storage dienst met uw portaal om back-ups te maken en gegevens op te slaan.{0}Verzamel de toegangsgegevens voor een gebruiker met lees-/schrijfrechten voor de containers waarin u uw back-ups wilt opslaan en plak deze hieronder:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Privé Container</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Openbare Container</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Voer de naam in van de Selectel privé container voor het opslaan van back-ups.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Voer de naam in van de Selectel openbare container voor het opslaan van back-ups.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>Applicatie ID</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Schakel deze app in om uw OneDrive account met de module Documenten te verbinden. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Gebruik deze app om twee-factor authenticatie met SMS Center service in te schakelen. {0}Voer uw smsc account login en uw wachtwoord (of wachtwoord MD5 hash) in kleine letters in:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot gebruikersnaam</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot token</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Verbind Telegram account om portaalmeldingen via Telegram te ontvangen.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Schakel Telegram bot in om portaalmeldingen via Telegram te ontvangen. U kunt een nieuwe bot maken met BotFather in Telegram Desktop. Om deze bot te gebruiken, moeten portaalgebruikers Telegram meldingen inschakelen op hun Profielpagina. {0}Plak de gebruikersnaam van de bot en het token dat u hebt ontvangen in de onderstaande velden.</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Auth Token</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers hun contactpersonen vanuit de CRM module kunnen bellen met Twilio. {0}Ga naar Twilio Console en plak de volgende gegevens hieronder:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Klant ID</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Schakel deze app in zodat uw gebruikers zich met hun Twitter kunnen aanmelden bij ONLYOFFICE en de Twitter accounts van hun klanten kunnen koppelen aan de CRM module. {0}Ga naar de Twitter Developers Portal en maak een nieuwe app ONLYOFFICE integration. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Key Secret</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace gebruikersnaam</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Applicatie ID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Secure key</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Activeer dat deze toepassing zich met een VK account aanmeldt bij het portaal.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Wanneer u de VK toepassing toevoegt, kunt u het aanmelden bij het portaal met de VK account op uw profielpagina inschakelen.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Schakel de toepassing in om documenten direct in WordPress te publiceren.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Schakel de applicatie in om eenvoudig documenten op uw WordPress website te publiceren. {0}Maak op de Wordpress Ontwikkelaars pagina een nieuwe app aan voor ONLYOFFICE integratie. Plak de gegevens die u ontvangen hebt hieronder:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress Key</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress Secret</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Klant ID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Client Geheim</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Schakel deze app in om nieuwe portaalgebruikers uit uw Yahoo contactenlijst toe te voegen. {0}Ga naar de pagina Toepassing maken in het Yahoo Developer Network en maak een nieuwe app voor de ONLYOFFICE integratie. Vul hieronder de gegevens in die u hebt ontvangen:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Activeer dat deze toepassing zich met een Yandex account aanmeldt bij het portaal.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Wanneer u de Yandex toepassing toevoegt, kunt u het aanmelden bij het portaal met de Yandex account op uw profielpagina inschakelen.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Onjuist Instance id.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Berichttekst is leeg</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Onjuiste voornaam of achternaam</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>geen spaties</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>uitsluitend Latijnse letters</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Aanvraaglimiet is overschreden</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Het tenant domein kan niet leeg zijn.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>De domeinnaam moet tussen {0} en {1} tekens lang zijn.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>U probeerde uzelf de beheerdersrechten te ontnemen. Uw beheerdersrechten zijn niet aangetast.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Uw account is niet gekoppeld aan de LDAP directory en uw LDAP wachtwoord is niet meer actief. Wijzig of stel het wachtwoord van uw account in op de pagina met profielinstellingen.</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP aan het verbreken</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Gebruiker {0} instellen als {1} beheerder</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Verouderde toegangsrechten verwijderen die eerder via LDAP zijn geladen</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Foto opslaan</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Gebruikers synchroniseren</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Toegangsrechten van gebruikers bijwerken</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Gebruikersfoto's bijwerken</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Succesvol geüpload. {0}Ondersteuning is sinds {2}.{1} niet beschikbaar voor deze licentie</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Succesvol geüpload. {0}Ondersteuning is sinds {2}.{1} niet beschikbaar voor deze licentie</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Als er een gebruiker met het e-mailadres {0} bestaat, is de instructie voor het wijzigen van het wachtwoord naar dit e-mailadres gestuurd.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Schijfruimte quota overschreden</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloudruimte voor uw office documenten</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Het proces voor het opnieuw toewijzen van gegevens voor {0} is niet voltooid.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Ongeldige Recaptcha</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integraties van derden</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Onjuiste code</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA toepassingsinstellingen zijn niet beschikbaar</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>U hebt te veel SMS berichten verstuurd. Probeer het later opnieuw.</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ import { Item } from "./../Item/Item.types";
 
 export type BodyProps = {
   footerVisible: boolean;
+  withHeader?: boolean;
   isSearch: boolean;
   isAllIndeterminate?: boolean;
   isAllChecked?: boolean;

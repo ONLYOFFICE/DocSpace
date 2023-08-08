@@ -26,10 +26,17 @@
 
 namespace ASC.Data.Reassigns;
 
+/// <summary>
+/// </summary>
 [Transient]
 public class ReassignProgressItem : DistributedTaskProgress
 {
+    /// <summary>The user whose data is reassigned</summary>
+    /// <type>System.Guid, System</type>
     public Guid FromUser { get; private set; }
+
+    /// <summary>The user to whom this data is reassigned</summary>
+    /// <type>System.Guid, System</type>
     public Guid ToUser { get; private set; }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;

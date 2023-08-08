@@ -10,6 +10,7 @@
   "RecaptchaInvalid": "Recaptcha non valido",
   "SsoAttributesNotFound": "Autenticazione non riuscita (attributi di asserzione non trovati)",
   "SsoAuthFailed": "Autenticazione fallita",
+  "SsoError": "Errore interno del server",
   "SsoSettingsCantCreateUser": "Impossibile creare un utente con questo token di autenticazione",
   "SsoSettingsDisabled": "L'accesso singolo è disattivato",
   "SsoSettingsEmptyToken": "Token di autenticazione non trovato",

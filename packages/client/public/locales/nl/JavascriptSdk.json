@@ -13,10 +13,9 @@
   "FrameId": "Frame ID",
   "Header": "Koptekst",
   "ItemsCount": "Items aantal",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Menu",
   "Page": "Pagina",
   "SearchTerm": "Zoekterm",
-  "SortOrder": "Sorteer volgorde",
-  "WindowParameters": "Venster parameters"
+  "SortOrder": "Sorteer volgorde"
 }

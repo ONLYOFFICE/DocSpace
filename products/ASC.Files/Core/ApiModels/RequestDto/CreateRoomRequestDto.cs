@@ -26,31 +26,43 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public enum RoomType
 {
     FillingFormsRoom = 1,
     EditingRoom = 2,
     ReviewRoom = 3,
     ReadOnlyRoom = 4,
-    CustomRoom = 5
+    CustomRoom = 5,
+    PublicRoom = 6,
 }
 
-public enum RoomFilterType
-{
-    FillingFormsRoomOnly = 1,
-    EditingRoomOnly = 2,
-    ReviewRoomOnly = 3,
-    ReadOnlyRoomOnly = 4,
-    CustomRoomOnly = 5,
-    FoldersOnly = 6,
-}
-
+/// <summary>
+/// </summary>
 public class CreateRoomRequestDto
 {
+    /// <summary>Room name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Room type</summary>
+    /// <type>ASC.Files.Core.ApiModels.RequestDto.RoomType, ASC.Files.Core</type>
     public RoomType RoomType { get; set; }
+
+    /// <summary>Private room or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Private { get; set; }
+
+    /// <summary>Collection of sharing parameters</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Files.Core.ApiModels.FileShareParams}, System.Collections.Generic</type>
     public IEnumerable<FileShareParams> Share { get; set; }
+
+    /// <summary>Notifies users about the shared room or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Notify { get; set; }
+
+    /// <summary>Message to send when notifying about the shared room</summary>
+    /// <type>System.String, System</type>
     public string SharingMessage { get; set; }
 }

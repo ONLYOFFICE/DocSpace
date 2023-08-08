@@ -45,7 +45,7 @@ class SectionBodyContent extends React.Component {
           this.setState({
             isRestoreProcess: restoring,
           }),
-        100
+        100,
       );
     } else {
       clearTimeout(this.timerId);
@@ -65,7 +65,7 @@ class SectionBodyContent extends React.Component {
     this.setState((prevState) => ({
       rowSizes: {
         ...prevState.rowSizes,
-        [i]: itemHeight + 24, //composed of itemHeight = clientHeight of div and padding-top = 12px and padding-bottom = 12px
+        [i]: itemHeight + 27, //composed of itemHeight = clientHeight of div and padding-top = 13px and padding-bottom = 12px
       },
     }));
   };
@@ -75,7 +75,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderRow = memo(({ index, style }) => {
-    const { versions, culture } = this.props;
+    const { versions, culture, onClose } = this.props;
 
     const prevVersion = versions[index > 0 ? index - 1 : index].versionGroup;
     let isVersion = true;
@@ -86,8 +86,9 @@ class SectionBodyContent extends React.Component {
     return (
       <div style={style}>
         <VersionRow
+          onClose={onClose}
           getFileVersions={this.getFileVersions}
-          isVersion={isVersion}
+          isVersion={true}
           key={`${versions[index].id}-${index}`}
           info={versions[index]}
           versionsListLength={versions.length}
@@ -113,8 +114,7 @@ class SectionBodyContent extends React.Component {
             itemSize={this.getSize}
             itemCount={versions.length}
             itemData={versions}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
+            outerElementType={CustomScrollbarsVirtualList}>
             {this.renderRow}
           </List>
         </StyledVersionList>
@@ -138,9 +138,17 @@ class SectionBodyContent extends React.Component {
 }
 
 export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
-  const { setFirstLoad, isLoading } = clientLoadingStore;
-  const { versions, fetchFileVersions, fileId, fileSecurity } =
-    versionHistoryStore;
+  const {
+    setFirstLoad,
+    isLoading,
+    setIsSectionBodyLoading,
+  } = clientLoadingStore;
+  const {
+    versions,
+    fetchFileVersions,
+    fileId,
+    fileSecurity,
+  } = versionHistoryStore;
 
   return {
     culture: auth.settingsStore.culture,
@@ -149,7 +157,7 @@ export default inject(({ auth, versionHistoryStore, clientLoadingStore }) => {
     fileId,
     fileSecurity,
     setFirstLoad,
-    setIsLoading,
+    setIsLoading: setIsSectionBodyLoading,
     fetchFileVersions,
   };
 })(observer(SectionBodyContent));

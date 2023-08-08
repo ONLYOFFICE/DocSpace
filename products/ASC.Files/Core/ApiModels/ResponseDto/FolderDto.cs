@@ -26,19 +26,56 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FolderDto<T> : FileEntryDto<T>
 {
+    /// <summary>Parent folder ID</summary>
+    /// <type>System.Int32, System</type>
     public T ParentId { get; set; }
+
+    /// <summary>Number of files</summary>
+    /// <type>System.Int32, System</type>
     public int FilesCount { get; set; }
+
+    /// <summary>Number of folders</summary>
+    /// <type>System.Int32, System</type>
     public int FoldersCount { get; set; }
+
+    /// <summary>Specifies if a folder is shareable or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsShareable { get; set; }
+
+    /// <summary>Specifies if a folder is favorite or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsFavorite { get; set; }
+
+    /// <summary>Number for a new folder</summary>
+    /// <type>System.Int32, System</type>
     public int New { get; set; }
+
+    /// <summary>Specifies if a folder is muted or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Mute { get; set; }
+
+    /// <summary>List of tags</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic</type>
     public IEnumerable<string> Tags { get; set; }
+
+    /// <summary>Logo</summary>
+    /// <type>ASC.Files.Core.VirtualRooms.Logo, ASC.Files.Core</type>
     public Logo Logo { get; set; }
+
+    /// <summary>Specifies if a folder is pinned or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Pinned { get; set; }
+
+    /// <summary>Room type</summary>
+    /// <type>System.Nullable{ASC.Files.Core.ApiModels.RequestDto.RoomType}, System</type>
     public RoomType? RoomType { get; set; }
+
+    /// <summary>Specifies if a folder is private or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Private { get; set; }
 
     protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
@@ -118,22 +155,14 @@ public class FolderDtoHelper : FileEntryDtoHelper
             }
 
             result.Logo = await _roomLogoManager.GetLogoAsync(folder);
-            result.RoomType = folder.FolderType switch
-            {
-                FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
-                FolderType.EditingRoom => RoomType.EditingRoom,
-                FolderType.ReviewRoom => RoomType.ReviewRoom,
-                FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
-                FolderType.CustomRoom => RoomType.CustomRoom,
-                _ => null,
-            };
+            result.RoomType = DocSpaceHelper.GetRoomType(folder.FolderType);
 
             if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
             {
                 result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
 
-            var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
-            result.Mute = isMuted;
+                var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
+                result.Mute = isMuted;
             }
         }
 

@@ -26,6 +26,8 @@
 
 namespace ASC.MessagingSystem.Core;
 
+/// <summary>
+/// </summary>
 [EnumExtensions]
 public enum MessageAction
 {
@@ -203,9 +205,9 @@ public enum MessageAction
     RoomUpdateAccessForUser = 5075,
     RoomRemoveUser = 5084,
     RoomCreateUser = 5085,// last
-    RoomLinkUpdated = 5082,
-    RoomLinkCreated = 5086,
-    RoomLinkDeleted = 5087,
+    RoomInvitationLinkUpdated = 5082,
+    RoomInvitationLinkCreated = 5086,
+    RoomInvitationLinkDeleted = 5087,
 
     TagCreated = 5076,
     TagsDeleted = 5077,
@@ -214,6 +216,10 @@ public enum MessageAction
 
     RoomLogoCreated = 5080,
     RoomLogoDeleted = 5081,
+    
+    ExternalLinkCreated = 5088,
+    ExternalLinkUpdated = 5089,
+    ExternalLinkDeleted = 5090,
 
     #endregion
 

@@ -126,13 +126,6 @@ Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
  
 $GreenButton
  
-Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
- 
-* 1 administrator, 2 utilizatori avansați
-* Până la 12 săli
-*  Un număr nelimitat de utilizatori în fiecare sală
-* 2 GB de spațiu de stocare
- 
 Descoperiți un nou mod de colaborare asupra documentelor!
  
 Cu deosebită considerație,
@@ -148,13 +141,6 @@ Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
  
 $GreenButton
  
-Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
- 
-* 1 administrator, 2 utilizatori avansați
-* Până la 12 săli
-*  Un număr nelimitat de utilizatori în fiecare sală
-* 2 GB de spațiu de stocare
- 
 Descoperiți un nou mod de colaborare asupra documentelor!
  
 Cu deosebită considerație,
@@ -169,13 +155,6 @@ Tocmai ați creat spațiul ONLYOFFICE DocSpace, un hub de documente pentru a ofe
 Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
  
 $GreenButton
- 
-Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
- 
-* 1 administrator, 2 utilizatori avansați
-* Până la 12 săli
-*  Un număr nelimitat de utilizatori în fiecare sală
-* 2 GB de spațiu de stocare
  
 Descoperiți un nou mod de colaborare asupra documentelor!
  
@@ -392,13 +371,13 @@ Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de ut
  
 Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
  
-Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+Pentru a proceda astfel, consultaţi secţiunea "Plăți":"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
  
 _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
  
 Cu deosebită considerație,
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Bună!
@@ -700,5 +679,47 @@ $GreenButton
 Linkul este valabil timp de 7 zile.
  
 Nu doriți să modificați parola? Atunci ignorați acest mesaj.</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a creat un document nou: &lt;a href={1}&gt;{2}&lt;/a&gt; în sală: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a încărcat un document nou: &lt;a href={1}&gt;{2}&lt;/a&gt; în sală: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a adăugat un comentariu nou documentului în versiunea: &lt;a href={1}&gt;{2}&lt;/a&gt; în sală: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a mutat sală: &lt;a href={1}&gt;{2}&lt;/a&gt;  în arhivă - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a creat o sală nouă: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a șters sală: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a redenumit sală: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; i-a fost atribuit rolul &lt;b&gt;{1}&lt;/b&gt; în sală: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a fost adăugat la sală: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Un nou utilizator DocSpace a fost adăugat: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a fost eliminat din sală: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; s-a modificat nivelul de acces al utilizatorilor &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Utilizatorul DocSpace a actualizat: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a modificat documentul: &lt;a href={1}&gt;{2}&lt;/a&gt; în sală: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
   </data>
 </root>

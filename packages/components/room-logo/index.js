@@ -9,6 +9,7 @@ import EditingSvg32Url from "PUBLIC_DIR/images/icons/32/room/editing.svg?url";
 import FillingFormSvg32Url from "PUBLIC_DIR/images/icons/32/room/filling.form.svg?url";
 import ReviewSvg32Url from "PUBLIC_DIR/images/icons/32/room/review.svg?url";
 import ViewOnlySvg32Url from "PUBLIC_DIR/images/icons/32/room/view.only.svg?url";
+import PublicRoomSvg32Url from "PUBLIC_DIR/images/icons/32/room/public.svg?url";
 
 import { RoomsType } from "@docspace/common/constants";
 
@@ -44,6 +45,8 @@ const RoomLogo = ({
         return EditingSvg32Url;
       case RoomsType.CustomRoom:
         return CustomSvg32Url;
+      case RoomsType.PublicRoom:
+        return PublicRoomSvg32Url;
       default:
         return "";
     }

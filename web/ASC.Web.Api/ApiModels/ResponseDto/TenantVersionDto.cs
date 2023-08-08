@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class TenantVersionDto
 {
+    /// <summary>Current portal version</summary>
+    /// <type>System.Int32, System</type>
     public int Current { get; set; }
+
+    /// <summary>List of available portal versions</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Core.TenantVersion}, System.Collections.Generic</type>
     public IEnumerable<TenantVersion> Versions { get; set; }
 
     public TenantVersionDto(int version, IEnumerable<TenantVersion> tenantVersions)

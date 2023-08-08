@@ -97,6 +97,15 @@ public class StorageController : BaseSettingsController, IDisposable
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns a list of all the portal storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage")]
     public async Task<List<StorageDto>> GetAllStoragesAsync()
     {
@@ -112,6 +121,14 @@ public class StorageController : BaseSettingsController, IDisposable
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Returns the storage progress.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the storage progress</short>
+    /// <returns type="System.Double, System">Storage progress</returns>
+    /// <path>api/2.0/settings/storage/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("storage/progress")]
     public async Task<double> GetStorageProgressAsync()
@@ -126,6 +143,15 @@ public class StorageController : BaseSettingsController, IDisposable
         return _serviceClient.GetProgress(Tenant.Id);
     }
 
+    /// <summary>
+    /// Starts the storage encryption process.
+    /// </summary>
+    /// <short>Start the storage encryption process</short>
+    /// <category>Encryption</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api" name="inDto">Storage encryption request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/encryption/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("encryption/start")]
     public async Task<bool> StartStorageEncryptionAsync(StorageEncryptionRequestsDto inDto)
     {
@@ -257,9 +283,13 @@ public class StorageController : BaseSettingsController, IDisposable
     }
 
     /// <summary>
-    /// Get storage encryption settings
+    /// Returns the storage encryption settings.
     /// </summary>
-    /// <returns>EncryptionSettings</returns>
+    /// <short>Get the storage encryption settings</short>
+    /// <category>Encryption</category>
+    /// <returns type="ASC.Core.Encryption.EncryptionSettings, ASC.Core.Encryption">Storage encryption settings</returns>
+    /// <path>api/2.0/settings/encryption/settings</path>
+    /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
     [HttpGet("encryption/settings")]
     public async Task<EncryptionSettings> GetStorageEncryptionSettingsAsync()
@@ -296,6 +326,14 @@ public class StorageController : BaseSettingsController, IDisposable
         }
     }
 
+    /// <summary>
+    /// Returns the storage encryption progress.
+    /// </summary>
+    /// <short>Get the storage encryption progress</short>
+    /// <category>Encryption</category>
+    /// <returns type="System.Nullable{System.Double}, System">Storage encryption progress</returns>
+    /// <path>api/2.0/settings/encryption/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("encryption/progress")]
     public double? GetStorageEncryptionProgress()
     {
@@ -317,6 +355,15 @@ public class StorageController : BaseSettingsController, IDisposable
         return _encryptionWorker.GetEncryptionProgress();
     }
 
+    /// <summary>
+    /// Updates a storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update a storage</short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, ASC.Web.Api" name="inDto">Storage settings request parameters</param>
+    /// <returns type="ASC.Data.Storage.Configuration.StorageSettings, ASC.Data.Storage">Updated storage settings</returns>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage")]
     public async Task<StorageSettings> UpdateStorageAsync(StorageRequestsDto inDto)
     {
@@ -354,6 +401,14 @@ public class StorageController : BaseSettingsController, IDisposable
         }
     }
 
+    /// <summary>
+    /// Resets the storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the storage settings</short>
+    /// <path>api/2.0/settings/storage</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage")]
     public async Task ResetStorageToDefaultAsync()
     {
@@ -381,6 +436,15 @@ public class StorageController : BaseSettingsController, IDisposable
         }
     }
 
+    /// <summary>
+    /// Returns a list of all the CDN storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the CDN storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of the CDN storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/cdn")]
     public async Task<List<StorageDto>> GetAllCdnStoragesAsync()
     {
@@ -396,6 +460,15 @@ public class StorageController : BaseSettingsController, IDisposable
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
+    /// <summary>
+    /// Updates the CDN storage with the parameters specified in the request.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Update the CDN storage</short>
+    /// <returns type="ASC.Data.Storage.Configuration.CdnStorageSettings, ASC.Data.Storage">Updated CDN storage</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, ASC.Web.Api" name="inDto">CDN storage settings request parameters</param>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage/cdn")]
     public async Task<CdnStorageSettings> UpdateCdnAsync(StorageRequestsDto inDto)
     {
@@ -434,6 +507,14 @@ public class StorageController : BaseSettingsController, IDisposable
         return settings;
     }
 
+    /// <summary>
+    /// Resets the CDN storage settings to the default parameters.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Reset the CDN storage settings</short>
+    /// <path>api/2.0/settings/storage/cdn</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <returns></returns>
     [HttpDelete("storage/cdn")]
     public async Task ResetCdnToDefaultAsync()
     {
@@ -447,6 +528,15 @@ public class StorageController : BaseSettingsController, IDisposable
         await _storageSettingsHelper.ClearAsync(await _settingsManager.LoadAsync<CdnStorageSettings>());
     }
 
+    /// <summary>
+    /// Returns a list of all the backup storages.
+    /// </summary>
+    /// <category>Storage</category>
+    /// <short>Get the backup storages</short>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.StorageDto, ASC.Web.Api">List of the backup storages with the following parameters</returns>
+    /// <path>api/2.0/settings/storage/backup</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/backup")]
     public async Task<List<StorageDto>> GetAllBackupStorages()
     {
@@ -480,8 +570,10 @@ public class StorageController : BaseSettingsController, IDisposable
     /// Returns a list of all Amazon regions.
     /// </summary>
     /// <category>Storage</category>
-    /// <short>Get all Amazon regions</short>
-    /// <returns>List of the Amazon regions</returns>
+    /// <short>Get Amazon regions</short>
+    /// <returns type="System.Object, System">List of the Amazon regions</returns>
+    /// <path>api/2.0/settings/storage/s3/regions</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/s3/regions")]
     public object GetAmazonS3Regions()
     {

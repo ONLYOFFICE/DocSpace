@@ -4,6 +4,11 @@ const { Filter } = api;
 import SelectionStore from "./SelectionStore";
 //import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
+import {
+  getSMTPSettings,
+  resetSMTPSettings,
+  setSMTPSettings,
+} from "@docspace/common/api/settings";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
@@ -46,6 +51,23 @@ class SettingsSetupStore {
   integration = {
     consumers: [],
     selectedConsumer: {},
+    smtpSettings: {
+      initialSettings: {},
+      settings: {
+        credentialsUserName: "",
+        credentialsUserPassword: "",
+        enableAuth: false,
+        enableSSL: false,
+        useNtlm: false,
+        host: "",
+        port: "25",
+        senderAddress: "",
+        senderDisplayName: "",
+      },
+      isLoading: false,
+      isDefaultSettings: false,
+      errors: {},
+    },
   };
 
   dataManagement = {
@@ -115,6 +137,76 @@ class SettingsSetupStore {
 
   setConsumers = (consumers) => {
     this.integration.consumers = consumers;
+  };
+
+  get isSMTPInitialSettings() {
+    const settings = this.integration.smtpSettings.settings;
+    const initialSettings = this.integration.smtpSettings.initialSettings;
+
+    const fields = Object.keys(settings).filter(
+      (key) => settings[key] !== initialSettings[key]
+    );
+
+    return fields.length === 0;
+  }
+
+  setSMTPFields = (result) => {
+    const { isDefaultSettings, ...settings } = result;
+
+    const storeSettings = this.integration.smtpSettings.settings;
+
+    this.integration.smtpSettings.isDefaultSettings = isDefaultSettings;
+
+    for (var key in settings) {
+      if (settings[key] === null) continue;
+      storeSettings[key] = settings[key];
+    }
+
+    this.integration.smtpSettings.errors = {};
+    this.integration.smtpSettings.initialSettings = { ...storeSettings };
+  };
+  setInitSMTPSettings = async () => {
+    const result = await getSMTPSettings();
+
+    if (!result) return;
+
+    this.setSMTPFields(result);
+  };
+
+  resetSMTPSettings = async () => {
+    const result = await resetSMTPSettings(
+      this.integration.smtpSettings.settings
+    );
+
+    if (!result) return;
+
+    this.setSMTPFields(result);
+  };
+
+  updateSMTPSettings = async () => {
+    await setSMTPSettings(this.integration.smtpSettings.settings);
+
+    this.setInitSMTPSettings();
+  };
+
+  setSMTPSettings = (settings) => {
+    this.integration.smtpSettings.settings = settings;
+  };
+
+  setSMTPSettingsLoading = (loading) => {
+    this.integration.smtpSettings.isLoading = loading;
+  };
+
+  setSMTPErrors = (errorsArray) => {
+    let errors = {};
+    errorsArray.forEach((elem) => {
+      errors = {
+        ...errors,
+        [elem.name]: elem.hasError,
+      };
+    });
+
+    this.integration.smtpSettings.errors = { ...errors };
   };
 
   setAddUsers = (func) => {

@@ -11,6 +11,7 @@ import LoginSettings from "./sub-components/login-settings";
 import Subscription from "./sub-components/subscription";
 import InterfaceTheme from "./sub-components/interface-theme";
 import SocialNetworks from "./sub-components/social-networks";
+import InterfaceDirection from "./sub-components/interface-direction";
 
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
@@ -73,6 +74,7 @@ const SectionBodyContent = (props) => {
       {tfa && tfa !== "none" && (
         <LoginSettings backupCodesCount={backupCodesCount} />
       )}
+      <InterfaceDirection />
       <SocialNetworks />
       <Subscription t={t} />
       <InterfaceTheme />

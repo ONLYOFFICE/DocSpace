@@ -53,6 +53,7 @@ const SecretKeyInput = (props) => {
     setIsResetVisible,
     webhooksGuideUrl,
     passwordInputKey,
+    additionalId,
   } = props;
 
   const [isHintVisible, setIsHintVisible] = useState(false);
@@ -141,7 +142,7 @@ const SecretKeyInput = (props) => {
         )}
         <div hidden={isResetVisible}>
           <PasswordInput
-            id="secret-key-input"
+            id={additionalId + "-secret-key-input"}
             onChange={handleOnChange}
             inputValue={value}
             inputName={name}

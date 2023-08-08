@@ -40,6 +40,7 @@ const Modal = ({
   containerVisible,
   isDoubleFooterLine,
   isCloseable,
+  embedded,
 }) => {
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
@@ -82,6 +83,7 @@ const Modal = ({
             autoMaxHeight={autoMaxHeight}
             autoMaxWidth={autoMaxWidth}
             modalSwipeOffset={modalSwipeOffset}
+            embedded={embedded}
           >
             {isCloseable && (
               <CloseButton
@@ -141,6 +143,7 @@ const Modal = ({
                         hasFooter={1 && footer}
                         currentDisplayType={currentDisplayType}
                         {...body.props}
+                        embedded={embedded}
                       >
                         {currentDisplayType === "aside" && withBodyScroll ? (
                           <Scrollbar

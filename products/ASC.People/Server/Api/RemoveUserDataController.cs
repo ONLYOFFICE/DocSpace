@@ -59,6 +59,15 @@ public class RemoveUserDataController : ApiControllerBase
         _apiContext = apiContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the deletion progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("remove/progress")]
     public async Task<TaskProgressResponseDto> GetRemoveProgressAsync(Guid userId)
     {
@@ -69,6 +78,16 @@ public class RemoveUserDataController : ApiControllerBase
         return TaskProgressResponseDto.Get(progressItem);
     }
 
+    /// <summary>
+    /// Sends instructions for deleting a user profile.
+    /// </summary>
+    /// <short>
+    /// Send the deletion instructions
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns type="System.Object, System">Information message</returns>
+    /// <path>api/2.0/people/self/delete</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("self/delete")]
     public async Task<object> SendInstructionsToDeleteAsync()
     {
@@ -85,6 +104,15 @@ public class RemoveUserDataController : ApiControllerBase
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
+    /// <summary>
+    /// Starts the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
+    /// <category>User data</category>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]
     public async Task<TaskProgressResponseDto> StartRemoveAsync(TerminateRequestDto inDto)
     {
@@ -107,6 +135,15 @@ public class RemoveUserDataController : ApiControllerBase
         return TaskProgressResponseDto.Get(progressItem);
     }
 
+    /// <summary>
+    /// Terminates the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the deletion process</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/remove/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("remove/terminate")]
     public async Task TerminateRemoveAsync(TerminateRequestDto inDto)
     {

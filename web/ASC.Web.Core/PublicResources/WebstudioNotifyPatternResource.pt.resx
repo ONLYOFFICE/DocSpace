@@ -135,13 +135,6 @@ Por favor confirme o seu email (o link é válido por 7 dias):
 
 $GreenButton
 
-O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
-
-* 1 administrador, 2 utilizadores com poder
-* Até 12 salas
-* Um número ilimitado de utilizadores em cada sala
-* 2 GB de armazenamento
-
 Desfrute de uma nova forma de colaborar em documentos!
 
 Com os melhores cumprimentos,
@@ -156,13 +149,6 @@ Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pod
 Por favor confirme o seu email (o link é válido por 7 dias):
 
 $GreenButton
-
-O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
-
-* 1 administrador, 2 utilizadores com poder
-* Até 12 salas
-* Um número ilimitado de utilizadores em cada sala
-* 2 GB de armazenamento
 
 Desfrute de uma nova forma de colaborar em documentos!
 
@@ -199,13 +185,6 @@ Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pod
 
 Por favor confirme o seu email (o link é válido por 7 dias):
 $GreenButton
-
-O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
-
-* 1 administrador, 2 utilizadores com poder
-* Até 12 salas
-* Um número ilimitado de utilizadores em cada sala
-* 2 GB de armazenamento
 
 Desfrute de uma nova forma de colaborar em documentos!
 
@@ -380,7 +359,7 @@ Se respondeu “sim” a pelo menos uma destas perguntas, opte pelo tarifário B
 
 Para o fazer, consulte a "Secção de pagamentos":"$PricingPage" do seu ONLYOFFICE DocSpace. Aí, encontrará uma ligação individual para o Portal do Cliente Stripe onde pode facilmente tratar de todos os detalhes de pagamento. 
 
-Por Favor Note: A pessoa que paga a subscrição torna-se o pagador. Apenas o pagador pode fazer alterações à subscrição (ajustar o número de gestores). Os utilizadores não têm acesso aos detalhes de pagamento. O proprietário da conta do ONLYOFFICE DocSpace pode reatribuir o pagador em qualquer altura mais tarde. _
+_Por Favor Note: A pessoa que paga a subscrição torna-se o pagador. Apenas o pagador pode fazer alterações à subscrição (ajustar o número de gestores). Os utilizadores não têm acesso aos detalhes de pagamento. O proprietário da conta do ONLYOFFICE DocSpace pode reatribuir o pagador em qualquer altura mais tarde. _
 
 Com os melhores cumprimentos,
 A Equipa da ONLYOFFICE
@@ -727,5 +706,47 @@ A Equipa da ONLYOFFICE
   </data>
   <data name="ButtonVisitPaymentsSection" xml:space="preserve">
     <value>Visitar a Secção dos Pagamentos</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; criou um novo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; na sala: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>b&gt;{0}&lt;/b&gt; editou o documento: &lt;a href={1}&gt;{2}&lt;/a&gt; na sala: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; carregou um novo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; na sala: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; adicionou um novo comentário à versão do documento: &lt;a href={1}&gt;{2}&lt;/a&gt; na sala: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; moveu a sala: &lt;a href={1}&gt;{2}&lt;/a&gt; para o arquivo - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; criou uma nova sala: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; eliminou a sala: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; renomeou a sala: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; recebeu o papel de &lt;b&gt;{1}&lt;/b&gt; na sala: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; foi adicionado(a) à sala: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Foi adicionado um novo utilizador do DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; foi removido(a) da sala: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; alterou o nível de acesso dos utilizadores &lt;b&gt;{1}&lt;/b&gt; para &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Um utilizador do DocSpace atualizou: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

@@ -9,10 +9,10 @@ import { isMobile } from "react-device-detect";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
-import PortalPlugins from "./PortalPlugins";
 
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
+import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
   const { t, tReady, loadBaseInfo, enablePlugins, toDefault } = props;
@@ -26,12 +26,6 @@ const IntegrationWrapper = (props) => {
     };
   }, []);
 
-  const pluginData = {
-    id: "plugins",
-    name: "Plugins",
-    content: <PortalPlugins />,
-  };
-
   const data = [
     {
       id: "third-party-services",
@@ -43,11 +37,12 @@ const IntegrationWrapper = (props) => {
       name: t("SingleSignOn"),
       content: <SSO />,
     },
+    {
+      id: "smtp-settings",
+      name: t("SMTPSettings"),
+      content: <SMTPSettings />,
+    },
   ];
-
-  if (!isMobile) {
-    enablePlugins && data.push(pluginData);
-  }
 
   const load = async () => {
     const path = location.pathname;
