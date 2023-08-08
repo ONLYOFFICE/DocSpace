@@ -152,8 +152,8 @@ internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, 
 
         folder.Id = MakeId(driveEntry);
         folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(driveEntry));
-        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
-        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTimeDateTimeOffset?.DateTime ?? default);
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTimeDateTimeOffset?.DateTime ?? default);
         folder.Private = ProviderInfo.Private;
         folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
@@ -228,9 +228,9 @@ internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, 
 
         file.Id = MakeId(driveFile.Id);
         file.ContentLength = driveFile.Size.HasValue ? (long)driveFile.Size : 0;
-        file.CreateOn = driveFile.CreatedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default;
+        file.CreateOn = driveFile.CreatedTimeDateTimeOffset.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.CreatedTimeDateTimeOffset.Value.UtcDateTime) : default;
         file.ParentId = MakeId(GetParentFolderId(driveFile));
-        file.ModifiedOn = driveFile.ModifiedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
+        file.ModifiedOn = driveFile.ModifiedTimeDateTimeOffset.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.ModifiedTimeDateTimeOffset.Value.UtcDateTime) : default;
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
         file.ThumbnailStatus = Thumbnail.Created;

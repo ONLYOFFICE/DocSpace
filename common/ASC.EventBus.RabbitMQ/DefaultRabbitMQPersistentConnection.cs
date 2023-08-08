@@ -34,7 +34,7 @@ public class DefaultRabbitMQPersistentConnection
     private readonly int _retryCount;
     private IConnection _connection;
     private bool _disposed;
-    readonly object sync_root = new object();
+    readonly object _sync_root = new object();
 
     public DefaultRabbitMQPersistentConnection(IConnectionFactory connectionFactory, ILogger<DefaultRabbitMQPersistentConnection> logger, int retryCount = 5)
     {
@@ -92,7 +92,7 @@ public class DefaultRabbitMQPersistentConnection
     {
         _logger.InformationRabbitMQTryingConnect();
 
-        lock (sync_root)
+        lock (_sync_root)
         {
             var policy = Policy.Handle<SocketException>()
                 .Or<BrokerUnreachableException>()
