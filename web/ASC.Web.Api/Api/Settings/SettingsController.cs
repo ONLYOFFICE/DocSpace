@@ -199,6 +199,13 @@ public class SettingsController : BaseSettingsController
                 DatabaseURL = _configuration["firebase:databaseURL"] ?? ""
             };
 
+            settings.DeepLink = new DeepLinkDto
+            {
+                AndroidPackageName = _configuration["deeplink:androidpackagename"] ?? "",
+                Url = _configuration["deeplink:url"] ?? "",
+                IosPackageId = _configuration["deeplink:iospackageid"] ?? "",
+            };
+
             settings.HelpLink = await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
             settings.ApiDocsLink = _configuration["web:api-docs"];
 

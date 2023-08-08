@@ -1519,7 +1519,7 @@ class FilesStore {
       `UserRoomsFilter=${this.authStore.userStore.user?.id}`
     );
 
-    if ((filterStorageItem && !filter) || withFilterLocalStorage) {
+    if (filterStorageItem && (!filter || withFilterLocalStorage)) {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];
