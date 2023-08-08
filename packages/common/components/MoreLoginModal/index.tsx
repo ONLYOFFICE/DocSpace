@@ -3,7 +3,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import { providersData } from "@docspace/common/constants";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@docspace/common/utils";
 import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
@@ -22,31 +22,52 @@ const ProviderRow = styled.div`
   svg {
     height: 24px;
     width: 24px;
-    padding-left: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 4px;
+          `
+        : css`
+            padding-left: 4px;
+          `}
 
     path {
-      fill: ${(props) => !props.theme.isBase && "#fff"};
+      fill: ${props => !props.theme.isBase && "#fff"};
     }
   }
 
   .provider-name {
-    padding-left: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 12px;
+          `
+        : css`
+            padding-left: 12px;
+          `}
     line-height: 16px;
   }
 
   .signin-button {
-    margin-left: auto;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+          `
+        : css`
+            margin-left: auto;
+          `}
   }
 `;
 
 const Modal = styled(ModalDialog)`
   .modal-dialog-aside {
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+    transform: translateX(${props => (props.visible ? "0" : "480px")});
     width: 480px;
 
     @media (max-width: 375px) {
       width: 325px;
-      transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+      transform: translateX(${props => (props.visible ? "0" : "480px")});
     }
   }
 `;
@@ -63,7 +84,7 @@ interface IMoreLoginNodalProps {
   t: TFuncType;
 }
 
-const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
+const MoreLoginModal: React.FC<IMoreLoginNodalProps> = props => {
   const {
     t,
     visible,
@@ -81,8 +102,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
       displayType="aside"
       visible={visible}
       onClose={onClose}
-      removeScroll={true}
-    >
+      removeScroll={true}>
       <ModalDialog.Header>{t("Common:Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
         {ssoUrl && (
@@ -92,8 +112,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
               fontSize="14px"
               fontWeight="600"
               className="provider-name"
-              noSelect
-            >
+              noSelect>
               {ssoLabel || getProviderTranslation("sso", t)}
             </Text>
             <Button
@@ -116,8 +135,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
                 fontSize="14px"
                 fontWeight="600"
                 className="provider-name"
-                noSelect
-              >
+                noSelect>
                 {getProviderTranslation(label, t)}
               </Text>
               <Button
