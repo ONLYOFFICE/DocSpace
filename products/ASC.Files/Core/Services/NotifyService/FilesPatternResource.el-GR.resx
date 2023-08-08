@@ -58,9 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_DocuSignStatus" xml:space="preserve">
-    <value>h1. $Message: $DocumentTitle</value>
-  </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου
 
@@ -137,5 +134,22 @@ $Message</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Έγγραφα. Η αποστολή έχει ολοκληρωθεί.</value>
+  </data>
+  <data name="pattern_DocuSignComplete" xml:space="preserve">
+    <value>h1. Όλοι οι υπογράφοντες συμπλήρωσαν το $DocumentTitle
+
+Με αυτήν την ειδοποίηση email σας ενημερώνουμε ότι όλοι οι υπογράφοντες ολοκλήρωσαν το "$DocumentTitle":"$DocumentURL".</value>
+  </data>
+  <data name="pattern_MailMergeEnd" xml:space="preserve">
+    <value>h1. Η αποστολή ολοκληρώθηκε
+
+Με αυτήν την ειδοποίηση email σας ενημερώνουμε ζητήσατε την αποστολή μηνυμάτων $MailsCount και η διαδικασία έχει ολοκληρωθεί. $Message
+
+Τα μηνύματα αλληλογραφίας που στάλθηκαν επιτυχώς θα τα βρείτε στον φάκελο "Απεσταλμένα":"$__VirtualRootPath/addons/mail/#sent" της ενότητας «Αλληλογραφία».</value>
+  </data>
+  <data name="pattern_DocuSignStatus" xml:space="preserve">
+    <value>h1. $Message: $DocumentTitle
+
+Συνδεθείτε στον λογαριασμό σας στο DocuSign για περισσότερες πληροφορίες.</value>
   </data>
 </root>

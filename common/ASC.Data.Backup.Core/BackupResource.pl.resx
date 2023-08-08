@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>Ustaw hasło</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Plik kopii zapasowej jest nieprawidłowy. Użyj pliku utworzonego w wersji 11.5 ONLYOFFICE lub nowszej.</value>
+  </data>
 </root>

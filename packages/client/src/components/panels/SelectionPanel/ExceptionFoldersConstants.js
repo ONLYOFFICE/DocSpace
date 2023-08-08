@@ -22,3 +22,12 @@ export const roomsOnly = [
   FolderType.Privacy,
   FolderType.Archive,
 ];
+
+export const userFolderOnly = [
+  FolderType.Recent,
+  FolderType.Rooms,
+  FolderType.TRASH,
+  FolderType.Favorites,
+  FolderType.Privacy,
+  FolderType.Archive,
+];

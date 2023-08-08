@@ -997,6 +997,7 @@ class FilesStore {
   };
 
   setSelection = (selection) => {
+    // console.log("setSelection", selection);
     this.selection = selection;
   };
 
@@ -1078,6 +1079,7 @@ class FilesStore {
   };
 
   setBufferSelection = (bufferSelection) => {
+    // console.log("setBufferSelection", bufferSelection);
     this.bufferSelection = bufferSelection;
   };
 
@@ -1284,7 +1286,26 @@ class FilesStore {
 
         if (clearFilter) {
           if (clearSelection) {
+            // Find not processed
+            const tempSelection = this.selection.filter(
+              (f) => !this.activeFiles.find((elem) => elem.id === f.id)
+            );
+            const tempBuffer =
+              this.bufferSelection &&
+              this.activeFiles.find(
+                (elem) => elem.id === this.bufferSelection.id
+              ) == null
+                ? this.bufferSelection
+                : null;
+
+            // console.log({ tempSelection, tempBuffer });
+
+            // Clear all selections
             this.setSelected("close");
+
+            // Restore not processed
+            tempSelection.length && this.setSelection(tempSelection);
+            tempBuffer && this.setBufferSelection(tempBuffer);
           }
         }
 
@@ -1408,7 +1429,8 @@ class FilesStore {
     filter,
     clearFilter = true,
     withSubfolders = false,
-    clearSelection = true
+    clearSelection = true,
+    withFilterLocalStorage = false
   ) => {
     const { setSelectedNode, roomsFolderId } = this.treeFoldersStore;
 
@@ -1423,7 +1445,7 @@ class FilesStore {
       `UserRoomsFilter=${this.authStore.userStore.user.id}`
     );
 
-    if (filterStorageItem && !filter) {
+    if ((filterStorageItem && !filter) || withFilterLocalStorage) {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];
@@ -3001,17 +3023,19 @@ class FilesStore {
   }
 
   get selectionTitle() {
-    if (this.selection.length === 0) {
-      if (this.bufferSelection) {
-        return this.bufferSelection.title;
-      }
-      return null;
+    if (this.selection.length === 0 && this.bufferSelection) {
+      return this.bufferSelection.title;
     }
-    return this.selection.find((el) => el.title).title;
+
+    return this.selection.find((el) => el.title)?.title || null;
   }
 
   get hasSelection() {
     return !!this.selection.length;
+  }
+
+  get hasBufferSelection() {
+    return !!this.bufferSelection;
   }
 
   get isEmptyFilesList() {

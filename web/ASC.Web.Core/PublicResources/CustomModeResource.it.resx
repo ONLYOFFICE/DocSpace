@@ -174,11 +174,11 @@ Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con su
 
 $GreenButton
 
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>Vuoi cambiare l'e-mail del tuo account dell'ufficio nel cloud?

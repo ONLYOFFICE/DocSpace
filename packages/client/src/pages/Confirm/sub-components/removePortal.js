@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
+import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
+
 import { deletePortal } from "@docspace/common/api/portal";
 import {
   StyledPage,

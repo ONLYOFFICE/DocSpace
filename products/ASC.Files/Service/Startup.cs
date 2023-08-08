@@ -63,8 +63,8 @@ public class Startup : BaseWorkerStartup
         services.AddHostedService<FeedAggregatorService>();
         DIHelper.TryAdd<FeedAggregatorService>();
 
-        services.AddHostedService<FeedCleanerService>();
-        DIHelper.TryAdd<FeedCleanerService>();
+        //services.AddHostedService<FeedCleanerService>();
+        //DIHelper.TryAdd<FeedCleanerService>();
 
         services.AddActivePassiveHostedService<FileConverterService<int>>(DIHelper);
         DIHelper.TryAdd<FileConverterService<int>>();

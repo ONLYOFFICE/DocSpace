@@ -7,8 +7,8 @@ import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
-import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
+import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import { combineUrl } from "@docspace/common/utils";
 import AppLoader from "@docspace/common/components/AppLoader";

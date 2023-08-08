@@ -30,12 +30,16 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
   });
 }
 
-export function getUser(userName = null) {
-  return request({
+export function getUser(userName = null, headers = null) {
+  const options = {
     method: "get",
     url: `/people/${userName || "@self"}`,
     skipUnauthorized: true,
-  }).then((user) => {
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options).then((user) => {
     if (user && user.displayName) {
       user.displayName = Encoder.htmlDecode(user.displayName);
     }

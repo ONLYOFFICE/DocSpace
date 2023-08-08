@@ -1111,7 +1111,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore �
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1166,7 +1166,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore �
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1187,7 +1187,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore �
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Ciao!
@@ -1248,7 +1248,7 @@ Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con su
 
 $GreenButton
 
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
 
 Distinti saluti,
 Team di ONLYOFFICE
@@ -1269,53 +1269,53 @@ Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con su
 
 $GreenButton
 
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
 
 Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
 
-*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+* Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
 
-*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+* *Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
 
-*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+* *Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
 
-*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+* *Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
 
 $GreenButton
 
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
 
 Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
 
-*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+* Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
 
-*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+* *Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
 
-*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+* *Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
 
-*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+* *Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
 
 $GreenButton
 
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_for_sales_notify" xml:space="preserve">
     <value>h1.Messaggio dal portale "${__VirtualRootPath}":"${__VirtualRootPath}"

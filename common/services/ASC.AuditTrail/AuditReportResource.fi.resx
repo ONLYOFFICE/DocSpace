@@ -634,4 +634,88 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Merkit poistettu: {0}</value>
   </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>Toiminto ID</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Tarkastuksen käyttöiän asetukset päivitetty</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Mukautetut navigointiasetukset päivitetty</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Pakotetun tallennuksen asetukset päivitetty</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Kaupan pakotetun tallennuksen asetukset päivitetty</value>
+  </data>
+  <data name="FullTextSearchSetting" xml:space="preserve">
+    <value>Sphinx-asetukset päivitetty</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Epäonnistunut sisääkirjautuminen. Liian monta yrityskertaa</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Epäonnistunut sisäänkirjautuminen. Recaptcha ei ole oikein</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Epäonnistunut sisäänkirjautuminen API:n &amp; todennussovelluksen kautta</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Epäonnistunut sisäänkirjautuminen todennussovelluksen kautta</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Onnistunut sisäänkirjautuminen sosiaalisen sovelluksen kautta</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Onnistunut sisäänkirjautumien API:n &amp; todennussovelluksen kautta</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Onnistunut sisäänkirjautuminen todennussovelluksen kautta</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Yksityinen huone ei ole käytössä</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Yksityinen huone on käytössä</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Uudelleenmääritykset</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Aloita tallennustilan salauksen purku</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Aloita tallennustilan salaus</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Tavoite ID</value>
+  </data>
+  <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
+    <value>Luotetun sähköpostin verkkotunnuksen asetukset päivitetty</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Kaksivaiheisen todennuksen asetukset päivitetty: Kaksivaiheinen todennus poistettiin käytöstä</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Kaksivaiheisen todennuksen asetukset päivitetty: SMS- vahvistus otettiin käyttöön</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Kaksivaiheisen todennuksen asetukset päivitetty: Todennussovellus otettiin käyttöön</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>siirretty: Käyttäjältä {0} käyttäjälle {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Käyttäjätiedot {0}:lle on poistettu</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Todennussovellus poistettu käytöstä: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Uudet varakoodit on luotu</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Sähköposti päivitetty</value>
+  </data>
 </root>

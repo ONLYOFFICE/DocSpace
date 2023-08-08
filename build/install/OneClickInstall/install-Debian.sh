@@ -4,14 +4,16 @@ set -e
 
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
-product="docspace"
+product_name="DocSpace"
+product=$(tr '[:upper:]' '[:lower:]' <<< ${product_name})
 GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
+MAKESWAP="true"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
-RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product^^}.";
-RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
+RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product_name}.";
+RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://forum.onlyoffice.com"
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -72,6 +74,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+		
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
 
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
@@ -83,6 +92,7 @@ while [ "$1" != "" ]; do
 			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
 			echo "      -ls, --local_scripts              use 'true' to run local scripts (true|false)"
 			echo "      -skiphc, --skiphardwarecheck      use to skip hardware check (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			exit 0

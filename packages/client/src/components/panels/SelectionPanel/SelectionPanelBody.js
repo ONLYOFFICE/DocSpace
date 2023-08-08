@@ -15,6 +15,7 @@ import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashArchiveFolders,
   roomsOnly,
+  userFolderOnly,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
@@ -201,6 +202,8 @@ class SelectionPanel extends React.Component {
           );
         case "roomsOnly":
           return filterFoldersTree(treeFolders, roomsOnly);
+        case "userFolderOnly":
+          return filterFoldersTree(treeFolders, userFolderOnly);
       }
     };
 
@@ -212,7 +215,8 @@ class SelectionPanel extends React.Component {
     if (
       filteredType === "exceptSortedByTags" ||
       filteredType === "exceptPrivacyTrashArchiveFolders" ||
-      filteredType === "roomsOnly"
+      filteredType === "roomsOnly" ||
+      filteredType === "userFolderOnly"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }

@@ -16,10 +16,12 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+portal_url="http://$local_ip:8092"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "APP_URL_PORTAL: $portal_url"
 
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
@@ -46,11 +48,27 @@ rm -rf $dir/publish
 echo "Build backend services (to "publish/" folder)"
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dockerDir/docker-entrypoint.py"
 
+proxy_version=v1.0.0
+
+if [ "$1" = "--build_proxy" ]; then
+    proxy_version=v9.9.9
+
+    exists=$(docker images | egrep "onlyoffice/4testing-docspace-proxy-runtime" | egrep "$proxy_version" | awk 'NR>0 {print $1 ":" $2}') 
+
+    if [ "${exists}" = "" ]; then
+        echo "Build proxy base image from source (apply new nginx config)"
+        docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target proxy .
+    else 
+        echo "SKIP build proxy base image (already exists)"
+    fi
+fi
+
+
 echo "Run migration and services"
 ENV_EXTENSION="dev" \
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
-Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:$proxy_version" \
 DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
@@ -59,4 +77,5 @@ ROOT_DIR=$dir \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
 DATA_DIR="$dir/Data" \
+APP_URL_PORTAL=$portal_url \
 docker-compose -f $dockerDir/docspace.profiles.yml -f $dockerDir/docspace.overcome.yml --profile migration-runner --profile backend-local up -d

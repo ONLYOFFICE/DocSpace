@@ -13,7 +13,8 @@ $LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
-
+$PortalUrl = ("http://" + $LocalIp + ":8092")
+$ProxyVersion="v1.0.0"
 
 # Stop all backend services"
 & "$PSScriptRoot\start\stop.backend.docker.ps1"
@@ -26,13 +27,26 @@ docker compose -f "$DockerDir\db.yml" up -d
 Write-Host "Build backend services (to `publish/` folder)" -ForegroundColor Green
 & "$PSScriptRoot\install\common\build-services.ps1"
 
-Set-Location -Path $DockerDir
+Set-Location -Path $RootDir
+
+if ($args[0] -eq "--build_proxy") {
+    $ProxyVersion="v9.9.9"
+
+    $Exists= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
+
+    if (!$Exists) {
+        Write-Host "Build proxy base image from source (apply new nginx config)" -ForegroundColor Green
+        docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target proxy .
+    } else { 
+        Write-Host "SKIP build proxy base image (already exists)" -ForegroundColor Green
+    }
+}
 
 Write-Host "Run migration and services" -ForegroundColor Green
 $Env:ENV_EXTENSION="dev"
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0"
 $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
-$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
+$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
 $Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login
@@ -41,6 +55,7 @@ $Env:ROOT_DIR=$RootDir
 $Env:BUILD_PATH="/var/www"
 $Env:SRC_PATH="$RootDir\publish\services"
 $Env:DATA_DIR="$RootDir\Data"
-docker compose -f docspace.profiles.yml -f docspace.overcome.yml --profile migration-runner --profile backend-local up -d
+$Env:APP_URL_PORTAL=$PortalUrl
+docker compose -f "$DockerDir\docspace.profiles.yml" -f "$DockerDir\docspace.overcome.yml" --profile migration-runner --profile backend-local up -d
 
 Set-Location -Path $PSScriptRoot

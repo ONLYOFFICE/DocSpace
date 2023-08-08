@@ -22,6 +22,9 @@
   "AmazonServiceTip": "This is an optional property; change it only if you want to try a different service endpoint.",
   "AmazonSSE": "Server-Side Encryption",
   "AmazonSSETip": "The Server-side encryption algorithm used when storing this object in S3.",
+  "Api": "Api",
+  "ApiPageDescription": "Create your own productivity platform based on ONLYOFFICE DocSpace and collaborate on documents with teams, clients, and partners.",
+  "ApiPageHeader": "Build your own collaboration platform",
   "Appearance": "Appearance",
   "AuditSubheader": "The subsection allows you to browse through the list of the latest changes (creation, modification, deletion etc.) made by users to the entities (rooms, opportunities, files etc.) within your DocSpace.",
   "AuditTrailNav": "Audit Trail",
@@ -95,8 +98,9 @@
   "EveryMonth": "Every month",
   "EveryWeek": "Every week",
   "ForcePathStyle": "Force Path Style",
+  "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that.",
   "IPSecurity": "IP Security",
-  "IPSecurityDescription": "<1>IP Security</1> is used to restrict login to the space from all IP addresses except certain addresses. You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255), IP range (in the #.#.#.#-#.#.#.# format), or CIDR masking (in the #.#.#.#/# format). The IP security does not work for portal owners, they can access the space from any IP address. Rules set in the For all users section apply to full access administrators as well. At the same time, you can set additional rules for full access administrators in the corresponding section.",
+  "IPSecurityDescription": "<1>IP Security</1> is used to restrict login to the space from all IP addresses except certain addresses. You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255), IP range (in the #.#.#.#-#.#.#.# format), or CIDR masking (in the #.#.#.#/# format). The IP security does not work for space owners, they can access the space from any IP address. Rules set in the For all users section apply to full access administrators as well. At the same time, you can set additional rules for full access administrators in the corresponding section.",
   "IPSecurityHelper": "You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255) or IP range (in the #.#.#.#-#.#.#.# format).",
   "IPSecurityWarningHelper": "First, you need to specify your current IP or the IP range your current IP address belongs to, otherwise your space access will be blocked right after you save the settings. The space owner will have the space access from any IP address.",
   "LanguageAndTimeZoneSettingsDescription": "Language and Time Zone Settings is a way to change the language of the space for all users and to configure the time zone so that all the actions will be shown with the correct date and time.",
@@ -207,9 +211,5 @@
   "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
-  "YourCurrentDomain": "Your current domain",
-  "IntegrationRequest": "Missing a useful integration or component in ONLYOFFICE DocSpace? Leave a request to our team and we will look into that.",
-  "ApiPageHeader": "Build your own collaboration platform",
-  "ApiPageDescription": "Create your own productivity platform based on ONLYOFFICE DocSpace and collaborate on documents with teams, clients, and partners.",
-  "Api": "Api"
+  "YourCurrentDomain": "Your current domain"
 }

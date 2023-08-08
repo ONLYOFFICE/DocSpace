@@ -2153,9 +2153,11 @@ class FilesActionStore {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
+    fetchRooms(null, filter, undefined, undefined, undefined, true).finally(
+      () => {
+        setIsLoading(false);
+      }
+    );
   };
 
   backToParentFolder = () => {

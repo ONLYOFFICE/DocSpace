@@ -26,12 +26,28 @@
 
 namespace ASC.Web.Files.Services.WCFService;
 
+/// <summary>
+/// </summary>
 public class MentionWrapper
 {
+    /// <summary>User information</summary>
+    /// <type>ASC.Core.Users.UserInfo, ASC.Core.Common</type>
     public UserInfo User { get; set; }
+
+    /// <summary>User email</summary>
+    /// <type>System.String, System</type>
     public string Email => User.Email;
+
+    /// <summary>User ID</summary>
+    /// <type>System.String, System</type>
     public string Id => User.Id.ToString();
+
+    /// <summary>Specifies if the user has the access to the file or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool HasAccess { get; set; }
+
+    /// <summary>User display name</summary>
+    /// <type>System.String, System</type>
     public string Name => User.DisplayUserName(false, _displayUserSettingsHelper);
 
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -43,9 +59,19 @@ public class MentionWrapper
     }
 }
 
+/// <summary>
+/// </summary>
 public class MentionMessageWrapper
 {
+    /// <summary>The config parameter which contains the information about the comment in the document that will be scrolled to</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.ActionLinkConfig, ASC.Files.Core</type>
     public ActionLinkConfig ActionLink { get; set; }
+
+    /// <summary>A list of emails which will receive the mention message</summary>
+    /// <type>System.Collections.Generic.List{System.String}, System.Collections.Generic</type>
     public List<string> Emails { get; set; }
+
+    /// <summary>The comment message</summary>
+    /// <type>System.String, System</type>
     public string Message { get; set; }
 }

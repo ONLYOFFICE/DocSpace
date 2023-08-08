@@ -75,19 +75,23 @@ class VersionHistoryStore {
   setVerHistoryFileVersions = (versions) => {
     const file = this.filesStore.files.find((item) => item.id == this.fileId);
 
-    const currentVersionGroup = Math.max.apply(
-      null,
-      versions.map((ver) => ver.versionGroup)
-    );
+    const currentVersion = versions.reduce((prev, current) => {
+      return prev.versionGroup > current.versionGroup ? prev : current;
+    });
 
-    const currentComment =
-      versions[versions.length - currentVersionGroup].comment;
+    // const currentVersionGroup = Math.max.apply(
+    //   null,
+    //   versions.map((ver) => ver.versionGroup)
+    // );
+
+    // const currentComment =
+    //   versions[versions.length - currentVersionGroup].comment;
 
     const newFile = {
       ...file,
-      comment: currentComment,
+      comment: currentVersion.comment,
       version: versions.length,
-      versionGroup: currentVersionGroup,
+      versionGroup: currentVersion.versionGroup,
     };
 
     this.filesStore.setFile(newFile);

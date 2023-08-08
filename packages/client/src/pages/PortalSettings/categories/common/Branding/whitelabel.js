@@ -28,6 +28,7 @@ const WhiteLabel = (props) => {
     isSettingPaid,
     logoText,
     logoUrls,
+    setLogoText,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls,
     setWhiteLabelSettings,
@@ -37,17 +38,18 @@ const WhiteLabel = (props) => {
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
-  const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] = useState(
-    ""
-  );
+  const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] =
+    useState("");
 
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const companyNameFromSessionStorage = getFromSessionStorage("companyName");
-
   useEffect(() => {
+    const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+
     if (!companyNameFromSessionStorage) {
+      if (!logoText) return;
+
       setLogoTextWhiteLabel(logoText);
       saveToSessionStorage("companyName", logoText);
     } else {
@@ -86,26 +88,24 @@ const WhiteLabel = (props) => {
   const onUseTextAsLogo = () => {
     let newLogos = logoUrlsWhiteLabel;
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      const width = logoUrlsWhiteLabel[i].size.width / 2;
-      const height = logoUrlsWhiteLabel[i].size.height / 2;
       const options = getLogoOptions(i, logoTextWhiteLabel);
       const isDocsEditorName = logoUrlsWhiteLabel[i].name === "DocsEditor";
 
       const logoLight = generateLogo(
-        width,
-        height,
+        options.width,
+        options.height,
         options.text,
         options.fontSize,
         isDocsEditorName ? "#fff" : "#000",
-        options.isEditorLogo
+        options.alignCenter
       );
       const logoDark = generateLogo(
-        width,
-        height,
+        options.width,
+        options.height,
         options.text,
         options.fontSize,
         "#fff",
-        options.isEditorLogo
+        options.alignCenter
       );
       newLogos[i].path.light = logoLight;
       newLogos[i].path.dark = logoDark;
@@ -182,7 +182,9 @@ const WhiteLabel = (props) => {
       setIsSaving(true);
       await setWhiteLabelSettings(data);
       await getWhiteLabelLogoUrls();
-      await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
+      await getWhiteLabelLogoUrlsAction();
+      setLogoText(data.logoText);
+      //TODO: delete duplicate request
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -459,6 +461,7 @@ export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings } = setup;
 
   const {
+    setLogoText,
     whiteLabelLogoText,
     getWhiteLabelLogoText,
     whiteLabelLogoUrls,
@@ -472,6 +475,7 @@ export default inject(({ setup, auth, common }) => {
   } = auth.settingsStore;
 
   return {
+    setLogoText,
     theme: auth.settingsStore.theme,
     logoText: whiteLabelLogoText,
     logoUrls: whiteLabelLogoUrls,

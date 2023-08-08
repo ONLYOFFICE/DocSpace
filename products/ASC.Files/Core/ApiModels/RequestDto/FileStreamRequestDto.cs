@@ -26,10 +26,23 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class FileStreamRequestDto : IModelWithFile
 {
+    /// <summary>Request input stream</summary>
+    /// <type>Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http</type>
     public IFormFile File { get; set; }
+
+    /// <summary>Specifies whether to encrypt a file or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Encrypted { get; set; }
+
+    /// <summary>Specifies whether to force save a file or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Forcesave { get; set; }
+
+    /// <summary>File extension</summary>
+    /// <type>System.String, System</type>
     public string FileExtension { get; set; }
 }

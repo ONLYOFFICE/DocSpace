@@ -29,16 +29,25 @@ const Sdk = ({
     window.addEventListener("message", handleMessage, false);
     return () => {
       window.removeEventListener("message", handleMessage, false);
+      setFrameConfig(null);
     };
   }, [handleMessage]);
 
+  const callCommand = useCallback(() => frameCallCommand("setConfig"), [
+    frameCallCommand,
+  ]);
+
   useEffect(() => {
     if (window.parent && !frameConfig && isLoaded) {
-      frameCallCommand("setConfig");
+      callCommand("setConfig");
     }
-  }, [frameCallCommand, isLoaded]);
+  }, [callCommand, isLoaded]);
 
   const { mode } = match.params;
+
+  const selectorType = new URLSearchParams(window.location.search).get(
+    "selectorType"
+  );
 
   const toRelativeUrl = (data) => {
     try {
@@ -123,8 +132,13 @@ const Sdk = ({
 
   const onClose = useCallback(() => {
     frameCallEvent({ event: "onCloseCallback" });
-    setFrameConfig(null);
   }, [frameCallEvent]);
+
+  const onCloseCallback = !!frameConfig?.events.onCloseCallback
+    ? {
+        onClose,
+      }
+    : {};
 
   let component;
 
@@ -144,13 +158,13 @@ const Sdk = ({
         <SelectFileDialog
           isPanelVisible={true}
           onSelectFile={onSelectFile}
-          onClose={onClose}
-          filteredType="roomsOnly"
+          filteredType={selectorType}
           withSubfolders={false}
           displayType="aside"
           embedded={true}
           searchParam={frameConfig?.filter.search}
           ByExtension
+          {...onCloseCallback}
         />
       );
       break;

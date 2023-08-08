@@ -49,6 +49,8 @@ const SMTPSettings = (props) => {
           {t("Settings:SMTPSettings")}
         </Text>
         <HelpButton
+          place="bottom"
+          offsetBottom={0}
           className="smtp-settings_help-button"
           place="bottom"
           offsetBottom={0}

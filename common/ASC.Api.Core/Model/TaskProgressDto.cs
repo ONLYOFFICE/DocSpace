@@ -25,9 +25,16 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Api.Core.Model;
+/// <summary>
+/// </summary>
 public class TaskProgressDto
 {
+    /// <summary>Specifies if the operation is completed or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsCompleted { get; set; }
+
+    /// <summary>Progress percentage</summary>
+    /// <type>System.Int32, System</type>
     public int Progress { get; set; }
 
     public static TaskProgressDto GetSample()

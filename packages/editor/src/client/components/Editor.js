@@ -599,6 +599,7 @@ function Editor({
 
       let goBack;
       const url = window.location.href;
+      const search = window.location.search;
 
       if (fileInfo) {
         let backUrl = "";
@@ -611,17 +612,22 @@ function Editor({
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
-        goBack = {
-          blank: true,
-          requestClose: false,
-          text: t("FileLocation"),
-          url: `${combineUrl(origin, backUrl)}`,
-        };
+        const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+        goBack =
+          editorGoBack === "false"
+            ? {}
+            : {
+                blank: true,
+                requestClose: false,
+                text: t("FileLocation"),
+                url: `${combineUrl(origin, backUrl)}`,
+              };
       }
 
       config.editorConfig.customization = {
         ...config.editorConfig.customization,
-        goback: goBack,
+        goback: { ...goBack },
       };
 
       config.editorConfig.customization.uiTheme = getEditorTheme(user?.theme);

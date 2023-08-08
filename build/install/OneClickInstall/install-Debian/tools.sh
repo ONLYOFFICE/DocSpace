@@ -2,14 +2,32 @@
 
 set -e
 
+make_swap () {
+	DISK_REQUIREMENTS=6144; #6Gb free space
+	MEMORY_REQUIREMENTS=11000; #RAM ~12Gb
+	SWAPFILE="/${PRODUCT}_swapfile";
+
+	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	EXIST=$(swapon -s | awk '{ print $1 }' | { grep -x ${SWAPFILE} || true; });
+
+	if [[ -z $EXIST ]] && [ ${TOTAL_MEMORY} -lt ${MEMORY_REQUIREMENTS} ] && [ ${AVAILABLE_DISK_SPACE} -gt ${DISK_REQUIREMENTS} ]; then
+		fallocate -l 6G ${SWAPFILE}
+		chmod 600 ${SWAPFILE}
+		mkswap ${SWAPFILE}
+		swapon ${SWAPFILE}
+		echo "$SWAPFILE none swap sw 0 0" >> /etc/fstab
+	fi
+}
+
 command_exists () {
 	type "$1" &> /dev/null;
 }
 
 check_hardware () {
     DISK_REQUIREMENTS=40960;
-    MEMORY_REQUIREMENTS=5500;
-    CORE_REQUIREMENTS=2;
+    MEMORY_REQUIREMENTS=8192;
+    CORE_REQUIREMENTS=4;
 
 	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
 

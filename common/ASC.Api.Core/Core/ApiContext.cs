@@ -63,7 +63,7 @@ public class ApiContext : ICloneable
     /// Gets count to get item from collection. Request parameter "count"
     /// </summary>
     /// <remarks>
-    /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP & COUNT
+    /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP &amp; COUNT
     /// </remarks>
     public long Count { get; set; }
 
@@ -71,7 +71,7 @@ public class ApiContext : ICloneable
     /// Gets start index to get item from collection. Request parameter "startIndex"
     /// </summary>
     /// <remarks>
-    /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP & COUNT
+    /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP &amp; COUNT
     /// </remarks>
     public long StartIndex { get; set; }
 
@@ -98,7 +98,7 @@ public class ApiContext : ICloneable
 
     /// <summary>
     /// Sort direction. From request parameter "sortOrder" can be "descending" or "ascending"
-    /// Like ...&sortOrder=descending&...
+    /// Like ...&amp;sortOrder=descending&amp;...
     /// </summary>
     public bool SortDescending { get; set; }
 

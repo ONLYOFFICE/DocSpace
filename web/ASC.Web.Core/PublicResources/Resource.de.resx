@@ -961,4 +961,34 @@
   <data name="ConsumersSelectelInstruction" xml:space="preserve">
     <value>Stellen Sie eine Verbindung mit Selectel Cloud Platform, um Daten Ihres Portals zu sichern und zu speichern. {0}Erhalten Sie die Zugriffsdaten (Read/Write) für die Kontainer, in denen Sie Ihre Backups speichern möchten und fügen Sie diese unten ein:</value>
   </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID des Anwendung-Clients</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Aktivieren Sie die Anwendung, um sich mit einem Microsoft-Konto am Portal anzumelden.</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot-Benutzername</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot-Token</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Verbinden Sie Ihr Telegram-Konto, um Portal-Benachrichtigungen über Telegram zu erhalten.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Um Portalbenachrichtigungen über Telegram zu erhalten, aktivieren Sie den Telegram-Bot. Sie können einen neuen Bot mit BotFather in Telegram Desktop erstellen. Um diesen Bot zu nutzen, müssen Portalnutzer Telegram-Benachrichtigungen auf ihrer Profilseite aktivieren. {0}Fügen Sie den Benutzernamen des Bots und den Token, den Sie erhalten haben, in die unten stehenden Felder ein.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloud-Speicherplatz für Ihre Office-Dokumente</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integrationen von Drittanbietern</value>
+  </data>
 </root>

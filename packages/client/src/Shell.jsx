@@ -323,7 +323,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       headerText: t("Attention"),
       text: `${t("BarMaintenanceDescription", {
         targetDate: targetDate,
-        productName: "ONLYOFFICE Personal",
+        productName: "ONLYOFFICE DocSpace",
       })} ${t("BarMaintenanceDisclaimer")}`,
       isMaintenance: true,
       clickAction: () => {
