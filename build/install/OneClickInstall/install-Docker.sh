@@ -76,6 +76,7 @@ MYSQL_PORT=""
 DATABASE_MIGRATION="true"
 
 ELK_VERSION=""
+ELK_SHEME=""
 ELK_HOST=""
 ELK_PORT=""
 
@@ -217,6 +218,13 @@ while [ "$1" != "" ]; do
 		-mysqlp | --mysqlpassword )
 			if [ "$2" != "" ]; then
 				MYSQL_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-espr | --elasticprotocol )
+			if [ "$2" != "" ]; then
+				ELK_SHEME=$2
 				shift
 			fi
 		;;
@@ -459,6 +467,7 @@ while [ "$1" != "" ]; do
 			echo "      -irds, --installredis             install or update redis (true|false)"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"		
 			echo "      -ies, --installelastic            install or update elasticsearch (true|false)"
+			echo "      -espr, --elasticprotocol          the protocol for the connection to elasticsearch (default value http)"
 			echo "      -esh, --elastichost               the IP address or hostname of the elasticsearch"
 			echo "      -esp, --elasticport               elasticsearch port number (default value 6379)"
 			echo "      -rdsh, --redishost                the IP address or hostname of the redis server"
@@ -1118,6 +1127,7 @@ set_docspace_params() {
 	DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST")};
 	DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_PORT")};
 
+	ELK_SHEME=${ELK_SHEME:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_SHEME")};
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
 	ELK_PORT=${ELK_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_PORT")};
 
@@ -1240,6 +1250,7 @@ install_elasticsearch () {
 		docker-compose -f $BASE_DIR/elasticsearch.yml up -d
 	elif [ ! -z "$ELK_HOST" ]; then
 		establish_conn ${ELK_HOST} "${ELK_PORT:-"9200"}" "Elasticsearch"
+		reconfigure ELK_SHEME "${ELK_SHEME:-"http"}"	
 		reconfigure ELK_HOST ${ELK_HOST}
 		reconfigure ELK_PORT "${ELK_PORT:-"9200"}"	
 	fi
