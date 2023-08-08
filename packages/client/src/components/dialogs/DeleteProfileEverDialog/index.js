@@ -234,7 +234,6 @@ export default inject(({ peopleStore }) => {
     setDataReassignmentDeleteProfile,
     setDataReassignmentDeleteAdministrator,
     setDialogData,
-
     setSelected,
     removeUser: peopleStore.usersStore.removeUser,
     userPerformedDeletion: peopleStore.authStore.userStore.user,

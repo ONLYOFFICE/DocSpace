@@ -203,7 +203,9 @@ const DataReassignmentDialog = ({
         </ModalDialog.Container>
       )}
 
-      <ModalDialog.Header>Data reassignment</ModalDialog.Header>
+      <ModalDialog.Header>
+        {t("DataReassignmentDialog:DataReassignment")}
+      </ModalDialog.Header>
 
       <ModalDialog.Body>
         {!tReady && <Loader />}
@@ -249,10 +251,10 @@ const DataReassignmentDialog = ({
 
             <StyledPeopleSelectorInfo>
               <Text className="new-owner" noSelect>
-                New data owner
+                {t("DataReassignmentDialog:NewDataOwner")}
               </Text>
               <Text className="description" noSelect>
-                User to whom the data will be transferred
+                {t("DataReassignmentDialog:UserToWhomTheDataWillBeTransferred")}
               </Text>
             </StyledPeopleSelectorInfo>
             {selectedUser ? (
@@ -287,11 +289,10 @@ const DataReassignmentDialog = ({
             )}
             <StyledAvailableList className="list-container">
               <Text className="list-item" noSelect>
-                We will transfer rooms created by user and documents stored in
-                user’s rooms.
+                {t("DataReassignmentDialog:DescriptionDataReassignment")}
               </Text>
               <Text className="list-item" noSelect>
-                Note: this action cannot be undone.
+                {t("DataReassignmentDialog:NoteDataReassignment")}
               </Text>
 
               <Link
@@ -300,7 +301,7 @@ const DataReassignmentDialog = ({
                 fontWeight={600}
                 style={{ textDecoration: "underline" }}
               >
-                More about data transfer
+                {t("DataReassignmentDialog:MoreAboutDataTransfer")}
               </Link>
             </StyledAvailableList>
           </>
@@ -317,7 +318,7 @@ const DataReassignmentDialog = ({
                 onClick={onToggleDeleteProfile}
               />
               <Text className="info" noSelect>
-                Delete profile when reassignment is finished
+                {t("DataReassignmentDialog:DeleteProfileIsFinished")}
               </Text>
             </div>
           )}
@@ -325,7 +326,7 @@ const DataReassignmentDialog = ({
           <div className="button-wrapper">
             {!showProgress && (
               <Button
-                label="Reassign"
+                label={t("DataReassignmentDialog:Reassign")}
                 size="normal"
                 primary
                 scale
@@ -345,7 +346,7 @@ const DataReassignmentDialog = ({
             )}
             {percent === 100 && (
               <Button
-                label="Ok"
+                label={t("Common:OkButton")}
                 size="normal"
                 scale
                 onClick={onClose}
@@ -391,8 +392,8 @@ export default inject(({ auth, peopleStore, setup }) => {
   };
 })(
   observer(
-    withTranslation(["Common,Translations,ChangePortalOwner"])(
-      DataReassignmentDialog
-    )
+    withTranslation([
+      "Common,DataReassignmentDialog,Translations,ChangePortalOwner",
+    ])(DataReassignmentDialog)
   )
 );
