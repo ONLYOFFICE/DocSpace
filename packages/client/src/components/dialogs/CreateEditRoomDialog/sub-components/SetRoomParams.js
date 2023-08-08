@@ -158,11 +158,12 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {canOwnerChange && (
+      {canOwnerChange && roomParams.roomOwner && (
         <div>
           <Text fontWeight={600} fontSize="13px">
             {t("Files:RoomOwner")}
           </Text>
+
           <div className="room-owner-block">
             <StyledIcon
               className="react-svg-icon"
@@ -177,6 +178,7 @@ const SetRoomParams = ({
               )}
             </div>
           </div>
+
           <Link
             isHovered
             type="action"
