@@ -127,6 +127,29 @@ public class SettingsController : ControllerBase
         });
     }
 
+    [HttpPost("checkdomain")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default,auth:portal")]
+    public async Task<IActionResult> CheckDomain([FromBody] DomainModel model)
+    {
+        if (model == null || string.IsNullOrEmpty(model.HostName))
+        {
+            return BadRequest(new
+            {
+                error = "hostNameEmpty",
+                message = "HostName is required"
+            });
+        }
+
+        var clientIP = CommonMethods.GetClientIp();
+
+        var hostIps = await Dns.GetHostAddressesAsync(model.HostName);
+
+        return Ok(new
+        {
+            value = Array.IndexOf(hostIps, clientIP) > -1
+        });
+    }
+
     #endregion
 
     #region private methods
