@@ -27,11 +27,11 @@ const fillAvailableWidth = css`
 
 const StyledInvitePanel = styled.div`
   .invite-panel-body {
-    height: ${props =>
+    height: ${(props) =>
       props.hasInvitedUsers ? "calc(100% - 55px - 70px)" : "calc(100% - 55px)"};
 
     .scroll-body {
-      ${props =>
+      ${(props) =>
         props.theme.interfaceDirection === "rtl"
           ? css`
               padding-left: 0px !important;
@@ -45,15 +45,15 @@ const StyledInvitePanel = styled.div`
 
 const ScrollList = styled.div`
   width: 100%;
-  height: ${props =>
+  height: ${(props) =>
     props.scrollAllPanelContent && props.isTotalListHeight
       ? "auto"
       : props.offsetTop && `calc(100% - ${props.offsetTop}px)`};
 `;
 
 const StyledBlock = styled.div`
-  padding: ${props => (props.noPadding ? "0px" : "0 16px")};
-  border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
+  padding: ${(props) => (props.noPadding ? "0px" : "0 16px")};
+  border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
 `;
 
 StyledBlock.defaultProps = { theme: Base };
@@ -70,7 +70,7 @@ const StyledSubHeader = styled(Heading)`
   padding-right: 16px;
   margin: 16px 0 8px 0;
 
-  ${props =>
+  ${(props) =>
     props.inline &&
     css`
       display: inline-flex;
@@ -82,7 +82,7 @@ const StyledSubHeader = styled(Heading)`
 const StyledDescription = styled(Text)`
   padding-left: 16px;
   padding-right: 16px;
-  color: ${props =>
+  color: ${(props) =>
     props.theme.createEditRoomDialog.commonParam.descriptionColor};
   margin-bottom: 16px;
 
@@ -101,7 +101,7 @@ const StyledRow = styled.div`
   gap: 8px;
 
   min-height: 41px;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: 16px;
@@ -119,7 +119,7 @@ const StyledRow = styled.div`
   }
 
   .invite-panel_access-selector {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: auto;
@@ -134,15 +134,15 @@ const StyledRow = styled.div`
 
 const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: 16px;
-          margin-left: ${props => (props.hideSelector ? "16px" : "8px")};
+          margin-left: ${(props) => (props.hideSelector ? "16px" : "8px")};
         `
       : css`
           margin-left: 16px;
-          margin-right: ${props => (props.hideSelector ? "16px" : "8px")};
+          margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
         `}
   
   
@@ -156,7 +156,7 @@ const StyledInviteInput = styled.div`
 `;
 
 const StyledAccessSelector = styled.div`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-left: 16px;
@@ -171,7 +171,7 @@ const StyledEditInput = styled(TextInput)`
 `;
 
 const StyledComboBox = styled(ComboBox)`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: auto;
@@ -190,7 +190,7 @@ const StyledComboBox = styled(ComboBox)`
   justify-content: center;
 
   .combo-buttons_arrow-icon {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 2px;
@@ -220,7 +220,7 @@ const StyledInviteInputContainer = styled.div`
 `;
 
 const StyledDropDown = styled(DropDown)`
-  ${props => props.width && `width: ${props.width}px`};
+  ${(props) => props.width && `width: ${props.width}px`};
 
   .list-item {
     display: flex;
@@ -233,15 +233,15 @@ const StyledDropDown = styled(DropDown)`
 const SearchItemText = styled(Text)`
   line-height: 16px;
 
-  font-size: ${props =>
+  font-size: ${(props) =>
     props.primary ? "14px" : props.info ? "11px" : "12px"};
-  font-weight: ${props => (props.primary || props.info ? "600" : "400")};
+  font-weight: ${(props) => (props.primary || props.info ? "600" : "400")};
 
-  color: ${props =>
+  color: ${(props) =>
     (props.primary && !props.disabled) || props.info
       ? props.theme.text.color
       : props.theme.text.disableColor};
-  ${props => props.info && `margin-left: auto`}
+  ${(props) => props.info && `margin-left: auto`}
 `;
 
 SearchItemText.defaultProps = { theme: Base };
@@ -255,10 +255,10 @@ const StyledEditButton = styled(Button)`
 const iconStyles = css`
   ${commonIconsStyles}
   path {
-    fill: ${props => props.theme.filesEditingWrapper.fill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: ${props => props.theme.filesEditingWrapper.hoverFill} !important;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
 
@@ -275,7 +275,7 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledDeleteIcon = styled(DeleteIcon)`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: auto;
@@ -290,7 +290,7 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 StyledDeleteIcon.defaultProps = { theme: Base };
 
 const StyledHelpButton = styled(HelpButton)`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-left: 8px;
@@ -309,18 +309,19 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-  background: ${props => props.theme.filesPanels.sharing.backgroundButtons};
-  border-top: ${props => props.theme.filesPanels.sharing.borderTop};
+  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
+  border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 
 const StyledLink = styled(Link)`
-  float: right;
+  float: ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left` : `right`};
 `;
 
 StyledButtons.defaultProps = { theme: Base };
 
 const StyledToggleButton = styled(ToggleButton)`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           left: 8px;
