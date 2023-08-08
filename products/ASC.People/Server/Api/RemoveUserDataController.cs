@@ -65,10 +65,10 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Get the deletion progress</short>
     /// <param type="System.Guid, System" name="userId">User ID</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
-    /// <path>api/2.0/people/remove/progress</path>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Deletion progress</returns>
+    /// <path>api/2.0/people/remove/progress/{userid}</path>
     /// <httpMethod>GET</httpMethod>
-    [HttpGet("remove/progress")]
+    [HttpGet("remove/progress/{userid}")]
     public async Task<TaskProgressResponseDto> GetRemoveProgressAsync(Guid userId)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
@@ -110,7 +110,7 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Start the data deletion</short>
     /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Deletion progress</returns>
     /// <path>api/2.0/people/remove/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]

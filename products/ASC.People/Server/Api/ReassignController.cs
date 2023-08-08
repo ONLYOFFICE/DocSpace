@@ -59,8 +59,8 @@ public class ReassignController : ApiControllerBase
     /// <short>Get the reassignment progress</short>
     /// <param type="System.Guid, System" name="userId">User ID whose data is reassigned</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
-    /// <path>api/2.0/people/reassign/progress</path>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Reassignment progress</returns>
+    /// <path>api/2.0/people/reassign/progress/{userid}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("reassign/progress/{userid}")]
     public async Task<TaskProgressResponseDto> GetReassignProgressAsync(Guid userId)
@@ -78,11 +78,11 @@ public class ReassignController : ApiControllerBase
     /// <short>Start the data reassignment</short>
     /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People" name="inDto">Request parameters for starting the reassignment process</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.TaskProgressResponseDto, ASC.People">Reassignment progress</returns>
     /// <path>api/2.0/people/reassign/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("reassign/start")]
-    public async Task<IEnumerable<TaskProgressResponseDto>> StartReassignAsync(StartReassignRequestDto inDto)
+    public async Task<TaskProgressResponseDto> StartReassignAsync(StartReassignRequestDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
@@ -92,33 +92,23 @@ public class ReassignController : ApiControllerBase
             || await _userManager.IsUserAsync(toUser)
             || toUser.Status == EmployeeStatus.Terminated)
         {
-            throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
+            throw new ArgumentException("Can not reassign data to user with id = " + toUser.Id);
         }
 
-        foreach (var fromUserId in inDto.FromUserIds)
+        var fromUser = await _userManager.GetUsersAsync(inDto.FromUserId);
+
+        if (_userManager.IsSystemUser(fromUser.Id)
+            || fromUser.IsOwner(Tenant)
+            || fromUser.IsMe(_authContext)
+            || await _userManager.IsUserAsync(toUser)
+            || fromUser.Status != EmployeeStatus.Terminated)
         {
-            var fromUser = await _userManager.GetUsersAsync(fromUserId);
-
-            if (_userManager.IsSystemUser(fromUser.Id)
-                || fromUser.IsOwner(Tenant)
-                || fromUser.IsMe(_authContext)
-                || await _userManager.IsUserAsync(toUser)
-                || fromUser.Status != EmployeeStatus.Terminated)
-            {
-                throw new ArgumentException("Can not reassign data from user with id = " + fromUserId);
-            }
+            throw new ArgumentException("Can not reassign data from user with id = " + fromUser.Id);
         }
 
-        var notify = inDto.FromUserIds.Count() == 1;
-        var result = new List<TaskProgressResponseDto>();
+        var progressItem = _queueWorkerReassign.Start(Tenant.Id, fromUser.Id, toUser.Id, _securityContext.CurrentAccount.ID, true, inDto.DeleteProfile);
 
-        foreach (var fromUserId in inDto.FromUserIds)
-        {
-            var progressItem = _queueWorkerReassign.Start(Tenant.Id, fromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, notify, inDto.DeleteProfile);
-            result.Add(TaskProgressResponseDto.Get(progressItem));
-        }
-
-        return result;
+        return TaskProgressResponseDto.Get(progressItem);
     }
 
     /// <summary>
