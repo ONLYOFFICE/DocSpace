@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledMobileDetails = styled.div`
   z-index: 307;
@@ -24,13 +24,27 @@ const StyledMobileDetails = styled.div`
 
   .mobile-close {
     position: fixed;
-    left: 21px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: 21px;
+          `
+        : css`
+            left: 21px;
+          `}
     top: 22px;
   }
 
   .mobile-context {
     position: fixed;
-    right: 22px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 22px;
+          `
+        : css`
+            right: 22px;
+          `}
     top: 22px;
   }
 

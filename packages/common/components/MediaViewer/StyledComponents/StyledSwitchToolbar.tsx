@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 type StyledSwitchToolbarProps = {
   left?: boolean;
@@ -14,8 +14,20 @@ const StyledSwitchToolbar = styled.div<StyledSwitchToolbarProps>`
   display: block;
   opacity: 0;
   transition: all 0.3s;
-  ${(props) =>
-    props.left ? "left: 0" : props.isPdfFIle ? "right: 20px" : "right: 0"};
+
+  ${props =>
+    props.left
+      ? props.theme.interfaceDirection === "rtl"
+        ? "right: 0"
+        : "left: 0"
+      : props.isPdfFIle
+      ? props.theme.interfaceDirection === "rtl"
+        ? "left: 20px"
+        : "right: 20px"
+      : props.theme.interfaceDirection === "rtl"
+      ? "left: 0"
+      : "right: 0"};
+
   &:hover {
     cursor: pointer;
     opacity: 1;

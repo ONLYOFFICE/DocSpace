@@ -26,7 +26,14 @@ const DesktopDetailsContainer = styled.div`
 
   position: fixed;
   top: 0;
-  left: 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 0;
+        `
+      : css`
+          left: 0;
+        `}
   z-index: 307;
 
   .title {
@@ -37,9 +44,16 @@ const DesktopDetailsContainer = styled.div`
     font-weight: 600;
     text-overflow: ellipsis;
     width: calc(100% - 50px);
-    padding-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+          `
+        : css`
+            padding-left: 16px;
+          `}
     box-sizing: border-box;
-    color: ${(props) => props.theme.mediaViewer.titleColor};
+    color: ${props => props.theme.mediaViewer.titleColor};
   }
 `;
 

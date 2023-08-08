@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const ImageViewerToolbarWrapper = styled.div`
   height: 48px;
@@ -7,7 +7,14 @@ export const ImageViewerToolbarWrapper = styled.div`
 
   position: fixed;
   bottom: 24px;
-  left: 50%;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 50%;
+        `
+      : css`
+          left: 50%;
+        `}
   z-index: 307;
 
   transform: translateX(-50%);
@@ -37,10 +44,10 @@ export const ToolbarItem = styled.li<{
   align-items: center;
 
   height: 48px;
-  width: ${(props) => (props.$isSeparator ? "33px" : "48px")};
+  width: ${props => (props.$isSeparator ? "33px" : "48px")};
 
   &:hover {
-    cursor: ${(props) => (props.$isSeparator ? "default" : "pointer")};
+    cursor: ${props => (props.$isSeparator ? "default" : "pointer")};
   }
 
   .zoomPercent {
@@ -54,7 +61,7 @@ export const ToolbarItem = styled.li<{
     height: 16px;
     path,
     rect {
-      ${(props) => (props.$percent !== 25 ? "fill: #fff;" : "fill: #BEBEBE;")}
+      ${props => (props.$percent !== 25 ? "fill: #fff;" : "fill: #BEBEBE;")}
     }
   }
 
