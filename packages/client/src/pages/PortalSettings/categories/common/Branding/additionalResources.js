@@ -64,18 +64,19 @@ const AdditionalResources = (props) => {
 
     const defaultData = {
       feedbackAndSupportEnabled:
-        additionalResourcesData.feedbackAndSupportEnabled,
-      videoGuidesEnabled: additionalResourcesData.videoGuidesEnabled,
-      helpCenterEnabled: additionalResourcesData.helpCenterEnabled,
+        additionalResourcesData?.feedbackAndSupportEnabled,
+      videoGuidesEnabled: additionalResourcesData?.videoGuidesEnabled,
+      helpCenterEnabled: additionalResourcesData?.helpCenterEnabled,
     };
 
     saveToSessionStorage("defaultAdditionalSettings", defaultData);
 
     if (additionalSettings) {
       setAdditionalSettings({
-        feedbackAndSupportEnabled: additionalSettings.feedbackAndSupportEnabled,
-        videoGuidesEnabled: additionalSettings.videoGuidesEnabled,
-        helpCenterEnabled: additionalSettings.helpCenterEnabled,
+        feedbackAndSupportEnabled:
+          additionalSettings?.feedbackAndSupportEnabled,
+        videoGuidesEnabled: additionalSettings?.videoGuidesEnabled,
+        helpCenterEnabled: additionalSettings?.helpCenterEnabled,
       });
     } else {
       setAdditionalSettings(defaultData);

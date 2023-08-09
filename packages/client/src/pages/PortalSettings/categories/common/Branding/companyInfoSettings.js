@@ -87,22 +87,22 @@ const CompanyInfoSettings = (props) => {
     const companySettings = getFromSessionStorage("companySettings");
 
     const defaultData = {
-      address: companyInfoSettingsData.address,
-      companyName: companyInfoSettingsData.companyName,
-      email: companyInfoSettingsData.email,
-      phone: companyInfoSettingsData.phone,
-      site: companyInfoSettingsData.site,
+      address: companyInfoSettingsData?.address,
+      companyName: companyInfoSettingsData?.companyName,
+      email: companyInfoSettingsData?.email,
+      phone: companyInfoSettingsData?.phone,
+      site: companyInfoSettingsData?.site,
     };
 
     saveToSessionStorage("defaultCompanySettings", defaultData);
 
     if (companySettings) {
       setCompanySettings({
-        address: companySettings.address,
-        companyName: companySettings.companyName,
-        email: companySettings.email,
-        phone: companySettings.phone,
-        site: companySettings.site,
+        address: companySettings?.address,
+        companyName: companySettings?.companyName,
+        email: companySettings?.email,
+        phone: companySettings?.phone,
+        site: companySettings?.site,
       });
     } else {
       setCompanySettings(defaultData);
@@ -119,11 +119,11 @@ const CompanyInfoSettings = (props) => {
     );
 
     const newSettings = {
-      address: companySettings.address,
-      companyName: companySettings.companyName,
-      email: companySettings.email,
-      phone: companySettings.phone,
-      site: companySettings.site,
+      address: companySettings?.address,
+      companyName: companySettings?.companyName,
+      email: companySettings?.email,
+      phone: companySettings?.phone,
+      site: companySettings?.site,
     };
 
     saveToSessionStorage("companySettings", newSettings);
