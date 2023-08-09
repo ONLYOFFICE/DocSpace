@@ -253,7 +253,7 @@ const BackupListModalDialog = (props) => {
             <Checkbox
               truncate
               className="backup-list_checkbox"
-              onChange={this.onChangeCheckbox}
+              onChange={onChangeCheckbox}
               isChecked={isChecked}
             />
             <Text as="span" className="backup-list_agreement-text">
@@ -274,7 +274,7 @@ const BackupListModalDialog = (props) => {
               primary
               size="normal"
               label={t("Common:Restore")}
-              onClick={this.onRestorePortal}
+              onClick={onRestorePortal}
               isDisabled={isCopyingToLocal || !isChecked}
             />
             <Button
