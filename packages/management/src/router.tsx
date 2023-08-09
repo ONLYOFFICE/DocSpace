@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       },
       {
         path: "backup",
-        element: <Backup />,
+        element: <Navigate to="/management/backup/data-backup" />,
       },
       {
         path: "backup/data-backup",
