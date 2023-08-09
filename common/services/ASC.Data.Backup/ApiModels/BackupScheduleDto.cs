@@ -46,6 +46,10 @@ public class BackupScheduleDto
     /// <summary>Cron parameters</summary>
     /// <type>ASC.Data.Backup.ApiModels.Cron, ASC.Data.Backup</type>
     public Cron CronParams { get; set; }
+
+    /// <summary>Dump</summary>
+    /// <type>System.Bolean, System</type>
+    /// <example>true</example>
     public bool Dump { get; set; }
 }
 
