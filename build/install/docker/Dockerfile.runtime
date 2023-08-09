@@ -100,7 +100,8 @@ COPY /build/install/docker/config/nginx/templates/upstream.conf.template /etc/ng
 COPY /build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY /build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 
-RUN dos2unix /docker-entrypoint.d/prepare-nginx-proxy.sh && \
+RUN dos2unix /docker-entrypoint.d/* && \
+    dos2unix /docker-entrypoint.sh && \
     apt-get --purge remove -y dos2unix && \
     rm -rf /var/lib/apt/lists/*
 
