@@ -313,6 +313,8 @@ module.exports = (env, argv) => {
         "./BrandingPage":
           "./src/pages/PortalSettings/categories/common/branding.js",
         "./BackupPage": "./src/pages/PortalSettings/categories/data-management",
+        "./RestorePage":
+          "./src/pages/PortalSettings/categories/data-management/backup/restore-backup",
         "./PaymentsPage": "./src/pages/PortalSettings/categories/payments",
       },
       shared: {
