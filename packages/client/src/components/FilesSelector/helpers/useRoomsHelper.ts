@@ -23,6 +23,10 @@ const getRoomLogo = (roomType: number) => {
     case RoomsType.EditingRoom:
       path = "editing.svg";
       break;
+
+    case RoomsType.PublicRoom:
+      path = "public.svg";
+      break;
   }
 
   return iconSize32.get(path);
