@@ -123,7 +123,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM nginx AS proxy
+FROM openresty/openresty:focal AS proxy
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -133,11 +133,17 @@ ENV DNS_NAMESERVER=127.0.0.11 \
 
 RUN apt-get -y update && \
     apt-get install -yq vim && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
+
+COPY /build/install/docker/config/nginx/docker-entrypoint.sh /docker-entrypoint.sh
+COPY /build/install/docker/config/nginx/docker-entrypoint.d /docker-entrypoint.d
+
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
@@ -162,6 +168,10 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+
+ENTRYPOINT  [ "/docker-entrypoint.sh" ]
+
+CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
 
 ## Doceditor ##
 FROM noderun as doceditor
