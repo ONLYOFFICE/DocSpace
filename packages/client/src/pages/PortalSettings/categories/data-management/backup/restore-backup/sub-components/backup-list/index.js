@@ -210,7 +210,7 @@ const BackupListModalDialog = (props) => {
                 </Text>
                 <Link
                   id="delete-backups"
-                  onClick={this.onCleanBackupList}
+                  onClick={onCleanBackupList}
                   fontWeight={600}
                   style={{ textDecoration: "underline dotted" }}
                 >
@@ -224,8 +224,8 @@ const BackupListModalDialog = (props) => {
                 filesList.length > 0 ? (
                   <BackupListBody
                     filesList={filesList}
-                    onDeleteBackup={this.onDeleteBackup}
-                    onSelectFile={this.onSelectFile}
+                    onDeleteBackup={onDeleteBackup}
+                    onSelectFile={onSelectFile}
                     selectedFileIndex={selectedFileIndex}
                   />
                 ) : (
