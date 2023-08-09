@@ -316,6 +316,7 @@ module.exports = (env, argv) => {
         "./LoaderWhiteLabel":
           "./src/pages/PortalSettings/categories/common/sub-components/loaderWhiteLabel.js",
         "./PaymentsPage": "./src/pages/PortalSettings/categories/payments",
+        "./BackupPage": "./src/pages/PortalSettings/categories/data-management",
       },
       shared: {
         ...deps,
