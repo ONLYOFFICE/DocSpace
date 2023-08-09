@@ -32,21 +32,62 @@ const ChipsContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const getChips = (domains) =>
-  domains ? (
-    domains.map((item) => (
-      <SelectedItem isInline text={item} onClose={() => {}} />
-    ))
-  ) : (
-    <></>
-  );
-
-const CSP = ({ t, cspSettings, getCSPSettings, setCSPSettings }) => {
+const CSP = ({ t, cspDomains, getCSPSettings, setCSPSettings }) => {
   useEffect(() => {
-    !cspSettings && getCSPSettings();
-  }, [cspSettings?.domains]);
+    getCSPSettings();
+  }, []);
 
-  const [domains, setDomains] = useState(cspSettings?.domains);
+  const [domain, changeDomain] = useState("");
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter" && !!domain.length) {
+      addDomain();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyPress);
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
+
+  const getChips = (domains) =>
+    domains ? (
+      domains.map((item, index) => (
+        <SelectedItem
+          key={`${item}-${index}`}
+          isInline
+          text={item}
+          onClose={() => deleteDomain(item)}
+        />
+      ))
+    ) : (
+      <></>
+    );
+
+  const deleteDomain = (value) => {
+    const domains = cspDomains.filter((item) => item !== value);
+
+    setCSPSettings({ domains });
+  };
+
+  const addDomain = () => {
+    const domainsSetting = [...cspDomains];
+    const trimmedDomain = domain.trim();
+    const domains = trimmedDomain.split(" ");
+
+    domains.map((domain) => {
+      if (domain === "" || domainsSetting.includes(domain)) return;
+
+      domainsSetting.push(domain);
+    });
+
+    setCSPSettings({ domains: domainsSetting });
+    changeDomain("");
+  };
+
+  const onChangeDomain = (e) => {
+    changeDomain(e.target.value);
+  };
 
   return (
     <>
@@ -60,16 +101,21 @@ const CSP = ({ t, cspSettings, getCSPSettings, setCSPSettings }) => {
         />
       </Container>
       <Container>
-        <TextInput onChange={() => {}} placeholder={t("CSPInputPlaceholder")} />
-        <SelectorAddButton onClick={() => {}} />
+        <TextInput
+          onChange={onChangeDomain}
+          value={domain}
+          placeholder={t("CSPInputPlaceholder")}
+          tabIndex={1}
+        />
+        <SelectorAddButton onClick={addDomain} />
       </Container>
-      <ChipsContainer>{getChips(domains)}</ChipsContainer>
+      <ChipsContainer>{getChips(cspDomains)}</ChipsContainer>
     </>
   );
 };
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { cspSettings, getCSPSettings, setCSPSettings } = settingsStore;
-  return { cspSettings, getCSPSettings, setCSPSettings };
+  const { cspDomains, getCSPSettings, setCSPSettings } = settingsStore;
+  return { cspDomains, getCSPSettings, setCSPSettings };
 })(observer(CSP));

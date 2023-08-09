@@ -372,6 +372,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeWidth}
                     placeholder={t("EnterWidth")}
                     value={width}
+                    tabIndex={2}
                   />
                   <ComboBox
                     size="content"
@@ -392,6 +393,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeHeight}
                     placeholder={t("EnterHeight")}
                     value={height}
+                    tabIndex={3}
                   />
                   <ComboBox
                     size="content"
@@ -412,6 +414,7 @@ const PortalIntegration = (props) => {
                   onChange={onChangeFrameId}
                   placeholder={t("EnterId")}
                   value={config.frameId}
+                  tabIndex={4}
                 />
               </ControlsGroup>
               <CategorySubHeader>{t("InterfaceElements")}</CategorySubHeader>
@@ -475,6 +478,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeSearch}
                     placeholder={t("Common:Search")}
                     value={config.search}
+                    tabIndex={5}
                   />
                   <Checkbox
                     label={t("Files:WithSubfolders")}
@@ -527,6 +531,7 @@ const PortalIntegration = (props) => {
                   onChange={onChangeCount}
                   placeholder={t("EnterCount")}
                   value={config.count}
+                  tabIndex={6}
                 />
               </ControlsGroup>
               <ControlsGroup>
@@ -537,6 +542,7 @@ const PortalIntegration = (props) => {
                   placeholder={t("EnterPage")}
                   value={config.page}
                   isDisabled={!config.count}
+                  tabIndex={7}
                 />
               </ControlsGroup>
             </Controls>
