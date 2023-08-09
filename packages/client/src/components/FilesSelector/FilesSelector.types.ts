@@ -88,6 +88,7 @@ export type FilesSelectorProps = {
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   isEditorDialog: boolean;
+  setMoveToPublicRoomVisible: (visible: boolean, operationData: object) => void;
 
   onClose?: () => void;
 
