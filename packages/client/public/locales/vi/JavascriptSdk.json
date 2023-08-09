@@ -13,10 +13,9 @@
   "FrameId": "Id khung",
   "Header": "Tiêu đề",
   "ItemsCount": "Số lượng mục",
-  "JavascriptSdk": "Javascript sdk",
+  "JavascriptSdk": "Javascript SDK",
   "Menu": "Thực đơn",
   "Page": "Trắng",
   "SearchTerm": "Cụm từ tìm kiếm",
-  "SortOrder": "Thứ tự sắp xếp",
-  "WindowParameters": "Thông số cửa sổ"
+  "SortOrder": "Thứ tự sắp xếp"
 }

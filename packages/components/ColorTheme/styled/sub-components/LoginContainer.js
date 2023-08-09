@@ -12,7 +12,7 @@ const LoginContainer = styled.div`
   z-index: 0;
 
   .remember-wrapper {
-    max-width: 142px;
+    max-width: 170px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -195,7 +195,11 @@ const LoginContainer = styled.div`
 
       .login-link {
         line-height: 18px;
-        margin-left: auto;
+
+        ${({ theme }) =>
+          theme.interfaceDirection === "rtl"
+            ? `margin-right: auto;`
+            : `margin-left: auto;`}
       }
     }
 
@@ -204,7 +208,10 @@ const LoginContainer = styled.div`
     }
 
     .login-button-dialog {
-      margin-right: 8px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 8px;`
+          : `margin-right: 8px;`}
     }
 
     .login-bottom-border {

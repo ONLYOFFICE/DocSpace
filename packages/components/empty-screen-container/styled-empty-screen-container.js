@@ -87,12 +87,19 @@ const MobileView = css`
   .ec-desc,
   .ec-image,
   .ec-buttons {
-    padding-left: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? "padding-right: 16px;"
+        : "padding-left: 16px;"}
   }
 
   .ec-image {
     height: 75px;
-    margin-left: 0;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? "margin-right: 0;"
+        : "margin-left: 0;"}
   }
 `;
 

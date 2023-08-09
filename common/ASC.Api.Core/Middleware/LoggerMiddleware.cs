@@ -62,7 +62,7 @@ public class LoggerMiddleware
             state.Add("tenantMappedDomain", tenant.MappedDomain);
         }
 
-        using (logger.BeginScope(state.ToArray()))
+        using (logger.BeginScope(state))
         {
             await _next.Invoke(context);
         }

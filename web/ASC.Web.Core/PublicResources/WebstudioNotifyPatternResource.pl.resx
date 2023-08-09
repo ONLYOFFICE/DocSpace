@@ -600,9 +600,6 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
   <data name="ButtonCollaborateDocSpace" xml:space="preserve">
     <value>Współpracuj w DocSpace</value>
   </data>
-  <data name="ButtonConfirm" xml:space="preserve">
-    <value>Potwierdź zaproszenie DocSpace</value>
-  </data>
   <data name="ButtonConfirmRoomInvite" xml:space="preserve">
     <value>Potwierdź zaproszenie do pokoju</value>
   </data>
@@ -627,13 +624,6 @@ Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
 
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
-
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
 Pozdrawiamy,
@@ -649,13 +639,6 @@ Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
 
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
-
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
 Pozdrawiamy,
@@ -670,13 +653,6 @@ Właśnie udało Ci się utworzyć konto DocSpace w ONLYOFFICE. Jest to centrum 
 Potwierdź swój adres e-mail (link jest ważny przez 7 dni):
 
 $GreenButton
-
-Twój obecny plan cenowy to STARTUP. Jest całkowicie darmowy i obejmuje:
-
-* 1 administratora, 2 użytkowników z większą liczbą uprawnień
-* Do 12 pokoi
-* Nieograniczoną liczbę użytkowników w pokojach
-* 2 GB miejsca na dysku
 
 Ciesz się nowym sposobem współpracy nad dokumentami!
 
@@ -850,13 +826,13 @@ Mamy dla Ciebie trzy proste pytania, które pomogą nam poprawić Twój komfort 
 
 Jeśli Twoja odpowiedź choć na jedno z pytań brzmiała „tak”, wybierz plan cenowy BIZNES, który pozwala dodać do konta ONLYOFFICE DocSpace dowolną liczbę menedżerów oraz zastosować branding.
 
-Aby to zrobić, skorzystaj przejdź do „sekcji płatności”:"$PricingPage” swojego konta ONLYOFFICE DocSpace. Znajdziesz tam indywidualny link do portalu klienta Stripe, gdzie z łatwością można zarządzać wszystkimi danymi płatniczymi. 
+Aby to zrobić, skorzystaj przejdź do "sekcji płatności":"$PricingPage” swojego konta ONLYOFFICE DocSpace. Znajdziesz tam indywidualny link do portalu klienta Stripe, gdzie z łatwością można zarządzać wszystkimi danymi płatniczymi. 
 
 _Uwaga: Osoba, która opłaca subskrypcję staje się płatnikiem. Tylko płatnicy mogą dokonywać zmian w subskrypcji (dostosować liczbę menedżerów). Użytkownicy nie mają dostępu do danych płatniczych. Właściciel konta ONLYOFFICE DocSpace może zmienić płatnika kiedykolwiek zechce. _
 
 Pozdrawiamy,
 Zespół ONLYOFFICE
-"www.onlyoffice.com":”http://onlyoffice.com/’</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Witaj!
@@ -1267,5 +1243,570 @@ Zespół ONLYOFFICE
   </data>
   <data name="subject_saas_docspace_invite" xml:space="preserve">
     <value>Dołącz do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potwierdź zaproszenie DocSpace</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Kliknij tutaj, aby aktywować swój adres e-mail</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Zmień adres e-mail</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Zmień hasło</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Zmień numer telefonu komórkowego</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Skonfiguruj aplikację uwierzytelniającą</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Potwierdź</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Potwierdź zmianę adresu portalu</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Potwierdź aktualizację właściciela portalu</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Potwierdź zamknięcie konta</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Dezaktywuj portal</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Usuń portal</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Kliknij tutaj, aby dołączyć do portalu</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Zostaw opinię</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Usuń profil</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Odnów teraz</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Rozpocznij darmowy okres próbny</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Skorzystaj ze zniżki</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Potwierdź zmianę swojego adresu e-mail</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Powiadomienie dot. bezpieczeństwa</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Dołącz do ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Dołącz do ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Dołącz do ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Prośba do działu sprzedaży</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Tworzenie skrzynki pocztowej</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Zmieniono hasło do skrzynki pocztowej</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Witaj w wersji ONLYOFFICE do użytku osobistego!</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Aktywuj swój adres e-mail</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Zamknięcie konta ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>Konto ONLYOFFICE DocSpace zostało dezaktywowane</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Użytkownik usunął swój profil</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Przypisywanie danych użytkownika nie powiodło się</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Zakończono usuwanie danych użytkownika</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Usuwanie danych użytkownika nie powiodło się</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Dołącz do ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Dołącz do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Co nowego na Twoim portalu $Date</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces odszyfrowywania nie powiódł się</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Rozpoczęto proces odszyfrowywania</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Zakończono proces odszyfrowywania</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Proces szyfrowania nie powiódł się</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Rozpoczęto proces szyfrowania</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Zakończono proces szyfrowania</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Otrzymano zaproszenie do ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>Utworzono kopię zapasową portalu [${__VirtualRootPath}](${__VirtualRootPath})
+
+Witaj, $OwnerName
+
+Plik kopii zapasowej zawierający dane z Twojego portalu [${__VirtualRootPath}](${__VirtualRootPath}) został utworzony.
+
+Aby dowiedzieć się więcej na temat procedury tworzenia kopii zapasowych, sprawdź nasz przewodnik [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy, skontaktuj się z nami pod adresem [support.onlyoffice.com](http://support.onlyoffice.com)
+
+Pozdrawiamy,
+Zespół pomocy technicznej ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Chcesz zmienić adres e-mail dla swojego konta ${LetterLogoText}?
+
+Kliknij poniższy przycisk, aby zalogować się* do swojej chmury.
+
+$GreenButton
+
+Link jest ważny przez 7 dni.
+
+*Jeśli nie jesteś zalogowany(a) w ${LetterLogoText} na tej przeglądarce, musisz użyć starego adresu e-mail do potwierdzenia. Jeżeli go nie pamiętasz, skontaktuj się z administratorem portalu.
+
+Nie chcesz zmieniać adresu e-mail? Po prostu zignoruj tę wiadomość.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Powiadomienie dot.bezpieczeństwa
+
+Konfiguracja aplikacji uwierzytelniającej, której używasz do logowania w portalu ${LetterLogoText}, została zresetowana.
+
+Kliknij poniższy przycisk, aby przejść do strony logowania portalu i skonfigurować aplikację uwierzytelniającą:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Mamy dla Ciebie trzy proste pytania, które pomogą nam poprawić Twój komfort korzystania z usługi.
+
+* Czy masz duży zespół lub wielu klientów oraz partnerów, z którymi będziesz współpracować w ONLYOFFICE DocSpace? 
+
+* Chcesz móc stworzyć dowolną liczbę pokoi, aby pracować z wieloma dokumentami? 
+
+* Chcesz korzystać z ONLYOFFICE DocSpace pod szyldem własnej marki?
+
+Jeśli Twoja odpowiedź choć na jedno z pytań brzmiała „tak”, wybierz plan cenowy BIZNES, który pozwala dodać do konta ONLYOFFICE DocSpace dowolną liczbę menedżerów oraz zastosować branding.
+
+Aby to zrobić, przejdź do "sekcji płatności":"$PricingPage" swojego konta ONLYOFFICE DocSpace. Znajdziesz tam indywidualny link do portalu klienta Stripe, gdzie z łatwością możesz zarządzać wszystkimi danymi płatniczymi. 
+
+_Uwaga: Osoba, która opłaca subskrypcję, staje się płatnikiem. Tylko płatnicy mogą dokonywać zmian w subskrypcji (dostosować liczbę menedżerów). Użytkownicy nie mają dostępu do danych płatniczych. Właściciel konta ONLYOFFICE DocSpace może zmienić płatnika, kiedykolwiek zechce. _
+
+Pozdrawiamy,
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Zaproszono Cię do dołączenia do "${__VirtualRootPath}":"${__VirtualRootPath}” jako gość. Zaakceptuj zaproszenie, klikając link:
+
+$GreenButton
+
+Link jest ważny tylko przez 7 dni.
+
+Uzyskaj więcej wskazówek na temat tego, jak korzystać ze swojego biura internetowego. Subskrypcje możesz w dowolnej chwili anulować lub ponownie włączyć na swojej stronie profilowej.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Użytkownik $__AuthorName zaprosił Cię jako gościa do "${__VirtualRootPath}":"${__VirtualRootPath}". Zaakceptuj zaproszenie, klikając link:
+
+$GreenButton
+
+Link jest ważny tylko przez 7 dni.
+
+Uzyskaj więcej wskazówek na temat tego, jak korzystać ze swojego biura internetowego. Subskrypcje możesz w dowolnej chwili anulować lub ponownie włączyć na swojej stronie profilowej.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Wiadomość z portalu "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+E-mail: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Witaj, $UserName
+
+      Administrator utworzył dla Ciebie nową skrzynkę pocztową &lt;b&gt;$Address&lt;/b&gt; w portalu "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Użyj następujących ustawień dla innych klientów poczty e-mail:
+      Login: &lt;b&gt;$Login&lt;/b&gt;
+      Hasło: "&lt;b&gt;ustaw hasło&lt;/b&gt;":"$MyStaffLink"
+
+      Poczta przychodząca (IMAP): 
+      Serwer: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Poczta wychodząca (SMTP): 
+      Serwer: &lt;b&gt;$Server&lt;/b&gt;
+      Port: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS &lt;b&gt;$Encryption&lt;/b&gt;
+      Wymaga uwierzytelnienia: &lt;b&gt;Tak&lt;/b&gt;
+
+      Jeśli wiadomość trafiła do Ciebie przez pomyłkę, zignoruj ją lub skontaktuj się z administratorem portalu, aby uzyskać szczegółowe informacje.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Witaj, $UserName
+
+      Hasło do skrzynki &lt;b&gt;$Address&lt;/b&gt; zostało zmienione.
+
+      Jeśli wiadomość trafiła do Ciebie przez pomyłkę, zignoruj ją lub skontaktuj się z administratorem portalu, aby uzyskać szczegółowe informacje.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Witaj, $UserName
+
+      Administrator utworzył dla Ciebie nową skrzynkę pocztową &lt;b&gt;$Address&lt;/b&gt; w portalu "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Jeśli wiadomość trafiła do Ciebie przez pomyłkę, zignoruj ją lub skontaktuj się z administratorem portalu, aby uzyskać szczegółowe informacje.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Migracja portalu
+h1."$PortalUrl":"$PortalUrl"
+
+Twój portal został przeniesiony na nową domenę. Przywróć swój dostęp do portalu, podając hasło, które będzie używane do logowania.
+
+Aby skonfigurować hasło dla konta, kliknij poniższy link.
+$GreenButton
+
+*Uwaga*: ten link jest ważny tylko przez 7 dni. Zakończ proces odzyskiwania dostępu w tym okresie.
+
+Jeśli wiadomość trafiła do Ciebie przez pomyłkę, zignoruj ją lub skontaktuj się z administratorem portalu "$PortalUrl":"$PortalUrl", aby uzyskać szczegółowe informacje.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Witaj!
+
+Zaproszono Cię do dołączenia do "${__VirtualRootPath}":"${__VirtualRootPath}" jako gość. Zaakceptuj zaproszenie, klikając link:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Link jest ważny tylko przez 7 dni.
+
+Uzyskaj więcej wskazówek na temat tego, jak korzystać ze swojego biura internetowego. Subskrypcje możesz w dowolnej chwili anulować lub ponownie włączyć na swojej stronie profilowej.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Witaj, $UserName
+Udało Ci się zarejestrować w ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Podłącz swoją ulubioną pamięć w chmurze: Dropbox, Google Drive, OneDrive lub Box, aby utworzyć jeden obszar roboczy dla wszystkich swoich dokumentów dostępny z dowolnego miejsca.
+
+Dowiedz się więcej na temat ONLYOFFICE PERSONAL na "naszym blogu":"$TagBlogLink".
+
+Cieszymy się, że z nami jesteś! Bądź na bieżąco!
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Witaj w ONLYOFFICE Personal
+
+Twoje osobiste biuro w chmurze właśnie zostało utworzone.
+
+h3.Jest to wirtualny obszar roboczy, gdzie możesz edytować i przechowywać dokumenty, pracować nad nimi z dowolnego miejsca oraz udostępniać je znajomym lub współpracownikom.
+
+h3. Na dobry początek zobacz, co możesz zrobić w ONLYOFFICE:
+
+- twórz i edytuj dokumenty tekstowe, arkusze kalkulacyjne oraz prezentacje
+
+- pracuj ze wszystkimi popularnymi formatami Najwyższa kompatybilność z plikami MS Office
+
+- twórz i współedytuj "gotowe do wypełnienia formularze":"https://www.onlyoffice.com/form-creator.aspx"
+
+- udostępniaj dokumenty i współpracuj nad nimi online
+
+- używaj różnych wtyczek, aby zastosować dodatkowe funkcje
+
+- uzyskaj łatwy dostęp do swojej osobistej chmury za pomocą "rozszerzenia Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Możesz również edytować dokumenty w trybie offline za pomocą naszych darmowych "edytorów dla komputerów stacjonarnych":"https://www.onlyoffice.com/download-desktop.aspx" lub pobrać pakiet edytorów mobilnych na urządzenia z "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" bądź "Androidem":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Chcesz zmienić adres e-mail dla swojego konta ONLYOFFICE?
+
+Kliknij poniższy przycisk, aby zalogować się* do swojej chmury.
+
+$GreenButton
+
+Link jest ważny przez 7 dni.
+
+*Jeśli nie jesteś zalogowany(a) w ONLYOFFICE na tej przeglądarce, musisz użyć starego adresu e-mail do potwierdzenia.
+
+Nie chcesz zmieniać adresu e-mail? Po prostu zignoruj tę wiadomość.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Witaj,
+
+Twoje konto ONLYOFFICE do użytku osobistego zostało pomyślnie utworzone. Kliknij "tutaj": "$InviteLink", aby potwierdzić rejestrację i utworzyć hasło.
+
+Jeśli nie możesz otworzyć linku, skopiuj "$InviteLink":"$InviteLink" i wklej go w pasku adresowym swojej przeglądarki.
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Poproszono o zamknięcie Twojego konta na stronie personal.onlyoffice.com. Kliknij link, aby potwierdzić prośbę (link jest aktywny przez 7 dni): 
+
+$GreenButton
+
+*Uwaga*: Po zamknięciu Twoje konto i wszystkie powiązane z nim dane zostaną trwale usunięte zgodnie z naszą "Polityką prywatności":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Dowiedz się więcej na temat procesu zamknięcia konta":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Zignoruj tę wiadomość e-mail, jeśli nie chcesz kontynuować. 
+
+W razie jakichkolwiek pytań prosimy o kontakt pod adresem "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Pozdrawiamy,
+Zespół ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Dezaktywacja portalu [${__VirtualRootPath}](${__VirtualRootPath})
+
+Witaj, $OwnerName
+
+Poproszono o tymczasową dezaktywację portalu [${__VirtualRootPath}](${__VirtualRootPath}). Kliknij poniższy link, aby potwierdzić operację:
+
+$GreenButton
+
+_Uwaga_: ten link jest ważny tylko przez 7 dni. Zakończ proces dezaktywacji portalu w tym okresie.
+
+Możesz ponownie aktywować portal w dowolnej chwili, klikając poniższy link:
+[Reaktywuj Portal]($ActivateUrl) (dany link jest ważny bezterminowo)
+
+Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy, skontaktuj się z nami pod adresem [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Pozdrawiamy,
+Zespół pomocy technicznej ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Usunięcie [${__VirtualRootPath}](${__VirtualRootPath})
+
+Witaj, $OwnerName
+
+Poproszono o trwałe usunięcie portalu [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Uwaga! Wszystkie dane przechowywane w portalu oraz dane rejestracyjne zostaną bezpowrotnie utracone._
+
+#if($AutoRenew == "True")
+Zanim usuniesz portal, upewnij się, że automatyczne fakturowanie jest wyłączone. Status automatycznego fakturowania sprawdzisz na koncie [Avangate](https://secure.avangate.com/myaccount/").
+#end
+
+Jeśli nadal chcesz usunąć portal [${__VirtualRootPath}](${__VirtualRootPath}), kliknij poniższy link, aby potwierdzić operację:
+
+$GreenButton
+
+_Uwaga_: ten link jest ważny tylko przez 7 dni. Zakończ proces usuwania portalu w tym okresie.
+
+Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy, skontaktuj się z nami pod adresem [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Pozdrawiamy,
+Zespół wsparcia ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Użytkownik "$ FromUserName":"$ FromUserLink" usunął swój profil i dany profil jest obecnie zablokowany. Wszystkie pliki użytkownika nadal są do niego przypisane i zajmują miejsce na dysku. 
+
+Możesz przypisać współdzielone dokumenty tego użytkownika innemu aktywnemu użytkownikowi lub usunąć je, aby zwolnić miejsce na dysku portalu.
+
+Przejdź do profilu użytkownika za pomocą "tego linku":"$FromUserLink", aby przypisać dokumenty do innego użytkownika lub usunąć dane.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Twój profil w [${__VirtualRootPath}](${__VirtualRootPath}) został zmieniony
+
+Witaj, $UserName
+
+Dane na Twoim profilu użytkownika w [${__VirtualRootPath}](${__VirtualRootPath}) zostały zmienione przez [$__AuthorName]($__AuthorUrl).
+
+Aby wyświetlić swój profil, kliknij poniższy link:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Witaj, $UserName
+
+Proces przypisywania danych użytkownika "$FromUserName":"$FromUserLink" użytkownikowi "$ToUserName":"$ToUserLink" nie powiódł się.
+
+Komunikat o wyjątku: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Witaj, $UserName
+
+Proces usuwania danych użytkownika "$FromUserName":"$FromUserLink" został pomyślnie zakończony.
+
+Usunięcie danych osobowych umożliwiło uwolnienie:
+
+# Dokumenty – $DocsSpace
+# CRM – $CrmSpace
+# Wiadomości – $MailSpace
+# Rozmowy – $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Witaj, $UserName
+
+Proces usuwania danych dla użytkownika "$ FromUserName":"$ FromUserLink" nie powiódł się.
+
+Komunikat o wyjątku: $Message</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.Zapytanie o taryfę SAAS dla "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Imię
+$UserName
+
+h3.Nazwisko
+$UserLastName
+
+h3.Stanowisko
+$Position
+
+h3.E-mail
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefon
+$Phone
+
+h3.Strona internetowa firmy
+$Website
+
+h3.Nazwa firmy
+$CompanyTitle
+
+h3.Rozmiar firmy
+$CompanySize
+
+h3.Treść zapytania
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Przywracanie portalu
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Twój portal został przywrócony. Aby uzyskać do niego dostęp, musisz ustawić nowe hasło:
+
+$GreenButton
+
+*Uwaga*: ten link jest ważny tylko przez 7 dni.
+
+Jeśli wiadomość trafiła do Ciebie przez pomyłkę, zignoruj ją lub skontaktuj się z administratorem portalu "${__VirtualRootPath}":"${__VirtualRootPath}", aby uzyskać szczegółowe informacje.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Witaj!
+
+Zaproszono Cię do dołączenia do "${__VirtualRootPath}":"${__VirtualRootPath}" jako gość. Zaakceptuj zaproszenie, klikając link:
+
+$GreenButton
+
+Od czasu do czasu prześlemy Ci również praktyczne wskazówki i najnowsze wiadomości na temat ONLYOFFICE. Subskrypcje możesz w dowolnej chwili anulować lub ponownie włączyć na swojej stronie profilowej.
+
+Pozdrawiamy,
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>Powiadomienie o zmianie danych profilowych w portalu [${__VirtualRootPath}](${__VirtualRootPath})
+
+Użytkownik [$__AuthorName]($__AuthorUrl) zmienił swoje dane profilowe w portalu [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Proces odszyfrowywania plików w Twoim portalu "${PortalUrl}":"${PortalUrl}" nie powiódł się.
+
+Nie udało się odszyfrować pewnych plików. Dowiedz się więcej w sekcji "Panel sterowania":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Rozpoczęto proces odszyfrowywania plików w Twoim portalu "${PortalUrl}":"${PortalUrl}".
+
+Odszyfrowywanie może zająć trochę czasu, dlatego portal będzie tymczasowo niedostępny. Gdy tylko odszyfrowywanie zostanie zakończone, będziesz w stanie ponownie pracować ze swoimi danymi.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Proces odszyfrowywania w Twoim portalu "${PortalUrl}":"${PortalUrl}" został pomyślnie zakończony.
+
+Twój portal jest ponownie dostępny.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Proces szyfrowania plików w Twoim portalu "${PortalUrl}":"${PortalUrl}" nie powiódł się.
+
+Nie udało się zaszyfrować pewnych plików. Dowiedz się więcej w sekcji "Panel sterowania":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Rozpoczęto proces szyfrowania plików w Twoim portalu "${PortalUrl}":"${PortalUrl}".
+
+Szyfrowanie może zająć trochę czasu, dlatego portal będzie tymczasowo niedostępny. Gdy tylko szyfrowanie zostanie zakończone, będziesz w stanie ponownie pracować ze swoimi danymi.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Proces szyfrowania plików w Twoim portalu "${PortalUrl}":"${PortalUrl}" został pomyślnie zakończony.
+
+Twój portal jest ponownie dostępny.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Dodano nowego użytkownika do portalu [${__VirtualRootPath}](${__VirtualRootPath})
+Użytkownik [$__AuthorName]($__AuthorUrl) dołączył do Twojego portalu [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Witaj, $UserName
+
+Twoja firma zaprosiła Cię do dołączenia do bezpiecznego biura internetowego, które usprawni współpracę. Jego adres to "${__VirtualRootPath}":"${__VirtualRootPath}". Dodaj ten link do zakładek – będziesz z niego często korzystać.
+
+Zaakceptuj zaproszenie, klikając poniższy link i użyj loginu oraz hasła do konta firmowego, aby się zalogować. 
+
+$GreenButton
+
+Link jest ważny tylko przez 7 dni.</value>
   </data>
 </root>

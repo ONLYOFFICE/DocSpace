@@ -29,6 +29,7 @@ using ASC.Core.Data;
 using Microsoft.Net.Http.Headers;
 
 using Constants = ASC.Core.Users.Constants;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace ASC.Web.Core;
 
@@ -56,6 +57,7 @@ public class CookiesManager
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly MessageService _messageService;
+    private readonly SameSiteMode? _sameSiteMode;
 
     public CookiesManager(
         IHttpContextAccessor httpContextAccessor,
@@ -65,7 +67,8 @@ public class CookiesManager
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         DbLoginEventsManager dbLoginEventsManager,
-        MessageService messageService)
+        MessageService messageService,
+        IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
@@ -75,6 +78,11 @@ public class CookiesManager
         _coreBaseSettings = coreBaseSettings;
         _dbLoginEventsManager = dbLoginEventsManager;
         _messageService = messageService;
+
+        if (Enum.TryParse<SameSiteMode>(configuration["web:samesite"], out var sameSiteMode))
+        {
+            _sameSiteMode = sameSiteMode;
+        }
     }
 
     public async Task SetCookiesAsync(CookiesType type, string value, bool session = false, string itemId = null)
@@ -93,10 +101,20 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
+            if (_sameSiteMode.HasValue && _sameSiteMode.Value != SameSiteMode.None)
+            {
+                options.SameSite = _sameSiteMode.Value;
+            }
+
             var urlRewriter = _httpContextAccessor.HttpContext.Request.Url();
             if (urlRewriter.Scheme == "https")
             {
                 options.Secure = true;
+
+                if (_sameSiteMode.HasValue && _sameSiteMode.Value == SameSiteMode.None)
+                {
+                    options.SameSite = _sameSiteMode.Value;
+                }
             }
 
             if (FromCors())
@@ -189,7 +207,7 @@ public class CookiesManager
         return expires;
     }
 
-    public async Task SetLifeTimeAsync(int lifeTime)
+    public async Task SetLifeTimeAsync(int lifeTime, bool enabled)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
         if (!await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
@@ -198,6 +216,7 @@ public class CookiesManager
         }
 
         var settings = await _tenantCookieSettingsHelper.GetForTenantAsync(tenant.Id);
+        settings.Enabled = enabled;
 
         if (lifeTime > 0)
         {
@@ -211,7 +230,7 @@ public class CookiesManager
 
         await _tenantCookieSettingsHelper.SetForTenantAsync(tenant.Id, settings);
 
-        if (lifeTime > 0)
+        if (enabled && lifeTime > 0)
         {
             await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenantAsync(tenant.Id);
         }
@@ -219,9 +238,9 @@ public class CookiesManager
         await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
     }
 
-    public async Task<int> GetLifeTimeAsync(int tenantId)
+    public async Task<TenantCookieSettings> GetLifeTimeAsync(int tenantId)
     {
-        return (await _tenantCookieSettingsHelper.GetForTenantAsync(tenantId)).LifeTime;
+        return (await _tenantCookieSettingsHelper.GetForTenantAsync(tenantId));
     }
 
     public async Task ResetUserCookieAsync(Guid? userId = null)

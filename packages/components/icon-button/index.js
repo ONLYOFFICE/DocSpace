@@ -101,7 +101,8 @@ class IconButton extends React.PureComponent {
   }
 
   onClick = (e) => {
-    const { onClick } = this.props;
+    const { onClick, isDisabled } = this.props;
+    if (isDisabled) return;
     onClick && onClick(e);
   };
 
@@ -157,6 +158,7 @@ class IconButton extends React.PureComponent {
         id={id}
         style={style}
         color={this.state.currentIconColor}
+        isFill={isFill}
         {...rest}
       >
         {/* {React.createElement(Icons["CalendarIcon"], {

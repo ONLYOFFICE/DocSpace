@@ -61,4 +61,10 @@
   <data name="NewDocument" xml:space="preserve">
     <value>Novo documento</value>
   </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Primeiro nome</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Último nome</value>
+  </data>
 </root>

@@ -65,6 +65,7 @@ public class CompressToArchive : ICompress
     /// The record name is created (the name of a separate file in the archive)
     /// </summary>
     /// <param name="title">File name with extension, this name will have the file in the archive</param>
+    /// <param name="lastModification"></param>
     public void CreateEntry(string title, DateTime? lastModification = null)
     {
         _compress.CreateEntry(title, lastModification);

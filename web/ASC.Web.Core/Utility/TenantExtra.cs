@@ -26,34 +26,6 @@
 
 namespace ASC.Web.Studio.Utility;
 
-[Singletone]
-public class TenantExtraConfig
-{
-    private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly LicenseReaderConfig _licenseReaderConfig;
-
-    public TenantExtraConfig(CoreBaseSettings coreBaseSettings, LicenseReaderConfig licenseReaderConfig)
-    {
-        _coreBaseSettings = coreBaseSettings;
-        _licenseReaderConfig = licenseReaderConfig;
-    }
-
-    public bool Saas
-    {
-        get { return !_coreBaseSettings.Standalone; }
-    }
-
-    public bool Enterprise
-    {
-        get { return _coreBaseSettings.Standalone && !string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
-    }
-
-    public bool Opensource
-    {
-        get { return _coreBaseSettings.Standalone && string.IsNullOrEmpty(_licenseReaderConfig.LicensePath); }
-    }
-}
-
 [Scope]
 public class TenantExtra
 {

@@ -24,45 +24,34 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Hosting;
-using ASC.Core.Common.Hosting.Extensions;
-using ASC.Data.Backup.EF.Model;
-using ASC.EventBus.Extensions.Logger;
-using ASC.EventBus.Extensions.Logger.Extensions;
-using ASC.Feed.Model;
-using ASC.Files.Core.EF;
-using ASC.MessagingSystem.EF.Model;
-using ASC.Webhooks.Core.EF.Model;
-
 namespace ASC.Migrations.Core;
 
-public class MigrationContext: DbContext
+public class MigrationContext : DbContext
 {
     public DbSet<AccountLinks> AccountLinks { get; set; }
-    
+
     public DbSet<DbTariff> Tariffs { get; set; }
     public DbSet<DbTariffRow> TariffRows { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbQuotaRow> QuotaRows { get; set; }
-    
+
     public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
     public DbSet<DbIPLookup> DbIPLookup { get; set; }
     public DbSet<Regions> Regions { get; set; }
-    
+
     public DbSet<FireBaseUser> FireBaseUsers { get; set; }
-    
+
     public DbSet<NotifyInfo> NotifyInfo { get; set; }
     public DbSet<NotifyQueue> NotifyQueue { get; set; }
-    
+
     public DbSet<TelegramUser> TelegramUsers { get; set; }
-    
+
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbTenantVersion> TenantVersion { get; set; }
     public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
     public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
     public DbSet<DbCoreSettings> CoreSettings { get; set; }
-    
+
     public DbSet<User> Users { get; set; }
     public DbSet<UserSecurity> UserSecurity { get; set; }
     public DbSet<UserPhoto> Photos { get; set; }
@@ -72,30 +61,30 @@ public class MigrationContext: DbContext
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
     public DbSet<UserDav> UsersDav { get; set; }
-    
+
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
     public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
-    
+
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
-    
+
     public DbSet<AuditEvent> AuditEvents { get; set; }
     public DbSet<LoginEvent> LoginEvents { get; set; }
-    
+
     public DbSet<BackupRecord> Backups { get; set; }
     public DbSet<BackupSchedule> Schedules { get; set; }
-    
+
     public DbSet<IntegrationEventLogEntry> IntegrationEventLogs { get; set; }
-    
+
     public DbSet<FeedLast> FeedLast { get; set; }
     public DbSet<FeedAggregate> FeedAggregates { get; set; }
     public DbSet<FeedUsers> FeedUsers { get; set; }
     public DbSet<FeedReaded> FeedReaded { get; set; }
-    
+
     public DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
     public DbSet<WebhooksLog> WebhooksLogs { get; set; }
     public DbSet<DbWebhook> Webhooks { get; set; }
-    
+
     public DbSet<DbFile> Files { get; set; }
     public DbSet<DbFolder> Folders { get; set; }
     public DbSet<DbFolderTree> Tree { get; set; }
@@ -109,6 +98,7 @@ public class MigrationContext: DbContext
     public DbSet<DbFilesLink> FilesLink { get; set; }
     public DbSet<DbFilesProperties> FilesProperties { get; set; }
     public DbSet<FilesConverts> FilesConverts { get; set; }
+    public DbSet<ShortLink> ShortLink { get; set; }
     public MigrationContext(DbContextOptions<MigrationContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -170,6 +160,7 @@ public class MigrationContext: DbContext
             .AddDbWebhooks()
             .AddWebhooksConfig()
             .AddWebhooksLog()
-            .AddDbFunction();
+            .AddShortLinks()
+            .AddDbFunctions();
     }
 }

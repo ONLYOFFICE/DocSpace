@@ -88,4 +88,13 @@
   <data name="Personal" xml:space="preserve">
     <value>Persoonlijk</value>
   </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Bestanden worden gecomprimeerd in het {0}.tar.gz bestand{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Bestanden worden gecomprimeerd in het {0}.zip-bestand{1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Privé Kamer</value>
+  </data>
 </root>

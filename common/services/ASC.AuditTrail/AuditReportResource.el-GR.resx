@@ -478,4 +478,244 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Οι ετικέτες διαγράφηκαν: {0}</value>
   </data>
+  <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων μηνυμάτων διαχειριστή</value>
+  </data>
+  <data name="AdministratorOpenedFullAccess" xml:space="preserve">
+    <value>Διαχειριστές [{0}]. Πλήρης πρόσβαση ανοιχτή</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων διάρκειας ζωής ελέγχου</value>
+  </data>
+  <data name="AuditTrailReportDownloaded" xml:space="preserve">
+    <value>Έγινε λήψη της αναφοράς διαδρομής ελέγχου</value>
+  </data>
+  <data name="AuditTrailReportName" xml:space="preserve">
+    <value>Έκθεση διαδρομής ελέγχου ({0}-{1})</value>
+  </data>
+  <data name="AuthorizationKeysSetting" xml:space="preserve">
+    <value>Έγινε ενημέρωση κλειδιών εξουσιοδότησης τρίτων</value>
+  </data>
+  <data name="CookieSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων cookie</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων προσαρμοσμένης πλοήγησης</value>
+  </data>
+  <data name="DocumentServiceLocationSetting" xml:space="preserve">
+    <value>Έγινε ενημέρωση τοποθεσίας υπηρεσίας εγγράφων</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων εξαναγκαστικής αποθήκευσης</value>
+  </data>
+  <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων αντικατάστασης</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων αποθήκευσης εξαναγκαστικής αποθήκευσης</value>
+  </data>
+  <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων τρίτων</value>
+  </data>
+  <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων μορφοτύπων μεταφόρτωσης</value>
+  </data>
+  <data name="FileChangeOwner" xml:space="preserve">
+    <value>Ορισμός ιδιοκτήτη του [{0}] σε [{1}]</value>
+  </data>
+  <data name="FileConverted" xml:space="preserve">
+    <value>Το αρχείο μετατράπηκε στο εσωτερικό μορφότυπο: {0}</value>
+  </data>
+  <data name="FileCopiedWithOverwriting" xml:space="preserve">
+    <value>Αρχεία [{0}]. Αντιγράφηκε με αντικατάσταση από τον φάκελο "{1}" στον φάκελο: "{2}"</value>
+  </data>
+  <data name="FileCreatedVersion" xml:space="preserve">
+    <value>Αρχεία [{0}]. Αναθεώρηση: {1}. Η έκδοση δημιουργήθηκε</value>
+  </data>
+  <data name="FileDeletedVersion" xml:space="preserve">
+    <value>Αρχεία [{0}]. Αναθεώρηση: {1}. Η έκδοση διαγράφηκε</value>
+  </data>
+  <data name="FileMovedToTrash" xml:space="preserve">
+    <value>Αρχεία [{0}]. Μεταφέρθηκαν στον φάκελο Κάδος ανακύκλωσης</value>
+  </data>
+  <data name="FileMovedWithOverwriting" xml:space="preserve">
+    <value>Αρχεία [{0}]. Μεταφέρθηκαν με αντικατάσταση από τον φάκελο "{1}" στον φάκελο: "{2}"</value>
+  </data>
+  <data name="FileRestoreVersion" xml:space="preserve">
+    <value>Αρχεία [{0}]. Αναθεώρηση: {1}. Έγινε επαναφορά έκδοσης</value>
+  </data>
+  <data name="FileSendAccessLink" xml:space="preserve">
+    <value>Έγινε αποστολή κοινόχρηστου συνδέσμου στο αρχείο [{0}]. Παραλήπτες: [{1}]</value>
+  </data>
+  <data name="FileUpdatedRevisionComment" xml:space="preserve">
+    <value>Αρχεία [{0}]. Αναθεώρηση {1}. Έγινε ενημέρωση σχολίου</value>
+  </data>
+  <data name="FolderCopiedWithOverwriting" xml:space="preserve">
+    <value>Φάκελοι [{0}]. Έγινε αντιγραφή με αντικατάσταση στον φάκελο: {1}</value>
+  </data>
+  <data name="FolderMovedToTrash" xml:space="preserve">
+    <value>Φάκελοι [{0}]. Μεταφέρθηκαν στον φάκελο Κάδος ανακύκλωσης</value>
+  </data>
+  <data name="FolderMovedWithOverwriting" xml:space="preserve">
+    <value>Φάκελοι [{0}]. Μεταφέρθηκαν με αντικατάσταση στον φάκελο: {1}</value>
+  </data>
+  <data name="FullTextSearchSetting" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων Sphinx</value>
+  </data>
+  <data name="GreetingSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων σελίδας καλωσορίσματος</value>
+  </data>
+  <data name="GuestActivated" xml:space="preserve">
+    <value>Έγινε ενεργοποίηση προσκεκλημένου: {0}</value>
+  </data>
+  <data name="GuestCreatedViaInvite" xml:space="preserve">
+    <value>Έγινε δημιουργία προσκεκλημένου μέσω πρόσκλησης: {0}</value>
+  </data>
+  <data name="LoginFailIpSecurity" xml:space="preserve">
+    <value>Ασφάλεια IP: Αποτυχία σύνδεσης</value>
+  </data>
+  <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
+    <value>Αποτυχία σύνδεσης. Δεν βρέθηκε ο συσχετιζόμενος λογαριασμός κοινωνικού δικτύου</value>
+  </data>
+  <data name="LoginFailViaApiSms" xml:space="preserve">
+    <value>Αποτυχημένη σύνδεση μέσω API και κωδικού SMS</value>
+  </data>
+  <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
+    <value>Η σύνδεση μέσω API και κοινωνικού δικτύου απέτυχε</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Αποτυχημένη σύνδεση μέσω API και εφαρμογής αυθεντικοποίησης</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Η σύνδεση μέσω εφαρμογής αυθεντικοποιητή απέτυχε</value>
+  </data>
+  <data name="LoginHistoryReportDownloaded" xml:space="preserve">
+    <value>Λήψη αναφοράς ιστορικού σύνδεσης</value>
+  </data>
+  <data name="LoginSuccessSocialAccount" xml:space="preserve">
+    <value>Η σύνδεση μέσω λογαριασμού κοινωνικού δικτύου έγινε με επιτυχία</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Επιτυχής σύνδεση μέσω εφαρμογής κοινωνικού δικτύου</value>
+  </data>
+  <data name="LoginSuccessViaApiSms" xml:space="preserve">
+    <value>Επιτυχής σύνδεση μέσω API και κωδικού SMS</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Επιτυχής σύνδεση μέσω API και εφαρμογής αυθεντικοποιητή</value>
+  </data>
+  <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
+    <value>Επιτυχής σύνδεση μέσω API και κοινωνικού δικτύου</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Επιτυχής σύνδεση μέσω εφαρμογής αυθεντικοποιητή</value>
+  </data>
+  <data name="MailServiceSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων υπηρεσίας αλληλογραφίας</value>
+  </data>
+  <data name="ModuleCol" xml:space="preserve">
+    <value>Ενότητα</value>
+  </data>
+  <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
+    <value>Ιδιοκτήτης [{0}]. Απεστάλησαν οδηγίες αλλαγής ιδιοκτήτη</value>
+  </data>
+  <data name="OwnerSentPortalDeactivationInstructions" xml:space="preserve">
+    <value>Ιδιοκτήτης [{0}]. Απεστάλησαν οδηγίες απενεργοποίησης πύλης</value>
+  </data>
+  <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
+    <value>Ιδιοκτήτης [{0}]. Απεστάλησαν οδηγίες διαγραφής πύλης</value>
+  </data>
+  <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων ισχύος κωδικού πρόσβασης</value>
+  </data>
+  <data name="PortalAccessSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση ρυθμίσεων πρόσβασης στην πύλη</value>
+  </data>
+  <data name="PortalDeactivated" xml:space="preserve">
+    <value>Η πύλη απενεργοποιήθηκε</value>
+  </data>
+  <data name="PortalDeleted" xml:space="preserve">
+    <value>Η πύλη διαγράφηκε</value>
+  </data>
+  <data name="ProductAccessOpenedForGroups" xml:space="preserve">
+    <value>Προϊόντα: [{0}]. Ομάδες [{1}].  Η πρόσβαση δόθηκε</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Επαναπροσδιορίζει</value>
+  </data>
+  <data name="SentInviteInstructions" xml:space="preserve">
+    <value>Οδηγίες πρόσκλησης που εστάλησαν: {0}</value>
+  </data>
+  <data name="SessionCompleted" xml:space="preserve">
+    <value>Ολοκληρώθηκε η περίοδος λειτουργίας</value>
+  </data>
+  <data name="SessionStarted" xml:space="preserve">
+    <value>Η περίοδος λειτουργίας ξεκίνησε</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Έναρξη αποκρυπτογράφησης αποθήκευσης</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Έναρξη κρυπτογράφησης αποθήκευσης</value>
+  </data>
+  <data name="StartTransferSetting" xml:space="preserve">
+    <value>Έναρξη μετεγκατάστασης περιοχής πύλης</value>
+  </data>
+  <data name="SystemAccount" xml:space="preserve">
+    <value>Λογαριασμός συστήματος</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Αναγνωριστικό στόχου</value>
+  </data>
+  <data name="TeamTemplateChanged" xml:space="preserve">
+    <value>Το πρότυπο ομάδας άλλαξε</value>
+  </data>
+  <data name="ThirdPartyCreated" xml:space="preserve">
+    <value>Δημιουργήθηκε από τρίτο μέρος: {0}. Πάροχος: {1}</value>
+  </data>
+  <data name="ThirdPartyDeleted" xml:space="preserve">
+    <value>Το τρίτο μέρος διαγράφηκε: {0}. Πάροχος: {1}</value>
+  </data>
+  <data name="ThirdPartyUpdated" xml:space="preserve">
+    <value>Το τρίτο μέρος ενημερώθηκε: {0}. Πάροχος: {1}</value>
+  </data>
+  <data name="TimeTrackingModule" xml:space="preserve">
+    <value>Παρακολούθηση χρόνου</value>
+  </data>
+  <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση των ρυθμίσεων αξιόπιστου τομέα αλληλογραφίας</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Έγινε ενημέρωση των ρυθμίσεων αυθεντικοποίησης δύο παραγόντων: Η αυθεντικοποίηση δύο παραγόντων απενεργοποιήθηκε</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Έγινε ενημέρωση των ρυθμίσεων αυθεντικοποίησης δύο παραγόντων: Η επιβεβαίωση μέσω SMS ενεργοποιήθηκε</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Έγινε ενημέρωση των ρυθμίσεων αυθεντικοποίησης δύο παραγόντων: Η εφαρμογή αυθεντικοποίησης ενεργοποιήθηκε</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
+    <value>Έγινε ενημέρωση των ρυθμίσεων αυθεντικοποίησης δύο παραγόντων</value>
+  </data>
+  <data name="UserAddedAvatar" xml:space="preserve">
+    <value>Χρήστες [{0}]. Προστέθηκε άβαταρ</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>Εκ νέου ανάθεση δεδομένων: από τον χρήστη {0} στον χρήστη {1}</value>
+  </data>
+  <data name="UserDeletedAvatar" xml:space="preserve">
+    <value>Χρήστες [{0}]. Διαγράφηκε άβαταρ</value>
+  </data>
+  <data name="UserLinkedSocialAccount" xml:space="preserve">
+    <value>Συνδεδεμένος λογαριασμός κοινωνικού δικτύου. Πάροχος: {0}</value>
+  </data>
+  <data name="UserSentDeleteInstructions" xml:space="preserve">
+    <value>Έγινε αποστολή οδηγιών διαγραφής προφίλ</value>
+  </data>
+  <data name="UserUnlinkedSocialAccount" xml:space="preserve">
+    <value>Έγινε αποσύνδεση λογαριασμού κοινωνικού δικτύου. Πάροχος: {0}</value>
+  </data>
+  <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
+    <value>Χρήστες [{0}]. Έγινε ενημέρωση μικρογραφιών άβαταρ</value>
+  </data>
 </root>

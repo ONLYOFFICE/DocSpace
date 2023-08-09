@@ -1,8 +1,9 @@
 import styled, { css } from "styled-components";
 import { Base } from "../themes";
 
-const StyledSlider = styled.input.attrs(() => ({
+const StyledSlider = styled.input.attrs((props) => ({
   type: "range",
+  disabled: props.isDisabled,
 }))`
   width: ${(props) => props.theme.avatarEditorBody.slider.width};
   margin: ${(props) => props.theme.avatarEditorBody.slider.margin};
@@ -23,6 +24,9 @@ const StyledSlider = styled.input.attrs(() => ({
     `}
 
   background-size: ${(props) => `${props.size} 100%`};
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" && "background-position-x: right;"}
+
   background-repeat: no-repeat;
 
   &:focus {
@@ -85,7 +89,9 @@ const StyledSlider = styled.input.attrs(() => ({
     width: ${(props) => props.theme.avatarEditorBody.slider.rangeThumb.width};
     height: ${(props) => props.theme.avatarEditorBody.slider.rangeThumb.height};
     background: ${(props) =>
-      props.theme.avatarEditorBody.slider.rangeThumb.background};
+      props.isDisabled
+        ? props.theme.avatarEditorBody.slider.sliderThumb.disabledBackground
+        : props.theme.avatarEditorBody.slider.sliderThumb.background};
     border: ${(props) => props.theme.avatarEditorBody.slider.rangeThumb.border};
     border-radius: ${(props) =>
       props.theme.avatarEditorBody.slider.rangeThumb.borderRadius};

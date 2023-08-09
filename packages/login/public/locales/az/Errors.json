@@ -5,7 +5,7 @@
   "ErrorNotAllowedOption": "Sizin qiymət planınız bu imkanı dəstəkləmir",
   "ErrorUserNotFound": "İstifadəçi tapılmadı",
   "InvalidUsernameOrPassword": "Etibarsız istifadəçi adı və ya parol",
-  "LoginWithAccountNotFound": "Əlaqəli üçüncü partiya hesab tapılmır",
+  "LoginWithAccountNotFound": "Əlaqəli üçüncü tərəf hesabını tapmaq mümkün deyil. Əvvəlcə profil redaktə səhifəsində sosial şəbəkə hesabınızı əlaqələndirməlisiniz.",
   "LoginWithBruteForce": "Avtorizasiya müvəqqəti olaraq bloklanıb.",
   "RecaptchaInvalid": "Yanlış Recaptcha",
   "SsoAttributesNotFound": "İdentifikasiya uğursuz oldu (təsdiq atributları tapılmadı)",

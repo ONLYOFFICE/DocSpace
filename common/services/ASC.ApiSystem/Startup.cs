@@ -57,6 +57,7 @@ public class Startup
         services.AddBaseDbContextPool<TelegramDbContext>();
         services.AddBaseDbContextPool<FirebaseDbContext>();
         services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<UrlShortenerDbContext>();
         services.AddBaseDbContextPool<WebstudioDbContext>();
         services.AddBaseDbContextPool<InstanceRegistrationContext>();
         services.AddBaseDbContextPool<IntegrationEventLogContext>();
@@ -144,9 +145,9 @@ public class Startup
 
         app.UseAuthorization();
 
-        app.UseEndpoints( async endpoints =>
+        app.UseEndpoints(endpoints =>
         {
-            await endpoints.MapCustomAsync();
+            endpoints.MapCustomAsync().Wait();
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {

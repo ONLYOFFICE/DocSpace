@@ -28,6 +28,9 @@ using Module = ASC.Api.Core.Module;
 
 namespace ASC.Web.Api.Controllers;
 
+/// <summary>
+/// Modules API.
+/// </summary>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -41,6 +44,16 @@ public class ModulesController : ControllerBase
         _webItemManagerSecurity = webItemManagerSecurity;
     }
 
+    /// <summary>
+    /// Returns a list of all the portal modules.
+    /// </summary>
+    /// <short>
+    /// Get modules
+    /// </short>
+    /// <returns type="System.String, System">List of modules</returns>
+    /// <path>api/2.0/modules</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet]
     public IEnumerable<string> GetAll()
     {
@@ -54,6 +67,16 @@ public class ModulesController : ControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Returns a list of all the portal modules with their information.
+    /// </summary>
+    /// <short>
+    /// Get modules information
+    /// </short>
+    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">List of modules with their information</returns>
+    /// <path>api/2.0/modules/info</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("info")]
     public IEnumerable<Module> GetAllWithInfo()
     {

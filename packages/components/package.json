@@ -1,6 +1,6 @@
 {
   "name": "@docspace/components",
-  "version": "1.0.1",
+  "version": "1.1.2",
   "private": true,
   "scripts": {
     "build": "echo 'skip it'",
@@ -36,6 +36,7 @@
     "react-dropzone": "^11.7.1",
     "react-lifecycles-compat": "^3.0.4",
     "react-onclickoutside": "^6.13.0",
+    "react-scrollbars-custom": "^4.1.1",
     "react-svg": "^12.1.0",
     "react-text-mask": "^5.5.0",
     "react-toastify": "^7.0.4",

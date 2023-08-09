@@ -9,6 +9,7 @@ import fs from "fs";
 import config from "../config";
 
 let logPath = config.get("logPath");
+let logLevel = config.get("logLevel") || "debug";
 
 if (logPath != null) {
   if (!path.isAbsolute(logPath)) {
@@ -40,6 +41,7 @@ if (!fs.existsSync(dirName)) {
 const options = {
   file: {
     filename: fileName,
+    level: logLevel,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
@@ -49,14 +51,14 @@ const options = {
     json: true,
   },
   console: {
-    level: "debug",
+    level: logLevel,
     handleExceptions: true,
     json: false,
     colorize: true,
   },
   cloudWatch: {
     name: 'aws',
-    level: "debug",
+    level: logLevel,
     logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,

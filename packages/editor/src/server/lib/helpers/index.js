@@ -51,6 +51,7 @@ export const initDocEditor = async (req) => {
     }
 
     const doc = query?.doc || null;
+    const shareKey = query?.share ?? null;
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
@@ -79,7 +80,7 @@ export const initDocEditor = async (req) => {
 
     personal = settings?.personal;
 
-    if (!successAuth && !doc) {
+    if (!successAuth && !doc && !shareKey) {
       error = {
         unAuthorized: true,
         // redirectPath: combineUrl(
@@ -90,7 +91,7 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    const config = await openEdit(fileId, fileVersion, doc, view);
+    const config = await openEdit(fileId, fileVersion, doc, view, shareKey);
 
     //const sharingSettings = await getShareFiles([+fileId], []);
 

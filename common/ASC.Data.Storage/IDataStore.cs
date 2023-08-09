@@ -63,11 +63,19 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+    
     ///<summary>
     /// Supporting generate uri to the file
     ///</summary>
     ///<returns></returns>
     bool IsSupportInternalUri { get; }
+
+    ///<summary>
+    /// Supporting generate uri to the file
+    ///</summary>
+    ///<returns></returns>
+    bool IsSupportCdnUri { get; }
+
 
     /// <summary>
     /// Get absolute Uri for html links
@@ -78,6 +86,16 @@ public interface IDataStore
     /// <param name="headers"></param>
     /// <returns></returns>
     Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
+
+    /// <summary>
+    /// Get absolute Uri via CDN for html links
+    /// </summary>
+    /// <param name="domain"></param>
+    /// <param name="path"></param>
+    /// <param name="expire"></param>
+    /// <param name="headers"></param>
+    /// <returns></returns>
+    Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers);
 
     ///<summary>
     /// A stream of read-only. In the case of the C3 stream NetworkStream general, and with him we have to work
@@ -94,16 +112,17 @@ public interface IDataStore
     ///</summary>
     ///<param name="domain"></param>
     ///<param name="path"></param>
+    ///<param name="offset"></param>
     ///<returns></returns>
     Task<Stream> GetReadStreamAsync(string domain, string path, long offset);
 
     ///<summary>
     /// Saves the contents of the stream in the repository.
-    ///</ Summary>
+    ///</summary>
     /// <param Name="domain"> </param>
     /// <param Name="path"> </param>
     /// <param Name="stream"> flow. Is read from the current position! Desirable to set to 0 when the transmission MemoryStream instance </param>
-    /// <returns> </Returns>
+    /// <returns> </returns>
     Task<Uri> SaveAsync(string domain, string path, Stream stream);
 
     /// <summary>
@@ -180,7 +199,7 @@ public interface IDataStore
     /// Deletes files
     ///</summary>
     ///<param name="domain"></param>
-    ///<param name="listPaths"></param>
+    ///<param name="paths"></param>
     Task DeleteFilesAsync(string domain, List<string> paths);
 
     ///<summary>
@@ -208,6 +227,7 @@ public interface IDataStore
     ///<param name="srcpath"></param>
     ///<param name="newdomain"></param>
     ///<param name="newpath"></param>
+    ///<param name="quotaCheckFileSize"></param>
     ///<returns></returns>
     Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
 

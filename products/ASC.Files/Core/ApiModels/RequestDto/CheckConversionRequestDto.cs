@@ -26,11 +26,27 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CheckConversionRequestDto<T>
 {
+    /// <summary>File ID</summary>
+    /// <type>System.Int32, System</type>
     public T FileId { get; set; }
+
+    /// <summary>Specifies if the conversion process is synchronous or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Sync { get; set; }
+
+    /// <summary>Specifies whether to start a conversion process or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool StartConvert { get; set; }
+
+    /// <summary>File version</summary>
+    /// <type>System.Int32, System</type>
     public int Version { get; set; }
+
+    /// <summary>Password</summary>
+    /// <type>System.String, System</type>
     public string Password { get; set; }
 }

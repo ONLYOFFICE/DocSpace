@@ -342,12 +342,42 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
             q = q.Union(q1).ToList();
         }
 
-        return await q
+        var records = await q
             .ToAsyncEnumerable()
             .SelectAwait(async e => await ToFileShareRecordAsync(e))
             .OrderBy(r => r.Level)
             .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
             .ToListAsync();
+
+        await DeleteExpiredAsync(records, filesDbContext);
+
+        return records;
+    }
+
+    private async Task DeleteExpiredAsync(List<FileShareRecord> records, FilesDbContext filesDbContext)
+    {
+        var expired = new List<Guid>();
+
+        for (var i = 0; i < records.Count; i++)
+        {
+            var r = records[i];
+            if (r.SubjectType != SubjectType.InvitationLink || r.Options is not { IsExpired: true })
+            {
+                continue;
+            }
+
+            expired.Add(r.Subject);
+            records.RemoveAt(i);
+        }
+
+        if (expired.Count > 0)
+        {
+            var tenantId = TenantID;
+
+            await filesDbContext.Security
+                .Where(s => s.TenantId == tenantId && s.SubjectType == SubjectType.InvitationLink && expired.Contains(s.Subject))
+                .ExecuteDeleteAsync();
+        }
     }
 }
 

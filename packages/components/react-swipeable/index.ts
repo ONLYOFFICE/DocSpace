@@ -11,12 +11,8 @@ import {
   Setter,
   ConfigurationOptions,
   SwipeableDirectionCallbacks,
-  SwipeableHandlers,
-  SwipeableProps,
   SwipeablePropsWithDefaultOptions,
   SwipeableState,
-  SwipeCallback,
-  TapCallback,
   UP,
   Vector2,
   Tuple,
@@ -73,10 +69,6 @@ function getDistance(p1: Point, p2: Point): number {
   return Math.hypot(p2.x - p1.x, p2.y - p1.y);
 }
 
-const cancelEvent = (event: any): void => {
-  event.stopPropagation();
-  event.preventDefault();
-};
 
 
 function getXYfromEvent(event: TouchEvent): Tuple<Point> {

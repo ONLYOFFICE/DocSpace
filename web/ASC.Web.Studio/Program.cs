@@ -50,6 +50,7 @@ var logger = LogManager.Setup()
 try
 {
     logger.Info("Configuring web host ({applicationContext})...", AppName);
+
     builder.Host.ConfigureDefault();
     builder.WebHost.ConfigureDefaultKestrel();
 

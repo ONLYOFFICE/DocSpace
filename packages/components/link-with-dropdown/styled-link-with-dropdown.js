@@ -61,6 +61,16 @@ const Caret = styled(ExpanderDownIconWrapper)`
   right: ${(props) => props.theme.linkWithDropdown.caret.right};
   top: ${(props) => props.theme.linkWithDropdown.caret.top};
   bottom: ${(props) => props.theme.linkWithDropdown.caret.bottom};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: ${(props) => props.theme.linkWithDropdown.caret.marginLeft};
+      margin-left: 0;
+      left: ${(props) => props.theme.linkWithDropdown.caret.right};
+      right: 0;
+    `}
+
   margin: ${(props) => props.theme.linkWithDropdown.caret.margin};
 
   path {
@@ -89,6 +99,13 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
   align-items: center;
 
   padding-right: ${(props) => props.theme.linkWithDropdown.paddingRight};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      padding-left: ${(props) => props.theme.linkWithDropdown.paddingRight};
+      padding-right: 0;
+    `}
 
   color: ${color};
 

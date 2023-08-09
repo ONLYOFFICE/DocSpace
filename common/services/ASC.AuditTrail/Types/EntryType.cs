@@ -1,5 +1,7 @@
 ﻿namespace ASC.AuditTrail.Types;
 
+/// <summary>
+/// </summary>
 [EnumExtensions]
 public enum EntryType
 {

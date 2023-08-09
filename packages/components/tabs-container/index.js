@@ -72,10 +72,13 @@ class TabContainer extends Component {
   }
 
   setTabPosition = (index, currentRef) => {
+    const scrollElement = this.scrollRef.current;
+    if (!scrollElement) return;
+
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
-    const scrollLeft = this.scrollRef.current.getScrollLeft(); // get scroll position relative to left side
-    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
-    const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
+    const scrollLeft = scrollElement.scrollLeft; // get scroll position relative to left side
+    const staticScroll = scrollElement.scrollWidth; //get static scroll width
+    const containerWidth = scrollElement.clientWidth; //get main container width
     const currentTabWidth = currentRef.current.offsetWidth;
     const marginRight = 8;
 
@@ -108,17 +111,20 @@ class TabContainer extends Component {
       const difference = containerWidth - widthBlocksInContainer;
       const currentContainerWidth = currentTabWidth;
 
-      this.scrollRef.current.scrollLeft(
+      scrollElement.scrollTo(
         difference * -1 + currentContainerWidth + marginRight
       );
     }
     //Out of range of left side
     else if (rightFullWidth > staticScroll - scrollLeft) {
-      this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+      scrollElement.scrollTo(staticScroll - rightFullWidth);
     }
   };
 
   setPrimaryTabPosition = (index) => {
+    const scrollElement = this.scrollRef.current;
+    if (!scrollElement) return;
+
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const marginRight = 8;
     let rightTabs = this.arrayRefs.length - 1;
@@ -128,8 +134,7 @@ class TabContainer extends Component {
       rightTabs--;
     }
     rightFullWidth -= marginRight;
-    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
-    this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+    scrollElement.scrollTo(scrollElement.scrollWidth - rightFullWidth);
   };
 
   onMouseEnter = () => {

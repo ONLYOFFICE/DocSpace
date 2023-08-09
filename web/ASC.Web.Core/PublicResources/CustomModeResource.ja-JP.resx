@@ -182,4 +182,17 @@ $GreenButton
 ONLYOFFICE チーム
 "www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>クラウドオフィスアカウントのメールアドレスを変更したいですか？
+
+以下のボタンをクリックし、クラウドにログイン*してください。
+
+$GreenButton
+
+リンクは7日間有効です。
+
+*このブラウザでクラウドオフィスにログインしていない場合、確認のために古いメールアドレスを使用する必要があります。
+
+メールアドレスを変更したくないで。</value>
+  </data>
 </root>

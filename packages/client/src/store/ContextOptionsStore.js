@@ -29,6 +29,7 @@ import UnmuteReactSvgUrl from "PUBLIC_DIR/images/unmute.react.svg?url";
 import MuteReactSvgUrl from "PUBLIC_DIR/images/mute.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import { makeAutoObservable } from "mobx";
@@ -47,6 +48,11 @@ import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { getOAuthToken } from "@docspace/common/utils";
+import api from "@docspace/common/api";
+
+const LOADER_TIMER = 500;
+let loadingTime;
+let timer;
 
 class ContextOptionsStore {
   authStore;
@@ -59,6 +65,9 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   selectedFolderStore;
+  publicRoomStore;
+
+  linksIsLoading = false;
 
   constructor(
     authStore,
@@ -70,7 +79,8 @@ class ContextOptionsStore {
     uploadDataStore,
     versionHistoryStore,
     settingsStore,
-    selectedFolderStore
+    selectedFolderStore,
+    publicRoomStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -83,6 +93,7 @@ class ContextOptionsStore {
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   onOpenFolder = (item) => {
@@ -296,7 +307,8 @@ class ContextOptionsStore {
 
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
 
     if (canConvert) {
       setConvertItem({ ...item, isOpen: true });
@@ -533,17 +545,79 @@ class ContextOptionsStore {
     return options.filter((o) => !!o);
   };
 
-  onShowInfoPanel = (item) => {
-    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item, view) => {
+    const { setSelection, setIsVisible, setView } =
+      this.authStore.infoPanelStore;
 
     setSelection(item);
     setIsVisible(true);
+    view && setView(view);
   };
 
   onClickEditRoom = (item) => {
     const event = new Event(Events.ROOM_EDIT);
     event.item = item;
     window.dispatchEvent(event);
+  };
+
+  onLoadLinks = async (t, item) => {
+    const promise = new Promise(async (resolve, reject) => {
+      let linksArray = [];
+
+      this.setLoaderTimer(true);
+      try {
+        const links = await this.publicRoomStore.fetchExternalLinks(item.id);
+
+        for (let link of links) {
+          const { id, title, shareLink, disabled, isExpired } = link.sharedTo;
+
+          if (!disabled && !isExpired) {
+            linksArray.push({
+              icon: InvitationLinkReactSvgUrl,
+              id,
+              key: `external-link_${id}`,
+              label: title,
+              onClick: () => {
+                copy(shareLink);
+                toastr.success(t("Files:LinkSuccessfullyCopied"));
+              },
+            });
+          }
+        }
+
+        if (!linksArray.length) {
+          linksArray = [
+            {
+              id: "no-external-links-option",
+              key: "no-external-links",
+              label: !links.length
+                ? t("Files:NoExternalLinks")
+                : t("Files:AllLinksAreDisabled"),
+              disableColor: true,
+            },
+            !isMobile && {
+              key: "separator0",
+              isSeparator: true,
+            },
+            {
+              icon: SettingsReactSvgUrl,
+              id: "manage-option",
+              key: "manage-links",
+              label: t("Notifications:ManageNotifications"),
+              onClick: () => this.onShowInfoPanel(item, "info_members"),
+            },
+          ];
+        }
+
+        this.setLoaderTimer(false, () => resolve(linksArray));
+      } catch (error) {
+        toastr.error(error);
+        this.setLoaderTimer(false);
+        return reject(linksArray);
+      }
+    });
+
+    return promise;
   };
 
   onClickInviteUsers = (e) => {
@@ -610,6 +684,46 @@ class ContextOptionsStore {
     const { action } = data;
 
     this.filesActionsStore.setMuteAction(action, item, t);
+  };
+
+  setLoaderTimer = (isLoading, cb) => {
+    if (isLoading) {
+      loadingTime = new Date();
+
+      return (timer = setTimeout(() => {
+        this.linksIsLoading = true;
+      }, LOADER_TIMER));
+    } else {
+      if (loadingTime) {
+        const currentDate = new Date();
+
+        let ms = Math.abs(loadingTime.getTime() - currentDate.getTime());
+
+        if (timer) {
+          let ms = Math.abs(ms - LOADER_TIMER);
+
+          clearTimeout(timer);
+          timer = null;
+        }
+
+        if (ms < LOADER_TIMER) {
+          return setTimeout(() => {
+            this.linksIsLoading = true;
+            loadingTime = null;
+            cb && cb();
+          }, LOADER_TIMER - ms);
+        }
+      }
+
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      loadingTime = null;
+      this.linksIsLoading = false;
+      cb && cb();
+    }
   };
 
   getRoomsRootContextOptions = (item, t) => {
@@ -682,7 +796,8 @@ class ContextOptionsStore {
     const hasInfoPanel = contextOptions.includes("show-info");
 
     //const emailSendIsDisabled = true;
-    const showSeparator0 = hasInfoPanel || !isMedia; // || !emailSendIsDisabled;
+    const showSeparator0 =
+      (hasInfoPanel || !isMedia) && !this.publicRoomStore.isPublicRoom; // || !emailSendIsDisabled;
 
     const separator0 = showSeparator0
       ? {
@@ -831,6 +946,8 @@ class ContextOptionsStore {
       t
     );
 
+    const withOpen = item.id !== this.selectedFolderStore.id;
+
     const optionsModel = [
       {
         id: "option_select",
@@ -840,7 +957,7 @@ class ContextOptionsStore {
         onClick: () => this.onSelect(item),
         disabled: false,
       },
-      {
+      withOpen && {
         id: "option_open",
         key: "open",
         label: t("Open"),
@@ -929,7 +1046,15 @@ class ContextOptionsStore {
         label: t("LinkForRoomMembers"),
         icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onCopyLink(item, t),
-        disabled: false,
+        disabled: this.publicRoomStore.isPublicRoom,
+      },
+      {
+        id: "option_copy-external-link",
+        key: "external-link",
+        label: t("SharingPanel:CopyExternalLink"),
+        icon: CopyToReactSvgUrl,
+        disabled: this.treeFoldersStore.isArchiveFolder,
+        onLoad: () => this.onLoadLinks(t, item),
       },
       {
         id: "option_room-info",
@@ -937,7 +1062,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: false,
+        disabled: this.publicRoomStore.isPublicRoom,
       },
       ...pinOptions,
       ...muteOptions,
@@ -978,7 +1103,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: false,
+        disabled: this.publicRoomStore.isPublicRoom,
       },
       {
         id: "option_block-unblock-version",
@@ -988,7 +1113,7 @@ class ContextOptionsStore {
         onClick: () => this.lockFile(item, t),
         disabled: false,
       },
-      {
+      !this.publicRoomStore.isPublicRoom && {
         key: "separator1",
         isSeparator: true,
       },
@@ -1034,7 +1159,7 @@ class ContextOptionsStore {
         label: t("Common:Download"),
         icon: DownloadReactSvgUrl,
         onClick: () => this.onClickDownload(item, t),
-        disabled: false,
+        disabled: !item.security.Download,
       },
       {
         id: "option_download-as",
@@ -1042,7 +1167,7 @@ class ContextOptionsStore {
         label: t("Translations:DownloadAs"),
         icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
-        disabled: false,
+        disabled: !item.security.Download || this.publicRoomStore.isPublicRoom,
       },
       ...moveActions,
       {
@@ -1246,9 +1371,8 @@ class ContextOptionsStore {
       return options;
     }
 
-    const downloadAs =
-      selection.findIndex((k) => k.contextOptions.includes("download-as")) !==
-      -1;
+    const hasDownloadAccess =
+      selection.findIndex((k) => k.security.Download) !== -1;
 
     const sharingItems =
       selection.filter(
@@ -1328,14 +1452,14 @@ class ContextOptionsStore {
           this.filesActionsStore
             .downloadAction(t("Translations:ArchivingData"))
             .catch((err) => toastr.error(err)),
-        disabled: false,
+        disabled: !hasDownloadAccess,
       },
       {
         key: "download-as",
         label: t("Translations:DownloadAs"),
         icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
-        disabled: !downloadAs,
+        disabled: !hasDownloadAccess || this.publicRoomStore.isPublicRoom,
       },
       {
         key: "move-to",

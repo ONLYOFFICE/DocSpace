@@ -936,13 +936,6 @@ Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
  
 $GreenButton
  
-La tua tariffa è STARTUP. È assolutamente gratuita e include:
- 
-* 1 amministratore, 2 utenti esperti
-* Fino a 12 stanze
-* Numero illimitato di utenti in ogni stanza
-* 2 GB di spazio sul disco
- 
 Goditi un nuovo modo di collaborare sui documenti!
  
 Tanti saluti,
@@ -958,13 +951,6 @@ Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
  
 $GreenButton
  
-La tua tariffa è STARTUP. È assolutamente gratuita e include:
- 
-* 1 amministratore, 2 utenti esperti
-* Fino a 12 stanze
-* Numero illimitato di utenti in ogni stanza
-* 2 GB di spazio sul disco
- 
 Goditi un nuovo modo di collaborare sui documenti!
  
 Tanti saluti,
@@ -979,13 +965,6 @@ Hai appena creato ONLYOFFICE DocSpace, un hub di documenti dove puoi migliorare 
 Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
  
 $GreenButton
- 
-La tua tariffa è STARTUP. È assolutamente gratuita e include:
- 
-* 1 amministratore, 2 utenti esperti
-* Fino a 12 stanze
-* Numero illimitato di utenti in ogni stanza
-* 2 GB di spazio sul disco
  
 Goditi un nuovo modo di collaborare sui documenti!
  
@@ -1166,8 +1145,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore �
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1209,7 +1187,7 @@ _Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore �
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Ciao!
@@ -1514,5 +1492,314 @@ Non vuoi cambiare la tua password? Ignora questo messaggio.</value>
   </data>
   <data name="ButtonConfirmEmail" xml:space="preserve">
     <value>CONFERMA</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACCETTARE</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Conferma invito DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Conferma invito alla stanza</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Vai alla sezione Pagamenti</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha creato un nuovo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; nella stanza: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha modificato il documento: &lt;a href={1}&gt;{2}&lt;/a&gt; nella stanza: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha caricato un nuovo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; nella stanza: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha aggiunto un nuovo commento alla versione del documento: &lt;a href={1}&gt;{2}&lt;/a&gt; nella stanza: &lt;a href={3}&gt;{4}&lt; /a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha rinominato la stanza: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b &gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; è stato rimosso dalla stanza: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha creato una nuova stanza: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Vuoi cambiare l'e-mail del tuo account ${LetterLogoText}?
+
+Fai clic sul pulsante qui sotto e accedi* al tuo cloud.
+
+$GreenButton
+
+Il link è valido per 7 giorni.
+
+*Se non hai effettuato l'accesso a ${LetterLogoText} in questo browser, dovrai utilizzare la tua vecchia e-mail per la conferma. Se non te la ricordi, contatta l'amministratore del portale.
+
+Non vuoi cambiare la tua e-mail? Ignora questo messaggio.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Migrazione del portale
+h1."$PortalUrl":"$PortalUrl"
+
+È stata eseguita la migrazione del tuo portale a un nuovo dominio. Ripristina l'accesso al portale specificando la password che verrà utilizzata per l'accesso.
+
+Segui il link qui sotto per impostare la tua password per l'account:
+$GreenButton
+
+*Nota*: questo link è valido solo per 7 giorni. Ti preghiamo di completare la procedura di ripristino dell'accesso entro tale periodo.
+
+Se hai ricevuto questa email per errore, ignorala o contatta il tuo amministratore del portale "$PortalUrl":"$PortalUrl" per scoprire più dettagli.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Salve!
+
+Sei invitato a unirti a "${__VirtualRootPath}":"${__VirtualRootPath}" come utente ospite. Accetta l'invito cliccando sul link:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Il link è valido solo per 7 giorni.
+
+Riceverai ulteriori suggerimenti su come utilizzare il tuo web-office. Puoi annullare gli abbonamenti sulla pagina del tuo profilo e riattivarli in qualsiasi momento.</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Vuoi cambiare l'e-mail sul tuo account ONLYOFFICE?
+
+Clicca sul pulsante qui sotto e accedi* al tuo cloud.
+
+$GreenButton
+
+Il link è valido per 7 giorni.
+
+*Se non hai effettuato l'accesso a ONLYOFFICE in questo browser, dovrai utilizzare la tua vecchia e-mail per la conferma.
+
+Non vuoi cambiare la tua e-mail? Ignora questo messaggio.</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Cancellazione del portale [${__VirtualRootPath}](${__VirtualRootPath})
+
+Gentile $OwnerName,
+
+Hai richiesto di eliminare definitivamente il tuo portale [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Importante! Tutti i dati memorizzati sul tuo portale, così come i tuoi dati di registrazione andranno persi e non potranno essere recuperati._
+
+#if($AutoRenew == "True")
+Prima di eliminare il portale, assicurati che la fatturazione automatica sia disattivata. Puoi controllare lo stato della fatturazione automatica nel tuo [Avangate account](https://secure.avangate.com/myaccount/").
+#end
+
+Se desideri comunque eliminare il tuo portale [${__VirtualRootPath}](${__VirtualRootPath}), segui il link sottostante per confermare l'operazione:
+
+$GreenButton
+
+_Nota_: questo link è valido solo per 7 giorni. Si prega di completare il processo di cancellazione del portale entro tale periodo.
+
+Se hai domande o hai bisogno di assistenza, non esitare a contattarci all'indirizzo [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Distinti saluti,
+Team di supporto di ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.Richiesta tariffa SAAS per "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Nome
+$UserName
+
+h3.Cognome
+$UserLastName
+
+h3.Posizione
+$Position
+
+h3.E-mail
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Telefono
+$Phone
+
+h3.Sito aziendale
+$Website
+
+h3.Nome dell'azienda
+$CompanyTitle
+
+h3. Dimensione dell'azienda
+$CompanySize
+
+h3.Richiesta contenuto
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Ripristino portale
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Il tuo portale è stato ripristinato. Per accedervi è necessario impostare una nuova password:
+
+$GreenButton
+
+*Note*: questo link è valido solo per 7 giorni.
+
+Se hai ricevuto questa email per errore, ignorala o contatta il tuo amministratore del portale "${__VirtualRootPath}":"${__VirtualRootPath}" per scoprire più dettagli.</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di decrittografia dei file sul tuo portale "${PortalUrl}":"${PortalUrl}" non è riuscito.
+
+Alcuni file non possono essere decifrati. Trovi maggiori dettagli nel "Pannello di controllo":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di decrittografia dei file è stato avviato sul tuo portale "${PortalUrl}":"${PortalUrl}".
+
+La decrittografia potrebbe richiedere del tempo, quindi il portale sarà temporaneamente non disponibile. Non appena la decrittografia sarà terminata, potrai nuovamente lavorare con i tuoi dati.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di decrittografia dei file sul tuo portale "${PortalUrl}":"${PortalUrl}" è stato completato con successo.
+
+Il tuo portale è di nuovo disponibile.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di crittografia dei file sul portale "${PortalUrl}":"${PortalUrl}" non è riuscito.
+
+Alcuni file non possono essere crittografati. Trovi maggiori dettagli nel "Pannello di controllo":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di crittografia dei file è stato avviato sul tuo portale "${PortalUrl}":"${PortalUrl}".
+
+La crittografia potrebbe richiedere del tempo, quindi il portale sarà temporaneamente non disponibile. Non appena la crittografia sarà terminata, potrai nuovamente lavorare con i tuoi dati.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Il processo di crittografia dei file sul tuo portale "${PortalUrl}":"${PortalUrl}" è stato completato con successo.
+
+Il tuo portale è di nuovo disponibile.</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} assistenza password</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Conferma la modifica della password</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ottieni le app di ONLYOFFICE gratuite</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Diversi suggerimenti per un lavoro efficace sui tuoi documenti</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Unisciti a ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Diversi suggerimenti per un lavoro efficace sui tuoi documenti</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Diversi suggerimenti per un lavoro efficace sui tuoi documenti</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Diversi suggerimenti per un lavoro efficace sui tuoi documenti</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace è stato disattivato</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Configura il tuo ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Novità sul tuo portale per $Date</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Ottieni le app di ONLYOFFICE gratuite</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Ottieni le app di ONLYOFFICE gratuite</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Scopri l'abbonamento aziendale di ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Richiesta ufficio vendite</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Accedi al tuo account ONLYOFFICE Personal</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Collaborate in DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Il tuo ONLYOFFICE DocSpace verrà eliminato</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Periodo di grazia è stato attivato per il tuo ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Il tuo abbonamento a ONLYOFFICE DocSpace sta per scadere</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Il periodo di grazia per il tuo ONLYOFFICE DocSpace è scaduto</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Il periodo di grazia per il tuo ONLYOFFICE DocSpace scade domani</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Unisciti a ${__VirtualRootPath}</value>
   </data>
 </root>

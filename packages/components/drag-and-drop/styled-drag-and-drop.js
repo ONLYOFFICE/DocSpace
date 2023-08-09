@@ -14,11 +14,18 @@ user-select: none;*/
     props.drag
       ? props.theme.dragAndDrop.border
       : props.theme.dragAndDrop.transparentBorder};
-  margin-left: -2px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: -2px;`
+      : `margin-left: -2px;`}
   position: relative;
 
   @media ${tablet} {
-    margin-left: 0;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 0;`
+        : `margin-left: 0;`}
   }
   outline: none;
   background: ${(props) =>

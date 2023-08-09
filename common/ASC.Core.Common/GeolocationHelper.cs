@@ -93,7 +93,7 @@ public class GeolocationHelper
 
             if (!ip.Equals(IPAddress.Loopback))
             {
-                _logger.DebugRemoteIpAddress(ip.ToString());
+                _logger.TraceRemoteIpAddress(ip.ToString());
 
                 return await GetIPGeolocationAsync(ip);
             }

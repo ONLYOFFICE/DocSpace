@@ -455,53 +455,57 @@ public class UserManager
                     new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
 
         var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
-        var allUserEmails = (await GetDavUserEmailsAsync()).ToList();
 
-        if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+        if (rootAuthorization != null)
         {
-            var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
-            var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
-            var collection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
-            if (collection.Completed && collection.StatusCode != 404)
+            var allUserEmails = (await GetDavUserEmailsAsync()).ToList();
+
+            if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
             {
-                await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);
-            }
-            foreach (var email in allUserEmails)
-            {
-                var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
-                try
+                var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
+                var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
+                var collection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
+                if (collection.Completed && collection.StatusCode != 404)
                 {
-                    var davItemRequest = new DavRequest()
+                    await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);
+                }
+                foreach (var email in allUserEmails)
+                {
+                    var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
+                    try
                     {
-                        Url = requestUrlItem,
-                        Authorization = rootAuthorization,
-                        Header = myUri
-                    };
-                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    _log.ErrorWithException(ex);
+                        var davItemRequest = new DavRequest()
+                        {
+                            Url = requestUrlItem,
+                            Authorization = rootAuthorization,
+                            Header = myUri
+                        };
+                        await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.ErrorWithException(ex);
+                    }
                 }
             }
-        }
-        else
-        {
-            try
+            else
             {
-                var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
                 try
                 {
-                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, await _tenantManager.GetCurrentTenantIdAsync(), oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                    var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
+                    try
+                    {
+                        await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, await _tenantManager.GetCurrentTenantIdAsync(), oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.ErrorWithException(ex);
+                    }
                 }
                 catch (Exception ex)
                 {
                     _log.ErrorWithException(ex);
                 }
-            }
-            catch (Exception ex)
-            {
-                _log.ErrorWithException(ex);
             }
         }
     }
@@ -544,38 +548,41 @@ public class UserManager
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = await GetDavUserEmailsAsync();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
-            var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
-
-
-            if (addBookCollection.Completed && addBookCollection.StatusCode != 404)
+            
+            if(rootAuthorization != null)
             {
-                var davbookRequest = new DavRequest()
+                var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
+                if (addBookCollection.Completed && addBookCollection.StatusCode != 404)
                 {
-                    Url = requestUrlBook,
-                    Authorization = rootAuthorization,
-                    Header = myUri
-                };
-                await _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
-            }
-
-            foreach (var email in davUsersEmails)
-            {
-                var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: delUser.Id.ToString());
-                try
-                {
-                    var davItemRequest = new DavRequest()
+                    var davbookRequest = new DavRequest()
                     {
-                        Url = requestUrlItem,
+                        Url = requestUrlBook,
                         Authorization = rootAuthorization,
                         Header = myUri
                     };
-                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    await _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
                 }
-                catch (Exception ex)
+
+                foreach (var email in davUsersEmails)
                 {
-                    _log.ErrorWithException(ex);
+                    var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: delUser.Id.ToString());
+                    try
+                    {
+                        var davItemRequest = new DavRequest()
+                        {
+                            Url = requestUrlItem,
+                            Authorization = rootAuthorization,
+                            Header = myUri
+                        };
+                        await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.ErrorWithException(ex);
+                    }
                 }
             }
+
         }
         catch (Exception ex)
         {

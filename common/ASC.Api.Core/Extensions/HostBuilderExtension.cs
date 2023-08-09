@@ -33,7 +33,7 @@ public static class HostBuilderExtension
         hostBuilder.UseSystemd();
         hostBuilder.UseWindowsService();
         hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-        hostBuilder.UseNLog();
+        hostBuilder.UseNLog(new NLogAspNetCoreOptions { ReplaceLoggerFactory = true });
 
         return hostBuilder;
     }

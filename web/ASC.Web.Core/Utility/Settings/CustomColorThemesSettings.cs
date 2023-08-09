@@ -60,11 +60,24 @@ public class CustomColorThemesSettings : ISettings<CustomColorThemesSettings>
     }
 }
 
+/// <summary>
+/// </summary>
 public class CustomColorThemesSettingsItem
 {
+    /// <summary>Theme ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Theme name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Main colors</summary>
+    /// <type>ASC.Web.Core.Utility.Settings.CustomColorThemesSettingsColorItem, ASC.Web.Core</type>
     public CustomColorThemesSettingsColorItem Main { get; set; }
+
+    /// <summary>Text colors</summary>
+    /// <type>ASC.Web.Core.Utility.Settings.CustomColorThemesSettingsColorItem, ASC.Web.Core</type>
     public CustomColorThemesSettingsColorItem Text { get; set; }
 
     public static List<CustomColorThemesSettingsItem> Default => new List<CustomColorThemesSettingsItem>
@@ -162,8 +175,15 @@ public class CustomColorThemesSettingsItem
     };
 }
 
+/// <summary>
+/// </summary>
 public class CustomColorThemesSettingsColorItem
 {
+    /// <summary>Accent color</summary>
+    /// <type>System.String, System</type>
     public string Accent { get; set; }
+
+    /// <summary>Button color</summary>
+    /// <type>System.String, System</type>
     public string Buttons { get; set; }
 }
