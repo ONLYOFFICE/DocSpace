@@ -35,7 +35,7 @@ export const toUrlParams = (obj, skipNull) => {
     }
 
     // added for double employeetype
-    if (Array.isArray(obj[key]) && key === "employeetype") {
+    if (Array.isArray(obj[key]) && key === "employeetypes") {
       for (let i = 0; i < obj[key].length; i++) {
         str += key + "=" + encodeURIComponent(obj[key][i]);
         if (i !== obj[key].length - 1) {

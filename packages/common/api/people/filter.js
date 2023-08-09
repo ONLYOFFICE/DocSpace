@@ -149,13 +149,20 @@ class Filter {
       accountLoginType,
     } = this;
 
+    let employeetype = null;
+
+    if (Array.isArray(role)) {
+      employeetype = { employeetypes: role };
+    } else {
+      employeetype = { employeetype: role };
+    }
+
     let dtoFilter = {
       StartIndex: this.getStartIndex(),
       Count: pageCount,
       sortby: sortBy,
       sortorder: sortOrder,
       employeestatus: employeeStatus,
-      employeetype: role,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
       groupId: group,
@@ -163,6 +170,8 @@ class Filter {
       payments,
       accountLoginType,
     };
+
+    dtoFilter = { ...dtoFilter, ...employeetype };
 
     const str = toUrlParams(dtoFilter, true);
     return str;

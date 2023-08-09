@@ -48,6 +48,7 @@ const ChangeRoomOwner = (props) => {
     userId,
     isAdmin,
     setRoomParams,
+    removeFiles,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -159,6 +160,7 @@ export default inject(({ auth, dialogsStore, filesStore }) => {
     bufferSelection,
     setFolder,
     updateRoomMemberRole,
+    removeFiles,
   } = filesStore;
 
   const item = selection.length ? selection : [bufferSelection];
@@ -174,5 +176,6 @@ export default inject(({ auth, dialogsStore, filesStore }) => {
     setFolder,
     updateRoomMemberRole,
     isAdmin: user.isOwner || user.isAdmin,
+    removeFiles,
   };
 })(observer(withTranslation(["Files"])(ChangeRoomOwner)));
