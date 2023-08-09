@@ -15,6 +15,7 @@ import Filter from "@docspace/common/api/people/filter";
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
 import { getUserRole } from "@docspace/common/utils";
+import { EmployeeStatus } from "@docspace/common/constants";
 
 let timer = null;
 
@@ -163,7 +164,7 @@ const PeopleSelector = ({
             const excludeUser =
               withAbilityCreateRoomUsers &&
               ((!item.isAdmin && !item.isOwner && !item.isRoomAdmin) ||
-                item.status === 2);
+                item.status === EmployeeStatus.Disabled);
 
             if (excludeItems.includes(item.id) || excludeUser) {
               totalDifferent++;
