@@ -85,10 +85,13 @@ const NewFilesPanel = (props) => {
       ? getIcon(24, extension)
       : getFolderIcon(item.providerKey, 24);
 
+    const svgLoader = () => <div style={{ width: "24px" }} />;
+
     return (
       <ReactSVG
         beforeInjection={(svg) => svg.setAttribute("style", "margin-top: 4px")}
         src={icon}
+        loading={svgLoader}
       />
     );
   };
