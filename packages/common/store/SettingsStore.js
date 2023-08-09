@@ -861,7 +861,7 @@ class SettingsStore {
   getCSPSettings = async () => {
     const { domains } = await api.settings.getCSPSettings();
 
-    this.setCSPDomains(domains);
+    this.setCSPDomains(domains || []);
 
     return domains;
   };
