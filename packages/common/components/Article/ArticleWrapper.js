@@ -7,7 +7,7 @@ const { auth: authStore } = store;
 
 const ArticleWrapper = (props) => {
   useEffect(() => {
-    authStore.init(true);
+    authStore.init();
   }, []);
 
   return (
