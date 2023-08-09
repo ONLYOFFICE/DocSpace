@@ -1,11 +1,11 @@
 import Text from "@docspace/components/text";
 import styled from "styled-components";
-import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import Loader from "@docspace/components/loader";
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
 import { withTranslation, Trans } from "react-i18next";
+import ProgressBar from "@docspace/components/progress-bar";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
@@ -74,11 +74,15 @@ const StyledProgress = styled.div`
     display: inline;
     font-weight: 600;
   }
+
+  .in-progress-loader {
+    height: 20px;
+  }
 `;
 const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
   const inProgressNode = (
     <div className="in-progress">
-      <Loader size="20px" type="track" />
+      <Loader className="in-progress-loader" size="20px" type="track" />
       <Text>{t("DataReassignmentDialog:InProgress")}</Text>
     </div>
   );
@@ -146,7 +150,7 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
           {percent < 50 ? inProgressNode : allDataTransferredNode}
 
           {percent < 50 ? (
-            <Text noSelect>Pending...</Text>
+            <Text noSelect>{t("PeopleTranslations:PendingTitle")}...</Text>
           ) : percent < 100 ? (
             inProgressNode
           ) : (
@@ -155,11 +159,7 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
         </div>
       </div>
 
-      <ColorTheme
-        className="progress"
-        themeId={ThemeType.MobileProgressBar}
-        uploadPercent={percent}
-      />
+      <ProgressBar className="progress" percent={percent} />
 
       <Text className="description" noSelect>
         {t("DataReassignmentDialog:ProcessComplete")}
@@ -168,4 +168,6 @@ const Progress = ({ fromUser, toUser, isReassignCurrentUser, percent, t }) => {
   );
 };
 
-export default withTranslation(["Common, DataReassignmentDialog"])(Progress);
+export default withTranslation([
+  "Common, DataReassignmentDialog, PeopleTranslations",
+])(Progress);
