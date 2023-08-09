@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MYSQL_HOST=${MYSQL_HOST:-"localhost"}
+MYSQL_HOST=${MYSQL_HOST:-${MYSQL_CONTAINER_NAME}}
 MYSQL_DATABASE=${MYSQL_DATABASE:-"onlyoffice"}
 MYSQL_USER=${MYSQL_USER:-"onlyoffice_user"}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-"onlyoffice_pass"}

@@ -6,6 +6,7 @@ services:
     container_name: ${MIGRATION_RUNNER_HOST}
     restart: "no"
     environment:
+      MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
