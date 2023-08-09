@@ -80,8 +80,8 @@ const filesStore = new FilesStore(
   thirdPartyStore,
   accessRightsStore,
   clientLoadingStore,
-  publicRoomStore,
-  pluginStore
+  pluginStore,
+  publicRoomStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
