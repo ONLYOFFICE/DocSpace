@@ -146,13 +146,14 @@ class ManualBackup extends React.Component {
       setDownloadingProgress,
       t,
       clearLocalStorage,
+      isManagement,
     } = this.props;
     const { TemporaryModuleType } = BackupStorageType;
 
     clearLocalStorage();
 
     try {
-      await startBackup(`${TemporaryModuleType}`, null);
+      await startBackup(`${TemporaryModuleType}`, null, false, isManagement);
       setDownloadingProgress(1);
       getIntervalProgress(t);
     } catch (e) {
@@ -193,6 +194,7 @@ class ManualBackup extends React.Component {
       setTemporaryLink,
       getStorageParams,
       saveToLocalStorage,
+      isManagement,
     } = this.props;
 
     clearLocalStorage();
@@ -215,7 +217,7 @@ class ManualBackup extends React.Component {
     );
 
     try {
-      await startBackup(moduleType, storageParams);
+      await startBackup(moduleType, storageParams, false, isManagement);
       setDownloadingProgress(1);
       setTemporaryLink("");
       getIntervalProgress(t);
@@ -414,7 +416,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     saveToLocalStorage,
     setConnectedThirdPartyAccount,
   } = backup;
-  const { currentTariffStatusStore } = auth;
+  const { currentTariffStatusStore, isManagement } = auth;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
   const { isNotPaidPeriod } = currentTariffStatusStore;
@@ -439,5 +441,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     fetchTreeFolders,
     saveToLocalStorage,
     setConnectedThirdPartyAccount,
+
+    isManagement,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));
