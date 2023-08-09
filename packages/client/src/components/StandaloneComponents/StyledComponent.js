@@ -1,14 +1,14 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledBenefitsBody = styled.div`
   margin: 20px 0;
   border-radius: 12px;
-  border: ${(props) => props.theme.client.settings.payment.border};
+  border: ${props => props.theme.client.settings.payment.border};
   max-width: 660px;
 
   padding: 23px;
 
-  background: ${(props) =>
+  background: ${props =>
     props.theme.client.settings.payment.backgroundBenefitsColor};
 
   .benefits-title {
@@ -42,12 +42,12 @@ const StyledContactComponent = styled.div`
     width: 100%;
     p {
       ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-      margin-left: 4px;
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
             `
-      : css`
-      margin-right: 4px;
+          : css`
+              margin-right: 4px;
             `}
     }
     a {
