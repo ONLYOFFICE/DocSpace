@@ -19,6 +19,7 @@ import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 import Loaders from "@docspace/common/components/Loaders";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
+import Badge from "@docspace/components/badge";
 
 import CSP from "./sub-components/csp";
 
@@ -53,6 +54,7 @@ const CategorySubHeader = styled.div`
 `;
 
 const CategoryDescription = styled(Box)`
+  margin-top: 20px;
   max-width: 700px;
 `;
 
