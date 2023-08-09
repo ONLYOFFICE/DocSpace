@@ -26,6 +26,8 @@
 
 namespace ASC.FederatedLogin.LoginProviders;
 
+/// <summary>
+/// </summary>
 public enum LoginProviderEnum
 {
     Facebook,

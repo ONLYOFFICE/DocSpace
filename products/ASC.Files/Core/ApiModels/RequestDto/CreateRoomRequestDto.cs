@@ -26,6 +26,8 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public enum RoomType
 {
     FillingFormsRoom = 1,
@@ -36,12 +38,31 @@ public enum RoomType
     PublicRoom = 6,
 }
 
+/// <summary>
+/// </summary>
 public class CreateRoomRequestDto
 {
+    /// <summary>Room name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Room type</summary>
+    /// <type>ASC.Files.Core.ApiModels.RequestDto.RoomType, ASC.Files.Core</type>
     public RoomType RoomType { get; set; }
+
+    /// <summary>Private room or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Private { get; set; }
+
+    /// <summary>Collection of sharing parameters</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Files.Core.ApiModels.FileShareParams}, System.Collections.Generic</type>
     public IEnumerable<FileShareParams> Share { get; set; }
+
+    /// <summary>Notifies users about the shared room or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Notify { get; set; }
+
+    /// <summary>Message to send when notifying about the shared room</summary>
+    /// <type>System.String, System</type>
     public string SharingMessage { get; set; }
 }

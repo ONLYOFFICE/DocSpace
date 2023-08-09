@@ -28,9 +28,15 @@ using ASC.Web.Core.Notify;
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class NotificationSettingsDto : IMapFrom<NotificationSettingsRequestsDto>
 {
+    /// <summary>Notification type</summary>
+    /// <type>ASC.Web.Core.Notify.NotificationType, ASC.Web.Core</type>
     public NotificationType Type { get; set; }
 
+    /// <summary>Specifies if the notification type is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsEnabled { get; set; }
 }

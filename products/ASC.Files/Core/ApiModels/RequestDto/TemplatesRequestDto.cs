@@ -26,7 +26,11 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class TemplatesRequestDto
 {
+    /// <summary>List of file IDs</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.Int32}, System.Collections.Generic</type>
     public IEnumerable<int> FileIds { get; set; }
 }

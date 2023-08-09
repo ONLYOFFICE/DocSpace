@@ -26,8 +26,15 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class PaymentUrlRequestsDto
 {
+    /// <summary>The quantity of payment</summary>
+    /// <type>System.Collections.Generic.Dictionary{System.String, System.Int32}, System.Collections.Generic</type>
     public Dictionary<string, int> Quantity { get; set; }
+
+    /// <summary>Back URL</summary>
+    /// <type>System.String, System</type>
     public string BackUrl { get; set; }
 }

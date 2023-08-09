@@ -26,16 +26,28 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class CapabilitiesDto
 {
+    /// <summary>Specifies if the LDAP settings are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool LdapEnabled { get; set; }
+
+    /// <summary>List of providers</summary>
+    /// <type>System.Collections.Generic.List{System.String}, System.Collections.Generic</type>
     public List<string> Providers { get; set; }
+
+    /// <summary>SP login label</summary>
+    /// <type>System.String, System</type>
     public string SsoLabel { get; set; }
+
+    /// <summary>Specifies if OAuth is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool OauthEnabled { get; set; }
 
-    /// <summary>
-    /// if empty sso is disabled
-    /// </summary>
+    /// <summary>SSO URL. If this parameter is empty, then the SSO settings are disabled</summary>
+    /// <type>System.String, System</type>
     public string SsoUrl { get; set; }
 
     public static CapabilitiesDto GetSample()

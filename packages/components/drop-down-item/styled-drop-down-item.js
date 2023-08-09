@@ -51,7 +51,6 @@ const StyledDropdownItem = styled.div`
     props.isModern ? "0 8px" : props.theme.dropDownItem.padding};
   line-height: ${(props) => props.theme.dropDownItem.lineHeight};
   box-sizing: border-box;
-  text-align: left;
   background: none;
   text-decoration: none;
   user-select: none;
@@ -106,6 +105,11 @@ const StyledDropdownItem = styled.div`
         background-color: ${(props) =>
           props.theme.dropDownItem.hoverBackgroundColor};
         text-align: left;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            text-align: right;
+          `}
       `}
   }
 
@@ -145,7 +149,6 @@ const StyledDropdownItem = styled.div`
     css`
       background-color: ${(props) =>
         props.theme.dropDownItem.hoverBackgroundColor};
-      text-align: left;
     `}
 
   ${(props) => props.disabled && !props.isSelected && disabledAndHeaderStyle}
@@ -158,7 +161,12 @@ const StyledDropdownItem = styled.div`
     `}
 
   .submenu-arrow {
-    margin-left: auto;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `margin-right: auto;
+           transform: scaleX(-1);
+        `
+        : `margin-left: auto;`}
     ${(props) =>
       props.isActive &&
       css`
@@ -178,7 +186,12 @@ const IconWrapper = styled.div`
   align-items: center;
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
-  //line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: 0;
+      margin-left: ${(props) => props.theme.dropDownItem.icon.marginRight};
+    `}
 
   height: 20px;
 

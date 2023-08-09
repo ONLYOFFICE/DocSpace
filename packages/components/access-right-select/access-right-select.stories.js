@@ -31,6 +31,7 @@ Default.args = {
   selectedOption: data[0],
   scaledOptions: false,
   scaled: false,
+  directionX: "left",
   size: "content",
   manualWidth: "fit-content",
 };

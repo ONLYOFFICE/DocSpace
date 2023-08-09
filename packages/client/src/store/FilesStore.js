@@ -1519,7 +1519,7 @@ class FilesStore {
       `UserRoomsFilter=${this.authStore.userStore.user?.id}`
     );
 
-    if ((filterStorageItem && !filter) || withFilterLocalStorage) {
+    if (filterStorageItem && (!filter || withFilterLocalStorage)) {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];
@@ -2401,8 +2401,8 @@ class FilesStore {
     if (this.authStore.settingsStore.withPaging) return;
 
     const scrollElm = isMobileOnly
-      ? document.querySelector("#customScrollBar > .scroll-body")
-      : document.querySelector("#sectionScroll > .scroll-body");
+      ? document.querySelector("#customScrollBar > .scroll-wrapper > .scroller")
+      : document.querySelector("#sectionScroll > .scroll-wrapper > .scroller");
 
     scrollElm && scrollElm.scrollTo(0, 0);
   };
