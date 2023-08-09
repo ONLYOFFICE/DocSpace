@@ -42,6 +42,7 @@ const EditLinkPanel = (props) => {
     isDenyDownload,
     link,
     date,
+    language,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -219,6 +220,7 @@ const EditLinkPanel = (props) => {
               expirationDate={expirationDate}
               setExpirationDate={setExpirationDate}
               setIsExpired={setIsExpired}
+              language={language}
             />
           </div>
         </StyledScrollbar>
@@ -296,6 +298,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
     link: link ?? template,
+    language: auth.language,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))
