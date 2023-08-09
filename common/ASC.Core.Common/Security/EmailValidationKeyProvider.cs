@@ -167,12 +167,28 @@ public class EmailValidationKeyProvider
     }
 }
 
+/// <summary>
+/// </summary>
 public class EmailValidationKeyModel
 {
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
+
+    /// <summary>Employee type</summary>
+    /// <type>System.Nullabel{ASC.Core.Users.EmployeeType}, System</type>
     public EmployeeType? EmplType { get; set; }
+
+    /// <summary>Email</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>User ID</summary>
+    /// <type>System.Nullabel{System.Guid}, System</type>
     public Guid? UiD { get; set; }
+
+    /// <summary>Confirmation email type</summary>
+    /// <type>System.Nullabel{ASC.Web.Studio.Utility.ConfirmType}, System</type>
     public ConfirmType? Type { get; set; }
 
     public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)

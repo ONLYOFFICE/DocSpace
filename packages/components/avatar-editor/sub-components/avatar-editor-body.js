@@ -331,10 +331,13 @@ class AvatarEditorBody extends React.Component {
 
     return (
       <Text as="span" textAlign={!desktopMode ? labelAlign : "left"}>
-        <Link type="action" fontWeight={600} isHovered {...onClickProp}>
-          {selectNewPhotoLabel}
-        </Link>{" "}
-        {desktopMode && orDropFileHereLabel}
+        <Box displayProp="flex" alignItems="center">
+          <Link type="action" fontWeight={600} isHovered {...onClickProp}>
+            {selectNewPhotoLabel}
+          </Link>
+          &nbsp;
+          {desktopMode && orDropFileHereLabel}
+        </Box>
         <Text
           as="p"
           // color="#A3A9AE"
@@ -349,14 +352,8 @@ class AvatarEditorBody extends React.Component {
   };
 
   render() {
-    const {
-      maxSize,
-      accept,
-      role,
-      title,
-      useModalDialog,
-      isLoading,
-    } = this.props;
+    const { maxSize, accept, role, title, useModalDialog, isLoading } =
+      this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();

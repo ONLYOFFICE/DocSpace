@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import TextareaAutosize from "react-autosize-textarea";
 
-import Scrollbar from "../scrollbar/index";
+import Scrollbar from "../scrollbar";
 import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
 import { CopyIcon } from "./svg";
@@ -17,26 +17,24 @@ const ClearScrollbar = ({
 
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
-
   :focus-within {
     border-color: ${(props) =>
       props.hasError
         ? props.theme.textArea.focusErrorBorderColor
         : props.theme.textArea.focusBorderColor};
   }
-
   :focus {
     outline: ${(props) => props.theme.textArea.focusOutline};
   }
 
   width: ${(props) => props.theme.textArea.scrollWidth} !important;
-  height: ${(props) =>
-    props.heightScale
+  height: ${(props) => {
+    return props.heightScale
       ? "67vh"
       : props.heightTextArea
       ? props.heightTextArea + 2 + "px"
-      : "91px"} !important;
-
+      : "91px";
+  }} !important;
   background-color: ${(props) =>
     props.isDisabled && props.theme.textArea.disabledColor};
 `;
@@ -79,7 +77,11 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
   resize: none;
   overflow: ${(props) => (props.isJSONField ? "visible !important" : "hidden")};
   padding: ${(props) => (props.enableCopy ? "5px 28px 2px" : "5px 8px 2px")};
-  padding-left: ${(props) => props.paddingLeftProp};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `padding-right: ${props.paddingLeftProp};`
+      : `padding-left: ${props.paddingLeftProp};`}
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
@@ -121,11 +123,16 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
     font-family: ${(props) => props.theme.fontFamily};
     user-select: none;
   }
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" &&
+    `
+      &:placeholder-shown {
+        text-align: right;
+      }`}}
 `;
 
-StyledTextarea.defaultProps = {
-  theme: Base,
-};
+StyledTextarea.defaultProps = { theme: Base };
 
 const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
   <CopyIcon {...props} />
@@ -140,9 +147,7 @@ const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
   }
 `;
 
-StyledCopyIcon.defaultProps = {
-  theme: Base,
-};
+StyledCopyIcon.defaultProps = { theme: Base };
 
 const CopyIconWrapper = styled.div`
   position: absolute;
@@ -150,8 +155,10 @@ const CopyIconWrapper = styled.div`
   height: 20px;
   z-index: 2;
 
-  right: ${(props) =>
-    props.isJSONField && props.heightScale ? "18px" : "10px"};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `left: ${props.isJSONField && props.heightScale ? "18px" : "10px"};`
+      : `right: ${props.isJSONField && props.heightScale ? "18px" : "10px"};`}
   top: 6px;
 
   display: flex;
@@ -160,9 +167,7 @@ const CopyIconWrapper = styled.div`
   background-color: ${(props) => props.theme.backgroundColor};
 `;
 
-CopyIconWrapper.defaultProps = {
-  theme: Base,
-};
+CopyIconWrapper.defaultProps = { theme: Base };
 
 const Wrapper = styled.div`
   position: relative;
@@ -178,8 +183,10 @@ const Numeration = styled.pre`
   line-height: 1.5;
   margin: 0;
   top: 6px;
-  left: 18px;
   text-align: right;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 18px;` : `left: 18px;`}
   color: ${(props) => props.theme.textArea.numerationColor};
 
   -webkit-user-select: none; /* Safari */
@@ -188,9 +195,7 @@ const Numeration = styled.pre`
   user-select: none; /* Standard */
 `;
 
-Numeration.defaultProps = {
-  theme: Base,
-};
+Numeration.defaultProps = { theme: Base };
 
 export {
   StyledTextarea,

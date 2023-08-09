@@ -21,7 +21,6 @@
   "RegisterTextBodyBeforeDomainsList": "L'inscription est accessible aux utilisateurs avec une adresse de messagerie à ",
   "RegisterTitle": "Demande d'inscription",
   "RegistrationEmailWatermark": "Adresse de courriel",
-  "Remember": "Se souvenir de moi",
   "RememberHelper": "Par défaut, la durée de validité de la session est de 20 minutes. Cochez cette option pour la définir sur 1 an. Vous pouvez définir votre propre valeur en accédant aux paramètres.",
   "ResendCode": "Renvoyer le code",
   "SignInWithCode": "Se connecter avec le code secret",

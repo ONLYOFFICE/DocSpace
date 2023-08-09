@@ -26,12 +26,28 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class SecurityDto
 {
+    /// <summary>Module ID</summary>
+    /// <type>System.String, System</type>
     public string WebItemId { get; set; }
+
+    /// <summary>List of users with the access to the module</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic</type>
     public List<EmployeeDto> Users { get; set; }
+
+    /// <summary>List of groups with the access to the module</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Web.Api.Models.GroupSummaryDto}, System.Collections.Generic</type>
     public IEnumerable<GroupSummaryDto> Groups { get; set; }
+
+    /// <summary>Specifies if the security settings are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
+
+    /// <summary>Specifies if this module is a subitem or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsSubItem { get; set; }
 
     public static SecurityDto GetSample()

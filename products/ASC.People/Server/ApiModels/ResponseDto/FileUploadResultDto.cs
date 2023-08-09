@@ -26,9 +26,19 @@
 
 namespace ASC.People.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FileUploadResultDto
 {
+    /// <summary>Specifies if the operation is successful or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Success { get; set; }
+
+    /// <summary>Data</summary>
+    /// <type>System.Object, System</type>
     public object Data { get; set; }
+
+    /// <summary>Message</summary>
+    /// <type>System.String, System</type>
     public string Message { get; set; }
 }
