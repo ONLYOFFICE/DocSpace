@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-
 import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
@@ -14,7 +13,6 @@ import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import toastr from "@docspace/components/toast/toastr";
 import SelectorAddButton from "@docspace/components/selector-add-button";
-
 import { useNavigate } from "react-router-dom";
 import {
   StyledOwnerInfo,
@@ -25,10 +23,8 @@ import {
   StyledSelectedOwnerContainer,
   StyledSelectedOwner,
 } from "../ChangePortalOwnerDialog/StyledDialog";
-
 import Progress from "./sub-components/Progress/Progress";
 import Loader from "./sub-components/Loader/Loader";
-
 import api from "@docspace/common/api";
 const { Filter } = api;
 
@@ -71,9 +67,7 @@ const DataReassignmentDialog = ({
   dataReassignmentDeleteAdministrator,
   t,
   tReady,
-
   setFilter,
-
   setDataReassignmentDeleteAdministrator,
 }) => {
   const [selectorVisible, setSelectorVisible] = useState(false);
@@ -83,10 +77,10 @@ const DataReassignmentDialog = ({
       dataReassignmentDeleteAdministrator.displayName;
   }
 
-  const defaultSelectedUser = dataReassignmentDeleteAdministrator;
-
-  const [selectedUser, setSelectedUser] = useState(defaultSelectedUser);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(
+    dataReassignmentDeleteAdministrator
+  );
+  const [isLoadingReassign, setIsLoadingReassign] = useState(false);
   const [isDeleteProfile, setIsDeleteProfile] = useState(
     dataReassignmentDeleteProfile
   );
@@ -117,12 +111,9 @@ const DataReassignmentDialog = ({
 
   useEffect(() => {
     //If click Delete user
-    if (dataReassignmentDeleteAdministrator) {
-      onReassign();
-    }
-    return () => {
-      setDataReassignmentDeleteAdministrator(null);
-    };
+    if (dataReassignmentDeleteAdministrator) onReassign();
+
+    return () => setDataReassignmentDeleteAdministrator(null);
   }, [dataReassignmentDeleteAdministrator]);
 
   const onToggleDeleteProfile = () => {
@@ -150,8 +141,8 @@ const DataReassignmentDialog = ({
     setIsReassignCurrentUser(idCurrentUser === selectedUser.id);
   };
 
-  const checkProgress = (ids) => {
-    dataReassignmentProgress(ids)
+  const checkProgress = (id) => {
+    dataReassignmentProgress(id)
       .then((res) => {
         setPercent(res.percentage);
       })
@@ -162,7 +153,7 @@ const DataReassignmentDialog = ({
 
   const onReassign = useCallback(() => {
     checkReassignCurrentUser();
-    setIsLoading(true);
+    setIsLoadingReassign(true);
     setShowProgress(true);
 
     dataReassignment(user.id, selectedUser.id, isDeleteProfile)
@@ -175,7 +166,7 @@ const DataReassignmentDialog = ({
         toastr.error(error?.response?.data?.error?.message);
       });
 
-    setIsLoading(false);
+    setIsLoadingReassign(false);
   }, [user, selectedUser, isDeleteProfile]);
 
   return (
@@ -330,7 +321,7 @@ const DataReassignmentDialog = ({
                 scale
                 isDisabled={!selectedUser}
                 onClick={onReassign}
-                isLoading={isLoading}
+                isLoading={isLoadingReassign}
               />
             )}
             {!(showProgress && percent === 100) && (
@@ -339,7 +330,6 @@ const DataReassignmentDialog = ({
                 size="normal"
                 scale
                 onClick={onClose}
-                isDisabled={isLoading}
               />
             )}
             {percent === 100 && (
@@ -348,7 +338,6 @@ const DataReassignmentDialog = ({
                 size="normal"
                 scale
                 onClick={onClose}
-                isDisabled={isLoading}
               />
             )}
           </div>

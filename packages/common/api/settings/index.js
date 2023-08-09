@@ -385,10 +385,10 @@ export function dataReassignment(fromUserId, toUserId, deleteProfile) {
   });
 }
 
-export function dataReassignmentProgress(ids) {
+export function dataReassignmentProgress(id) {
   return request({
     method: "get",
-    url: `/people/reassign/progress/${ids}`,
+    url: `/people/reassign/progress/${id}`,
   });
 }
 
