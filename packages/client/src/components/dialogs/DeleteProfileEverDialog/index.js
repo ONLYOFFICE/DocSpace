@@ -86,7 +86,6 @@ const DeleteProfileEverDialogComponent = (props) => {
 
   const needReassignData = user.isRoomAdmin || user.isOwner || user.isAdmin;
 
-  const header = t("DeleteUser");
   const deleteMessage = (
     <Trans i18nKey="DeleteUserMessage" ns="DeleteProfileEverDialog" t={t}>
       {{ userCaption: t("Common:User") }}
@@ -159,7 +158,7 @@ const DeleteProfileEverDialogComponent = (props) => {
       onClose={onClose}
       needReassignData={needReassignData}
     >
-      <ModalDialog.Header>{header}</ModalDialog.Header>
+      <ModalDialog.Header>{t("DeleteUser")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text className="user-delete">{deleteMessage}</Text>
         <Text className="text-warning">{t("Common:Warning")}!</Text>
