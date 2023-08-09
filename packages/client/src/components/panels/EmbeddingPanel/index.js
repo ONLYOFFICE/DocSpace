@@ -22,7 +22,7 @@ const EmbeddingPanelComponent = (props) => {
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
   useEffect(() => {
-    scrollRef.current && scrollRef.current.view.focus();
+    scrollRef.current && scrollRef.current?.view?.focus();
 
     document.addEventListener("keyup", onKeyPress);
 
