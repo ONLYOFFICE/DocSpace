@@ -3,15 +3,27 @@ import styled from "styled-components";
 import { tablet } from "@docspace/components/utils/device";
 const StyledContainer = styled.div`
   max-width: 211px;
-  margin-left: 1px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-right: 1px;`
+      : `margin-left: 1px;`}
 
   ${isMobile} {
-    margin-left: 0;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 0;`
+        : `margin-left: 0;`}
   }
 
   @media ${tablet} {
+    ${(props) => {
+      const value = props.showText ? "10px" : "0";
 
-    ${(props) => (props.showText ? "margin-left: 10px" : "margin-left:0")};
+      return props.theme.interfaceDirection === "rtl"
+        ? `margin-right: ${value};`
+        : `margin-left: ${value};`;
+    }}
   }
 `;
 
