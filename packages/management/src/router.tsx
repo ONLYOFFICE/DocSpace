@@ -31,6 +31,14 @@ const router = createBrowserRouter([
         element: <Backup />,
       },
       {
+        path: "backup/data-backup",
+        element: <Backup />,
+      },
+      {
+        path: "backup/auto-backup",
+        element: <Backup />,
+      },
+      {
         path: "restore",
         element: <Restore />,
       },
