@@ -94,7 +94,7 @@ public class BackupController : ControllerBase
             Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
             Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
         };
-        await _backupHandler.CreateScheduleAsync(storageType, storageParams, backupStored, cron);
+        await _backupHandler.CreateScheduleAsync(storageType, storageParams, backupStored, cron, backupSchedule.Dump);
         return true;
     }
 
@@ -134,11 +134,17 @@ public class BackupController : ControllerBase
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
+        if (!_coreBaseSettings.Standalone && backup.Dump)
+        {
+            throw new ArgumentException("backup can not start as dump");
+        }
+
         _eventBus.Publish(new BackupRequestIntegrationEvent(
              tenantId: _tenantId,
              storageParams: storageParams,
              storageType: storageType,
-             createBy: _currentUserId
+             createBy: _currentUserId,
+             dump: backup.Dump
         ));
 
         return await _backupHandler.GetBackupProgressAsync();

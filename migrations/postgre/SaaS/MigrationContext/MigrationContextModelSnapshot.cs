@@ -5287,6 +5287,12 @@ namespace ASC.Migrations.PostgreSql.SaaS.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
+                    b.Property<bool>("Dump")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("dump")
+                        .HasDefaultValueSql("'0'");
+
                     b.Property<DateTime>("LastBackupTime")
                         .HasColumnType("datetime")
                         .HasColumnName("last_backup_time");

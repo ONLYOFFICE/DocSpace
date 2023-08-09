@@ -69,7 +69,7 @@ public class BackupAjaxHandler
         _storageFactory = storageFactory;
     }
 
-    public async Task StartBackupAsync(BackupStorageType storageType, Dictionary<string, string> storageParams)
+    public async Task StartBackupAsync(BackupStorageType storageType, Dictionary<string, string> storageParams, bool dump)
     {
         await DemandPermissionsBackupAsync();
 
@@ -78,7 +78,8 @@ public class BackupAjaxHandler
             TenantId = await GetCurrentTenantIdAsync(),
             UserId = _securityContext.CurrentAccount.ID,
             StorageType = storageType,
-            StorageParams = storageParams
+            StorageParams = storageParams,
+            Dump = dump
         };
 
         switch (storageType)
@@ -137,13 +138,18 @@ public class BackupAjaxHandler
         return await _backupService.GetBackupHistoryAsync(await GetCurrentTenantIdAsync());
     }
 
-    public async Task CreateScheduleAsync(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
+    public async Task CreateScheduleAsync(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool dump)
     {
         await DemandPermissionsBackupAsync();
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup"))
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
+        }
+
+        if(!_coreBaseSettings.Standalone && dump)
+        {
+            throw new ArgumentException("backup can not start as dump");
         }
 
         ValidateCronSettings(cronParams);
@@ -154,7 +160,8 @@ public class BackupAjaxHandler
             Cron = cronParams.ToString(),
             NumberOfBackupsStored = backupsStored,
             StorageType = storageType,
-            StorageParams = storageParams
+            StorageParams = storageParams,
+            Dump = dump
         };
 
         switch (storageType)
@@ -194,7 +201,8 @@ public class BackupAjaxHandler
             StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
             CronParams = new CronParams(response.Cron),
             BackupsStored = response.NumberOfBackupsStored.NullIfDefault(),
-            LastBackupTime = response.LastBackupTime
+            LastBackupTime = response.LastBackupTime,
+            Dump = response.Dump
         };
 
         if (response.StorageType == BackupStorageType.CustomCloud)
@@ -221,7 +229,8 @@ public class BackupAjaxHandler
                 Cron = schedule.CronParams.ToString(),
                 NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                 StorageType = schedule.StorageType,
-                StorageParams = schedule.StorageParams
+                StorageParams = schedule.StorageParams,
+                Dump = schedule.Dump
             };
 
             await _backupService.CreateScheduleAsync(Schedule);
@@ -400,6 +409,7 @@ public class BackupAjaxHandler
         public CronParams CronParams { get; set; }
         public int? BackupsStored { get; set; }
         public DateTime LastBackupTime { get; set; }
+        public bool Dump { get; set; }
     }
 
     public class CronParams

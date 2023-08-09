@@ -30,4 +30,5 @@ public class BackupDto
 {
     public string StorageType { get; set; }
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
+    public bool Dump { get; set; }
 }

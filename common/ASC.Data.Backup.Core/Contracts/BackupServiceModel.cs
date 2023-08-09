@@ -44,6 +44,7 @@ public class StartBackupRequest
     public BackupStorageType StorageType { get; set; }
     public string StorageBasePath { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
+    public bool Dump { get; set; }
 }
 
 public class BackupHistoryRecord
@@ -93,4 +94,5 @@ public class ScheduleResponse
     public string Cron { get; set; }
     public DateTime LastBackupTime { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
+    public bool Dump { get; set; }
 }

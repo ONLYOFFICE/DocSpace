@@ -40,6 +40,7 @@ public class BackupProgressItem : BaseBackupProgressItem
     private BackupStorageType _storageType;
     private string _storageBasePath;
     private int _limit;
+    private bool _dump;
 
     private TenantManager _tenantManager;
     private BackupStorageFactory _backupStorageFactory;
@@ -72,6 +73,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
         _limit = limit;
+        _dump = schedule.Dump;
     }
 
     public void Init(StartBackupRequest request, bool isScheduled, string tempFolder, int limit)
@@ -84,6 +86,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
         _limit = limit;
+        _dump = request.Dump;
     }
 
     protected override async Task DoJob()
@@ -108,7 +111,7 @@ public class BackupProgressItem : BaseBackupProgressItem
             var backupStorage = await _backupStorageFactory.GetBackupStorageAsync(_storageType, TenantId, StorageParams);
             var writer = await ZipWriteOperatorFactory.GetWriteOperatorAsync(_tempStream, _storageBasePath, backupName, TempFolder, _userId, backupStorage as IGetterWriteOperator);
 
-            _backupPortalTask.Init(TenantId, tempFile, _limit, writer);
+            _backupPortalTask.Init(TenantId, tempFile, _limit, writer, _dump);
 
             _backupPortalTask.ProgressChanged += (sender, args) =>
             {

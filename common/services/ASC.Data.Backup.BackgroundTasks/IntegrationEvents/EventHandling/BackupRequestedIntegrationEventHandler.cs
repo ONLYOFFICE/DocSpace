@@ -78,12 +78,13 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
                     StorageBasePath = @event.StorageBasePath,
                     StorageParams = JsonConvert.SerializeObject(@event.StorageParams),
                     StorageType = @event.StorageType,
-                    TenantId = @event.TenantId
+                    TenantId = @event.TenantId,
+                    Dump = @event.Dump
                 });
             }
             else
             {
-                await _backupAjaxHandler.StartBackupAsync(@event.StorageType, @event.StorageParams);
+                await _backupAjaxHandler.StartBackupAsync(@event.StorageType, @event.StorageParams, @event.Dump);
             }
         }
     }

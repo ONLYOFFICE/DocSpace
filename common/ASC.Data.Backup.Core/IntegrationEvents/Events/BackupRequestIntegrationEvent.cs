@@ -40,13 +40,15 @@ public record BackupRequestIntegrationEvent : IntegrationEvent
                                   Dictionary<string, string> storageParams,
                                   bool isScheduled = false,
                                   int backupsStored = 0,
-                                  string storageBasePath = "") : base(createBy, tenantId)
+                                  string storageBasePath = "",
+                                  bool dump = false) : base(createBy, tenantId)
     {
         StorageType = storageType;
         StorageParams = storageParams;
         IsScheduled = isScheduled;
         BackupsStored = backupsStored;
         StorageBasePath = storageBasePath;
+        Dump = dump;
     }
 
     [ProtoMember(1)]
@@ -63,5 +65,8 @@ public record BackupRequestIntegrationEvent : IntegrationEvent
 
     [ProtoMember(6)]
     public string StorageBasePath { get; private init; }
+    
+    [ProtoMember(7)]
+    public bool Dump { get; private init; }
 }
 

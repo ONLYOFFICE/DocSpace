@@ -35,7 +35,8 @@ public class BackupPortalTask : PortalTaskBase
     private const int MaxLength = 250;
     private const int BatchLimit = 5000;
 
-    private readonly bool _dump;
+    private bool _dump;
+    private bool _standalone;
     private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
     private readonly ILogger<BackupPortalTask> _logger;
     private readonly TenantManager _tenantManager;
@@ -53,22 +54,23 @@ public class BackupPortalTask : PortalTaskBase
         TempStream tempStream)
         : base(dbFactory, logger, storageFactory, storageFactoryConfig, moduleProvider)
     {
-        _dump = coreBaseSettings.Standalone;
+        _standalone = coreBaseSettings.Standalone;
         _dbContextFactory = dbContextFactory;
         _logger = logger;
         _tenantManager = tenantManager;
         _tempStream = tempStream;
     }
 
-    public void Init(int tenantId, string toFilePath, int limit, IDataWriteOperator writeOperator)
+    public void Init(int tenantId, string toFilePath, int limit, IDataWriteOperator writeOperator, bool dump)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(toFilePath);
 
         BackupFilePath = toFilePath;
         Limit = limit;
         WriteOperator = writeOperator;
-        Init(tenantId);
+        _dump = dump;
 
+        Init(tenantId);
     }
 
     public override async Task RunJob()
