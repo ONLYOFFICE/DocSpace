@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect, useMemo } from "react";
 import Backdrop from "@docspace/components/backdrop";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
@@ -31,46 +31,76 @@ import FilesFilter from "@docspace/common/api/files/filter";
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
-class NewFilesPanel extends React.Component {
-  state = { readingFiles: [], inProgress: false };
+const NewFilesPanel = (props) => {
+  const {
+    setNewFilesPanelVisible,
+    getIcon,
+    getFolderIcon,
+    newFiles,
+    markAsRead,
+    setMediaViewerData,
+    addFileToRecentlyViewed,
+    playlist,
+    currentFolderId,
+    setIsLoading,
+    t,
+    visible,
+    isLoading,
+    theme,
+  } = props;
 
-  componentDidUpdate() {
-    const { readingFiles } = this.state;
-    const { newFiles } = this.props;
+  const [readingFiles, setReadingFiles] = useState([]);
+  const [listFiles, setListFiles] = useState([]);
+  const [inProgress, setInProgress] = useState(false);
+  const zIndex = 310;
 
-    if (newFiles.length === readingFiles.length) this.onClose();
-  }
+  useEffect(() => {
+    if (newFiles.length === readingFiles.length) onClose();
 
-  onClose = () => {
-    if (this.state.inProgress) return;
-    this.props.setNewFilesPanelVisible(false);
+    onUpdateListFiles();
+  }, [newFiles, readingFiles, onUpdateListFiles]);
+
+  const onUpdateListFiles = () => {
+    let rendListFiles = [];
+
+    newFiles.forEach((file) => {
+      const fileHasRead = readingFiles.find(
+        (readingFile) => readingFile === file.id.toString()
+      );
+
+      if (!fileHasRead) rendListFiles.push(file);
+    });
+
+    setListFiles(rendListFiles);
   };
 
-  getItemIcon = (item) => {
+  const onClose = () => {
+    if (inProgress) return;
+    setNewFilesPanelVisible(false);
+  };
+
+  const getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
-      ? this.props.getIcon(24, extension)
-      : this.props.getFolderIcon(item.providerKey, 24);
+      ? getIcon(24, extension)
+      : getFolderIcon(item.providerKey, 24);
 
     return (
       <ReactSVG
         beforeInjection={(svg) => svg.setAttribute("style", "margin-top: 4px")}
         src={icon}
-        loading={this.svgLoader}
       />
     );
   };
 
-  onMarkAsRead = () => {
-    const { inProgress, readingFiles } = this.state;
+  const onMarkAsRead = () => {
     if (inProgress) return;
-
-    this.setState({ inProgress: true });
+    setInProgress(true);
 
     const files = [];
     const folders = [];
 
-    for (let item of this.props.newFiles) {
+    for (let item of newFiles) {
       if (item.fileExst) files.push(item);
       else folders.push(item);
     }
@@ -83,32 +113,23 @@ class NewFilesPanel extends React.Component {
       .filter((f) => !readingFiles.includes(f.id.toString()))
       .map((f) => f.id);
 
-    this.props
-      .markAsRead(folderIds, fileIds)
-      //.then(() => this.setNewBadgeCount())
+    markAsRead(folderIds, fileIds)
       .then(() => {
-        const { hasNew, refreshFiles } = this.props;
-
         return Promise.resolve(); //hasNew ? refreshFiles() :
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.setState({ inProgress: false }, () => {
-          this.onClose();
-        });
+        setInProgress(false);
+        onClose();
       });
   };
 
-  onNewFileClick = (e) => {
-    if (this.state.inProgress) return;
+  const onNewFileClick = (e) => {
+    if (inProgress) return;
 
-    this.setState({ inProgress: true });
+    setInProgress(true);
 
     const { id, extension: fileExst } = e.target.dataset;
-
-    const { /* updateFolderBadge, */ markAsRead, newFiles, refreshFiles } =
-      this.props;
-    const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
     const folderIds = fileExst ? [] : [id];
@@ -116,26 +137,21 @@ class NewFilesPanel extends React.Component {
     const item = newFiles.find((file) => file.id.toString() === id);
 
     if (readingFiles.includes(id)) {
-      this.setState({ inProgress: false });
-      return this.onFileClick(item);
+      setInProgress(false);
+      return onFileClick(item);
     }
 
     markAsRead(folderIds, fileIds, item)
       .then(() => {
-        //updateFolderBadge(folderId, 1);
+        setReadingFiles([...readingFiles, id]);
+        setInProgress(false);
 
-        readingFiles.push(id);
-        this.setState({ readingFiles, inProgress: false });
-
-        this.onFileClick(item);
-      })
-      .then(() => {
-        // refreshFiles();
+        onFileClick(item);
       })
       .catch((err) => toastr.error(err));
   };
 
-  onFileClick = (item) => {
+  const onFileClick = (item) => {
     const {
       id,
       fileExst,
@@ -146,15 +162,6 @@ class NewFilesPanel extends React.Component {
 
       title,
     } = item;
-    const {
-      setMediaViewerData,
-
-      addFileToRecentlyViewed,
-      playlist,
-
-      currentFolderId,
-      setIsLoading,
-    } = this.props;
 
     if (!fileExst) {
       const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
@@ -169,9 +176,8 @@ class NewFilesPanel extends React.Component {
 
       window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
 
-      this.setState({ inProgress: false }, () => {
-        this.onClose();
-      });
+      setInProgress(false);
+      onClose();
     } else {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
 
@@ -222,14 +228,13 @@ class NewFilesPanel extends React.Component {
           const mediaItem = { visible: true, id };
           setMediaViewerData(mediaItem);
 
-          this.setState({ inProgress: false }, () => {
-            this.onClose();
-          });
+          setInProgress(false);
+          onClose();
         } else {
           const mediaItem = { visible: true, id };
           setMediaViewerData(mediaItem);
 
-          return this.onClose();
+          return onClose();
         }
 
         return;
@@ -239,138 +244,90 @@ class NewFilesPanel extends React.Component {
     }
   };
 
-  // setNewBadgeCount = () => {
-  //   const {
-  //     newFilesIds,
-  //     updateFoldersBadge,
-  //     updateFilesBadge,
-  //     updateRootBadge,
-  //     updateFolderBadge,
-  //     pathParts,
-  //     newFiles,
-  //   } = this.props;
+  const filesListNode = useMemo(() => {
+    return listFiles.map((file) => {
+      const element = getItemIcon(file);
 
-  //   const { readingFiles } = this.state;
-
-  //   const filesCount = newFiles.filter(
-  //     (f) => !readingFiles.includes(f.id.toString())
-  //   ).length;
-  // updateRootBadge(+newFilesIds[0], filesCount);
-
-  // if (newFilesIds.length <= 1) {
-  //   if (pathParts[0] === +newFilesIds[0]) {
-  //     updateFoldersBadge();
-  //     updateFilesBadge();
-  //   }
-  // } else {
-  //   updateFolderBadge(newFilesIds[newFilesIds.length - 1], filesCount);
-  // }
-  //};
-
-  render() {
-    //console.log("NewFiles panel render");
-    const { t, visible, isLoading, newFiles, theme } = this.props;
-    const { inProgress, readingFiles } = this.state;
-    const zIndex = 310;
-    let listFiles = [];
-
-    newFiles.forEach((file) => {
-      const fileHasRead = readingFiles.find(
-        (readingFile) => readingFile === file.id.toString()
+      return (
+        <Row key={file.id} element={element}>
+          <Link
+            onClick={onNewFileClick}
+            containerWidth="100%"
+            type="page"
+            fontWeight={600}
+            color={theme.filesPanels.color}
+            isTextOverflow
+            truncate
+            title={file.title}
+            fontSize="14px"
+            className="files-new-link"
+            data-id={file.id}
+            data-extension={file.fileExst}
+          >
+            {file.title}
+          </Link>
+        </Row>
       );
-      if (!fileHasRead) listFiles.push(file);
     });
+  }, [onNewFileClick, theme.filesPanels.color, getItemIcon]);
 
-    return (
-      <StyledAsidePanel visible={visible}>
-        <Backdrop
-          onClick={this.onClose}
-          visible={visible}
-          zIndex={zIndex}
-          isAside={true}
-        />
-        <Aside
-          className="header_aside-panel"
-          visible={visible}
-          onClose={this.onClose}
-        >
-          <StyledContent>
-            <StyledHeaderContent>
-              <Heading
-                className="files-operations-header"
-                size="medium"
-                truncate
-              >
-                {t("NewFiles")}
-              </Heading>
-            </StyledHeaderContent>
-            {!isLoading ? (
-              <StyledBody className="files-operations-body">
-                <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
-                  {listFiles.map((file) => {
-                    const element = this.getItemIcon(file);
-
-                    return (
-                      <Row key={file.id} element={element}>
-                        <Link
-                          onClick={this.onNewFileClick}
-                          containerWidth="100%"
-                          type="page"
-                          fontWeight={600}
-                          color={theme.filesPanels.color}
-                          isTextOverflow
-                          truncate
-                          title={file.title}
-                          fontSize="14px"
-                          className="files-new-link"
-                          data-id={file.id}
-                          data-extension={file.fileExst}
-                        >
-                          {file.title}
-                        </Link>
-                      </Row>
-                    );
-                  })}
-                </StyledSharingBody>
-              </StyledBody>
-            ) : (
-              <div key="loader" className="panel-loader-wrapper">
-                <Loader type="oval" size="16px" className="panel-loader" />
-                <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                  "Common:LoadingDescription"
-                )}`}</Text>
-              </div>
-            )}
-            <StyledFooter>
-              <Button
-                className="new_files_panel-button new_file_panel-first-button"
-                label={t("MarkAsRead")}
-                size="normal"
-                primary
-                onClick={this.onMarkAsRead}
-                isLoading={inProgress}
-              />
-              <Button
-                className="new_files_panel-button"
-                label={t("Common:CloseButton")}
-                size="normal"
-                isDisabled={inProgress}
-                onClick={this.onClose}
-              />
-            </StyledFooter>
-          </StyledContent>
-        </Aside>
-      </StyledAsidePanel>
-    );
-  }
-}
+  return (
+    <StyledAsidePanel visible={visible}>
+      <Backdrop
+        onClick={onClose}
+        visible={visible}
+        zIndex={zIndex}
+        isAside={true}
+      />
+      <Aside className="header_aside-panel" visible={visible} onClose={onClose}>
+        <StyledContent>
+          <StyledHeaderContent>
+            <Heading className="files-operations-header" size="medium" truncate>
+              {t("NewFiles")}
+            </Heading>
+          </StyledHeaderContent>
+          {!isLoading ? (
+            <StyledBody className="files-operations-body">
+              <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
+                {filesListNode}
+              </StyledSharingBody>
+            </StyledBody>
+          ) : (
+            <div key="loader" className="panel-loader-wrapper">
+              <Loader type="oval" size="16px" className="panel-loader" />
+              <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
+                "Common:LoadingDescription"
+              )}`}</Text>
+            </div>
+          )}
+          <StyledFooter>
+            <Button
+              className="new_files_panel-button new_file_panel-first-button"
+              label={t("MarkAsRead")}
+              size="normal"
+              primary
+              onClick={onMarkAsRead}
+              isLoading={inProgress}
+            />
+            <Button
+              className="new_files_panel-button"
+              label={t("Common:CloseButton")}
+              size="normal"
+              isDisabled={inProgress}
+              onClick={onClose}
+            />
+          </StyledFooter>
+        </StyledContent>
+      </Aside>
+    </StyledAsidePanel>
+  );
+};
 
 export default inject(
   ({
     auth,
     filesStore,
     mediaViewerDataStore,
-    treeFoldersStore,
     filesActionsStore,
     selectedFolderStore,
     dialogsStore,
@@ -390,7 +347,6 @@ export default inject(
       setIsSectionFilterLoading(param);
     };
 
-    //const { updateRootBadge } = treeFoldersStore;
     const { playlist, setMediaViewerData, setCurrentItem } =
       mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
@@ -410,22 +366,18 @@ export default inject(
       newFiles,
       newFilesIds,
       isLoading,
-
       playlist,
       setCurrentItem,
       currentFolderId,
-
       setMediaViewerData,
       addFileToRecentlyViewed,
       getIcon,
       getFolderIcon,
       markAsRead,
       setNewFilesPanelVisible,
-
       theme: auth.settingsStore.theme,
       hasNew,
       refreshFiles,
-
       setIsLoading,
     };
   }
