@@ -26,7 +26,10 @@ const StyledItem = styled.div`
   align-items: center;
 
   .avatar {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
 
     ${(props) =>
       props.isUser &&
@@ -36,7 +39,10 @@ const StyledItem = styled.div`
   }
 
   .checkbox {
-    margin-left: auto;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: auto;`
+        : `margin-left: auto;`}
   }
 `;
 
