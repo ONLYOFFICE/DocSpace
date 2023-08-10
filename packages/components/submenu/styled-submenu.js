@@ -78,8 +78,9 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   flex-direction: column;
   padding-top: 4px;
   line-height: 20px;
-  margin-right: 17px;
-
+  &:not(:last-child) {
+    margin-right: 17px;
+  }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
@@ -101,7 +102,6 @@ StyledSubmenuItemText.defaultProps = { theme: Base };
 export const StyledSubmenuItemLabel = styled.div`
   z-index: 1;
   width: 100%;
-  //margin-left: -14px;
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;
@@ -122,6 +122,14 @@ export const SubmenuScroller = styled.div`
   },
   overflow-x: auto;
   overflow-y: hidden;
+
+  ${(props) =>
+    props.smallBottomLine &&
+    css`
+      display: grid;
+      flex: 0 1 auto;
+    `};
+
 `;
 
 export const SubmenuRoot = styled.div`

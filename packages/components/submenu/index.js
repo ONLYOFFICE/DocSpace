@@ -21,6 +21,7 @@ const Submenu = (props) => {
     startSelect = 0,
     forsedActiveItemId,
     onSelect,
+    smallBottomLine,
     ...rest
   } = props;
   if (!data) return null;
@@ -105,7 +106,7 @@ const Submenu = (props) => {
       <div className="sticky">
         <SubmenuRoot>
           <SubmenuScrollbarSize />
-          <SubmenuScroller>
+          <SubmenuScroller smallBottomLine={smallBottomLine}>
             <StyledSubmenuItems ref={submenuItemsRef} role="list">
               {data.map((d) => {
                 const isActive =
@@ -143,9 +144,14 @@ const Submenu = (props) => {
                 );
               })}
             </StyledSubmenuItems>
+            {smallBottomLine && (
+              <StyledSubmenuBottomLine className="bottom-line" />
+            )}
           </SubmenuScroller>
         </SubmenuRoot>
-        <StyledSubmenuBottomLine className="bottom-line" />
+        {!smallBottomLine && (
+          <StyledSubmenuBottomLine className="bottom-line" />
+        )}
       </div>
       <div className="sticky-indent"></div>
 
@@ -159,6 +165,8 @@ const Submenu = (props) => {
 Submenu.propTypes = {
   /** List of the elements*/
   data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  /** Property means whether a small width of the bottom line is used. */
+  smallBottomLine: PropTypes.bool,
   /** Specifies the first item or the item's index to be displayed in the submenu. */
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   /** Property that allows explicitly selecting content passed through an external operation  */
