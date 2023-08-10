@@ -36,7 +36,7 @@ const StyledMainContent = styled.div`
 const StyledBottom = styled.div`
   display: flex;
   align-items: center;
-  border:${(props) => props.theme.filesSection.tilesView.tile.border};
+  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
   padding: 15px;
 
@@ -48,19 +48,24 @@ const StyledBottom = styled.div`
 
   .second-content {
     width: 100%;
-    margin-left: 8px;
-  }
 
-  {${(props) =>
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 8px;`
+        : `margin-left: 8px;`}
+  } {
+  ${(props) =>
     !props.isFolder &&
     css`
       border-top-style: none;
       border-radius: 0 0 6px 6px;
     `}
-
   .option-button {
     min-width: 16px;
-    margin-left: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 8px;`
+        : `margin-left: 8px;`}
   }
 `;
 
