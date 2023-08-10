@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF;
-
 namespace ASC.AuditTrail.Repositories;
 
 [Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
@@ -35,17 +33,20 @@ public class AuditEventsRepository
     private readonly TenantManager _tenantManager;
     private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IMapper _mapper;
+    private readonly GeolocationHelper _geolocationHelper;
 
     public AuditEventsRepository(
         AuditActionMapper auditActionMapper,
         TenantManager tenantManager,
         IDbContextFactory<MessagesContext> dbContextFactory,
-        IMapper mapper)
+        IMapper mapper,
+        GeolocationHelper geolocationHelper)
     {
         _auditActionMapper = auditActionMapper;
         _tenantManager = tenantManager;
         _dbContextFactory = dbContextFactory;
         _mapper = mapper;
+        _geolocationHelper = geolocationHelper;
     }
 
     public async Task<IEnumerable<AuditEvent>> GetByFilterAsync(
@@ -204,7 +205,13 @@ public class AuditEventsRepository
         {
             query = query.Take(limit);
         }
-        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEvent>>(await query.ToListAsync());
+        var events = _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEvent>>(await query.ToListAsync());
+
+        foreach(var e in events)
+        {
+            await _geolocationHelper.AddGeolocationAsync(e);
+        }
+        return events;
     }
 
     private static void FindByEntry(IQueryable<AuditEventQuery> q, EntryType entry, string target, IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actions)

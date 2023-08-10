@@ -32,15 +32,18 @@ public class LoginEventsRepository
     private readonly TenantManager _tenantManager;
     private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IMapper _mapper;
+    private readonly GeolocationHelper _geolocationHelper;
 
     public LoginEventsRepository(
         TenantManager tenantManager,
         IDbContextFactory<MessagesContext> dbContextFactory,
-        IMapper mapper)
+        IMapper mapper,
+        GeolocationHelper geolocationHelper)
     {
         _tenantManager = tenantManager;
         _dbContextFactory = dbContextFactory;
         _mapper = mapper;
+        _geolocationHelper = geolocationHelper;
     }
 
     public async Task<IEnumerable<LoginEvent>> GetByFilterAsync(
@@ -108,7 +111,13 @@ public class LoginEventsRepository
             }
         }
 
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(await query.ToListAsync());
+        var events = _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(await query.ToListAsync());
+
+        foreach (var e in events)
+        {
+            await _geolocationHelper.AddGeolocationAsync(e);
+        }
+        return events;
     }
 }
 

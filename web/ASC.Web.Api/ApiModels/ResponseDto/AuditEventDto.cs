@@ -58,6 +58,14 @@ public class AuditEventDto
     /// <type>System.String, System</type>
     public string IP { get; set; }
 
+    /// <summary>Country</summary>
+    /// <type>System.String, System</type>
+    public string Country { get; set; }
+
+    /// <summary>City</summary>
+    /// <type>System.String, System</type>
+    public string City { get; set; }
+
     /// <summary>Browser</summary>
     /// <type>System.String, System</type>
     public string Browser { get; set; }
@@ -103,6 +111,8 @@ public class AuditEventDto
         Action = auditEvent.ActionText;
         ActionId = (MessageAction)auditEvent.Action;
         IP = auditEvent.IP;
+        Country = auditEvent.Country;
+        City = auditEvent.City;
         Browser = auditEvent.Browser;
         Platform = auditEvent.Platform;
         Page = auditEvent.Page;

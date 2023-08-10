@@ -39,6 +39,12 @@ public class BaseEvent : IMapFrom<DbLoginEvent>
     [Event("IpCol")]
     public string IP { get; set; }
 
+    [Event("CountryCol")]
+    public string Country { get; set; }
+
+    [Event("CityCol")]
+    public string City { get; set; }
+
     [Event("BrowserCol")]
     public string Browser { get; set; }
 
