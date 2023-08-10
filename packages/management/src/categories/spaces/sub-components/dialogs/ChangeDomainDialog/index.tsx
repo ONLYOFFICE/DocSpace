@@ -64,7 +64,6 @@ const ChangeDomainDialogComponent = () => {
         </Text>
         <div className="create-docspace-input-block">
           <Text
-            color="#333"
             fontSize="13px"
             fontWeight="600"
             style={{ paddingBottom: "5px" }}
