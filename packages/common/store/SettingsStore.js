@@ -149,6 +149,8 @@ class SettingsStore {
   bookTrainingEmail = null;
   legalTerms = null;
   baseDomain = "onlyoffice.io";
+  portals = [];
+  domain = null;
   documentationEmail = null;
   publicRoomKey = "";
 
@@ -424,7 +426,11 @@ class SettingsStore {
       this.getBuildVersionInfo(),
     );
 
-    await Promise.all(requests);
+    await Promise.all(requests).then(() => {
+      if (this.standalone) {
+        this.getSpaces();
+      }
+    });
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
@@ -532,6 +538,16 @@ class SettingsStore {
 
     this.setLogoUrls(Object.values(res));
     this.setLogoUrl(Object.values(res));
+  };
+
+  getSpaces = async () => {
+    const res = await api.management.getDomainName();
+    const { settings } = res;
+    if (settings) {
+      const res = await api.management.getAllPortals();
+      this.domain = settings;
+      this.portals = res.tenants;
+    }
   };
 
   restoreCompanyInfoSettings = async () => {
