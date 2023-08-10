@@ -126,7 +126,7 @@ class ContextMenu extends Component {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
 
       let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
-      let top = rects ? rects.top : event.pageY + 1;
+      let top = rects ? rects.top - this.props.topOffset : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
         : DomHelpers.getHiddenElementOuterWidth(this.menuRef.current);
@@ -462,6 +462,8 @@ ContextMenu.propTypes = {
   getContextModel: PropTypes.func,
   /** Specifies the offset  */
   leftOffset: PropTypes.number,
+  /** Specifies the offset  */
+  topOffset: PropTypes.number,
 };
 
 ContextMenu.defaultProps = {
@@ -477,6 +479,7 @@ ContextMenu.defaultProps = {
   scaled: false,
   containerRef: null,
   leftOffset: 0,
+  topOffset: 0,
   fillIcon: true,
 };
 
