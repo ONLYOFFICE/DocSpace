@@ -40,7 +40,10 @@ const StyledSelector = styled.div`
     justify-content: start;
 
     .arrow-button {
-      margin-right: 12px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 12px;`
+          : `margin-right: 12px;`}
     }
 
     svg {
@@ -67,7 +70,11 @@ const StyledSelector = styled.div`
       grid-area: header-options;
 
       padding: 0 16px;
-      margin-right: 0px !important;
+
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 0px !important;`
+          : `margin-right: 0px !important;`}
 
       display: grid;
       grid-template-columns: 1fr;
@@ -106,7 +113,10 @@ const StyledSelector = styled.div`
 
       .options-list {
         div:nth-child(3) {
-          right: 10px !important;
+          ${({ theme }) =>
+            theme.interfaceDirection === "rtl"
+              ? `left: 10px !important;`
+              : `right: 10px !important;`}
         }
       }
       .option-loader {
@@ -138,7 +148,10 @@ const StyledSelector = styled.div`
         }
 
         .option-avatar {
-          margin-right: 12px;
+          ${({ theme }) =>
+            theme.interfaceDirection === "rtl"
+              ? `margin-left: 12px;`
+              : `margin-right: 12px;`}
           min-width: 32px;
           max-width: 32px;
         }
@@ -176,7 +189,10 @@ const StyledSelector = styled.div`
         cursor: auto;
 
         .option-checkbox {
-          margin-right: 0 !important;
+          ${({ theme }) =>
+            theme.interfaceDirection === "rtl"
+              ? `margin-left: 0 !important;`
+              : `margin-right: 0 !important;`}
         }
 
         :hover {
