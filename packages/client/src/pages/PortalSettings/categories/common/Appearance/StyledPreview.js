@@ -70,7 +70,7 @@ const StyledComponent = styled.div`
         ? css`
             margin-right: 16px;
             border-left: none !important;
-            border-radius: 12px 12px 12px 0 !important;
+            border-radius: 0px 12px 12px 0 !important;
           `
         : css`
             margin-left: 16px;
@@ -139,7 +139,7 @@ const StyledComponent = styled.div`
         ? css`
             margin: 0px 20px 24px 0px;
             border-left-style: none;
-            border-radius: 3px 3px 0px 0px;
+            border-radius: 0px 3px 3px 0px;
           `
         : css`
             margin: 0px 0px 24px 20px;
@@ -165,14 +165,7 @@ const StyledComponent = styled.div`
   }
 
   .main-button-container {
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin: 0px 0px 23px 20px;
-          `
-        : css`
-            margin: 0px 20px 23px 0;
-          `}
+    margin: 0px 20px 23px;
   }
 
   .main-button-preview {
@@ -221,14 +214,7 @@ const StyledComponent = styled.div`
   .flex {
     display: flex;
     align-items: center;
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            padding: 10px 0px 0px 32px;
-          `
-        : css`
-            padding: 10px 32px 0px;
-          `}
+    padding: 10px 32px 0px;
 
     &:not(:last-child) {
       padding-bottom: 10px;
@@ -249,14 +235,7 @@ const StyledComponent = styled.div`
 
   .title-section {
     height: 12px;
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin: 0px 0px 4px 32px;
-          `
-        : css`
-            margin: 0px 32px 4px;
-          `}
+    margin: 0px 32px 4px;
   }
 
   .menu-badge {
@@ -284,7 +263,7 @@ const StyledComponent = styled.div`
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: ${props =>
-              props.isViewTablet ? "0 20px 0 0 " : "0 0 0 20px"};
+              props.isViewTablet ? "0 20px 0 0px " : "0 20px 0"};
           `
         : css`
             padding: ${props =>
