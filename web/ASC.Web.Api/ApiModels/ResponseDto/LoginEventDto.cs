@@ -74,7 +74,7 @@ public class LoginEventDto
     /// <type>System.String, System</type>
     public string Page { get; set; }
 
-    public LoginEventDto(AuditTrail.Models.LoginEventDto loginEvent)
+    public LoginEventDto(AuditTrail.Models.LoginEvent loginEvent)
     {
         Id = loginEvent.Id;
         Date = new ApiDateTime(loginEvent.Date, TimeSpan.Zero);

@@ -28,12 +28,12 @@
 namespace ASC.MessagingSystem.Mapping;
 
 [Scope]
-public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITypeConverter<EventMessage, AuditEvent>
+public class EventTypeConverter : ITypeConverter<EventMessage, DbLoginEvent>, ITypeConverter<EventMessage, DbAuditEvent>
 {
-    public LoginEvent Convert(EventMessage source, LoginEvent destination, ResolutionContext context)
+    public DbLoginEvent Convert(EventMessage source, DbLoginEvent destination, ResolutionContext context)
     {
         var messageEvent = context.Mapper.Map<EventMessage, MessageEvent>(source);
-        var loginEvent = context.Mapper.Map<MessageEvent, LoginEvent>(messageEvent);
+        var loginEvent = context.Mapper.Map<MessageEvent, DbLoginEvent>(messageEvent);
 
         loginEvent.Login = source.Initiator;
         loginEvent.Active = source.Active;
@@ -50,10 +50,10 @@ public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITyp
         return loginEvent;
     }
 
-    public AuditEvent Convert(EventMessage source, AuditEvent destination, ResolutionContext context)
+    public DbAuditEvent Convert(EventMessage source, DbAuditEvent destination, ResolutionContext context)
     {
         var messageEvent = context.Mapper.Map<EventMessage, MessageEvent>(source);
-        var auditEvent = context.Mapper.Map<MessageEvent, AuditEvent>(messageEvent);
+        var auditEvent = context.Mapper.Map<MessageEvent, DbAuditEvent>(messageEvent);
 
         auditEvent.Initiator = source.Initiator;
         auditEvent.Target = source.Target?.ToString();

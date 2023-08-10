@@ -28,8 +28,8 @@ namespace ASC.MessagingSystem.EF.Context;
 
 public class MessagesContext : DbContext
 {
-    public DbSet<AuditEvent> AuditEvents { get; set; }
-    public DbSet<LoginEvent> LoginEvents { get; set; }
+    public DbSet<DbAuditEvent> AuditEvents { get; set; }
+    public DbSet<DbLoginEvent> LoginEvents { get; set; }
     public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }

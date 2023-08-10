@@ -43,7 +43,7 @@ public class LoginEventsRepository
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<LoginEventDto>> GetByFilterAsync(
+    public async Task<IEnumerable<LoginEvent>> GetByFilterAsync(
         Guid? login = null,
         MessageAction? action = null,
         DateTime? fromDate = null,
@@ -108,7 +108,7 @@ public class LoginEventsRepository
             }
         }
 
-        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(await query.ToListAsync());
+        return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEvent>>(await query.ToListAsync());
     }
 }
 

@@ -28,7 +28,7 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.MessagingSystem.EF.Model;
 
-public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
+public class DbLoginEvent : MessageEvent, IMapFrom<EventMessage>
 {
     public string Login { get; set; }
     public bool Active { get; set; }
@@ -37,8 +37,8 @@ public class LoginEvent : MessageEvent, IMapFrom<EventMessage>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<MessageEvent, LoginEvent>();
-        profile.CreateMap<EventMessage, LoginEvent>()
+        profile.CreateMap<MessageEvent, DbLoginEvent>();
+        profile.CreateMap<EventMessage, DbLoginEvent>()
             .ConvertUsing<EventTypeConverter>();
     }
 }
@@ -47,7 +47,7 @@ public static class LoginEventsExtension
 {
     public static ModelBuilderWrapper AddLoginEvents(this ModelBuilderWrapper modelBuilder)
     {
-        modelBuilder.Entity<LoginEvent>().Navigation(e => e.Tenant).AutoInclude(false);
+        modelBuilder.Entity<DbLoginEvent>().Navigation(e => e.Tenant).AutoInclude(false);
 
         modelBuilder
             .Add(MySqlAddLoginEvents, Provider.MySql)
@@ -58,7 +58,7 @@ public static class LoginEventsExtension
 
     public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<LoginEvent>(entity =>
+        modelBuilder.Entity<DbLoginEvent>(entity =>
         {
             entity.ToTable("login_events")
                 .HasCharSet("utf8");
@@ -131,7 +131,7 @@ public static class LoginEventsExtension
     }
     public static void PgSqlAddLoginEvents(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<LoginEvent>(entity =>
+        modelBuilder.Entity<DbLoginEvent>(entity =>
         {
             entity.ToTable("login_events", "onlyoffice");
 

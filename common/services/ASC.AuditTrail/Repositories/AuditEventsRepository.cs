@@ -48,7 +48,7 @@ public class AuditEventsRepository
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<AuditEventDto>> GetByFilterAsync(
+    public async Task<IEnumerable<AuditEvent>> GetByFilterAsync(
         Guid? userId = null,
         ProductType? productType = null,
         ModuleType? moduleType = null,
@@ -77,7 +77,7 @@ public class AuditEventsRepository
             withoutUserId);
     }
 
-    public async Task<IEnumerable<AuditEventDto>> GetByFilterWithActionsAsync(
+    public async Task<IEnumerable<AuditEvent>> GetByFilterWithActionsAsync(
         Guid? userId = null,
         ProductType? productType = null,
         ModuleType? moduleType = null,
@@ -204,7 +204,7 @@ public class AuditEventsRepository
         {
             query = query.Take(limit);
         }
-        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(await query.ToListAsync());
+        return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEvent>>(await query.ToListAsync());
     }
 
     private static void FindByEntry(IQueryable<AuditEventQuery> q, EntryType entry, string target, IEnumerable<KeyValuePair<MessageAction, MessageMaps>> actions)

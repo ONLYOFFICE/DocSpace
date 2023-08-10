@@ -28,7 +28,7 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.AuditTrail.Models;
 
-public class BaseEvent : IMapFrom<LoginEvent>
+public class BaseEvent : IMapFrom<DbLoginEvent>
 {
     public int Id { get; set; }
     public int TenantId { get; set; }
@@ -59,7 +59,7 @@ public class BaseEvent : IMapFrom<LoginEvent>
 
     public virtual void Mapping(Profile profile)
     {
-        profile.CreateMap<LoginEvent, BaseEvent>()
+        profile.CreateMap<DbLoginEvent, BaseEvent>()
             .ForMember(r => r.IP, opt => opt.MapFrom<BaseEventTypeIpResolver>())
             .ForMember(r => r.Date, opt => opt.MapFrom<BaseEventTypeDateResolver>())
             ;

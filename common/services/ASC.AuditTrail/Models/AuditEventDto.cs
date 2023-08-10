@@ -26,7 +26,7 @@
 
 namespace ASC.AuditTrail.Models;
 
-public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
+public class AuditEvent : BaseEvent, IMapFrom<AuditEventQuery>
 {
     public string Initiator { get; set; }
 
@@ -48,9 +48,9 @@ public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
 
     public override void Mapping(Profile profile)
     {
-        profile.CreateMap<AuditEvent, AuditEventDto>();
+        profile.CreateMap<DbAuditEvent, AuditEvent>();
 
-        profile.CreateMap<AuditEventQuery, AuditEventDto>()
+        profile.CreateMap<AuditEventQuery, AuditEvent>()
             .ConvertUsing<EventTypeConverter>();
     }
 }

@@ -151,7 +151,7 @@ public class InvitationLinkHelper
         return linkId == default ? (ValidationResult.Invalid, default) : (ValidationResult.Ok, linkId);
     }
 
-    private async Task<AuditEvent> GetLinkVisitMessageAsync(string email, string key)
+    private async Task<DbAuditEvent> GetLinkVisitMessageAsync(string email, string key)
     {
         await using var context = _dbContextFactory.CreateDbContext();
 
@@ -188,7 +188,7 @@ public class LinkValidationResult
 
 static file class Queries
 {
-    public static readonly Func<MessagesContext, string, string, Task<AuditEvent>> AuditEventsAsync =
+    public static readonly Func<MessagesContext, string, string, Task<DbAuditEvent>> AuditEventsAsync =
         EF.CompileAsyncQuery(
             (MessagesContext ctx, string target, string description) =>
                 ctx.AuditEvents.FirstOrDefault(a => a.Target == target && a.DescriptionRaw == description));

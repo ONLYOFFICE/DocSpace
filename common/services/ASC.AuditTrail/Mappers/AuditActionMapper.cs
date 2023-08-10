@@ -46,7 +46,7 @@ public class AuditActionMapper
             };
     }
 
-    public string GetActionText(MessageMaps action, AuditEventDto evt)
+    public string GetActionText(MessageMaps action, AuditEvent evt)
     {
         if (action == null)
         {
@@ -78,7 +78,7 @@ public class AuditActionMapper
         }
     }
 
-    public string GetActionText(MessageMaps action, LoginEventDto evt)
+    public string GetActionText(MessageMaps action, LoginEvent evt)
     {
         if (action == null)
         {

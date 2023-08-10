@@ -142,7 +142,7 @@ public class ProductEntryPoint : Product
 
     public override async Task<IEnumerable<ActivityInfo>> GetAuditEventsAsync(DateTime scheduleDate, Guid userId, Tenant tenant, WhatsNewType whatsNewType)
     {
-        IEnumerable<AuditEventDto> events;
+        IEnumerable<AuditEvent> events;
         _tenantManager.SetCurrentTenant(tenant);
 
         if (whatsNewType == WhatsNewType.RoomsActivity)

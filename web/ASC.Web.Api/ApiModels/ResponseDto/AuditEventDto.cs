@@ -94,7 +94,7 @@ public class AuditEventDto
     /// <type>System.String, System</type>
     public string Context { get; set; }
 
-    public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
+    public AuditEventDto(AuditTrail.Models.AuditEvent auditEvent, AuditActionMapper auditActionMapper)
     {
         Id = auditEvent.Id;
         Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
