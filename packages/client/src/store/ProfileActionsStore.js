@@ -14,7 +14,12 @@ import SpacesReactSvgUrl from "PUBLIC_DIR/images/spaces.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 
-import { isDesktop, isTablet, isMobile } from "react-device-detect";
+import {
+  isDesktop,
+  isTablet,
+  isMobile,
+  isMobileOnly,
+} from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
@@ -189,7 +194,8 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const { enablePlugins, standalone } = this.authStore.settingsStore;
+    const { enablePlugins, standalone, portals, domain } =
+      this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
     const isCommunity = this.authStore.isCommunity;
     const { isOwner } = this.authStore.userStore.user;
@@ -214,14 +220,39 @@ class ProfileActionsStore {
         }
       : null;
 
-    const management = isOwner
-      ? {
-          key: "spaces-management-settings",
-          icon: SpacesReactSvgUrl,
-          label: t("Common:Spaces"),
-          onClick: this.onSpacesClick,
-        }
-      : null;
+    const managementItems = portals.map((portal) => {
+      return {
+        key: portal.tenantId,
+        label: portal.domain,
+        onClick: () => {},
+        disabled: false,
+      };
+    });
+
+    const management =
+      isOwner && standalone
+        ? {
+            key: "spaces-management-settings",
+            id: "spaces",
+            icon: SpacesReactSvgUrl,
+            label: t("Common:Spaces"),
+            onClick: domain && !isMobileOnly ? () => {} : this.onSpacesClick,
+            items: domain
+              ? [
+                  ...managementItems,
+                  {
+                    key: "spaces-separator",
+                    isSeparator: true,
+                  },
+                  {
+                    key: "spaces-management",
+                    label: t("Common:SpaceManagement"),
+                    onClick: this.onSpacesClick,
+                  },
+                ]
+              : null,
+          }
+        : null;
 
     let hotkeys = null;
     // if (modules) {
