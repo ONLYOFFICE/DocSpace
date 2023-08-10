@@ -87,6 +87,7 @@ const SubmenuCommon = (props) => {
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
+      smallBottomLine
     />
   );
 };

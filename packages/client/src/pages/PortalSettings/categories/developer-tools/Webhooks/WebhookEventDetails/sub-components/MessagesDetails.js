@@ -36,7 +36,7 @@ const MessagesDetails = ({ eventDetails }) => {
 
   return (
     <SubmenuWrapper>
-      <Submenu data={menuData} startSelect={0} />
+      <Submenu data={menuData} startSelect={0} smallBottomLine />
     </SubmenuWrapper>
   );
 };

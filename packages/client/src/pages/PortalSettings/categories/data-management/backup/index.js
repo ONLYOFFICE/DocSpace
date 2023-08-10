@@ -82,7 +82,12 @@ const Backup = ({
   return isNotPaidPeriod ? (
     <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
   ) : (
-    <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
+    <Submenu
+      data={data}
+      startSelect={data[0]}
+      onSelect={(e) => onSelect(e)}
+      smallBottomLine
+    />
   );
 };
 

@@ -55,6 +55,7 @@ const DeleteData = (props) => {
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
+      smallBottomLine
     />
   );
 };

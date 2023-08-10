@@ -122,6 +122,7 @@ const DataManagementWrapper = (props) => {
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
+      smallBottomLine
     />
   );
 };
