@@ -58,6 +58,10 @@ const StyledComponent = styled.div`
       height: auto;
     }
   }
+
+  .customization-separator {
+    max-width: 700px;
+  }
 `;
 
 StyledComponent.defaultProps = { theme: Base };
@@ -95,12 +99,13 @@ const Customization = (props) => {
           {t("Settings:CustomizationDescription")}
         </div>
       )}
+
       <LanguageAndTimeZone isMobileView={viewMobile} />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="customization-separator" />
       <WelcomePageSettings isMobileView={viewMobile} />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="customization-separator" />
       <DNSSettings isMobileView={viewMobile} />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="customization-separator" />
       <PortalRenaming isMobileView={viewMobile} />
     </StyledComponent>
   );

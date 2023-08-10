@@ -61,6 +61,10 @@ const MainContainer = styled.div`
       position: absolute;
       z-index: 1 !important;
     }
+
+    .history-row-container {
+      max-width: 700px;
+    }
   }
 
   ${(props) => props.isSettingNotPaid && UnavailableStyles}

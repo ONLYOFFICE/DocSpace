@@ -63,7 +63,7 @@ const AccessPortal = (props) => {
         classNameTooltip="password-strength"
       />
       <PasswordStrengthSection />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="security-separator" />
       <CategoryWrapper
         t={t}
         title={t("TwoFactorAuth")}
@@ -84,7 +84,7 @@ const AccessPortal = (props) => {
         classNameTooltip="two-factor-auth"
       />
       <TfaSection />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="security-separator" />
       <CategoryWrapper
         t={t}
         title={t("TrustedMail")}
@@ -106,7 +106,7 @@ const AccessPortal = (props) => {
         classNameTooltip="trusted-mail"
       />
       <TrustedMailSection />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="security-separator" />
       <CategoryWrapper
         t={t}
         title={t("IPSecurity")}
@@ -124,7 +124,7 @@ const AccessPortal = (props) => {
         classNameTooltip="ip-security"
       />
       <IpSecuritySection />
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="security-separator" />
       <CategoryWrapper
         t={t}
         title={t("AdminsMessage")}
@@ -146,7 +146,7 @@ const AccessPortal = (props) => {
       />
       <AdminMessageSection />
 
-      <StyledSettingsSeparator />
+      <StyledSettingsSeparator className="security-separator" />
       <CategoryWrapper
         t={t}
         title={t("SessionLifetime")}

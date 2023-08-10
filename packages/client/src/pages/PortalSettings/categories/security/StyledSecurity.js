@@ -28,6 +28,10 @@ export const MainContainer = styled.div`
     position: fixed;
     left: 50%;
   }
+
+  .security-separator {
+    max-width: 700px;
+  }
 `;
 
 MainContainer.defaultProps = { theme: Base };
