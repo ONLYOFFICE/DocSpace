@@ -73,7 +73,6 @@ const withLoader = (WrappedComponent) => (Loader) => {
         isLoadingFilesFind,
         isInit: isPublicRoom ? true : isInit,
         showBodyLoader,
-        isPublicRoom,
         accountsViewAs,
       };
     }
