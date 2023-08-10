@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { isTablet } from "react-device-detect";
 
 const StyledLoader = styled.div`
-  padding-left: 8px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-right: 8px;
+        `
+      : css`
+          padding-left: 8px;
+        `}
 
   .loader {
     padding-bottom: 12px;
@@ -26,7 +33,14 @@ const StyledLoader = styled.div`
   }
 
   @media (min-width: 1024px) {
-    padding-left: 10px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 10px;
+          `
+        : css`
+            padding-left: 10px;
+          `}
     padding-top: 7px;
     display: flex;
     flex-direction: column;

@@ -32,7 +32,14 @@ const HeaderContainer = styled.div`
     display: flex;
     align-items: baseline;
     .settings-section_badge {
-      margin-left: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
       cursor: auto;
     }
 
@@ -46,16 +53,38 @@ const HeaderContainer = styled.div`
     flex-grow: 1;
 
     .action-button {
-      margin-left: auto;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: auto;
+            `
+          : css`
+              margin-left: auto;
+            `}
     }
   }
 
   .arrow-button {
-    margin-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 12px;
+          `
+        : css`
+            margin-right: 12px;
+          `}
 
     @media ${tablet} {
-      padding: 8px 0 8px 8px;
-      margin-left: -8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 8px 8px 8px 0;
+              margin-right: -8px;
+            `
+          : css`
+              padding: 8px 0 8px 8px;
+              margin-left: -8px;
+            `}
     }
   }
 
@@ -88,7 +117,7 @@ const HeaderContainer = styled.div`
 
 const StyledContainer = styled.div`
   .group-button-menu-container {
-    ${(props) =>
+    ${props =>
       props.viewAs === "table"
         ? css`
             margin: 0px -20px;
@@ -118,7 +147,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const SectionHeaderContent = (props) => {
+const SectionHeaderContent = props => {
   const {
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,
@@ -136,7 +165,7 @@ const SectionHeaderContent = (props) => {
     isHeaderVisible: false,
   });
 
-  const isAvailableSettings = (key) => {
+  const isAvailableSettings = key => {
     switch (key) {
       case "DNSSettings":
         return isBrandingAndCustomizationAvailable;
@@ -173,12 +202,12 @@ const SectionHeaderContent = (props) => {
     const isNeedPaidIcon = !isAvailableSettings(header);
 
     state.isNeedPaidIcon !== isNeedPaidIcon &&
-      setState((val) => ({ ...val, isNeedPaidIcon }));
+      setState(val => ({ ...val, isNeedPaidIcon }));
 
-    header !== state.header && setState((val) => ({ ...val, header }));
+    header !== state.header && setState(val => ({ ...val, header }));
 
     isCategoryOrHeader !== state.isCategoryOrHeader &&
-      setState((val) => ({ ...val, isCategoryOrHeader }));
+      setState(val => ({ ...val, isCategoryOrHeader }));
   }, [
     tReady,
     setIsLoadedSectionHeader,
@@ -199,14 +228,14 @@ const SectionHeaderContent = (props) => {
 
   const getArrayOfParams = () => {
     const resultPath = location.pathname;
-    const arrayOfParams = resultPath.split("/").filter((param) => {
+    const arrayOfParams = resultPath.split("/").filter(param => {
       return param !== "filter" && param && param !== "portal-settings";
     });
 
     return arrayOfParams;
   };
 
-  const addUsers = (items) => {
+  const addUsers = items => {
     const { addUsers } = props;
     if (!addUsers) return;
     addUsers(items);
@@ -222,7 +251,7 @@ const SectionHeaderContent = (props) => {
     deselectUser();
   };
 
-  const onCheck = (checked) => {
+  const onCheck = checked => {
     const { setSelected } = props;
     setSelected(checked ? "all" : "close");
   };

@@ -8,10 +8,17 @@ const StyledLoader = styled.div`
   align-items: center;
 
   .arrow {
-    padding-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
-  padding: ${(props) =>
+  padding: ${props =>
     props.isTabletView
       ? "16px 0 17px"
       : props.isDesktopView

@@ -23,7 +23,14 @@ export const commonSettingsStyles = css`
     }
 
     .inherit-title-link {
-      margin-right: 7px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 7px;
+            `
+          : css`
+              margin-right: 7px;
+            `}
       font-size: 19px;
       font-weight: 600;
     }
@@ -35,12 +42,12 @@ export const commonSettingsStyles = css`
 `;
 export const UnavailableStyles = css`
   .settings_unavailable {
-    color: ${(props) => props.theme.text.disableColor};
+    color: ${props => props.theme.text.disableColor};
     pointer-events: none;
     cursor: default;
 
     label {
-      color: ${(props) => props.theme.text.disableColor};
+      color: ${props => props.theme.text.disableColor};
     }
   }
 `;

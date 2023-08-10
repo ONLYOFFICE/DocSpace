@@ -15,7 +15,7 @@ const flex = "4px";
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.theme.client.settings.common.arrowColor};
+    fill: ${props => props.theme.client.settings.common.arrowColor};
   }
 `;
 
@@ -52,7 +52,7 @@ const StyledSettingsComponent = styled.div`
     textarea {
       color: ${props => props.theme.text.disableColor};
     }
-    ${(props) => props.standalone && "margin-top: 14px"};
+    ${props => props.standalone && "margin-top: 14px"};
   }
 
   .combo-button-label {
@@ -101,13 +101,27 @@ const StyledSettingsComponent = styled.div`
       props.hasScroll &&
       css`
         width: ${isMobileOnly ? "100vw" : "calc(100vw - 52px)"};
-        left: -16px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                right: -16px;
+              `
+            : css`
+                left: -16px;
+              `}
         position: relative;
 
         .settings-block {
           width: ${isMobileOnly ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
           max-width: none;
-          padding-left: 16px;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  padding-right: 16px;
+                `
+              : css`
+                  padding-left: 16px;
+                `}
         }
       `}
 
@@ -115,7 +129,14 @@ const StyledSettingsComponent = styled.div`
       box-sizing: border-box;
       position: absolute;
       bottom: 0;
-      left: 0;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              right: 0;
+            `
+          : css`
+              left: 0;
+            `}
       padding: 16px;
       width: 100%;
     }

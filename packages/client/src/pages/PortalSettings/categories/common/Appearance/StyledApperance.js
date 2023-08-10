@@ -55,7 +55,14 @@ const StyledComponent = styled.div`
   .add-theme {
     background: #d0d5da;
     padding-top: 16px;
-    padding-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+          `
+        : css`
+            padding-left: 16px;
+          `}
     box-sizing: border-box;
   }
 

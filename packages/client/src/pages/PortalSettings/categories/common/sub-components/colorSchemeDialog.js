@@ -1,7 +1,7 @@
 ﻿import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
 import React, { useEffect } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
 
@@ -9,7 +9,14 @@ const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
     width: 100%;
     bottom: 0 !important;
-    left: 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: 0;
+          `
+        : css`
+            left: 0;
+          `}
     padding: 16px;
     box-shadow: 0px 12px 40px rgba(4, 15, 27, 0.12);
   }
@@ -34,7 +41,7 @@ const StyledComponent = styled(ModalDialog)`
   }
 
   .accent-box {
-    background: ${(props) =>
+    background: ${props =>
       props.currentColorAccent
         ? props.currentColorAccent
         : props.theme.isBase
@@ -43,7 +50,7 @@ const StyledComponent = styled(ModalDialog)`
   }
 
   .buttons-box {
-    background: ${(props) =>
+    background: ${props =>
       props.currentColorButtons
         ? props.currentColorButtons
         : props.theme.isBase
@@ -59,7 +66,7 @@ const StyledComponent = styled(ModalDialog)`
   }
 `;
 
-const ColorSchemeDialog = (props) => {
+const ColorSchemeDialog = props => {
   const {
     visible,
     onClose,
@@ -75,8 +82,7 @@ const ColorSchemeDialog = (props) => {
     currentColorButtons,
   } = props;
 
-  const onKeyPress = (e) =>
-    (e.key === "Esc" || e.key === "Escape") && onClose();
+  const onKeyPress = e => (e.key === "Esc" || e.key === "Escape") && onClose();
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
@@ -90,8 +96,7 @@ const ColorSchemeDialog = (props) => {
       displayType="aside"
       currentColorAccent={currentColorAccent}
       currentColorButtons={currentColorButtons}
-      withFooterBorder={showSaveButtonDialog}
-    >
+      withFooterBorder={showSaveButtonDialog}>
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>
