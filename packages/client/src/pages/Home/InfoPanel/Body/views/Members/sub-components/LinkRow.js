@@ -92,7 +92,7 @@ const LinkRow = (props) => {
   };
 
   const onEmbeddingClick = () => {
-    setLinkParams({ link });
+    setLinkParams({ link, roomId });
     setEmbeddingPanelIsVisible(true);
   };
 

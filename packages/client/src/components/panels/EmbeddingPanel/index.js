@@ -8,9 +8,7 @@ import { StyledEmbeddingPanel, StyledScrollbar } from "./StyledEmbeddingPanel";
 import EmbeddingBody from "./EmbeddingBody";
 
 const EmbeddingPanelComponent = (props) => {
-  const { t, link, visible, setEmbeddingPanelIsVisible } = props;
-
-  const embeddingLink = "embeddingLinkembeddingLinkembeddingLinkembeddingLink";
+  const { t, link, roomId, visible, setEmbeddingPanelIsVisible } = props;
 
   const scrollRef = useRef(null);
 
@@ -44,7 +42,7 @@ const EmbeddingPanelComponent = (props) => {
           </Heading>
         </div>
         <StyledScrollbar ref={scrollRef} stype="mediumBlack">
-          <EmbeddingBody t={t} embeddingLink={link} />
+          <EmbeddingBody t={t} link={link} roomId={roomId} />
         </StyledScrollbar>
       </Aside>
     </StyledEmbeddingPanel>
@@ -59,6 +57,7 @@ export default inject(({ dialogsStore }) => {
     visible: embeddingPanelIsVisible,
     setEmbeddingPanelIsVisible,
     link: linkParams?.link?.sharedTo?.shareLink,
+    roomId: linkParams?.roomId,
   };
 })(
   withTranslation(["Files", "EmbeddingPanel"])(

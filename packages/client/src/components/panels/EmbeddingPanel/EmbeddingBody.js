@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from "react";
+﻿import React, { useState } from "react";
 import copy from "copy-to-clipboard";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
@@ -9,28 +9,33 @@ import IconButton from "@docspace/components/icon-button";
 import Button from "@docspace/components/button";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import { StyledBody } from "./StyledEmbeddingPanel";
+import { objectToGetParams } from "@docspace/common/utils";
 
-const EmbeddingBody = ({ t, embeddingLink }) => {
+const EmbeddingBody = ({ t, link, roomId }) => {
   const [size, setSize] = useState("auto");
   const [widthValue, setWidthValue] = useState("100%");
   const [heightValue, setHeightValue] = useState("100%");
 
-  const getIframe = useCallback(
-    () =>
-      `<iframe src="${embeddingLink}" width="${widthValue}" height="${heightValue}" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
-    [embeddingLink, widthValue, heightValue]
-  );
-  const [link, setLink] = useState(getIframe());
+  const config = {
+    width: `${widthValue}`,
+    height: `${heightValue}`,
+    frameId: "ds-frame",
+    showHeader: true,
+    showTitle: true,
+    showMenu: false,
+    showFilter: true,
+    rootPath: "/rooms/shared/",
+    id: roomId,
+  };
 
-  useEffect(() => {
-    const link = getIframe();
-    setLink(link);
-  }, [embeddingLink, widthValue, heightValue]);
+  const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
+  const params = objectToGetParams(config);
+  const codeBlock = `<div id="${config.frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
   const onChangeWidth = (e) => setWidthValue(e.target.value);
   const onChangeHeight = (e) => setHeightValue(e.target.value);
   const onCopyLink = () => {
-    copy(link);
+    copy(codeBlock);
     toastr.success(t("EmbeddingPanel:CodeCopySuccess"));
   };
 
@@ -134,7 +139,7 @@ const EmbeddingBody = ({ t, embeddingLink }) => {
             iconName={CopyReactSvgUrl}
             onClick={onCopyLink}
           />
-          <Textarea isReadOnly value={link} heightTextArea={150} />
+          <Textarea isReadOnly value={codeBlock} heightTextArea={150} />
         </div>
       </div>
     </StyledBody>
