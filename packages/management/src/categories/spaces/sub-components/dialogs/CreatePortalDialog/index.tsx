@@ -6,6 +6,7 @@ import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { useTranslation } from "react-i18next";
 import { observer } from "mobx-react";
+import toastr from "@docspace/components/toast/toastr";
 import { TextInput, Checkbox } from "@docspace/components";
 import { useStore } from "SRC_DIR/store";
 
@@ -63,9 +64,13 @@ const CreatePortalDialog = () => {
       portalName: name,
       limitedAccessSpace: false,
     };
+    try {
+      await createNewPortal(data);
+      await getAllPortals();
+    } catch (error) {
+      toastr.error(t("PortalExists"));
+    }
 
-    await createNewPortal(data);
-    await getAllPortals();
     onClose();
   };
 
@@ -86,7 +91,6 @@ const CreatePortalDialog = () => {
         <Text noSelect={true}>{t("CreateSpaceDescription")}</Text>
         <div className="create-docspace-input-block">
           <Text
-            color="#333"
             fontSize="13px"
             fontWeight="600"
             style={{ paddingBottom: "5px" }}
