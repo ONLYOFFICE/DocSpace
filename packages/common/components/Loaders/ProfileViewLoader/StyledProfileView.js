@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { desktop, tablet } from "@docspace/components/utils/device";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledWrapper = styled.div`
   width: 660px;
@@ -108,7 +109,10 @@ const ThemeBlock = styled.div`
     }
 
     .description {
-      padding-left: 23px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-right: 23px;`
+          : `padding-left: 23px;`}
     }
   }
 
@@ -132,7 +136,8 @@ const MobileView = styled.div`
   flex-direction: column;
   margin-top: 8px;
   padding: 0 16px;
-  margin: 0 0 0 -20px;
+  margin: ${({ theme }) =>
+    getCorrectFourValuesStyle("0 0 0 -20px", theme.interfaceDirection)};
 
   .avatar {
     height: 124px;
@@ -172,14 +177,21 @@ const MobileView = styled.div`
     }
 
     .check-box {
-      padding-right: 7px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-left: 7px;`
+          : `padding-right: 7px;`}
     }
 
     .theme-selection {
       display: flex;
       flex-direction: column;
       padding-top: 4px;
-      padding-left: 22px;
+
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-right: 22px;`
+          : `padding-left: 22px;`}
 
       .theme-description {
         padding-bottom: 12px;
