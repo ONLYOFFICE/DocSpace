@@ -23,14 +23,20 @@ const StyledRow = styled.div`
   justify-items: center;
   align-items: center;
   .list-loader_rectangle {
-    padding-right: 4px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 4px;`
+        : `padding-right: 4px;`}
   }
   .list-loader_rectangle-content {
     width: 32px;
     height: 32px;
   }
   .list-loader_rectangle-row {
-    margin-right: auto;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: auto;`
+        : `margin-right: auto;`}
     max-width: 167px;
   }
 `;
