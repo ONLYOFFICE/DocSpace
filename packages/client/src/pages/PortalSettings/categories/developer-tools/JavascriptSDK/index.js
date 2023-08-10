@@ -160,6 +160,7 @@ const PortalIntegration = (props) => {
     showTitle: true,
     showMenu: true,
     showFilter: true,
+    init: true,
   });
 
   const params = objectToGetParams(config);
