@@ -25,7 +25,7 @@ const Template = (args) => {
       {...args}
       buttons={
         <>
-          <CrossReactSvgUrl size="small" style={{ marginRight: "4px" }} />
+          <CrossReactSvgUrl size="small" style={{ marginInlineEnd: "4px" }} />
           <Link type="action" isHovered={true} onClick={(e) => args.onClick(e)}>
             Reset filter
           </Link>

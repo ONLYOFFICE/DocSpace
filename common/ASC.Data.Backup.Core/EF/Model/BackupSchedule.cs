@@ -35,6 +35,7 @@ public class BackupSchedule : BaseEntity
     public string StorageBasePath { get; set; }
     public DateTime LastBackupTime { get; set; }
     public string StorageParams { get; set; }
+    public bool Dump { get; set; }
 
     public DbTenant Tenant { get; set; }
 
@@ -108,6 +109,11 @@ public static class BackupScheduleExtension
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
 
+            entity.Property(e => e.Dump)
+                .HasColumnName("dump")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
+
             entity.HasOne(e => e.Tenant)
                    .WithOne()
                    .HasForeignKey<BackupSchedule>(b => b.TenantId)
@@ -163,6 +169,11 @@ public static class BackupScheduleExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
+
+            entity.Property(e => e.Dump)
+                .HasColumnName("dump")
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValueSql("'0'");
 
             entity.HasOne(e => e.Tenant)
                    .WithOne()

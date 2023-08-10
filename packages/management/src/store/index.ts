@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 
-import BrandingStore from "./BrandingStore";
 import SpacesStore from "./SpacesStore";
 
 import store from "client/store";
@@ -8,8 +7,7 @@ const { auth: authStore } = store;
 
 export class RootStore {
   authStore = authStore;
-  brandingStore = new BrandingStore();
-  spacesStore = new SpacesStore(this.brandingStore);
+  spacesStore = new SpacesStore(this.authStore);
 }
 
 export const RootStoreContext = createContext<RootStore | null>(null);

@@ -23,9 +23,14 @@ const containerTabletStyle = css`
 
 const mainWrapperTabletStyle = css`
   min-width: ${(props) => props.theme.rowContent.mainWrapper.minWidth};
-  margin-right: ${(props) => props.theme.rowContent.mainWrapper.marginRight};
+
   margin-top: ${(props) => props.theme.rowContent.mainWrapper.marginTop};
   width: ${(props) => props.theme.rowContent.mainWrapper.width};
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: ${theme.rowContent.mainWrapper.marginRight};`
+      : `margin-right: ${theme.rowContent.mainWrapper.marginRight};`}
 `;
 
 const mainContainerTabletStyle = css`
@@ -62,11 +67,20 @@ StyledRowContent.defaultProps = { theme: Base };
 
 const MainContainerWrapper = styled.div`
   ${commonCss};
-  margin-left: 0;
 
   display: flex;
   align-self: center;
-  margin-right: auto;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `
+      margin-right: 0;
+      margin-left: auto;
+      `
+      : `
+      margin-left: 0;
+      margin-right: auto;
+      `}
 
   width: ${(props) =>
     props.mainContainerWidth ? props.mainContainerWidth : "140px"};
@@ -91,8 +105,13 @@ MainContainerWrapper.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
   height: 20px;
-  margin-right: 8px;
+
   max-width: 100%;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: 8px;`
+      : `margin-right: 8px;`}
 
   ${(props) =>
     (props.widthProp && props.widthProp <= size.tablet) || props.isMobile

@@ -61,6 +61,7 @@ const Base = {
   backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "13px",
+  interfaceDirection: "ltr",
 
   text: {
     color: black,
@@ -496,7 +497,7 @@ const Base = {
     textColor: black,
     textDisableColor: gray,
 
-    marginRight: "8px",
+    marginBeforeLabel: "8px",
 
     background: white,
     disableBackground: grayLight,
@@ -1354,38 +1355,10 @@ const Base = {
   },
 
   progressBar: {
-    height: "22px",
-    backgroundColor: grayLight,
-    marginLeft: "-100%",
-
-    fullText: {
-      padding: "0px 6px",
-      fontWeight: "600",
-      margin: "0",
-    },
+    backgroundColor: "#DADDDF",
 
     percent: {
-      float: "left",
-      overflow: "hidden",
-      maxHeight: "22px",
-      minHeight: "22px",
-      transition: "width 0.6s ease",
-      background: "linear-gradient(90deg, #20d21f 75%, #b9d21f 100%)",
-    },
-
-    text: {
-      minWidth: "200%",
-
-      progressText: {
-        padding: "2px 6px",
-        margin: "0",
-        minWidth: "100px",
-        fontWeight: "600",
-      },
-    },
-
-    dropDown: {
-      padding: "16px 16px 16px 17px",
+      background: "#4781D1",
     },
   },
 
@@ -3134,6 +3107,11 @@ const Base = {
 
   portalUnavailable: {
     textDescriptionColor: "#A3A9AE",
+  },
+
+  deepLink: {
+    navBackground: "#f8f9f9",
+    fileTileBackground: "#f3f4f4",
   },
 
   emailChips: {

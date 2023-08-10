@@ -34,6 +34,7 @@ class AuthStore {
   isUpdatingTariff = false;
 
   tenantExtra = {};
+
   constructor() {
     this.userStore = new UserStore();
 
@@ -460,6 +461,10 @@ class AuthStore {
     const capabilities = await api.settings.getCapabilities();
     if (capabilities) this.setCapabilities(capabilities);
   };
+
+  get isManagement() {
+    return window.location.pathname.includes("management");
+  }
 }
 
 export default new AuthStore();

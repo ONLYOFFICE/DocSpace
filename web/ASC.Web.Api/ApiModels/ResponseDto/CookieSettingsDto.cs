@@ -26,8 +26,15 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class CookieSettingsDto
 {
+    /// <summary>Lifetime value in minutes</summary>
+    /// <type>System.Int32, System</type>
     public int LifeTime { get; set; }
+
+    /// <summary>Specifies if the cookie settings are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
 }

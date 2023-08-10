@@ -70,6 +70,17 @@ public class WhitelabelController : BaseSettingsController
         _tenantExtra = tenantExtra;
     }
 
+    /// <summary>
+    /// Saves the white label settings specified in the request.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelRequestsDto, ASC.Web.Api" name="inDto">Request parameters for white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is sucessful</returns>
+    /// <path>api/2.0/settings/whitelabel/save</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
     public async Task<bool> SaveWhiteLabelSettingsAsync(WhiteLabelRequestsDto inDto)
@@ -100,6 +111,16 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Saves the white label settings from files.
+    /// </summary>
+    /// <short>
+    /// Save the white label settings from files
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/savefromfiles</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
     public async Task<bool> SaveWhiteLabelSettingsFromFilesAsync()
@@ -159,7 +180,20 @@ public class WhitelabelController : BaseSettingsController
         fileExt = parts.Last();
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Returns the white label logos.
+    /// </summary>
+    /// <short>
+    /// Get the white label logos
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelQueryRequestsDto, ASC.Web.Api" name="inDto">White label request parameters</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemDto, ASC.Web.Api">White label logos</returns>
+    /// <path>api/2.0/settings/whitelabel/logos</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
+    /// <visible>false</visible>
     [AllowNotPayment, AllowAnonymous, AllowSuspended]
     [HttpGet("whitelabel/logos")]
     public async IAsyncEnumerable<WhiteLabelItemDto> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
@@ -219,6 +253,16 @@ public class WhitelabelController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the white label logo text.
+    /// </summary>
+    /// <short>
+    /// Get the white label logo text
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Object, System">Logo text</returns>
+    /// <path>api/2.0/settings/whitelabel/logotext</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [AllowNotPayment]
     [HttpGet("whitelabel/logotext")]
@@ -232,7 +276,17 @@ public class WhitelabelController : BaseSettingsController
     }
 
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Restores the white label options.
+    /// </summary>
+    /// <short>
+    /// Restore the white label options
+    /// </short>
+    /// <category>Rebranding</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/whitelabel/restore</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("whitelabel/restore")]
     public async Task<bool> RestoreWhiteLabelOptionsAsync()
     {
@@ -250,7 +304,16 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Returns the licensor data.
+    /// </summary>
+    /// <short>Get the licensor data</short>
+    /// <category>Rebranding</category>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">List of company white label settings</returns>
+    /// <path>api/2.0/settings/companywhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpGet("companywhitelabel")]
     public async Task<List<CompanyWhiteLabelSettings>> GetLicensorDataAsync()
     {
@@ -268,7 +331,16 @@ public class WhitelabelController : BaseSettingsController
         return result;
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Saves the company white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the company white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettingsWrapper, ASC.Web.Core" name="companyWhiteLabelSettingsWrapper">Company white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("rebranding/company")]
     public async Task<bool> SaveCompanyWhiteLabelSettingsAsync(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
@@ -286,15 +358,32 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-    [AllowNotPayment]
+
+    /// <summary>
+    /// Returns the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the company white label settings</short>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CompanyWhiteLabelSettingsDtov, ASC.Web.Api">Company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/company")]
     public async Task<CompanyWhiteLabelSettingsDto> GetCompanyWhiteLabelSettingsAsync()
     {
         return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(await _settingsManager.LoadAsync<CompanyWhiteLabelSettings>());
     }
 
-    ///<visible>false</visible>
+    /// <summary>
+    /// Deletes the company white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the company white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">Default company white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/company</path>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <visible>false</visible>
     [HttpDelete("rebranding/company")]
     public async Task<CompanyWhiteLabelSettings> DeleteCompanyWhiteLabelSettingsAsync()
     {
@@ -308,6 +397,15 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the additional white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the additional white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettingsWrapper, ASC.Web.Core" name="wrapper">Additional white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/additional")]
     public async Task<bool> SaveAdditionalWhiteLabelSettingsAsync(AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -324,14 +422,31 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-    [AllowNotPayment]
+
+    /// <summary>
+    /// Returns the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the additional white label settings</short>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.AdditionalWhiteLabelSettingsDto, ASC.Web.Api">Additional white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/additional")]
     public async Task<AdditionalWhiteLabelSettingsDto> GetAdditionalWhiteLabelSettingsAsync()
     {
         return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(await _settingsManager.LoadAsync<AdditionalWhiteLabelSettings>());
     }
 
+    /// <summary>
+    /// Deletes the additional white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the additional white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettings, ASC.Web.Core">Default additional white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/additional</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/additional")]
     public async Task<AdditionalWhiteLabelSettings> DeleteAdditionalWhiteLabelSettingsAsync()
@@ -346,6 +461,15 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Saves the mail white label settings specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Save the mail white label settings</short>
+    /// <param type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core" name="settings">Mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
     [HttpPost("rebranding/mail")]
     public async Task<bool> SaveMailWhiteLabelSettingsAsync(MailWhiteLabelSettings settings)
@@ -359,6 +483,15 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
+    /// <summary>
+    /// Updates the mail white label settings with a paramater specified in the request.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Update the mail white label settings</short>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailWhiteLabelSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
     [HttpPut("rebranding/mail")]
     public async Task<bool> UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
@@ -368,12 +501,20 @@ public class WhitelabelController : BaseSettingsController
 
         await _settingsManager.ManageAsync<MailWhiteLabelSettings>(settings =>
         {
-            settings.FooterEnabled = inDto.FooterEnabled;
+        settings.FooterEnabled = inDto.FooterEnabled;
         });
 
         return true;
     }
 
+    /// <summary>
+    /// Returns the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Get the mail white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Mail white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("rebranding/mail")]
     public async Task<MailWhiteLabelSettings> GetMailWhiteLabelSettingsAsync()
@@ -381,6 +522,14 @@ public class WhitelabelController : BaseSettingsController
         return await _settingsManager.LoadAsync<MailWhiteLabelSettings>();
     }
 
+    /// <summary>
+    /// Deletes the mail white label settings.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Delete the mail white label settings</short>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Default mail white label settings</returns>
+    /// <path>api/2.0/settings/rebranding/mail</path>
+    /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
     [HttpDelete("rebranding/mail")]
     public async Task<MailWhiteLabelSettings> DeleteMailWhiteLabelSettingsAsync()
@@ -395,6 +544,14 @@ public class WhitelabelController : BaseSettingsController
         return defaultSettings;
     }
 
+    /// <summary>
+    /// Checks if the white label is enabled or not.
+    /// </summary>
+    /// <category>Rebranding</category>
+    /// <short>Check the white label availability</short>
+    /// <returns type="System.Boolean, System">Boolean value: true if the white label is enabled</returns>
+    /// <path>api/2.0/settings/enableWhitelabel</path>
+    /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
     [HttpGet("enableWhitelabel")]
     public async Task<bool> GetEnableWhitelabelAsync()

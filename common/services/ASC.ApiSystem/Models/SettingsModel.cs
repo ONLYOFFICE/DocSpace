@@ -39,3 +39,9 @@ public class SettingsModel : IModel
 
     public string Value { get; set; }
 }
+
+public class DomainModel
+{
+    [StringLength (255)]
+    public string HostName { get; set; }
+}

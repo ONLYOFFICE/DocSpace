@@ -310,11 +310,11 @@ module.exports = (env, argv) => {
         "./PeopleSelector": "./src/components/PeopleSelector",
         "./PeopleSelector/UserTooltip":
           "./src/components/PeopleSelector/sub-components/UserTooltip.js",
-        "./BreakpointWarning": "./src/components/BreakpointWarning",
-        "./CommonWhiteLabel":
-          "./src/pages/PortalSettings/categories/common/Branding/WhiteLabelWrapper.js",
-        "./LoaderWhiteLabel":
-          "./src/pages/PortalSettings/categories/common/sub-components/loaderWhiteLabel.js",
+        "./BrandingPage":
+          "./src/pages/PortalSettings/categories/common/branding.js",
+        "./BackupPage": "./src/pages/PortalSettings/categories/data-management",
+        "./RestorePage":
+          "./src/pages/PortalSettings/categories/data-management/backup/restore-backup",
         "./PaymentsPage": "./src/pages/PortalSettings/categories/payments",
       },
       shared: {

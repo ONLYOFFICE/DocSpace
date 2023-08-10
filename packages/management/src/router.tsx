@@ -28,6 +28,14 @@ const router = createBrowserRouter([
       },
       {
         path: "backup",
+        element: <Navigate to="/management/backup/data-backup" />,
+      },
+      {
+        path: "backup/data-backup",
+        element: <Backup />,
+      },
+      {
+        path: "backup/auto-backup",
         element: <Backup />,
       },
       {

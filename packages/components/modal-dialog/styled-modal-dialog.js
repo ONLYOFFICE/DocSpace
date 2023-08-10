@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import { mobile, smallTablet, tablet } from "../utils/device";
+import { smallTablet, tablet } from "../utils/device";
 import { isMobile } from "react-device-detect";
 
 const StyledModal = styled.div`
@@ -62,16 +62,33 @@ const Content = styled.div.attrs((props) => ({
           flex-direction: column;
           position: absolute;
           top: 0;
-          right: 0;
           bottom: 0;
-          transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  left: 0;
+                  transform: translateX(
+                    ${(props) => (props.visible ? "0" : "-100%")}
+                  );
+                `
+              : css`
+                  right: 0;
+                  transform: translateX(
+                    ${(props) => (props.visible ? "0" : "100%")}
+                  );
+                `}
+
           transition: transform 0.3s ease-in-out;
+
           @media ${smallTablet} {
             transform: translateY(${(props) => (props.visible ? "0" : "100%")});
             height: 100%;
             width: 100%;
             left: 0;
             top: ${(props) => (props.embedded ? "0" : "auto")};
+            right: 0;
+            top: auto;
             bottom: 0;
           }
         `}
@@ -102,13 +119,25 @@ const StyledBody = styled(Box)`
 
   white-space: pre-line;
 
-  #modal-scroll > .scroll-body {
-    ${isMobile && "margin-right: 0 !important"}
-    padding-right: 16px !important;
+  #modal-scroll > .scroll-wrapper > .scroller > .scroll-body {
+    ${(props) =>
+      isMobile && props.theme.interfaceDirection === "rtl"
+        ? `margin-left: 0 !important;`
+        : `margin-right: 0 !important;`}
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `padding-left: 16px !important;`
+        : `padding-right: 16px !important;`}
+
     ${(props) =>
       props.isScrollLocked &&
       css`
-        margin-right: 0 !important;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? `margin-left: 0 !important;`
+            : `margin-right: 0 !important;`}
+
         overflow: hidden !important;
       `}
   }
@@ -116,7 +145,10 @@ const StyledBody = styled(Box)`
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
-      margin-right: ${props.withBodyScroll ? "-16px" : "0"};
+      ${props.theme.interfaceDirection === "rtl"
+        ? `margin-left: ${props.withBodyScroll ? "-16px" : "0"};`
+        : `margin-right: ${props.withBodyScroll ? "-16px" : "0"};`}
+
       padding-bottom: 8px;
       height: 100%;
       min-height: auto;

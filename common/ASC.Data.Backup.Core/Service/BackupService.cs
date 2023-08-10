@@ -193,7 +193,8 @@ public class BackupService : IBackupService
                 BackupsStored = request.NumberOfBackupsStored,
                 StorageType = request.StorageType,
                 StorageBasePath = request.StorageBasePath,
-                StorageParams = JsonConvert.SerializeObject(request.StorageParams)
+                StorageParams = JsonConvert.SerializeObject(request.StorageParams),
+                Dump = request.Dump
             });
     }
 
@@ -214,7 +215,8 @@ public class BackupService : IBackupService
                 NumberOfBackupsStored = schedule.BackupsStored,
                 Cron = schedule.Cron,
                 LastBackupTime = schedule.LastBackupTime,
-                StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams)
+                StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams),
+                Dump = schedule.Dump
             };
 
             return tmp;

@@ -26,6 +26,8 @@ const DataManagementWrapper = (props) => {
 
     isNotPaidPeriod,
     toDefault,
+
+    isManagement,
   } = props;
 
   const navigate = useNavigate();
@@ -104,12 +106,11 @@ const DataManagementWrapper = (props) => {
   }, []);
 
   const onSelect = (e) => {
+    const url = isManagement
+      ? `/management/backup/${e.id}`
+      : `/portal-settings/backup/${e.id}`;
     navigate(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/portal-settings/backup/${e.id}`
-      )
+      combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, url)
     );
   };
 
@@ -128,7 +129,7 @@ const DataManagementWrapper = (props) => {
 
 export default inject(({ auth, setup, backup }) => {
   const { initSettings } = setup;
-  const { settingsStore, currentTariffStatusStore } = auth;
+  const { settingsStore, currentTariffStatusStore, isManagement } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { toDefault } = backup;
   const {
@@ -149,5 +150,7 @@ export default inject(({ auth, setup, backup }) => {
     isNotPaidPeriod,
     currentColorScheme,
     toDefault,
+
+    isManagement,
   };
 })(withTranslation(["Settings", "Common"])(observer(DataManagementWrapper)));

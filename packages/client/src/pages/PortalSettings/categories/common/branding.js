@@ -60,10 +60,16 @@ const Branding = ({
   isLoadedCompanyInfoSettingsData,
   isSettingPaid,
   standalone,
+  initSettings,
 }) => {
   const isSmallWindow = useIsSmallWindow(795);
 
+  const init = async () => {
+    await initSettings();
+  };
+
   useEffect(() => {
+    init();
     return () => {
       if (!window.location.pathname.includes("customization")) {
         resetSessionStorage();
@@ -103,12 +109,13 @@ const Branding = ({
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore, settingsStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
-  const { isLoadedCompanyInfoSettingsData } = common;
+  const { isLoadedCompanyInfoSettingsData, initSettings } = common;
   const { standalone } = settingsStore;
 
   return {
     isLoadedCompanyInfoSettingsData,
     isSettingPaid: isBrandingAndCustomizationAvailable,
     standalone,
+    initSettings,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

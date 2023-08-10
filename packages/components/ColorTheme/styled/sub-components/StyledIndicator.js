@@ -8,7 +8,9 @@ const StyledIndicator = styled.div`
   background: ${(props) => props.theme.filterInput.filter.indicatorColor};
   position: absolute;
   top: 25px;
-  left: 25px;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 25px;` : `left: 25px;`}
 
   z-index: 10;
 `;

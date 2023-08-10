@@ -1,3 +1,4 @@
+import { settingsTree } from 'SRC_DIR/utils/settingsTree';
 import { makeAutoObservable } from "mobx";
 import { getLogoFromPath } from "@docspace/common/utils";
 import {
@@ -13,7 +14,7 @@ import { TNewPortalData, TPortals } from "SRC_DIR/types/spaces";
 
 class SpacesStore {
   isInit = false;
-  brandingStore = null;
+  authStore = null;
 
   portals: TPortals[] = [];
   domain: string | null = null;
@@ -21,15 +22,14 @@ class SpacesStore {
   createPortalDialogVisible = false;
   domainDialogVisible = false;
 
-  constructor(brandingStore) {
-    this.brandingStore = brandingStore;
+  constructor(authStore) {
+    this.authStore = authStore;
     makeAutoObservable(this);
   }
 
   initStore = async () => {
     if (this.isInit) return;
     this.isInit = true;
-    this.brandingStore.initStore();
 
     const requests = [];
     requests.push(this.getPortalDomain(), this.getAllPortals());
@@ -63,7 +63,7 @@ class SpacesStore {
   }
 
   get faviconLogo() {
-    const logos = this.brandingStore.whiteLabelLogos;
+    const logos = this.authStore.settingsStore.whiteLabelLogoUrls;
     if (!logos) return;
     return getLogoFromPath(logos[2]?.path?.light);
   }

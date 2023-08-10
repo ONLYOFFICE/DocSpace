@@ -210,7 +210,7 @@ const BackupListModalDialog = (props) => {
                 </Text>
                 <Link
                   id="delete-backups"
-                  onClick={this.onCleanBackupList}
+                  onClick={onCleanBackupList}
                   fontWeight={600}
                   style={{ textDecoration: "underline dotted" }}
                 >
@@ -224,8 +224,8 @@ const BackupListModalDialog = (props) => {
                 filesList.length > 0 ? (
                   <BackupListBody
                     filesList={filesList}
-                    onDeleteBackup={this.onDeleteBackup}
-                    onSelectFile={this.onSelectFile}
+                    onDeleteBackup={onDeleteBackup}
+                    onSelectFile={onSelectFile}
                     selectedFileIndex={selectedFileIndex}
                   />
                 ) : (
@@ -253,7 +253,7 @@ const BackupListModalDialog = (props) => {
             <Checkbox
               truncate
               className="backup-list_checkbox"
-              onChange={this.onChangeCheckbox}
+              onChange={onChangeCheckbox}
               isChecked={isChecked}
             />
             <Text as="span" className="backup-list_agreement-text">
@@ -274,7 +274,7 @@ const BackupListModalDialog = (props) => {
               primary
               size="normal"
               label={t("Common:Restore")}
-              onClick={this.onRestorePortal}
+              onClick={onRestorePortal}
               isDisabled={isCopyingToLocal || !isChecked}
             />
             <Button
