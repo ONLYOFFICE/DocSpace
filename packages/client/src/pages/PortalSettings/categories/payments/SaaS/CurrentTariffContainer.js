@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -10,7 +10,7 @@ import { mobile } from "@docspace/components/utils/device";
 const StyledCurrentTariffContainer = styled.div`
   display: flex;
   min-height: 40px;
-  background: ${(props) => props.theme.client.settings.payment.backgroundColor};
+  background: ${props => props.theme.client.settings.payment.backgroundColor};
   margin-bottom: 24px;
   flex-wrap: wrap;
   margin-top: 14px;
@@ -26,15 +26,29 @@ const StyledCurrentTariffContainer = styled.div`
 
   div {
     padding-bottom: 8px;
-    margin-right: 24px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 24px;
+          `
+        : css`
+            margin-right: 24px;
+          `}
   }
 
   p {
     margin-bottom: 0;
-    color: ${(props) => props.theme.client.settings.payment.tariffText};
+    color: ${props => props.theme.client.settings.payment.tariffText};
     .current-tariff_count {
-      color: ${(props) => props.theme.client.settings.payment.tariffText};
-      margin-left: 4px;
+      color: ${props => props.theme.client.settings.payment.tariffText};
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 4px;
+            `
+          : css`
+              margin-left: 4px;
+            `}
     }
   }
 `;
@@ -71,8 +85,7 @@ const CurrentTariffContainer = ({ style, quotaCharacteristics }) => {
                 className="current-tariff_count"
                 as="span"
                 isBold
-                fontSize={"14px"}
-              >
+                fontSize={"14px"}>
                 {resultingUsedValue}
                 {resultingMaxValue ? `/${resultingMaxValue}` : ""}
               </Text>

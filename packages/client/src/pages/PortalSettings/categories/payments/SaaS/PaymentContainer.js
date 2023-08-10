@@ -33,7 +33,7 @@ const StyledBody = styled.div`
     @media (max-width: ${size.smallTablet + 40}px) {
       grid-template-columns: 1fr;
 
-      grid-template-rows: ${(props) => "1fr max-content"};
+      grid-template-rows: ${props => "1fr max-content"};
 
       .price-calculation-container,
       .benefits-container {
@@ -44,11 +44,11 @@ const StyledBody = styled.div`
       }
     }
 
-    ${(props) =>
+    ${props =>
       props.isChangeView &&
       css`
         grid-template-columns: 1fr;
-        grid-template-rows: ${(props) => "1fr max-content"};
+        grid-template-rows: ${props => "1fr max-content"};
 
         .price-calculation-container,
         .benefits-container {
@@ -75,12 +75,19 @@ const StyledBody = styled.div`
       margin: auto 0;
     }
     .payment-info_managers-price {
-      margin-right: 6px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 6px;
+            `
+          : css`
+              margin-right: 6px;
+            `}
     }
   }
 `;
 
-const PaymentContainer = (props) => {
+const PaymentContainer = props => {
   const {
     isFreeTariff,
     isGracePeriod,
@@ -157,8 +164,7 @@ const PaymentContainer = (props) => {
         noSelect
         fontSize="16px"
         isBold
-        color={theme.client.settings.payment.warningColor}
-      >
+        color={theme.client.settings.payment.warningColor}>
         <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
           {{ date: gracePeriodEndDate }} {{ planName: tariffPlanTitle }}
         </Trans>
@@ -175,8 +181,7 @@ const PaymentContainer = (props) => {
           noSelect
           fontSize="16px"
           isBold
-          className={"payment-info_suggestion"}
-        >
+          className={"payment-info_suggestion"}>
           <Trans t={t} i18nKey="StartupSuggestion" ns="Payments">
             {{ planName: tariffPlanTitle }}
           </Trans>
@@ -190,8 +195,7 @@ const PaymentContainer = (props) => {
           noSelect
           fontSize="16px"
           isBold
-          className={"payment-info_suggestion"}
-        >
+          className={"payment-info_suggestion"}>
           <Trans t={t} i18nKey="BusinessSuggestion" ns="Payments">
             {{ planName: tariffPlanTitle }}
           </Trans>
@@ -205,8 +209,7 @@ const PaymentContainer = (props) => {
           noSelect
           fontSize="16px"
           isBold
-          className={"payment-info_suggestion"}
-        >
+          className={"payment-info_suggestion"}>
           <Trans t={t} i18nKey="RenewSubscription" ns="Payments">
             {{ planName: tariffPlanTitle }}
           </Trans>
@@ -221,8 +224,7 @@ const PaymentContainer = (props) => {
           fontSize="16px"
           isBold
           className={"payment-info_grace-period"}
-          color={theme.client.settings.payment.warningColor}
-        >
+          color={theme.client.settings.payment.warningColor}>
           <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
             {{ date: paymentDate }} {{ planName: currentTariffPlanTitle }}
           </Trans>
@@ -259,8 +261,7 @@ const PaymentContainer = (props) => {
           noSelect
           fontSize={"14px"}
           lineHeight={"16px"}
-          className="payment-info_managers-price"
-        >
+          className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: paymentDate }}
           </Trans>
@@ -272,13 +273,12 @@ const PaymentContainer = (props) => {
 
   return (
     <Consumer>
-      {(context) => (
+      {context => (
         <StyledBody
           theme={theme}
           isChangeView={
             context.sectionWidth < size.smallTablet && expandArticle
-          }
-        >
+          }>
           {isNotPaidPeriod
             ? expiredTitleSubscriptionWarning()
             : currentPlanTitle()}
@@ -303,8 +303,7 @@ const PaymentContainer = (props) => {
                   noSelect
                   fontWeight={600}
                   fontSize={"14px"}
-                  className="payment-info_managers-price"
-                >
+                  className="payment-info_managers-price">
                   <Trans t={t} i18nKey="PerUserMonth" ns="Common">
                     From {{ currencySymbol }}
                     {{ price: startValue }} per admin/power user /month
