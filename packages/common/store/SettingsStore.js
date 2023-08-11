@@ -79,6 +79,7 @@ class SettingsStore {
   logoUrl = "";
 
   isDesktopClient = isDesktopEditors;
+  isDesktopClientInit = false;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -300,6 +301,10 @@ class SettingsStore {
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
+
+  setIsDesktopClientInit = (isDesktopClientInit) => {
+    this.isDesktopClientInit = isDesktopClientInit;
+  };
 
   setMainBarVisible = (visible) => {
     this.mainBarVisible = visible;
