@@ -1,7 +1,7 @@
 <service>
-	<id>proxy</id>
-	<name>proxy</name>
-	<description>Proxy service</description>
+	<id>ASC.Proxy</id>
+	<name>ONLYOFFICE DocSpace Proxy</name>
+	<description>ONLYOFFICE DocSpace Proxy</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
 	<onfailure action="restart" delay="1 sec"/>

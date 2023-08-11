@@ -104,10 +104,10 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -119,7 +119,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
         bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType))
@@ -335,29 +335,29 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return moved;
     }
 
-    public async Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, string to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
-        return Task.FromResult((IDictionary<string, TTo>)new Dictionary<string, TTo>());
+        return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
     }
 
-    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, int to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
     {
-        return Task.FromResult((IDictionary<string, TTo>)new Dictionary<string, TTo>());
+        return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
     }
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)

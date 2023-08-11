@@ -26,8 +26,8 @@ command_exists () {
 
 check_hardware () {
     DISK_REQUIREMENTS=40960;
-    MEMORY_REQUIREMENTS=5500;
-    CORE_REQUIREMENTS=2;
+    MEMORY_REQUIREMENTS=8192;
+    CORE_REQUIREMENTS=4;
 
 	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
 
