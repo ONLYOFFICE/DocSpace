@@ -61,19 +61,19 @@
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
     <value>Witaj, $UserName!
 
-Witaj w ONLYOFFICE DocSpace! Twój profil użytkownika został pomyślnie dodany do „${__VirtualRootPath}”:”${__VirtualRootPath}”. Teraz możesz:
+Witaj w ONLYOFFICE DocSpace! Twój profil użytkownika został pomyślnie dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
 
-*# Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
 
-*# Pracować z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+* *Pracować z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
 
-*# Współpracować nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+* *Współpracować nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
 
-*# Podłączyć dowolną pamięć w chmurze* i pracować bez konieczności przełączania się między aplikacjami. 
+* *Podłączyć dowolną pamięć w chmurze* i pracować bez konieczności przełączania się między aplikacjami. 
 
 $GreenButton
 
-Jeśli potrzebujesz pomocy, sprawdź nasze Centrum pomocy: „https://helpcenter.onlyoffice.com/” lub skontaktuj się z naszym zespołem wsparcia pod adresem: „https://www.onlyoffice.com/support-contact-form.aspx”.
+Jeśli potrzebujesz pomocy, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub skontaktuj się z naszym zespołem wsparcia pod "adresem":"https://www.onlyoffice.com/support-contact-form.aspx".
 
 Pozdrawiamy, 
 Zespół ONLYOFFICE
@@ -156,7 +156,7 @@ Zespół ONLYOFFICE</value>
   <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>Witaj, {username}
 
-Proces usuwania danych użytkownika "$FromUserName":"$FromUserLink” został pomyślnie zakończony.
+Proces usuwania danych użytkownika "$FromUserName":"$FromUserLink" został pomyślnie zakończony.
 
 Usunięcie danych osobowych umożliwiło uwolnienie:
 

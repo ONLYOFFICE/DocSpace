@@ -289,7 +289,7 @@ Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de ut
  
 Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
  
-Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+Pentru a proceda astfel, consultaţi secţiunea "Plăți":"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
  
 _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
  
@@ -329,13 +329,13 @@ Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de ut
  
 Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
  
-Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+Pentru a proceda astfel, consultaţi secţiunea "Plăți":"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
  
 _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
  
 Cu deosebită considerație,
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>Stimate, $UserName!
@@ -350,13 +350,13 @@ Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de ut
  
 Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
  
-Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+Pentru a proceda astfel, consultaţi secţiunea "Plăți":"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
  
 _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
  
 Cu deosebită considerație,
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
     <value>Stimate, $UserName!
@@ -438,11 +438,11 @@ Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost a
  
 $GreenButton
  
-Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați "echipa noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
  
 Cu deosebită considerație, 
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>Stimate, $UserName!
@@ -459,53 +459,53 @@ Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost a
  
 $GreenButton
  
-Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați "echipa noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
  
 Cu deosebită considerație, 
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>Stimate, $UserName!
  
 Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
  
-*# Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+* Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
  
-*# Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+* *Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
  
-*# Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+* *Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
  
-*# Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+* *Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
  
 $GreenButton
  
-Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați "echipa noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
  
 Cu deosebită considerație, 
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>Stimate, $UserName!
  
 Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
  
-*# Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+* Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
  
-*# Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+* *Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
  
-*# Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+* *Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
  
-*# Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+* *Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
  
 $GreenButton
  
-Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați "echipa noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
  
 Cu deosebită considerație, 
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_for_sales_notify" xml:space="preserve">
     <value>h1.Mesajul de la "${__VirtualRootPath}": portalul "${__VirtualRootPath}"

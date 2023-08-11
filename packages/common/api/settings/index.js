@@ -1,11 +1,15 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings(withPassword = false) {
-  return request({
+export function getSettings(withPassword = false, headers = null) {
+  const options = {
     method: "get",
     url: `/settings?withPassword=${withPassword}`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function getPortalCultures() {
@@ -179,11 +183,15 @@ export function restoreGreetingSettings() {
   });
 }
 
-export function getAppearanceTheme() {
-  return request({
+export function getAppearanceTheme(headers = null) {
+  const options = {
     method: "get",
     url: "/settings/colortheme",
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function sendAppearanceTheme(data) {
@@ -208,11 +216,15 @@ export function getLogoText() {
   });
 }
 
-export function getLogoUrls() {
-  return request({
+export function getLogoUrls(headers = null) {
+  const options = {
     method: "get",
     url: `/settings/whitelabel/logos`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function setWhiteLabelSettings(data) {
@@ -583,11 +595,13 @@ export function getBackupStorage() {
   return request(options);
 }
 
-export function getBuildVersion() {
+export function getBuildVersion(headers = null) {
   const options = {
     method: "get",
     url: "/settings/version/build",
   };
+  if (headers) options.headers = headers;
+
   return request(options);
 }
 
