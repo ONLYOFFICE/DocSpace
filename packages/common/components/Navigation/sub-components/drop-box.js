@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 
 import { VariableSizeList } from "react-window";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
@@ -156,6 +156,7 @@ const DropBox = React.forwardRef(
       return isMobile || isMobileUtils() || isTabletUtils() ? 36 : 30;
     };
 
+    const { interfaceDirection } = useTheme();
     React.useEffect(() => {
       const itemsHeight = navigationItems.map((item, index) =>
         getItemSize(index)
@@ -249,6 +250,7 @@ const DropBox = React.forwardRef(
           </StyledContainer>
 
           <VariableSizeList
+            direction={interfaceDirection}
             height={dropBoxHeight}
             width={"auto"}
             itemCount={countItems}
