@@ -27,7 +27,6 @@
 using IJsonSerializer = JWT.IJsonSerializer;
 using JsonException = System.Text.Json.JsonException;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Web.Core.Files;
 
 public static class JsonWebToken
@@ -60,7 +59,7 @@ public static class JsonWebToken
     }
 }
 
-public class DictionaryStringObjectJsonConverter : JsonConverter<Dictionary<string, object>>
+public class DictionaryStringObjectJsonConverter : System.Text.Json.Serialization.JsonConverter<Dictionary<string, object>>
 {
     public override Dictionary<string, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
