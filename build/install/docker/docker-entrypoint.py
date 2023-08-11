@@ -188,17 +188,17 @@ jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.logLevel", LOG_LEVEL)
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/autofac.consumers.json"
-jsonData = openJsonFile(filePath)
-
 if OAUTH_REDIRECT_URL:
+    filePath = "/app/onlyoffice/config/autofac.consumers.json"
+    jsonData = openJsonFile(filePath)
+    
     for component in jsonData['components']:
         if 'parameters' in component and 'additional' in component['parameters']:
             for key, value in component['parameters']['additional'].items():
                 if re.search(r'.*RedirectUrl$', key) and value:
                     component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
-
-writeJsonFile(filePath, jsonData)
+                    
+    writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
