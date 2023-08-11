@@ -1160,14 +1160,20 @@ public class UserController : PeopleControllerBase
         }
 
         var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var viewerIsAdmin = await _userManager.IsDocSpaceAdminAsync(viewer);
         var user = await _userManager.GetUsersAsync(userid);
 
-        if (user == null)
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
+        if (!viewerIsAdmin && viewer.Id != user.Id)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        if (user.IsOwner(Tenant) && viewer.Id != user.Id)
         {
             throw new Exception(Resource.ErrorAccessDenied);
         }
@@ -1179,7 +1185,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!await _userManager.IsDocSpaceAdminAsync(viewer))
+        if (!viewerIsAdmin)
         {
             await _studioNotifyService.SendEmailChangeInstructionsAsync(user, email);
         }
