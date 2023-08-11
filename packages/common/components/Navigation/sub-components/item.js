@@ -25,17 +25,18 @@ const StyledItem = styled.div`
   width: auto !important;
   position: relative;
   display: grid;
-  align-items: ${props => (props.isRoot ? "baseline" : "end")};
+  align-items: ${(props) => (props.isRoot ? "baseline" : "end")};
   grid-template-columns: 17px auto;
   cursor: pointer;
 
-  margin-left: 0;
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `margin-right: 0;` : `margin-left: 0;`}
 
   @media ${tablet} {
     ${({ withLogo }) =>
       withLogo &&
       css`
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: 44px;
@@ -48,7 +49,7 @@ const StyledItem = styled.div`
 
   ${isMobile &&
   css`
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 0;
@@ -59,7 +60,7 @@ const StyledItem = styled.div`
   `};
 
   @media ${hugeMobile} {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 0;
@@ -71,7 +72,7 @@ const StyledItem = styled.div`
 `;
 
 const StyledText = styled(Text)`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: 10px;
@@ -80,7 +81,7 @@ const StyledText = styled(Text)`
           margin-left: 10px;
         `}
   position: relative;
-  bottom: ${props => (props.isRoot ? "2px" : "-1px")};
+  bottom: ${(props) => (props.isRoot ? "2px" : "-1px")};
 `;
 
 const Item = ({
@@ -102,7 +103,8 @@ const Item = ({
       isRoot={isRoot}
       onClick={onClickAvailable}
       withLogo={withLogo}
-      {...rest}>
+      {...rest}
+    >
       <ColorTheme isRoot={isRoot} themeId={ThemeType.IconWrapper}>
         {isMobile || isTablet() || IsMobileUtils() ? (
           isRoot ? (
@@ -122,7 +124,8 @@ const Item = ({
         fontWeight={isRoot ? "600" : "400"}
         fontSize={"15px"}
         truncate={true}
-        title={title}>
+        title={title}
+      >
         {title}
       </StyledText>
     </StyledItem>

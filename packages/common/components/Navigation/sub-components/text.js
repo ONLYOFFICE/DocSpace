@@ -20,11 +20,15 @@ const StyledTextContainer = styled.div`
 
   position: relative;
 
-  ${props =>
+  ${(props) =>
     !props.isRootFolder && !props.isRootFolderTitle && "cursor: pointer"};
-  ${props => props.isRootFolderTitle && "padding-right: 3px"};
+  ${(props) =>
+    props.isRootFolderTitle &&
+    (props.theme.interfaceDirection === "rtl"
+      ? "padding-left: 3px;"
+      : "padding-right: 3px;")};
 
-  ${props =>
+  ${(props) =>
     !props.isRootFolderTitle &&
     css`
       white-space: nowrap;
@@ -40,7 +44,7 @@ const StyledHeading = styled(Heading)`
 
   margin: 0;
 
-  ${props =>
+  ${(props) =>
     props.isRootFolderTitle &&
     `color: ${props.theme.navigation.rootFolderTitleColor}`};
 
@@ -66,7 +70,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           padding: 0 4px 0 2px;
@@ -75,7 +79,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
           padding: 0 2px 0 4px;
         `}
   path {
-    fill: ${props => props.theme.navigation.expanderColor};
+    fill: ${(props) => props.theme.navigation.expanderColor};
   }
 
   ${commonIconsStyles};
@@ -84,7 +88,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
 const StyledArrowIcon = styled(ArrowIcon)`
   height: 12px;
   min-width: 12px;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           padding-right: 6px;
@@ -93,7 +97,7 @@ const StyledArrowIcon = styled(ArrowIcon)`
           padding-left: 6px;
         `}
   path {
-    fill: ${props => props.theme.navigation.rootFolderTitleColor};
+    fill: ${(props) => props.theme.navigation.rootFolderTitleColor};
   }
 `;
 
@@ -103,7 +107,7 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           padding: 0 2px 0 4px;
@@ -114,7 +118,7 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   transform: rotate(-180deg);
 
   path {
-    fill: ${props => props.theme.navigation.expanderColor};
+    fill: ${(props) => props.theme.navigation.expanderColor};
   }
 
   ${commonIconsStyles};
@@ -136,12 +140,14 @@ const Text = ({
       onClick={onClick}
       isOpen={isOpen}
       isRootFolderTitle={isRootFolderTitle}
-      {...rest}>
+      {...rest}
+    >
       <StyledHeading
         type="content"
         title={title}
         truncate={true}
-        isRootFolderTitle={isRootFolderTitle}>
+        isRootFolderTitle={isRootFolderTitle}
+      >
         {title}
       </StyledHeading>
 
