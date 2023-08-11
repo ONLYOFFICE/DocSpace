@@ -32,7 +32,7 @@ OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDI
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
-LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else "Warning"
+LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else None
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
 
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
@@ -241,12 +241,13 @@ jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else No
 jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/nlog.config"
-with open(filePath, 'r') as f:
-  configData = f.read()
-configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
-with open(filePath, 'w') as f:
-  f.write(configData)
+if LOG_LEVEL:
+    filePath = "/app/onlyoffice/config/nlog.config"
+    with open(filePath, 'r') as f:
+        configData = f.read()
+    configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
+    with open(filePath, 'w') as f:
+        f.write(configData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
 run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
