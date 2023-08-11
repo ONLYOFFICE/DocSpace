@@ -28,11 +28,11 @@ APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CO
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
 INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "ENTERPRISE"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
-OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDIRECT_URL") else "https://service.onlyoffice.com/oauth2.aspx"
+OAUTH_REDIRECT_URL = os.environ["OAUTH_REDIRECT_URL"] if environ.get("OAUTH_REDIRECT_URL") else None
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
 APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
-LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else "Warning"
+LOG_LEVEL = os.environ["LOG_LEVEL"] if environ.get("LOG_LEVEL") else None
 DEBUG_INFO = os.environ["DEBUG_INFO"] if environ.get("DEBUG_INFO") else "false"
 
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
@@ -188,16 +188,17 @@ jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.logLevel", LOG_LEVEL)
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/autofac.consumers.json"
-jsonData = openJsonFile(filePath)
-
-for component in jsonData['components']:
-  if 'parameters' in component and 'additional' in component['parameters']:
-    for key, value in component['parameters']['additional'].items():
-      if re.search(r'.*RedirectUrl$', key) and value:
-        component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
-
-writeJsonFile(filePath, jsonData)
+if OAUTH_REDIRECT_URL:
+    filePath = "/app/onlyoffice/config/autofac.consumers.json"
+    jsonData = openJsonFile(filePath)
+    
+    for component in jsonData['components']:
+        if 'parameters' in component and 'additional' in component['parameters']:
+            for key, value in component['parameters']['additional'].items():
+                if re.search(r'.*RedirectUrl$', key) and value:
+                    component['parameters']['additional'][key] = OAUTH_REDIRECT_URL
+                    
+    writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
@@ -240,12 +241,13 @@ jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else No
 jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
-filePath = "/app/onlyoffice/config/nlog.config"
-with open(filePath, 'r') as f:
-  configData = f.read()
-configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
-with open(filePath, 'w') as f:
-  f.write(configData)
+if LOG_LEVEL:
+    filePath = "/app/onlyoffice/config/nlog.config"
+    with open(filePath, 'r') as f:
+        configData = f.read()
+    configData = re.sub(r'(minlevel=")(\w+)(")', '\\1' + LOG_LEVEL + '\\3', configData)
+    with open(filePath, 'w') as f:
+        f.write(configData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
 run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
