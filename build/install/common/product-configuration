@@ -640,7 +640,7 @@ setup_redis() {
 	echo -n "Configuring redis... "
 
 	$JSON $APP_DIR/redis.$ENVIRONMENT.json -e "this.Redis={'Hosts': [ { Host: \"${REDIS_HOST}\", Port: \"${REDIS_PORT}\" } ] }" >/dev/null 2>&1
-	
+
 	if [ $1 == "LOCAL_REDIS_SERVER" ]; then
 		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
 		sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
