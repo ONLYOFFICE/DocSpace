@@ -32,15 +32,15 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.Extensions.S3.Encryption" Version="2.0.5" />
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.201.5" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.201.9" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.201.8" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.201.12" />
     <PackageReference Include="Google.Api.Gax" Version="4.4.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="4.4.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.61.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.61.0" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.61.0.3112" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.6.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.56.2">
+    <PackageReference Include="Grpc.Tools" Version="2.57.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

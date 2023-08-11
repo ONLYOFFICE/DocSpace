@@ -21,6 +21,7 @@
   "AmazonServiceTip": "Esta é uma propriedade opcional; mude-a apenas se quiser experimentar um ponto de chegada de serviço diferente.",
   "AmazonSSE": "Encriptação por Parte do Servidor",
   "AmazonSSETip": "O algoritmo de encriptação do lado do servidor utilizado no armazenamento deste objeto em S3.",
+  "Api": "Api",
   "Appearance": "Aparência",
   "AuditSubheader": "A subsecção permite-lhe navegar através da lista das últimas alterações (criação, modificação, eliminação, etc.) feitas pelos utilizadores às entidades (salas, oportunidades, ficheiros, etc.) dentro do seu DocSpace.",
   "AuditTrailNav": "Auditar o Rastro",

@@ -259,8 +259,8 @@
     <ROW Dialog_="ELKConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400"/>
     <ROW Dialog_="ELKConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
     <ROW Dialog_="ELKConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="20" Attributes="196611" Text="Настройка подключения Elasticsearch..." Order="700"/>
-    <ROW Dialog_="ELKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Elasticsearch настройки подключения" TextStyle="[DlgTitleFont]" Order="800"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="20" Attributes="196611" Text="Configure Elasticsearch Connection..." Order="700"/>
+    <ROW Dialog_="ELKConnectionDlg" Control="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Attributes="196611" Text="Elasticsearch connection settings" TextStyle="[DlgTitleFont]" Order="800"/>
     <ROW Dialog_="ELKConnectionDlg" Control="ProtocolLabel" Type="Text" X="25" Y="65" Width="67" Height="11" Attributes="65539" Text="Protocol" Order="900"/>
     <ROW Dialog_="ELKConnectionDlg" Control="ServerLabel" Type="Text" X="25" Y="92" Width="67" Height="11" Attributes="65539" Text="Server:" Order="1000"/>
     <ROW Dialog_="ELKConnectionDlg" Control="PortLabel" Type="Text" X="25" Y="119" Width="67" Height="11" Attributes="65539" Text="Port:" Order="1100"/>
@@ -314,7 +314,7 @@
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Order="100" Options="1"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Order="200" Options="1"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Back]" Order="300" Options="1"/>
-    <ROW Dialog_="PostgreSQLConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="[BannerBitmap]" Order="400"/>
+    <ROW Dialog_="PostgreSQLConnectionDlg" Control="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Attributes="1048577" Text="banner.bmp" Order="400"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Order="500"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="BottomLine" Type="Line" X="5" Y="234" Width="368" Height="0" Attributes="1" Order="600"/>
     <ROW Dialog_="PostgreSQLConnectionDlg" Control="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Attributes="196611" Text="Configure PostgreSQL Connection..." Order="700"/>
@@ -617,11 +617,8 @@
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_VerifyPrereq" Type="1" Source="Prereq.dll" Target="VerifyPrereq"/>
-    <ROW Action="ElasticSearchInstallPlugin" Type="1030" Source="utils.vbs" Target="ElasticSearchInstallPlugin"/>
-    <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
     <ROW Action="MySQLConfigure" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="PostgreSqlConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
-    <ROW Action="RedisSearchSetup" Type="6" Source="utils.vbs" Target="RedisSetup"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -680,11 +677,8 @@
     <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="DefaultBuild"/>
     <ROW Action="AI_ExtractFiles" Sequence="1399" Builds="DefaultBuild"/>
     <ROW Action="AI_DATA_SETTER" Sequence="1398"/>
-    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="6405"/>
-    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="6404"/>
-    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="6403"/>
-    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="6402"/>
-    <ROW Action="RedisSearchSetup" Condition="( NOT Installed )" Sequence="6401"/>
+    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="6402"/>
+    <ROW Action="PostgreSqlConfigure" Condition="( NOT Installed )" Sequence="6401"/>
     <ROW Action="AI_PrepareChainers" Condition="VersionMsi &gt;= &quot;4.05&quot;" Sequence="5851"/>
     <ROW Action="AI_ConfigureChainer" Condition="((UILevel = 2) OR (UILevel = 3)) AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6598"/>
     <ROW Action="AI_LaunchChainer" Condition="AI_PREREQ_CHAINER AND (NOT UPGRADINGPRODUCTCODE)" Sequence="6599"/>
