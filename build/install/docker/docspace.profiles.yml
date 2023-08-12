@@ -40,7 +40,7 @@ x-service: &x-service-base
     DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
     KAFKA_HOST: ${KAFKA_HOST}
     ELK_HOST: ${ELK_HOST}
-    PROXY_HOST: ${PROXY_HOST}
+    ROUTER_HOST: ${ROUTER_HOST}
   volumes:
     - ${ROOT_DIR}/Data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/

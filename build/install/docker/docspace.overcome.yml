@@ -165,9 +165,9 @@ services:
     volumes:
       - ${SRC_PATH}/ASC.Migration.Runner/service:${BUILD_PATH}/services/ASC.Migration.Runner/
 
-  onlyoffice-proxy:
+  onlyoffice-router:
     <<: *x-profiles-local
-    image: ${Baseimage_Proxy_Run}
+    image: ${Baseimage_Router_Run}
     environment:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
     volumes:

@@ -75,7 +75,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-FROM nginx AS proxy
+FROM nginx AS router
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -92,7 +92,7 @@ RUN apt-get -y update && \
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY /build/install/docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY /build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+COPY /build/install/docker/prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
 
 # todo modify for client
 # add defualt user and group for no-root run

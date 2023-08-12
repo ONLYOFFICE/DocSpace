@@ -123,7 +123,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM nginx AS proxy
+FROM nginx AS router
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -143,7 +143,7 @@ COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+COPY prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
 
 # add defualt user and group for no-root run
 RUN chown nginx:nginx /etc/nginx/* -R && \

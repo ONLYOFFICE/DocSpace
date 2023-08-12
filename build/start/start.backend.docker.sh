@@ -27,7 +27,7 @@ echo "SERVICE_CLIENT: $client"
 
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
-Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:v1.0.0" \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
 SERVICE_DOCEDITOR=$doceditor \
