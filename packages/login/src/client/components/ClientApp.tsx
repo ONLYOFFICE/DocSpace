@@ -5,7 +5,6 @@ import ErrorBoundary from "./ErrorBoundary";
 import App from "../App";
 import i18n from "../i18n";
 import { I18nextProvider } from "react-i18next";
-import { fonts } from "@docspace/common/fonts";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -42,7 +41,7 @@ const ClientApp: React.FC<IClientApp> = ({
       <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
           <ThemeProviderWrapper>
-            <GlobalStyles fonts={fonts} />
+            <GlobalStyles />
             <App {...rest} />
           </ThemeProviderWrapper>
         </I18nextProvider>

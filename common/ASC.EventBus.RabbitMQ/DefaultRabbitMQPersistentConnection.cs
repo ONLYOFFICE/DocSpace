@@ -70,11 +70,6 @@ public class DefaultRabbitMQPersistentConnection
 
         _disposed = true;
 
-        DisposeConnection();
-    }
-
-    private void DisposeConnection()
-    {
         try
         {
             _connection.ConnectionShutdown -= OnConnectionShutdown;
@@ -94,6 +89,18 @@ public class DefaultRabbitMQPersistentConnection
 
         lock (_sync_root)
         {
+            if (_connection != null)
+            {
+                while (!IsConnected) // waiting automatic recovery connection
+                {
+                    Thread.Sleep(1000);
+                }
+
+                _logger.InformationRabbitMQAcquiredPersistentConnection(_connection.Endpoint.HostName);
+
+                return true;
+            }
+
             var policy = Policy.Handle<SocketException>()
                 .Or<BrokerUnreachableException>()
                 .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
@@ -104,11 +111,6 @@ public class DefaultRabbitMQPersistentConnection
 
             policy.Execute(() =>
             {
-                if (_connection != null)
-                {
-                    DisposeConnection();
-                }
-
                 _connection = _connectionFactory
                         .CreateConnection();
             });

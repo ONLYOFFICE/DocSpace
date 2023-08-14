@@ -370,4 +370,49 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrator des Raums</value>
   </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Die neue Version kann nicht mit der aktuellen identisch sein</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Sie haben keine ausreichende Berechtigungen, um die Datei zu kopieren</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Sie haben keine ausreichende  Berechtigungen, um den Ordner zu kopieren</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Ungültiger Anbieter</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Es ist nicht möglich, diesen Ordner zum Speichern des Raums zu verwenden</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Der Einladungslink ist ungültig oder seine Gültigkeit ist abgelaufen</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Dieser Anbieter ist bereits mit dem Raum verbunden</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Die Rolle ist für diesen Benutzertyp nicht verfügbar</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Sie haben keine ausreichende Berechtigung zum Archivieren des Raums</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Sie haben keine Berechtigung zum Kopieren in diesen Ordner</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Sie haben keine Berechtigung, den Raum zu bearbeiten</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Sie haben keine Berechtigung zum Verschieben in diesen Ordner</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Sie haben keine ausreichende Berechtigung, um die Archivierung des Raums aufzuheben</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Sie können archivierte Räume nicht bearbeiten</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Sie können einen Raum nicht anheften</value>
+  </data>
 </root>

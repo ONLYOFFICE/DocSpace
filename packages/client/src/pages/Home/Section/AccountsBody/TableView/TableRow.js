@@ -215,6 +215,7 @@ const PeopleTableRow = props => {
     canChangeUserType,
     hideColumns,
     value,
+    standalone,
   } = props;
 
   const {
@@ -399,7 +400,7 @@ const PeopleTableRow = props => {
 
     onContentRowClick && onContentRowClick(!isChecked, item);
   };
-
+  const isPaidUser = !standalone && !isVisitor;
   return (
     <StyledWrapper
       className={`user-item ${
@@ -444,7 +445,7 @@ const PeopleTableRow = props => {
               ? displayName
               : email}
           </Link>
-          <Badges statusType={statusType} isPaid={!isVisitor} isSSO={isSSO} />
+          <Badges statusType={statusType} isPaid={isPaidUser} isSSO={isSSO} />
         </TableCell>
 
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>
