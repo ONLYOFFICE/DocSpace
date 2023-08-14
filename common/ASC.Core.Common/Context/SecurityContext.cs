@@ -161,11 +161,13 @@ public class SecurityContext
                 return false;
             }
 
-            var loginEventById = await _dbLoginEventsManager.GetByIdAsync(loginEventId);
-
-            if (loginEventById == null || !loginEventById.Active)
+            if (loginEventId != 0)
             {
-                return false;
+                var loginEventById = await _dbLoginEventsManager.GetByIdAsync(loginEventId);
+                if (loginEventById == null || !loginEventById.Active)
+                {
+                    return false;
+                }
             }
 
             await AuthenticateMeWithoutCookieAsync(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));

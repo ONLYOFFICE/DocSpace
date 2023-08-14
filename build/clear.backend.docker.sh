@@ -12,9 +12,9 @@ then
     echo "Remove all backend containers"
 
     DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
-    Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
-    Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
-    Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+    Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:dev" \
+    Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:dev" \
+    Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:dev" \
     SERVICE_CLIENT="localhost:5001" \
     SERVICE_MANAGEMENT="localhost:5015" \
     BUILD_PATH="/var/www" \
@@ -28,6 +28,9 @@ then
 
     echo "Remove docker volumes"
     docker volume prune -f -a
+
+    echo "Remove docker base images (onlyoffice/4testing-docspace)" 
+    docker rmi -f $(docker images -a | egrep "onlyoffice/4testing-docspace" | awk 'NR>0 {print $3}')
 
     echo "Remove unused networks."
     docker network prune -f
