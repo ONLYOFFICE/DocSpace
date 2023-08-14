@@ -172,7 +172,11 @@ const StyledLabel = styled.label`
 
   .help-button {
     display: inline-block;
-    margin-left: 4px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 4px;`
+        : `margin-left: 4px;`}
   }
 `;
 StyledLabel.defaultProps = { theme: Base };
