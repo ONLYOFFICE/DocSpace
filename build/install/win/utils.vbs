@@ -97,6 +97,30 @@ Function PostgreSqlConfigure
 
 End Function
 
+Function NginxSetup
+   On Error Resume Next
+
+   Dim objShell, sourcePath, destinationPath
+
+   Set objShell = CreateObject("WScript.Shell")
+
+   sourcePath = "C:\nginx\nginx-1.24.0\"
+   destinationPath = "C:\nginx"
+
+   ' Run XCopy to copy files and folders
+   objShell.Run "xcopy """ & sourcePath & """ """ & destinationPath & """ /E /I /Y", 0, True
+
+   objShell.CurrentDirectory = destinationPath
+
+   ' Run the RMDIR command to delete the folder
+   objShell.Run "cmd /c RMDIR /S /Q nginx-1.24.0", 0, True
+
+   objShell.Run "C:\nginx\tools\Nginx.exe install", 0, True
+
+   Set objShell = Nothing
+
+End Function
+
 Function RandomString( ByVal strLen )
     Dim str, min, max
 

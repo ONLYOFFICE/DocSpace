@@ -5,11 +5,8 @@ set "nginx_version=1.21.1"
 set "environment=production"
 
 REM echo ######## Extracting and preparing files to build ########
-%sevenzip% x build\install\win\nginx-%nginx_version%.zip -o"build\install\win\Files" -y
-xcopy "build\install\win\Files\nginx-%nginx_version%" "build\install\win\Files\nginx" /s /y /b /i
-rmdir build\install\win\Files\nginx-%nginx_version% /s /q
-md build\install\win\Files\nginx\temp
-md build\install\win\Files\nginx\logs
+md build\install\win\Files\nginx\conf
+md build\install\win\Nginx\tools
 md build\install\win\Files\tools
 md build\install\win\Files\Logs
 md build\install\win\Files\Data
@@ -24,8 +21,8 @@ md build\install\win\Files\services\ASC.ClearEvents\service\temp
 md build\install\win\Files\services\ASC.Web.Api\service\temp
 md build\install\win\Files\services\ASC.Web.Studio\service\temp
 md build\install\win\Files\services\ASC.Web.HealthChecks.UI\service\temp
-copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\Proxy.exe" /y
-copy build\install\win\tools\Proxy.xml "build\install\win\Files\tools\Proxy.xml" /y
+copy build\install\win\WinSW.NET4.exe "build\install\win\Nginx\tools\Nginx.exe" /y
+copy build\install\win\tools\Proxy.xml "build\install\win\Nginx\tools\Nginx.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Socket.IO.exe" /y
 copy build\install\win\tools\Socket.IO.xml "build\install\win\Files\tools\Socket.IO.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\SsoAuth.exe" /y
@@ -36,6 +33,10 @@ copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" 
 copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
+
+REM echo ######## Configuring Nginx########
+sed -i "s/<id>.*<\/id>/<id>nginx<\/id>/g; s/<name>.*<\/name>/<name>nginx<\/name>/g; s/<description>.*<\/description>/<description>nginx<\/description>/g" Nginx.xml
+sed -i "/<\/startmode>/a \ \t<delayedAutoStart>true<\/delayedAutoStart>" Nginx.xml
 
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
