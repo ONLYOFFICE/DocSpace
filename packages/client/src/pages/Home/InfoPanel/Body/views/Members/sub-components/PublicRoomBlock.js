@@ -29,7 +29,7 @@ const PublicRoomBlock = (props) => {
     <>
       {externalLinks.length > 0 && !isArchiveFolder && (
         <PublicRoomBar
-          headerText={t("Files:PublicRoom")}
+          headerText={t("Files:RoomAvailableViaExternalLink")}
           bodyText={t("CreateEditRoomDialog:PublicRoomBarDescription")}
         />
       )}
