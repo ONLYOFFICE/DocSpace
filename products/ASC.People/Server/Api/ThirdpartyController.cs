@@ -248,7 +248,7 @@ public class ThirdpartyController : ApiControllerBase
 
         var user = _userManager.GetUsers(userID);
 
-        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+        _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id);
 
         _studioNotifyService.UserHasJoin();
 

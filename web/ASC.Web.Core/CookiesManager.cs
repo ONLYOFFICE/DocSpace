@@ -190,7 +190,7 @@ public class CookiesManager
             await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
         }
 
-        AuthenticateMeAndSetCookies(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
+        AuthenticateMeAndSetCookies(tenant.Id, _securityContext.CurrentAccount.ID);
     }
 
     public TenantCookieSettings GetLifeTime(int tenantId)
@@ -210,7 +210,7 @@ public class CookiesManager
 
         if (!userId.HasValue)
         {
-            AuthenticateMeAndSetCookies(tenant, currentUserId, MessageAction.LoginSuccess);
+            AuthenticateMeAndSetCookies(tenant, currentUserId);
         }
     }
 
@@ -230,7 +230,7 @@ public class CookiesManager
         await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
     }
 
-    public string AuthenticateMeAndSetCookies(int tenantId, Guid userId, MessageAction action, bool session = false)
+    public string AuthenticateMeAndSetCookies(int tenantId, Guid userId, MessageAction action = MessageAction.LoginSuccess, bool session = false)
     {
         var isSuccess = true;
         var cookies = string.Empty;

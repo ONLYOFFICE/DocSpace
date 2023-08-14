@@ -203,7 +203,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id, MessageAction.LoginSuccess);
+            var token = _cookiesManager.AuthenticateMeAndSetCookies(user.Tenant, user.Id);
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
             var result = new AuthenticationTokenDto
@@ -380,8 +380,8 @@ public class AuthenticationController : ControllerBase
     {
         if (inDto.Type != ConfirmType.LinkInvite)
         {
-        return _emailValidationKeyModelHelper.Validate(inDto);
-    }
+            return _emailValidationKeyModelHelper.Validate(inDto);
+        }
 
         var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
 
