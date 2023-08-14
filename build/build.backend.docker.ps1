@@ -14,12 +14,20 @@ $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
 $PortalUrl = ("http://" + $LocalIp + ":8092")
-$DotnetVersion="v1.0.0"
+$ProxyVersion="v1.0.0"
 
 # Stop all backend services"
 & "$PSScriptRoot\start\stop.backend.docker.ps1"
 
 $Env:COMPOSE_IGNORE_ORPHANS = "True"
+
+$Force = $False
+
+if ($args[0] -eq "--force") {
+    $Force = $True
+}
+
+Write-Host "FORCE BUILD BASE IMAGES: $Force" -ForegroundColor Blue
 
 Write-Host "Run MySQL" -ForegroundColor Green
 docker compose -f "$DockerDir\db.yml" up -d
@@ -37,26 +45,40 @@ if ($args[0] -eq "--community" ) {
 
 Set-Location -Path $RootDir
 
-if ($args[0] -eq "--build_dotnet") {
-  $DotnetVersion="v9.9.9"
+$DotnetVersion = "dev"
+$NodeVersion = "dev"
+$ProxyVersion = "dev"
 
-  $Exists= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
+$ExistsDotnet= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
+$ExistsNode= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-nodejs-runtime:$NodeVersion"
+$ExistsProxy= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
 
-  if (!$Exists) {
-    Write-Host "Build dotnet base image from source (apply new configs)" -ForegroundColor Green
+if (!$ExistsDotnet -or $Force) {
+    Write-Host "Build dotnet base image from source (apply new dotnet config)" -ForegroundColor Green
     docker build -t "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"  -f "$DockerDir\Dockerfile.runtime" --target dotnetrun .
-  } else { 
-    Write-Host "SKIP build dotnet base image (already exists)" -ForegroundColor Green
-  }
+} else { 
+    Write-Host "SKIP build dotnet base image (already exists)" -ForegroundColor Blue
 }
 
-# Set-Location -Path $DockerDir
+if (!$ExistsNode -or $Force) {
+    Write-Host "Build node base image from source" -ForegroundColor Green
+    docker build -t "onlyoffice/4testing-docspace-nodejs-runtime:$NodeVersion"  -f "$DockerDir\Dockerfile.runtime" --target noderun .
+} else { 
+    Write-Host "SKIP build node base image (already exists)" -ForegroundColor Blue
+}
+
+if (!$ExistsProxy -or $Force) {
+    Write-Host "Build proxy base image from source (apply new nginx config)" -ForegroundColor Green
+    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target proxy .
+} else { 
+    Write-Host "SKIP build proxy base image (already exists)" -ForegroundColor Blue
+}
 
 Write-Host "Run migration and services" -ForegroundColor Green
 $Env:ENV_EXTENSION="dev"
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
-$Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0"
-$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0"
+$Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:$NodeVersion"
+$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login
 $Env:SERVICE_CLIENT=$Client

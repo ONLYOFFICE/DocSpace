@@ -13,7 +13,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import store from "client/store";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import { fonts } from "@docspace/common/fonts.js";
 import GlobalStyle from "./components/GlobalStyle.js";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
@@ -24,7 +23,14 @@ import PresentationIcoUrl from "PUBLIC_DIR/images/presentation.ico";
 import SpreadSheetIcoUrl from "PUBLIC_DIR/images/spreadsheet.ico";
 import TextIcoUrl from "PUBLIC_DIR/images/text.ico";
 
-const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
+const App = ({
+  initialLanguage,
+  initialI18nStoreASC,
+  setTheme,
+  getAppearanceTheme,
+  currentColorScheme,
+  ...rest
+}) => {
   const [isInitialized, isErrorLoading] = useMfScripts();
   useSSR(initialI18nStoreASC, initialLanguage);
 
@@ -80,6 +86,8 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
     }
+
+    getAppearanceTheme();
   }, []);
 
   const onError = () => {
@@ -94,12 +102,13 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
 
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyle fonts={fonts} />
+      <GlobalStyle />
       <Editor
         mfReady={isInitialized}
         mfFailed={isErrorLoading}
         isDesktopEditor={isDesktopEditor}
         initDesktop={initDesktop}
+        currentColorScheme={currentColorScheme}
         {...rest}
       />
     </ErrorBoundary>
@@ -108,15 +117,20 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
 
 const AppWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { setTheme } = settingsStore;
+  const { setTheme, getAppearanceTheme, currentColorScheme } = settingsStore;
   return {
     setTheme,
+    getAppearanceTheme,
+    currentColorScheme,
   };
 })(observer(App));
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
+  let currentColorScheme = false;
+  currentColorScheme = settingsStore.currentColorScheme || false;
+
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default (props) => (

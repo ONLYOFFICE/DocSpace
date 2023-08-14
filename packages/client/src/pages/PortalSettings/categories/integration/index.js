@@ -14,14 +14,21 @@ import SSOLoader from "./sub-components/ssoLoader";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const { t, tReady, loadBaseInfo, enablePlugins, toDefault } = props;
+  const {
+    t,
+    tReady,
+    loadBaseInfo,
+    enablePlugins,
+    toDefault,
+    isSSOAvailable,
+  } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
-      toDefault();
+      isSSOAvailable && toDefault();
     };
   }, []);
 
@@ -76,6 +83,7 @@ export default inject(({ setup, auth, ssoStore }) => {
   const { initSettings } = setup;
   const { load: toDefault } = ssoStore;
   const { enablePlugins } = auth.settingsStore;
+  const { isSSOAvailable } = auth.currentQuotaStore;
 
   return {
     loadBaseInfo: async () => {
@@ -83,6 +91,7 @@ export default inject(({ setup, auth, ssoStore }) => {
     },
     enablePlugins,
     toDefault,
+    isSSOAvailable,
   };
 })(
   withTranslation(["Settings", "SingleSignOn", "Translations"])(
