@@ -224,7 +224,7 @@ const NewFilesPanel = (props) => {
           const url = getCategoryUrl(categoryType, item.folderId);
 
           const filter = FilesFilter.getDefault();
-          filter.folder = id;
+          filter.folder = item.folderId;
 
           window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
 
