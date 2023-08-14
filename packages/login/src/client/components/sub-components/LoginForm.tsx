@@ -73,9 +73,15 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     thirdPartyLogin(profile)
       .then((response) => {
-        if (!response || !response.token) throw new Error("Empty API response");
+        if (!(response || response.token || response.confirmUrl))
+          throw new Error("Empty API response");
 
         setWithCredentialsStatus(true);
+
+        if (response.confirmUrl) {
+          return window.location.replace(response.confirmUrl);
+        }
+
         const redirectPath = sessionStorage.getItem("referenceUrl");
 
         if (redirectPath) {
