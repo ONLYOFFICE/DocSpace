@@ -22,7 +22,12 @@ interface IClientApp extends IInitialState {
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
+  return {
+    theme: {
+      ...settingsStore.theme,
+      interfaceDirection: settingsStore.interfaceDirection,
+    },
+  };
 })(observer(ThemeProvider));
 
 const ClientApp: React.FC<IClientApp> = ({
@@ -37,6 +42,7 @@ const ClientApp: React.FC<IClientApp> = ({
       <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
           <ThemeProviderWrapper>
+            <GlobalStyles fonts={fonts} />
             <App {...rest} />
           </ThemeProviderWrapper>
         </I18nextProvider>
@@ -51,7 +57,6 @@ const ClientAppWrapper: React.FC<IClientApp> = (props) => {
   };
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyles fonts={fonts} />
       <ClientApp {...props} />
     </ErrorBoundary>
   );
