@@ -291,7 +291,7 @@ class SettingsStore {
   }
 
   get sdkLink() {
-    return `${this.apiDocsLink}/docspace/jssdk`;
+    return `${this.apiDocsLink}/docspace/jssdk/`;
   }
 
   get apiBasicLink() {
