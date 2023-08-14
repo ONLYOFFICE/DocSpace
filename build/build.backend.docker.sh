@@ -16,11 +16,13 @@ echo "LOCAL IP: $local_ip"
 doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
+management=${local_ip}:5015
 portal_url="http://$local_ip:8092"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "SERVICE_MANAGEMENT: $management"
 echo "APP_URL_PORTAL: $portal_url"
 
 force=false
@@ -108,6 +110,7 @@ DOCUMENT_SERVER_IMAGE_NAME=$DOCUMENT_SERVER_IMAGE_NAME \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+SERVICE_MANAGEMENT=$management \
 ROOT_DIR=$dir \
 BUILD_PATH="/var/www" \
 SRC_PATH="$dir/publish/services" \
@@ -121,4 +124,5 @@ echo "LOCAL IP: $local_ip"
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
+echo "SERVICE_MANAGEMENT: $management"
 echo "INSTALLATION_TYPE=$INSTALLATION_TYPE"
