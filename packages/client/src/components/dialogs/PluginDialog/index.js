@@ -67,8 +67,8 @@ const PluginDialog = ({
   React.useEffect(() => {
     if (eventListeners) {
       eventListeners.forEach((e) => {
-        const onAction = () => {
-          const message = e.onAction();
+        const onAction = async (evt) => {
+          const message = await e.onAction(evt);
 
           messageActions(
             message,
@@ -91,16 +91,16 @@ const PluginDialog = ({
           );
         };
 
-        functionsRef.push(onAction);
+        functionsRef.current.push(onAction);
 
-        document.addEventListener(e.name, onAction);
+        window.addEventListener(e.name, onAction);
       });
     }
 
     return () => {
       if (eventListeners) {
         eventListeners.forEach((e, index) => {
-          document.removeEventListener(e.name, functionsRef[index]);
+          window.removeEventListener(e.name, functionsRef.current[index]);
         });
       }
     };

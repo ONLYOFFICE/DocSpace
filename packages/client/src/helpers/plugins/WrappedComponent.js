@@ -37,9 +37,12 @@ const ComponentPure = ({
 }) => {
   const [elementProps, setElementProps] = React.useState(component.props);
 
-  const [isRequestRunning, setIsRequestRunning] = React.useState(false);
-
-  const { contextProps, updatePropsContext } = React.useContext(PropsContext);
+  const {
+    contextProps,
+    updatePropsContext,
+    isRequestRunning,
+    setIsRequestRunning,
+  } = React.useContext(PropsContext);
 
   React.useEffect(() => {
     if (!component.contextName || !contextProps[component.contextName]) return;
@@ -190,7 +193,8 @@ const ComponentPure = ({
       }
 
       case PluginComponents.button: {
-        const { withLoadingAfterClick, ...rest } = elementProps;
+        const { withLoadingAfterClick, disableWhileRequestRunning, ...rest } =
+          elementProps;
 
         const onClickAction = async () => {
           if (withLoadingAfterClick) {
@@ -221,10 +225,22 @@ const ComponentPure = ({
           setIsRequestRunning(false);
         };
 
+        const isLoading = withLoadingAfterClick
+          ? isRequestRunning
+            ? isRequestRunning
+            : rest.isLoading
+          : rest.isLoading;
+        const isDisabled = disableWhileRequestRunning
+          ? isRequestRunning
+            ? isRequestRunning
+            : rest.isDisabled
+          : rest.isDisabled;
+
         return (
           <Button
             {...rest}
-            isLoading={isRequestRunning}
+            isLoading={isLoading}
+            isDisabled={isDisabled}
             onClick={onClickAction}
           />
         );
@@ -311,6 +327,8 @@ const Component = inject(({ pluginStore }) => {
 const WrappedComponent = ({ component, pluginId }) => {
   const [contextProps, setContextProps] = React.useState({});
 
+  const [isRequestRunning, setIsRequestRunning] = React.useState(false);
+
   const updatePropsContext = (name, props) => {
     const newProps = { ...contextProps };
     newProps[name] = props;
@@ -319,7 +337,14 @@ const WrappedComponent = ({ component, pluginId }) => {
   };
 
   return (
-    <PropsContext.Provider value={{ contextProps, updatePropsContext }}>
+    <PropsContext.Provider
+      value={{
+        contextProps,
+        updatePropsContext,
+        isRequestRunning,
+        setIsRequestRunning,
+      }}
+    >
       <Component component={component} pluginId={pluginId} />
     </PropsContext.Provider>
   );

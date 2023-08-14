@@ -53,7 +53,6 @@ const SettingsPluginDialog = ({
       displayType="modal"
       onClose={onCloseAction}
       autoMaxHeight
-      autoMaxWidth
     >
       <ModalDialog.Header>{plugin?.name}</ModalDialog.Header>
       <ModalDialog.Body>

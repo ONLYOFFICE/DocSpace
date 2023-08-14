@@ -1963,6 +1963,28 @@ class FilesStore {
           pluginFilesKeys.forEach((key) => fileOptions.push(key));
       }
 
+      if (enablePlugins && item.viewAccessability.ImageView) {
+        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+          PluginFileType.Image,
+          item.fileExst
+        );
+
+        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
+        pluginFilesKeys &&
+          pluginFilesKeys.forEach((key) => fileOptions.push(key));
+      }
+
+      if (enablePlugins && item.viewAccessability.MediaView) {
+        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+          PluginFileType.Video,
+          item.fileExst
+        );
+
+        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
+        pluginFilesKeys &&
+          pluginFilesKeys.forEach((key) => fileOptions.push(key));
+      }
+
       if (!this.canShareOwnerChange(item)) {
         fileOptions = this.removeOptions(fileOptions, ["owner-change"]);
       }

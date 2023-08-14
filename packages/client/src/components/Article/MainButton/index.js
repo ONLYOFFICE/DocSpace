@@ -412,7 +412,7 @@ const ArticleMainButtonContent = (props) => {
     menuModel.push(...uploadActions);
     setUploadActions(uploadActions);
 
-    if (mainButtonItemsList && enablePlugins) {
+    if (mainButtonItemsList && enablePlugins && !isAccountsPage) {
       mainButtonItemsList.forEach((option) => {
         menuModel.splice(option.value.position, 0, {
           key: option.key,

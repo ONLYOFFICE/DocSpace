@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 
 import { inject, observer } from "mobx-react";
 
@@ -12,7 +12,7 @@ import EditRoomEvent from "./EditRoomEvent";
 import ChangeUserTypeEvent from "./ChangeUserTypeEvent";
 import CreatePluginFile from "./CreatePluginFileEvent";
 
-const GlobalEvents = ({ enablePlugins }) => {
+const GlobalEvents = ({ enablePlugins, eventListenerItemsList }) => {
   const [createDialogProps, setCreateDialogProps] = useState({
     visible: false,
     id: null,
@@ -51,6 +51,8 @@ const GlobalEvents = ({ enablePlugins }) => {
     props: null,
     onClose: null,
   });
+
+  const eventHandlersList = useRef([]);
 
   const onCreate = useCallback((e) => {
     const { payload } = e;
@@ -159,6 +161,18 @@ const GlobalEvents = ({ enablePlugins }) => {
         Events.CREATE_PLUGIN_FILE,
         onCreatePluginFileDialog
       );
+
+      if (eventListenerItemsList) {
+        eventListenerItemsList.forEach((item) => {
+          const eventHandler = (e) => {
+            item.eventHandler(e);
+          };
+
+          eventHandlersList.current.push(eventHandler);
+
+          window.addEventListener(item.eventType, eventHandler);
+        });
+      }
     }
 
     return () => {
@@ -173,6 +187,15 @@ const GlobalEvents = ({ enablePlugins }) => {
           Events.CREATE_PLUGIN_FILE,
           onCreatePluginFileDialog
         );
+
+        if (eventListenerItemsList) {
+          eventListenerItemsList.forEach((item, index) => {
+            window.removeEventListener(
+              item.eventType,
+              eventHandlersList.current[index]
+            );
+          });
+        }
       }
     };
   }, [
@@ -213,8 +236,10 @@ const GlobalEvents = ({ enablePlugins }) => {
   ];
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, pluginStore }) => {
   const { enablePlugins } = auth.settingsStore;
 
-  return { enablePlugins };
+  const { eventListenerItemsList } = pluginStore;
+
+  return { enablePlugins, eventListenerItemsList };
 })(observer(GlobalEvents));

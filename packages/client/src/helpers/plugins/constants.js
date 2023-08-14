@@ -51,6 +51,8 @@ export const PluginActions = Object.freeze({
   updateProfileMenuItems: "update-profile-menu-items",
   updateFileItems: "update-file-items",
   updateEventListenerItems: "update-event-listener-items",
+
+  sendPostMessage: "send-post-message",
 });
 
 export const PluginToastType = Object.freeze({
@@ -81,4 +83,10 @@ export const PluginUsersType = Object.freeze({
   roomAdmin: "RoomAdmin",
   collaborator: "Collaborator",
   user: "User",
+});
+
+export const PluginDevices = Object.freeze({
+  mobile: "mobile",
+  tablet: "tablet",
+  desktop: "desktop",
 });

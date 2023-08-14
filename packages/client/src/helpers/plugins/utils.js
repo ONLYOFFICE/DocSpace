@@ -137,6 +137,22 @@ export const messageActions = (
         updateFileItems(pluginId);
 
         break;
+
+      case PluginActions.sendPostMessage:
+        if (!message.postMessage) return;
+
+        const { postMessage } = message;
+
+        const frame = document.getElementById(`${postMessage.frameId}`);
+
+        if (frame) {
+          frame.contentWindow.postMessage(
+            JSON.stringify(postMessage.message),
+            "*"
+          );
+        }
+
+        break;
     }
   });
 };

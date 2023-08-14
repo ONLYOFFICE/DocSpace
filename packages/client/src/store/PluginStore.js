@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { cloneDeep } from "lodash";
+import { isMobileOnly, isTablet } from "react-device-detect";
 
 import api from "@docspace/common/api";
 
@@ -9,6 +10,7 @@ import {
   PluginFileType,
   PluginScopes,
   PluginUsersType,
+  PluginDevices,
 } from "SRC_DIR/helpers/plugins/constants";
 import { getPluginUrl, messageActions } from "SRC_DIR/helpers/plugins/utils";
 
@@ -299,10 +301,21 @@ class PluginStore {
     return userRole;
   };
 
+  getCurrentDevice = () => {
+    const device = isTablet
+      ? PluginDevices.tablet
+      : isMobileOnly
+      ? PluginDevices.mobile
+      : PluginDevices.desktop;
+
+    return device;
+  };
+
   getContextMenuKeysByType = (type, fileExst) => {
     if (!this.contextMenuItems) return;
 
     const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
 
     const itemsMap = Array.from(this.contextMenuItems);
     const keys = [];
@@ -321,7 +334,12 @@ class PluginStore {
               ? item.usersType.includes(userRole)
               : true;
 
-            if (correctFileExt && correctUserType) keys.push(item.key);
+            const correctDevice = item.devices
+              ? item.devices.includes(device)
+              : true;
+
+            if (correctFileExt && correctUserType && correctDevice)
+              keys.push(item.key);
           }
         });
         break;
@@ -334,7 +352,11 @@ class PluginStore {
               ? item.usersType.includes(userRole)
               : true;
 
-            if (correctUserType) keys.push(item.key);
+            const correctDevice = item.devices
+              ? item.devices.includes(device)
+              : true;
+
+            if (correctUserType && correctDevice) keys.push(item.key);
           }
         });
         break;
@@ -347,7 +369,11 @@ class PluginStore {
               ? item.usersType.includes(userRole)
               : true;
 
-            if (correctUserType) keys.push(item.key);
+            const correctDevice = item.devices
+              ? item.devices.includes(device)
+              : true;
+
+            if (correctUserType && correctDevice) keys.push(item.key);
           }
         });
         break;
@@ -360,7 +386,11 @@ class PluginStore {
               ? item.usersType.includes(userRole)
               : true;
 
-            if (correctUserType) keys.push(item.key);
+            const correctDevice = item.devices
+              ? item.devices.includes(device)
+              : true;
+
+            if (correctUserType && correctDevice) keys.push(item.key);
           }
         });
         break;
@@ -373,7 +403,11 @@ class PluginStore {
               ? item.usersType.includes(userRole)
               : true;
 
-            if (correctUserType) keys.push(item.key);
+            const correctDevice = item.devices
+              ? item.devices.includes(device)
+              : true;
+
+            if (correctUserType && correctDevice) keys.push(item.key);
           }
         });
         break;
@@ -385,7 +419,11 @@ class PluginStore {
             ? item.usersType.includes(userRole)
             : true;
 
-          if (correctUserType) keys.push(item.key);
+          const correctDevice = item.devices
+            ? item.devices.includes(device)
+            : true;
+
+          if (correctUserType && correctDevice) keys.push(item.key);
         });
     }
 
@@ -461,19 +499,27 @@ class PluginStore {
     if (!items) return;
 
     const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
 
     Array.from(items).map(([key, value]) => {
+      console.log(value);
       const correctUserType = value.usersType
         ? value.usersType.includes(userRole)
         : true;
 
-      if (!correctUserType) return;
+      const correctDevice = value.devices
+        ? value.devices.includes(device)
+        : true;
 
-      const submenu = { ...value.submenu };
+      if (!correctUserType || !correctDevice) return;
 
-      if (value.submenu.onClick) {
+      const submenu = { ...value.subMenu };
+
+      console.log(value);
+
+      if (value.subMenu.onClick) {
         const onClick = async () => {
-          const message = await value.submenu.onClick();
+          const message = await value.subMenu.onClick();
 
           messageActions(
             message,
@@ -501,7 +547,7 @@ class PluginStore {
 
       this.infoPanelItems.set(key, {
         ...value,
-        submenu,
+        subMenu: submenu,
         pluginId: plugin.id,
       });
     });
@@ -529,13 +575,18 @@ class PluginStore {
     if (!items) return;
 
     const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
 
     Array.from(items).map(([key, value]) => {
       const correctUserType = value.usersType
         ? value.usersType.includes(userRole)
         : true;
 
-      if (!correctUserType) return;
+      const correctDevice = value.devices
+        ? value.devices.includes(device)
+        : true;
+
+      if (!correctUserType || !correctDevice) return;
 
       const newItems = [];
       if (value.items) {
@@ -603,7 +654,7 @@ class PluginStore {
         onClick,
         pluginId: plugin.id,
         icon: `${plugin.iconUrl}/assets/${value.icon}`,
-        items: newItems,
+        items: newItems.length > 0 ? newItems : null,
       });
     });
   };
@@ -630,13 +681,18 @@ class PluginStore {
     if (!items) return;
 
     const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
 
     Array.from(items).map(([key, value]) => {
       const correctUserType = value.usersType
         ? value.usersType.includes(userRole)
         : true;
 
-      if (!correctUserType) return;
+      const correctDevice = value.devices
+        ? value.devices.includes(device)
+        : true;
+
+      if (!correctUserType || !correctDevice) return;
 
       const onClick = async () => {
         if (!value.onClick) return;
@@ -695,8 +751,50 @@ class PluginStore {
 
     if (!items) return;
 
+    const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
+
     Array.from(items).map(([key, value]) => {
-      this.eventListenerItems.set(key, value);
+      const correctUserType = value.usersType
+        ? value.usersType.includes(userRole)
+        : true;
+
+      const correctDevice = value.devices
+        ? value.devices.includes(device)
+        : true;
+
+      if (!correctUserType || !correctDevice) return;
+      const eventHandler = async (e) => {
+        if (!value.eventHandler) return;
+
+        const message = await value.eventHandler(e);
+
+        messageActions(
+          message,
+          null,
+
+          plugin.id,
+          this.setSettingsPluginDialogVisible,
+          this.setCurrentSettingsDialogPlugin,
+          this.updatePluginStatus,
+          null,
+          this.setPluginDialogVisible,
+          this.setPluginDialogProps,
+
+          this.updateContextMenuItems,
+          this.updateInfoPanelItems,
+          this.updateMainButtonItems,
+          this.updateProfileMenuItems,
+          this.updateEventListenerItems,
+          this.updateFileItems
+        );
+      };
+
+      this.eventListenerItems.set(key, {
+        ...value,
+        eventHandler,
+        pluginId: id,
+      });
     });
   };
 
@@ -723,13 +821,18 @@ class PluginStore {
     if (!items) return;
 
     const userRole = this.getUserRole();
+    const device = this.getCurrentDevice();
 
     Array.from(items).map(([key, value]) => {
       const correctUserType = value.usersType
         ? value.usersType.includes(userRole)
         : true;
 
-      if (!correctUserType) return;
+      const correctDevice = value.devices
+        ? value.devices.includes(device)
+        : true;
+
+      if (!correctUserType || !correctDevice) return;
 
       const onClick = async (item) => {
         if (!value.onClick) return;
