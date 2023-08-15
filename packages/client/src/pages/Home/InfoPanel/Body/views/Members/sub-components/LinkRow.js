@@ -86,7 +86,7 @@ const LinkRow = (props) => {
       .finally(() => setIsLoading(false));
   };
 
-  const onLockClick = () => {
+  const onCopyPassword = () => {
     copy(password);
     toastr.success(t("Files:PasswordSuccessfullyCopied"));
   };
@@ -198,7 +198,8 @@ const LinkRow = (props) => {
                 className="locked-icon"
                 size={16}
                 iconName={LockedReactSvgUrl}
-                onClick={onLockClick}
+                onClick={onCopyPassword}
+                title={t("Files:CopyLinkPassword")}
               />
             )}
             <IconButton
@@ -206,12 +207,17 @@ const LinkRow = (props) => {
               size={16}
               iconName={CopyReactSvgUrl}
               onClick={onCopyExternalLink}
+              title={t("SharingPanel:CopyExternalLink")}
             />
           </>
         )}
 
         {!isArchiveFolder && (
-          <ContextMenuButton getData={getData} isDisabled={false} />
+          <ContextMenuButton
+            getData={getData}
+            isDisabled={false}
+            title={t("Files:ShowLinkActions")}
+          />
         )}
       </div>
     </StyledLinkRow>

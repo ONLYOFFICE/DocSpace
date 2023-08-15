@@ -153,5 +153,8 @@
   "LinkValidUntil": "This link will be valid until",
   "NoExternalLinks": "No external links",
   "AllLinksAreDisabled": "All links are disabled",
-  "MaximumNumberOfExternalLinksCreated": "Maximum number of external links created"
+  "MaximumNumberOfExternalLinksCreated": "Maximum number of external links created",
+  "AddNewExternalLink": "Add new external link",
+  "CopyLinkPassword": "Copy link password",
+  "ShowLinkActions": "Show link actions"
 }
