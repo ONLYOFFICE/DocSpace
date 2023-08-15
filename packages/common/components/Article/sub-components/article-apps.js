@@ -12,7 +12,8 @@ import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
 import { Base } from "@docspace/components/themes";
-import { tablet, hugeMobile } from "@docspace/components/utils/device";
+import { desktop, tablet, hugeMobile } from "@docspace/components/utils/device";
+import { isTablet } from "react-device-detect";
 
 const StyledArticleApps = styled.div`
   display: flex;
@@ -20,7 +21,14 @@ const StyledArticleApps = styled.div`
   gap: 8px;
   position: relative;
   margin-top: auto;
-  margin-bottom: 16px;
+  margin-bottom: 76px;
+
+  @media ${desktop} {
+    ${!isTablet &&
+    css`
+      margin-bottom: 16px;
+    `}
+  }
 
   @media ${tablet} {
     ${(props) =>
