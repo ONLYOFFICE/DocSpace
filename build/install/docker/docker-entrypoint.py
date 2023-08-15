@@ -28,8 +28,8 @@ APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE
 INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "ENTERPRISE"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
-APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
-APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
+APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"] if environ.get("APP_KNOWN_PROXIES") else ""
+APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"] if environ.get("APP_KNOWN_NETWORKS") else ""
 
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
 DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ.get("DOCUMENT_SERVER_JWT_HEADER") else "AuthorizationJwt"
@@ -44,7 +44,8 @@ ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
 RUN_FILE = sys.argv[1] if (len(sys.argv) > 1) else "none"
 LOG_FILE = sys.argv[2] if (len(sys.argv) > 2) else "none"
-CORE_EVENT_BUS = sys.argv[3] if (len(sys.argv) > 3) else ""
+CHECK =  sys.argv[-1] if (len(sys.argv) > 3) else "none"
+CORE_EVENT_BUS = sys.argv[3] if (len(sys.argv) > 3 and not  (CHECK=="healthcheck" or CHECK=="migration") ) else ""
 
 REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
 REDIS_PORT = os.environ["REDIS_PORT"] if environ.get("REDIS_PORT") else "6379"
@@ -91,6 +92,7 @@ class RunServices:
                                 " core:products:folder=/var/www/products/" +\
                                     " core:products:subfolder=server" + " " +\
                                         CORE_EVENT_BUS)
+            
         else:
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
                  " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
@@ -101,6 +103,57 @@ class RunServices:
                                     " core:products:folder=/var/www/products/" +\
                                         " core:products:subfolder=server" + " " +\
                                             CORE_EVENT_BUS)
+
+    @dispatch(str, str, str, str)
+    def RunService(self, RUN_FILE, ENV_EXTENSION, LOG_FILE, CHECK):
+        if not(CHECK=="healthcheck" or CHECK=="migration"):
+            self.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
+            return
+        RUN_DLL = RUN_FILE
+        NAME_SERVICE = LOG_FILE
+        print(f"Executing -- {NAME_SERVICE}")
+
+        PRODUCT = os.environ.get("PRODUCT", "onlyoffice")
+        CONTAINER_PREFIX = f"{PRODUCT}-"
+        SERVICE_PORT = os.environ.get("SERVICE_PORT", "5050")
+        SHEME = os.environ.get("SHEME", "http")
+
+        PATH_TO_CONF = os.environ.get("PATH_TO_CONF", "/var/www/services/ASC.Web.HealthChecks.UI/service")
+
+        API_SYSTEM_HOST = os.environ.get("API_SYSTEM_HOST", f"{CONTAINER_PREFIX}api-system:{SERVICE_PORT}")
+        BACKUP_HOST = os.environ.get("BACKUP_HOST", f"{CONTAINER_PREFIX}backup:{SERVICE_PORT}")
+        BACKUP_BACKGRUOND_TASKS_HOST = os.environ.get("BACKUP_BACKGRUOND_TASKS_HOST", f"{CONTAINER_PREFIX}backup-background-tasks:{SERVICE_PORT}")
+        CLEAR_EVENTS_HOST = os.environ.get("CLEAR_EVENTS_HOST", f"{CONTAINER_PREFIX}clear-events:{SERVICE_PORT}")
+        FILES_HOST = os.environ.get("FILES_HOST", f"{CONTAINER_PREFIX}files:{SERVICE_PORT}")
+        FILES_SERVICES_HOST = os.environ.get("FILES_SERVICES_HOST", f"{CONTAINER_PREFIX}files-services:{SERVICE_PORT}")
+        NOTIFY_HOST = os.environ.get("NOTIFY_HOST", f"{CONTAINER_PREFIX}notify:{SERVICE_PORT}")
+        PEOPLE_SERVER_HOST = os.environ.get("PEOPLE_SERVER_HOST", f"{CONTAINER_PREFIX}people-server:{SERVICE_PORT}")
+        STUDIO_NOTIFY_HOST = os.environ.get("STUDIO_NOTIFY_HOST", f"{CONTAINER_PREFIX}studio-notify:{SERVICE_PORT}")
+        API_HOST = os.environ.get("API_HOST", f"{CONTAINER_PREFIX}api:{SERVICE_PORT}")
+        STUDIO_HOST = os.environ.get("STUDIO_HOST", f"{CONTAINER_PREFIX}studio:{SERVICE_PORT}")
+
+        with open(f"{PATH_TO_CONF}/appsettings.json", "r") as f:
+            appsettings_content = f.read()
+
+        appsettings_content = appsettings_content.replace("localhost:5010", API_SYSTEM_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5012", BACKUP_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5032", BACKUP_BACKGRUOND_TASKS_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5027", CLEAR_EVENTS_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5007", FILES_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5009", FILES_SERVICES_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5005", NOTIFY_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5004", PEOPLE_SERVER_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5000", API_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5006", STUDIO_NOTIFY_HOST)
+        appsettings_content = appsettings_content.replace("localhost:5003", STUDIO_HOST)
+
+        with open(f"{PATH_TO_CONF}/appsettings.json", "w") as f:
+            f.write(appsettings_content)
+
+        print(f"dotnet {RUN_DLL} --urls={URLS}")
+        print(f"dotnet {RUN_DLL} --urls={SHEME}://0.0.0.0:{SERVICE_PORT}")
+
+        os.system(f"dotnet {RUN_DLL} --urls={SHEME}://0.0.0.0:{SERVICE_PORT}")
 
 def openJsonFile(filePath):
     try:
@@ -219,4 +272,4 @@ jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
-run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
+run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE, CHECK)
