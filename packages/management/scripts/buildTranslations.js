@@ -14,6 +14,7 @@ beforeBuild(
       "Payments.json",
       "PaymentsEnterprise.json",
       "Translations.json",
+      "Files.json",
     ],
     alias: "CLIENT_PUBLIC_DIR",
   }
