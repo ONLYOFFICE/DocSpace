@@ -303,6 +303,7 @@ const Preview = (props) => {
                       getData={() => {}}
                       directionX="right"
                       className="menu-button"
+                      isDisabled
                     />
                   </div>
                 )}
@@ -391,6 +392,7 @@ const Preview = (props) => {
                   getData={() => {}}
                   directionX="right"
                   className="menu-button"
+                  isDisabled
                 />
               </div>
             </div>

@@ -13,19 +13,10 @@ const StyledDialogAsideLoader = styled.div`
               `1px solid ${props.theme.modalDialog.headerBorderColor}`};
 
             box-sizing: border-box;
-
-            ${({ theme }) =>
-              theme.interfaceDirection === "rtl"
-                ? `margin-left: -16px;`
-                : `margin-right: -16px;`}
           }
 
           .dialog-loader-body {
             padding: 16px;
-            ${({ theme }) =>
-              theme.interfaceDirection === "rtl"
-                ? `margin-left: -16px;`
-                : `margin-right: -16px;`}
           }
 
           .dialog-loader-footer {
