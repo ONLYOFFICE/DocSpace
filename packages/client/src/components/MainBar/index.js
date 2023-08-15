@@ -23,6 +23,10 @@ const StyledContainer = styled.div`
 
     margin-right: -16px;
     margin-top: 48px;
+
+    &:empty {
+      margin-top: 0px;
+    }
   `}
 
   #bar-banner {
