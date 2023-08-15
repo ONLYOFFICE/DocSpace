@@ -261,6 +261,7 @@ export default inject(
 
         if (
           value?.fileType?.includes(PluginFileType.Image) ||
+          value?.fileType.includes(PluginFileType.Video) ||
           !value?.fileType
         ) {
           return true;

@@ -10,9 +10,10 @@ import {
 } from "./StyledPluginsSettings";
 
 const PluginsSettingsBodyContent = ({
-  withDele,
   enabledPluginList,
   changePluginStatus,
+  openSettingsDialog,
+  updatePluginStatus,
 }) => {
   const navigate = useNavigate();
 
@@ -31,6 +32,8 @@ const PluginsSettingsBodyContent = ({
             {...plugin}
             changePluginStatus={changePluginStatus}
             isUserSettings={true}
+            openSettingsDialog={openSettingsDialog}
+            updatePluginStatus={updatePluginStatus}
             isLast={index === enabledPluginList.length - 1}
           />
         ))}
@@ -40,14 +43,31 @@ const PluginsSettingsBodyContent = ({
 };
 
 export default inject(({ auth, pluginStore }) => {
-  const { enablePlugins, pluginOptions } = auth.settingsStore;
+  const { enablePlugins } = auth.settingsStore;
 
-  const { enabledPluginList, changePluginStatus } = pluginStore;
+  const {
+    enabledPluginList,
+    changePluginStatus,
+    setCurrentSettingsDialogPlugin,
+    setSettingsPluginDialogVisible,
+    setIsAdminSettingsDialog,
+
+    updatePluginStatus,
+  } = pluginStore;
+
+  const openSettingsDialog = (pluginId) => {
+    setSettingsPluginDialogVisible(true);
+    setCurrentSettingsDialogPlugin(pluginId);
+    setIsAdminSettingsDialog(false);
+  };
 
   return {
     enablePlugins,
 
     enabledPluginList,
     changePluginStatus,
+
+    openSettingsDialog,
+    updatePluginStatus,
   };
 })(observer(PluginsSettingsBodyContent));

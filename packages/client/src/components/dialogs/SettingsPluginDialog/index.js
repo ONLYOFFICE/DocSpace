@@ -32,6 +32,8 @@ const SettingsPluginDialog = ({
   const [customSettingsProps, setCustomSettingsProps] =
     React.useState(customSettings);
 
+  console.log(customSettings);
+
   const onLoadAction = React.useCallback(async () => {
     if (!onLoad) return;
     const res = await onLoad();
