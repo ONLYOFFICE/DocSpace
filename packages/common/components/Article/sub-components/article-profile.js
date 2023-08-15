@@ -94,11 +94,12 @@ const ArticleProfile = (props) => {
                 {username[1]}
               </Text>
             </StyledUserName>
-            <div ref={iconRef}>
+            <div ref={iconRef} className="option-button">
               <IconButton
+                className="option-button-icon"
                 onClick={onClick}
                 iconName={VerticalDotsReactSvgUrl}
-                size={15}
+                size={32}
                 isFill
               />
               <ContextMenu
