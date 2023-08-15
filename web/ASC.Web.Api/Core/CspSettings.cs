@@ -124,7 +124,8 @@ public class CspSettingsHelper
         var imageBuilder = csp.AllowImages
             .FromSelf();
 
-        var frameBuilder = csp.AllowFraming;
+        var frameBuilder = csp.AllowFraming
+            .FromSelf();
 
         foreach (var domain in domains)
         {
