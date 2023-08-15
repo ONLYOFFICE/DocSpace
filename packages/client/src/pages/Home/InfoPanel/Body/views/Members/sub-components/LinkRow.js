@@ -13,6 +13,7 @@ import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import CodeReactSvgUrl from "PUBLIC_DIR/images/code.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import OutlineReactSvgUrl from "PUBLIC_DIR/images/outline-true.react.svg?url";
 import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import LoadedReactSvgUrl from "PUBLIC_DIR/images/loaded.react.svg?url";
@@ -130,6 +131,14 @@ const LinkRow = (props) => {
         icon: CodeReactSvgUrl,
         onClick: onEmbeddingClick,
       },
+
+      {
+        key: "copy-link-settings-key",
+        label: t("SharingPanel:CopyExternalLink"),
+        icon: CopyToReactSvgUrl,
+        onClick: onCopyExternalLink,
+      },
+
       disabled
         ? {
             key: "enable-link-key",
