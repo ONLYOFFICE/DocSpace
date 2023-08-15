@@ -34,6 +34,7 @@
 PACKAGE_SYSNAME="onlyoffice"
 PRODUCT="docspace"
 BASE_DIR="/app/$PACKAGE_SYSNAME";
+PROXY_YML="${BASE_DIR}/proxy.yml"
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="master"
@@ -1140,7 +1141,11 @@ set_docspace_params() {
 	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
 	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
 	
-	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:80$)' ${BASE_DIR}/${PRODUCT}.yml)
+	if docker ps -a --format '{{.Names}}' | grep -q "$PACKAGE_SYSNAME-proxy" && docker port $PACKAGE_SYSNAME-proxy | grep -q '443'; then
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
+	fi
+
+	[ -f ${PROXY_YML} ] && EXTERNAL_PORT=${EXTERNAL_PORT:-"$(grep -oP '(?<=- ).*?(?=:80$)' ${PROXY_YML})"}
 }
 
 set_installation_type_data () {
@@ -1260,17 +1265,17 @@ install_product () {
 
 	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
 		docker-compose -f $BASE_DIR/build.yml pull
-		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml -f ${PROXY_YML} down
 		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" $BASE_DIR/${PRODUCT}.yml
+	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
 	
 	if [ $(free -m | grep -oP '\d+' | head -n 1) -gt "12228" ]; then #RAM ~12Gb
 		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
@@ -1280,6 +1285,7 @@ install_product () {
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
+	docker-compose -f ${PROXY_YML} up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }

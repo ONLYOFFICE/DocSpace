@@ -170,29 +170,6 @@ services:
     expose:
       - "5011"
 
-  onlyoffice-proxy:
-    image: nginx
-    container_name: ${PROXY_HOST}
-    restart: always
-    healthcheck:
-     <<: *x-healthcheck
-     test: nginx -t || exit 1
-    ports:
-      - 80:80
-      #- 443:443
-    depends_on:
-      - onlyoffice-router
-    environment:
-      - ROUTER_HOST=${ROUTER_HOST}
-    volumes:
-      - proxy_log:/var/log/nginx
-      - ./config/nginx/templates/proxy.upstream.conf.template:/etc/nginx/templates/proxy.upstream.conf.template:ro
-      - ./config/nginx/onlyoffice-proxy.conf:/etc/nginx/conf.d/default.conf
-      #- ./config/nginx/onlyoffice-proxy-ssl.conf:/etc/nginx/conf.d/default.conf
-      #- {{SSL_KEY_PATH}}:/etc/ssl/private/tls.key
-      #- {{SSL_CERTIFICATE_PATH}}:/usr/local/share/ca-certificates/tls.crt
-      #- {{SSL_DHPARAM_PATH}}:/etc/ssl/certs/dhparam.pem
-
   onlyoffice-router:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-router:${DOCKER_TAG}"
     container_name: ${ROUTER_HOST}
