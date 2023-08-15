@@ -115,7 +115,10 @@ const StyledDropDown = styled(DropDown)`
   ${isMobileOnly && mobileDropDown}
 
   .section-scroll, .scroll-body {
-    padding-right: 0px !important;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 0px !important;`
+        : `padding-right: 0px !important;`}
   }
 
   .separator-wrapper {
