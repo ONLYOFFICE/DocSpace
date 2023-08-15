@@ -115,6 +115,7 @@ public class CspSettingsHelper
         var scriptBuilder = csp.AllowScripts
             .FromSelf()
             .From(_filesLinkUtility.DocServiceUrl)
+            .From("*.googleapis.com") //firebase
             .AllowUnsafeInline();
 
         var styleBuilder = csp.AllowStyles
