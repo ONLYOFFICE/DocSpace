@@ -339,6 +339,13 @@ class SettingsStore {
     this.defaultPage = defaultPage;
   };
 
+  setPortalDomain = (domain) => {
+    this.domain = domain;
+  };
+  setPortals = (portals) => {
+    this.portals = portals;
+  };
+
   setGreetingSettings = (greetingSettings) => {
     this.greetingSettings = greetingSettings;
   };
@@ -439,7 +446,7 @@ class SettingsStore {
     );
 
     await Promise.all(requests).then(() => {
-      if (this.standalone) {
+      if (this.standalone && !this.wizardToken) {
         this.getSpaces();
       }
     });
@@ -558,13 +565,22 @@ class SettingsStore {
     this.setLogoUrl(Object.values(res));
   };
 
-  getSpaces = async () => {
+  getDomainName = async () => {
     const res = await api.management.getDomainName();
     const { settings } = res;
-    if (settings) {
-      const res = await api.management.getAllPortals();
-      this.domain = settings;
-      this.portals = res.tenants;
+    this.domain = settings;
+    return settings;
+  };
+
+  getAllPortals = async () => {
+    const res = await api.management.getAllPortals();
+    this.portals = res.tenants;
+  };
+
+  getSpaces = async () => {
+    const domain = await this.getDomainName();
+    if (domain) {
+      await this.getAllPortals();
     }
   };
 
