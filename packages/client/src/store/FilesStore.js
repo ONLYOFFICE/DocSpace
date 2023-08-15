@@ -1037,25 +1037,18 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        const isFound =
-          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
-
         if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
-          isFound &&
-            newSelections.push(
-              this.filesList.find((f) => f.id == id && !f.isFolder)
-            );
+          newSelections.push(
+            this.filesList.find((f) => f.id == id && !f.isFolder)
+          );
         }
       } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
-        const isFound =
-          this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
-
         const selectableFolder = this.filesList.find(
           (f) => f.id == id && f.isFolder
         );
         selectableFolder.isFolder = true;
 
-        isFound && newSelections.push(selectableFolder);
+        newSelections.push(selectableFolder);
       }
     }
 
@@ -1087,7 +1080,15 @@ class FilesStore {
       }
     }
 
-    this.setSelection(newSelections);
+    const removeDuplicate = (items) => {
+      return items.filter(
+        (x, index, self) =>
+          index ===
+          self.findIndex((i) => i.id === x.id && i.isFolder === x.isFolder)
+      );
+    };
+
+    this.setSelection(removeDuplicate(newSelections));
   };
 
   setBufferSelection = (bufferSelection) => {
