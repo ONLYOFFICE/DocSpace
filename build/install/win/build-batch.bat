@@ -34,8 +34,8 @@ copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.co
 rmdir build\install\win\publish /s /q
 
 REM echo ######## Configuring Nginx########
-sed -i "s/<id>.*<\/id>/<id>Nginx<\/id>/g; s/<name>.*<\/name>/<name>Nginx<\/name>/g; s/<description>.*<\/description>/<description>nginx<\/description>/g" Nginx.xml
-sed -i "/<\/startmode>/a \ \t<delayedAutoStart>true<\/delayedAutoStart>" Nginx.xml
+%sed% -i "s/<id>.*<\/id>/<id>Nginx<\/id>/g; s/<name>.*<\/name>/<name>Nginx<\/name>/g; s/<description>.*<\/description>/<description>nginx<\/description>/g" build\install\win\Nginx\tools\Nginx.xml
+%sed% -i "/<\/startmode>/a \ \t<delayedAutoStart>true<\/delayedAutoStart>" build\install\win\Nginx\tools\Nginx.xml
 
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
