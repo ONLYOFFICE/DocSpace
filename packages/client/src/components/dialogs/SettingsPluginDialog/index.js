@@ -16,23 +16,13 @@ const SettingsPluginDialog = ({
   customSettings,
 
   settingsPluginDialogVisible,
-  currentSettingsDialogPlugin,
 
   onClose,
-
-  isUserDialog,
-
-  setSettingsPluginDialogVisible,
-  setCurrentSettingsDialogPlugin,
-
-  updateStatus,
-  setPluginDialogVisible,
-  setPluginDialogProps,
 }) => {
   const [customSettingsProps, setCustomSettingsProps] =
     React.useState(customSettings);
 
-  console.log(customSettings);
+  const [modalRequestRunning, setModalRequestRunning] = React.useState(false);
 
   const onLoadAction = React.useCallback(async () => {
     if (!onLoad) return;
@@ -46,6 +36,7 @@ const SettingsPluginDialog = ({
   }, [onLoadAction]);
 
   const onCloseAction = () => {
+    if (modalRequestRunning) return;
     onClose();
   };
 
@@ -64,6 +55,7 @@ const SettingsPluginDialog = ({
             component: PluginComponents.box,
             props: customSettingsProps,
           }}
+          setModalRequestRunning={setModalRequestRunning}
         />
       </ModalDialog.Body>
     </ModalDialog>

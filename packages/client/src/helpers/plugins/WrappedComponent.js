@@ -42,6 +42,7 @@ const ComponentPure = ({
     updatePropsContext,
     isRequestRunning,
     setIsRequestRunning,
+    setModalRequestRunning,
   } = React.useContext(PropsContext);
 
   React.useEffect(() => {
@@ -199,6 +200,7 @@ const ComponentPure = ({
         const onClickAction = async () => {
           if (withLoadingAfterClick) {
             setIsRequestRunning(true);
+            setModalRequestRunning && setModalRequestRunning(true);
           }
           const message = await elementProps.onClick();
 
@@ -324,7 +326,7 @@ const Component = inject(({ pluginStore }) => {
   };
 })(observer(ComponentPure));
 
-const WrappedComponent = ({ component, pluginId }) => {
+const WrappedComponent = ({ component, pluginId, setModalRequestRunning }) => {
   const [contextProps, setContextProps] = React.useState({});
 
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
@@ -343,6 +345,7 @@ const WrappedComponent = ({ component, pluginId }) => {
         updatePropsContext,
         isRequestRunning,
         setIsRequestRunning,
+        setModalRequestRunning,
       }}
     >
       <Component component={component} pluginId={pluginId} />

@@ -38,9 +38,12 @@ const PluginDialog = ({
   const [dialogFooterProps, setDialogFooterProps] =
     React.useState(dialogFooter);
 
+  const [modalRequestRunning, setModalRequestRunning] = React.useState(false);
+
   const functionsRef = React.useRef([]);
 
   const onCloseAction = async () => {
+    if (modalRequestRunning) return;
     const message = await onClose();
 
     messageActions(
@@ -130,6 +133,7 @@ const PluginDialog = ({
             component: PluginComponents.box,
             props: dialogBodyProps,
           }}
+          setModalRequestRunning={setModalRequestRunning}
         />
       </ModalDialog.Body>
       {dialogFooterProps && (
@@ -140,6 +144,7 @@ const PluginDialog = ({
               component: PluginComponents.box,
               props: dialogFooterProps,
             }}
+            setModalRequestRunning={setModalRequestRunning}
           />
         </ModalDialog.Footer>
       )}
