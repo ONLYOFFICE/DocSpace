@@ -121,6 +121,55 @@ Function NginxSetup
 
 End Function
 
+Function MoveNginxConfigs
+    On Error Resume Next
+
+    Dim objFSO, sourceFolder, targetFolder, nginxFolder
+
+    ' Define source and target paths
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    sourceFolder = Session.Property("APPDIR") & "nginx\conf"
+    targetFolder = "C:\nginx\conf"
+    nginxFolder =  Session.Property("APPDIR") & "nginx"
+
+    ' Check if source folder exists
+    If objFSO.FolderExists(sourceFolder) Then
+        ' Check if target folder exists, if not, create it
+        If Not objFSO.FolderExists(targetFolder) Then
+            objFSO.CreateFolder(targetFolder)
+        End If
+
+        ' Copy files and folders from source to target
+        CopyFolderContents objFSO.GetFolder(sourceFolder), targetFolder, objFSO
+
+        ' Delete source folder
+        objFSO.DeleteFolder nginxFolder, True ' "True" parameter for recursive deletion
+
+        WScript.Echo "Files and folders moved, and source folder deleted."
+    Else
+        WScript.Echo "Source folder does not exist."
+    End If
+
+    Set objFSO = Nothing
+End Function
+
+Sub CopyFolderContents(sourceFolder, targetFolder, objFSO)
+    Dim subFolder, objFile
+
+    ' Copy files
+    For Each objFile In sourceFolder.Files
+        objFSO.CopyFile objFile.Path, targetFolder & "\" & objFile.Name, True
+    Next
+
+    ' Recursively copy subfolders
+    For Each subFolder In sourceFolder.SubFolders
+        Dim newTargetFolder
+        newTargetFolder = targetFolder & "\" & subFolder.Name
+        objFSO.CreateFolder newTargetFolder
+        CopyFolderContents subFolder, newTargetFolder, objFSO
+    Next
+End Sub
+
 Function RandomString( ByVal strLen )
     Dim str, min, max
 

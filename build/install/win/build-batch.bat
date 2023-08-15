@@ -5,7 +5,6 @@ set "nginx_version=1.21.1"
 set "environment=production"
 
 REM echo ######## Extracting and preparing files to build ########
-md build\install\win\Files\nginx\conf
 md build\install\win\Nginx\tools
 md build\install\win\Files\tools
 md build\install\win\Files\Logs
@@ -35,7 +34,7 @@ copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.co
 rmdir build\install\win\publish /s /q
 
 REM echo ######## Configuring Nginx########
-sed -i "s/<id>.*<\/id>/<id>nginx<\/id>/g; s/<name>.*<\/name>/<name>nginx<\/name>/g; s/<description>.*<\/description>/<description>nginx<\/description>/g" Nginx.xml
+sed -i "s/<id>.*<\/id>/<id>Nginx<\/id>/g; s/<name>.*<\/name>/<name>Nginx<\/name>/g; s/<description>.*<\/description>/<description>nginx<\/description>/g" Nginx.xml
 sed -i "/<\/startmode>/a \ \t<delayedAutoStart>true<\/delayedAutoStart>" Nginx.xml
 
 REM echo ######## Delete test and dev configs ########
@@ -74,6 +73,13 @@ del /f /q build\install\win\*.back.*
 
 REM echo ######## Build MySQL Server Installer ########
 iscc /Qp /S"byparam="signtool" sign /a /n "%publisher%" /t http://timestamp.digicert.com $f" "build\install\win\MySQL Server Installer Runner.iss"
+
+REM echo ######## Build Nginx ########
+IF "%SignBuild%"=="true" (
+%AdvancedInstaller% /edit build\install\win\Nginx.aip /SetSig
+%AdvancedInstaller% /edit build\install\win\Nginx.aip /SetDigitalCertificateFile -file %onlyoffice_codesign_path% -password "%onlyoffice_codesign_password%"
+)
+%AdvancedInstaller% /rebuild build\install\win\Nginx.aip
 
 REM echo ######## Build DocSpace package ########
 %AdvancedInstaller% /edit build\install\win\DocSpace.aip /SetVersion %BUILD_VERSION%.%BUILD_NUMBER%

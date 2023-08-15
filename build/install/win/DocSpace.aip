@@ -86,7 +86,6 @@
     <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
     <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
     <ROW Property="ServiceName_PeopleServer" Value="ASC.PeopleServer"/>
-    <ROW Property="ServiceName_Proxy" Value="ASC.Proxy"/>
     <ROW Property="ServiceName_Socket.IO" Value="ASC.Socket.IO"/>
     <ROW Property="ServiceName_SsoAuth" Value="ASC.SsoAuth.Svc"/>
     <ROW Property="ServiceName_StudioNotifyService" Value="ASC.StudioNotifyService"/>
@@ -982,6 +981,8 @@
     <ROW Action="AI_DATA_SETTER_20" Type="51" Source="CustomActionData" Target="[PostgreSqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_21" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_22" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DATA_SETTER_23" Type="51" Source="CustomActionData" Target="Nginx"/>
+    <ROW Action="AI_DATA_SETTER_24" Type="51" Source="CustomActionData" Target="Nginx"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[SqlConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
@@ -1046,6 +1047,7 @@
     <ROW Action="DetectMySQLService" Type="1" Source="aicustact.dll" Target="DetectProcess" Options="3" AdditionalSeq="AI_DATA_SETTER_9"/>
     <ROW Action="ElasticSearchInstallPlugin" Type="1030" Source="utils.vbs" Target="ElasticSearchInstallPlugin"/>
     <ROW Action="ElasticSearchSetup" Type="6" Source="utils.vbs" Target="ElasticSearchSetup"/>
+    <ROW Action="MoveNginxConfigs" Type="6" Source="utils.vbs" Target="MoveNginxConfigs"/>
     <ROW Action="MySQLConfigure" Type="262" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="PostgreSQLConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
     <ROW Action="RedisSearchSetup" Type="6" Source="utils.vbs" Target="RedisSetup"/>
@@ -1062,9 +1064,11 @@
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
     <ROW Action="StartMigrationRunner" Type="3074" Source="viewer.exe" Target="/EnforcedRunAsAdmin /RunAsAdmin /HideWindow /dir &quot;[APPDIR]services\ASC.Migration.Runner\service&quot; &quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot;" Options="1"/>
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
+    <ROW Action="StartNginx" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_24"/>
     <ROW Action="StartService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_19"/>
     <ROW Action="StopElasticSearchService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_12"/>
     <ROW Action="StopMySQLService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
+    <ROW Action="StopNginx" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_23"/>
     <ROW Action="StopRedisService" Type="3073" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_16"/>
     <ROW Action="TestElasticsearchConnection" Type="1" Source="Utils.CA.dll" Target="CheckTCPAvailability" WithoutSeq="true" AdditionalSeq="AI_DATA_SETTER_1"/>
     <ROW Action="TestElasticsearchConnectionMsgBox" Type="1" Source="aicustact.dll" Target="MsgBox" WithoutSeq="true" Options="1" AdditionalSeq="AI_DATA_SETTER"/>
@@ -1248,6 +1252,11 @@
     <ROW Action="AI_FwUninstall" Condition="(VersionNT &gt;= 501) AND (REMOVE=&quot;ALL&quot;)" Sequence="1702"/>
     <ROW Action="AI_DATA_SETTER_22" Condition="(VersionNT &gt;= 501) AND (REMOVE=&quot;ALL&quot;)" Sequence="1701"/>
     <ROW Action="SetSERVERNAME" Condition="( NOT Installed )" Sequence="1604"/>
+    <ROW Action="MoveNginxConfigs" Condition="( NOT Installed )" Sequence="6601"/>
+    <ROW Action="StopNginx" Condition="( NOT Installed )" Sequence="6603"/>
+    <ROW Action="AI_DATA_SETTER_23" Condition="( NOT Installed )" Sequence="6602"/>
+    <ROW Action="StartNginx" Condition="( NOT Installed )" Sequence="6605"/>
+    <ROW Action="AI_DATA_SETTER_24" Condition="( NOT Installed )" Sequence="6604"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -1433,7 +1442,6 @@
     <ROW MsiServiceConfig="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ConfigType="3" Argument="1" Component_="Login.exe"/>
     <ROW MsiServiceConfig="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.People.exe"/>
-    <ROW MsiServiceConfig="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ConfigType="3" Argument="1" Component_="Proxy.exe"/>
     <ROW MsiServiceConfig="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ConfigType="3" Argument="1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfig="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Studio.Notify.exe"/>
@@ -1452,7 +1460,6 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Login.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.People.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Proxy.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
@@ -1471,7 +1478,6 @@
     <ROW ServiceControl="ServiceName_Login" Name="[ServiceName_Login]" Event="161" Wait="0" Component_="Login.exe"/>
     <ROW ServiceControl="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="161" Wait="0" Component_="ASC.Notify.exe"/>
     <ROW ServiceControl="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="161" Wait="0" Component_="ASC.People.exe"/>
-    <ROW ServiceControl="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="161" Wait="0" Component_="Proxy.exe"/>
     <ROW ServiceControl="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="161" Wait="0" Component_="Socket.IO.exe"/>
     <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="SsoAuth.exe"/>
     <ROW ServiceControl="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="161" Wait="0" Component_="ASC.Studio.Notify.exe"/>
@@ -1490,7 +1496,6 @@
     <ROW ServiceInstall="ServiceName_Login" Name="[ServiceName_Login]" DisplayName="[ShortProductName] Login" ServiceType="16" StartType="2" ErrorControl="1" Component_="Login.exe" Description="[ShortProductName] Login"/>
     <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ShortProductName] NotifyService" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER] --core:eventBus:subscriptionClientName=asc_event_bus_notify_queue" Component_="ASC.Notify.exe" Description="[ShortProductName] NotifyService"/>
     <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ShortProductName] PeopleServer" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer] [SUBFOLDER_SERVER]" Component_="ASC.People.exe" Description="[ShortProductName] PeopleServer"/>
-    <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ShortProductName] Proxy" ServiceType="16" StartType="2" ErrorControl="1" Component_="Proxy.exe" Description="[ShortProductName] Proxy"/>
     <ROW ServiceInstall="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" DisplayName="[ShortProductName] Socket.IO" ServiceType="16" StartType="2" ErrorControl="1" Component_="Socket.IO.exe" Description="[ShortProductName] Socket.IO"/>
     <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ShortProductName] SsoAuth.Svc" ServiceType="16" StartType="2" ErrorControl="1" Component_="SsoAuth.exe" Description="[ShortProductName] SsoAuth.Svc"/>
     <ROW ServiceInstall="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" DisplayName="[ShortProductName] StudioNotifyService" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5006 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_StudioNotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Studio.Notify.exe" Description="[ShortProductName] StudioNotifyService"/>
@@ -1523,7 +1528,8 @@
     <ROW PrereqKey="RequiredApplication_4" DisplayName="Elasticsearch v7.10.0 x64" VersionMin="7.10.0" SetupFileUrl="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="Elasticsearch v7.10.0 x64"/>
     <ROW PrereqKey="RequiredApplication_5" DisplayName="RabbitMQ v3.12.1 x64" VersionMin="3.12" SetupFileUrl="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.12.1/rabbitmq-server-3.12.1.exe" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/S" BasicUiComLine="/S" NoUiComLine="/S" Options="yx" TargetName="RabbitMQ v3.12.1 x64"/>
     <ROW PrereqKey="RequiredApplication_6" DisplayName="Redis 5.0.10 x64" VersionMin="5.0" SetupFileUrl="http://download.onlyoffice.com/install/windows/redist/Redis-x64-5.0.10.msi" Location="1" ExactSize="0" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" ComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" BasicUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" NoUiComLine="/quiet ADD_INSTALLFOLDER_TO_PATH=1" Options="yx" TargetName="Redis 5.0.10 x64"/>
-    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 RequiredApplication RequiredApplication_2 MySQLInstallerRunn RequiredApplication_1 RequiredApplication_4 Erlangv26.0x64 RequiredApplication_5 RequiredApplication_6 FFmpegx64 PostgreSQL_ODBC PostgresSQL DocumentServer"/>
+    <ROW PrereqKey="nginx" DisplayName="Nginx" VersionMin="1.24.0.0" SetupFileUrl="publish\Nginx.msi" Location="0" ExactSize="0" Operator="1" ComLine="/quiet" BasicUiComLine="/quiet" NoUiComLine="/quiet" Options="y" TargetName="nginx\Nginx.msi"/>
+    <ATTRIBUTE name="PrereqsOrder" value="B96F93FA27E74B02866727AAE83982D0 F3520F64DA5998338D97129FAD2 EA5B60A5CAD4115A8386D017CC889B9 CA62D813A4E74FA2AAE86A7D7B7B1493 A918597FE054CCCB65ABDBA0AD8F63C C4FE6FD5B7C4D07B3A313E754A9A6A8 RequiredApplication RequiredApplication_2 MySQLInstallerRunn RequiredApplication_1 RequiredApplication_4 Erlangv26.0x64 RequiredApplication_5 RequiredApplication_6 FFmpegx64 PostgreSQL_ODBC PostgresSQL nginx DocumentServer"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="A918597FE054CCCB65ABDBA0AD8F63CSyst" Prereq="A918597FE054CCCB65ABDBA0AD8F63C" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.26.28720" Order="1" Property="PreReqSearch_A918597FE054CCCB65ABDB"/>
@@ -1539,6 +1545,7 @@
     <ROW SearchKey="SystemFolderfile.dll" Prereq="RequiredApplication" SearchType="4" SearchString="{7AEDB3F3-7B9D-4FE2-8D8F-3CE3DE6F5B6B}" VerMin="8.0.33" Order="1" Property="PreReqSearch"/>
     <ROW SearchKey="SystemFolderfile.dll_1" Prereq="RequiredApplication_1" SearchType="4" SearchString="{47C07A3A-42EF-4213-A85D-8F5A59077C28}" VerMin="18.16.0" Order="1" Property="PreReqSearch_1"/>
     <ROW SearchKey="SystemFolderfile.dll_2" Prereq="RequiredApplication_2" SearchType="4" SearchString="{18B94B70-06F1-4AC0-B308-37280DB868C2}" VerMin="1.6.6.0" Order="1" Property="PreReqSearch_2"/>
+    <ROW SearchKey="SystemFolderfile.dll_3" Prereq="nginx" SearchType="4" SearchString="{264FA774-91E5-4854-8010-4AB58CA830BD}" VerMin="1.24.0" Order="1" Property="PreReqSearch_8"/>
     <ROW SearchKey="UpgradeCode" Prereq="PostgreSQL_ODBC" SearchType="4" SearchString="{BBD29DF5-89F6-4B8B-BDC9-C3EA3A4AFDBB}" VerMin="15.0" Order="1" Property="PreReqSearch_14"/>
     <ROW SearchKey="UpgradeCode_1" Prereq="RequiredApplication_4" SearchType="4" SearchString="{DAAA2CBA-A1ED-4F29-AFBF-5478617B00F6}" VerMin="7.10.0" Order="2" Property="PreReqSearch_7"/>
     <ROW SearchKey="UpgradeCode_3" Prereq="RequiredApplication_6" SearchType="4" SearchString="{05410198-7212-4FC4-B7C8-AFEFC3DA0FBC}" VerMin="5.0.10" Order="2" Property="PreReqSearch_12"/>
@@ -1558,8 +1565,8 @@
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceInclude" TxtUpdateSet="YourFile.txt" FindPattern="/etc/nginx/includes" ReplacePattern="includes" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="/var/www/client" ReplacePattern="&quot;[APPDIR]client&quot;" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="/var/www/public/" ReplacePattern="&quot;[APPDIR]public/&quot;" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceDsProxyPass" TxtUpdateSet="YourFile.txt" FindPattern="proxy_pass .*;" ReplacePattern="proxy_pass http://[DOCUMENT_SERVER_HOST]:[DOCUMENT_SERVER_PORT];" Options="19" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceListen" TxtUpdateSet="YourFile.txt" FindPattern="listen.*;" ReplacePattern="listen [APP_PORT];" Options="19" Order="2" FileEncoding="-1"/>
   </COMPONENT>
