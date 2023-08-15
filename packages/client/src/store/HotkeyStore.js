@@ -41,14 +41,17 @@ class HotkeyStore {
       const el = item[0];
       const rect = el.getBoundingClientRect();
 
+      const rectHeight =
+        this.filesStore.viewAs === "table" ? rect.height * 2 : rect.height;
+
       if (
         scrollRect.top + scrollRect.height - rect.height > rect.top &&
-        scrollRect.top < rect.top + el.offsetHeight
+        scrollRect.top < rect.top + el.offsetHeight - rectHeight
       ) {
-        //console.log("element is visible");
+        // console.log("element is visible");
       } else {
         scroll.scrollTo(0, offsetTop - scrollRect.height / 2);
-        //console.log("element is not visible");
+        // console.log("element is not visible");
       }
     } else {
       scroll?.scrollTo(0, this.elemOffset - scrollRect.height / 2);

@@ -81,7 +81,7 @@ export const HistoryBlockItemList = ({
               size="16"
               isFill={true}
               onClick={() => checkAndOpenLocationAction(item)}
-              title="Open Location"
+              title={t("Files:OpenLocation")}
             />
           </StyledHistoryBlockFile>
         );
