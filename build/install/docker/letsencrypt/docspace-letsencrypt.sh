@@ -26,6 +26,7 @@ if [ "$#" -ge "2" ]; then
     # Request and generate Let's Encrypt SSL certificate
     echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-start.log
     certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-new.log
+    openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
     if [ -f "${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/fullchain.pem" -a -f ${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/privkey.pem ]; then
         if [ -f ${DOCKERCOMPOSE_DIR}/.env -a -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml ]; then
