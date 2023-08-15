@@ -11,9 +11,14 @@ const ConfigurationSection = ({ t }) => {
   const [domain, setDomain] = React.useState<string>("");
   const [name, setName] = React.useState<string>("");
 
-  const { spacesStore } = useStore();
+  const { spacesStore, authStore } = useStore();
 
   const { validatePortalName, setPortalSettings } = spacesStore;
+
+  const onHandleClick = () => {
+    setPortalSettings(domain, name);
+    authStore.settingsStore.getAllPortals();
+  };
 
   const onHandleDomain = (e: React.ChangeEvent<HTMLInputElement>) =>
     setDomain(e.target.value);
@@ -75,7 +80,7 @@ const ConfigurationSection = ({ t }) => {
         size="normal"
         className="spaces-button"
         label={t("Common:Connect")}
-        onClick={() => setPortalSettings(domain, name)}
+        onClick={onHandleClick}
         primary={true}
       />
     </ConfigurationWrapper>

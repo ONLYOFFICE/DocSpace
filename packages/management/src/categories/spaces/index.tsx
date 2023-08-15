@@ -17,18 +17,13 @@ const Spaces = () => {
 
   const { spacesStore, authStore } = useStore();
 
-  const {
-    initStore,
-    isConnected,
-    portals,
-    domainDialogVisible,
-    createPortalDialogVisible,
-  } = spacesStore;
+  const { isConnected, domainDialogVisible, createPortalDialogVisible } =
+    spacesStore;
   const { setDocumentTitle } = authStore;
+  const { portals } = authStore.settingsStore;
 
   React.useEffect(() => {
     const fetchData = async () => {
-      await initStore();
       setIsLoading(false);
     };
 

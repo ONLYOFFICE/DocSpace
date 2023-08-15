@@ -7,16 +7,16 @@ import { StyledMultipleSpaces } from "../StyledSpaces";
 import { useStore } from "SRC_DIR/store";
 
 const MultipleSpaces = ({ t }) => {
-  const { spacesStore } = useStore();
+  const { spacesStore, authStore } = useStore();
 
   const {
-    portals,
     deletePortal,
-    domain,
     setPortalName,
     setChangeDomainDialogVisible,
     setCreatePortalDialogVisible,
   } = spacesStore;
+
+  const { portals, domain } = authStore.settingsStore;
 
   return (
     <StyledMultipleSpaces>
