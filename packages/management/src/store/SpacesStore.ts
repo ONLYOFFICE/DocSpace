@@ -1,4 +1,4 @@
-import { settingsTree } from 'SRC_DIR/utils/settingsTree';
+import { settingsTree } from "SRC_DIR/utils/settingsTree";
 import { makeAutoObservable } from "mobx";
 import { getLogoFromPath } from "@docspace/common/utils";
 import {
@@ -27,16 +27,6 @@ class SpacesStore {
     makeAutoObservable(this);
   }
 
-  initStore = async () => {
-    if (this.isInit) return;
-    this.isInit = true;
-
-    const requests = [];
-    requests.push(this.getPortalDomain(), this.getAllPortals());
-
-    return Promise.all(requests);
-  };
-
   deletePortal = async (portalName: string) => {
     const data = {
       portalName,
@@ -51,7 +41,7 @@ class SpacesStore {
     const res = await getDomainName();
     const { settings } = res;
 
-    this.domain = settings;
+    this.authStore.settingsStore.setPortalDomain(settings);
 
     if (settings) {
       const status = await getPortalStatus(settings);
@@ -59,7 +49,7 @@ class SpacesStore {
   };
 
   get isConnected() {
-    return !!this.domain;
+    return !!this.authStore.settingsStore.domain;
   }
 
   get faviconLogo() {
@@ -71,7 +61,7 @@ class SpacesStore {
   setPortalSettings = async (domain: string, portalName: string) => {
     const dmn = await setDomainName(domain);
     const { settings } = dmn;
-    this.domain = settings;
+    this.authStore.settingsStore.setPortalDomain(settings);
     if (!portalName) return;
     const name = await setPortalName(portalName);
   };
@@ -86,7 +76,7 @@ class SpacesStore {
 
   getAllPortals = async () => {
     const res = await getAllPortals();
-    this.portals = res.tenants;
+    this.authStore.settingsStore.setPortals(res.tenants);
     return res;
   };
 
