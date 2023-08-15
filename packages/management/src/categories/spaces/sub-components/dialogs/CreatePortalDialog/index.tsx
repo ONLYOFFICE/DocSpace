@@ -38,6 +38,7 @@ const CreatePortalDialog = () => {
   const [restrictAccess, setRestrictAccess] = React.useState<boolean>(false);
 
   const { spacesStore, authStore } = useStore();
+  const { domain } = authStore.settingsStore;
 
   const {
     createPortalDialogVisible: visible,
@@ -98,14 +99,19 @@ const CreatePortalDialog = () => {
             {t("DocSpaceName")}
           </Text>
           <TextInput
-            //     mask={[/[1-9]/, ".", "onlyoffice"]}
-            // placeholderChar={[/[1-9]/, ".", "onlyoffice"]}
             onChange={onHandleName}
             hasError={isNameError}
             value={name}
-            placeholder={t("addTranslationAndMask")}
+            placeholder={t("EnterName")}
             className="create-docspace-input"
           />
+          <div style={{ marginTop: "6px" }}>
+            <Text
+              fontSize="12px"
+              fontWeight="400"
+              color="#A3A9AE"
+            >{`${name}.${domain}`}</Text>
+          </div>
         </div>
         <div>
           <Checkbox
