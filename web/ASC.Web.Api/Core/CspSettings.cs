@@ -47,19 +47,22 @@ public class CspSettingsHelper
     private readonly TenantManager _tenantManager;
     private readonly CoreSettings _coreSettings;
     private readonly IDistributedCache _distributedCache;
+    private readonly IConfiguration _configuration;
 
     public CspSettingsHelper(
         SettingsManager settingsManager,
         FilesLinkUtility filesLinkUtility,
         TenantManager tenantManager,
         CoreSettings coreSettings,
-        IDistributedCache distributedCache)
+        IDistributedCache distributedCache,
+        IConfiguration configuration)
     {
         _settingsManager = settingsManager;
         _filesLinkUtility = filesLinkUtility;
         _tenantManager = tenantManager;
         _coreSettings = coreSettings;
         _distributedCache = distributedCache;
+        _configuration = configuration;
     }
 
     public async Task<string> Save(IEnumerable<string> domains)
@@ -108,9 +111,16 @@ public class CspSettingsHelper
 
         var csp = new CspBuilder();
 
-        csp.ByDefaultAllow
+        var def = csp.ByDefaultAllow
             .FromSelf()
-            .From(_filesLinkUtility.DocServiceUrl);
+            .From(_filesLinkUtility.DocServiceUrl)
+            .From("*.googleapis.com"); //firebase
+
+        var firebaseDomain = _configuration["firebase:authDomain"];
+        if (!string.IsNullOrEmpty(firebaseDomain))
+        {
+            def.From(firebaseDomain);
+        }
 
         var scriptBuilder = csp.AllowScripts
             .FromSelf()

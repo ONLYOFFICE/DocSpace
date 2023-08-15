@@ -123,7 +123,7 @@ public class Tenant : IMapFrom<DbTenant>
         {
             //single tenant on local host
             Alias = "localhost";
-            result = HostName;
+            result = Alias;
         }
         else
         {
