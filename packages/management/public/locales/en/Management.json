@@ -14,5 +14,6 @@
   "ChangeDomainDescription": "Changing the domain name may cause some systems failure. After changing the domain name you will need to reconfigure the following settings: mail, account, jabber parameters.",
   "DomainName": "Domain name",
   "PortalStats": "Rooms: {{roomCount}} | Users: {{userCount}} | Storage space used:",
-  "PortalExists": "Portal already exists"
+  "PortalExists": "Portal already exists",
+  "EnterName": "Enter space name"
 }
