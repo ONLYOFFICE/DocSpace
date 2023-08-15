@@ -21,8 +21,13 @@ if [ "$#" -ge "2" ]; then
     LETS_ENCRYPT_MAIL=$1
     LETS_ENCRYPT_DOMAIN=$2
 
-    docker-compose ${SERVICES_FILES} -f ${DOCKERCOMPOSE_DIR}/proxy.yml down
-
+    if [ -f "${DOCKERCOMPOSE_DIR}/proxy.yml" ]; then
+        docker-compose ${SERVICES_FILES} -f "${DOCKERCOMPOSE_DIR}/proxy.yml" down
+    else
+        echo "Error: The file '${DOCKERCOMPOSE_DIR}/proxy.yml' does not exist."
+        exit 1
+    fi
+    
     # Request and generate Let's Encrypt SSL certificate
     echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-start.log
     certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-new.log
