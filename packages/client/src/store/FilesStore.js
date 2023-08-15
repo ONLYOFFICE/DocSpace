@@ -1949,40 +1949,55 @@ class FilesStore {
       //   ]);
       // }
 
-      if (!isRecycleBinFolder)
+      if (!isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
 
-      if (enablePlugins && !isRecycleBinFolder) {
-        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
-          PluginFileType.Files,
-          item.fileExst
-        );
+        if (enablePlugins) {
+          if (
+            !item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Files,
+              item.fileExst
+            );
 
-        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
-        pluginFilesKeys &&
-          pluginFilesKeys.forEach((key) => fileOptions.push(key));
-      }
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
 
-      if (enablePlugins && item.viewAccessability.ImageView) {
-        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
-          PluginFileType.Image,
-          item.fileExst
-        );
+          if (
+            !item.viewAccessability.MediaView &&
+            item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Image,
+              item.fileExst
+            );
 
-        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
-        pluginFilesKeys &&
-          pluginFilesKeys.forEach((key) => fileOptions.push(key));
-      }
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
 
-      if (enablePlugins && item.viewAccessability.MediaView) {
-        const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
-          PluginFileType.Video,
-          item.fileExst
-        );
+          if (
+            item.viewAccessability.MediaView &&
+            !item.viewAccessability.ImageView
+          ) {
+            const pluginFilesKeys = this.pluginStore.getContextMenuKeysByType(
+              PluginFileType.Video,
+              item.fileExst
+            );
 
-        pluginAllKeys && pluginAllKeys.forEach((key) => fileOptions.push(key));
-        pluginFilesKeys &&
-          pluginFilesKeys.forEach((key) => fileOptions.push(key));
+            pluginAllKeys &&
+              pluginAllKeys.forEach((key) => fileOptions.push(key));
+            pluginFilesKeys &&
+              pluginFilesKeys.forEach((key) => fileOptions.push(key));
+          }
+        }
       }
 
       if (!this.canShareOwnerChange(item)) {

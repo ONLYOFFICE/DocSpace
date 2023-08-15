@@ -36,6 +36,7 @@ export interface MediaViewerProps {
       label: string;
       onClick: (id: number) => void;
       icon: string;
+      fileType?: ["video", "image"];
     };
   }[];
 

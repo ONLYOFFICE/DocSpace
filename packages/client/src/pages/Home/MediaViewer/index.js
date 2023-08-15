@@ -253,17 +253,17 @@ export default inject(
       setIsSectionFilterLoading(param);
     };
 
-    const { contextMenuItemsList } = pluginStore;
+    const { contextMenuItemsList, getContextMenuKeysByType } = pluginStore;
+
+    const pluginContextMenuKeys = [
+      ...(getContextMenuKeysByType() || []),
+      ...(getContextMenuKeysByType(PluginFileType.Image) || []),
+      ...(getContextMenuKeysByType(PluginFileType.Video) || []),
+    ];
 
     const pluginContextMenuItems =
       contextMenuItemsList?.filter((i) => {
-        const { value } = i;
-
-        if (
-          value?.fileType?.includes(PluginFileType.Image) ||
-          value?.fileType.includes(PluginFileType.Video) ||
-          !value?.fileType
-        ) {
+        if (pluginContextMenuKeys.includes(i.key)) {
           return true;
         }
 

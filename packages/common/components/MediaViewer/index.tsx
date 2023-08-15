@@ -201,6 +201,19 @@ function MediaViewer({
           props.onClose();
         };
 
+        if (
+          item.value.fileType &&
+          item.value.fileType.includes("image") &&
+          !targetFile.viewAccessability.ImageView
+        )
+          return;
+        if (
+          item.value.fileType &&
+          item.value.fileType.includes("video") &&
+          !targetFile.viewAccessability.MediaView
+        )
+          return;
+
         model.push({
           id: item.key,
           key: item.key,
