@@ -132,7 +132,7 @@ const LinkRow = (props) => {
         onClick: onEmbeddingClick,
       },
 
-      {
+      !disabled && {
         key: "copy-link-settings-key",
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
