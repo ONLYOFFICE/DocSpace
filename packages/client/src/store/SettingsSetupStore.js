@@ -92,6 +92,7 @@ class SettingsSetupStore {
       await authStore.settingsStore.getIpRestrictionsEnable();
       await authStore.settingsStore.getIpRestrictions();
       await authStore.settingsStore.getSessionLifetime();
+      await authStore.settingsStore.getLoginSettings();
     }
   };
 
