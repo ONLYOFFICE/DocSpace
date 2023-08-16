@@ -93,7 +93,6 @@ const StyledSsoPage = styled.div`
   .upload-button {
     height: 32px;
     width: 45px;
-    margin-left: 9px;
     overflow: inherit;
   }
 
