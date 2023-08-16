@@ -17,7 +17,10 @@ const StyledContainer = styled.div`
 
 const StyledBox = styled.div`
   @media ${desktop} {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 `;
 

@@ -28,7 +28,7 @@ const fillAvailableWidth = css`
 const StyledInvitePanel = styled.div`
   .invite-panel-body {
     height: ${(props) =>
-      props.hasInvitedUsers ? "calc(100% - 55px - 70px)" : "calc(100% - 55px)"};
+      props.hasInvitedUsers ? "calc(100% - 55px - 73px)" : "calc(100% - 55px)"};
 
     .scroll-body {
       ${(props) =>

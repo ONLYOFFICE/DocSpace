@@ -19,7 +19,11 @@ const GlobalStyle = createGlobalStyle`
 
     .pageLoader {
       position: fixed;
-      left: calc(50% - 20px);
+      
+      ${({ theme }) =>
+        theme?.interfaceDirection === "rtl"
+          ? `right: calc(50% - 20px);`
+          : `left: calc(50% - 20px);`}
       top: 35%;
     }
   }

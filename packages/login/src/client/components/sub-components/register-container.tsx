@@ -30,7 +30,9 @@ const StyledRegister = styled(Box)`
   height: 68px;
   padding: 1.5em;
   bottom: 0;
-  right: 0;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left: 0;` : `right: 0;`}
   background-color: ${(props) => props.theme.login.register.backgroundColor};
   cursor: pointer;
 `;

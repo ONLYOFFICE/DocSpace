@@ -5,7 +5,6 @@ import ErrorBoundary from "./ErrorBoundary";
 import App from "../App";
 import i18n from "../i18n";
 import { I18nextProvider } from "react-i18next";
-import { fonts } from "@docspace/common/fonts";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -22,7 +21,12 @@ interface IClientApp extends IInitialState {
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
+  return {
+    theme: {
+      ...settingsStore.theme,
+      interfaceDirection: settingsStore.interfaceDirection,
+    },
+  };
 })(observer(ThemeProvider));
 
 const ClientApp: React.FC<IClientApp> = ({
@@ -37,6 +41,7 @@ const ClientApp: React.FC<IClientApp> = ({
       <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
           <ThemeProviderWrapper>
+            <GlobalStyles />
             <App {...rest} />
           </ThemeProviderWrapper>
         </I18nextProvider>
@@ -51,7 +56,6 @@ const ClientAppWrapper: React.FC<IClientApp> = (props) => {
   };
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyles fonts={fonts} />
       <ClientApp {...props} />
     </ErrorBoundary>
   );

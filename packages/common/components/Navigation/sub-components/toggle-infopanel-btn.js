@@ -9,7 +9,7 @@ import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   align-self: center;
 
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           margin-right: auto;
@@ -24,13 +24,13 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
 
   @media ${tablet} {
     display: none;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            margin-right: ${props => (props.isRootFolder ? "auto" : "0")};
+            margin-right: ${props.isRootFolder ? "auto" : "0"};
           `
         : css`
-            margin-left: ${props => (props.isRootFolder ? "auto" : "0")};
+            margin-left: ${props.isRootFolder ? "auto" : "0"};
           `}
   }
 `;
@@ -47,7 +47,8 @@ const ToggleInfoPanelButton = ({
     <StyledInfoPanelToggleColorThemeWrapper
       isRootFolder={isRootFolder}
       themeId={ThemeType.InfoPanelToggle}
-      isInfoPanelVisible={isInfoPanelVisible}>
+      isInfoPanelVisible={isInfoPanelVisible}
+    >
       <div className="info-panel-toggle-bg">
         <IconButton
           id={id}

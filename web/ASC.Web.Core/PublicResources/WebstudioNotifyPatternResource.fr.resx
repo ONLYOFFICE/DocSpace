@@ -1007,7 +1007,7 @@ Le lien est valide pendant 7 jours.</value>
   <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Bonjour, $UserName!
 
-Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}" : "${__VirtualRootPath}". Maintenant vous pouvez :
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
 
 * Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
 
@@ -1019,7 +1019,7 @@ Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté av
 
 $GreenButton
 
-Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+Si vous avez besoin d'aide, consultez notre "Centre d'aide":"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support":"https://www.onlyoffice.com/support-contact-form.aspx".
 
 Bien à vous, 
 équipe ONLYOFFICE
@@ -1028,7 +1028,7 @@ Bien à vous,
   <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
     <value>Bonjour, $UserName!
 
-Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}" : "${__VirtualRootPath}". Maintenant vous pouvez :
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
 
 * Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
 
@@ -1040,7 +1040,7 @@ Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté av
 
 $GreenButton
 
-Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+Si vous avez besoin d'aide, consultez notre "Centre d'aide":"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support":"https://www.onlyoffice.com/support-contact-form.aspx".
 
 Bien à vous, 
 équipe ONLYOFFICE
@@ -1061,7 +1061,7 @@ Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté av
 
 $GreenButton
 
-Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+Si vous avez besoin d'aide, consultez notre "Centre d'aide":"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support":"https://www.onlyoffice.com/support-contact-form.aspx".
 
 Bien à vous, 
 équipe ONLYOFFICE
@@ -1082,7 +1082,7 @@ Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté av
 
 $GreenButton
 
-Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+Si vous avez besoin d'aide, consultez notre "Centre d'aide":"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support":"https://www.onlyoffice.com/support-contact-form.aspx".
 
 Bien à vous, 
 équipe ONLYOFFICE
@@ -1201,7 +1201,7 @@ Voici trois questions simples qui peuvent nous aider à rendre votre expérience
  
 Si vous avez au moins une réponse positive, optez pour le plan tarifaire BUSINESS qui vous permet d'ajouter autant d'adùinistrateurs que vous le souhaitez à ONLYOFFICE DocSpace ainsi que d'appliquer des options de marque blache.
  
-Pour ce faire, veuillez consulter la section "Paiements" : "$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
+Pour ce faire, veuillez consulter la section "Paiements":"$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
  
 _Attention : la personne qui paie l'abonnement devient le payeur. Seul le payeur est en mesure d'apporter des modifications à l'abonnement (ajuster le nombre d'administrateurs). Les utilisateurs n'ont pas accès aux détails des paiements. Le propriétaire du compte ONLYOFFICE DocSpace peut réaffecter le payeur à tout moment par la suite. _
  
@@ -1222,7 +1222,7 @@ Voici trois questions simples qui peuvent nous aider à rendre votre expérience
  
 Si vous avez au moins une réponse positive, optez pour le plan tarifaire BUSINESS qui vous permet d'ajouter autant d'adùinistrateurs que vous le souhaitez à ONLYOFFICE DocSpace ainsi que d'appliquer des options de marque blache.
  
-Pour ce faire, veuillez consulter la section "Paiements" : "$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
+Pour ce faire, veuillez consulter la section "Paiements":"$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
  
 _Attention : la personne qui paie l'abonnement devient le payeur. Seul le payeur est en mesure d'apporter des modifications à l'abonnement (ajuster le nombre d'administrateurs). Les utilisateurs n'ont pas accès aux détails des paiements. Le propriétaire du compte ONLYOFFICE DocSpace peut réaffecter le payeur à tout moment par la suite. _
  
@@ -1243,7 +1243,7 @@ Voici trois questions simples qui peuvent nous aider à rendre votre expérience
  
 Si vous avez au moins une réponse positive, optez pour le plan tarifaire BUSINESS qui vous permet d'ajouter autant d'adùinistrateurs que vous le souhaitez à ONLYOFFICE DocSpace ainsi que d'appliquer des options de marque blache.
  
-Pour ce faire, veuillez consulter la section "Paiements" : "$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
+Pour ce faire, veuillez consulter la section "Paiements":"$PricingPage" de votre ONLYOFFICE DocSpaceE. Vous y trouverez un lien individuel vers le portail client Stripe où vous pourrez facilement gérer tous les détails du paiement.
  
 _Attention : la personne qui paie l'abonnement devient le payeur. Seul le payeur est en mesure d'apporter des modifications à l'abonnement (ajuster le nombre d'administrateurs). Les utilisateurs n'ont pas accès aux détails des paiements. Le propriétaire du compte ONLYOFFICE DocSpace peut réaffecter le payeur à tout moment par la suite. _
  
@@ -1327,7 +1327,7 @@ Après avoir cliqué sur le lien d'invitation, veuillez définir un nouveau mot 
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
     <value>Vous n'avez pas utilisé votre ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" depuis plus de six mois.
@@ -1342,7 +1342,7 @@ Si vous pensez qu'il s'agit d'une erreur et que vous souhaitez continuer à util
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_portal_delete_success_v1" xml:space="preserve">
     <value>Votre ONLYOFFICE DocSpace a été désactivé avec succès. Veuillez noter que toutes vos données seront supprimées conformément à notre "Politique de confidentialité":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
@@ -1376,7 +1376,7 @@ Si vous avez besoin d'aide, veuillez consulter notre "Centre d'aide":"https://he
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
     <value>Bonjour, $UserName!
@@ -1412,7 +1412,7 @@ Si vous avez besoin d'aide, veuillez consulter notre "Centre d'aide":"https://he
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
     <value>Bonjour, $UserName!
@@ -1427,7 +1427,7 @@ Profitez d'un nouveau mode de collaboration documentaire !
  
 Bien à vous,
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1446,7 +1446,7 @@ $GreenButton
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1467,7 +1467,7 @@ Si vous avez besoin d'aide, veuillez consulter notre "Centre d'aide":"https://he
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1480,7 +1480,7 @@ Obtenez des applications ONLYOFFICE gratuites pour travailler sur des documents 
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_personal_already_exist" xml:space="preserve">
     <value>Bonjour !
@@ -1511,7 +1511,7 @@ Profitez d'un nouveau mode de collaboration documentaire !
  
 Bien à vous,
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1538,7 +1538,7 @@ Visitez notre "Centre d'aide":"https://helpcenter.onlyoffice.com/fr" pour en sav
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1551,7 +1551,7 @@ Obtenez des applications ONLYOFFICE gratuites pour travailler sur des documents 
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_docspace_invite" xml:space="preserve">
     <value>Bonjour !
@@ -1564,7 +1564,7 @@ Après avoir cliqué sur le lien d'invitation, veuillez définir un nouveau mot 
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1577,7 +1577,7 @@ $GreenButton
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1590,7 +1590,7 @@ $GreenButton
 
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1603,7 +1603,7 @@ $GreenButton
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1616,7 +1616,7 @@ $GreenButton
  
 Bien à vous, 
 équipe ONLYOFFICE
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>Bonjour, $UserName !
@@ -1637,7 +1637,7 @@ Si vous avez besoin d'aide, veuillez consulter notre "Centre d'aide":"https://he
  
 Bien à vous, 
 équipe ONLYOFFICE 
-"www.onlyoffice.com":”https://www.onlyoffice.com/fr/”</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/fr/"</value>
   </data>
   <data name="subject_saas_user_welcome_v1" xml:space="preserve">
     <value>Bienvenue sur ONLYOFFICE DocSpace !</value>
