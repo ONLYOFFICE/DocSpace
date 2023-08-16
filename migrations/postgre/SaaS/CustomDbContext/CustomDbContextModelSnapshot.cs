@@ -17,101 +17,89 @@ namespace ASC.Migrations.PostgreSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:Enum:onlyoffice.enum_dbip_location", "ipv4,ipv6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.7")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbIPLookup", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
                     b.Property<string>("AddrType")
-                        .HasColumnType("text");
+                        .HasColumnType("enum('ipv4','ipv6')")
+                        .HasColumnName("addr_type");
+
+                    b.Property<byte[]>("IPStart")
+                        .HasColumnType("varbinary(16)")
+                        .HasColumnName("ip_start");
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(80)")
                         .HasColumnName("city");
+
+                    b.Property<string>("Continent")
+                        .IsRequired()
+                        .HasColumnType("char(2)")
+                        .HasColumnName("continent");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasMaxLength(2)
-                        .HasColumnType("character varying(2)")
+                        .HasColumnType("char(2)")
                         .HasColumnName("country");
 
                     b.Property<string>("District")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("district")
-                        .HasDefaultValueSql("NULL");
+                        .IsRequired()
+                        .HasColumnType("varchar(80)")
+                        .HasColumnName("district");
 
                     b.Property<int?>("GeonameId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int(10)")
                         .HasColumnName("geoname_id");
 
-                    b.Property<string>("IPEnd")
+                    b.Property<byte[]>("IPEnd")
                         .IsRequired()
-                        .HasMaxLength(39)
-                        .HasColumnType("character varying(39)")
+                        .HasColumnType("varbinary(16)")
                         .HasColumnName("ip_end");
 
-                    b.Property<string>("IPStart")
-                        .IsRequired()
-                        .HasMaxLength(39)
-                        .HasColumnType("character varying(39)")
-                        .HasColumnName("ip_start");
-
-                    b.Property<long?>("Latitude")
-                        .HasColumnType("bigint")
+                    b.Property<float>("Latitude")
+                        .HasColumnType("float")
                         .HasColumnName("latitude");
 
-                    b.Property<long?>("Longitude")
-                        .HasColumnType("bigint")
+                    b.Property<float>("Longitude")
+                        .HasColumnType("float")
                         .HasColumnName("longitude");
-
-                    b.Property<int>("Processed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("processed")
-                        .HasDefaultValueSql("1");
 
                     b.Property<string>("StateProv")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(80)")
                         .HasColumnName("stateprov");
 
-                    b.Property<string>("TimezoneName")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("timezone_name")
-                        .HasDefaultValueSql("NULL");
+                    b.Property<string>("StateProvCode")
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("stateprov_code");
 
-                    b.Property<double?>("TimezoneOffset")
-                        .HasColumnType("double precision")
+                    b.Property<string>("TimezoneName")
+                        .IsRequired()
+                        .HasColumnType("varchar(64)")
+                        .HasColumnName("timezone_name");
+
+                    b.Property<float>("TimezoneOffset")
+                        .HasColumnType("float")
                         .HasColumnName("timezone_offset");
 
+                    b.Property<string>("WeatherCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("weather_code");
+
                     b.Property<string>("ZipCode")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("zipcode")
-                        .HasDefaultValueSql("NULL");
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("zipcode");
 
-                    b.HasKey("Id");
+                    b.HasKey("AddrType", "IPStart");
 
-                    b.HasIndex("IPStart")
-                        .HasDatabaseName("ip_start");
+                    b.ToTable("dbip_lookup", (string)null);
 
-                    b.ToTable("dbip_location", "onlyoffice");
+                    b.HasAnnotation("MySql:CharSet", "utf8mb4");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.MobileAppInstall", b =>

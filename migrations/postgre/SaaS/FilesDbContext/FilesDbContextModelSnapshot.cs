@@ -170,6 +170,39 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         });
                 });
 
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("AffiliateId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("affiliate_id")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("Campaign")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("campaign")
+                        .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("PartnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("partner_id")
+                        .HasDefaultValueSql("NULL");
+
+                    b.HasKey("TenantId")
+                        .HasName("tenants_partners_pkey");
+
+                    b.ToTable("tenants_partners", "onlyoffice");
+                });
+
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FilesConverts", b =>
                 {
                     b.Property<string>("Input")
@@ -3458,6 +3491,22 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         .HasDatabaseName("folder_id_files_folder_tree");
 
                     b.ToTable("files_folder_tree", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithOne("Partner")
+                        .HasForeignKey("ASC.Core.Common.EF.Model.DbTenantPartner", "TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
+                {
+                    b.Navigation("Partner");
                 });
 #pragma warning restore 612, 618
         }
