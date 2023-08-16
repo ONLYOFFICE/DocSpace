@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -26,10 +26,13 @@ const IntegrationWrapper = (props) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     return () => {
-      isSSOAvailable && toDefault();
+      isSSOAvailable &&
+        !location.pathname.includes("single-sign-on") &&
+        toDefault();
     };
   }, []);
 
