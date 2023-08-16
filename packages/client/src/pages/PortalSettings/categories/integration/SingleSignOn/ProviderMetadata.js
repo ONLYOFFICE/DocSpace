@@ -1,21 +1,39 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 
+import { smallTablet } from "@docspace/components/utils/device";
+
 import MetadataUrlField from "./sub-components/MetadataUrlField";
+import { useIsMobileView } from "../../../utils/useIsMobileView";
+
+const StyledWrapper = styled.div`
+  .button-wrapper {
+    margin: 24px 0;
+  }
+
+  @media ${smallTablet} {
+    .button-wrapper {
+      position: fixed;
+      bottom: 4px;
+      width: calc(100% - 32px);
+    }
+  }
+`;
 
 const ProviderMetadata = (props) => {
   const { t } = useTranslation("SingleSignOn");
+  const isMobileView = useIsMobileView();
   const { downloadMetadata } = props;
 
   const url = window.location.origin;
 
   return (
-    <>
+    <StyledWrapper>
       <MetadataUrlField
         labelText={t("SPEntityId")}
         name="spEntityId"
@@ -44,17 +62,18 @@ const ProviderMetadata = (props) => {
         tooltipClass="sp-single-logout-url-tooltip icon-button"
       />
 
-      <Box marginProp="24px 0">
+      <div className="button-wrapper">
         <Button
           id="download-metadata-xml"
           label={t("DownloadMetadataXML")}
           primary
-          size="small"
+          scale={isMobileView}
+          size={isMobileView ? "normal" : "small"}
           tabIndex={25}
           onClick={downloadMetadata}
         />
-      </Box>
-    </>
+      </div>
+    </StyledWrapper>
   );
 };
 
