@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 
 import Box from "@docspace/components/box";
 
-import Certificates from "./Certificates";
-import FieldMapping from "./FieldMapping";
 import HideButton from "./sub-components/HideButton";
-import IdpSettings from "./IdpSettings";
+import SPSettings from "./SPSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
-import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
+
+import MobileView from "./MobileView";
+import { useIsMobileView } from "../../../utils/useIsMobileView";
 
 const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
 const SP_METADATA = "spMetadata";
@@ -20,6 +20,7 @@ const SP_METADATA = "spMetadata";
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
+  const isMobileView = useIsMobileView();
 
   useEffect(() => {
     isSSOAvailable && load();
@@ -32,40 +33,34 @@ const SingleSignOn = (props) => {
       isSettingPaid={isSSOAvailable}
     >
       <ToggleSSO isSSOAvailable={isSSOAvailable} />
+      {isMobileView ? (
+        <MobileView />
+      ) : (
+        <>
+          <HideButton
+            id="sp-settings-hide-button"
+            text={t("ServiceProviderSettings")}
+            label={SERVICE_PROVIDER_SETTINGS}
+            value={serviceProviderSettings}
+            isDisabled={!isSSOAvailable}
+          />
 
-      <HideButton
-        id="sp-settings-hide-button"
-        text={t("ServiceProviderSettings")}
-        label={SERVICE_PROVIDER_SETTINGS}
-        value={serviceProviderSettings}
-        isDisabled={!isSSOAvailable}
-      />
+          <SPSettings />
+          <StyledSettingsSeparator />
 
-      <Box className="service-provider-settings">
-        <IdpSettings />
+          <HideButton
+            id="sp-metadata-hide-button"
+            text={t("SpMetadata")}
+            label={SP_METADATA}
+            value={spMetadata}
+            isDisabled={!isSSOAvailable}
+          />
 
-        <Certificates provider="IdentityProvider" />
-
-        <Certificates provider="ServiceProvider" />
-
-        <FieldMapping />
-
-        <SubmitResetButtons />
-      </Box>
-
-      <StyledSettingsSeparator />
-
-      <HideButton
-        id="sp-metadata-hide-button"
-        text={t("SpMetadata")}
-        label={SP_METADATA}
-        value={spMetadata}
-        isDisabled={!isSSOAvailable}
-      />
-
-      <Box className="sp-metadata">
-        <ProviderMetadata />
-      </Box>
+          <Box className="sp-metadata">
+            <ProviderMetadata />
+          </Box>
+        </>
+      )}
     </StyledSsoPage>
   );
 };
