@@ -45,7 +45,6 @@ public class TenantDbContext : DbContext
             .AddCoreSettings()
             .AddDbTenantForbiden()
             .AddTenantIpRestrictions()
-            .AddDbTenantPartner()
             .AddDbTenantVersion();
     }
 }

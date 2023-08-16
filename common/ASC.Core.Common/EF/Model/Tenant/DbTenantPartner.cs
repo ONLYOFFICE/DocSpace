@@ -51,7 +51,7 @@ public static class DbTenantPartnerExtension
     {
         modelBuilder.Entity<DbTenantPartner>(entity =>
         {
-            entity.HasKey(e => e.TenantId)
+            entity.HasKey(e => new { e.TenantId })
                 .HasName("PRIMARY");
 
             entity.ToTable("tenants_partners")
@@ -85,7 +85,7 @@ public static class DbTenantPartnerExtension
     {
         modelBuilder.Entity<DbTenantPartner>(entity =>
         {
-            entity.HasKey(e => e.TenantId)
+            entity.HasKey(e => new { e.TenantId })
                 .HasName("tenants_partners_pkey");
 
             entity.ToTable("tenants_partners", "onlyoffice");

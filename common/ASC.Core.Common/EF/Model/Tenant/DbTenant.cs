@@ -86,7 +86,9 @@ public static class DbTenantExtension
 {
     public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
     {
+
         modelBuilder
+            .AddDbTenantPartner()
             .Add(MySqlAddDbTenant, Provider.MySql)
             .Add(PgSqlAddDbTenant, Provider.PostgreSql)
             .HasData(
