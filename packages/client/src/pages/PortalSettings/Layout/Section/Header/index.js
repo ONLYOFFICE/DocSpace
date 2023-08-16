@@ -368,6 +368,8 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
+    withTranslation(["Settings", "SingleSignOn", "Common"])(
+      observer(SectionHeaderContent)
+    )
   )
 );
