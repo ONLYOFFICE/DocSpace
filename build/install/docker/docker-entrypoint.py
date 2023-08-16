@@ -269,3 +269,4 @@ writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)
 run.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE, CHECK)
+
