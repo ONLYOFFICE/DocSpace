@@ -121,23 +121,6 @@ const StyledSsoPage = styled.div`
     }
   }
 
-  .metadata-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 16px;
-    max-width: 350px;
-
-    .input {
-      width: 350px;
-    }
-
-    .label > div {
-      display: inline-flex;
-      margin-left: 4px;
-    }
-  }
-
   ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 

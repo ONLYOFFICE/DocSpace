@@ -1,5 +1,6 @@
 ﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React from "react";
+import styled from "styled-components";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -7,6 +8,23 @@ import { Text, HelpButton, InputBlock } from "@docspace/components";
 import toastr from "@docspace/components/toast/toastr";
 
 import copy from "copy-to-clipboard";
+
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+  max-width: 350px;
+
+  .input {
+    width: 350px;
+  }
+
+  .label > div {
+    display: inline-flex;
+    margin-left: 4px;
+  }
+`;
 
 const MetadataUrlField = ({
   labelText,
@@ -23,7 +41,7 @@ const MetadataUrlField = ({
   };
 
   return (
-    <div className="metadata-field">
+    <StyledWrapper>
       <Text className="label" fontSize="13px" as="div" fontWeight={600}>
         {labelText}
         <HelpButton
@@ -43,7 +61,7 @@ const MetadataUrlField = ({
         iconSize={16}
         onIconClick={onCopyClick}
       />
-    </div>
+    </StyledWrapper>
   );
 };
 
