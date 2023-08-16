@@ -18,11 +18,18 @@ const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
 const SP_METADATA = "spMetadata";
 
 const SingleSignOn = (props) => {
-  const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
+  const {
+    load,
+    serviceProviderSettings,
+    spMetadata,
+    isSSOAvailable,
+    setDocumentTitle,
+  } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
   const isMobileView = useIsMobileView();
 
   useEffect(() => {
+    setDocumentTitle(t("Settings:SingleSignOn"));
     isSSOAvailable && load();
   }, []);
 
@@ -66,7 +73,7 @@ const SingleSignOn = (props) => {
 };
 
 export default inject(({ auth, ssoStore }) => {
-  const { currentQuotaStore } = auth;
+  const { currentQuotaStore, setDocumentTitle } = auth;
   const { isSSOAvailable } = currentQuotaStore;
 
   const { load, serviceProviderSettings, spMetadata } = ssoStore;
@@ -76,5 +83,6 @@ export default inject(({ auth, ssoStore }) => {
     serviceProviderSettings,
     spMetadata,
     isSSOAvailable,
+    setDocumentTitle,
   };
 })(observer(SingleSignOn));
