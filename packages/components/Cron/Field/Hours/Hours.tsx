@@ -8,7 +8,7 @@ function Hours({ hours, setHours }: HoursProps) {
     <Select
       value={hours}
       setValue={setHours}
-      placeholder="every hour"
+      placeholder="EveryHour"
       unit={units[1]}
       prefix="at"
       dropDownMaxHeight={300}

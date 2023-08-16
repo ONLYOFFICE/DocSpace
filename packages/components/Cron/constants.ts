@@ -1,21 +1,6 @@
 import type { Options, PeriodType, Unit } from "./types";
 
-export const defaultPeriod: PeriodType = "hour";
-
-export const numberOfMonth: Record<string, number> = {
-  JAN: 1,
-  FEB: 2,
-  MAR: 3,
-  APR: 4,
-  MAY: 5,
-  JUN: 6,
-  JUL: 7,
-  AUG: 8,
-  SEP: 9,
-  OCT: 10,
-  NOV: 11,
-  DEC: 12,
-};
+export const defaultPeriod: PeriodType = "Hour";
 
 export const defaultOptions: Options = {
   outputHashes: false,

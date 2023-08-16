@@ -10,12 +10,12 @@ function WeekDays({
   monthDays,
   period,
 }: WeekDaysProps) {
-  const prefix = period === "week" ? "on" : "and";
+  const prefix = period === "Week" ? "On" : "And";
 
   const placeholder = useMemo(() => {
     const isEmpty = monthDays.length === 0;
 
-    return isEmpty || isWeek ? "every day of the week" : "day of the week";
+    return isEmpty || isWeek ? "EveryDayOfTheWeek" : "DayOfTheWeek";
   }, [monthDays.length, isWeek]);
 
   return (

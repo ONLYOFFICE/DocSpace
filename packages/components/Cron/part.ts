@@ -30,16 +30,16 @@ export function getCronStringFromValues(
   hours: number[] | undefined,
   minutes: number[] | undefined
 ) {
-  const newMonths = period === "year" && months ? months : [];
+  const newMonths = period === "Year" && months ? months : [];
   const newMonthDays =
-    (period === "year" || period === "month") && monthDays ? monthDays : [];
+    (period === "Year" || period === "Month") && monthDays ? monthDays : [];
   const newWeekDays =
-    (period === "year" || period === "month" || period === "week") && weekDays
+    (period === "Year" || period === "Month" || period === "Week") && weekDays
       ? weekDays
       : [];
   const newHours =
-    period !== "minute" && period !== "hour" && hours ? hours : [];
-  const newMinutes = period !== "minute" && minutes ? minutes : [];
+    period !== "Minute" && period !== "Hour" && hours ? hours : [];
+  const newMinutes = period !== "Minute" && minutes ? minutes : [];
 
   const parsedArray = arrayToString([
     newMinutes,

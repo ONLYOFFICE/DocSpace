@@ -53,18 +53,18 @@ export const dedup = (array: number[]) => {
 
 export const getPeriodFromCronParts = (cronParts: number[][]): PeriodType => {
   if (cronParts[3].length > 0) {
-    return "year";
+    return "Year";
   } else if (cronParts[2].length > 0) {
-    return "month";
+    return "Month";
   } else if (cronParts[4].length > 0) {
-    return "week";
+    return "Week";
   } else if (cronParts[1].length > 0) {
-    return "day";
+    return "Day";
   } else if (cronParts[0].length > 0) {
-    return "hour";
+    return "Hour";
   }
   // return "minute";
-  return "hour";
+  return "Hour";
 };
 
 export const fixFormatValue = (value: number) => {

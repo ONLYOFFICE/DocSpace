@@ -5,23 +5,23 @@ export const getOptions = (
   t: TFunction<"translation", undefined>
 ): PeriodOptionType[] => [
   {
-    key: "year",
-    label: t("Every year"),
+    key: "Year",
+    label: t("EveryYear"),
   },
   {
-    key: "month",
-    label: t("Every month"),
+    key: "Month",
+    label: t("EveryMonth"),
   },
   {
-    key: "week",
-    label: t("Every week"),
+    key: "Week",
+    label: t("EveryWeek"),
   },
   {
-    key: "day",
-    label: t("Every day"),
+    key: "Day",
+    label: t("EveryDay"),
   },
   {
-    key: "hour",
-    label: t("Every hour"),
+    key: "Hour",
+    label: t("EveryHour"),
   },
 ];

@@ -1,5 +1,57 @@
 import React, { useEffect, useState } from "react";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
 import type { Meta, StoryObj } from "@storybook/react";
+
+i18n.use(initReactI18next).init({
+  resources: {
+    en: {
+      Cron: {
+        EveryYear: "Every year",
+        EveryMonth: "Every month",
+        EveryWeek: "Every week",
+        EveryHour: "Every hour",
+        EveryMinute: "Every minute",
+        In: "in",
+        At: "at",
+        On: "on",
+        And: "and",
+        EveryDayOfTheMonth: "Every day of the month",
+        DayOfTheMonth: "Day of the month",
+        EveryDayOfTheWeek: "Every day of the week",
+        DayOfTheWeek: "Day of the week",
+
+        JAN: "JAN",
+        FEB: "FEB",
+        MAR: "MAR",
+        APR: "APR",
+        MAY: "MAY",
+        JUN: "JUN",
+        JUL: "JUL",
+        AUG: "AUG",
+        SEP: "SEP",
+        OCT: "OCT",
+        NOV: "NOV",
+        DEC: "DEC",
+
+        SUN: "SUN",
+        MON: "MON",
+        TUE: "TUE",
+        WED: "WED",
+        THU: "THU",
+        FRI: "FRI",
+        SAT: "SAT",
+      },
+    },
+  },
+
+  lng: "en",
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false,
+  },
+});
 
 import Cron from ".";
 

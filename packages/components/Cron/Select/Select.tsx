@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
 import ComboBox from "../../combobox";
 import { Option } from "../types";
 import { fixFormatValue } from "../util";
-import SelectProps from "./Select.props";
 import { SelectWrapper } from "./Select.styled";
+import SelectProps from "./Select.props";
 
 function Select({
   unit,
@@ -13,6 +15,8 @@ function Select({
   prefix,
   dropDownMaxHeight,
 }: SelectProps) {
+  const { t } = useTranslation("Cron");
+
   const options = useMemo(() => {
     const { alt } = unit;
 
@@ -22,7 +26,7 @@ function Select({
 
         return {
           key: number,
-          label: item,
+          label: t(item),
         };
       });
     }
@@ -43,9 +47,9 @@ function Select({
     return {
       key: isEmpty ? -1 : value[0],
       label: isEmpty
-        ? placeholder
+        ? t(placeholder)
         : unit.alt
-        ? unit.alt[value[0] - unit.min]
+        ? t(unit.alt[value[0] - unit.min])
         : fixFormatValue(value[0]),
     };
   }, [value, placeholder]);
@@ -62,7 +66,7 @@ function Select({
 
   return (
     <SelectWrapper>
-      <span>{prefix}</span>
+      <span>{t(prefix)}</span>
       <ComboBox
         scaledOptions
         size="content"

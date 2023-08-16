@@ -6,8 +6,8 @@ import { getOptions } from "./Period.helper";
 
 import PeriodProps, { PeriodOptionType } from "./Period.props";
 
-function Period({ period = "hour", setPeriod }: PeriodProps) {
-  const { t } = useTranslation();
+function Period({ period = "Hour", setPeriod }: PeriodProps) {
+  const { t } = useTranslation("Cron");
 
   const onSelect = (arg: PeriodOptionType) => {
     setPeriod(arg.key);
@@ -15,7 +15,7 @@ function Period({ period = "hour", setPeriod }: PeriodProps) {
 
   const options = useMemo(() => getOptions(t), []);
   const selectedOption = useMemo(
-    () => ({ key: period, label: t(`Every ${period}`) }),
+    () => ({ key: period, label: t(`Every${period}`) }),
     [period]
   );
 

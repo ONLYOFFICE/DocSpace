@@ -4,13 +4,13 @@ import { units } from "../../constants";
 import MinutesProps from "./Minutes.props";
 
 function Minutes({ minutes, setMinutes, period }: MinutesProps) {
-  const prefix = period === "hour" ? "at" : ":";
+  const prefix = period === "Hour" ? "At" : ":";
 
   return (
     <Select
       value={minutes}
       setValue={setMinutes}
-      placeholder="every minute"
+      placeholder="EveryMinute"
       unit={units[0]}
       prefix={prefix}
       dropDownMaxHeight={300}

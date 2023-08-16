@@ -1,4 +1,4 @@
-export type PeriodType = "year" | "month" | "week" | "day" | "hour" | "minute";
+export type PeriodType = "Year" | "Month" | "Week" | "Day" | "Hour" | "Minute";
 
 export type Unit = {
   name: "minute" | "hour" | "day" | "month" | "weekday";

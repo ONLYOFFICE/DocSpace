@@ -71,11 +71,11 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
   };
 
   const { isYear, isMonth, isWeek, isHour, isMinute } = useMemo(() => {
-    const isYear = period === "year";
-    const isMonth = period === "month";
-    const isWeek = period === "week";
-    const isHour = period === "hour";
-    const isMinute = period == "minute";
+    const isYear = period === "Year";
+    const isMonth = period === "Month";
+    const isWeek = period === "Week";
+    const isHour = period === "Hour";
+    const isMinute = period == "Minute";
 
     return {
       isYear,

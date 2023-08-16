@@ -10,9 +10,9 @@ function Months({ months, setMonths }: MonthsProps) {
     <Select
       value={months}
       setValue={setMonths}
-      placeholder="every month"
+      placeholder="EveryMonth"
       unit={units[3]}
-      prefix="in"
+      prefix="In"
       dropDownMaxHeight={300}
     />
   );

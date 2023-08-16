@@ -7,7 +7,7 @@ function MonthDays({ weekDays, monthDays, setMonthDays }: MonthDaysProps) {
   const placeholder = useMemo(() => {
     const isEmpty = weekDays.length === 0;
 
-    return isEmpty ? "every day of the month" : "day of the month";
+    return isEmpty ? "EveryDayOfTheMonth" : "DayOfTheMonth";
   }, [weekDays.length]);
 
   return (
@@ -16,7 +16,7 @@ function MonthDays({ weekDays, monthDays, setMonthDays }: MonthDaysProps) {
       setValue={setMonthDays}
       placeholder={placeholder}
       unit={units[2]}
-      prefix="on"
+      prefix="On"
       dropDownMaxHeight={300}
     />
   );
