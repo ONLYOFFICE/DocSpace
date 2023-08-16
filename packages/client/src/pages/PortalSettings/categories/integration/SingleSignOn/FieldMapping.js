@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +19,21 @@ import {
   SSO_TITLE,
   SSO_PHONE,
 } from "SRC_DIR/helpers/constants";
+
+const StyledWrapper = styled.div`
+  .advanced-block {
+    margin: 24px 0;
+
+    .field-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+  }
+
+  .checkbox-input {
+    margin: 10px 8px 6px 0;
+  }
+`;
 
 const FieldMapping = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
@@ -41,7 +57,7 @@ const FieldMapping = (props) => {
   } = props;
 
   return (
-    <Box>
+    <StyledWrapper>
       <Box
         alignItems="center"
         displayProp="flex"
@@ -138,7 +154,7 @@ const FieldMapping = (props) => {
           onChange={setCheckbox}
         />
       </FieldContainer>
-    </Box>
+    </StyledWrapper>
   );
 };
 

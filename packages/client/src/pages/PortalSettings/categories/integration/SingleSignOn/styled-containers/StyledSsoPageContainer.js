@@ -36,33 +36,6 @@ const StyledSsoPage = styled.div`
     padding: 0 5px;
   }
 
-  .hide-button {
-    margin-left: 12px;
-  }
-
-  .field-input {
-    ::placeholder {
-      font-size: 13px;
-      font-weight: 400;
-    }
-  }
-
-  .field-label-icon {
-    align-items: center;
-    margin-bottom: 4px;
-    max-width: 350px;
-  }
-
-  .field-label {
-    display: flex;
-    align-items: center;
-    height: auto;
-    font-weight: 600;
-    line-height: 20px;
-    overflow: visible;
-    white-space: normal;
-  }
-
   .xml-input {
     .field-label-icon {
       margin-bottom: 8px;
@@ -78,16 +51,8 @@ const StyledSsoPage = styled.div`
     margin: 0 24px;
   }
 
-  .radio-button-group {
-    margin-left: 24px;
-  }
-
   .combo-button-label {
     max-width: 100%;
-  }
-
-  .checkbox-input {
-    margin: 10px 8px 6px 0;
   }
 
   .download-button {
@@ -100,15 +65,6 @@ const StyledSsoPage = styled.div`
 
   .sp-metadata {
     display: ${(props) => (!props.hideMetadata ? "none" : "block")};
-  }
-
-  .advanced-block {
-    margin: 24px 0;
-
-    .field-label {
-      font-size: 15px;
-      font-weight: 600;
-    }
   }
 
   ${(props) => !props.isSettingPaid && UnavailableStyles}

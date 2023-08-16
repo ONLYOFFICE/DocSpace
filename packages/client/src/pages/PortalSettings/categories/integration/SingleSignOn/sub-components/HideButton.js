@@ -1,10 +1,21 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
+
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: ${(props) => (props.isAdditionalParameters ? "0" : "24px 0")};
+
+  .hide-button {
+    margin-left: 12px;
+  }
+`;
 
 const HideButton = (props) => {
   const { t } = useTranslation("SingleSignOn");
@@ -17,7 +28,6 @@ const HideButton = (props) => {
     isDisabled,
     id,
   } = props;
-  const marginProp = isAdditionalParameters ? null : "24px 0";
 
   const onClick = () => {
     setHideLabel(label);
@@ -26,12 +36,7 @@ const HideButton = (props) => {
   const onClickProp = isDisabled ? {} : { onClick: onClick };
 
   return (
-    <Box
-      alignItems="center"
-      displayProp="flex"
-      flexDirection="row"
-      marginProp={marginProp}
-    >
+    <StyledWrapper isAdditionalParameters={isAdditionalParameters}>
       {!isAdditionalParameters && (
         <Text
           as="h2"
@@ -59,7 +64,7 @@ const HideButton = (props) => {
           ? t("ShowAdditionalParameters")
           : t("Show")}
       </Link>
-    </Box>
+    </StyledWrapper>
   );
 };
 
