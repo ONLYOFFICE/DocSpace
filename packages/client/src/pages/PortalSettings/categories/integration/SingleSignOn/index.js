@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { isMobile, isDesktop } from "react-device-detect";
+import { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -15,42 +14,16 @@ import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettings
 import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
-import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
-
 const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
 const SP_METADATA = "spMetadata";
 
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
-  const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   useEffect(() => {
     isSSOAvailable && load();
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
-
-    return () => window.removeEventListener("resize", onCheckView);
   }, []);
-
-  const onCheckView = () => {
-    if (isDesktop && window.innerWidth < 795) {
-      setIsSmallWindow(true);
-    } else {
-      setIsSmallWindow(false);
-    }
-  };
-
-  if (isSmallWindow)
-    return (
-      <BreakpointWarning
-        sectionName={t("Settings:SingleSignOn")}
-        isSmallWindow
-      />
-    );
-
-  if (isMobile)
-    return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
 
   return (
     <StyledSsoPage
