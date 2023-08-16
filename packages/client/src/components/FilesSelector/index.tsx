@@ -163,6 +163,7 @@ const FilesSelector = ({
     onSelectTreeNode,
     setSelectedTreeNode,
     filterParam,
+    getRootData,
   });
 
   const onSelectAction = (item: Item) => {

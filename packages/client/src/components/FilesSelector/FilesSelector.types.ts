@@ -80,6 +80,7 @@ export type useFilesHelpersProps = {
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
+  getRootData?: () => Promise<void>;
 };
 
 export type FilesSelectorProps = {
