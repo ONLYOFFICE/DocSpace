@@ -7,28 +7,11 @@ dir=$(builtin cd $rd/../../; pwd)
 
 echo "Root directory:" $dir
 
-cd $dir
-
-branch=$(git branch --show-current)
-
-echo "GIT_BRANCH:" $branch
-
-branch_exist_remote=$(git ls-remote --heads origin $branch)
-
-if [ -z "$branch_exist_remote" ]; then
-    echo "The current branch does not exist in the remote repository. Please push changes."
-    exit 1
-fi
-
 cd $dir/build/install/docker/
 
 docker_dir="$( pwd )"
 
 echo "Docker directory:" $docker_dir
-
-build_date=$(date +%Y-%m-%d)
-
-echo "BUILD DATE: $build_date"
 
 local_ip=$(ipconfig getifaddr en0)
 
@@ -42,19 +25,16 @@ echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
 
-docker_file=Dockerfile.dev
-env_extension="dev"
-core_base_domain="localhost"
-
-echo "Start all backend services (containers)"
-DOCKERFILE=$docker_file \
-ROOT_DIR=$dir \
-RELEASE_DATE=$build_date \
-GIT_BRANCH=$branch \
+Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
+Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
+BUILD_PATH="/var/www" \
+SRC_PATH="$dir/publish/services" \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
-APP_CORE_BASE_DOMAIN=$core_base_domain \
-APP_URL_PORTAL="http://$local_ip:8092" \
-ENV_EXTENSION=$env_extension \
-docker compose -f docspace.dev.yml up -d
+ROOT_DIR=$dir \
+DATA_DIR="$dir/Data" \
+ENV_EXTENSION="dev" \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local start

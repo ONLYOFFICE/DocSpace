@@ -74,6 +74,7 @@ const SelectFileDialogAsideView = ({
                 isFolderTreeLoading={!!!resultingFolderTree}
                 withFileSelectDialog
                 maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
+                embedded={embedded}
               />
 
               <Text color="#A3A9AE" className="selection-panel_aside-title">
@@ -104,13 +105,15 @@ const SelectFileDialogAsideView = ({
           onClick={onButtonClick}
           isDisabled={!fileId}
         />
-        <Button
-          theme={theme}
-          scale
-          size="normal"
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-        />
+        {onClose && (
+          <Button
+            theme={theme}
+            scale
+            size="normal"
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+          />
+        )}
       </ModalDialog.Footer>
     </ModalDialog>
   );

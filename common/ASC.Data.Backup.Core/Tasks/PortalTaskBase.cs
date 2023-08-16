@@ -132,7 +132,8 @@ public abstract class PortalTaskBase
                     "mailaggregator",
                     "whitelabel",
                     "customnavigation",
-                    "userPhotos"
+                    "userPhotos",
+                    "room_logos"
                 };
 
         if (!allowedStorageModules.Contains(storageModuleName))

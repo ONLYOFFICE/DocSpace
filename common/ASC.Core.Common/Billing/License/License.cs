@@ -26,29 +26,51 @@
 
 namespace ASC.Core.Billing;
 
+/// <summary>
+/// </summary>
 [Serializable]
 [DebuggerDisplay("{DueDate}")]
 public class License
 {
+    /// <summary>Original license</summary>
+    /// <type>System.String, System</type>
     public string OriginalLicense { get; set; }
+
+    /// <summary>Specifies if the license is customizable or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Customization { get; set; }
 
+    /// <summary>License due date</summary>
+    /// <type>System.DateTime, System</type>
     [JsonPropertyName("end_date")]
     public DateTime DueDate { get; set; }
+
+    /// <summary>Specifies if the license is trial or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Trial { get; set; }
 
+    /// <summary>Customer ID</summary>
+    /// <type>System.String, System</type>
     [JsonPropertyName("customer_id")]
     public string CustomerId { get; set; }
 
+    /// <summary>Number of document server users</summary>
+    /// <type>System.Int32, System</type>
     [JsonPropertyName("users_count")]
     public int DSUsersCount { get; set; }
 
+    /// <summary>Number of users whose licenses have expired</summary>
+    /// <type>System.Int32, System</type>
     [JsonPropertyName("users_expire")]
     public int DSUsersExpire { get; set; }
 
+    /// <summary>Number of document server connections</summary>
+    /// <type>System.Int32, System</type>
     [JsonPropertyName("connections")]
     public int DSConnections { get; set; }
 
+    /// <summary>License signature</summary>
+    /// <type>System.String, System</type>
     [JsonPropertyName("signature")]
     public string Signature { get; set; }
 

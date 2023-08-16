@@ -67,6 +67,16 @@ public class RadicaleController : BaseSettingsController
     }
 
 
+    /// <summary>
+    /// Creates a CardDav address book for a user with all portal users and returns a link to this address book.
+    /// </summary>
+    /// <short>
+    /// Get a link to the CardDav address book
+    /// </short>
+    /// <category>CardDav address book</category>
+    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response</returns>
+    /// <path>api/2.0/settings/carddavurl</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("carddavurl")]
     public async Task<DavResponse> GetCardDavUrl()
     {
@@ -129,6 +139,16 @@ public class RadicaleController : BaseSettingsController
 
     }
 
+    /// <summary>
+    /// Deletes a CardDav address book with all portal users.
+    /// </summary>
+    /// <short>
+    /// Delete a CardDav address book
+    /// </short>
+    /// <category>CardDav address book</category>
+    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response</returns>
+    /// <path>api/2.0/settings/deletebook</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("deletebook")]
     public async Task<DavResponse> DeleteCardDavAddressBook()
     {

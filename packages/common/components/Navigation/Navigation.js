@@ -49,6 +49,7 @@ const Navigation = ({
   isEmptyPage,
   isDesktop: isDesktopClient,
   isRoom,
+  isFrame,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -201,6 +202,7 @@ const Navigation = ({
               titles={titles}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isFrame={isFrame}
             />
           </StyledContainer>
           {isTrashFolder && !isEmptyPage && (

@@ -12,6 +12,8 @@
     locale: "en-US",
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
+    editorGoBack: true,
+    selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomsOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     showHeader: false,
     showTitle: true,
     showMenu: false,
@@ -23,6 +25,8 @@
       page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
+      search: "",
+      withSubfolders: true,
     },
     keysForReload: [
       "src",
@@ -109,7 +113,7 @@
         }
 
         case "file-selector": {
-          path = `/sdk/file-selector`;
+          path = `/sdk/file-selector?selectorType=${config.selectorType}`;
           break;
         }
 
@@ -119,12 +123,12 @@
         }
 
         case "editor": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${config.editorGoBack}`;
           break;
         }
 
@@ -163,7 +167,9 @@
 
       if (!!this.#iframe.contentWindow) {
         this.#iframe.contentWindow.postMessage(
-          JSON.stringify(mes),
+          JSON.stringify(mes, (key, value) =>
+            typeof value === "function" ? value.toString() : value
+          ),
           this.config.src
         );
       }

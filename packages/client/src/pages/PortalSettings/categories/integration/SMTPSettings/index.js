@@ -45,13 +45,18 @@ const SMTPSettings = (props) => {
   return (
     <StyledComponent>
       <div className="smtp-settings_main-title">
-        <Text fontWeight={700} fontSize={"16px"}>
+        <Text fontWeight={700} fontSize="16px">
           {t("Settings:SMTPSettings")}
         </Text>
         <HelpButton
-          className="smtp-settings_help-button"
-          tooltipContent={t("HelpText", { organizationName })}
           place="bottom"
+          offsetBottom={0}
+          className="smtp-settings_help-button"
+          place="bottom"
+          offsetBottom={0}
+          tooltipContent={
+            <Text fontSize="12px">{t("HelpText", { organizationName })}</Text>
+          }
         />
       </div>
       <Text className="smtp-settings_description">

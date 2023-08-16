@@ -198,4 +198,7 @@
   <data name="UserSkipped" xml:space="preserve">
     <value>Չհաջողվեց ներմուծել օգտվողին: {0} ({1}/{2})</value>
   </data>
+  <data name="ClearingTemporaryData" xml:space="preserve">
+    <value>Ժամանակավոր տվյալների մաքրում</value>
+  </data>
 </root>

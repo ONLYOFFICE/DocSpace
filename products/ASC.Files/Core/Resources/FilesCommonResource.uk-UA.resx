@@ -367,4 +367,53 @@
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Адміністратор кімнати</value>
   </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Коментар</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Заповнення форми</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Автоматично збережено</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Створено для заповнення форми</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Відредаговано з шифруванням</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Зашифровано</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Збережено</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>У вас недостатньо прав, щоб перемістити файл</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>У вас недостатньо прав, щоб перемістити папку</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Користувача не знайдено</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Пошук у вмісті документів</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Документ OFORM для заповнення готовий. Його збережено до {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Копія OFORM створюється в папці {0}. Заповніть форму й завантажте результат у форматі PDF або DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Файл більше не є чернеткою для заповнення форми.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Редагуйте офісні документи, надавайте до них доступ і спільно працюйте над ними в реальному часі. Створюйте загальні документи, доступні всій команді, та керуйте ними.
+Максимальна сумісність із форматами docx, xlsx і pptx.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Переглядайте і завантажуйте спільні документи. Завантажуйте файли до спільних папок. Гарантована максимальна сумісність із форматами docx, xlsx і pptx.</value>
+  </data>
 </root>

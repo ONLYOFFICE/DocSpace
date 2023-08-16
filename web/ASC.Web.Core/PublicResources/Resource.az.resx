@@ -988,4 +988,7 @@
   <data name="ConsumersSelectelInstruction" xml:space="preserve">
     <value>Portalınızdan məlumatların ehtiyat nüsxəsini çıxarmaq və saxlamaq üçün Selectel Cloud Storage xidmətinə qoşulun. {0}Yedək nüsxələrinizi saxlamağı planlaşdırdığınız konteynerlər üçün Oxumaq/Yazmaq hüququ olan istifadəçi üçün giriş məlumatını əldə edin və aşağıda yerləşdirin:</value>
   </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Üçüncü tərəf inteqrasiyaları</value>
+  </data>
 </root>

@@ -590,13 +590,6 @@ $GreenButton
 
 $GreenButton
 
-Ваш поточний тарифний план — STARTUP. Він абсолютно безплатний та містить:
-
-* 1 адміністратора, 2 досвідчених користувачів
-* максимум 12 кімнат
-* необмежену кількість користувачів у кожній кімнаті
-* 2 ГБ дискового простору
-
 Сподіваємося, вам сподобається новий спосіб спільної роботи над документами!
 
 З повагою
@@ -611,13 +604,6 @@ $GreenButton
 Підтвердьте свою адресу електронної пошти (посилання дійсне протягом 7 днів):
 
 $GreenButton
-
-Ваш поточний тарифний план — STARTUP. Він абсолютно безплатний та містить:
-
-* 1 адміністратора, 2 досвідчених користувачів
-* максимум 12 кімнат
-* необмежену кількість користувачів у кожній кімнаті
-* 2 ГБ дискового простору
 
 Сподіваємося, вам сподобається новий спосіб спільної роботи над документами!
 
@@ -655,13 +641,6 @@ $GreenButton
 Підтвердьте свою адресу електронної пошти (посилання дійсне протягом 7 днів):
 
 $GreenButton
-
-Ваш поточний тарифний план — STARTUP. Він абсолютно безплатний та містить:
-
-* 1 адміністратора, 2 досвідчених користувачів
-* максимум 12 кімнат
-* необмежену кількість користувачів у кожній кімнаті
-* 2 ГБ дискового простору
 
 Сподіваємося, вам сподобається новий спосіб спільної роботи над документами!
 
@@ -1182,5 +1161,650 @@ $GreenButton
   </data>
   <data name="ButtonVisitPaymentsSection" xml:space="preserve">
     <value>Відвідати розділ «Платежі»</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; додав(-ла) новий коментар до версії документа: &lt;a href={1}&gt;{2}&lt;/a&gt; в кімнаті: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; створив(-ла) новий документ: &lt;a href={1}&gt;{2}&lt;/a&gt; в кімнаті: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Натисніть тут, щоб активувати адресу електронної пошти</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Змінити адресу електронної пошти</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Змінити пароль</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Змінити номер мобільного телефону</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Настроїти застосунок для аутентифікації</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Підтвердити зміну адреси порталу</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Підтвердити оновлення власника порталу</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Підтвердити закриття облікового запису</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Деактивувати портал</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Видалити портал</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Натисніть тут, щоб приєднатися до порталу</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Залишити відгук</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Видалити профіль</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Поновити зараз</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Запустити безкоштовну пробну версію</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Використати знижку</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Підтвердьте зміну адреси електронної пошти</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Підтвердьте зміну пароля</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Сповіщення безпеки</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Приєднайтеся до ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Отримайте безкоштовні застосунки ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Отримайте безкоштовні застосунки ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Отримайте безкоштовні застосунки ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Декілька порад щодо ефективної роботи над документами</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Декілька порад щодо ефективної роботи над документами</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Декілька порад щодо ефективної роботи над документами</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Відкрийте для себе бізнес-підписку на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Відкрийте для себе бізнес-підписку на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Відкрийте для себе бізнес-підписку на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Приєднайтеся до ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Приєднайтеся до ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Приєднайтеся до ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Запит відділу продажів</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Створення поштової скриньки</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Зміна паролю до поштової скриньки</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE для особистого використання!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Увійдіть до свого облікового запису ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Активуйте адресу електронної пошти</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Закриття облікового запису ONLYOFFICE</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace деактивовано</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Користувач видалив свій профіль</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Перепризначення даних користувача завершено</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Не вдалося перепризначити дані користувача</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Видалення даних користувача завершено</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Не вдалося видалити дані користувача</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Налаштуйте ваш ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Ваш ONLYOFFICE DocSpace буде видалено</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Декілька порад щодо ефективної роботи над документами</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Відкрийте для себе бізнес-підписку на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Приєднайтеся до ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Пільговий період для вашого ONLYOFFICE DocSpace активовано</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Термін дії вашої підписки на ONLYOFFICE DocSpace скоро закінчиться</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Пільговий період для вашого ONLYOFFICE DocSpace закінчився</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Пільговий період для вашого ONLYOFFICE DocSpace закінчується завтра</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Збій процесу дешифрування</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Процес дешифрування розпочато</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Процес дешифрування завершено</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Збій процесу шифрування</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Процес шифрування розпочато</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Процес шифрування завершено</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Вас запросили приєднатися до ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>Створено резервну копію порталу [${__VirtualRootPath}](${__VirtualRootPath}) 
+
+Вітаємо, $OwnerName!
+
+Створено файл резервної копії, що містить дані з вашого порталу [${__VirtualRootPath}](${__VirtualRootPath}).
+
+Щоб дізнатися більше про процедуру резервного копіювання, зверніться до нашого посібника користувача [Резервне копіювання даних](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+Якщо у вас виникли запитання або потрібна допомога, зв’яжіться з нами на сторінці [support.onlyoffice.com](http://support.onlyoffice.com)
+
+З найкращими побажаннями
+команда підтримки ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Хочете змінити адресу електронної пошти у своєму обліковому запису ${LetterLogoText}?
+
+Натисніть кнопку нижче та увійдіть* до своєї хмари.
+
+$GreenButton
+
+Посилання дійсне протягом 7 днів.
+
+*Якщо ви не увійшли до ${LetterLogoText} в цьому браузері, вам необхідно буде використати стару адресу електронної пошти для підтвердження. Якщо ви її не пам’ятаєте, зверніться до адміністратора порталу.
+
+Не хочете змінювати адресу електронної пошти? Просто проігноруйте це повідомлення.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Сповіщення безпеки
+
+Параметри застосунку для аутентифікації, який ви використовуєте для входу до порталу ${LetterLogoText}, скинуто.
+
+Натисніть кнопку нижче, щоб перейти на сторінку входу до порталу й настроїти застосунок для аутентифікації:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Вас запросили приєднатися до "${__VirtualRootPath}":"${__VirtualRootPath}" у ролі гостьового користувача. Щоб прийняти запрошення, натисніть посилання:
+
+$GreenButton
+
+Посилання дійсне лише протягом 7 днів.
+
+Ви отримаєте додаткові поради щодо використання вебофісу. Ви можете будь-коли скасовувати підписки на сторінці свого профілю, а також вмикати їх знову.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+$__AuthorName запросив(-ла) вас до "${__VirtualRootPath}":"${__VirtualRootPath}" у ролі гостьового користувача. Щоб прийняти запрошення, натисніть посилання:
+
+$GreenButton
+
+Посилання дійсне лише протягом 7 днів.
+
+Ви отримаєте додаткові поради щодо використання вебофісу. Ви можете будь-коли скасовувати підписки на сторінці свого профілю, а також вмикати їх знову.</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Повідомлення від порталу [${__VirtualRootPath}](${__VirtualRootPath})
+
+Адреса ел. пошти: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+      Адміністратор створив для вас нову поштову скриньку &lt;b&gt;$Address&lt;/b&gt; на порталі "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Для інших поштових клієнтів використовуйте такі параметри:
+      Логін: &lt;b&gt;$Login&lt;/b&gt;
+      Пароль: "&lt;b&gt;встановити пароль &lt;/b&gt;":"$MyStaffLink"
+
+      Вхідна пошта (IMAP): 
+      Сервер: &lt;b&gt;$Server&lt;/b&gt;
+      Порт: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Вихідна пошта (SMTP): 
+      Сервер: &lt;b&gt;$Server&lt;/b&gt;
+      Порт: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Потрібна аутентифікація: &lt;b&gt;Так&lt;/b&gt;
+
+      Якщо ви отримали цей електронний лист помилково, проігноруйте його або зв’яжіться з адміністратором порталу, щоб дізнатися подробиці.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+      Пароль до поштової скриньки &lt;b&gt;$Address&lt;/b&gt; змінено.
+
+      Якщо ви отримали цей електронний лист помилково, проігноруйте його або зв’яжіться з адміністратором порталу, щоб дізнатися подробиці.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+      Адміністратор створив для вас нову поштову скриньку &lt;b&gt;$Address&lt;/b&gt; на порталі "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Якщо ви отримали цей електронний лист помилково, проігноруйте його або зв’яжіться з адміністратором порталу, щоб дізнатися подробиці.</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Перенесення порталу
+h1."$PortalUrl":"$PortalUrl"
+
+Ваш портал перенесено на новий домен. Відновіть доступ до порталу, вказавши пароль, який буде використовуватися для входу.
+
+Щоб встановити пароль для облікового запису, перейдіть за посиланням нижче:
+$GreenButton
+
+*Примітка*. Це посилання дійсне лише протягом 7 днів. Завершіть процес відновлення доступу протягом цього періоду.
+
+Якщо ви отримали цей лист помилково, проігноруйте його або зв’яжіться з адміністратором порталу "$PortalUrl":"$PortalUrl", щоб дізнатися подробиці.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Вітаємо!
+
+Вас запросили приєднатися до "${__VirtualRootPath}":"${__VirtualRootPath}" у ролі гостьового користувача. Щоб прийняти запрошення, натисніть посилання:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Посилання дійсне лише протягом 7 днів.
+
+Ви отримаєте додаткові поради щодо використання вебофісу. Ви можете будь-коли скасовувати підписки на сторінці свого профілю, а також вмикати їх знову.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+Ви успішно зареєструвалися в "${__VirtualRootPath}":"${__VirtualRootPath}" ONLYOFFICE Personal.
+
+Під’єднайте своє улюблене хмарне сховище: Dropbox, Google Диск, OneDrive або Box, щоб створити єдиний робочий простір для своїх документів, доступний із будь-якого місця.
+
+Дізнайтеся більше про ONLYOFFICE Personal у "нашому блозі":"$TagBlogLink".
+
+Ми раді, що ви тут. Слідкуйте за оновленнями!
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Ласкаво просимо до ONLYOFFICE Personal!
+
+Ви щойно створили свій персональний офіс у хмарі.
+
+h3.Це віртуальний робочий простір, де можна редагувати та зберігати документи, працювати з ними з будь-якого місця, а також надавати до них доступ друзям і колегам.
+
+h3.Спочатку про те, що можна робити в ONLYOFFICE:
+
+- Створювати, переглядати й редагувати текстові документи, електронні таблиці й презентації.
+
+- Працювати з усіма популярними форматами. Забезпечується максимальна сумісність із файлами MS Office.
+
+- Створювати й спільно редагувати "готові до заповнення форми":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Надавати доступ до документів і спільно працювати над ними онлайн.
+
+- Використовувати різні плагіни для застосування додаткових функцій.
+
+- Легко отримувати доступ до своєї персональної хмари через "розширення для Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Крім того, ви можете редагувати документи в автономному режимі за допомогою наших  "настільних редакторів":"https://www.onlyoffice.com/download-desktop.aspx" і отримати набір застосунків для редагування на мобільному пристрої "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" або "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Хочете змінити адресу електронної пошти у своєму обліковому записі ONLYOFFICE?
+
+Натисніть кнопку нижче та увійдіть* до своєї хмари.
+
+$GreenButton
+
+Посилання дійсне протягом 7 днів.
+
+*Якщо ви не увійшли до ONLYOFFICE у цьому браузері, вам потрібно буде використати стару адресу електронної пошти для підтвердження.
+
+Не хочете змінювати адресу електронної пошти? Просто проігноруйте це повідомлення.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Вітаємо!
+
+Ви щойно зареєстрували обліковий запис ONLYOFFICE для особистого використання. Натисніть "тут":"$InviteLink", щоб підтвердити реєстрацію та створити пароль.
+
+Якщо ви не можете відкрити посилання, скопіюйте "$InviteLink":"$InviteLink" та вставте до адресного рядка браузера.
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Ви подали запит на закриття вашого облікового запису на personal.onlyoffice.com. Для виконання запиту перейдіть за посиланням (посилання активне протягом 7 днів): 
+
+$GreenButton
+
+*Примітка*. Після видалення ваш обліковий запис і всі пов’язані з ним дані буде знищено назавжди відповідно до нашого "Положення про конфіденційність":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Ознайомитися з додатковою інформацією про закриття облікового запису":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Якщо ви не хочете продовжувати, проігноруйте цей лист. 
+
+Якщо у вас виникли запитання, напишіть нам на адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Деактивація порталу [${__VirtualRootPath}](${__VirtualRootPath}) 
+
+Вітаємо, $OwnerName!
+
+Ви подали запит на тимчасову деактивацію порталу [${__VirtualRootPath}](${__VirtualRootPath}). Щоб підтвердити операцію, перейдіть за посиланням нижче:
+
+$GreenButton
+
+_Примітка_. Це посилання дійсне лише протягом 7 днів. Завершіть процес деактивації порталу протягом цього періоду.
+
+Ви можете повторно активувати портал у будь-який час, натиснувши посилання нижче:
+[Повторно активувати портал]($ActivateUrl) (у цього посилання немає терміну дії)
+
+Якщо у вас виникли запитання або потрібна допомога, напишіть нам на адресу [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+З найкращими побажаннями
+команда підтримки ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Видалення порталу [${__VirtualRootPath}](${__VirtualRootPath}) 
+
+Вітаємо, $OwnerName!
+
+Ви подали запит на остаточне видалення вашого порталу [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Важливо! Усі дані, які зберігаються на порталі, а також ваші реєстраційні дані будуть втрачені без можливості відновлення._
+
+#if($AutoRenew == "True")
+Перш ніж видалити портал, переконайтеся, що автоматичне виставлення рахунків вимкнено. Ви можете перевірити статус автоматичного виставлення рахунків у своєму [обліковому записі Avangate](https://secure.avangate.com/myaccount/").
+#end
+
+Якщо ви все ще хочете видалити портал [${__VirtualRootPath}](${__VirtualRootPath}), перейдіть за посиланням, щоб підтвердити операцію:
+
+$GreenButton
+
+_Примітка_. Це посилання дійсне лише протягом 7 днів. Завершіть процес видалення порталу протягом цього періоду.
+
+Якщо у вас виникли запитання або потрібна допомога, напишіть нам на адресу [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+З найкращими побажаннями
+команда підтримки ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Користувач "$FromUserName":"$FromUserLink" видалив свій профіль, і цей профіль тепер заблоковано. Усі файли користувача все ще призначені йому і займають дисковий простір. 
+
+Ви можете перепризначити документи користувача, до яких надано спільний доступ, іншому активному користувачеві або видалити їх, щоб звільнити місце на диску порталу.
+
+Перейдіть до профілю користувача, використавши "це посилання":"$FromUserLink", щоб перепризначити документи іншому користувачеві або видалити дані.</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Ваш профіль у [${__VirtualRootPath}](${__VirtualRootPath}) змінено
+
+Вітаємо, $UserName!
+
+Дані вашого профілю користувача в [${__VirtualRootPath}](${__VirtualRootPath}) змінено [$__AuthorName]($__AuthorUrl).
+
+Щоб переглянути профіль, перейдіть за посиланням нижче:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес перепризначення даних від користувача "$FromUserName":"$FromUserLink" користувачу "$ToUserName":"$ToUserLink" успішно завершено.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес перепризначення даних користувача "$FromUserName":"$FromUserLink" користувачу "$ToUserName":"$ToUserLink" закінчився збоєм.
+
+Повідомлення про виняток: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Вітаємо $UserName!
+
+Процес видалення даних користувача "$FromUserName":"$FromUserLink" успішно завершено.
+
+Видалення персональних даних дозволило вивільнити:
+
+# Документи: $DocsSpace
+# CRM: $CrmSpace
+# Пошта: $MailSpace
+# Розмови: $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес видалення даних користувача "$FromUserName":"$FromUserLink" закінчився збоєм.
+
+Повідомлення про виняток: $Message</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.Запит тарифу SAAS для "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Ім’я
+$UserName
+
+h3.Прізвище
+$UserLastName
+
+h3.Посада
+$Position
+
+h3.Адреса ел. пошти
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Телефон
+$Phone
+
+h3.Вебсайт компанії
+$Website
+
+h3.Назва компанії
+$CompanyTitle
+
+h3.Розмір компанії
+$CompanySize
+
+h3.Запит контенту
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Відновлення порталу
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ваш портал відновлено. Для доступу до нього вам потрібно встановити новий пароль:
+
+$GreenButton
+
+*Примітка*: це посилання дійсне лише протягом 7 днів.
+
+Якщо ви отримали цей електронний лист помилково, проігноруйте його або зв’яжіться з адміністратором порталу "${__VirtualRootPath}":"${__VirtualRootPath}", щоб дізнатися подробиці.</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Вітаємо!
+
+Вас запросили приєднатися до "${__VirtualRootPath}":"${__VirtualRootPath}" у ролі гостьового користувача. Щоб прийняти запрошення, натисніть посилання:
+
+$GreenButton
+
+Ми також час від часу надсилатимемо вам корисні поради та останні новини ONLYOFFICE. Ви можете будь-коли скасовувати підписки на сторінці свого профілю, а також вмикати їх знову.
+
+Щиро ваша
+команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>Сповіщення про зміну профілю на порталі [${__VirtualRootPath}](${__VirtualRootPath})
+
+[$__AuthorName]($__AuthorUrl) змінив(-ла) дані у своєму профілі на порталі [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес дешифрування файлів на вашому порталі "${PortalUrl}":"${PortalUrl}" закінчився збоєм.
+
+Деякі файли не вдається дешифрувати. Додаткову інформацію див. на "панелі керування":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Розпочато процес дешифрування файлів на вашому порталі "${PortalUrl}":"${PortalUrl}".
+
+Дешифрування може зайняти деякий час, тому портал буде тимчасово недоступний. Як тільки дешифрування закінчиться, ви знову зможете працювати зі своїми даними.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес дешифрування файлів на вашому порталі "${PortalUrl}":"${PortalUrl}" успішно завершено.
+
+Портал знову доступний.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес шифрування файлів на порталі "${PortalUrl}":"${PortalUrl}" завершився збоєм.
+
+Деякі файли не вдається зашифрувати. Додаткову інформацію див. на "панелі керування":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Розпочато процес шифрування файлів на вашому порталі "${PortalUrl}":"${PortalUrl}".
+
+Шифрування може зайняти деякий час, тому портал буде тимчасово недоступний. Як тільки шифрування закінчиться, ви знову зможете працювати зі своїми даними.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес шифрування файлів на вашому порталі "${PortalUrl}":"${PortalUrl}" успішно завершено.
+
+Портал знову доступний.</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Нового користувача додано на портал [${__VirtualRootPath}](${__VirtualRootPath})
+[$__AuthorName]($__AuthorUrl) приєднався(-лась) до вашого порталу за адресою [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Вас запросили приєднатися до безпечного вебофісу вашої компанії, який покращить спільну роботу. Його адреса: "${__VirtualRootPath}":"${__VirtualRootPath}". Рекомендуємо додати це посилання до ваших закладок — ймовірно, ви часто ним користуватиметесь.
+
+Щоб прийняти запрошення, перейдіть за посиланням нижче. Для входу використовуйте логін і пароль корпоративного облікового запису. 
+
+$GreenButton
+
+Посилання дійсне лише протягом 7 днів.</value>
   </data>
 </root>

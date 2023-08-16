@@ -979,4 +979,16 @@
   <data name="TariffsFeature_thirdparty" xml:space="preserve">
     <value>Integrace třetích stran</value>
   </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Úspěšně nahráno. {0}Podpora a aktualizace nejsou pro tuto licenci k dispozici od {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Nahráno úspěšně. {0}Podpora není pro tuto licenci dostupná od {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Pokud existuje uživatel s e-mailovou adresou {0}, byl na tuto e-mailovou adresu zaslán pokyn ke změně hesla.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Překročena kvóta místa na disku</value>
+  </data>
 </root>

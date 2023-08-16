@@ -35,7 +35,7 @@ done
 PRODUCT="docspace"
 BASE_DIR="/var/www/${PRODUCT}"
 PATH_TO_CONF="/etc/onlyoffice/${PRODUCT}"
-STORAGE_ROOT="${PATH_TO_CONF}/data"
+STORAGE_ROOT="/var/www/onlyoffice/Data"
 LOG_DIR="/var/log/onlyoffice/${PRODUCT}"
 DOTNET_RUN="/usr/bin/dotnet"
 NODE_RUN="/usr/bin/node"
@@ -166,7 +166,7 @@ reassign_values (){
 	SERVICE_TYPE="notify"	
 	RESTART="always"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
-	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${CORE_EVENT_BUS}${ENVIRONMENT}"
+--\$STORAGE_ROOT=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${CORE_EVENT_BUS}${ENVIRONMENT}"
 	unset CORE_EVENT_BUS
   fi
 }

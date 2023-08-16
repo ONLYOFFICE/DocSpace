@@ -740,7 +740,8 @@ class FilesActionStore {
     if (
       this.settingsStore.confirmDelete ||
       this.treeFoldersStore.isPrivacyFolder ||
-      isThirdParty
+      isThirdParty ||
+      isRoom
     ) {
       this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
@@ -824,7 +825,7 @@ class FilesActionStore {
       addActiveItems(null, items);
 
       this.setGroupMenuBlocked(true);
-      return removeFiles(items, [], true, true)
+      return removeFiles(items, [], false, true)
         .then(async (res) => {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
@@ -2031,7 +2032,8 @@ class FilesActionStore {
 
     const isMediaOrImage =
       item.viewAccessability?.ImageView || item.viewAccessability?.MediaView;
-    const canConvert = item.viewAccessability?.Convert;
+    const canConvert =
+      item.viewAccessability?.Convert && item.security?.Convert;
     const canWebEdit = item.viewAccessability?.WebEdit;
     const canViewedDocs = item.viewAccessability?.WebView;
 
@@ -2151,9 +2153,11 @@ class FilesActionStore {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
+    fetchRooms(null, filter, undefined, undefined, undefined, true).finally(
+      () => {
+        setIsLoading(false);
+      }
+    );
   };
 
   backToParentFolder = () => {

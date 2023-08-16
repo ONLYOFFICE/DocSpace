@@ -9,7 +9,8 @@ export const getAccessOptions = (
   roomType = RoomsType.CustomRoom,
   withRemove = false,
   withSeparator = false,
-  isOwner = false
+  isOwner = false,
+  standalone = false
 ) => {
   let options = [];
   const accesses = {
@@ -17,7 +18,7 @@ export const getAccessOptions = (
       key: "docSpaceAdmin",
       label: t("Common:DocSpaceAdmin"),
       description: t("Translations:RoleDocSpaceAdminDescription"),
-      quota: t("Common:Paid"),
+      ...(!standalone && { quota: t("Common:Paid") }),
       color: "#EDC409",
       access:
         roomType === -1 ? EmployeeType.Admin : ShareAccessRights.FullAccess,
@@ -26,7 +27,7 @@ export const getAccessOptions = (
       key: "roomAdmin",
       label: t("Common:RoomAdmin"),
       description: t("Translations:RoleRoomAdminDescription"),
-      quota: t("Common:Paid"),
+      ...(!standalone && { quota: t("Common:Paid") }),
       color: "#EDC409",
       access:
         roomType === -1 ? EmployeeType.User : ShareAccessRights.RoomManager,
@@ -35,7 +36,7 @@ export const getAccessOptions = (
       key: "collaborator",
       label: t("Common:PowerUser"),
       description: t("Translations:RolePowerUserDescription"),
-      quota: t("Common:Paid"),
+      ...(!standalone && { quota: t("Common:Paid") }),
       color: "#EDC409",
       access:
         roomType === -1

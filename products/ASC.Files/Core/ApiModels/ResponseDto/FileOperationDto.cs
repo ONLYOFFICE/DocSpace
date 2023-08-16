@@ -26,18 +26,45 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FileOperationDto
 {
+    /// <summary>Operation ID</summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
 
+    /// <summary>Operation type</summary>
+    /// <type>ASC.Web.Files.Services.WCFService.FileOperations.FileOperationType, ASC.Files.Core</type>
     [JsonPropertyName("Operation")]
     public FileOperationType OperationType { get; set; }
+
+    /// <summary>Operation progress</summary>
+    /// <type>System.Int32, System</type>
     public int Progress { get; set; }
+
+    /// <summary>Error</summary>
+    /// <type>System.String, System</type>
     public string Error { get; set; }
+
+    /// <summary>Processing status</summary>
+    /// <type>System.String, System</type>
     public string Processed { get; set; }
+
+    /// <summary>Specifies if the operation is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Finished { get; set; }
+
+    /// <summary>URL</summary>
+    /// <type>System.String, System</type>
     public string Url { get; set; }
+
+    /// <summary>List of files</summary>
+    /// <type>System.Collections.Generic.List{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic</type>
     public List<FileEntryDto> Files { get; set; }
+
+    /// <summary>List of folders</summary>
+    /// <type>System.Collections.Generic.List{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic</type>
     public List<FileEntryDto> Folders { get; set; }
 
     public FileOperationDto() { }

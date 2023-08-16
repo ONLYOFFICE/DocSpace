@@ -120,4 +120,7 @@
   <data name="ButtonSetPassword" xml:space="preserve">
     <value>Aseta salasana</value>
   </data>
+  <data name="BackupNotFound" xml:space="preserve">
+    <value>Varmuuskopiotiedosto on virheellinen. Ole hyvä ja käytä tiedostoa, joka on luotu ONLYOFFICE v11.5:llä tai uudemmalla versiolla.</value>
+  </data>
 </root>

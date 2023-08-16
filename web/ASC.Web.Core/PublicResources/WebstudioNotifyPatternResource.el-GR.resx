@@ -288,13 +288,6 @@ $GreenButton
 
 $GreenButton
 
-Το τρέχον τιμολογιακό σας πρόγραμμα είναι ΒΑΣΙΚΟ. Είναι απολύτως δωρεάν και περιλαμβάνει:
-
-* 1 διαχειριστή, 2 χρήστες ισχύος
-* Μέχρι 12 δωμάτια
-* Απεριόριστο αριθμό χρηστών σε κάθε δωμάτιο
-* 2 GB χώρο στον δίσκο
-
 Απολαύστε έναν νέο τρόπο συνεργασίας σε έγγραφα!
 
 Με εκτίμηση,
@@ -309,13 +302,6 @@ $GreenButton
 Επιβεβαιώστε το email σας (ο σύνδεσμος ισχύει για 7 ημέρες):
 
 $GreenButton
-
-Το τρέχον τιμολογιακό σας πρόγραμμα είναι ΒΑΣΙΚΟ. Είναι απολύτως δωρεάν και περιλαμβάνει:
-
-* 1 διαχειριστή, 2 χρήστες ισχύος
-* Μέχρι 12 δωμάτια
-* Απεριόριστο αριθμό χρηστών σε κάθε δωμάτιο
-* 2 GB χώρο στον δίσκο
 
 Απολαύστε έναν νέο τρόπο συνεργασίας σε έγγραφα!
 
@@ -353,13 +339,6 @@ $GreenButton
 Επιβεβαιώστε το email σας (ο σύνδεσμος ισχύει για 7 ημέρες):
 
 $GreenButton
-
-Το τρέχον τιμολογιακό σας πρόγραμμα είναι ΒΑΣΙΚΟ. Είναι απολύτως δωρεάν και περιλαμβάνει:
-
-* 1 διαχειριστή, 2 χρήστες ισχύος
-* Μέχρι 12 δωμάτια
-* Απεριόριστο αριθμό χρηστών σε κάθε δωμάτιο
-* 2 GB χώρο στον δίσκο
 
 Απολαύστε έναν νέο τρόπο συνεργασίας σε έγγραφα!
 
@@ -859,5 +838,948 @@ $GreenButton
   </data>
   <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Καλώς ήλθατε στο ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ΑΠΟΔΟΧΉ</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ΕΠΙΒΕΒΑΊΩΣΗ</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} δημιουργία αντιγράφου ασφαλείας πύλης</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} βοήθεια κωδικού πρόσβασης</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. Αίτημα αλλαγής κινητού τηλεφώνου</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Αλλαγή του ιδιοκτήτη της πύλης</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}. Αλλαγή της διεύθυνσης πύλης</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Αποκτήστε δωρεάν εφαρμογές ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Αποκτήστε δωρεάν εφαρμογές ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Αποκτήστε δωρεάν εφαρμογές ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Αρκετές συμβουλές για αποτελεσματική εργασία στα έγγραφά σας</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Αρκετές συμβουλές για αποτελεσματική εργασία στα έγγραφά σας</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Αρκετές συμβουλές για αποτελεσματική εργασία στα έγγραφά σας</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Αρκετές συμβουλές για αποτελεσματική εργασία στα έγγραφά σας</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Ανακαλύψτε την επαγγελματική συνδρομή του ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Ανακαλύψτε την επαγγελματική συνδρομή του ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Ανακαλύψτε την επαγγελματική συνδρομή του ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Ανακαλύψτε την επαγγελματική συνδρομή του ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Εγγραφείτε στο ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Εγγραφείτε στο ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Εγγραφείτε στο ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Εγγραφείτε στο ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Εγγραφείτε στο ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Αίτημα τμήματος πωλήσεων</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>Πρόσκληση για συμμετοχή στην πύλη ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Δημιουργία γραμματοκιβωτίου</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Αλλαγή κωδικού πρόσβασης γραμματοκιβωτίου</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. Άλλο ένα σφάλμα μετεγκατάστασης στην πύλη της περιοχής</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}. Άλλη μια μετεγκατάσταση πύλης περιοχής ξεκίνησε</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Μια άλλη μετεγκατάσταση πύλης περιοχής ολοκληρώθηκε επιτυχώς</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Καλώς ήρθατε στο ONLYOFFICE για προσωπική χρήση!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Συνδεθείτε στον προσωπικό σας λογαριασμό ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Τερματισμός προσωπικού λογαριασμού ONLYOFFICE</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>Απενεργοποίηση της πύλης ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>Διαγραφή της πύλης ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>Το ONLYOFFICE DocSpace έχει απενεργοποιηθεί</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}. Αλλαγή της διεύθυνσης πύλης</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>Διαγραφή του προφίλ σας από την πύλη ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Ο χρήστης διέγραψε το προφίλ του</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Η εκ νέου ανάθεση δεδομένων χρήστη ολοκληρώθηκε</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Η εκ νέου ανάθεση δεδομένων χρήστη απέτυχε</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Αίτημα για επαγγελματική άδεια χρήσης</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>Αίτημα για πρόγραμμα τιμολόγησης SaaS</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Διαμορφώστε το ONLYOFFICE DocSpace σας</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Το ONLYOFFICE DocSpace σας θα διαγραφεί</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Η συνδρομή σας στο ONLYOFFICE DocSpace πρόκειται να λήξει</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Η περίοδος χάριτος για το ONLYOFFICE DocSpace έληξε</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Η περίοδος χάριτος για το ONLYOFFICE DocSpace ενεργοποιήθηκε</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Η περίοδος χάριτος για το ONLYOFFICE DocSpace λήγει αύριο</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>Ειδοποίησης αλλαγής προφίλ πύλης ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Τι νέο υπάρχει στην πύλη σας για τις $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>Δοκιμαστικό μήνυμα SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Η διαδικασία αποκρυπτογράφησης απέτυχε</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. Η διαδικασία αποκρυπτογράφησης ξεκίνησε</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Η διαδικασία αποκρυπτογράφησης ολοκληρώθηκε</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. Η διαδικασία κρυπτογράφησης απέτυχε</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Η διαδικασία κρυπτογράφησης ολοκληρώθηκε</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>Νέος χρήστης προστέθηκε στην πύλη ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Έχετε προσκληθεί να συμμετάσχετε στο ${__VirtualRootPath}</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Πίνακας ελέγχου πρόσβασης</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Αποκτήστε πρόσβαση στην πύλη σας</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Αποκτήστε πρόσβαση στο Web-Office σας</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Διαμορφώστε την εφαρμογή αυθεντικοποίησης</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Συνεργαστείτε στο DocSpace</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Κάντε διαμόρφωση τώρα</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Επιβεβαίωση πρόσκλησης στο DocSpace</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Επιβεβαίωση αλλαγής διεύθυνσης πύλης</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Επιβεβαίωση ενημέρωσης ιδιοκτήτη πύλης</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Επιβεβαίωση πρόσκλησης στο δωμάτιο</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Απενεργοποίηση πύλης</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Διαγραφή πύλης</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Πρόσκληση τώρα</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Κάντε κλικ εδώ για να συνδεθείτε στην πύλη</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Αφήστε σχόλια</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Αίτημα κλήσης</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Επιλέξτε τα προγράμματα τιμολόγησης αυτήν τη στιγμή</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1.Ενεργοποιήστε το email σας για την πύλη "${__VirtualRootPath}":"$InviteLink".
+
+Γεια σας!
+
+Για να ξεκινήσετε να συμμετέχετε στη ζωή της πύλης "${__VirtualRootPath}":"$InviteLink" πρέπει να ενεργοποιήσετε τη διεύθυνση email σας. Αυτό γίνεται για λόγους ασφαλείας.
+
+$GreenButton
+
+Αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε την ενεργοποίηση του email σας εντός αυτής της περιόδου.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" δημιουργήθηκε αντίγραφο ασφαλείας πύλης
+
+Αγαπητέ $OwnerName,
+
+Δημιουργήθηκε ένα αρχείο αντιγράφου ασφαλείας που περιέχει δεδομένα από την πύλη σας "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Για να μάθετε περισσότερα σχετικά με τη διαδικασία δημιουργίας αντιγράφων ασφαλείας, ανατρέξτε στον οδηγό χρήσης "Δημιουργία αντιγράφων ασφαλείας δεδομένων":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
+
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) δημιουργήθηκε αντίγραφο ασφαλείας της πύλης
+
+Αγαπητέ $OwnerName,
+
+Δημιουργήθηκε ένα αρχείο αντιγράφου ασφαλείας που περιέχει δεδομένα από την πύλη σας [${__VirtualRootPath}](${__VirtualRootPath}).
+
+Για να μάθετε περισσότερα σχετικά με τη διαδικασία δημιουργίας αντιγράφων ασφαλείας, ανατρέξτε στον οδηγό χρήσης [Δημιουργία αντιγράφων ασφαλείας δεδομένων](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο [support.onlyoffice.com](http://support.onlyoffice.com)
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Θέλετε να αλλάξετε το email στον λογαριασμό σας ${LetterLogoText};
+
+Κάντε κλικ στο παρακάτω κουμπί και συνδεθείτε* στο cloud σας.
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει για 7 ημέρες.
+
+*Αν δεν έχετε συνδεθεί στο ${LetterLogoText} σε αυτό το πρόγραμμα περιήγησης, θα πρέπει να χρησιμοποιήσετε το παλιό σας email για επιβεβαίωση. Αν δεν το θυμάστε, επικοινωνήστε με τον διαχειριστή της πύλης σας.
+
+Δεν θέλετε να αλλάξετε το email σας; Απλώς αγνοήστε αυτό το μήνυμα.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Αίτημα αλλαγής κινητού τηλεφώνου
+
+Ζητήσατε να αλλάξετε το κινητό σας τηλέφωνο που χρησιμοποιείται για την είσοδο στην πύλη ${LetterLogoText}.
+
+Ακολουθήστε τον παρακάτω σύνδεσμο για να αλλάξετε το κινητό σας τηλέφωνο:
+
+$GreenButton
+
+Εάν δεν θέλετε να αλλάξετε το κινητό σας τηλέφωνο ή λάβατε αυτό το email κατά λάθος, παρακαλούμε αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Ειδοποίηση ασφαλείας
+
+Η διαμόρφωση της εφαρμογής αυθεντικοποίησης που χρησιμοποιείτε για την είσοδο στην πύλη ${LetterLogoText} έχει επαναφερθεί.
+
+Κάντε κλικ στο παρακάτω κουμπί για να μεταβείτε στη σελίδα εισόδου στην πύλη και να διαμορφώσετε την εφαρμογή αυθεντικοποίησης:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1.Αλλαγή του ιδιοκτήτης της πύλης "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Αγαπητέ $OwnerName,
+
+Υπήρξε ένα αίτημα για την αλλαγή του ιδιοκτήτη της πύλης "${__VirtualRootPath}":"${__VirtualRootPath}" σε $UserName.
+
+Ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. ολοκληρώστε τη διαδικασία αλλαγής ιδιοκτήτη πύλης εντός αυτής της περιόδου.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1.Αλλαγή της διεύθυνσης πύλης
+
+Αγαπητέ $OwnerName,
+
+Υπήρξε ένα αίτημα αλλαγής της διεύθυνσης πύλης "${__VirtualRootPath}":"${__VirtualRootPath}" σε "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Παρακαλείστε να ολοκληρώσετε τη διαδικασία αλλαγής διεύθυνσης πύλης εντός αυτής της περιόδου.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Σας προσκαλούμε να συμμετάσχετε στο "${__VirtualRootPath}":"${__VirtualRootPath}" ως επισκέπτης χρήστης. Αποδεχτείτε την πρόσκληση κάνοντας κλικ στον σύνδεσμο:
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει μόνο για 7 ημέρες.
+
+Θα λάβετε περισσότερες συμβουλές σχετικά με τη χρήση του web-office σας. Μπορείτε να ακυρώσετε τις συνδρομές στη σελίδα του προφίλ σας ανά πάσα στιγμή, καθώς και να τις ενεργοποιήσετε εκ νέου.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Ο $__AuthorName σας προσκάλεσε ως προσκεκλημένο χρήστη στο "${__VirtualRootPath}":"${__VirtualRootPath}". Αποδεχτείτε την πρόσκληση κάνοντας κλικ στον σύνδεσμο:
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει μόνο για 7 ημέρες.
+
+Θα λάβετε περισσότερες συμβουλές σχετικά με τη χρήση του web-office σας. Μπορείτε να ακυρώσετε τις συνδρομές στη σελίδα του προφίλ σας ανά πάσα στιγμή, καθώς και να τις ενεργοποιήσετε εκ νέου.</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1.Μήνυμα από την πύλη "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Μήνυμα από την πύλη [${__VirtualRootPath}](${__VirtualRootPath})
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1.Πρόσκληση συμμετοχής στην πύλη "${__VirtualRootPath}":"$InviteLink" 
+
+Καλησπέρα,
+
+Ζητήσατε να γίνετε μέλος της πύλης "${__VirtualRootPath}":"$InviteLink" στο ${LetterLogoText} – μια πλατφόρμα για τη διαχείριση εγγράφων και έργων. Γίνετε μέλος της πύλης και ξεκινήστε αμέσως τη συνεργασία με τους συναδέλφους ή τους φίλους σας.
+
+Για να αποδεχτείτε την πρόσκληση, εισάγετε το όνομα και τον κωδικό πρόσβασής σας ακολουθώντας αυτόν τον σύνδεσμο:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 48 ώρες. Παρακαλείστε να ολοκληρώσετε τη λειτουργία εντός του εν λόγω χρονικού διαστήματος.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+      Ο διαχειριστής δημιούργησε ένα νέο γραμματοκιβώτιο &lt;b&gt;$Address&lt;/b&gt; για εσάς στην πύλη "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Χρησιμοποιήστε τις ακόλουθες ρυθμίσεις για άλλους πελάτες email:
+      Σύνδεση: &lt;b&gt;$Login&lt;/b&gt;
+      Κωδικός πρόσβασης: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
+
+      Εισερχόμενη αλληλογραφία (IMAP): 
+       &lt;b&gt;$Server&lt;/b&gt;
+       &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Εξερχόμενη αλληλογραφία (SMTP): 
+      Διακομιστής: &lt;b&gt;$Server&lt;/b&gt;
+      Θύρα: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Απαιτείται αυθεντικοποίηση: &lt;b&gt;Ναι&lt;/b&gt;
+
+      Εάν λάβατε αυτό το email κατά λάθος, αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+      Ο κωδικός πρόσβασης για το γραμματοκιβώτιο &lt;b&gt;$Address&lt;/b&gt; έχει αλλάξει.
+
+      Εάν λάβατε αυτό το email κατά λάθος, αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+      Ο διαχειριστής δημιούργησε ένα νέο γραμματοκιβώτιο &lt;b&gt;$Address&lt;/b&gt; για εσάς στην πύλη "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Εάν λάβατε αυτό το email κατά λάθος, αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1.Ακόμα ένα σφάλμα μετάβασης στην πύλη της περιοχής
+
+Παρουσιάστηκε σφάλμα κατά τη μετάβαση στην περιοχή $RegionName. Ππροσπαθήστε ξανά αργότερα.
+Η πύλη σας είναι τώρα διαθέσιμη στην παλιά διεύθυνση "$PortalUrl":"$PortalUrl"
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Για να αλλάξετε τον τύπο ειδοποίησης, διαχειριστείτε τις "ρυθμίσεις συνδρομής":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.Ακόμα ένα σφάλμα μετάβασης στην πύλη της περιοχής
+
+Παρουσιάστηκε σφάλμα κατά τη μετάβαση σε άλλη περιοχή. Προσπαθήστε ξανά αργότερα.
+Η πύλη σας είναι τώρα διαθέσιμη στην παλιά διεύθυνση "$PortalUrl":"$PortalUrl"
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Για να αλλάξετε τον τύπο ειδοποίησης, διαχειριστείτε τις "ρυθμίσεις συνδρομής":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Μεταφορά πύλης
+h1."$PortalUrl":"$PortalUrl"
+
+Η πύλη σας έχει μεταφερθεί σε νέο τομέα. Επαναφέρετε την πρόσβασή σας στην πύλη καθορίζοντας τον κωδικό πρόσβασης που θα χρησιμοποιηθεί για την είσοδο.
+
+Ακολουθήστε τον παρακάτω σύνδεσμο για να ορίσετε τον κωδικό πρόσβασης για τον λογαριασμό σας:
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Παρακαλείστε να ολοκληρώσετε τη διαδικασία επαναφοράς της πρόσβασης εντός αυτής της περιόδου.
+
+Εάν λάβατε αυτό το email κατά λάθος, αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας "$PortalUrl":"$PortalUrl" για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Γεια σας!
+
+Σας προσκαλούμε να συνδεθείτε στο "${__VirtualRootPath}":"${__VirtualRootPath}" ως επισκέπτης χρήστης. Αποδεχτείτε την πρόσκληση κάνοντας κλικ στον σύνδεσμο:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Ο σύνδεσμος ισχύει μόνο για 7 ημέρες.
+
+Θα λάβετε περισσότερες συμβουλές σχετικά με τη χρήση του web-office σας. Μπορείτε να ακυρώσετε τις συνδρομές στη σελίδα του προφίλ σας ανά πάσα στιγμή, καθώς και να τις ενεργοποιήσετε εκ νέου.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Γεια σας, $UserName
+Έχετε εγγραφεί επιτυχώς στο ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Συνδέστε τον αγαπημένο σας αποθηκευτικό χώρο στο cloud: Dropbox, Google Drive, OneDrive ή Box για να δημιουργήσετε έναν ενιαίο χώρο εργασίας για τα έγγραφά σας, προσβάσιμο από οπουδήποτε.
+
+Μάθετε περισσότερα για το ONLYOFFICE Personal στο "ιστολόγιό μας":"$TagBlogLink".
+
+Χαιρόμαστε που βρίσκεστε εδώ. Μείνετε συντονισμένοι!
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Καλώς ήρθατε στο ONLYOFFICE Personal
+
+Μόλις δημιουργήσατε το προσωπικό σας γραφείο στο cloud.
+
+h3.Είναι ένας εικονικός χώρος εργασίας όπου μπορείτε να επεξεργάζεστε και να αποθηκεύετε έγγραφα, να εργάζεστε με αυτά από οπουδήποτε παρέχοντας πρόσβαση στους φίλους ή τους συναδέλφους σας.
+
+h3.Για να ξεκινήσετε, δείτε τι μπορείτε να κάνετε στο ONLYOFFICE:
+
+- Δημιουργία, προβολή και επεξεργασία εγγράφων κειμένου, υπολογιστικών φύλλων, παρουσιάσεων.
+
+- Εργασία με όλα τα δημοφιλή μορφότυπα. Υψηλότερη συμβατότητα με τα αρχεία του MS Office.
+
+- Δημιουργία και συνεπεξεργασία "έτοιμων προς συμπλήρωση φορμών":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Κοινή χρήση και συνεργασία σε έγγραφα σε απευθείας σύνδεση.
+
+- Χρήση διάφορων πρόσθετων για εφαρμογή πρόσθετων λειτουργιών.
+
+- Εύκολη πρόσβαση στο προσωπικό σας cloud μέσω "επέκτασης Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Μπορείτε επίσης να επεξεργαστείτε έγγραφα εκτός σύνδεσης με τα δωρεάν "προγράμματα επεξεργασία για υπολογιστές":"https://www.onlyoffice.com/download-desktop.aspx" ή να αποκτήσετε μια σουίτα επεξεργασίας για κινητά για τη συσκευή σας "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ή "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Θέλετε να αλλάξετε το email του λογαριασμού σας στο ONLYOFFICE;
+
+Κάντε κλικ στο παρακάτω κουμπί και συνδεθείτε* στο cloud σας.
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει για 7 ημέρες.
+
+*Αν δεν έχετε συνδεθεί στο ONLYOFFICE σε αυτό το πρόγραμμα περιήγησης, θα πρέπει να χρησιμοποιήσετε το παλιό σας email για επιβεβαίωση.
+
+Δεν θέλετε να αλλάξετε το email σας; Απλά αγνοήστε αυτό το μήνυμα.</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Γεια σας,
+
+Μόλις καταχωρήσατε έναν λογαριασμό στη λύση ONLYOFFICE για προσωπική χρήση. Κάντε κλικ "εδώ":"$InviteLink" για να επιβεβαιώσετε την εγγραφή και να δημιουργήσετε έναν κωδικό πρόσβασης.
+
+Εάν δεν μπορείτε να ανοίξετε τον σύνδεσμο, αντιγράψτε τον ακόλουθο σύνδεσμο "$InviteLink":"$InviteLink" και επικολλήστε τον στη γραμμή διευθύνσεων του προγράμματος περιήγησής σας.
+
+Με εκτίμηση,
+Ομάδα ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Ζητήσατε τον τερματισμό του λογαριασμού σας στο personal.onlyoffice.com. Ακολουθήστε τον σύνδεσμο για να ολοκληρώσετε το αίτημα (ο σύνδεσμος είναι ενεργός για 7 ημέρες): 
+
+$GreenButton
+
+*Σημείωση*: Μετά τη διαγραφή, ο λογαριασμός σας και όλα τα δεδομένα που σχετίζονται με αυτόν θα διαγραφούν οριστικά σύμφωνα με τη "Δήλωση απορρήτου":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Διαβάστε περισσότερα σχετικά με τον τερματισμό του λογαριασμού":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Αγνοήστε αυτό το email εάν δεν θέλετε να συνεχίσετε. 
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις, επικοινωνήστε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1.Απενεργοποίηση της πύλης "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Αγαπητέ $OwnerName,
+
+Ζητήσατε την προσωρινή απενεργοποίηση της πύλης σας "${__VirtualRootPath}":"${__VirtualRootPath}". Ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε τη διαδικασία απενεργοποίησης της πύλης εντός αυτής της περιόδου.
+
+Μπορείτε να επανενεργοποιήσετε την πύλη σας ανά πάσα στιγμή κάνοντας κλικ στον ακόλουθο σύνδεσμο:
+p=. "Επανενεργοποίηση πύλης":"$ActivateUrl" (αυτός ο σύνδεσμος δεν έχει χρονικό περιορισμό)
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_deactivate_tg" xml:space="preserve">
+    <value>Απενεργοποίηση πύλης [${__VirtualRootPath}](${__VirtualRootPath})
+
+Αγαπητέ $OwnerName,
+
+Ζητήσατε την προσωρινή απενεργοποίηση της πύλης σας [${__VirtualRootPath}](${__VirtualRootPath}). Ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+_Σημείωση_: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε τη διαδικασία απενεργοποίησης της πύλης εντός αυτής της περιόδου.
+
+Μπορείτε να επανενεργοποιήσετε την πύλη σας ανά πάσα στιγμή κάνοντας κλικ στον ακόλουθο σύνδεσμο:
+[Επανενεργοποίηση πύλης]($ActivateUrl) (αυτός ο σύνδεσμος δεν έχει χρονικό περιορισμό)
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μπορείτε να επικοινωνήσετε μαζί μας στο [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1.Διαγραφή του χώρου "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Αγαπητέ $OwnerName,
+
+Ζητήσατε την οριστική διαγραφή του χώρου "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Σημαντικό! Όλα τα δεδομένα που είναι αποθηκευμένα στον χώρο σας, καθώς και τα στοιχεία εγγραφής σας θα χαθούν και δεν μπορούν να ανακτηθούν.*
+
+#if($AutoRenew == "True")
+Πριν διαγράψετε τον χώρο, βεβαιωθείτε ότι η αυτόματη χρέωση είναι απενεργοποιημένη. Μπορείτε να ελέγξετε την κατάσταση της αυτόματης χρέωσης στο "Λογαριασμός Avangate":"https://secure.avangate.com/myaccount/".
+#end
+
+Εάν εξακολουθείτε να θέλετε να διαγράψετε τον χώρο "${__VirtualRootPath}":"${__VirtualRootPath}", ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε τη διαδικασία διαγραφής της πύλης εντός αυτής της περιόδου.
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_tg" xml:space="preserve">
+    <value>Διαγραφή της πύλης [${__VirtualRootPath}](${__VirtualRootPath})
+
+Αγαπητέ $OwnerName,
+
+Ζητήσατε την οριστική διαγραφή της πύλης [${__VirtualRootPath}](${__VirtualRootPath}).
+
+_Σημαντικό! Όλα τα δεδομένα που είναι αποθηκευμένα στην πύλη σας, καθώς και τα στοιχεία εγγραφής σας θα χαθούν και δεν μπορούν να ανακτηθούν _.
+
+#if($AutoRenew == "True")
+Πριν διαγράψετε την πύλη, βεβαιωθείτε ότι η αυτόματη χρέωση είναι απενεργοποιημένη. Μπορείτε να ελέγξετε την κατάσταση της αυτόματης χρέωσης στον [λογαριασμό σας στο Avangate](https://secure.avangate.com/myaccount/").
+#end
+
+Εάν εξακολουθείτε να θέλετε να διαγράψετε την πύλη [${__VirtualRootPath}](${__VirtualRootPath}), ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+_Σημείωση_: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε τη διαδικασία διαγραφής της πύλης εντός αυτής της περιόδου.
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο [support@onlyoffice.com](mailto:support@onlyoffice.com)
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1.Αλλαγή διεύθυνσης πύλης
+
+Αγαπητέ $UserDisplayName,
+
+Η διεύθυνση της πύλης σας $PortalUrl άλλαξε στη νέα διεύθυνση "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Σημείωση*: Οι ρυθμίσεις DNS και οι επιλογές ενιαίας σύνδεσης σταματούν να λειτουργούν μέχρι να τις αλλάξετε.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1.Αφαίρεση του προφίλ από την πύλη "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ζητήσατε την οριστική διαγραφή του προφίλ σας από την πύλη "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Εάν εξακολουθείτε να θέλετε να διαγράψετε το προφίλ σας, ακολουθήστε τον παρακάτω σύνδεσμο για να επιβεβαιώσετε τη διαδικασία:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες. Ολοκληρώστε τη διαδικασία διαγραφής του προφίλ εντός αυτής της περιόδου.</value>
+  </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Ο χρήστης "$FromUserName":"$FromUserLink" έχει διαγράψει το προφίλ του και αυτό το προφίλ είναι πλέον μπλοκαρισμένο. Όλα τα αρχεία του χρήστη εξακολουθούν να ανατίθενται σε αυτόν/αυτήν και καταλαμβάνουν χώρο στον δίσκο. 
+
+Μπορείτε να αναθέσετε εκ νέου τα έγγραφα του χρήστη που μοιράζονται με άλλους σε άλλον ενεργό χρήστη ή να τα αφαιρέσετε για να ελευθερώσετε χώρο στον δίσκο της πύλης.
+
+Μεταβείτε στο προφίλ του χρήστη χρησιμοποιώντας "αυτόν τον σύνδεσμο":"$FromUserLink" για να αναθέσετε εκ νέου έγγραφα σε άλλον χρήστη ή να αφαιρέσετε τα δεδομένα.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1.Το προφίλ σας στο "$__VirtualRootPath":"$__VirtualRootPath" έχει αλλάξει
+
+Αγαπητέ $UserName,
+
+Τα στοιχεία του προφίλ χρήστη σας στο "$__VirtualRootPath":"$__VirtualRootPath" έχουν αλλάξει από τον χρήστη "$__AuthorName":"$__AuthorUrl".
+
+Για να δείτε το προφίλ σας, ακολουθήστε τον παρακάτω σύνδεσμο:
+"$UserName":"$MyStaffLink"</value>
+  </data>
+  <data name="pattern_profile_updated_tg" xml:space="preserve">
+    <value>Το προφίλ σας στο [${__VirtualRootPath}](${__VirtualRootPath}) έχει αλλάξει
+
+Αγαπητέ $UserName,
+
+Τα στοιχεία του προφίλ χρήστη σας στο [${__VirtualRootPath}](${__VirtualRootPath}) έχουν αλλάξει από τον χρήστη [$__AuthorName]($__AuthorUrl).
+
+Για να δείτε το προφίλ σας, ακολουθήστε τον παρακάτω σύνδεσμο:
+[$UserName]($MyStaffLink)</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Η διαδικασία εκ νέου ανάθεσης δεδομένων από τον χρήστη "$FromUserName":"$FromUserLink" στον χρήστη "$ToUserName":"$ToUserLink" ολοκληρώθηκε με επιτυχία.</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Η διαδικασία εκ νέου ανάθεσης δεδομένων από τον χρήστη "$FromUserName":"$FromUserLink" στον χρήστη "$ToUserName":"$ToUserLink" απέτυχε.
+
+Μήνυμα εξαίρεσης: $Message</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Η διαδικασία αφαίρεσης δεδομένων από τον χρήστη "$FromUserName":"$FromUserLink" ολοκληρώθηκε με επιτυχία.
+
+Η διαγραφή των προσωπικών δεδομένων επέτρεψε την αποδέσμευση:
+
+# Έγγραφα – $DocsSpace
+# CRM – $CrmSpace
+# Αλληλογραφία – $MailSpace
+# Ομιλία – $TalkSpace</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Η διαδικασία αφαίρεσης δεδομένων για τον χρήστη "$FromUserName":"$FromUserLink" απέτυχε.
+
+Μήνυμα εξαίρεσης: $Message</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1.Αίτηση για άδεια χρήσης Enterprise
+
+h3.Όνομα
+$UserName
+
+h3.Επώνυμο
+$UserLastName
+
+h3.Θέση
+$Position
+
+h3.Email
+"$UserEmail": "mailto:$UserEmail"
+
+h3.Τηλέφωνο
+$Phone
+
+h3.Ιστόποπος εταιρείας
+$Website
+
+h3.Επωνυμία εταιρείας
+$CompanyTitle
+
+h3.Μέγεθος εταιρείας
+$CompanySize
+
+h3.Αίτηση περιεχομένου
+$Body
+
+h3.Διεύθυνση πύλης
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff1" xml:space="preserve">
+    <value>h1.Αίτηση τιμολόγησης SAAS για "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Όνομα
+$UserName
+
+h3.Επώνυμο
+$UserLastName
+
+h3.Θέση
+$Position
+
+h3.Email
+"$UserEmail": "mailto:$UserEmail"
+
+h3.Τηλέφωνο
+$Phone
+
+h3.Ιστότοπος εταιρείας
+$Website
+
+h3.Επωνυμία εταιρείας
+$CompanyTitle
+
+h3.Μέγεθος εταιρείας
+$CompanySize
+
+h3.Αίτηση περιεχομένου
+$Body</value>
+  </data>
+  <data name="pattern_restore_completed_v115" xml:space="preserve">
+    <value>h1.Αποκατάσταση πύλης
+h1."${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Η πύλη σας έχει αποκατασταθεί. Για να αποκτήσετε πρόσβαση σε αυτήν, πρέπει να ορίσετε έναν νέο κωδικό πρόσβασης:
+
+$GreenButton
+
+*Σημείωση*: αυτός ο σύνδεσμος ισχύει μόνο για 7 ημέρες.
+
+Εάν λάβατε αυτό το email κατά λάθος, αγνοήστε το ή επικοινωνήστε με τον διαχειριστή της πύλης σας "${__VirtualRootPath}":"${__VirtualRootPath}" για να μάθετε λεπτομέρειες.</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1.Η αποκατάσταση της πύλης ξεκίνησε
+
+Η αποκατάσταση της πύλης ξεκίνησε. Μπορεί να χρειαστεί λίγος χρόνος ανάλογα με τον όγκο των δεδομένων σας.
+
+*Σημείωση*: η πύλη δεν θα είναι διαθέσιμη κατά τη διάρκεια της διαδικασίας αποκατάστασης.
+
+Εάν έχετε οποιεσδήποτε ερωτήσεις ή χρειάζεστε βοήθεια, μη διστάσετε να επικοινωνήσετε μαζί μας στο "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Με εκτίμηση,
+Η ομάδα υποστήριξης του ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Για να αλλάξετε τον τύπο ειδοποίησης, διαχειριστείτε τις "ρυθμίσεις συνδρομής":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Γεια σας!
+
+Σας προσκαλούμε να συνδεθείτε στο "${__VirtualRootPath}":"${__VirtualRootPath}" ως επισκέπτης χρήστης. Αποδεχτείτε την πρόσκληση κάνοντας κλικ στον σύνδεσμο:
+
+$GreenButton
+
+Θα σας στέλνουμε επίσης χρήσιμες συμβουλές και τα τελευταία νέα του ONLYOFFICE μια στο τόσο. Μπορείτε να ακυρώσετε τις συνδρομές στη σελίδα του προφίλ σας ανά πάσα στιγμή, καθώς και να τις ενεργοποιήσετε εκ νέου.
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1.Ειδοποίηση αλλαγής προφίλ πύλης "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ο χρήστης "$__AuthorName":"$__AuthorUrl" έχει αλλάξει τα στοιχεία του προφίλ του στην πύλη "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^Αν δεν θέλετε να λαμβάνετε τις ειδοποιήσεις σχετικά με τις ενημερώσεις του προφίλ σας, διαχειριστείτε τις "ρυθμίσεις συνδρομής":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_self_profile_updated_tg" xml:space="preserve">
+    <value>Ειδοποίηση αλλαγής προφίλ πύλης [${__VirtualRootPath}](${__VirtualRootPath})
+
+Ο χρήστης [$__AuthorName]($__AuthorUrl) άλλαξε τα στοιχεία του προφίλ του στην πύλη [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>Μήνυμα δοκιμής SMTP
+
+Αυτό το μήνυμα δημιουργήθηκε αυτόματα για να ελέγξετε τις ρυθμίσεις SMTP. Αν το βλέπετε, αυτό σημαίνει ότι οι ρυθμίσεις είναι σωστές και μπορείτε να τις χρησιμοποιήσετε στην πύλη σας.
+
+
+Με εκτίμηση,
+Η ομάδα του ONLYOFFICE</value>
+  </data>
+  <data name="pattern_storage_decryption_error" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία αποκρυπτογράφησης του αρχείου στην πύλη σας "${PortalUrl}":"${PortalUrl}" απέτυχε.
+
+Ορισμένα αρχεία δεν μπόρεσαν να αποκρυπτογραφηθούν. Βρείτε περισσότερες λεπτομέρειες στον "Πίνακα ελέγχου":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_decryption_start" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία αποκρυπτογράφησης του αρχείου έχει ξεκινήσει στην πύλη σας "${PortalUrl}":"${PortalUrl}".
+
+Η αποκρυπτογράφηση ενδέχεται να διαρκέσει λίγο χρόνο, οπότε η πύλη θα είναι προσωρινά μη διαθέσιμη. Μόλις ολοκληρωθεί η αποκρυπτογράφηση, θα μπορείτε να εργαστείτε ξανά με τα δεδομένα σας.</value>
+  </data>
+  <data name="pattern_storage_decryption_success" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία αποκρυπτογράφησης του αρχείου στην πύλη σας "${PortalUrl}":"${PortalUrl}" ολοκληρώθηκε με επιτυχία.
+
+Η πύλη σας είναι και πάλι διαθέσιμη.</value>
+  </data>
+  <data name="pattern_storage_encryption_error" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία κρυπτογράφησης αρχείων στην πύλη "${PortalUrl}":"${PortalUrl}" απέτυχε.
+
+Ορισμένα αρχεία δεν μπόρεσαν να κρυπτογραφηθούν. Βρείτε περισσότερες λεπτομέρειες στον "Πίνακα ελέγχου":"${ControlPanelUrl}/storage".</value>
+  </data>
+  <data name="pattern_storage_encryption_start" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία κρυπτογράφησης αρχείων έχει ξεκινήσει στην πύλη σας "${PortalUrl}":"${PortalUrl}".
+
+Η κρυπτογράφηση ενδέχεται να διαρκέσει λίγο, οπότε η πύλη θα είναι προσωρινά μη διαθέσιμη. Μόλις ολοκληρωθεί η κρυπτογράφηση, θα μπορείτε να εργαστείτε ξανά με τα δεδομένα σας.</value>
+  </data>
+  <data name="pattern_storage_encryption_success" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Η διαδικασία κρυπτογράφησης αρχείων στην πύλη σας "${PortalUrl}":"${PortalUrl}" ολοκληρώθηκε με επιτυχία.
+
+Η πύλη σας είναι και πάλι διαθέσιμη.</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.Προστέθηκε νέος χρήστης στην πύλη "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Ο χρήστης "$__AuthorName":"$__AuthorUrl" έχει ενταχθεί στην πύλη σας στο "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+
+^Αν δεν θέλετε να λαμβάνετε τις ειδοποιήσεις για τους νέους χρήστες, διαχειριστείτε τις "ρυθμίσεις συνδρομής":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_has_join_tg" xml:space="preserve">
+    <value>Νέος χρήστης προστέθηκε στην πύλη [${__VirtualRootPath}](${__VirtualRootPath})
+Ο χρήστης [$__AuthorName]($__AuthorUrl) έχει ενταχθεί στην πύλη σας στο [${__VirtualRootPath}](${__VirtualRootPath}).</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Αγαπητέ $UserName,
+
+Έχετε προσκληθεί να ενταχθείτε στο ασφαλές web-office της εταιρείας σας που θα ενισχύσει τη συνεργασία σας. Η διεύθυνσή του είναι "${__VirtualRootPath}":"${__VirtualRootPath}". Προσθέστε αυτόν τον σύνδεσμο στους σελιδοδείκτες σας, γιατί είναι πιθανό να τον χρησιμοποιείτε συχνά.
+
+Αποδεχτείτε την πρόσκληση ακολουθώντας τον παρακάτω σύνδεσμο και χρησιμοποιήστε τα διαπιστευτήριά σας από τον εταιρικό λογαριασμό για να συνδεθείτε. 
+
+$GreenButton
+
+Ο σύνδεσμος ισχύει μόνο για 7 ημέρες.</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Επισκεφθείτε το τμήμα πληρωμών</value>
   </data>
 </root>

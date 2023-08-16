@@ -244,6 +244,8 @@ class SelectFileDialog extends React.Component {
 
     const buttonName = creationButtonPrimary
       ? t("Common:Create")
+      : embedded
+      ? t("Common:SelectFile")
       : t("Common:SaveButton");
     const name = dialogName ? dialogName : t("Common:SelectFile");
 
@@ -302,12 +304,14 @@ class SelectFileDialog extends React.Component {
   }
 }
 SelectFileDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
     "exceptPrivacyTrashArchiveFolders",
+    "roomsOnly",
+    "userFolderOnly",
   ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,

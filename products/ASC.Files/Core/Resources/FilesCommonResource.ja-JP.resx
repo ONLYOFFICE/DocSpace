@@ -164,7 +164,7 @@
     <value>{0}はファイルを編集しています。そのファイルの形式では、共同編集機能が現在サポートされていません。</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>ファイルがモバイルアップで {0} によって編集するように開かれています</value>
+    <value>このファイルは{0}によってモバイルアプリケーションで編集用に開かれています</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>空ファイル</value>
@@ -218,7 +218,7 @@
     <value>この操作を実行するための十分な権限がありません</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>指定された認証情報で {0} プロバイダを許可することができません。</value>
+    <value>与えられた認証情報で{0}プロバイダで認証できません。</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>作成するのに十分な権限がありません</value>
@@ -354,5 +354,65 @@
   </data>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>ルームの管理者</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>フォームに入力するために作成されました</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>提出されたフォーム</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>新しいバージョンは、現在のと同じにすることはできません</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>ファイルをコピーするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>フォルダをコピーするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>無効なプロバイダ</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>このフォルダを使用してルームを保存することはできません</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>招待リンクが無効か、有効期限が切れています</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>このプロバイダはすでにルームに接続しています</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>この役割は、このユーザータイプでは使用できません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>ルームをアーカイブするのに十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>このフォルダーにコピーする権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>ルームを編集する権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>このフォルダーに移動する権限がありません</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>ルームをアーカイブ解除する十分な権限がありません</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>アーカイブされたルームを編集することはできません</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>ルームを固定することはできません</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>記入可能なOFORM文書が出来上がりました。{0}に保存されます</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORMのコピーは{0}フォルダーに作成されました。フォームに必要事項を記入し、結果ファイルをPDFまたはDOCXファイルとしてダウンロードしてください。</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>このファイルは、もはや記入用の下書きではありません。</value>
   </data>
 </root>

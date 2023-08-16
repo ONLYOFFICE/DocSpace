@@ -316,9 +316,9 @@ public abstract class BaseStartup
 
         app.UseLoggerMiddleware();
 
-        app.UseEndpoints(async endpoints =>
+        app.UseEndpoints(endpoints =>
         {
-            await endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices);
+            endpoints.MapCustomAsync(WebhooksEnabled, app.ApplicationServices).Wait();
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
             {

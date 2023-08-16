@@ -85,6 +85,10 @@ elif [ "$UPDATE" = "true" ] && [ "$PRODUCT_INSTALLED" = "true" ]; then
 	fi
 fi
 
+if [ "$MAKESWAP" == "true" ]; then
+	make_swap
+fi
+
 echo ""
 echo "$RES_INSTALL_SUCCESS"
 echo "$RES_QUESTIONS"

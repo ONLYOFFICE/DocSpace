@@ -27,27 +27,88 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class FileDto<T> : FileEntryDto<T>
 {
+    /// <summary>Folder ID</summary>
+    /// <type>System.Int32, System</type>
     public T FolderId { get; set; }
+
+    /// <summary>Version</summary>
+    /// <type>System.Int32, System</type>
     public int Version { get; set; }
+
+    /// <summary>Version group</summary>
+    /// <type>System.Int32, System</type>
     public int VersionGroup { get; set; }
+
+    /// <summary>Content length</summary>
+    /// <type>System.String, System</type>
     public string ContentLength { get; set; }
+
+    /// <summary>Pure content length</summary>
+    /// <type>System.Nullable{System.Int64}, System</type>
     public long? PureContentLength { get; set; }
+
+    /// <summary>File status</summary>
+    /// <type>ASC.Files.Core.FileStatus, ASC.Files.Core</type>
     public FileStatus FileStatus { get; set; }
+
+    /// <summary>Muted or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Mute { get; set; }
+
+    /// <summary>URL to view a file</summary>
+    /// <type>System.String, System</type>
     public string ViewUrl { get; set; }
+
+    /// <summary>Web URL</summary>
+    /// <type>System.String, System</type>
     public string WebUrl { get; set; }
+
+    /// <summary>File type</summary>
+    /// <type>ASC.Web.Core.Files.FileType, ASC.Web.Core</type>
     public FileType FileType { get; set; }
+
+    /// <summary>File extension</summary>
+    /// <type>System.String, System</type>
     public string FileExst { get; set; }
+
+    /// <summary>Comment</summary>
+    /// <type>System.String, System</type>
     public string Comment { get; set; }
+
+    /// <summary>Encrypted or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Encrypted { get; set; }
+
+    /// <summary>Thumbnail URL</summary>
+    /// <type>System.String, System</type>
     public string ThumbnailUrl { get; set; }
+
+    /// <summary>Thumbnail status</summary>
+    /// <type>ASC.Files.Core.Thumbnail, ASC.Files.Core</type>
     public Thumbnail ThumbnailStatus { get; set; }
+
+    /// <summary>Locked or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Locked { get; set; }
+
+    /// <summary>User ID who locked a file</summary>
+    /// <type>System.String, System</type>
     public string LockedBy { get; set; }
+
+    /// <summary>Denies file downloading or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DenyDownload { get; set; }
+
+    /// <summary>Denies file sharing or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DenySharing { get; set; }
+
+    /// <summary>File accessibility</summary>
+    /// <type>System.Collections.IDictionary{ASC.Files.Core.Helpers.Accessability, System.Boolean}, System.Collections</type>
     public IDictionary<Accessability, bool> ViewAccessability { get; set; }
 
     protected internal override FileEntryType EntryType { get => FileEntryType.File; }

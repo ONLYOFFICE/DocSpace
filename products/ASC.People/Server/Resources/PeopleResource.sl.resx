@@ -79,4 +79,7 @@
   <data name="ProductAdminOpportunities" xml:space="preserve">
     <value>Dodaj nove uporabnike, jih povabi ali uvozi. Upravljaj uporabnike in si oglej njihove podrobne informacije</value>
   </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Oglejte si profile in skupine</value>
+  </data>
 </root>

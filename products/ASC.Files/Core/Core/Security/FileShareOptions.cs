@@ -31,4 +31,7 @@ public class FileShareOptions
 {
     public string Title { get; set; }
     public DateTime ExpirationDate { get; set; }
+    
+    [JsonIgnore]
+    public bool IsExpired => ExpirationDate != DateTime.MinValue && ExpirationDate < DateTime.UtcNow;
 }

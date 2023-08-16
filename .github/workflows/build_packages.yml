@@ -11,6 +11,9 @@ on:
     - build/install/rpm**
     - build/install/common**
   workflow_dispatch:
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
   
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
@@ -27,6 +30,16 @@ jobs:
       contents: write
       
     steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
       - name: Import GPG 
         uses: crazy-max/ghaction-import-gpg@v5
         id: gpg_step
@@ -88,6 +101,16 @@ jobs:
       contents: write
  
     steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
       - name: Import GPG 
         uses: crazy-max/ghaction-import-gpg@v5
         with: 
@@ -115,7 +138,7 @@ jobs:
           sudo npm install -g json
           sudo pip install rpmlint
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.1.0")" >> $GITHUB_OUTPUT
           
       - name: Build
         run: |
@@ -142,18 +165,18 @@ jobs:
           EOF
           gpg --export --armor --output onlyoffice-gpgkey.pub
           rpm --import onlyoffice-gpgkey.pub
-          rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
           
       - name: Upload
         run: |
-          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm; do
+          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm; do
             curl --verbose --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
             --upload-file "$file" ${{ secrets.REPO_URL_4TESTING_RPM }}
           done
 
       - name: Rpmlint  
         run: |  
-          for package in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          for package in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
             do rpmlint --ignore-unused-rpmlintrc --rpmlintrc \
             /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/SOURCES/${{ env.PRODUCT_LOW }}.rpmlintrc $package \
             | tee -a file2

@@ -311,7 +311,8 @@
     <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real. 100% de compatibilidade garantida com os formatos do MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real. 100% de compatibilidade garantida com os formatos do MS Office.</value>
+    <value>Crie, edite e compartilhe documentos. Colabore neles em tempo real.
+100% de compatibilidade garantida com os formatos do MS Office.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Ver e transferir documentos partilhados. Enviar os ficheiros para as pastas partilhadas. 100% compatibilidade com docx, xlsx, pptx garantida.</value>
@@ -363,5 +364,56 @@
   </data>
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>Editor</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador da sala</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formulário enviado</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>A nova versão não pode ser igual à atual</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Você não tem permissão suficiente para copiar o arquivo</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Você não tem permissão suficiente para copiar a pasta</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Provedor inválido</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Não é possível usar esta pasta para armazenar a sala</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>O link do convite é inválido ou sua validade expirou</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Este provedor já está conectado à sala</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>A função não está disponível para este tipo de usuário</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Você não tem permissão suficiente para arquivar a sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Você não tem permissão para copiar para esta pasta</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Você não tem permissão para editar a sala</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Você não tem permissão para mover para esta pasta</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Você não tem permissão suficiente para desarquivar a sala</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Você não pode editar salas arquivadas</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Você não pode marcar uma sala</value>
   </data>
 </root>

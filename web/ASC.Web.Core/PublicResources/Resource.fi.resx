@@ -502,4 +502,487 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Aloitus</value>
   </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Järjestelmänvalvojien/tehokäyttäjien määrä:</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Nykyisen hinnoitteluohjelman käyttäjäraja on saavutettu</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Hetaan käyttäjäluetteloa LDAP-palvelimelta</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Haetaan ryhmäluetteloa LDAP-palvelimelta</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Yhteyttä LDAP-palvelimeen ei löytynyt. Ole hyvä ja varmista, että palvelimen osoite ja portin numero ovat oikein.</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Vahvistuskoodikenttä ei voi olla tyhjä</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Tekstiviestinä</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Todennussovelluksen kautta</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 pääsyavain</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Sovelluksen Client ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön kirjautuaksesi sisään portaaliin käyttäen Apple ID-tiliä.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön antaaksesi käyttäjillesi mahdollisuuden kirjautua ONLYOFFICE:en käyttäen Apple ID:tä. {0} Mene Apple-kehittäjät-portaaliin ja luo uusi sovellus ONLYOFFICE-integraatioon. Syötä alle saamasi tiedot:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10-merkkinen avaimen tunniste, joka on luotu Applen yksityisellä avaimella kirjautumiseen</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Yksityinen avain ladattu Apple-kehittäjältä</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-merkkinen kehittäjätili-tiimi ID</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön lyhentääksesi kutsua ja asiakirjan linkkejä. {0} Syötä Bitly käyttäjätietosi ja API-avain alle:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön yhdistääksesi Box-tilisi Asiakirjat-moduuliin. Pystyt hallinnoimaan, muokkaamaan ja jakamaan tiedostoja Boxista ONLYOFFICE-käyttäjien kanssa. {0} Kirjaudu sisään tiliisi Boxin kehittäjät-sivulla ja luo uusi sovellus ONLYOFFICE- integraatioon. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön kaksivaiheista todennusta varten Clickatellin kautta.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Käytä tätä sovellusta ottaaksesi käyttöön kaksivaiheisen todennuksen Clickatell-palvelussa. {0} Kirjaudu sisään tekstiviesti-alustallesi ja luo uusi integraario ONLYOFFICE:lle. Kopioi ApiKey ja syötä se alle:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön allekirjoittaaksesi asiakirjoja sähköisesti DocuSignin avulla. {0}Mene DocuSign-pääkäyttäjäkonsoliin ja lisää ONLYOFFICE-integraatio. Syötä saamasi tieto alle:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön yhdistääksesi DropBox-tilisi Asiakirjat-mobuulissa. Pystyt hallitsemaan, muokkaamaan ja jakamaan tiedostoja DropBoxista ONLYOFFICE-käyttäjien kanssa. {0}Kirjaudu sisään tilillesi Dropboxin Kehittäjät-verkkosivustolla ja luo uusi sovellus ONLYOFFICE-integraatioon. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Sovellusavain</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön luodaksesi EasyBibillä bibliografisia listoja asiakirjoissa.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön luodaksesi bibliographeja ONLYOFFICE editoreissa. {0}Mene EasyBib-kirjautumissivulle ja täytä lomake lisätäksesi ONLYOFFICE-integraation. Syötä saamasi sovellusavain alle:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Sovellustunnus</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön antaaksesi käyttäjiesi kirjautua sisään ONLYOFFICE:een käyttäen Facebookia ja linkittää heidän asiakkaidensa Facebook-tilejä CRM-moduuliin. {0}Mene Facebookin Kehittäjät-portaaliit ja luo uusi sovellus ONLYOFFICE-integraatioon. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API-avain</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Palvelinavain</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Lähettäjän ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Projekti-ID</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön saadaksesi ilmoituksia sinulle lähetetyistä viesteistä Firebase Cloudissa.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön, jotta käyttäjäsi saavat ilmoituksia viesteistä jopa offlinessa. {0}Mene Firebase-konsoliin ja lisää uusi projekti ONLYOFFICE-integraatiota varten. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Syötä Google Cloud bucketin nimi varmuuskopioiden tallentamiseen.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Yhdistä Google Cloud Storage-palvelu varmuuskopioidaksesi ja tallentaaksesi tietoja portaalistasi.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Yhdistä Google Cloud Storage-palvelu varmuuskopioidaksesi ja tallentaaksesi dataa portaalistasi. {0}Mene Google Cloud Platform-konsoliin ja luo uusi palvelutili ONLYOFFICE:lle. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Ota käyttöön tämä sovellus yhdistääksesi Google Drive-tilisi Asiakirjat-moduulissa. Pystyt hallinnoimaan, muokkaamaan ja jakamaan kansioita Google Drivesta ONLYOFFICE-käyttäjille. {0}Mene Google APIs-konsoliin ja luo uusi projekti ONLYOFFICE-integraatiolle. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Ota käyttöön tämä sovellus saadaksesi ystäväsi kirjautumaan ONLYOFFICE:en käyttäen LinkedIn-tiliä. {0}Mene LinkedIn-kehittäjät verkkosivustolle ja luo uusi sovellus ONLYOFFICE-integraatiolle. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Salainen avain</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön kirjautuaksesi sisään portaaliin käyttäen Mail.ru-tiliä.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Kun lisäät Mail.ru-sovelluksen voit ottaa käyttöön portaaliin sisäänkirjautumisen käyttäen Mail.ru-tiliä profiilisivullasi.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Sovelluksen Client ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Ota käyttöön sovellus kirjautuaksesi sisään portaaliin käyttäen Microsoft-tiliä.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön antaaksesi käyttäjille mahdollisuuden kirjautua sisään ONLYOFFICE:en Microsoftin kautta. {0} Mene Microsoft Azureen ja luo uusi sovellus ONLYOFFICE-integraatiolle. Syötä saamasi data alle:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace-pilvipalvelu</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Yhdistä Rackspace-pilvipalvelu varmuuskopioimaan ja tallentamaan tietoa portaalistasi.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Yhdistä Rackspace-pilvipalvelu varmuuskopioimaan ja tallentamaan tietoa portaalistasi. {0}Rackspace-pilvipalvelun ohjauspaneelin turvallisuusasetuksissa klikkaa näytä linkki Racksppace API-avaimen vieressä. Liitä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Yksityinen sisältö</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Yksityinen sisältö</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Syötä Rackspacen yksityisen sisällön URL-osoite varmuuskopioiden tallentamista varten.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Yleinen sisältö</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Yleinen sisältö</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Syötä Rackspacen julkisen sisällön URL-osoite varmuuskopioiden tallentamista varten.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Alue</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Alue</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Syötä alue, jossa Rackspace-sisällöt sijaitsevat.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Syötä Amazon bucketin ainutlaatuinen nimi varmuuskopioiden tallentamista varten.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Yhdistä Amazon AWS S3 portaalisi varmuuskopiointia ja tiedon tallentamista varten.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Yhdistä Amazon AWS S3 varmuuskopioidaksesi ja tallentaaksesi tietoa portaalistasi. {0}Mene AWS hallintakonsoliin ja luo pääsyavaimet ONLYOFFICE:lle. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Syötä AWS-alue, jossa Amazon-bucket sijaitsee.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 salainen pääsyavain</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel-pilvipalvelu</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Salasana muistiin pääsyä varten</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Valtuutettu käyttäjä</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Yhdistä Selectel-pilvipalvelu varmuuskopioidaksesi ja tallentaaksesi tietoa portaalistasi.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Yhdistä Selectel-pilvipalvelu varmuuskopioidaksesi ja tallentaaksesi tietoa portaalistasi. {0}Hanki pääsytiedot sisältöjen luku/kirjoitusoikeuksiin käyttäjälle ja syötä se alle:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Syötä Selectel-yksityisen sisällön nimi varmuuskopioiden jakamiseen.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Syötä Selectel- julkisen sisällön nimi varmuuskopioiden tallentamiseen.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>SovellusID</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Client secret</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön OneDrive-tilisi Asiakirjat-moduulissa. Pystyt hallitsemaan, ja jakamaan tiedostoja OneDrivestä ONLYOFFICE-käyttäjien kanssa. {0}Kirjaudu sisään Microsoft Azure-tiliisi ja luo uusi sovellus ONLYOFFICE-integraatiolle. Syötä alle saamasi tiedot:</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Tekstiviestikeskus</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Ota käyttöön sovellus kaksivaiheista todennusta varten tekstiviestikeskuksen kautta.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Käytä tätä sovellusta ottaaksesi käyttöön kaksivaiheinen todennus tekstiviestikeskuspalvelun kanssa.  {0}Syötä tekstiviestikeskustilisi sisäänkirjautumistiedot (tai salasana MD5 hash) pienillä kirjaimilla:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Salasana tai salasana MD5 has pienillä kirjaimilla</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot-käyttäjänimi</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot-merkki</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Yhdistä Telegram-tili saadaksesi ilmoituksia Telegramin kautta.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Ota käyttöön Telegram-botti saadaksesi ilmoituksia Telegramin kautta. Voit luoda uuden botin käyttäen BotFatheria Telegramin työpöydällä. Käyttäjien tulee ottaa käyttöön Telegram-ilmoitukset profiilisivullaan käyttääkseen tätä bottia. {0} Syötä botin käyttäjänimi ja saamasi merkki alla oleviin kenttiin.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön, jotta käyttäjät voivat soittaa kontakteilleen CRM-moduulin kautta käyttäen Twilio. {0}Mene Twilion konsoliin ja syötä alla olevat tiedot:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Puhelinnumero Twiliosta (vaaditaan tekstiviestivaltuutusta varten)</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön, jotta käyttäjäsi voivat kirjautua sisään ONLYOFFICE:en käyttämällä Twitteriä ja linkittää heidän asiakkaidensa Twitter-tilit CRM-moduuliin. {0} Mene Twitter-kehittäjien portaaliin ja luo uusi sovellus ONLYOFFICE-integraatiolle. Syötä alle saamasi tiedot:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API-avain</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API-avainsalaus</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace käyttäjänimi</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Sovellus ID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Suojattu avain</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön kirjautuaksesi portaaliin käyttäen VK-tiliä.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Kun lisäät VK-sovelluksen, voit kirjautua portaaliin käyttäen VK-tiliä profiilisivullasi.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön julkaistaksesi asiakirjoja suoraan WordPressissä.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Ota sovellus käyttöön julkaistaksesi helposti asiakirjoja WordPress-sivustollasi. {0}Wordpress-kehittäjien sivulla, luo uusi sovellus ONLYOFFICE-integraatioon. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress-avain</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress-salaus</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön tuodaksesi käyttäjiä Yahoo-palvelusta.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Ota tämä sovellus käyttöön lisätäksesi uusia portaalin käyttäjiä Yahoon kontaktilistalta. {0}Mene luo sovellus-sivulle Yahoon kehittäjäverkostossa ja luo uusi sovellus ONLYOFFICE-integraatiolle. Syötä saamasi tiedot alle:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Ota sovellus käyttöön kirjautuaksesi portaaliin käyttäen Yandex-tiliä.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Kun lisäät Yandex-sovelluksen voit kirjautua portaaliin profiilisivultasi käyttäen Yandex-tiliä.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Salasanan palautustoiminto ei ole sallittu LDAP-käyttäjälle</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Salasanan palautustoiminto ei ole sallittu SSO-käyttäjälle</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Väärän tapauksen id.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Viestin teksti on tyhjä</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Väärä etunimi tai sukunimi</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>ei välilyöntejä</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>vain latinalaisia kirjaimia</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Pyyntöjen raja on ylitetty</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Tenant domain ei voi olla tyhjä.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Domain-nimen tulee olla {0} -{1} merkkiä pitkä.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP domainia ei löytynyt.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Yritit ottaa järjestelmänvalvojanoikeudet pois itseltäsi. Tämä ei vaikuttanut järjestelmänvalvojan oikeuksiisi.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Tiliäsi ei ole yhdistetty LDAP-hakemistoon ja LDAP-salasanasi ei ole enää aktiivinen. Ole hyvä ja muuta tai aseta salasana tilillesi profiilin asetukset-sivulla.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>LDAP-käyttäjien muokkaus tavallisilla portaalin käyttäjillä</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>käyttäjän lisäys</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP yhteyttä katkaistaan</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Ladataan LDAP pohjatietoja</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>poistetaan käyttäjää</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Poistetaan vanhentuneita ryhmiä, jotka on ladattu LDAP:n kautta aiemmin</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Poistetaan käytöstä vanhentuneita käyttäjäprofiileja, jotka on ladattu aiemmin LDAP:n kautta</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Tallennetaan kuvaa</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synkronoidaan käyttäjiä</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Päivitetään käyttäjien pääsyoikeuksia</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Päivitetään käyttjäjien kuvia</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS:ä ei tueta nykyisessä LDAP-palvelimessa.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Liian monta LDAP-toimintoa.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Käyttäjä-/ryhmäobjektien yksilöllistä tunnusta ei saatu. Oletuksena järjestelmä yrittää löytää yhden seuraavista tunnisteista: entryUUID, nsuniqueid, GUID, objectSid. Jos mikään attribuuteista ei vastaa LDAP-palvelimelle, ole hyvä ja määritä tarvittava attribuutti web.appsettings.config- kansion ldap.unique.id- asetus.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Lisenssi ei ole oikein</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Lisenssi ei ole voimassa tässä portaalin versiossa.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Portaalien määrä ylittää lisenssissä sallitun määrän</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Käyttäjien määrä ylittää lisenssissä sallitun määrän</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Onnistuneesti ladattu. {0} Tuki ja päivitykset eivät ole saatavilla tälle lisenssille {2}.{1} alkaen</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Onnistuneesti ladattu. {0} Tuki ei olle saatavilla tälle lisenssille {2}.{1} alkaen</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Jos käyttäjä sähköpostilla {0}  on olemassa, salasanan vaihto-ohjeet on lähetetty tähän sähköpostiosoitteeseen.</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG-alue</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Levytilan kiintiö ylitetty</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Pilvitila asiakirjoillesi</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Tietojen uudelleen määräämisprosessi {0} ei ole valmis.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Virheellinen Recaptcha</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Asetukset eivät voi olla tyhjät</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Virheellinen sidonta: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Virheellinen yritysID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Virheellinen kenttien kartoitus</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Kolmansien osapuolien integraatiot</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Väärä koodi</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA-sovellusasetukset eivät ole saatavilla</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Olet lähettänyt liian monta tekstiviestiä. Ole hyvä ja yritä uudelleen.</value>
+  </data>
 </root>

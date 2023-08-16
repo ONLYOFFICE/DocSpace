@@ -862,4 +862,133 @@
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
     <value>このアプリを接続すると、WordPressウェブサイトに文書を投稿に使用できます。{0}Wordpress開発者ページでONLYOFFICE統合のために新しいアプリを作成します。その後、データを以下に入力してください：</value>
   </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook キー</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>このアプリを有効にして、ユーザーがLinkedInアカウントを使用してONLYOFFICEにサインインできるようにします。{0}LinkedIn開発者ウェブサイトにアクセスし、新しいアプリONLYOFFICE統合を作成します。受け取ったデータを以下に挿入してください：</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Mail.ruアプリケーションを追加すると、プロフィールページでMail.ruアカウントを使用してポータルにサインインすることができるようになります。</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>バケット</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>クライアントのシークレット</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>クライアントID</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>クライアントのシークレット</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API キー</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API キーのシークレット</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspaceのユーザー名</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>アプリケーションID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>セキュリティキー</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>VKアプリケーションを追加すると、プロフィールページでVKアカウントを使用したポータルへのサインインを有効にすることができます。</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress キー</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress シークレット</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>クライアントID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>クライアントのシークレット</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Yandexアプリケーションを追加すると、プロフィールページでYandexアカウントを使用してポータルにサインインすることが可能になります。</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>現在のプロフィールが停止しています</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>テナントドメインを空にすることはできません。</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>ライセンスがこのポータルのバージョンに有効ではありません。</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>ポータルの数がライセンスに含まれている数を超えています</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>アップロード完了</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>正常にアップロードされました。{0}このライセンスは{2}.{1}以降、サポートとアップデートが利用できません</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>正常にアップロードされました。{0}このライセンスは{2}.{1}からサポートが利用できません</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>オフィス文書用のクラウドスペース</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>テキストメッセージの送信数が多すぎます。後で再試行してください。</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>BUSINESS</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>STARTUP</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>テキストメッセージの送信数が多すぎます。後で再試行してください。</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>サードパーティの統合</value>
+  </data>
 </root>

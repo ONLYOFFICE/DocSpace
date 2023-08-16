@@ -32,21 +32,23 @@ function PlayerMessageError({
           {errorTitle}
         </Text>
       </StyledMediaError>
-      <StyledErrorToolbar>
-        {items.map((item) => {
-          if (item.disabled || isSeparator(item)) return;
+      {items.length !== 0 && (
+        <StyledErrorToolbar>
+          {items.map((item) => {
+            if (item.disabled || isSeparator(item)) return;
 
-          const onClick = () => {
-            onMaskClick();
-            item.onClick();
-          };
-          return (
-            <div className="toolbar-item" key={item.key} onClick={onClick}>
-              <ReactSVG src={item.icon} />
-            </div>
-          );
-        })}
-      </StyledErrorToolbar>
+            const onClick = () => {
+              onMaskClick();
+              item.onClick();
+            };
+            return (
+              <div className="toolbar-item" key={item.key} onClick={onClick}>
+                <ReactSVG src={item.icon} />
+              </div>
+            );
+          })}
+        </StyledErrorToolbar>
+      )}
     </div>
   );
 }

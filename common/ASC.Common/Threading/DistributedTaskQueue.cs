@@ -319,11 +319,12 @@ public class DistributedTaskQueue
     {
         var listTasks = queueTasks.ToList();
 
-        listTasks.RemoveAll(IsOrphanCacheItem);
+        if (listTasks.RemoveAll(IsOrphanCacheItem) > 0)
+        {
+            SaveToCache(listTasks);
+        }
 
-        SaveToCache(listTasks);
-
-        return queueTasks;
+        return listTasks;
     }
 
     private bool IsOrphanCacheItem(DistributedTask obj)

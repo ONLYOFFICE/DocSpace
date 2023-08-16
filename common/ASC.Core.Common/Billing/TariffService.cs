@@ -285,7 +285,7 @@ public class TariffService : ITariffService
                     UpdateCache(tariff.Id);
                 }
             }
-            else if (_tenantExtraConfig.Enterprise && tariff.Id == 0)
+            else if (_tenantExtraConfig.Enterprise && tariff.Id == 0 && tariff.LicenseDate == DateTime.MaxValue)
             {
                 var defaultQuota = _quotaService.GetTenantQuota(Tenant.DefaultTenant);
 
@@ -301,8 +301,7 @@ public class TariffService : ITariffService
                 tariff = new Tariff
                 {
                     Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
-                    DueDate = DateTime.UtcNow.AddDays(DefaultTrialPeriod),
-                    Id = 1000
+                    DueDate = DateTime.UtcNow.AddDays(DefaultTrialPeriod)
                 };
 
                 SetTariff(-1, tariff, new List<TenantQuota> { quota });
@@ -931,6 +930,7 @@ public class TariffService : ITariffService
 
                 var unlimTariff = CreateDefault();
                 unlimTariff.LicenseDate = tariff.DueDate;
+                unlimTariff.DueDate = tariff.DueDate;
                 unlimTariff.Quotas = new List<Quota>()
                 {
                     new Quota(defaultQuota.Tenant, 1)

@@ -259,9 +259,6 @@
   <data name="ProductDescription" xml:space="preserve">
     <value>Luo, muokkaa ja jaa asiakirjoja. Muokkaa niitä yhteistyössä reaaliajassa. Tukee 100% MS Office formaatteja.</value>
   </data>
-  <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Luo, muokkaa ja jaa asiakirjoja. Muokkaa niitä yhteistyössä reaaliajassa. Tukee 100% MS Office formaatteja.</value>
-  </data>
   <data name="ProductName" xml:space="preserve">
     <value>Asiakirjat</value>
   </data>
@@ -351,5 +348,68 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Et voi kiinnittää huonetta</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Yhteistyökumppani</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Muokkaaja</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Huoneen ylläpitäjä</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Kommentti</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Mukautettu suodatin</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Lomakkeen täyttö</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Automaattisesti tallennettu</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Luotu täyttämään lomake</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Muokattu salauksella</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Salattu</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Tallennettu</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Päällekirjoitettu</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia tiedostoon siirtoa varten</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Sinulla ei ole tarpeeksi oikeuksia kansion siirtoa varten</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Käyttäjää ei löytynyt</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Etsi asiakirjojen sisällöstä</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Tiedosto luotu kansiossa "{0}"</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Täytettävä OFORM-asiakirja on valmis. Se on tallennettu {0}:aan</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>OFORM-kopio on luotu {0} kansioon. Ole hyvä ja täytä lomake ja lataa tulos PDF:nä tai DOCX-tiedostona.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Tiedosto ei ole enää luonnos lomakkeen täyttämiseksi.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Näytä ja lataa jaetut asiakirjat. Lataa tiedostot jaettuihin kansioihin. Taattu yhteensopivuus docx:n, xlsx:n, pptx:n kanssa.</value>
   </data>
 </root>

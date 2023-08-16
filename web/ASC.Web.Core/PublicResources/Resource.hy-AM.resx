@@ -999,4 +999,55 @@
   <data name="ConsumersSmscDescription" xml:space="preserve">
     <value>Միացնել երկգործոն նույնականացման հավելվածը SMS կենտրոնի միջոցով.</value>
   </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ հրավերի և փաստաթղթերի հղումները կրճատելու համար: {0}Տեղադրեք ձեր Bitly մուտքի և API բանալին ստորև՝</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Box հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել Box-ի ֆայլերը ONLYOFFICE-ի օգտատերերի հետ: {0}Մուտք գործեք ձեր հաշիվ Box մշակողների էջում և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը DocuSign-ի միջոցով փաստաթղթերը թվային ստորագրելու համար: {0}Գնացեք ձեր DocuSign Admin Console և ավելացրեք ONLYOFFICE ինտեգրումը: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Dropbox հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը Dropbox-ից ONLYOFFICE օգտվողների հետ: {0}Մուտք գործեք ձեր հաշիվ Dropbox Developers կայքում և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ONLYOFFICE խմբագիրներում մատենագիտություններ ստեղծելու համար: {0}Գնացեք EasyBib-ի գրանցման էջ և լրացրեք ձևը՝ ONLYOFFICE-ի ինտեգրումն ավելացնելու համար: Հավելվածի բանալի ստանալուց հետո տեղադրեք այն ստորև՝</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերին թույլ տա մուտք գործել ONLYOFFICE՝ օգտագործելով Facebook-ը և կապել իրենց հաճախորդների Facebook հաշիվները CRM մոդուլին: {0}Գնացեք Facebook Developers Portal և ստեղծեք նոր հավելված ONLYOFFICE ինտեգրում: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերը ծանուցումներ ստանան հաղորդագրությունների մասին նույնիսկ անցանց: {0}Գնացեք Firebase կոնսոլ և ավելացրեք նոր նախագիծ ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Միացրեք Google Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Գնացեք Google Cloud Պլատֆորմ Console և ստեղծեք ծառայության նոր հաշիվ ONLYOFFICE-ի համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Google Drive հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը Google Drive-ով ONLYOFFICE օգտվողների հետ: {0}Գնացեք Google API-ների վահանակ և ստեղծեք նոր նախագիծ ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերին թույլ տա մուտք գործել ONLYOFFICE՝ օգտագործելով իրենց LinkedIn հաշիվները: {0}Գնացեք LinkedIn Developers-ի կայք և ստեղծեք նոր հավելված՝ ONLYOFFICE ինտեգրում: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Միացրեք Rackspace Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Rackspace Cloud Control Panel-ի անվտանգության կարգավորումներում սեղմեք Rackspace API բանալի կողքին գտնվող Ցուցադրել հղումը: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Միացրեք Amazon AWS S3-ը՝ ձեր պորտալից տվյալները կրկնօրինակելու և պահելու համար: {0}Գնացեք AWS Management Console և ստեղծեք մուտքի բանալիներ ONLYOFFICE-ի համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Միացրեք Selectel Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Ստացեք մուտքի տվյալներ օգտատիրոջ համար, ով ունի «Կարդալ/գրել» իրավունքներ այն բեռնարկղերի համար, որտեղ դուք նախատեսում եք պահել ձեր կրկնօրինակները և տեղադրեք դրանք ստորև՝</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր OneDrive հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը OneDrive-ով ONLYOFFICE օգտատերերի հետ: &lt;b&gt;{0}Մուտք գործեք ձեր Microsoft Azure հաշիվ և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար:&lt;/b&gt; &lt;b&gt;Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Միացրեք հավելվածը հեշտությամբ հրապարակելու փաստաթղթեր ձեր WordPress կայքում: {0}Wordpress Developers էջում ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ձեր ստացած տվյալները ստորև.</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Գաղտնաբառը պետք է պարունակի</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Երրորդ կողմի ինտեգրումներ</value>
+  </data>
 </root>

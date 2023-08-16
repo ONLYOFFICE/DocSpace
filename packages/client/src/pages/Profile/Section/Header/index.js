@@ -40,12 +40,19 @@ const Header = (props) => {
     setChangeEmailVisible,
     setChangePasswordVisible,
     setChangeAvatarVisible,
+
+    setDialogData,
   } = props;
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
-  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] = useState(
-    false
-  );
+  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
+    useState(false);
+
+  const onChangePasswordClick = () => {
+    const email = profile.email;
+    setDialogData({ email });
+    setChangePasswordVisible(true);
+  };
 
   const getUserContextOptions = () => {
     const options = [
@@ -59,7 +66,7 @@ const Header = (props) => {
       {
         key: "change-password",
         label: t("PeopleTranslations:PasswordChangeButton"),
-        onClick: () => setChangePasswordVisible(true),
+        onClick: () => onChangePasswordClick(),
         disabled: false,
         icon: SecurityReactSvgUrl,
       },
@@ -153,7 +160,7 @@ export default withRouter(
 
     const { isVisitor, isCollaborator } = auth.userStore.user;
 
-    const { targetUserStore, filterStore } = peopleStore;
+    const { targetUserStore, filterStore, dialogStore } = peopleStore;
 
     const { filter, setFilterParams } = filterStore;
 
@@ -164,6 +171,8 @@ export default withRouter(
       setChangePasswordVisible,
       setChangeAvatarVisible,
     } = targetUserStore;
+
+    const { setDialogData } = dialogStore;
 
     return {
       isAdmin,
@@ -178,6 +187,8 @@ export default withRouter(
       setChangeEmailVisible,
       setChangePasswordVisible,
       setChangeAvatarVisible,
+
+      setDialogData,
     };
   })(
     observer(

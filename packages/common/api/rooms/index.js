@@ -136,7 +136,7 @@ export function unpinRoom(id) {
   });
 }
 
-export function deleteRoom(id, deleteAfter = true) {
+export function deleteRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {

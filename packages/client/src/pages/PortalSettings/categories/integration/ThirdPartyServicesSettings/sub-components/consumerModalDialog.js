@@ -22,6 +22,12 @@ const StyledBox = styled(Box)`
   }
 `;
 
+const maxLength = {
+  json: Infinity,
+};
+
+const defaultMaxLength = 255;
+
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -181,8 +187,13 @@ class ConsumerModalDialog extends React.Component {
   );
 
   render() {
-    const { selectedConsumer, onModalClose, dialogVisible, isLoading, t } =
-      this.props;
+    const {
+      selectedConsumer,
+      onModalClose,
+      dialogVisible,
+      isLoading,
+      t,
+    } = this.props;
     const {
       state,
       onChangeHandler,
@@ -224,6 +235,7 @@ class ConsumerModalDialog extends React.Component {
                       value={Object.values(state)[i]}
                       isDisabled={isLoading}
                       onChange={onChangeHandler}
+                      maxLength={maxLength[prop.name] ?? defaultMaxLength}
                     />
                   </Box>
                 </Box>

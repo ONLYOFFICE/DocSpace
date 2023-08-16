@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
+
 import AccessRightSelect from "@docspace/components/access-right-select";
 import { getAccessOptions } from "../utils";
 import { isMobileOnly } from "react-device-detect";
 
 import { StyledAccessSelector } from "../StyledInvitePanel";
 import { isSmallTablet } from "@docspace/components/utils/device";
+
 const AccessSelector = ({
   t,
   roomType,
@@ -12,11 +15,20 @@ const AccessSelector = ({
   containerRef,
   defaultAccess,
   isOwner,
+  withRemove,
+  standalone,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
 
-  const accessOptions = getAccessOptions(t, roomType, false, true, isOwner);
+  const accessOptions = getAccessOptions(
+    t,
+    roomType,
+    withRemove,
+    true,
+    isOwner,
+    standalone
+  );
 
   const selectedOption = accessOptions.filter(
     (access) => access.access === +defaultAccess
@@ -68,4 +80,10 @@ const AccessSelector = ({
   );
 };
 
-export default AccessSelector;
+export default inject(({ auth }) => {
+  const { standalone } = auth.settingsStore;
+
+  return {
+    standalone,
+  };
+})(observer(AccessSelector));

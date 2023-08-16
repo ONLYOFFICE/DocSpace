@@ -115,9 +115,9 @@ export const resetSessionStorage = () => {
   if (storagePeriodSettings !== defaultStoragePeriodSettings) {
     saveToSessionStorage("storagePeriod", defaultStoragePeriodSettings);
   }
-  if (companyNameFromeSessionStorage !== "ONLYOFFICE") {
-    saveToSessionStorage("companyName", "ONLYOFFICE");
-  }
+
+  sessionStorage.removeItem("companyName");
+
   if (
     companySettingsFromSessionStorage !==
     defaultCompanySettingsFromSessionStorage

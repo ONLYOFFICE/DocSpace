@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@docspace/components/box";
+import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 
 import MetadataUrlField from "./sub-components/MetadataUrlField";
@@ -19,21 +20,25 @@ const ProviderMetadata = (props) => {
         labelText={t("SPEntityId")}
         name="spEntityId"
         placeholder={`${url}/sso/metadata`}
-        tooltipContent={t("SPEntityIdTooltip")}
+        tooltipContent={<Text fontSize="12px">{t("SPEntityIdTooltip")}</Text>}
       />
 
       <MetadataUrlField
         labelText={t("SPAssertionConsumerURL")}
         name="spAssertionConsumerUrl"
         placeholder={`${url}/sso/acs`}
-        tooltipContent={t("SPAssertionConsumerURLTooltip")}
+        tooltipContent={
+          <Text fontSize="12px">{t("SPAssertionConsumerURLTooltip")}</Text>
+        }
       />
 
       <MetadataUrlField
         labelText={t("SPSingleLogoutURL")}
         name="spSingleLogoutUrl"
         placeholder={`${url}/sso/slo/callback`}
-        tooltipContent={t("SPSingleLogoutURLTooltip")}
+        tooltipContent={
+          <Text fontSize="12px">{t("SPSingleLogoutURLTooltip")}</Text>
+        }
       />
 
       <Box marginProp="24px 0">

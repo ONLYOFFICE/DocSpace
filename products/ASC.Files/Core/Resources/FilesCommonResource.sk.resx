@@ -272,7 +272,8 @@
     <value>Vytvárajte, upravujte a zdieľajte dokumenty. Spolupracujte na nich v reálnom čase. 100% kompatibilita s formátmi MS Office je zaručená.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Vytvárajte, upravujte a zdieľajte dokumenty. Spolupracujte na nich v reálnom čase. 100% kompatibilita s formátmi MS Office je zaručená.</value>
+    <value>Vytvárajte, upravujte a zdieľajte dokumenty. Spolupracujte na nich v reálnom čase.
+100% kompatibilita s formátmi MS Office je zaručená.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Dokumenty</value>
@@ -372,5 +373,8 @@
   </data>
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Vlastný filter</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor miestnosti</value>
   </data>
 </root>

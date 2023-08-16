@@ -14,7 +14,9 @@ const StyledTooltip = styled.div`
     display: inline;
   }
   .display-block {
+    margin-top: 10px;
     display: block;
+    margin-top: 10px;
   }
 `;
 
@@ -23,7 +25,6 @@ export const LanguageTimeSettingsTooltip = ({
   theme,
   helpLink,
   organizationName,
-  currentColorScheme,
 }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
@@ -48,9 +49,11 @@ export const LanguageTimeSettingsTooltip = ({
           <div className="bold display-inline font-size"> {{ save }}</div>
           button at the bottom of the section.
           <Link
-            color={currentColorScheme.main.accent}
-            className="display-block font-size"
-            isHovered={true}
+            className="display-block"
+            color="#333333"
+            fontSize="13px"
+            isHovered
+            isBold
             target="_blank"
             href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}
           >
@@ -102,7 +105,6 @@ export const CustomTitlesTooltip = ({ t }) => {
 
 export const DNSSettingsTooltip = ({
   t,
-  currentColorScheme,
   helpLink,
   organizationName,
   standalone,
@@ -115,9 +117,11 @@ export const DNSSettingsTooltip = ({
           ? t("DNSSettingsTooltipStandalone", { organizationName })
           : t("DNSSettingsMobile")}
         <Link
-          color={currentColorScheme.main.accent}
-          className="display-block font-size"
-          isHovered={true}
+          color="#333333"
+          className="display-block"
+          fontSize="13px"
+          isBold
+          isHovered
           target="_blank"
           href={`${helpLink}/administration/docspace-settings.aspx#alternativeurl`}
         >

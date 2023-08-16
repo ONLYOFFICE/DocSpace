@@ -42,6 +42,7 @@ public class S3Storage : BaseStorage
     private string _accessKeyId = string.Empty;
     private string _bucket = string.Empty;
     private string _recycleDir = string.Empty;
+    private bool _recycleUse;
     private Uri _bucketRoot;
     private Uri _bucketSSlRoot;
     private string _region = "";
@@ -148,14 +149,14 @@ public class S3Storage : BaseStorage
         }
 
         using var client = GetClient();
-        
+
         return Task.FromResult(MakeUri(client.GetPreSignedURL(pUrlRequest)));
     }
 
     public override Task<Uri> GetCdnPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
     {
         if (!_cdnEnabled) return GetInternalUriAsync(domain, path, expire, headers);
-        
+
         var proto = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? "https" : "http";
 
         var baseUrl = $"{proto}://{_cdnDistributionDomain}/{MakePath(domain, path)}";
@@ -209,7 +210,7 @@ public class S3Storage : BaseStorage
         uriBuilder.Query = queryParams.ToString();
 
         var signedUrl = "";
-        
+
         using (TextReader textReader = File.OpenText(_cdnPrivateKeyPath))
         {
             signedUrl = AmazonCloudFrontUrlSigner.GetCannedSignedURL(
@@ -417,7 +418,7 @@ public class S3Storage : BaseStorage
             using (var s3 = GetClient())
             {
                 await s3.CompleteMultipartUploadAsync(request);
-            //    await InvalidateCloudFrontAsync(MakePath(domain, path));
+                //    await InvalidateCloudFrontAsync(MakePath(domain, path));
             }
 
             if (QuotaController != null)
@@ -983,6 +984,11 @@ public class S3Storage : BaseStorage
 
         props.TryGetValue("recycleDir", out _recycleDir);
 
+        if (props.TryGetValue("recycleUse", out var recycleUseProp) && bool.TryParse(recycleUseProp, out var recycleUse))
+        {
+            _recycleUse = recycleUse;
+        }
+
         if (props.TryGetValue("region", out var region) && !string.IsNullOrEmpty(region))
         {
             _region = region;
@@ -1038,7 +1044,7 @@ public class S3Storage : BaseStorage
         {
             bool.TryParse(lower, out _lowerCasing);
         }
-          
+
         if (props.TryGetValue("cdn_enabled", out var cdnEnabled))
         {
             if (bool.TryParse(cdnEnabled, out _cdnEnabled))
@@ -1100,7 +1106,7 @@ public class S3Storage : BaseStorage
 
         return new UnencodedUri(baseUri, signedPart);
     }
-    
+
     private Task InvalidateCloudFrontAsync(params string[] paths)
     {
         if (!_cdnEnabled || string.IsNullOrEmpty(_cdnDistributionDomain))
@@ -1256,7 +1262,7 @@ public class S3Storage : BaseStorage
 
     private Task RecycleAsync(IAmazonS3 client, string domain, string key)
     {
-        if (string.IsNullOrEmpty(_recycleDir))
+        if (string.IsNullOrEmpty(_recycleDir) || string.IsNullOrEmpty(domain) || domain.EndsWith("_temp") || !_recycleUse)
         {
             return Task.CompletedTask;
         }
@@ -1310,6 +1316,8 @@ public class S3Storage : BaseStorage
 
             var partSize = GetChunkSize();
 
+            var uploadTasks = new List<Task<CopyPartResponse>>();
+
             long bytePosition = 0;
             for (var i = 1; bytePosition < objectSize; i++)
             {
@@ -1325,10 +1333,12 @@ public class S3Storage : BaseStorage
                     PartNumber = i
                 };
 
-                copyResponses.Add(await client.CopyPartAsync(copyRequest));
+                uploadTasks.Add(client.CopyPartAsync(copyRequest));
 
                 bytePosition += partSize;
             }
+
+            copyResponses.AddRange(await Task.WhenAll(uploadTasks));
 
             var completeRequest =
                 new CompleteMultipartUploadRequest
@@ -1339,7 +1349,7 @@ public class S3Storage : BaseStorage
                 };
             completeRequest.AddPartETags(copyResponses);
 
-            var completeUploadResponse = await client.CompleteMultipartUploadAsync(completeRequest);
+            await client.CompleteMultipartUploadAsync(completeRequest);
         }
         else
         {

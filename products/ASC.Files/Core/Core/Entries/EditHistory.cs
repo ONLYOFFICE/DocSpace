@@ -183,15 +183,37 @@ public class EditHistoryChanges
     public DateTime Date { get; set; }
 }
 
+/// <summary>
+/// </summary>
 [DebuggerDisplay("{Version}")]
 public class EditHistoryDataDto
 {
+    /// <summary>URL to the file changes</summary>
+    /// <type>System.String, System</type>
     public string ChangesUrl { get; set; }
+
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
+
+    /// <summary>Previous version</summary>
+    /// <type>ASC.Files.Core.EditHistoryUrl, ASC.Files.Core</type>
     public EditHistoryUrl Previous { get; set; }
+
+    /// <summary>Token</summary>
+    /// <type>System.String, System</type>
     public string Token { get; set; }
+
+    /// <summary>File URL</summary>
+    /// <type>System.String, System</type>
     public string Url { get; set; }
+
+    /// <summary>File version</summary>
+    /// <type>System.Int32, System</type>
     public int Version { get; set; }
+
+    /// <summary>File type</summary>
+    /// <type>System.String, System</type>
     public string FileType { get; set; }
 }
 
