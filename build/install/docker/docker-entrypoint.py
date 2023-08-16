@@ -59,6 +59,20 @@ RABBIT_PORT =  os.environ["RABBIT_PORT"] if environ.get("RABBIT_PORT") else "567
 RABBIT_VIRTUAL_HOST = os.environ["RABBIT_VIRTUAL_HOST"] if environ.get("RABBIT_VIRTUAL_HOST") else "/"
 RABBIT_URI = {"Uri": os.environ["RABBIT_URI"]} if environ.get("RABBIT_URI") else None
 
+#Environment variables for healthcheck
+CONTAINER_PREFIX = f"{PRODUCT}-"
+API_SYSTEM_HOST = os.environ.get("API_SYSTEM_HOST", f"{CONTAINER_PREFIX}api-system:{SERVICE_PORT}")
+BACKUP_HOST = os.environ.get("BACKUP_HOST", f"{CONTAINER_PREFIX}backup:{SERVICE_PORT}")
+BACKUP_BACKGRUOND_TASKS_HOST = os.environ.get("BACKUP_BACKGRUOND_TASKS_HOST", f"{CONTAINER_PREFIX}backup-background-tasks:{SERVICE_PORT}")
+CLEAR_EVENTS_HOST = os.environ.get("CLEAR_EVENTS_HOST", f"{CONTAINER_PREFIX}clear-events:{SERVICE_PORT}")
+FILES_HOST = os.environ.get("FILES_HOST", f"{CONTAINER_PREFIX}files:{SERVICE_PORT}")
+FILES_SERVICES_HOST = os.environ.get("FILES_SERVICES_HOST", f"{CONTAINER_PREFIX}files-services:{SERVICE_PORT}")
+NOTIFY_HOST = os.environ.get("NOTIFY_HOST", f"{CONTAINER_PREFIX}notify:{SERVICE_PORT}")
+PEOPLE_SERVER_HOST = os.environ.get("PEOPLE_SERVER_HOST", f"{CONTAINER_PREFIX}people-server:{SERVICE_PORT}")
+STUDIO_NOTIFY_HOST = os.environ.get("STUDIO_NOTIFY_HOST", f"{CONTAINER_PREFIX}studio-notify:{SERVICE_PORT}")
+API_HOST = os.environ.get("API_HOST", f"{CONTAINER_PREFIX}api:{SERVICE_PORT}")
+STUDIO_HOST = os.environ.get("STUDIO_HOST", f"{CONTAINER_PREFIX}studio:{SERVICE_PORT}")
+
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
         self.SERVICE_PORT = SERVICE_PORT
@@ -109,28 +123,10 @@ class RunServices:
         if not(CHECK=="healthcheck" or CHECK=="migration"):
             self.RunService(RUN_FILE, ENV_EXTENSION, LOG_FILE)
             return
-        RUN_DLL = RUN_FILE
-        NAME_SERVICE = LOG_FILE
-        print(f"Executing -- {NAME_SERVICE}")
 
-        PRODUCT = os.environ.get("PRODUCT", "onlyoffice")
-        CONTAINER_PREFIX = f"{PRODUCT}-"
-        SERVICE_PORT = os.environ.get("SERVICE_PORT", "5050")
-        SHEME = os.environ.get("SHEME", "http")
+        print(f"Executing -- {LOG_FILE}")
 
         PATH_TO_CONF = os.environ.get("PATH_TO_CONF", "/var/www/services/ASC.Web.HealthChecks.UI/service")
-
-        API_SYSTEM_HOST = os.environ.get("API_SYSTEM_HOST", f"{CONTAINER_PREFIX}api-system:{SERVICE_PORT}")
-        BACKUP_HOST = os.environ.get("BACKUP_HOST", f"{CONTAINER_PREFIX}backup:{SERVICE_PORT}")
-        BACKUP_BACKGRUOND_TASKS_HOST = os.environ.get("BACKUP_BACKGRUOND_TASKS_HOST", f"{CONTAINER_PREFIX}backup-background-tasks:{SERVICE_PORT}")
-        CLEAR_EVENTS_HOST = os.environ.get("CLEAR_EVENTS_HOST", f"{CONTAINER_PREFIX}clear-events:{SERVICE_PORT}")
-        FILES_HOST = os.environ.get("FILES_HOST", f"{CONTAINER_PREFIX}files:{SERVICE_PORT}")
-        FILES_SERVICES_HOST = os.environ.get("FILES_SERVICES_HOST", f"{CONTAINER_PREFIX}files-services:{SERVICE_PORT}")
-        NOTIFY_HOST = os.environ.get("NOTIFY_HOST", f"{CONTAINER_PREFIX}notify:{SERVICE_PORT}")
-        PEOPLE_SERVER_HOST = os.environ.get("PEOPLE_SERVER_HOST", f"{CONTAINER_PREFIX}people-server:{SERVICE_PORT}")
-        STUDIO_NOTIFY_HOST = os.environ.get("STUDIO_NOTIFY_HOST", f"{CONTAINER_PREFIX}studio-notify:{SERVICE_PORT}")
-        API_HOST = os.environ.get("API_HOST", f"{CONTAINER_PREFIX}api:{SERVICE_PORT}")
-        STUDIO_HOST = os.environ.get("STUDIO_HOST", f"{CONTAINER_PREFIX}studio:{SERVICE_PORT}")
 
         with open(f"{PATH_TO_CONF}/appsettings.json", "r") as f:
             appsettings_content = f.read()
@@ -150,10 +146,10 @@ class RunServices:
         with open(f"{PATH_TO_CONF}/appsettings.json", "w") as f:
             f.write(appsettings_content)
 
-        print(f"dotnet {RUN_DLL} --urls={URLS}")
-        print(f"dotnet {RUN_DLL} --urls={SHEME}://0.0.0.0:{SERVICE_PORT}")
+        print(f"dotnet {RUN_FILE} --urls={URLS}")
+        print(f"dotnet {RUN_FILE} --urls={ELK_SHEME}://0.0.0.0:{SERVICE_PORT}")
 
-        os.system(f"dotnet {RUN_DLL} --urls={SHEME}://0.0.0.0:{SERVICE_PORT}")
+        os.system(f"dotnet {RUN_FILE} --urls={ELK_SHEME}://0.0.0.0:{SERVICE_PORT}")
 
 def openJsonFile(filePath):
     try:
