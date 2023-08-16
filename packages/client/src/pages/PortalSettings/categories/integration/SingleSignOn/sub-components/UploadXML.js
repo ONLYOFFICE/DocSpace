@@ -1,11 +1,10 @@
 import UploadIcon from "PUBLIC_DIR/images/actions.upload.react.svg";
 
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
@@ -13,7 +12,7 @@ import Text from "@docspace/components/text";
 import SsoTextInput from "./SsoTextInput";
 import FileInput from "@docspace/components/file-input";
 import { Base } from "@docspace/components/themes";
-import { hugeMobile } from "@docspace/components/utils/device";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -25,19 +24,39 @@ const StyledWrapper = styled.div`
     display: flex;
     flex-direction: row;
     gap: 9px;
+
+    @media ${smallTablet} {
+      width: 100%;
+
+      .upload-xml-input {
+        max-width: 100%;
+      }
+    }
   }
 
-  @media ${hugeMobile} {
-    flex-direction: column;
-    gap: 8px;
+  .xml-upload-file {
+    width: auto;
 
-    .xml-upload-file {
+    .text-input {
+      display: none;
+    }
+
+    .icon {
+      position: static;
+    }
+
+    @media ${smallTablet} {
       width: 100%;
 
       button {
         width: 100%;
       }
     }
+  }
+
+  @media ${smallTablet} {
+    flex-direction: column;
+    gap: 8px;
   }
 `;
 
@@ -80,6 +99,7 @@ const UploadXML = (props) => {
       <StyledWrapper>
         <div className="upload-input">
           <SsoTextInput
+            className="upload-xml-input"
             maxWidth="297px"
             name="uploadXmlUrl"
             placeholder={t("UploadXMLPlaceholder")}

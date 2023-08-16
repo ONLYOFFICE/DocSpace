@@ -4,12 +4,12 @@ import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 const StyledSsoPage = styled.div`
   box-sizing: border-box;
   outline: none;
-  max-width: 700px;
   padding-top: 5px;
 
   .intro-text {
-    margin-bottom: 18px;
+    width: 100%;
     max-width: 700px;
+    margin-bottom: 18px;
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
@@ -102,16 +102,6 @@ const StyledSsoPage = styled.div`
 
   .download-button {
     width: fit-content;
-  }
-
-  .xml-upload-file {
-    .text-input {
-      display: none;
-    }
-
-    .icon {
-      position: static;
-    }
   }
 
   .service-provider-settings {
