@@ -42,5 +42,9 @@ export const UnavailableStyles = css`
     label {
       color: ${(props) => props.theme.text.disableColor};
     }
+
+    path {
+      fill: ${(props) => props.theme.text.disableColor};
+    }
   }
 `;
