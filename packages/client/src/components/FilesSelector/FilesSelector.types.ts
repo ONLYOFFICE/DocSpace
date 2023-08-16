@@ -150,4 +150,6 @@ export type FilesSelectorProps = {
 
   descriptionText?: string;
   setSelectedItems: () => void;
+
+  includeFolder?: boolean;
 };

@@ -82,6 +82,8 @@ const FilesSelector = ({
 
   descriptionText,
   setSelectedItems,
+
+  includeFolder,
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -408,7 +410,8 @@ const FilesSelector = ({
     isRequestRunning,
     selectedItemSecurity,
     filterParam,
-    !!selectedFileInfo
+    !!selectedFileInfo,
+    includeFolder
   );
 
   return (
@@ -576,6 +579,9 @@ export default inject(
       }
     });
 
+    const includeFolder =
+      selectionsWithoutEditing.filter((i: any) => i.isFolder).length > 0;
+
     return {
       currentFolderId,
       fromFolderId,
@@ -600,6 +606,7 @@ export default inject(
       setRestoreAllPanelVisible,
       setIsFolderActions,
       setSelectedItems,
+      includeFolder,
     };
   }
 )(observer(FilesSelector));
