@@ -1,11 +1,21 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 
 import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
+
+const StyledWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .save-button {
+    margin-right: 8px;
+  }
+`;
 
 const SubmitResetButtons = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Settings", "Common"]);
@@ -22,7 +32,7 @@ const SubmitResetButtons = (props) => {
   } = props;
 
   return (
-    <Box alignItems="center" displayProp="flex" flexDirection="row">
+    <StyledWrapper>
       <Button
         className="save-button"
         label={t("Common:SaveButton")}
@@ -42,7 +52,7 @@ const SubmitResetButtons = (props) => {
         isDisabled={isSubmitLoading || isLoadingXml}
       />
       {confirmationResetModal && <ResetConfirmationModal />}
-    </Box>
+    </StyledWrapper>
   );
 };
 

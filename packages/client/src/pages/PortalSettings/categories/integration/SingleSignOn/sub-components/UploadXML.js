@@ -54,6 +54,12 @@ const StyledWrapper = styled.div`
     }
   }
 
+  .upload-button {
+    height: 32px;
+    width: 45px;
+    overflow: inherit;
+  }
+
   @media ${smallTablet} {
     flex-direction: column;
     gap: 8px;

@@ -90,16 +90,6 @@ const StyledSsoPage = styled.div`
     margin: 10px 8px 6px 0;
   }
 
-  .upload-button {
-    height: 32px;
-    width: 45px;
-    overflow: inherit;
-  }
-
-  .save-button {
-    margin-right: 8px;
-  }
-
   .download-button {
     width: fit-content;
   }
