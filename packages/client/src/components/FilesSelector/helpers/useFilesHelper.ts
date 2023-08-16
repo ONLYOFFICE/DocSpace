@@ -1,14 +1,7 @@
 import React from "react";
 
-import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
-import CatalogUserReactSvgUrl from "PUBLIC_DIR/images/catalog.user.react.svg?url";
-
-import {
-  getFolder,
-  getFolderInfo,
-  getFoldersTree,
-  // @ts-ignore
-} from "@docspace/common/api/files";
+// @ts-ignore
+import { getFolder, getFolderInfo } from "@docspace/common/api/files";
 // @ts-ignore
 import FilesFilter from "@docspace/common/api/files/filter";
 // @ts-ignore
