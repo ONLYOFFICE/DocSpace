@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Trans, withTranslation } from "react-i18next";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { MainContainer } from "../StyledSecurity";
-import MobileCategoryWrapper from "../sub-components/mobile-category-wrapper";
+import MobileCategoryWrapper from "../../../components/MobileCategoryWrapper";
 
 const MobileView = (props) => {
   const { t } = props;
