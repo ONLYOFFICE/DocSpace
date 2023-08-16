@@ -220,9 +220,9 @@ public class DbTenantService : ITenantService
                 var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
                 dbTenant.Id = 0;
                 dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
-                
+
                 await tenantDbContext.SaveChangesAsync();
-                
+
                 tenant.Id = dbTenant.Id;
             }
             else
@@ -254,6 +254,30 @@ public class DbTenantService : ITenantService
                 }
 
                 await tenantDbContext.SaveChangesAsync();
+            }
+
+            if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
+            {
+                var p = tenantDbContext.TenantPartner
+                    .Where(r => r.TenantId == tenant.Id)
+                    .FirstOrDefault();
+
+                if (p != null)
+                {
+                    tenantDbContext.TenantPartner.Remove(p);
+                }
+            }
+            else
+            {
+                var tenantPartner = new DbTenantPartner
+                {
+                    TenantId = tenant.Id,
+                    PartnerId = tenant.PartnerId,
+                    AffiliateId = tenant.AffiliateId,
+                    Campaign = tenant.Campaign
+                };
+
+                tenantDbContext.TenantPartner.Add(tenantPartner);
             }
 
             await tx.CommitAsync();
@@ -299,7 +323,7 @@ public class DbTenantService : ITenantService
 
             await tx.CommitAsync();
         }).GetAwaiter()
-          .GetResult(); 
+          .GetResult();
     }
 
     public IEnumerable<TenantVersion> GetTenantVersions()
@@ -358,7 +382,7 @@ public class DbTenantService : ITenantService
             }
 
             await tenantDbContext.SaveChangesAsync();
-           
+
             await tx.CommitAsync();
         }).GetAwaiter()
           .GetResult();

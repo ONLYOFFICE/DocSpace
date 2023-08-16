@@ -30,6 +30,7 @@ public class TenantDbContext : DbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<DbTenantVersion> TenantVersion { get; set; }
+    public DbSet<DbTenantPartner> TenantPartner { get; set; }
     public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
     public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
     public DbSet<DbCoreSettings> CoreSettings { get; set; }
@@ -44,6 +45,7 @@ public class TenantDbContext : DbContext
             .AddCoreSettings()
             .AddDbTenantForbiden()
             .AddTenantIpRestrictions()
+            .AddDbTenantPartner()
             .AddDbTenantVersion();
     }
 }
