@@ -318,6 +318,20 @@ public class SettingsController : ApiControllerBase
     }
 
     /// <summary>
+    /// Get the trash bin auto-clearing setting.
+    /// </summary>
+    /// <short>Get the trash bin auto-clearing setting</short>
+    /// <category>Settings</category>
+    /// <returns type="ASC.Files.Core.AutoCleanUpData, ASC.Files.Core">The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
+    /// <path>api/2.0/files/settings/autocleanup</path>
+    /// <httpMethod>GET</httpMethod>
+    [HttpGet("settings/autocleanup")]
+    public AutoCleanUpData GetAutomaticallyCleanUp()
+    {
+        return _fileStorageService.GetSettingsAutomaticallyCleanUp();
+    }
+
+    /// <summary>
     /// Updates the trash bin auto-clearing setting.
     /// </summary>
     /// <short>Update the trash bin auto-clearing setting</short>
