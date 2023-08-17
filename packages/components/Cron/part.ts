@@ -62,20 +62,24 @@ export const getNextSynchronization = (
   cronString: string,
   timezone?: string
 ) => {
-  const cron = stringToArray(cronString, true);
-  assertValidArray(cron);
-  let date = DateTime.now();
+  try {
+    const cron = stringToArray(cronString, true);
+    assertValidArray(cron);
+    let date = DateTime.now();
 
-  if (timezone) date = date.setZone(timezone);
+    if (timezone) date = date.setZone(timezone);
 
-  if (!date.isValid) {
-    throw new Error("Invalid timezone provided");
+    if (!date.isValid) {
+      throw new Error("Invalid timezone provided");
+    }
+
+    if (date.second > 0) {
+      // plus a minute to the date to prevent returning dates in the past
+      date = date.plus({ minute: 1 });
+    }
+
+    return findDate(cron, date);
+  } catch (error) {
+    console.log(error);
   }
-
-  if (date.second > 0) {
-    // plus a minute to the date to prevent returning dates in the past
-    date = date.plus({ minute: 1 });
-  }
-
-  return findDate(cron, date);
 };
