@@ -47,15 +47,15 @@ const IntegrationWrapper = (props) => {
   ];
 
   const load = async () => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
-
     await loadBaseInfo();
     setIsLoading(true);
   };
 
   useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+
     load();
   }, []);
 
@@ -70,7 +70,7 @@ const IntegrationWrapper = (props) => {
   };
 
   if (!isLoading && !tReady)
-    return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+    return currentTab === 1 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
