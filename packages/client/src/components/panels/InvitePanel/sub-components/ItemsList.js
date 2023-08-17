@@ -57,6 +57,9 @@ const ItemsList = ({
   scrollAllPanelContent,
   inputsRef,
 }) => {
+  const overflowStyleDefault = scrollAllPanelContent ? "hidden" : "scroll";
+
+  const [overflowStyle, setIsOverflowStyle] = useState(overflowStyleDefault);
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
@@ -85,6 +88,14 @@ const ItemsList = ({
       setIsTotalListHeight(
         totalHeightItems >= listAreaHeight && totalHeightItems >= scrollHeight
       );
+
+    if (
+      isOpenItemAccess &&
+      isTotalListHeight &&
+      scrollHeight === totalHeightItems
+    ) {
+      setIsOverflowStyle("visible");
+    }
   }, [
     height,
     bodyRef?.current?.offsetHeight,
@@ -103,8 +114,6 @@ const ItemsList = ({
     scrollAllPanelContent,
     isOpenItemAccess,
   ]);
-
-  const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
   return (
     <ScrollList
