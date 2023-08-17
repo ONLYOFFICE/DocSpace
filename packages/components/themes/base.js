@@ -3121,6 +3121,12 @@ const Base = {
       errorColor: "#F21C0E",
     },
   },
+
+  infoBlock: {
+    background: "#F8F9F9",
+    headerColor: "#333",
+    descriptionColor: "#555F65",
+  },
 };
 
 export default Base;

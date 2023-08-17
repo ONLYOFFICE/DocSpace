@@ -4,7 +4,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 const StyledPublicRoomBar = styled.div`
   display: flex;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.infoBlock.background};
   color: #333;
   font-size: 12px;
   padding: 12px 16px;
@@ -25,9 +25,12 @@ const StyledPublicRoomBar = styled.div`
     font-weight: 600;
   }
 
-  .body-container {
-    color: #555f65;
-    font-weight: 400;
+  .text-container_header {
+    color: ${(props) => props.theme.infoBlock.headerColor};
+  }
+
+  .text-container_body {
+    color: ${(props) => props.theme.infoBlock.descriptionColor};
   }
 
   .close-icon {

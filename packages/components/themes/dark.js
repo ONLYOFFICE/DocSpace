@@ -3124,6 +3124,12 @@ const Dark = {
       errorColor: "#F21C0E",
     },
   },
+
+  infoBlock: {
+    background: "#282828",
+    headerColor: "#FFF",
+    descriptionColor: "#ADADAD",
+  },
 };
 
 export default Dark;
