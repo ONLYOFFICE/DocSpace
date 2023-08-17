@@ -12,6 +12,7 @@ i18n.use(initReactI18next).init({
       Cron: {
         EveryYear: "Every year",
         EveryMonth: "Every month",
+        EveryDay: "Every day",
         EveryWeek: "Every week",
         EveryHour: "Every hour",
         EveryMinute: "Every minute",
