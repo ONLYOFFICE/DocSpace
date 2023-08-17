@@ -408,9 +408,9 @@ public class SettingsController : BaseSettingsController
     /// <path>api/2.0/settings/dns</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsRequestsDto inDto)
+    public async Task<object> SaveDnsSettings(DnsSettingsRequestsDto inDto)
     {
-        return _dnsSettings.SaveDnsSettings(inDto.DnsName, inDto.Enable);
+        return await _dnsSettings.SaveDnsSettings(inDto.DnsName, inDto.Enable);
     }
 
     /// <summary>

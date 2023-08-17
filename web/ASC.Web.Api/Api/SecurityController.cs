@@ -49,6 +49,7 @@ public class SecurityController : ControllerBase
     private readonly AuditActionMapper _auditActionMapper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
+    private readonly CspSettingsHelper _cspSettingsHelper;
 
     public SecurityController(
         PermissionContext permissionContext,
@@ -61,7 +62,8 @@ public class SecurityController : ControllerBase
         SettingsManager settingsManager,
         AuditActionMapper auditActionMapper,
         CoreBaseSettings coreBaseSettings,
-        ApiContext apiContext)
+        ApiContext apiContext,
+        CspSettingsHelper cspSettingsHelper)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;
@@ -74,6 +76,7 @@ public class SecurityController : ControllerBase
         _auditActionMapper = auditActionMapper;
         _coreBaseSettings = coreBaseSettings;
         _apiContext = apiContext;
+        _cspSettingsHelper = cspSettingsHelper;
     }
 
     /// <summary>
@@ -391,6 +394,26 @@ public class SecurityController : ControllerBase
         _messageService.Send(MessageAction.AuditSettingsUpdated);
 
         return inDto.Settings;
+    }
+
+    [HttpPost("csp")]
+    public async Task<CspDto> Csp(CspRequestsDto request)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        ArgumentNullException.ThrowIfNull(request);
+
+        var header = await _cspSettingsHelper.Save(request.Domains);
+
+        return new CspDto { Domains = request.Domains, Header = header };
+    }
+
+    [HttpGet("csp")]
+    public CspDto Csp()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        var settings = _cspSettingsHelper.Load();
+        return new CspDto { Domains = settings.Domains, Header = _cspSettingsHelper.CreateHeader(settings.Domains) };
     }
 
     private void DemandAuditPermission()

@@ -157,6 +157,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  cspDomains = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -856,6 +857,30 @@ class SettingsStore {
 
   deleteAppearanceTheme = async (id) => {
     return api.settings.deleteAppearanceTheme(id);
+  };
+
+  setCSPDomains = (domains) => {
+    this.cspDomains = domains;
+  };
+
+  getCSPSettings = async () => {
+    const { domains } = await api.settings.getCSPSettings();
+
+    this.setCSPDomains(domains || []);
+
+    return domains;
+  };
+
+  setCSPSettings = async (data) => {
+    try {
+      const { domains } = await api.settings.setCSPSettings(data);
+
+      this.setCSPDomains(domains);
+
+      return domains;
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 }
 
