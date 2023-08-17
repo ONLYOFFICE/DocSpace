@@ -37,7 +37,7 @@ const SubmitResetButtons = (props) => {
         className="save-cancel-buttons"
         onSaveClick={() => saveSsoSettings(t)}
         onCancelClick={isSsoEnabled ? openResetModal : resetForm}
-        showReminder={false}
+        showReminder={true}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Settings:RestoreDefaultButton")}
         displaySettings={true}
