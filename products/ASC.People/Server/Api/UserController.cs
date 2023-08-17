@@ -438,6 +438,7 @@ public class UserController : PeopleControllerBase
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
+        _cookiesManager.AuthenticateMeAndSetCookies(Tenant.Id, userid);
         return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 

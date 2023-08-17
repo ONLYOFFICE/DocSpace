@@ -60,7 +60,7 @@ public class DbTenant : IMapFrom<Tenant>
     public bool Spam { get; set; }
     public bool Calls { get; set; }
 
-    //        public DbTenantPartner Partner { get; set; }
+    public DbTenantPartner Partner { get; set; }
 
     public void Mapping(Profile profile)
     {
@@ -70,8 +70,15 @@ public class DbTenant : IMapFrom<Tenant>
             .ForMember(dest => dest.Alias, opt => opt.MapFrom(dest => dest.Alias.ToLowerInvariant()))
             .ForMember(dest => dest.LastModified, opt => opt.MapFrom(dest => DateTime.UtcNow))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? ""))
-            .ForMember(dest => dest.MappedDomain, opt => opt.MapFrom(dest =>
-                !string.IsNullOrEmpty(dest.MappedDomain) ? dest.MappedDomain.ToLowerInvariant() : null));
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? ""))
+            .ForMember(dest => dest.Partner, opt => opt.MapFrom(dest => new DbTenantPartner
+            {
+                TenantId = dest.Id,
+                AffiliateId = dest.AffiliateId,
+                PartnerId = dest.PartnerId,
+                Campaign = dest.Campaign,
+            }))
+            .ForMember(dest => dest.MappedDomain, opt => opt.MapFrom(dest => !string.IsNullOrEmpty(dest.MappedDomain) ? dest.MappedDomain.ToLowerInvariant() : null));
     }
 }
 
@@ -79,7 +86,10 @@ public static class DbTenantExtension
 {
     public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbTenant>().Navigation(e => e.Partner).AutoInclude();
+
         modelBuilder
+            .AddDbTenantPartner()
             .Add(MySqlAddDbTenant, Provider.MySql)
             .Add(PgSqlAddDbTenant, Provider.PostgreSql)
             .HasData(
@@ -99,10 +109,10 @@ public static class DbTenantExtension
 
     public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<DbTenant>()
-        //    .HasOne(r => r.Partner)
-        //    .WithOne(r => r.Tenant)
-        //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
+        modelBuilder.Entity<DbTenant>()
+            .HasOne(r => r.Partner)
+            .WithOne(r => r.Tenant)
+            .HasPrincipalKey<DbTenant>(r => new { r.Id });
 
         modelBuilder.Entity<DbTenant>(entity =>
         {

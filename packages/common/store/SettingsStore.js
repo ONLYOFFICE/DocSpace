@@ -79,6 +79,7 @@ class SettingsStore {
   logoUrl = "";
 
   isDesktopClient = isDesktopEditors;
+  isDesktopClientInit = false;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -291,7 +292,7 @@ class SettingsStore {
   }
 
   get sdkLink() {
-    return `${this.apiDocsLink}/docspace/jssdk`;
+    return `${this.apiDocsLink}/docspace/jssdk/`;
   }
 
   get apiBasicLink() {
@@ -301,6 +302,10 @@ class SettingsStore {
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
+
+  setIsDesktopClientInit = (isDesktopClientInit) => {
+    this.isDesktopClientInit = isDesktopClientInit;
+  };
 
   setMainBarVisible = (visible) => {
     this.mainBarVisible = visible;
