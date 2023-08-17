@@ -1,8 +1,14 @@
+import { DateTime } from "luxon";
 import { Options, PeriodType } from "./types";
 import { defaultOptions, units } from "./constants";
-import { arrayToStringPart, assertValidArray, stringToArrayPart } from "./util";
+import {
+  arrayToStringPart,
+  assertValidArray,
+  findDate,
+  stringToArrayPart,
+} from "./util";
 
-export const stringToArray = (str: string) => {
+export const stringToArray = (str: string, full = false) => {
   if (typeof str !== "string") {
     throw new Error("Invalid cron string");
   }
@@ -10,7 +16,7 @@ export const stringToArray = (str: string) => {
   if (parts.length !== 5) {
     throw new Error("Invalid cron string format");
   } else {
-    return parts.map((str, idx) => stringToArrayPart(str, units[idx]));
+    return parts.map((str, idx) => stringToArrayPart(str, units[idx], full));
   }
 };
 
@@ -51,3 +57,25 @@ export function getCronStringFromValues(
 
   return parsedArray;
 }
+
+export const getNextSynchronization = (
+  cronString: string,
+  timezone?: string
+) => {
+  const cron = stringToArray(cronString, true);
+  assertValidArray(cron);
+  let date = DateTime.now();
+
+  if (timezone) date = date.setZone(timezone);
+
+  if (!date.isValid) {
+    throw new Error("Invalid timezone provided");
+  }
+
+  if (date.second > 0) {
+    // plus a minute to the date to prevent returning dates in the past
+    date = date.plus({ minute: 1 });
+  }
+
+  return findDate(cron, date);
+};

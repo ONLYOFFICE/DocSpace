@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import i18n from "i18next";
+import React, { useEffect, useMemo, useState } from "react";
 import { initReactI18next } from "react-i18next";
+import i18n from "i18next";
+
+import Cron, { getNextSynchronization } from ".";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -53,8 +55,6 @@ i18n.use(initReactI18next).init({
   },
 });
 
-import Cron from ".";
-
 type CronType = typeof Cron;
 
 type Story = StoryObj<CronType>;
@@ -88,9 +88,14 @@ export const Default: Story = {
       setValue(defaultValue);
     }, [defaultValue]);
 
+    const date = useMemo(() => cron && getNextSynchronization(cron), [cron]);
+
     return (
       <div>
         <input
+          style={{
+            borderColor: error ? "red" : "black",
+          }}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onBlur={(e) => setCron(e.target.value)}
@@ -102,6 +107,12 @@ export const Default: Story = {
         <p>
           <strong>Error message: </strong> {error?.message ?? "undefined"}
         </p>
+        {date && (
+          <p>
+            <strong>Next synchronization: </strong>{" "}
+            {date.toUTC().setLocale("en-GB").toFormat("DDDD tt")}
+          </p>
+        )}
       </div>
     );
   },

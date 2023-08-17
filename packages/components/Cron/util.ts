@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { Options, PeriodType, Unit } from "./types";
 
 export const parseNumber = (value: unknown) => {
@@ -17,7 +18,7 @@ export const parseNumber = (value: unknown) => {
   return undefined;
 };
 
-export const assertValidArray = (arr: unknown) => {
+export const assertValidArray = (arr: unknown): void | never => {
   if (
     arr === undefined ||
     !Array.isArray(arr) ||
@@ -100,8 +101,8 @@ export const arrayToStringPart = (
   return toString(values, unit, options);
 };
 
-export const stringToArrayPart = (str: string, unit: Unit) => {
-  if (str === "*" || str === "*/1") {
+export const stringToArrayPart = (str: string, unit: Unit, full = false) => {
+  if ((str === "*" || str === "*/1") && !full) {
     return [];
   }
 
@@ -331,4 +332,73 @@ const getStep = (values: number[]) => {
 
 const isFull = (values: number[], unit: Unit) => {
   return values.length === unit.max - unit.min + 1;
+};
+
+const shiftMonth = (arr: number[][], date: DateTime) => {
+  while (arr[3].indexOf(date.month) === -1) {
+    date = date.plus({ months: 1 }).startOf("month");
+  }
+  return date;
+};
+
+const shiftDay = (arr: number[][], date: DateTime): [DateTime, boolean] => {
+  const currentMonth = date.month;
+  while (
+    arr[2].indexOf(date.day) === -1 ||
+    // luxon uses 1-7 for weekdays, but we use 0-6
+    arr[4].indexOf(date.weekday === 7 ? 0 : date.weekday) === -1
+  ) {
+    date = date.plus({ days: 1 }).startOf("day");
+    if (currentMonth !== date.month) {
+      return [date, true];
+    }
+  }
+  return [date, false];
+};
+
+const shiftHour = (arr: number[][], date: DateTime): [DateTime, boolean] => {
+  const currentDay = date.day;
+  while (arr[1].indexOf(date.hour) === -1) {
+    date = date.plus({ hours: 1 }).startOf("hour");
+    if (currentDay !== date.day) {
+      return [date, true];
+    }
+  }
+  return [date, false];
+};
+
+const shiftMinute = (arr: number[][], date: DateTime): [DateTime, boolean] => {
+  const currentHour = date.hour;
+  while (arr[0].indexOf(date.minute) === -1) {
+    date = date.plus({ minutes: 1 }).startOf("minute");
+    if (currentHour !== date.hour) {
+      return [date, true];
+    }
+  }
+  return [date, false];
+};
+
+export const findDate = (arr: number[][], date: DateTime) => {
+  let retry = 24;
+  let monthChanged: boolean;
+  let dayChanged: boolean;
+  let hourChanged: boolean;
+
+  while (--retry) {
+    date = shiftMonth(arr, date);
+    [date, monthChanged] = shiftDay(arr, date);
+    if (!monthChanged) {
+      [date, dayChanged] = shiftHour(arr, date);
+      if (!dayChanged) {
+        [date, hourChanged] = shiftMinute(arr, date);
+        if (!hourChanged) {
+          break;
+        }
+      }
+    }
+  }
+  if (!retry) {
+    throw new Error("Unable to find execution time for schedule");
+  }
+  return date.set({ second: 0, millisecond: 0 });
 };
