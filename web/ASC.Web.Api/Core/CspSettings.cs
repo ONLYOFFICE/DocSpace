@@ -138,6 +138,21 @@ public class CspSettingsHelper
         var frameBuilder = csp.AllowFraming
             .FromSelf();
 
+        if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
+        {
+            def.From("*.zdassets.com");
+            scriptBuilder.From("*.zdassets.com");
+
+            def.From("*.zendesk.com");
+            def.From("*.zopim.com");
+            def.From("wss:");
+            scriptBuilder
+                .From("*.zopim.com")
+                .AllowUnsafeEval();//zendesk;
+
+            imageBuilder.From("*.zopim.io");
+        }
+
         foreach (var domain in domains)
         {
             scriptBuilder.From(domain);
