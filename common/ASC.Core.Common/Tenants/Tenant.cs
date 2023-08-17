@@ -60,6 +60,17 @@ public class Tenant : IMapFrom<DbTenant>
     {
         Id = id;
     }
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbTenant, Tenant>()
+            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled))
+            .ForMember(r => r.AffiliateId, opt => opt.MapFrom(src => src.Partner.AffiliateId))
+            .ForMember(r => r.PartnerId, opt => opt.MapFrom(src => src.Partner.PartnerId))
+            .ForMember(r => r.Campaign, opt => opt.MapFrom(src => src.Partner.Campaign));
+
+        profile.CreateMap<TenantUserSecurity, Tenant>()
+            .IncludeMembers(src => src.DbTenant);
+    }
 
     public string AffiliateId { get; set; }
     public string Alias { get; set; }
@@ -145,15 +156,6 @@ public class Tenant : IMapFrom<DbTenant>
         }
 
         return result;
-    }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbTenant, Tenant>()
-            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled));
-
-        profile.CreateMap<TenantUserSecurity, Tenant>()
-            .IncludeMembers(src => src.DbTenant);
     }
 
     public void SetStatus(TenantStatus status)

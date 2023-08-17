@@ -86,6 +86,7 @@ public static class DbTenantExtension
 {
     public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<DbTenant>().Navigation(e => e.Partner).AutoInclude();
 
         modelBuilder
             .AddDbTenantPartner()

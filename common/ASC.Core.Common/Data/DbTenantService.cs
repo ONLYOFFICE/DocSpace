@@ -192,6 +192,7 @@ public class DbTenantService : ITenantService
         {
             using var tenantDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await tenantDbContext.Database.BeginTransactionAsync();
+            DbTenant dbTenant = null;
 
             if (!string.IsNullOrEmpty(tenant.MappedDomain))
             {
@@ -210,6 +211,7 @@ public class DbTenantService : ITenantService
             if (tenant.Id == Tenant.DefaultTenant)
             {
                 tenant.Version = await tenantDbContext.TenantVersion
+                    .AsNoTracking()
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)
@@ -217,17 +219,21 @@ public class DbTenantService : ITenantService
 
                 tenant.LastModified = DateTime.UtcNow;
 
-                var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
+                dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
                 dbTenant.Id = 0;
-                dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
+
+                var entity = tenantDbContext.Tenants.Add(dbTenant);
+                dbTenant = entity.Entity;
 
                 await tenantDbContext.SaveChangesAsync();
 
                 tenant.Id = dbTenant.Id;
+                entity.State = EntityState.Detached;
             }
             else
             {
-                var dbTenant = await tenantDbContext.Tenants
+                dbTenant = await tenantDbContext.Tenants
+                    .AsNoTracking()
                     .Where(r => r.Id == tenant.Id)
                     .FirstOrDefaultAsync();
 
@@ -259,6 +265,7 @@ public class DbTenantService : ITenantService
             if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
             {
                 var p = tenantDbContext.TenantPartner
+                    .AsNoTracking()
                     .Where(r => r.TenantId == tenant.Id)
                     .FirstOrDefault();
 
@@ -274,7 +281,8 @@ public class DbTenantService : ITenantService
                     TenantId = tenant.Id,
                     PartnerId = tenant.PartnerId,
                     AffiliateId = tenant.AffiliateId,
-                    Campaign = tenant.Campaign
+                    Campaign = tenant.Campaign,
+                    Tenant = dbTenant
                 };
 
                 tenantDbContext.TenantPartner.Add(tenantPartner);

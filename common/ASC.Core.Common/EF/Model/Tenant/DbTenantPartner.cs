@@ -49,6 +49,8 @@ public static class DbTenantPartnerExtension
 
     public static void MySqlAddDbTenantPartner(this ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<DbTenantPartner>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder.Entity<DbTenantPartner>(entity =>
         {
             entity.HasKey(e => new { e.TenantId })
