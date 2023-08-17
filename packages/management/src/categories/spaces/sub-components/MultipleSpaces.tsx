@@ -9,12 +9,8 @@ import { useStore } from "SRC_DIR/store";
 const MultipleSpaces = ({ t }) => {
   const { spacesStore, authStore } = useStore();
 
-  const {
-    deletePortal,
-    setPortalName,
-    setChangeDomainDialogVisible,
-    setCreatePortalDialogVisible,
-  } = spacesStore;
+  const { setChangeDomainDialogVisible, setCreatePortalDialogVisible } =
+    spacesStore;
 
   const { portals, domain } = authStore.settingsStore;
 

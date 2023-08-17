@@ -21,11 +21,10 @@ const StyledModal = styled(ModalDialogContainer)`
 
 const ChangeDomainDialogComponent = () => {
   const { t } = useTranslation(["Management", "Common"]);
-  const { spacesStore } = useStore();
+  const { spacesStore, authStore } = useStore();
 
   const {
     setPortalSettings,
-    getAllPortals,
     getPortalDomain,
     setChangeDomainDialogVisible,
     domainDialogVisible: visible,
@@ -43,7 +42,7 @@ const ChangeDomainDialogComponent = () => {
 
   const onClickDomainChange = async () => {
     await setPortalSettings(domain);
-    await getAllPortals();
+    await authStore.settingsStore.getAllPortals();
     await getPortalDomain();
     onClose();
   };

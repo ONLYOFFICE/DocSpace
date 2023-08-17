@@ -44,7 +44,6 @@ const CreatePortalDialog = () => {
     createPortalDialogVisible: visible,
     setCreatePortalDialogVisible,
     createNewPortal,
-    getAllPortals,
   } = spacesStore;
 
   const { t } = useTranslation(["Management", "Common"]);
@@ -67,7 +66,7 @@ const CreatePortalDialog = () => {
     };
     try {
       await createNewPortal(data);
-      await getAllPortals();
+      await authStore.settingsStore.getAllPortals();
     } catch (error) {
       toastr.error(t("PortalExists"));
     }

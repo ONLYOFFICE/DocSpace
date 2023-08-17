@@ -1,5 +1,5 @@
 import React from "react";
-import { inject, observer } from "mobx-react";
+import { observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import TextInput from "@docspace/components/text-input";
 import Text from "@docspace/components/text";

@@ -3,6 +3,7 @@ import RowContainer from "@docspace/components/row-container";
 import SpacesRoomRow from "./SpacesRoomRow";
 import styled from "styled-components";
 import Base from "@docspace/components/themes/base";
+import { TPortals } from "SRC_DIR/types/spaces";
 
 const StyledRowContainer = styled(RowContainer)`
   max-width: 620px;
@@ -14,11 +15,15 @@ const StyledRowContainer = styled(RowContainer)`
   margin-top: 20px;
 `;
 
+type TRowContainer = {
+  portals: TPortals[];
+};
+
 StyledRowContainer.defaultProps = { theme: Base };
-export const SpacesRowContainer = ({ portals }) => {
+export const SpacesRowContainer = ({ portals }: TRowContainer) => {
   return (
     <StyledRowContainer useReactWindow={false}>
-      {portals.map((item) => (
+      {portals.map((item: TPortals) => (
         <SpacesRoomRow key={item.tenantId} item={item} />
       ))}
     </StyledRowContainer>

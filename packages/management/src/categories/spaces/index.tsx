@@ -11,8 +11,6 @@ import CreatePortalDialog from "./sub-components/dialogs/CreatePortalDialog";
 import { SpacesLoader } from "./sub-components/SpacesLoader";
 
 const Spaces = () => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-
   const { t } = useTranslation(["Management", "Common", "Settings"]);
 
   const { spacesStore, authStore } = useStore();
@@ -23,15 +21,10 @@ const Spaces = () => {
   const { portals } = authStore.settingsStore;
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(false);
-    };
-
-    fetchData();
     setDocumentTitle(t("Common:Spaces"));
   }, []);
 
-  if (isLoading)
+  if (!(portals.length > 0))
     return (
       <SpacesLoader
         isConfigurationSection={!(isConnected && portals.length > 0)}

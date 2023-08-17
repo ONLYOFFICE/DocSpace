@@ -1,4 +1,3 @@
-import { settingsTree } from "SRC_DIR/utils/settingsTree";
 import { makeAutoObservable } from "mobx";
 import { getLogoFromPath } from "@docspace/common/utils";
 import {
@@ -7,17 +6,12 @@ import {
   setDomainName,
   setPortalName,
   createNewPortal,
-  getAllPortals,
   getPortalStatus,
 } from "@docspace/common/api/management";
-import { TNewPortalData, TPortals } from "SRC_DIR/types/spaces";
+import { TNewPortalData } from "SRC_DIR/types/spaces";
 
 class SpacesStore {
-  isInit = false;
   authStore = null;
-
-  portals: TPortals[] = [];
-  domain: string | null = null;
 
   createPortalDialogVisible = false;
   domainDialogVisible = false;
@@ -32,9 +26,8 @@ class SpacesStore {
       portalName,
     };
 
-    console.log(data);
     const res = await deletePortal(data);
-    await this.getAllPortals();
+    return res;
   };
 
   getPortalDomain = async () => {
@@ -43,9 +36,9 @@ class SpacesStore {
 
     this.authStore.settingsStore.setPortalDomain(settings);
 
-    if (settings) {
-      const status = await getPortalStatus(settings);
-    }
+    // if (settings) {
+    //   const status = await getPortalStatus(settings);
+    // }
   };
 
   get isConnected() {
@@ -66,18 +59,9 @@ class SpacesStore {
     const name = await setPortalName(portalName);
   };
 
-  setPortalName = async (portalName: string) => {
-    const name = await setPortalName(portalName);
-  };
-
   createNewPortal = async (data: TNewPortalData) => {
     const register = await createNewPortal(data);
-  };
-
-  getAllPortals = async () => {
-    const res = await getAllPortals();
-    this.authStore.settingsStore.setPortals(res.tenants);
-    return res;
+    return register;
   };
 
   setCreatePortalDialogVisible = (createPortalDialogVisible: boolean) => {

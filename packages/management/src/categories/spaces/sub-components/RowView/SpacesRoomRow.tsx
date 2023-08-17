@@ -8,6 +8,7 @@ import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg?url";
 import DefaultLogoUrl from "PUBLIC_DIR/images/logo/dark_lightsmall.svg?url";
 import { useTranslation } from "react-i18next";
+import { TPortals } from "SRC_DIR/types/spaces";
 
 import { ReactSVG } from "react-svg";
 import { useStore } from "SRC_DIR/store";
@@ -24,7 +25,11 @@ const StyledRoomRow = styled(Row)`
     margin-right: 8px;
   }
 `;
-const SpacesRoomRow = ({ item }) => {
+
+type TRow = {
+  item: TPortals;
+};
+const SpacesRoomRow = ({ item }: TRow) => {
   const { spacesStore } = useStore();
 
   const { deletePortal, faviconLogo } = spacesStore;
