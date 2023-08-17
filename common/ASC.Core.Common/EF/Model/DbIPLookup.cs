@@ -71,7 +71,7 @@ public static class DbIPLookupExtension
                 .IsRequired()
                 .HasColumnName("addr_type")
                 .HasColumnType("enum('ipv4','ipv6')");
-       
+
             entity.Property(e => e.IPStart)
                 .IsRequired()
                 .HasColumnName("ip_start")
@@ -150,6 +150,91 @@ public static class DbIPLookupExtension
     }
     public static void PgSqlAddDbIPLookup(this ModelBuilder modelBuilder)
     {
-        throw new NotImplementedException();
+        modelBuilder.Entity<DbIPLookup>(entity =>
+        {
+            entity.ToTable("dbip_lookup")
+                 .HasCharSet("utf8mb4");
+
+            entity.HasKey(nameof(DbIPLookup.AddrType), nameof(DbIPLookup.IPStart));
+
+            entity.Property(e => e.AddrType)
+                .IsRequired()
+                .HasColumnName("addr_type")
+                .HasColumnType("enum('ipv4','ipv6')");
+
+            entity.Property(e => e.IPStart)
+                .IsRequired()
+                .HasColumnName("ip_start")
+                .HasColumnType("varbinary(16)");
+
+            entity.Property(e => e.IPEnd)
+                .IsRequired()
+                .HasColumnName("ip_end")
+                .HasColumnType("varbinary(16)");
+
+            entity.Property(e => e.Continent)
+                .IsRequired()
+                .HasColumnName("continent")
+                .HasColumnType("char(2)");
+
+            entity.Property(e => e.Country)
+                .IsRequired()
+                .HasColumnName("country")
+                .HasColumnType("char(2)");
+
+            entity.Property(e => e.StateProvCode)
+                .HasColumnName("stateprov_code")
+                .HasColumnType("varchar(15)");
+
+            entity.Property(e => e.StateProv)
+                .IsRequired()
+                .HasColumnName("stateprov")
+                .HasColumnType("varchar(80)");
+
+            entity.Property(e => e.District)
+                .IsRequired()
+                .HasColumnName("district")
+                .HasColumnType("varchar(80)");
+
+
+            entity.Property(e => e.City)
+                .IsRequired()
+                .HasColumnName("city")
+                .HasColumnType("varchar(80)");
+
+            entity.Property(e => e.ZipCode)
+                .HasColumnName("zipcode")
+                .HasColumnType("varchar(20)");
+
+            entity.Property(e => e.Latitude)
+                .IsRequired()
+                .HasColumnName("latitude")
+                .HasColumnType("float");
+
+            entity.Property(e => e.Longitude)
+                .IsRequired()
+                .HasColumnName("longitude")
+                .HasColumnType("float");
+
+            entity.Property(e => e.GeonameId)
+               .IsRequired(false)
+               .HasColumnName("geoname_id")
+               .HasColumnType("int(10)");
+
+            entity.Property(e => e.TimezoneOffset)
+                .IsRequired()
+                .HasColumnType("float")
+                .HasColumnName("timezone_offset");
+
+            entity.Property(e => e.TimezoneName)
+                .IsRequired()
+                .HasColumnName("timezone_name")
+                .HasColumnType("varchar(64)");
+
+            entity.Property(e => e.WeatherCode)
+                .IsRequired()
+                .HasColumnName("weather_code")
+                .HasColumnType("varchar(10)");
+        });
     }
 }
