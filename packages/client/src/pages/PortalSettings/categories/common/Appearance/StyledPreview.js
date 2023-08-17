@@ -20,7 +20,13 @@ const StyledComponent = styled.div`
       css`
         border-width: 1px;
         border-style: solid;
-        border-radius: 16px 0px 0px 16px;
+        border-radius: ${props.theme.interfaceDirection === "rtl"
+          ? `
+          0px 16px 16px 0px;
+            `
+          : `
+            16px 0px 0px 16px;
+            `};
       `}
   }
 
@@ -92,7 +98,7 @@ const StyledComponent = styled.div`
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: 12px;
-                border-radius: 0px 0px 16px 16px;
+                border-radius: 16px 0px 0px 16px;
                 border-right-style: none;
               `
             : css`
@@ -304,12 +310,13 @@ const StyledComponent = styled.div`
         ? css`
             margin-right: 16px;
             border-left: none !important;
+            border-radius: 12px 16px 16px 16px !important;
           `
         : css`
             margin-left: 16px;
             border-right: none !important;
+            border-radius: 12px 0 16px 0 !important;
           `}
-    border-radius: 12px 0 16px 0 !important;
   }
 
   .only-tile-name {
