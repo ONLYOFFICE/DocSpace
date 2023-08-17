@@ -169,7 +169,6 @@ const LinkRow = (props) => {
   return (
     <StyledLinkRow {...rest} isExpired={isExpired}>
       <Avatar
-        className="avatar"
         size="min"
         source={EyeReactSvgUrl}
         roleIcon={expiryDate ? <ClockReactSvg /> : null}

@@ -2013,6 +2013,11 @@ const Base = {
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
+    links: {
+      iconColor: "#3B72A7",
+      iconErrorColor: "rgba(242, 28, 14, 0.5)", //"#F21C0E",
+    },
+
     members: {
       iconColor: "#A3A9AE",
       iconHoverColor: "#657077",

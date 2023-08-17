@@ -90,12 +90,13 @@ const StyledLinkRow = styled.div`
   }
 
   .avatar_role-wrapper {
-    ${({ isExpired }) =>
-      isExpired &&
+    ${({ isExpired, theme }) =>
       css`
         svg {
           path {
-            fill: #f98e86;
+            fill: ${isExpired
+              ? theme.infoPanel.links.iconErrorColor
+              : theme.infoPanel.links.iconColor};
           }
         }
       `}

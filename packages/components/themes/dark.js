@@ -2009,6 +2009,11 @@ const Dark = {
     closeButtonSize: "12px",
     closeButtonBg: "#a2a2a2",
 
+    links: {
+      iconColor: "#858585",
+      iconErrorColor: "rgba(242, 28, 14, 0.5)", //"#F21C0E",
+    },
+
     members: {
       iconColor: "#A3A9AE",
       iconHoverColor: "#ffffff",
