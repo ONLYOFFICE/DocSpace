@@ -208,7 +208,7 @@ const PortalSettingsRoutes = {
     },
     {
       path: "integration",
-      element: <Integration />,
+      element: <Navigate to="integration/third-party-services" />,
     },
     {
       path: "integration/third-party-services",
