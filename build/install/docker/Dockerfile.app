@@ -155,6 +155,7 @@ COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 RUN chown nginx:nginx /etc/nginx/* -R && \
     chown nginx:nginx /docker-entrypoint.d/* && \
     # changes for upstream configure
+    sed -i 's/redis_host = \"127.0.0.1\"/redis_host = \"$service_redis\"/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \

@@ -222,6 +222,7 @@ services:
       - SERVICE_LOGIN=${SERVICE_LOGIN}
       - SERVICE_HELTHCHECKS=${SERVICE_HELTHCHECKS}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
+      - REDIS_HOST=${REDIS_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
       - proxy_log:/var/log/nginx
