@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { isMobile } from "react-device-detect";
 
 import SSO from "./SingleSignOn";
 import ThirdParty from "./ThirdPartyServicesSettings";
@@ -15,23 +14,16 @@ import SSOLoader from "./sub-components/ssoLoader";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const {
-    t,
-    tReady,
-    loadBaseInfo,
-    enablePlugins,
-    toDefault,
-    isSSOAvailable,
-  } = props;
+  const { t, tReady, loadBaseInfo, enablePlugins, toDefault, isSSOAvailable } =
+    props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     return () => {
       isSSOAvailable &&
-        !location.pathname.includes("single-sign-on") &&
+        !window.location.pathname.includes("single-sign-on") &&
         toDefault();
     };
   }, []);

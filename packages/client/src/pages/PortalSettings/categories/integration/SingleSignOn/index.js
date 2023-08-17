@@ -19,7 +19,7 @@ const SP_METADATA = "spMetadata";
 
 const SingleSignOn = (props) => {
   const {
-    load,
+    init,
     serviceProviderSettings,
     spMetadata,
     isSSOAvailable,
@@ -30,7 +30,7 @@ const SingleSignOn = (props) => {
 
   useEffect(() => {
     setDocumentTitle(t("Settings:SingleSignOn"));
-    isSSOAvailable && load();
+    isSSOAvailable && init();
   }, []);
 
   return (
@@ -76,10 +76,10 @@ export default inject(({ auth, ssoStore }) => {
   const { currentQuotaStore, setDocumentTitle } = auth;
   const { isSSOAvailable } = currentQuotaStore;
 
-  const { load, serviceProviderSettings, spMetadata } = ssoStore;
+  const { init, serviceProviderSettings, spMetadata } = ssoStore;
 
   return {
-    load,
+    init,
     serviceProviderSettings,
     spMetadata,
     isSSOAvailable,
