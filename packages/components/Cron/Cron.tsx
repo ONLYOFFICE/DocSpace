@@ -8,7 +8,7 @@ import { getPeriodFromCronParts } from "./util";
 
 import CronProps from "./Cron.props";
 import { PeriodType } from "./types";
-import { CronWrapper } from "./Cron.styled";
+import { CronWrapper, Suffix } from "./Cron.styled";
 
 function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
   const valueRef = useRef<string>(value);
@@ -111,6 +111,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
       {!isMinute && (
         <Minutes period={period} minutes={minutes} setMinutes={setMinutes} />
       )}
+      <Suffix>UTC</Suffix>
     </CronWrapper>
   );
 }
