@@ -568,13 +568,13 @@ class SettingsStore {
   getDomainName = async () => {
     const res = await api.management.getDomainName();
     const { settings } = res;
-    this.domain = settings;
+    this.setPortalDomain(settings);
     return settings;
   };
 
   getAllPortals = async () => {
     const res = await api.management.getAllPortals();
-    this.portals = res.tenants;
+    this.setPortals(res.tenants);
   };
 
   getSpaces = async () => {
