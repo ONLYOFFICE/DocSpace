@@ -3194,6 +3194,7 @@ __metadata:
     "@svgr/webpack": ^5.5.0
     "@testing-library/react": ^9.5.0
     "@types/jest": ^24.9.1
+    "@types/luxon": ^3.3.1
     "@use-gesture/react": ^10.2.24
     "@wojtekmaj/enzyme-adapter-react-17": ^0.4.1
     attr-accept: ^2.2.2
@@ -3223,6 +3224,7 @@ __metadata:
     jest-junit: ^10.0.0
     jest-styled-components: ^7.1.1
     lodash: 4.17.21
+    luxon: ^3.4.0
     moment: ^2.29.4
     postcss: ^7.0.39
     prettier: 2.8.6
@@ -8298,6 +8300,13 @@ __metadata:
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
   checksum: d16cde7240d834cf44ba1eaec49e78ae3180e724cd667052b194a372f350d024cba8dd3f37b0864931683dab09ca935d52f0c4c1687178af5ada9fc85b0635f4
+  languageName: node
+  linkType: hard
+
+"@types/luxon@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@types/luxon@npm:3.3.1"
+  checksum: da8f6158edacae1430f3eca5f4ab4891200ffb34aa521ef6bae407a3c50b3854907098bc4535fb2a66a2779738f3c6c48fdfd86f01117a6f4844b18536cdb7c0
   languageName: node
   linkType: hard
 
@@ -18074,6 +18083,13 @@ __metadata:
   version: 10.0.1
   resolution: "lru-cache@npm:10.0.1"
   checksum: 06f8d0e1ceabd76bb6f644a26dbb0b4c471b79c7b514c13c6856113879b3bf369eb7b497dad4ff2b7e2636db202412394865b33c332100876d838ad1372f0181
+  languageName: node
+  linkType: hard
+
+"luxon@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "luxon@npm:3.4.0"
+  checksum: ca9b6d0e0a8d156574b7e84014ac8e4b60d116d6d7a0fb65ef48eeb8e4415dad6350b76c5ee34f795cadf8b3f9a5fe7a6885733f561e554c50dffb0b704a840b
   languageName: node
   linkType: hard
 
