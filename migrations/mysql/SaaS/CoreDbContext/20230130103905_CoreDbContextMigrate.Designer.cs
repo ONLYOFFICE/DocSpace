@@ -94,6 +94,33 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                             Name = "startup",
                             Price = 0m,
                             Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -4,
+                            Features = "total_size:1073741824",
+                            Name = "disk",
+                            Price = 0m,
+                            ProductId = "1004",
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -5,
+                            Features = "manager:1",
+                            Name = "admin1",
+                            Price = 0m,
+                            ProductId = "1005",
+                            Visible = false
+                        },
+                        new
+                        {
+                            Tenant = -6,
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:1024",
+                            Name = "subscription",
+                            Price = 0m,
+                            ProductId = "1001",
+                            Visible = false
                         });
                 });
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuotaRow", b =>
