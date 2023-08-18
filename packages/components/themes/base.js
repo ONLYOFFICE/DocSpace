@@ -1939,6 +1939,7 @@ const Base = {
     expanderColor: black,
     background: white,
     rootFolderTitleColor: "#A3A9AE",
+    publicIcon: black,
 
     icon: {
       fill: "#316DAA",
@@ -2012,6 +2013,11 @@ const Base = {
     closeButtonIcon: white,
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
+
+    links: {
+      iconColor: "#3B72A7",
+      iconErrorColor: "rgba(242, 28, 14, 0.5)", //"#F21C0E",
+    },
 
     members: {
       iconColor: "#A3A9AE",
@@ -3120,6 +3126,12 @@ const Base = {
       color: "#A3A9AE",
       errorColor: "#F21C0E",
     },
+  },
+
+  infoBlock: {
+    background: "#F8F9F9",
+    headerColor: "#333",
+    descriptionColor: "#555F65",
   },
 };
 

@@ -339,12 +339,14 @@ export const useFilesHelper = ({
             pathParts.map(async (folderId: number | string) => {
               const folderInfo: any = await getFolderInfo(folderId);
 
-              const { title, id, parentId, rootFolderType } = folderInfo;
+              const { title, id, parentId, rootFolderType, roomType } =
+                folderInfo;
 
               return {
                 label: title,
                 id: id,
                 isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                roomType,
               };
             })
           );

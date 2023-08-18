@@ -27,6 +27,7 @@ export type Item = {
   isFolder: boolean;
   isDisabled?: boolean;
   security: Security;
+  roomType: number;
 };
 
 export type BreadCrumb = {
@@ -88,6 +89,7 @@ export type FilesSelectorProps = {
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   isEditorDialog: boolean;
+  setMoveToPublicRoomVisible: (visible: boolean, operationData: object) => void;
 
   onClose?: () => void;
 
