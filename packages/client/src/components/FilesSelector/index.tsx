@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 // @ts-ignore
 import Loaders from "@docspace/common/components/Loaders";
-import { FolderType } from "@docspace/common/constants";
+import { FolderType, RoomsType } from "@docspace/common/constants";
 
 import Aside from "@docspace/components/aside";
 import Backdrop from "@docspace/components/backdrop";
@@ -85,9 +85,13 @@ const FilesSelector = ({
   setSelectedItems,
 
   includeFolder,
+<<<<<<< HEAD
 
   socketHelper,
   socketSubscribersId,
+=======
+  setMoveToPublicRoomVisible,
+>>>>>>> develop
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -191,6 +195,7 @@ const FilesSelector = ({
           id: item.id,
           isRoom:
             item.parentId === 0 && item.rootFolderType === FolderType.Rooms,
+          roomType: item.roomType,
         },
       ]);
       setSelectedItemId(item.id);
@@ -316,6 +321,10 @@ const FilesSelector = ({
     fileName: string,
     isChecked: boolean
   ) => {
+    const isPublic =
+      breadCrumbs.findIndex((f: any) => f.roomType === RoomsType.PublicRoom) >
+      -1;
+
     if ((isMove || isCopy || isRestoreAll) && !isEditorDialog) {
       const folderTitle = breadCrumbs[breadCrumbs.length - 1].label;
 
@@ -352,6 +361,11 @@ const FilesSelector = ({
             move: t("Translations:MoveToOperation"),
           },
         };
+
+        if (isPublic) {
+          setMoveToPublicRoomVisible(true, operationData);
+          return;
+        }
 
         setIsRequestRunning(true);
         setSelectedItems();
@@ -574,6 +588,7 @@ export default inject(
       conflictResolveDialogVisible,
       isFolderActions,
       setIsFolderActions,
+      setMoveToPublicRoomVisible,
     } = dialogsStore;
 
     const { theme, socketHelper } = auth.settingsStore;
@@ -639,8 +654,12 @@ export default inject(
       setIsFolderActions,
       setSelectedItems,
       includeFolder,
+<<<<<<< HEAD
       socketHelper,
       socketSubscribersId,
+=======
+      setMoveToPublicRoomVisible,
+>>>>>>> develop
     };
   }
 )(observer(FilesSelector));

@@ -317,7 +317,10 @@ export const useFilesHelper = ({
         if (isInit && getRootData) {
           const folder = await getFolderInfo(id);
 
-          if (folder.rootFolderType === FolderType.TRASH) {
+          if (
+            folder.rootFolderType === FolderType.TRASH ||
+            folder.rootFolderType === FolderType.Archive
+          ) {
             await getRootData();
 
             return;
@@ -359,12 +362,14 @@ export const useFilesHelper = ({
               pathParts.map(async (folderId: number | string) => {
                 const folderInfo: any = await getFolderInfo(folderId);
 
-                const { title, id, parentId, rootFolderType } = folderInfo;
+                const { title, id, parentId, rootFolderType, roomType } =
+                  folderInfo;
 
                 return {
                   label: title,
                   id: id,
                   isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                  roomType,
                 };
               })
             );

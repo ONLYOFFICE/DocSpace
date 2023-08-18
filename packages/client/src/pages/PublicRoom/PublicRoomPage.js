@@ -1,10 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import Section from "@docspace/common/components/Section";
 import SectionHeaderContent from "../Home/Section/Header";
 import SectionFilterContent from "../Home/Section/Filter";
-import SectionBodyContent from "../Home/Section/Body";
 import FilesPanels from "../../components/FilesPanels";
 
 import { RoomSharingDialog } from "../../components/dialogs";
@@ -62,7 +61,7 @@ const PublicRoomPage = (props) => {
         )}
 
         <Section.SectionBody>
-          <SectionBodyContent />
+          <Outlet />
         </Section.SectionBody>
       </Section>
 
@@ -83,8 +82,7 @@ export default inject(
     clientLoadingStore,
   }) => {
     const { withPaging } = auth.settingsStore;
-    const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
-      publicRoomStore;
+    const { isLoaded, isLoading, roomStatus, roomId } = publicRoomStore;
 
     const { fetchFiles, isEmptyPage } = filesStore;
     const { getFilesSettings } = settingsStore;
@@ -113,7 +111,6 @@ export default inject(
       getFilesSettings,
 
       withPaging,
-      validatePublicRoomKey,
 
       showSecondaryProgressBar,
       secondaryProgressBarValue,
