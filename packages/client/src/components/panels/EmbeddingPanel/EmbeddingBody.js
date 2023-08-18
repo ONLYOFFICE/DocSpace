@@ -20,6 +20,7 @@ const EmbeddingBody = ({ t, link, roomId }) => {
     width: `${widthValue}`,
     height: `${heightValue}`,
     frameId: "ds-frame",
+    init: true,
     showHeader: true,
     showTitle: true,
     showMenu: false,
@@ -132,7 +133,9 @@ const EmbeddingBody = ({ t, link, roomId }) => {
           /> */}
         </div>
         <div className="embedding-panel_code-container">
-          <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
+          <Text className="embedding-panel_text">
+            {t("EmbeddingPanel:EmbedCode")}:
+          </Text>
           <IconButton
             className="embedding-panel_copy-icon"
             size="16"
