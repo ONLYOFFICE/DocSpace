@@ -1,7 +1,6 @@
 REM echo ######## Set variables ########
 set "publisher="Ascensio System SIA""
 set "nuget="%cd%\thirdparty\SimpleRestServices\src\.nuget\NuGet.exe""
-set "nginx_version=1.21.1"
 set "environment=production"
 
 REM echo ######## Extracting and preparing files to build ########
@@ -21,7 +20,7 @@ md build\install\win\Files\services\ASC.Web.Api\service\temp
 md build\install\win\Files\services\ASC.Web.Studio\service\temp
 md build\install\win\Files\services\ASC.Web.HealthChecks.UI\service\temp
 copy build\install\win\WinSW.NET4.exe "build\install\win\Nginx\tools\Nginx.exe" /y
-copy build\install\win\tools\Proxy.xml "build\install\win\Nginx\tools\Nginx.xml" /y
+copy build\install\win\tools\Nginx.xml "build\install\win\Nginx\tools\Nginx.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Socket.IO.exe" /y
 copy build\install\win\tools\Socket.IO.xml "build\install\win\Files\tools\Socket.IO.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\SsoAuth.exe" /y
@@ -32,10 +31,6 @@ copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" 
 copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
-
-REM echo ######## Configuring Nginx########
-%sed% -i "s/<id>.*<\/id>/<id>Nginx<\/id>/g; s/<name>.*<\/name>/<name>Nginx<\/name>/g; s/<description>.*<\/description>/<description>Nginx<\/description>/g" build\install\win\Nginx\tools\Nginx.xml
-%sed% -i "/<\/startmode>/a \ \t<delayedAutoStart>true<\/delayedAutoStart>" build\install\win\Nginx\tools\Nginx.xml
 
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json

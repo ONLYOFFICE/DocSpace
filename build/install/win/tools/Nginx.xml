@@ -1,9 +1,10 @@
 <service>
-	<id>ASC.Proxy</id>
-	<name>ONLYOFFICE DocSpace Proxy</name>
-	<description>ONLYOFFICE DocSpace Proxy</description>
+	<id>Nginx</id>
+	<name>Nginx</name>
+	<description>Nginx</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
+	<delayedAutoStart>true</delayedAutoStart>
 	<onfailure action="restart" delay="1 sec"/>
 	<executable>&quot;{APPDIR}nginx\nginx.exe&quot;</executable>
 	<workingdirectory>{APPDIR}nginx</workingdirectory>
