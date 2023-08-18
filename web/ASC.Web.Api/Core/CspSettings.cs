@@ -47,6 +47,7 @@ public class CspSettingsHelper
     private readonly TenantManager _tenantManager;
     private readonly CoreSettings _coreSettings;
     private readonly IDistributedCache _distributedCache;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
 
     public CspSettingsHelper(
@@ -55,6 +56,7 @@ public class CspSettingsHelper
         TenantManager tenantManager,
         CoreSettings coreSettings,
         IDistributedCache distributedCache,
+        IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
     {
         _settingsManager = settingsManager;
@@ -62,21 +64,34 @@ public class CspSettingsHelper
         _tenantManager = tenantManager;
         _coreSettings = coreSettings;
         _distributedCache = distributedCache;
+        _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
     }
 
     public async Task<string> Save(IEnumerable<string> domains)
     {
-        var headerKey = GetKey(_tenantManager.GetCurrentTenant().GetTenantDomain(_coreSettings));
+        var tenant = _tenantManager.GetCurrentTenant();
+        var domain = tenant.GetTenantDomain(_coreSettings);
+        List<string> headerKeys = new()
+        {
+            GetKey(domain)
+        };
+
+        if (domain == Tenant.LocalHost && tenant.Alias == Tenant.LocalHost)
+        {
+            headerKeys.Add(GetKey(Tenant.HostName));
+            headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
+        }
+
         var headerValue = CreateHeader(domains);
 
         if (!string.IsNullOrEmpty(headerValue))
         {
-            await _distributedCache.SetStringAsync(headerKey, headerValue);
+            await Parallel.ForEachAsync(headerKeys, async (headerKey, _) => await _distributedCache.SetStringAsync(headerKey, headerValue));
         }
         else
         {
-            await _distributedCache.RemoveAsync(headerKey);
+            await Parallel.ForEachAsync(headerKeys, async (headerKey, _) => await _distributedCache.RemoveAsync(headerKey));
         }
 
         var current = _settingsManager.Load<CspSettings>();

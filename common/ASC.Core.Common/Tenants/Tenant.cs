@@ -32,6 +32,7 @@ public class Tenant : IMapFrom<DbTenant>
     public const int DefaultTenant = -1;
 
     public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
+    public const string LocalHost = "localhost";
 
     private List<string> _domains;
 
