@@ -80,11 +80,6 @@ map $SERVICE_HELTHCHECKS $service_healthchecks {
     $SERVICE_HELTHCHECKS $SERVICE_HELTHCHECKS;
 }
 
-map $REDIS_HOST $service_redis {
-    volatile;
-    $REDIS_HOST $REDIS_HOST;
-}
-
 map $DOCUMENT_SERVER $document_server {
     volatile;
     $DOCUMENT_SERVER $DOCUMENT_SERVER;

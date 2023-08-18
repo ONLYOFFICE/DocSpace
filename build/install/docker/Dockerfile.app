@@ -150,8 +150,7 @@ COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 
 # changes for upstream configure
-RUN sed -i 's/redis_host = \"127.0.0.1\"/redis_host = \"$service_redis\"/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+RUN sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
