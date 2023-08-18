@@ -90,6 +90,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <path>api/2.0/files/file/{fileId}/share</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpGet("file/{fileId}/share")]
     public async IAsyncEnumerable<FileShareDto> GetFileSecurityInfoAsync(T fileId)
     {
@@ -109,6 +110,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <path>api/2.0/files/folder/{folderId}/share</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpGet("folder/{folderId}/share")]
     public async IAsyncEnumerable<FileShareDto> GetFolderSecurityInfoAsync(T folderId)
     {
@@ -145,6 +147,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <path>api/2.0/files/file/{fileId}/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpPut("file/{fileId}/share")]
     public async IAsyncEnumerable<FileShareDto> SetFileSecurityInfoAsync(T fileId, SecurityInfoRequestDto inDto)
     {
@@ -165,6 +168,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <path>api/2.0/files/folder/{folderId}/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpPut("folder/{folderId}/share")]
     public async IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, SecurityInfoRequestDto inDto)
     {
@@ -265,6 +269,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <path>api/2.0/files/share</path>
     /// <httpMethod>POST</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpPost("share")]
     public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(BaseBatchRequestDto inDto)
     {
@@ -289,6 +294,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/share</path>
     /// <httpMethod>DELETE</httpMethod>
+    /// <visible>false</visible>
     [HttpDelete("share")]
     public async Task<bool> RemoveSecurityInfoAsync(BaseBatchRequestDto inDto)
     {
@@ -312,6 +318,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <path>api/2.0/files/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
+    /// <visible>false</visible>
     [HttpPut("share")]
     public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(SecurityInfoRequestDto inDto)
     {

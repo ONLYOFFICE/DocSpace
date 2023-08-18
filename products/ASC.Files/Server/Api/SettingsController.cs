@@ -132,6 +132,7 @@ public class SettingsController : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/displayRecent</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("displayRecent")]
     public bool DisplayRecent(DisplayRequestDto inDto)
     {
@@ -147,6 +148,7 @@ public class SettingsController : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/templates</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("settings/templates")]
     public bool DisplayTemplates(DisplayRequestDto inDto)
     {
