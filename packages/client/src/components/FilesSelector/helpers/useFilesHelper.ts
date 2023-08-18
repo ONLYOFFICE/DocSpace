@@ -310,7 +310,10 @@ export const useFilesHelper = ({
         if (isInit && getRootData) {
           const folder = await getFolderInfo(id);
 
-          if (folder.rootFolderType === FolderType.TRASH) {
+          if (
+            folder.rootFolderType === FolderType.TRASH ||
+            folder.rootFolderType === FolderType.Archive
+          ) {
             await getRootData();
 
             return;
