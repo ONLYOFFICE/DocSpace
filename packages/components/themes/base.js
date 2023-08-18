@@ -1939,6 +1939,7 @@ const Base = {
     expanderColor: black,
     background: white,
     rootFolderTitleColor: "#A3A9AE",
+    publicIcon: black,
 
     icon: {
       fill: "#316DAA",

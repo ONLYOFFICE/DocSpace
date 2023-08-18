@@ -1935,6 +1935,7 @@ const Dark = {
     expanderColor: "#eeeeee",
     background: black,
     rootFolderTitleColor: "#858585",
+    publicIcon: "#858585",
 
     icon: {
       fill: "#E06A1B",
