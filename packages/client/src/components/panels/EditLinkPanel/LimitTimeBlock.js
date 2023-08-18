@@ -9,6 +9,7 @@ const LimitTimeBlock = (props) => {
     setExpirationDate,
     setIsExpired,
     isExpired,
+    language,
   } = props;
 
   const onChange = (date) => {
@@ -35,6 +36,7 @@ const LimitTimeBlock = (props) => {
         minDate={minDate}
         openDate={new Date()}
         hasError={isExpired}
+        locale={language}
       />
     </ToggleBlock>
   );
