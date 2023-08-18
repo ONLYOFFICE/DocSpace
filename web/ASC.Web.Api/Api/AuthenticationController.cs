@@ -527,7 +527,7 @@ public class AuthenticationController : ControllerBase
         catch (BruteForceCredentialException)
         {
             await _messageService.SendAsync(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
-            throw new AuthenticationException("Login Fail. Too many attempts");
+            throw new AuthenticationException(Resource.ErrorTooManyLoginAttempts);
         }
         catch (Exception ex)
         {
