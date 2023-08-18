@@ -14,6 +14,7 @@ function Select({
   setValue,
   prefix,
   dropDownMaxHeight,
+  withTranslationPrefix = true,
 }: SelectProps) {
   const { t } = useTranslation("Cron");
 
@@ -66,7 +67,7 @@ function Select({
 
   return (
     <SelectWrapper>
-      <span>{t(prefix)}</span>
+      <span>{withTranslationPrefix ? t(prefix) : prefix}</span>
       <ComboBox
         scaledOptions
         size="content"

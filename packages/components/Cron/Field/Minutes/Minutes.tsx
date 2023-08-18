@@ -4,7 +4,8 @@ import { units } from "../../constants";
 import MinutesProps from "./Minutes.props";
 
 function Minutes({ minutes, setMinutes, period }: MinutesProps) {
-  const prefix = period === "Hour" ? "At" : ":";
+  const isHour = period === "Hour";
+  const prefix = isHour ? "At" : ":";
 
   return (
     <Select
@@ -14,6 +15,7 @@ function Minutes({ minutes, setMinutes, period }: MinutesProps) {
       unit={units[0]}
       prefix={prefix}
       dropDownMaxHeight={300}
+      withTranslationPrefix={isHour}
     />
   );
 }

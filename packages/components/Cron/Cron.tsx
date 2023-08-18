@@ -22,7 +22,7 @@ function Cron({ value = defaultCronString, setValue, onError }: CronProps) {
   const [monthDays, setMonthDays] = useState<number[]>([]);
 
   useEffect(() => {
-    onError?.(undefined);
+    onError?.(undefined); // reset error state
     if (valueRef.current !== value) init();
   }, [value]);
 
