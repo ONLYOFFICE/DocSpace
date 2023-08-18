@@ -5,6 +5,7 @@ on:
     branches: 
       - 'hotfix/v**'
       - 'release/v**'
+      - 'feature/*'
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
@@ -34,10 +35,17 @@ jobs:
         run: |
           cd .${DOCKER_PATH}
           TAG=${{github.run_number}}
-          export DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/v\|hotfix.*\/v//').$TAG
+
+          if [[ $GITHUB_REF_NAME =~ feature/([0-9.]*)-(.*) ]]; then
+            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/([0-9.]*)-(.*)|\1.$TAG-\2")
+          else
+            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///').$TAG
+          fi
+          export DOCKER_TAG       
 
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
           --set *.platform=linux/amd64 \
           --push
         shell: bash
+        
