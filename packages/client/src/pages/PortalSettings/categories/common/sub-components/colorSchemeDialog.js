@@ -120,25 +120,22 @@ const ColorSchemeDialog = (props) => {
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        {showSaveButtonDialog && (
-          <>
-            <Button
-              className="save"
-              label={t("Common:SaveButton")}
-              size="normal"
-              primary
-              scale
-              onClick={onSaveColorSchemeDialog}
-            />
-            <Button
-              className="cancel-button"
-              label={t("Common:CancelButton")}
-              size="normal"
-              scale
-              onClick={onClose}
-            />
-          </>
-        )}
+        <Button
+          className="save"
+          label={t("Common:SaveButton")}
+          size="normal"
+          primary
+          scale
+          onClick={onSaveColorSchemeDialog}
+          isDisabled={!showSaveButtonDialog}
+        />
+        <Button
+          className="cancel-button"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onClose}
+        />
       </ModalDialog.Footer>
     </StyledComponent>
   );

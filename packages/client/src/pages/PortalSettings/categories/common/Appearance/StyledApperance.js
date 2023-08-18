@@ -1,5 +1,6 @@
-﻿import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
-import styled from "styled-components";
+﻿import { smallTablet } from "@docspace/components/utils/device";
+import PlusThemeSvgUrl from "PUBLIC_DIR/images/plus.theme.svg?url";
+import styled, { css } from "styled-components";
 
 const StyledComponent = styled.div`
   padding-top: 3px;
@@ -53,11 +54,32 @@ const StyledComponent = styled.div`
   }
 
   .buttons-container {
+    display: flex;
     padding-top: 24px;
-  }
 
-  .button:not(:last-child) {
-    margin-right: 8px;
+    .button:not(:last-child) {
+      margin-right: 8px;
+    }
+
+    @media ${smallTablet} {
+      .button {
+        width: 100%;
+      }
+    }
+
+    ${({ isShowDeleteButton }) =>
+      isShowDeleteButton &&
+      css`
+        @media ${smallTablet} {
+          flex-direction: column;
+          gap: 8px;
+          margin: 0;
+
+          .button:not(:last-child) {
+            margin-right: 0px;
+          }
+        }
+      `}
   }
 
   .check-img {

@@ -21,7 +21,6 @@ import Loader from "./sub-components/loaderAppearance";
 
 import { StyledComponent, StyledTheme } from "./Appearance/StyledApperance.js";
 import { ReactSVG } from "react-svg";
-import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 import ModalDialogDelete from "./sub-components/modalDialogDelete";
 import hexToRgba from "hex-to-rgba";
 
@@ -624,13 +623,6 @@ const Appearance = (props) => {
     );
   };
 
-  if (isSmallWindow)
-    return (
-      <BreakpointWarning sectionName={t("Settings:Appearance")} isSmallWindow />
-    );
-  if (isMobileOnly)
-    return <BreakpointWarning sectionName={t("Settings:Appearance")} />;
-
   return !tReady ? (
     <Loader />
   ) : (
@@ -641,7 +633,10 @@ const Appearance = (props) => {
         onClickDelete={onClickDeleteModal}
       />
 
-      <StyledComponent colorCheckImg={colorCheckImg}>
+      <StyledComponent
+        colorCheckImg={colorCheckImg}
+        isShowDeleteButton={isShowDeleteButton}
+      >
         <div className="header">{t("Common:Color")}</div>
 
         <div className="theme-standard-container">
@@ -724,7 +719,7 @@ const Appearance = (props) => {
           visible={showColorSchemeDialog}
           onClose={onCloseColorSchemeDialog}
           header={headerColorSchemeDialog}
-          viewMobile={isMobileOnly}
+          // viewMobile={isMobileOnly}
           openHexColorPickerButtons={openHexColorPickerButtons}
           openHexColorPickerAccent={openHexColorPickerAccent}
           showSaveButtonDialog={showSaveButtonDialog}
