@@ -7,7 +7,7 @@ import Item from "./Item";
 
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
 
-const FOOTER_HEIGHT = 70;
+const FOOTER_HEIGHT = 73;
 const USER_ITEM_HEIGHT = 48;
 
 const Row = memo(({ data, index, style }) => {

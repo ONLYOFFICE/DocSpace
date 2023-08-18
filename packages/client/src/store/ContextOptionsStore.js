@@ -40,7 +40,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights, RoomsType } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -635,7 +635,7 @@ class ContextOptionsStore {
     return promise;
   };
 
-  onClickInviteUsers = (e) => {
+  onClickInviteUsers = (e, item) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
 
     const { action } = data;
@@ -650,7 +650,10 @@ class ContextOptionsStore {
         visible: true,
         roomId: action ? action : e,
         hideSelector: false,
-        defaultAccess: ShareAccessRights.ReadOnly,
+        defaultAccess:
+          item.roomType === RoomsType.PublicRoom
+            ? ShareAccessRights.RoomManager
+            : ShareAccessRights.ReadOnly,
       });
     }
   };
@@ -1054,7 +1057,7 @@ class ContextOptionsStore {
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
-        onClick: (e) => this.onClickInviteUsers(e),
+        onClick: (e) => this.onClickInviteUsers(e, item),
         disabled: false,
         action: item.id,
       },

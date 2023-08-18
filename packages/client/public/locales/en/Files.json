@@ -25,6 +25,9 @@
   "DisableNotifications": "Disable notifications",
   "Document": "Document",
   "DocumentEdited": "Cannot perform the action because the document is being edited.",
+  "PasswordLink": " Add a password to protect your link.",
+  "ChooseExpirationDate": "Limit availability period for this link by setting an expiration date.",
+  "PreventDownloadFilesAndFolders": "Disable downloads of files and folders from this room to secure your data.",
   "EditRoom": "Edit room",
   "EmptyFile": "Empty file",
   "EmptyFilterDescriptionText": "No files or folders match this filter. Try a different one or clear filter to view all files. ",
@@ -138,6 +141,7 @@
   "ShareRoom": "Share room",
   "DownloadAll": "Download all",
   "PublicRoom": "Public room",
+  "RoomAvailableViaExternalLink": "Room available via external link",
   "PasswordSuccessfullyCopied": "Password successfully copied",
   "LinkAddedSuccessfully": "Link added successfully",
   "MoveToPublicRoomTitle": "Move to Public room",
@@ -158,5 +162,8 @@
   "RoomOwner": "Room owner",
   "YouLeftTheRoom": "You have left the room",
   "LeftAndAppointNewOwner": "You have left the room and appointed a new owner",
-  "AppointNewOwner": "You have appointed a new owner."
+  "AppointNewOwner": "You have appointed a new owner.",
+  "AddNewExternalLink": "Add new external link",
+  "CopyLinkPassword": "Copy link password",
+  "ShowLinkActions": "Show link actions"
 }
