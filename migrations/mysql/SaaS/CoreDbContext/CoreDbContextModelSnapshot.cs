@@ -80,7 +80,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                             Tenant = -2,
                             Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
-                            Price = 30m,
+                            Price = 15m,
                             ProductId = "1002",
                             Visible = true
                         },
