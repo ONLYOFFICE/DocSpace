@@ -175,6 +175,7 @@ const FilesSelector = ({
           id: item.id,
           isRoom:
             item.parentId === 0 && item.rootFolderType === FolderType.Rooms,
+          roomType: item.roomType,
         },
       ]);
       setSelectedItemId(item.id);

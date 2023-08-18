@@ -59,6 +59,7 @@ const convertRoomsToItems = (rooms: any) => {
       parentId,
       rootFolderType,
       isFolder: true,
+      roomType,
     };
   });
 
