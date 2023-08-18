@@ -26,7 +26,7 @@ export const messageActions = (
   updateEventListenerItems,
   updateFileItems
 ) => {
-  if (!message) return;
+  if (!message || !message.actions || message.actions.length === 0) return;
 
   message.actions.forEach((action) => {
     switch (action) {

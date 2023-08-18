@@ -502,7 +502,6 @@ class PluginStore {
     const device = this.getCurrentDevice();
 
     Array.from(items).map(([key, value]) => {
-      console.log(value);
       const correctUserType = value.usersType
         ? value.usersType.includes(userRole)
         : true;
@@ -514,8 +513,6 @@ class PluginStore {
       if (!correctUserType || !correctDevice) return;
 
       const submenu = { ...value.subMenu };
-
-      console.log(value);
 
       if (value.subMenu.onClick) {
         const onClick = async () => {

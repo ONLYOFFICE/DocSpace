@@ -1249,7 +1249,20 @@ class ContextOptionsStore {
         if (contextOptions.includes(option.key)) {
           const value = option.value;
 
-          const onClick = () => value.onClick(item.id);
+          const onClick = async () => {
+            if (option.withActiveItem && item.fileExst) {
+              const { addActiveItems } = this.filesStore;
+              const { id } = this.selectedFolderStore;
+
+              addActiveItems([item.id], null, id);
+
+              await value.onClick(item.id);
+
+              addActiveItems(null, null, id);
+            } else {
+              value.onClick(item.id);
+            }
+          };
 
           if (value.fileExt) {
             if (value.fileExt.includes(item.fileExst)) {
