@@ -85,13 +85,10 @@ const FilesSelector = ({
   setSelectedItems,
 
   includeFolder,
-<<<<<<< HEAD
 
   socketHelper,
   socketSubscribersId,
-=======
   setMoveToPublicRoomVisible,
->>>>>>> develop
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
 
@@ -654,12 +651,9 @@ export default inject(
       setIsFolderActions,
       setSelectedItems,
       includeFolder,
-<<<<<<< HEAD
       socketHelper,
       socketSubscribersId,
-=======
       setMoveToPublicRoomVisible,
->>>>>>> develop
     };
   }
 )(observer(FilesSelector));
