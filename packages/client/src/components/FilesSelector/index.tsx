@@ -29,6 +29,7 @@ import useRoomsHelper from "./helpers/useRoomsHelper";
 import useLoadersHelper from "./helpers/useLoadersHelper";
 import useFilesHelper from "./helpers/useFilesHelper";
 import { getAcceptButtonLabel, getHeaderLabel, getIsDisabled } from "./utils";
+import useSocketHelper from "./helpers/useSocketHelper";
 
 const FilesSelector = ({
   isPanelVisible = false,
@@ -84,6 +85,9 @@ const FilesSelector = ({
   setSelectedItems,
 
   includeFolder,
+
+  socketHelper,
+  socketSubscribersId,
   setMoveToPublicRoomVisible,
 }: FilesSelectorProps) => {
   const { t } = useTranslation(["Files", "Common", "Translations"]);
@@ -114,6 +118,16 @@ const FilesSelector = ({
 
   const [isRequestRunning, setIsRequestRunning] =
     React.useState<boolean>(false);
+
+  const { subscribe, unsubscribe } = useSocketHelper({
+    socketHelper,
+    socketSubscribersId,
+    setItems,
+    setBreadCrumbs,
+    setTotal,
+    disabledItems,
+    filterParam,
+  });
 
   const {
     setIsBreadCrumbsLoading,
@@ -195,6 +209,13 @@ const FilesSelector = ({
       setSelectedFileInfo({ id: item.id, title: item.title });
     }
   };
+
+  React.useEffect(() => {
+    if (!selectedItemId) return;
+    if (selectedItemId && isRoot) return unsubscribe(+selectedItemId);
+
+    subscribe(+selectedItemId);
+  }, [selectedItemId, isRoot]);
 
   React.useEffect(() => {
     if (!withoutBasicSelection) {
@@ -525,7 +546,12 @@ export default inject(
     }: any,
     { isCopy, isRestoreAll, isMove, isPanelVisible, id, passedFoldersTree }: any
   ) => {
-    const { id: selectedId, parentId, rootFolderType } = selectedFolderStore;
+    const {
+      id: selectedId,
+      parentId,
+      rootFolderType,
+      socketSubscribersId,
+    } = selectedFolderStore;
 
     const { setConflictDialogData, checkFileConflicts, setSelectedItems } =
       filesActionsStore;
@@ -562,10 +588,15 @@ export default inject(
       setMoveToPublicRoomVisible,
     } = dialogsStore;
 
-    const { theme } = auth.settingsStore;
+    const { theme, socketHelper } = auth.settingsStore;
 
-    const { selection, bufferSelection, filesList, setMovingInProgress } =
-      filesStore;
+    const {
+      selection,
+      bufferSelection,
+      filesList,
+
+      setMovingInProgress,
+    } = filesStore;
 
     const selections =
       isMove || isCopy || isRestoreAll
@@ -620,6 +651,8 @@ export default inject(
       setIsFolderActions,
       setSelectedItems,
       includeFolder,
+      socketHelper,
+      socketSubscribersId,
       setMoveToPublicRoomVisible,
     };
   }
