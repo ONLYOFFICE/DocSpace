@@ -32,7 +32,8 @@
  #
 
 PACKAGE_SYSNAME="onlyoffice"
-PRODUCT="docspace"
+PRODUCT_NAME="DocSpace"
+PRODUCT=$(tr '[:upper:]' '[:lower:]' <<< ${PRODUCT_NAME})
 BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
@@ -47,8 +48,8 @@ SWAPFILE="/${PRODUCT}_swapfile";
 MAKESWAP="true";
 
 DISK_REQUIREMENTS=40960;
-MEMORY_REQUIREMENTS=5500;
-CORE_REQUIREMENTS=2;
+MEMORY_REQUIREMENTS=8192;
+CORE_REQUIREMENTS=4;
 
 DIST="";
 REV="";
@@ -750,7 +751,7 @@ domain_check () {
 		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
 			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
 			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
-			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME} installation."
 			if read_continue_installation; then
 				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
 					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
@@ -1153,8 +1154,8 @@ start_installation () {
 	fi
 
 	echo ""
-	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT^^}."
-	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://dev.${PACKAGE_SYSNAME}.org"
+	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME}."
+	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://forum.${PACKAGE_SYSNAME}.com"
 	echo ""
 
 	exit 0;

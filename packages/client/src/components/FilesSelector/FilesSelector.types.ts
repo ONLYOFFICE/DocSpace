@@ -27,6 +27,7 @@ export type Item = {
   isFolder: boolean;
   isDisabled?: boolean;
   security: Security;
+  roomType: number;
 };
 
 export type BreadCrumb = {
@@ -80,6 +81,7 @@ export type useFilesHelpersProps = {
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
+  getRootData?: () => Promise<void>;
 };
 
 export type FilesSelectorProps = {
@@ -88,6 +90,7 @@ export type FilesSelectorProps = {
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   isEditorDialog: boolean;
+  setMoveToPublicRoomVisible: (visible: boolean, operationData: object) => void;
 
   onClose?: () => void;
 
@@ -150,4 +153,6 @@ export type FilesSelectorProps = {
 
   descriptionText?: string;
   setSelectedItems: () => void;
+
+  includeFolder?: boolean;
 };

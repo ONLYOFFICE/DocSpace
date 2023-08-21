@@ -161,17 +161,21 @@ services:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
-    restart: always
     expose:
       - "5013"
+    healthcheck:
+     <<: *x-healthcheck
+     test: curl --fail http://${SERVICE_DOCEDITOR}/health/ || exit 1
 
   onlyoffice-login:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
     container_name: ${LOGIN_HOST}
-    restart: always
     expose:
       - "5011"
+    healthcheck:
+     <<: *x-healthcheck
+     test: curl --fail http://${SERVICE_LOGIN}/health/ || exit 1
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"

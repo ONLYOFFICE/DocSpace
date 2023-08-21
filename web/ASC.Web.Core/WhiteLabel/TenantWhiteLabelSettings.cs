@@ -431,7 +431,7 @@ public class TenantWhiteLabelSettingsHelper
                 await SetLogoAsync(tenantWhiteLabelSettings, currentLogoType, extDark, darkData, true, storage);
             }
 
-            tenantWhiteLabelSettings.SetExt(currentLogoType, extLight);
+            tenantWhiteLabelSettings.SetExt(currentLogoType, extLight ?? extDark);
             tenantWhiteLabelSettings.SetIsDefault(currentLogoType, false);
         }
     }

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.AspNetCore.RateLimiting;
+
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -1160,14 +1162,20 @@ public class UserController : PeopleControllerBase
         }
 
         var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var viewerIsAdmin = await _userManager.IsDocSpaceAdminAsync(viewer);
         var user = await _userManager.GetUsersAsync(userid);
 
-        if (user == null)
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
+        if (!viewerIsAdmin && viewer.Id != user.Id)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
+        if (user.IsOwner(Tenant) && viewer.Id != user.Id)
         {
             throw new Exception(Resource.ErrorAccessDenied);
         }
@@ -1179,7 +1187,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!await _userManager.IsDocSpaceAdminAsync(viewer))
+        if (!viewerIsAdmin)
         {
             await _studioNotifyService.SendEmailChangeInstructionsAsync(user, email);
         }
@@ -1216,6 +1224,7 @@ public class UserController : PeopleControllerBase
     [AllowNotPayment]
     [AllowAnonymous]
     [HttpPost("password")]
+    [EnableRateLimiting("sensitive_api")]
     public async Task<object> SendUserPasswordAsync(MemberRequestDto inDto)
     {
         if (_authContext.IsAuthenticated)
