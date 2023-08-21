@@ -206,6 +206,10 @@ const StyledTableGroupMenu = styled.div`
       }
     }
   }
+
+  .scroll-body {
+    display: flex;
+  }
 `;
 
 StyledTableGroupMenu.defaultProps = { theme: Base };

@@ -174,6 +174,13 @@ const StyledContainer = styled.div`
     .title-icon {
       min-width: 16px;
       min-height: 16px;
+
+      svg {
+        path,
+        rect {
+          fill: ${({ theme }) => theme.navigation.publicIcon};
+        }
+      }
     }
   }
 

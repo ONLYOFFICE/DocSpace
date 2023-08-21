@@ -86,7 +86,7 @@ const PasswordAccessBlock = (props) => {
               isDisabled={isLoading}
               onClick={onCleanClick}
             >
-              {t("Clean")}
+              {t("Files:Clean")}
             </Link>
             <Link
               fontSize="13px"
@@ -96,7 +96,7 @@ const PasswordAccessBlock = (props) => {
               isDisabled={isLoading}
               onClick={onCopyClick}
             >
-              {t("CopyPassword")}
+              {t("Files:CopyPassword")}
             </Link>
           </div>
         </div>
