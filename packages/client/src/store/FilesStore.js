@@ -458,6 +458,10 @@ class FilesStore {
           });
         }
       }
+
+      if (folder.id === this.selectedFolderStore.id) {
+        this.selectedFolderStore.setSelectedFolder({ ...folder });
+      }
     }
   };
 
