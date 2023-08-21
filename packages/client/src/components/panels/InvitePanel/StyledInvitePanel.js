@@ -33,6 +33,12 @@ const StyledInvitePanel = styled.div`
     .scroll-body {
       padding-right: 0px !important;
     }
+
+    .trackYVisible {
+      .scroller {
+        margin-right: -17px !important;
+      }
+    }
   }
 `;
 
