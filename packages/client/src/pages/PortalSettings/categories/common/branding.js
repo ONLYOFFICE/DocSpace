@@ -74,7 +74,7 @@ const Branding = ({
 
   return (
     <StyledComponent isSettingPaid={isSettingPaid}>
-      <Whitelabel isSettingPaid={isSettingPaid} />
+      <Whitelabel />
       {standalone && (
         <>
           <hr />
@@ -85,8 +85,8 @@ const Branding = ({
           ) : (
             <LoaderBrandingDescription />
           )}
-          <CompanyInfoSettings isSettingPaid={isSettingPaid} />
-          <AdditionalResources isSettingPaid={isSettingPaid} />
+          <CompanyInfoSettings />
+          <AdditionalResources />
         </>
       )}
     </StyledComponent>

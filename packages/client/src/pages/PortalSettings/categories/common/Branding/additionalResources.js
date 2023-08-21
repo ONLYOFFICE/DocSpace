@@ -9,9 +9,18 @@ import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 import isEqual from "lodash/isEqual";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
+
+  @media ${smallTablet} {
+    margin-top: 0px;
+
+    .header {
+      display: none;
+    }
+  }
 
   .branding-checkbox {
     display: flex;
@@ -253,7 +262,7 @@ const AdditionalResources = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { settingsStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
 
   const { setIsLoadedAdditionalResources, isLoadedAdditionalResources } =
     common;
@@ -266,6 +275,8 @@ export default inject(({ auth, common }) => {
     additionalResourcesIsDefault,
   } = settingsStore;
 
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+
   return {
     getAdditionalResources,
     setAdditionalResources,
@@ -274,6 +285,7 @@ export default inject(({ auth, common }) => {
     additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(

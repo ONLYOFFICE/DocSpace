@@ -108,6 +108,10 @@ const WhiteLabelWrapper = styled.div`
     width: 384px;
     height: 42px;
     padding: 12px 20px;
+
+    @media ${smallTablet} {
+      width: 310px;
+    }
   }
 
   .logo-about {
@@ -171,6 +175,13 @@ const WhiteLabelWrapper = styled.div`
 
   .save-cancel-buttons {
     margin-top: 24px;
+  }
+
+  @media ${smallTablet} {
+    .subtitle,
+    .header-container {
+      display: none;
+    }
   }
 `;
 

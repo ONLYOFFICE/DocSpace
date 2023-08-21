@@ -12,6 +12,7 @@ import Link from "@docspace/components/link";
 import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
 import AboutDialog from "../../../../About/AboutDialog";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledComponent = styled.div`
   .link {
@@ -31,6 +32,16 @@ const StyledComponent = styled.div`
 
   .save-cancel-buttons {
     margin-top: 24px;
+  }
+
+  .description {
+    padding-bottom: 16px;
+  }
+
+  @media ${smallTablet} {
+    .header {
+      display: none;
+    }
   }
 `;
 
@@ -427,7 +438,7 @@ const CompanyInfoSettings = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { settingsStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
 
   const {
     setIsLoadedCompanyInfoSettingsData,
@@ -444,6 +455,8 @@ export default inject(({ auth, common }) => {
     personal,
   } = settingsStore;
 
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+
   return {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
@@ -454,6 +467,7 @@ export default inject(({ auth, common }) => {
     isLoadedCompanyInfoSettingsData,
     buildVersionInfo,
     personal,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(
   withLoading(

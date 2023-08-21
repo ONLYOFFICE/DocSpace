@@ -486,6 +486,7 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoUrls,
     whiteLabelLogoUrls: defaultWhiteLabelLogoUrls,
   } = auth.settingsStore;
+  const { isBrandingAndCustomizationAvailable } = auth.currentQuotaStore;
 
   return {
     setLogoText,
@@ -498,5 +499,6 @@ export default inject(({ setup, auth, common }) => {
     restoreWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoUrlsAction,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));
