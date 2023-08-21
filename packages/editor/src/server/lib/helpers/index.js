@@ -15,7 +15,10 @@ import {
 } from "@docspace/common/api/files";
 import { TenantStatus } from "@docspace/common/constants";
 
-import { getLogoFromPath } from "@docspace/common/utils";
+import {
+  getLtrLanguageForEditor,
+  getLogoFromPath,
+} from "@docspace/common/utils";
 
 export const getFavicon = (logoUrls) => {
   if (!logoUrls) return null;
@@ -91,7 +94,14 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    const config = await openEdit(fileId, fileVersion, doc, view, headers, shareKey);
+    const config = await openEdit(
+      fileId,
+      fileVersion,
+      doc,
+      view,
+      headers,
+      shareKey
+    );
 
     //const sharingSettings = await getShareFiles([+fileId], []);
 
@@ -140,6 +150,13 @@ export const initDocEditor = async (req) => {
         config.editorConfig.customization.logo.url +
         getLogoFromPath(config.editorConfig.customization.customer.logo);
     }
+
+    // needed to reset rtl language in Editor
+    config.editorConfig.lang = getLtrLanguageForEditor(
+      user.cultureName || "en",
+      settings.culture,
+      true
+    );
 
     return {
       config,

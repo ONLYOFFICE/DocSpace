@@ -465,3 +465,18 @@ export const FilterSelectorTypes = Object.freeze({
   people: "people-selector",
   rooms: "rooms-selector",
 });
+
+export const RtlLanguages = [
+  "ar",
+  "arc",
+  "dv",
+  "fa",
+  "ha",
+  "he",
+  "khw",
+  "ks",
+  "ku",
+  "ps",
+  "ur",
+  "yi",
+];
