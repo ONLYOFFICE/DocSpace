@@ -572,6 +572,16 @@ public class EFUserService : IUserService
             }
 
             await userDbContext.AddOrUpdateAsync(q => q.Photos, userPhoto);
+            
+            var userEntity = new User
+            {
+                Id = id,
+                LastModified = DateTime.UtcNow,
+                TenantId = tenant
+            };
+
+            userDbContext.Users.Attach(userEntity);
+            userDbContext.Entry(userEntity).Property(x => x.LastModified).IsModified = true;
         }
         else if (userPhoto != null)
         {
