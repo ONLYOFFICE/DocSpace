@@ -777,4 +777,10 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Trash emptied</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Country</value>
+  </data>
 </root>
