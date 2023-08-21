@@ -56,10 +56,8 @@ const ItemsList = ({
   externalLinksVisible,
   scrollAllPanelContent,
   inputsRef,
+  invitePanelBodyRef,
 }) => {
-  const overflowStyleDefault = scrollAllPanelContent ? "hidden" : "scroll";
-
-  const [overflowStyle, setIsOverflowStyle] = useState(overflowStyleDefault);
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
@@ -72,30 +70,25 @@ const ItemsList = ({
     const heightList = height ? height : bodyRef.current.offsetHeight;
     const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
     const listAreaHeight = heightList;
+    const heightBody = invitePanelBodyRef.current.clientHeight;
+    const fullHeightList = heightBody - bodyRef.current.offsetTop;
+    const heightWitchOpenItemAccess = Math.max(scrollHeight, fullHeightList);
 
     const calculatedHeight = scrollAllPanelContent
       ? Math.max(
           totalHeightItems,
           listAreaHeight,
-          isOpenItemAccess ? scrollHeight : 0
+          isOpenItemAccess ? heightWitchOpenItemAccess : 0
         )
       : heightList - FOOTER_HEIGHT;
 
-    setBodyHeight(calculatedHeight);
+    setBodyHeight(isOpenItemAccess ? calculatedHeight : totalHeightItems);
     setOffsetTop(bodyRef.current.offsetTop);
 
     if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
       setIsTotalListHeight(
         totalHeightItems >= listAreaHeight && totalHeightItems >= scrollHeight
       );
-
-    if (
-      isOpenItemAccess &&
-      isTotalListHeight &&
-      scrollHeight === totalHeightItems
-    ) {
-      setIsOverflowStyle("visible");
-    }
   }, [
     height,
     bodyRef?.current?.offsetHeight,
@@ -114,6 +107,8 @@ const ItemsList = ({
     scrollAllPanelContent,
     isOpenItemAccess,
   ]);
+
+  const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
   return (
     <ScrollList

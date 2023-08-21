@@ -56,6 +56,7 @@ const InvitePanel = ({
   const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
+  const invitePanelBodyRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
@@ -82,7 +83,8 @@ const InvitePanel = ({
       let links = [];
 
       users.map((user) => {
-        const { shareLink, id, title, expirationDate, linkType } = user.sharedTo;
+        const { shareLink, id, title, expirationDate, linkType } =
+          user.sharedTo;
 
         if (!!shareLink && linkType === LinkType.Invite) {
           links.push({
@@ -254,6 +256,7 @@ const InvitePanel = ({
             externalLinksVisible={externalLinksVisible}
             scrollAllPanelContent={scrollAllPanelContent}
             inputsRef={inputsRef}
+            invitePanelBodyRef={invitePanelBodyRef}
           />
         )}
       </>
@@ -270,6 +273,7 @@ const InvitePanel = ({
     setHasErrors,
     scrollAllPanelContent,
     hasInvitedUsers,
+    invitePanelBodyRef,
   ]);
 
   const invitePanelComponent = (
@@ -292,7 +296,7 @@ const InvitePanel = ({
         </StyledBlock>
 
         {scrollAllPanelContent ? (
-          <div className="invite-panel-body">
+          <div className="invite-panel-body" ref={invitePanelBodyRef}>
             <Scrollbar stype="mediumBlack">{bodyInvitePanel}</Scrollbar>
           </div>
         ) : (
