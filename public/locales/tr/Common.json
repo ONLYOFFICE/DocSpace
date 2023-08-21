@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Sağlayıcı hesabınıza bağlı değil",
   "PunycodeDomain": "Punycode domainler desteklenmemektedir",
   "PunycodeLocalPart": "Punycode yerel kısmı desteklenmiyor",
+  "QuotaPaidUserLimitError": "Ücretli kullanıcı sınırına ulaşıldı.",
   "ReconnectStorage": "Depolamayı yeniden bağla",
   "RecoverDescribeYourProblemPlaceholder": "Sorununuzu tarif edin",
   "RecoverTitle": "Erişim kurtarma",
