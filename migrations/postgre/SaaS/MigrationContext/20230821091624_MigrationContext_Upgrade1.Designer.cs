@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.SaaS.Migrations
 {
     [DbContext(typeof(MigrationContext))]
-    [Migration("20230726124747_MigrationContext_Upgrade1")]
-    partial class MigrationContextUpgrade1
+    [Migration("20230821091624_MigrationContext_Upgrade1")]
+    partial class MigrationContext_Upgrade1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace ASC.Migrations.PostgreSql.SaaS.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
@@ -4511,6 +4511,38 @@ namespace ASC.Migrations.PostgreSql.SaaS.Migrations
                     b.HasKey("Region");
 
                     b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.ShortLink", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint(19)")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text")
+                        .HasColumnName("link")
+                        .UseCollation("utf8_bin");
+
+                    b.Property<string>("Short")
+                        .HasColumnType("varchar(12)")
+                        .HasColumnName("short")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasKey("Id")
+                        .HasName("PRIMARY");
+
+                    b.HasIndex("Short")
+                        .IsUnique();
+
+                    b.ToTable("short_links", (string)null);
+
+                    b
+                        .HasAnnotation("MySql:CharSet", "utf8")
+                        .HasAnnotation("Relational:Collation", "utf8_general_ci");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.TelegramUser", b =>
