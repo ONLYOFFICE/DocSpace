@@ -5,7 +5,7 @@ on:
     branches: 
       - 'hotfix/v**'
       - 'release/v**'
-      - 'feature/*'
+      - 'feature/*-build-action'
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
@@ -35,9 +35,8 @@ jobs:
         run: |
           cd .${DOCKER_PATH}
           TAG=${{github.run_number}}
-
-          if [[ $GITHUB_REF_NAME =~ feature/([0-9.]*)-(.*) ]]; then
-            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/([0-9.]*)-(.*)|\1.$TAG-\2")
+          if [[ $GITHUB_REF_NAME =~ feature/v([0-9.]*)-(.*) ]]; then
+            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/v([0-9.]*)(-.*)?-build-action|\1\2-action|")
           else
             DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///').$TAG
           fi
@@ -48,4 +47,3 @@ jobs:
           --set *.platform=linux/amd64 \
           --push
         shell: bash
-        
