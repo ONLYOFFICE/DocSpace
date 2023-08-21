@@ -31,12 +31,12 @@ if [ "$#" -ge "2" ]; then
     # Request and generate Let's Encrypt SSL certificate
     echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-start.log
     certbot certonly --expand --webroot --noninteractive --agree-tos --email ${LETS_ENCRYPT_MAIL} -d ${LETS_ENCRYPT_DOMAIN} > /var/log/le-new.log
-    openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
+    [[ ! -f "/etc/ssl/certs/dhparam.pem" ]] && openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
 
     if [ -f "${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/fullchain.pem" -a -f ${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/privkey.pem ]; then
         if [ -f ${DOCKERCOMPOSE_DIR}/.env -a -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml ]; then
             # Update .env file with Let's Encrypt domain
-            sed -i "s~\(LETSENCRYPT_CERTIFICATE_PATH=\).*~\1\"${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}\"~g" ${DOCKERCOMPOSE_DIR}/.env
+            sed -i "s~\(LETS_ENCRYPT_DOMAIN=\).*~\1\"${LETS_ENCRYPT_DOMAIN}\"~g" ${DOCKERCOMPOSE_DIR}/.env
             sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${LETS_ENCRYPT_DOMAIN}\"~g" ${DOCKERCOMPOSE_DIR}/.env
 
             docker-compose ${SERVICES_FILES} -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml up -d

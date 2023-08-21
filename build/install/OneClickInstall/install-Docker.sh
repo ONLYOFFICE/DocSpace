@@ -100,6 +100,8 @@ DOCUMENT_SERVER_URL_EXTERNAL=""
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
 ENV_EXTENSION=""
+LETS_ENCRYPT_DOMAIN=""
+LETS_ENCRYPT_MAIL=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -433,6 +435,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-led | --letsencryptdomain )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_DOMAIN=$2
+				shift
+			fi
+		;;
+
+		-lem | --letsencryptmail )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_MAIL=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -477,6 +493,8 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
+			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
+			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -1141,9 +1159,8 @@ set_docspace_params() {
 	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
 	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
 	
-	if docker ps -a --format '{{.Names}}' | grep -q "$PACKAGE_SYSNAME-proxy" && docker port $PACKAGE_SYSNAME-proxy | grep -q '443'; then
-		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
-	fi
+	LETS_ENCRYPT_DOMAIN=${LETS_ENCRYPT_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_DOMAIN")};
+	LETS_ENCRYPT_MAIL=${LETS_ENCRYPT_MAIL:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_MAIL")};
 
 	[ -f ${PROXY_YML} ] && EXTERNAL_PORT=${EXTERNAL_PORT:-"$(grep -oP '(?<=- ).*?(?=:80$)' ${PROXY_YML})"}
 }
@@ -1281,6 +1298,11 @@ install_product () {
 		sed -i 's/Xms[0-9]g/Xms4g/g; s/Xmx[0-9]g/Xmx4g/g' $BASE_DIR/${PRODUCT}.yml
 	else
 		sed -i 's/Xms[0-9]g/Xms1g/g; s/Xmx[0-9]g/Xmx1g/g' $BASE_DIR/${PRODUCT}.yml
+	fi
+
+	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt.sh "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
