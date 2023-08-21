@@ -25,13 +25,13 @@ const MobileView = () => {
       <MobileCategoryWrapper
         title={t("WhiteLabel")}
         subtitle={t("BrandingSubtitle")}
-        url="/portal-settings/customization/branding/logo-settings"
+        url="/portal-settings/customization/branding/white-label"
         onClickLink={onClickLink}
       />
       <MobileCategoryWrapper
         title={t("CompanyInfoSettings")}
         subtitle={t("BrandingSectionDescription")}
-        url="/portal-settings/customization/branding/company-info"
+        url="/portal-settings/customization/branding/company-info-settings"
         onClickLink={onClickLink}
       />
       <MobileCategoryWrapper
