@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Base } from "@docspace/components/themes";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const WhiteLabelWrapper = styled.div`
   .subtitle {
@@ -53,7 +54,12 @@ const WhiteLabelWrapper = styled.div`
 
   .logos-wrapper {
     display: flex;
+    flex-direction: row;
     gap: 20px;
+
+    @media ${smallTablet} {
+      flex-direction: column;
+    }
   }
 
   .logos-login-wrapper {
@@ -64,8 +70,13 @@ const WhiteLabelWrapper = styled.div`
 
   .logos-editor-wrapper {
     display: flex;
+    flex-direction: row;
     gap: 8px;
     margin-bottom: 8px;
+
+    @media ${smallTablet} {
+      flex-direction: column;
+    }
   }
 
   .logo-item {
