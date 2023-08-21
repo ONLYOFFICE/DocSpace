@@ -51,7 +51,7 @@
     <ROW Property="JWT_ENABLED" Value="true"/>
     <ROW Property="JWT_HEADER" Value="Authorization"/>
     <ROW Property="Login_Port" Value="5011"/>
-    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3#ExeBuild:3"/>
+    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3#ExeBuild:7"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
     <ROW Property="Manufacturer" Value="Ascensio System SIA"/>
     <ROW Property="MsiLogging" MultiBuildValue="DefaultBuild:vp#ExeBuild:vp"/>
