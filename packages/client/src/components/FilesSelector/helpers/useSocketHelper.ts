@@ -7,6 +7,7 @@ import {
   setItemsCallback,
   useSocketHelperProps,
 } from "../FilesSelector.types";
+import { convertRoomsToItems } from "./useRoomsHelper";
 
 const useSocketHelper = ({
   socketHelper,
@@ -72,7 +73,9 @@ const useSocketHelper = ({
     if (opt?.type === "file") {
       item = convertFilesToItems([data], filterParam)[0];
     } else if (opt?.type === "folder") {
-      item = convertFoldersToItems([data], disabledItems, filterParam)[0];
+      item = !!data.roomType
+        ? convertRoomsToItems([data])[0]
+        : convertFoldersToItems([data], disabledItems, filterParam)[0];
     }
 
     const callback: setItemsCallback = (value: Item[] | null) => {
@@ -114,9 +117,9 @@ const useSocketHelper = ({
     const data = JSON.parse(opt.data);
 
     if (
-      data.folderId
-        ? data.folderId !== subscribedId.current
-        : data.parentId !== subscribedId.current
+      ((data.folderId && data.folderId !== subscribedId.current) ||
+        (data.parentId && data.parentId !== subscribedId.current)) &&
+      data.id !== subscribedId.current
     )
       return;
 
@@ -125,7 +128,23 @@ const useSocketHelper = ({
     if (opt?.type === "file") {
       item = convertFilesToItems([data], filterParam)[0];
     } else if (opt?.type === "folder") {
-      item = convertFoldersToItems([data], disabledItems, filterParam)[0];
+      item = !!data.roomType
+        ? convertRoomsToItems([data])[0]
+        : convertFoldersToItems([data], disabledItems, filterParam)[0];
+    }
+
+    if (item?.id === subscribedId.current) {
+      return setBreadCrumbs((value) => {
+        if (!value) return value;
+
+        const newValue = [...value];
+
+        if (newValue[newValue.length - 1].id === item?.id) {
+          newValue[newValue.length - 1].label = item.label;
+        }
+
+        return newValue;
+      });
     }
 
     const callback: setItemsCallback = (value: Item[] | null) => {
@@ -143,10 +162,6 @@ const useSocketHelper = ({
         }
 
         setBreadCrumbs((breadCrumbsValue) => {
-          if (breadCrumbsValue[breadCrumbsValue.length - 1].id === item?.id) {
-            breadCrumbsValue[breadCrumbsValue.length - 1].label = item.label;
-          }
-
           return breadCrumbsValue;
         });
       }
