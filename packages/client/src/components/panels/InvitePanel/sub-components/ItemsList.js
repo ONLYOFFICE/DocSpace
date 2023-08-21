@@ -70,7 +70,7 @@ const ItemsList = ({
     const heightList = height ? height : bodyRef.current.offsetHeight;
     const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
     const listAreaHeight = heightList;
-    const heightBody = invitePanelBodyRef.current.clientHeight;
+    const heightBody = invitePanelBodyRef?.current?.clientHeight;
     const fullHeightList = heightBody - bodyRef.current.offsetTop;
     const heightWitchOpenItemAccess = Math.max(scrollHeight, fullHeightList);
 
