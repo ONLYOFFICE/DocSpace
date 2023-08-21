@@ -116,6 +116,7 @@ const WhiteLabelWrapper = styled.div`
 
     @media ${smallTablet} {
       width: 310px;
+      height: 35px;
     }
   }
 
