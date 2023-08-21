@@ -23,12 +23,16 @@ const getRoomLogo = (roomType: number) => {
     case RoomsType.EditingRoom:
       path = "editing.svg";
       break;
+
+    case RoomsType.PublicRoom:
+      path = "public.svg";
+      break;
   }
 
   return iconSize32.get(path);
 };
 
-const convertRoomsToItems = (rooms: any) => {
+export const convertRoomsToItems = (rooms: any) => {
   const items = rooms.map((room: any) => {
     const {
       id,
@@ -55,6 +59,7 @@ const convertRoomsToItems = (rooms: any) => {
       parentId,
       rootFolderType,
       isFolder: true,
+      roomType,
     };
   });
 

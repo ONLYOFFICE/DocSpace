@@ -254,6 +254,17 @@ const ClientRoutes = [
         </ErrorBoundary>
       </PublicRoute>
     ),
+    errorElement: <Error404 />,
+    children: [
+      {
+        index: true,
+        element: (
+          <PublicRoute>
+            <FilesView />
+          </PublicRoute>
+        ),
+      },
+    ],
   },
   {
     path: "/wizard",
