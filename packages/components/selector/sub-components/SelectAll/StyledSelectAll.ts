@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Base } from "../../../themes";
 
 const StyledSelectAll = styled.div`
@@ -31,6 +31,12 @@ const StyledSelectAll = styled.div`
     line-height: 16px;
 
     margin-left: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0;
+        margin-right: 8px;
+      `}
   }
 
   .checkbox {

@@ -102,10 +102,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {

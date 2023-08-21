@@ -10,8 +10,9 @@ import {
   MainContainerWrapper,
   StyledRowContent,
 } from "./styled-row-content";
+import { useTheme } from "styled-components";
 
-const getSideInfo = (content, convert) => {
+const getSideInfo = (content, convert, interfaceDirection = "ltr") => {
   let info = [];
   let child = null;
   const lastIndex = content.length - 1;
@@ -28,10 +29,19 @@ const getSideInfo = (content, convert) => {
     }
   });
 
-  return (
+  if (interfaceDirection === "rtl") {
+    info.reverse();
+  }
+
+  return interfaceDirection === "ltr" ? (
     <>
       {info.join(" | ")}
       {child}
+    </>
+  ) : (
+    <>
+      {child}
+      {info.join(" | ")}
     </>
   );
 };
@@ -49,7 +59,9 @@ const RowContent = (props) => {
     convertSideInfo,
   } = props;
 
-  const sideInfo = getSideInfo(children, convertSideInfo);
+  const { interfaceDirection } = useTheme();
+
+  const sideInfo = getSideInfo(children, convertSideInfo, interfaceDirection);
   const mainContainerWidth =
     children[0].props && children[0].props.containerWidth;
 

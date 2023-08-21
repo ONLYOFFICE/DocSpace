@@ -26,14 +26,39 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class LinkRequestDto
 {
+    /// <summary>Link ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid LinkId { get; set; }
+
+    /// <summary>External link name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Sharing rights</summary>
+    /// <type>ASC.Files.Core.Security.FileShare, ASC.Files.Core</type>
     public FileShare Access { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.DateTime, System</type>
     public DateTime? ExpirationDate { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Files.Core.ApiModels.ResponseDto.LinkType, ASC.Files.Core</type>
     public LinkType LinkType { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Password { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool Disabled { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
     public bool DenyDownload { get; set; }
 }

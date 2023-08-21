@@ -1807,8 +1807,8 @@ public class EntryManager
                     lastVersionFile = await UpdateToVersionFileAsync(fileVersion.Id, fileVersion.Version, null, checkRight, true);
                 }
 
-                await fileDao.CompleteVersionAsync(fileVersion.Id, fileVersion.Version);
-                lastVersionFile.VersionGroup++;
+                //await fileDao.CompleteVersionAsync(fileVersion.Id, fileVersion.Version);
+                //lastVersionFile.VersionGroup++;
             }
         }
 

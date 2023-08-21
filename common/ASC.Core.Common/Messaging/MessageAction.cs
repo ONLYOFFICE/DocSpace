@@ -26,6 +26,8 @@
 
 namespace ASC.MessagingSystem.Core;
 
+/// <summary>
+/// </summary>
 [EnumExtensions]
 public enum MessageAction
 {

@@ -58,9 +58,6 @@ basic.args = {
   offsetLeft: 0,
 };
 
-const BodyStyle_2 = { marginTop: -22, marginLeft: 50, position: "absolute" };
-const BodyStyle_3 = { marginTop: 70, marginLeft: 250 };
-
 const arrayUsers = [
   {
     key: "user_1",
@@ -97,7 +94,7 @@ const arrayUsers = [
 const AllTemplate = (args) => {
   return (
     <div>
-      <div style={BodyStyle_2}>
+      <div>
         <h5 style={{ marginLeft: -5 }}>Hover on me</h5>
         <Link data-for="link" data-tip="Bob Johnston">
           Bob Johnston
@@ -115,7 +112,7 @@ const AllTemplate = (args) => {
         </div>
       </Tooltip>
 
-      <div style={BodyStyle_3}>
+      <div>
         <h5 style={{ marginLeft: -5 }}>Hover group</h5>
         <Link data-for="group" data-tip={0}>
           Bob

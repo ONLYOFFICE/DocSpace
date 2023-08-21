@@ -331,16 +331,16 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                 : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
     }
 
-    public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
@@ -351,11 +351,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
     }
 
-    public async Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
         if (folderIds.Length == 0)
         {
-            return new Dictionary<string, string>();
+            return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
 
         var selector = _selectorFactory.GetSelector(to);
@@ -363,12 +363,17 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         if (matchedIds.Length == 0)
         {
-            return new Dictionary<string, string>();
+            return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
 
+        return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
+    }
+
+    private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+    {
         var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
 
-        return await folderDao.CanMoveOrCopyAsync(matchedIds, to);
+        return folderDao.CanMoveOrCopyAsync(matchedIds, to);
     }
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)

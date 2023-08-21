@@ -26,15 +26,32 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class WhiteLabelItemDto
 {
+    /// <summary>File name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Size</summary>
+    /// <type>SixLabors.ImageSharp.Size, SixLabors.ImageSharp</type>
     public SixLabors.ImageSharp.Size Size { get; set; }
+
+    /// <summary>Path</summary>
+    /// <type>ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemPathDto, ASC.Web.Api</type>
     public WhiteLabelItemPathDto Path { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class WhiteLabelItemPathDto
 {
+    /// <summary>Path to the light theme logo</summary>
+    /// <type>System.String, System</type>
     public string Light { get; set; }
+
+    /// <summary>Path to the dark theme logo</summary>
+    /// <type>System.String, System</type>
     public string Dark { get; set; }
 }

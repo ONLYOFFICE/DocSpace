@@ -1,7 +1,7 @@
 <service>
 	<id>ASC.Socket.IO</id>
-	<name>ASC.Socket.IO</name>
-	<description>This service runs ASC.Socket.IO</description>
+	<name>ONLYOFFICE DocSpace Socket.IO</name>
+	<description>ONLYOFFICE DocSpace Socket.IO</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
 	<onfailure action="restart" delay="10 sec"/>

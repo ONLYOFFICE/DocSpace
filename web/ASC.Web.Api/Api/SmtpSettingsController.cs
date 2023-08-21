@@ -26,6 +26,9 @@
 
 namespace ASC.Api.Settings;
 
+///<summary>
+/// SMTP settings API.
+///</summary>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -59,6 +62,16 @@ public class SmtpSettingsController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the current portal SMTP settings.
+    /// </summary>
+    /// <short>
+    /// Get the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("smtp")]
     public async Task<SmtpSettingsDto> GetSmtpSettingsAsync()
     {
@@ -77,6 +90,17 @@ public class SmtpSettingsController : ControllerBase
         return settings;
     }
 
+    /// <summary>
+    /// Saves the SMTP settings for the current portal.
+    /// </summary>
+    /// <short>
+    /// Save the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api" name="inDto">SMTP settings</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("smtp")]
     public async Task<SmtpSettingsDto> SaveSmtpSettingsAsync(SmtpSettingsDto inDto)
     {
@@ -118,6 +142,16 @@ public class SmtpSettingsController : ControllerBase
         return settingsConfig;
     }
 
+    /// <summary>
+    /// Resets the SMTP settings of the current portal.
+    /// </summary>
+    /// <short>
+    /// Reset the SMTP settings
+    /// </short>
+    /// <category>SMTP settings</category>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">Default SMTP settings</returns>
+    /// <path>api/2.0/smtpsettings/smtp</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("smtp")]
     public async Task<SmtpSettingsDto> ResetSmtpSettingsAsync()
     {
@@ -131,12 +165,27 @@ public class SmtpSettingsController : ControllerBase
 
         var current = await _coreConfiguration.GetDefaultSmtpSettingsAsync();
 
+        if (current.IsDefaultSettings && !_coreBaseSettings.Standalone)
+        {
+            current = SmtpSettings.Empty;
+        }
+
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";
 
         return settings;
     }
 
+    // <summary>
+    // Tests the SMTP settings for the current portal (sends test message to the user email).
+    // </summary>
+    // <short>
+    // Test the SMTP settings
+    // </short>
+    // <category>SMTP settings</category>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test</path>
+    // <httpMethod>GET</httpMethod>
     [HttpGet("smtp/test")]
     public async Task<SmtpOperationStatusRequestsDto> TestSmtpSettings()
     {
@@ -151,6 +200,16 @@ public class SmtpSettingsController : ControllerBase
         return _smtpOperation.GetStatus(tenant);
     }
 
+    // <summary>
+    // Returns the SMTP test process status.
+    // </summary>
+    // <short>
+    // Get the SMTP test process status
+    // </short>
+    // <category>SMTP settings</category>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatusRequestsDto, ASC.Web.Api">SMTP operation status</returns>
+    // <path>api/2.0/smtpsettings/smtp/test/status</path>
+    // <httpMethod>GET</httpMethod>
     [HttpGet("smtp/test/status")]
     public SmtpOperationStatusRequestsDto GetSmtpOperationStatus()
     {

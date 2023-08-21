@@ -147,7 +147,11 @@ class FilesActionStore {
     if (isRoomsFolder || isArchiveFolder || isArchiveFolderRoot) {
       fetchRooms(
         updatedFolder,
-        newFilter ? newFilter : roomsFilter.clone()
+        newFilter ? newFilter : roomsFilter.clone(),
+        undefined,
+        undefined,
+        undefined,
+        true
       ).finally(() => {
         this.dialogsStore.setIsFolderActions(false);
         return setTimeout(

@@ -156,7 +156,7 @@ if [ "$PRODUCT_INSTALLED" = "false" ]; then
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
 elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE || $RECONFIGURE_PRODUCT = "true" ]]; then
-	ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /lib/systemd/system/${product}-api.service)
+	ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /usr/lib/systemd/system/${product}-api.service)
 	CONNECTION_STRING=$(json -f /etc/${package_sysname}/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	${package_manager} -y update ${product}
 	${product}-configuration \
@@ -165,6 +165,10 @@ elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE || $RECONFIGURE_PRODUCT
 		-mysqld $(grep -oP 'Database=\K[^;]*' <<< "$CONNECTION_STRING") \
 		-mysqlu $(grep -oP 'User ID=\K[^;]*' <<< "$CONNECTION_STRING") \
 		-mysqlp $(grep -oP 'Password=\K[^;]*' <<< "$CONNECTION_STRING")
+fi
+
+if [ "$MAKESWAP" == "true" ]; then
+	make_swap
 fi
 
 echo ""

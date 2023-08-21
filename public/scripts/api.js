@@ -13,7 +13,7 @@
     theme: "Base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     editorGoBack: true,
-    selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
+    selectorType: "exceptPrivacyTrashArchiveFolders", //TODO: ["roomsOnly", "userFolderOnly", "exceptPrivacyTrashArchiveFolders", "exceptSortedByTagsFolders"]
     showHeader: false,
     showTitle: true,
     showMenu: false,

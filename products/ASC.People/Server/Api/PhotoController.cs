@@ -61,6 +61,18 @@ public class PhotoController : PeopleControllerBase
         _setupInfo = setupInfo;
     }
 
+    /// <summary>
+    /// Creates photo thumbnails by coordinates of the original image specified in the request.
+    /// </summary>
+    /// <short>
+    /// Create photo thumbnails
+    /// </short>
+    /// <category>Photos</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.ThumbnailsRequestDto, ASC.People" name="inDto">Thumbnail request parameters</param>
+    /// <path>api/2.0/people/{userid}/photo/thumbnails</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.ThumbnailsDataDto, ASC.People">Thumbnail parameters</returns>
     [HttpPost("{userid}/photo/thumbnails")]
     public async Task<ThumbnailsDataDto> CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
     {
@@ -106,6 +118,17 @@ public class PhotoController : PeopleControllerBase
         return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
+    /// <summary>
+    /// Deletes a photo of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Delete a user photo
+    /// </short>
+    /// <category>Photos</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.ThumbnailsDataDto, ASC.People">Thumbnail parameters: original photo, retina, maximum size photo, big, medium, small</returns>
+    /// <path>api/2.0/people/{userid}/photo</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{userid}/photo")]
     public async Task<ThumbnailsDataDto> DeleteMemberPhotoAsync(string userid)
     {
@@ -125,6 +148,17 @@ public class PhotoController : PeopleControllerBase
         return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
+    /// <summary>
+    /// Returns a photo of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get a user photo
+    /// </short>
+    /// <category>Photos</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.ThumbnailsDataDto, ASC.People">Thumbnail parameters: original photo, retina, maximum size photo, big, medium, small</returns>
+    /// <path>api/2.0/people/{userid}/photo</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("{userid}/photo")]
     public async Task<ThumbnailsDataDto> GetMemberPhoto(string userid)
     {
@@ -138,6 +172,18 @@ public class PhotoController : PeopleControllerBase
         return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
+    /// <summary>
+    /// Updates a photo of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Update a user photo
+    /// </short>
+    /// <category>Photos</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user photo</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.ThumbnailsDataDto, ASC.People">Updated thumbnail parameters: original photo, retina, maximum size photo, big, medium, small</returns>
+    /// <path>api/2.0/people/{userid}/photo</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/photo")]
     public async Task<ThumbnailsDataDto> UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
     {
@@ -159,6 +205,18 @@ public class PhotoController : PeopleControllerBase
         return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
+    /// <summary>
+    /// Uploads a photo of the user with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Upload a user photo
+    /// </short>
+    /// <category>Photos</category>
+    /// <param type="System.String, System" method="url" name="userid">User ID</param>
+    /// <param type="Microsoft.AspNetCore.Http.IFormCollection, Microsoft.AspNetCore.Http" name="formCollection">Image data</param>
+    /// <path>api/2.0/people/{userid}/photo</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.FileUploadResultDto, ASC.People">Result of file uploading</returns>
     [HttpPost("{userid}/photo")]
     public async Task<FileUploadResultDto> UploadMemberPhoto(string userid, IFormCollection formCollection)
     {

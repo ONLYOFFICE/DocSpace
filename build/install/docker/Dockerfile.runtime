@@ -84,7 +84,7 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     MAP_HASH_BUCKET_SIZE=""
 
 RUN apt-get -y update && \
-    apt-get install -yq vim && \
+    apt-get install -yq vim dos2unix && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
@@ -93,6 +93,10 @@ COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY /build/install/docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY /build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+
+RUN dos2unix /docker-entrypoint.d/prepare-nginx-proxy.sh && \
+    apt-get --purge remove -y dos2unix && \
+    rm -rf /var/lib/apt/lists/*
 
 # todo modify for client
 # add defualt user and group for no-root run

@@ -5,6 +5,8 @@ import ObjectUtils from "../../utils/objectUtils";
 import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
+import { useTheme } from "styled-components";
+
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
 import ToggleButton from "../../toggle-button";
@@ -27,6 +29,8 @@ const SubMenu = (props) => {
   const [activeItem, setActiveItem] = useState(null);
 
   const subMenuRef = useRef();
+
+  const theme = useTheme();
 
   const onItemMouseEnter = (e, item) => {
     if (item.disabled) {
@@ -79,16 +83,23 @@ const SubMenu = (props) => {
       ? subMenuRef.current.offsetWidth
       : DomHelpers.getHiddenElementOuterWidth(subMenuRef.current);
     const itemOuterWidth = DomHelpers.getOuterWidth(parentItem.children[0]);
-
+    const isRtl = theme.interfaceDirection === "rtl";
     subMenuRef.current.style.top = "0px";
-
-    if (
-      parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
-      viewport.width - DomHelpers.calculateScrollbarWidth()
-    ) {
-      subMenuRef.current.style.left = -1 * subListWidth + "px";
+    if (isRtl) {
+      if (subListWidth < parseInt(containerOffset.left, 10)) {
+        subMenuRef.current.style.left = -1 * subListWidth + "px";
+      } else {
+        subMenuRef.current.style.left = itemOuterWidth + "px";
+      }
     } else {
-      subMenuRef.current.style.left = itemOuterWidth + "px";
+      if (
+        parseInt(containerOffset.left, 10) + itemOuterWidth + subListWidth >
+        viewport.width - DomHelpers.calculateScrollbarWidth()
+      ) {
+        subMenuRef.current.style.left = -1 * subListWidth + "px";
+      } else {
+        subMenuRef.current.style.left = itemOuterWidth + "px";
+      }
     }
   };
 

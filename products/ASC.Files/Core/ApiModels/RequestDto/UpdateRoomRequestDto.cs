@@ -26,7 +26,11 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class UpdateRoomRequestDto
 {
+    /// <summary>New room name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 }

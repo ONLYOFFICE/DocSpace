@@ -788,10 +788,11 @@ public class FileSecurity : IFileSecurity
                 {
                     if (folder.FolderType == FolderType.USER)
                     {
-                        return action == FilesSecurityActions.Create ||
+                        return folder.CreateBy == userId && (
+                            action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.CopyTo ||
                             action == FilesSecurityActions.MoveTo ||
-                            action == FilesSecurityActions.FillForms;
+                            action == FilesSecurityActions.FillForms);
                     }
 
                     if (folder.FolderType == FolderType.Archive)

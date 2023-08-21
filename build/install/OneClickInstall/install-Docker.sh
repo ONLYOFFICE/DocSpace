@@ -32,7 +32,8 @@
  #
 
 PACKAGE_SYSNAME="onlyoffice"
-PRODUCT="docspace"
+PRODUCT_NAME="DocSpace"
+PRODUCT=$(tr '[:upper:]' '[:lower:]' <<< ${PRODUCT_NAME})
 BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
@@ -43,9 +44,12 @@ CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
 NETWORK_NAME=${PACKAGE_SYSNAME}
 
+SWAPFILE="/${PRODUCT}_swapfile";
+MAKESWAP="true";
+
 DISK_REQUIREMENTS=40960;
-MEMORY_REQUIREMENTS=5500;
-CORE_REQUIREMENTS=2;
+MEMORY_REQUIREMENTS=8192;
+CORE_REQUIREMENTS=4;
 
 DIST="";
 REV="";
@@ -310,6 +314,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ms | --makeswap )
+			if [ "$2" != "" ]; then
+				MAKESWAP=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -341,6 +352,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
+			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
@@ -479,6 +491,10 @@ check_os_info () {
 		echo "$KERNEL, $DIST, $REV";
 		echo "Not supported OS";
 		exit 1;
+	fi
+
+	if [ -f /etc/needrestart/needrestart.conf ]; then
+		sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
 	fi
 }
 
@@ -735,7 +751,7 @@ domain_check () {
 		if ! grep -q '"dns"' "$DOCKER_DAEMON_FILE" 2>/dev/null; then
 			echo "A problem was detected for ${LOCAL_RESOLVED_DOMAINS[@]} domains when using a loopback IP address or when using NAT."
 			echo "Select 'Y' to continue installing with configuring the use of external IP in Docker via Google Public DNS."
-			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT^^} installation."
+			echo "Select 'N' to cancel ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME} installation."
 			if read_continue_installation; then
 				if [[ -f "$DOCKER_DAEMON_FILE" ]]; then	
 					sed -i '/{/a\    "dns": ["8.8.8.8", "8.8.4.4"],' "$DOCKER_DAEMON_FILE"
@@ -1048,6 +1064,30 @@ install_product () {
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
 
+make_swap () {
+	DISK_REQUIREMENTS=6144; #6Gb free space
+	MEMORY_REQUIREMENTS=11000; #RAM ~12Gb
+
+	AVAILABLE_DISK_SPACE=$(df -m /  | tail -1 | awk '{ print $4 }');
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	EXIST=$(swapon -s | awk '{ print $1 }' | { grep -x ${SWAPFILE} || true; });
+
+	if [[ -z $EXIST ]] && [ ${TOTAL_MEMORY} -lt ${MEMORY_REQUIREMENTS} ] && [ ${AVAILABLE_DISK_SPACE} -gt ${DISK_REQUIREMENTS} ]; then
+
+		if [ "${DIST}" == "Ubuntu" ] || [ "${DIST}" == "Debian" ]; then
+			fallocate -l 6G ${SWAPFILE}
+		else
+			dd if=/dev/zero of=${SWAPFILE} count=6144 bs=1MiB
+		fi
+
+		chmod 600 ${SWAPFILE}
+		mkswap ${SWAPFILE}
+		swapon ${SWAPFILE}
+		echo "$SWAPFILE none swap sw 0 0" >> /etc/fstab
+	fi
+}
+
+
 start_installation () {
 	root_checking
 
@@ -1063,6 +1103,10 @@ start_installation () {
 
 	if [ "$SKIP_HARDWARE_CHECK" != "true" ]; then
 		check_hardware
+	fi
+
+	if [ "$MAKESWAP" == "true" ]; then
+		make_swap
 	fi
 
 	if command_exists docker ; then
@@ -1110,8 +1154,8 @@ start_installation () {
 	fi
 
 	echo ""
-	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT^^}."
-	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://dev.${PACKAGE_SYSNAME}.org"
+	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT_NAME}."
+	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://forum.${PACKAGE_SYSNAME}.com"
 	echo ""
 
 	exit 0;

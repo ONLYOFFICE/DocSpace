@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+///<summary>
+/// Portal information access.
+///</summary>
+///<name>portal</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -137,6 +141,16 @@ public class PortalController : ControllerBase
         _eventBus = eventBus;
     }
 
+    /// <summary>
+    /// Returns the current portal.
+    /// </summary>
+    /// <short>
+    /// Get a portal
+    /// </short>
+    /// <category>Settings</category>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.TenantDto, ASC.Web.Api">Current portal information</returns>
+    /// <path>api/2.0/portal</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("")]
     public TenantDto Get()
@@ -144,12 +158,34 @@ public class PortalController : ControllerBase
         return _mapper.Map<TenantDto>(Tenant);
     }
 
+    /// <summary>
+    /// Returns a user with the ID specified in the request from the current portal.
+    /// </summary>
+    /// <short>
+    /// Get a user by ID
+    /// </short>
+    /// <category>Users</category>
+    /// <param type="System.Guid, System" method="url" name="userID">User ID</param>
+    /// <returns type="ASC.Core.Users.UserInfo, ASC.Core.Common">User information</returns>
+    /// <path>api/2.0/portal/users/{userID}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("users/{userID}")]
     public async Task<UserInfo> GetUserAsync(Guid userID)
     {
         return await _userManager.GetUsersAsync(userID);
     }
 
+    /// <summary>
+    /// Returns an invitation link for joining the portal.
+    /// </summary>
+    /// <short>
+    /// Get an invitation link
+    /// </short>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" method="url" name="employeeType">Employee type (All, RoomAdmin, User, DocSpaceAdmin)</param>
+    /// <category>Users</category>
+    /// <returns type="System.Object, System">Invitation link</returns>
+    /// <path>api/2.0/portal/users/invite/{employeeType}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("users/invite/{employeeType}")]
     public async Task<object> GeInviteLinkAsync(EmployeeType employeeType)
     {
@@ -162,6 +198,15 @@ public class PortalController : ControllerBase
                 + $"&emplType={employeeType:d}";
     }
 
+    /// <summary>
+    /// Returns a link specified in the request in the shortened format.
+    /// </summary>
+    /// <short>Get a shortened link</short>
+    /// <category>Settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.ShortenLinkRequestsDto, ASC.Web.Api" name="inDto">Shortened link request parameters</param>
+    /// <returns type="System.Object, System">Shortened link</returns>
+    /// <path>api/2.0/portal/getshortenlink</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("getshortenlink")]
     public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto inDto)
     {
@@ -176,6 +221,17 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns an extra tenant license for the portal.
+    /// </summary>
+    /// <short>
+    /// Get an extra tenant license
+    /// </short>
+    /// <category>Quota</category>
+    /// <param type="System.Boolean, System" name="refresh">Specifies whether the tariff will be refreshed</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto, ASC.Web.Api">Extra tenant license information</returns>
+    /// <path>api/2.0/portal/tenantextra</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("tenantextra")]
     public async Task<TenantExtraDto> GetTenantExtra(bool refresh)
@@ -207,6 +263,16 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the used space of the current portal.
+    /// </summary>
+    /// <short>
+    /// Get the used portal space
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="System.Double, System">Used portal space</returns>
+    /// <path>api/2.0/portal/usedspace</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("usedspace")]
     public async Task<double> GetUsedSpaceAsync()
     {
@@ -217,12 +283,33 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns a number of portal users.
+    /// </summary>
+    /// <short>
+    /// Get a number of portal users
+    /// </short>
+    /// <category>Users</category>
+    /// <returns type="System.Int64, System">Number of portal users</returns>
+    /// <path>api/2.0/portal/userscount</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("userscount")]
     public async Task<long> GetUsersCountAsync()
     {
         return _coreBaseSettings.Personal ? 1 : (await _userManager.GetUserNamesAsync(EmployeeStatus.Active)).Length;
     }
 
+    /// <summary>
+    /// Returns the current portal tariff.
+    /// </summary>
+    /// <short>
+    /// Get a portal tariff
+    /// </short>
+    /// <category>Quota</category>
+    /// <param type="System.Boolean, System" name="refresh">Specifies whether the tariff will be refreshed</param>
+    /// <returns type="ASC.Core.Billing.Tariff, ASC.Core.Common">Current portal tariff</returns>
+    /// <path>api/2.0/portal/tariff</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("tariff")]
     public async Task<Tariff> GetTariffAsync(bool refresh)
@@ -230,6 +317,16 @@ public class PortalController : ControllerBase
         return await _tariffService.GetTariffAsync(Tenant.Id, refresh: refresh);
     }
 
+    /// <summary>
+    /// Returns the current portal quota.
+    /// </summary>
+    /// <short>
+    /// Get a portal quota
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Common">Current portal quota</returns>
+    /// <path>api/2.0/portal/quota</path>
+    /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
     [HttpGet("quota")]
     public async Task<TenantQuota> GetQuotaAsync()
@@ -237,6 +334,16 @@ public class PortalController : ControllerBase
         return await _tenantManager.GetTenantQuotaAsync(Tenant.Id);
     }
 
+    /// <summary>
+    /// Returns the recommended quota for the current portal.
+    /// </summary>
+    /// <short>
+    /// Get the recommended quota
+    /// </short>
+    /// <category>Quota</category>
+    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Common">Recommended portal quota</returns>
+    /// <path>api/2.0/portal/quota/right</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("quota/right")]
     public async Task<TenantQuota> GetRightQuotaAsync()
     {
@@ -250,12 +357,34 @@ public class PortalController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Returns the full absolute path to the current portal.
+    /// </summary>
+    /// <short>
+    /// Get a path to the portal
+    /// </short>
+    /// <category>Settings</category>
+    /// <param type="System.String, System" name="virtualPath">Portal virtual path</param>
+    /// <returns type="System.Object, System">Portal path</returns>
+    /// <path>api/2.0/portal/path</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("path")]
     public object GetFullAbsolutePath(string virtualPath)
     {
         return _commonLinkUtility.GetFullAbsolutePath(virtualPath);
     }
 
+    /// <summary>
+    /// Returns a thumbnail of the bookmark URL specified in the request.
+    /// </summary>
+    /// <short>
+    /// Get a bookmark thumbnail
+    /// </short>
+    /// <category>Settings</category>
+    /// <param type="System.String, System" name="url">Bookmark URL</param>
+    /// <returns type="Microsoft.AspNetCore.Mvc.FileResult, Microsoft.AspNetCore.Mvc">Thumbnail</returns>
+    /// <path>api/2.0/portal/thumb</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("thumb")]
     public FileResult GetThumb(string url)
     {
@@ -290,6 +419,16 @@ public class PortalController : ControllerBase
         return File(bytes, type);
     }
 
+    /// <summary>
+    /// Marks a gift message as read.
+    /// </summary>
+    /// <short>
+    /// Mark a gift message as read
+    /// </short>
+    /// <category>Users</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/present/mark</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("present/mark")]
     public async Task MarkPresentAsReadedAsync()
     {
@@ -305,6 +444,17 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Registers the mobile app installation.
+    /// </summary>
+    /// <short>
+    /// Register the mobile app installation
+    /// </short>
+    /// <category>Settings</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileAppRequestsDto, ASC.Web.Api" name="inDto">Mobile app request parameters</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/mobile/registration</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("mobile/registration")]
     public async Task RegisterMobileAppInstallAsync(MobileAppRequestsDto inDto)
     {
@@ -312,6 +462,18 @@ public class PortalController : ControllerBase
         await _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, inDto.Type);
     }
 
+    /// <summary>
+    /// Registers the mobile app installation by mobile app type.
+    /// </summary>
+    /// <short>
+    /// Register the mobile app installation by mobile app type
+    /// </short>
+    /// <category>Settings</category>
+    /// <param type="ASC.Core.Common.Notify.Push.MobileAppType, ASC.Core.Common" name="type">Mobile app type (IosProjects, AndroidProjects, IosDocuments, AndroidDocuments, or DesktopEditor)</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/mobile/registration</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("mobile/registration")]
     public async Task RegisterMobileAppInstallAsync(MobileAppType type)
     {
@@ -323,11 +485,14 @@ public class PortalController : ControllerBase
     /// Updates a portal name with a new one specified in the request.
     /// </summary>
     /// <short>Update a portal name</short>
-    /// <param name="alias">New portal name</param>
-    /// <returns>Message about renaming a portal</returns>
-    ///<visible>false</visible>
+    /// <category>Settings</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api" name="inDto">Request parameters for portal renaming</param>
+    /// <returns type="System.Object, System">Confirmation email about authentication to the portal with a new name</returns>
+    /// <path>api/2.0/portal/portalrename</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("portalrename")]
-    public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
+    public async Task<object> UpdatePortalName(PortalRenameRequestsDto inDto)
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
         {
@@ -341,7 +506,7 @@ public class PortalController : ControllerBase
 
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var alias = model.Alias;
+        var alias = inDto.Alias;
         if (string.IsNullOrEmpty(alias))
         {
             throw new ArgumentException(nameof(alias));
@@ -402,6 +567,14 @@ public class PortalController : ControllerBase
                );
     }
 
+    /// <summary>
+    /// Deletes the current portal immediately.
+    /// </summary>
+    /// <short>Delete a portal immediately</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/deleteportalimmediately</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("deleteportalimmediately")]
     public async Task DeletePortalImmediatelyAsync()
     {
@@ -433,6 +606,14 @@ public class PortalController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Sends the instructions to suspend the current portal.
+    /// </summary>
+    /// <short>Send suspension instructions</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/suspend</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("suspend")]
     public async Task SendSuspendInstructionsAsync()
@@ -453,6 +634,14 @@ public class PortalController : ControllerBase
         await _messageService.SendAsync(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    /// <summary>
+    /// Sends the instructions to remove the current portal.
+    /// </summary>
+    /// <short>Send removal instructions</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/delete</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
     [HttpPost("delete")]
     public async Task SendDeleteInstructionsAsync()
@@ -475,6 +664,14 @@ public class PortalController : ControllerBase
         await _messageService.SendAsync(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    /// <summary>
+    /// Restores the current portal.
+    /// </summary>
+    /// <short>Restore a portal</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/continue</path>
+    /// <httpMethod>PUT</httpMethod>
     [AllowSuspended]
     [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
@@ -484,6 +681,14 @@ public class PortalController : ControllerBase
         await _tenantManager.SaveTenantAsync(Tenant);
     }
 
+    /// <summary>
+    /// Deactivates the current portal.
+    /// </summary>
+    /// <short>Deactivate a portal</short>
+    /// <category>Settings</category>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/suspend</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("suspend")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalSuspend")]
     public async Task SuspendPortalAsync()
@@ -493,6 +698,14 @@ public class PortalController : ControllerBase
         await _messageService.SendAsync(MessageAction.PortalDeactivated);
     }
 
+    /// <summary>
+    /// Deletes the current portal.
+    /// </summary>
+    /// <short>Delete a portal</short>
+    /// <category>Settings</category>
+    /// <returns type="System.Object, System">URL to the feedback form about removing a portal</returns>
+    /// <path>api/2.0/portal/delete</path>
+    /// <httpMethod>DELETE</httpMethod>
     [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
@@ -546,6 +759,15 @@ public class PortalController : ControllerBase
         return redirectLink;
     }
 
+    /// <summary>
+    /// Sends congratulations to the user after registering the portal.
+    /// </summary>
+    /// <short>Send congratulations</short>
+    /// <category>Users</category>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SendCongratulationsDto, ASC.Web.Api" name="inDto">Congratulations request parameters</param>
+    /// <returns></returns>
+    /// <path>api/2.0/portal/sendcongratulations</path>
+    /// <httpMethod>POST</httpMethod>
     [AllowAnonymous]
     [HttpPost("sendcongratulations")]
     public async Task SendCongratulationsAsync([FromQuery] SendCongratulationsDto inDto)

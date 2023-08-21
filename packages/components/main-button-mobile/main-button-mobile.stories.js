@@ -5,7 +5,7 @@ import { useEffect, useReducer, useState } from "react";
 import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
 import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
 import MobileStartReactSvgUrl from "PUBLIC_DIR/images/mobile.star.react.svg?url";
-
+import { useTheme } from "styled-components";
 import MobileMainButtonDocs from "./main-button-mobile-docs.mdx";
 
 export default {
@@ -198,14 +198,24 @@ const Template = ({ ...args }) => {
 
   const isAutoDocs =
     typeof window !== "undefined" && window?.location?.href.includes("docs");
-
+  const { interfaceDirection } = useTheme();
+  const style = {
+    position: "absolute",
+    bottom: "26px",
+    [interfaceDirection === "rtl" ? "left" : "right"]: "44px",
+  };
+  const dropdownStyle = {
+    position: "absolute",
+    [interfaceDirection === "rtl" ? "left" : "right"]: "60px",
+    bottom: "25px",
+  };
   return (
     <StyledWrapper isAutoDocs={isAutoDocs} isMobile={isMobile}>
       <MainButtonMobile
         {...args}
-        style={{ position: "absolute", bottom: "26px", right: "44px" }}
+        style={style}
         actionOptions={actionOptions}
-        dropdownStyle={{ position: "absolute", right: "60px", bottom: "25px" }}
+        dropdownStyle={dropdownStyle}
         progressOptions={progressOptions}
         buttonOptions={buttonOptions}
         onUploadClick={onUploadClick}

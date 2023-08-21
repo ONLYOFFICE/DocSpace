@@ -11,6 +11,7 @@ const TimeInput = styled.div`
   height: 32px;
   box-sizing: border-box;
   padding: 6px 8px;
+  direction: ltr;
 
   border: 1px solid #d0d5da;
   border-radius: 3px;

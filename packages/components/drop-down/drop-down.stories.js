@@ -35,7 +35,7 @@ const Template = (args) => {
         open={isOpen}
         isDefaultMode={false}
         clickOutsideAction={() => {}}
-        style={{ top: "20px", left: "20px" }}
+        style={{ top: "20px" }}
         onClick={() => {}}
       >
         <DropDownItem isHeader label="Category 1" />

@@ -1,5 +1,6 @@
 import React from "react";
 import TabContainer from "./";
+import styled from "styled-components";
 
 export default {
   title: "Components/TabContainer",
@@ -398,10 +399,17 @@ const tabsItems = [
   },
 ];
 
+const StyledTitle = styled.h5.attrs({ dir: "auto" })`
+  text-align: ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right` : `left`};
+`;
+
 const Template = ({ onSelect, ...args }) => {
   return (
     <div>
-      <h5 style={{ marginBottom: 20 }}>Base TabsContainer:</h5>
+      <StyledTitle style={{ marginBottom: 20 }}>
+        Base TabsContainer:
+      </StyledTitle>
       <TabContainer
         {...args}
         onSelect={(index) => onSelect(index)}
@@ -410,9 +418,9 @@ const Template = ({ onSelect, ...args }) => {
       />
 
       <div style={{ marginTop: 32, maxWidth: 430 }}>
-        <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+        <StyledTitle style={{ marginTop: 100, marginBottom: 20 }}>
           Autoscrolling with different tab widths:
-        </h5>
+        </StyledTitle>
         <TabContainer
           {...args}
           selectedItem={3}
@@ -422,9 +430,9 @@ const Template = ({ onSelect, ...args }) => {
       </div>
 
       <div style={{ marginTop: 32, maxWidth: 430 }}>
-        <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+        <StyledTitle style={{ marginTop: 100, marginBottom: 20 }}>
           Autoscrolling with the same tabs width:
-        </h5>
+        </StyledTitle>
         <TabContainer
           {...args}
           selectedItem={5}

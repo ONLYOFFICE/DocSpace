@@ -34,7 +34,18 @@ const serverConfig = {
       return `/login/static/${folder}[name][ext]?hash=[contenthash]`; //`${folder}/[name].[contenthash][ext]`;
     },
   },
-
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        generator: {
+          emit: false,
+        },
+        type: "asset/resource",
+        resourceQuery: /url/, // *.css?url
+      },
+    ],
+  },
   plugins: [
     new CopyPlugin({
       patterns: [

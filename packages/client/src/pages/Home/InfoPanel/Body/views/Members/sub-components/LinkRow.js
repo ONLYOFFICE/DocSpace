@@ -13,6 +13,7 @@ import EyeReactSvgUrl from "PUBLIC_DIR/images/eye.react.svg?url";
 import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import CodeReactSvgUrl from "PUBLIC_DIR/images/code.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import OutlineReactSvgUrl from "PUBLIC_DIR/images/outline-true.react.svg?url";
 import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import LoadedReactSvgUrl from "PUBLIC_DIR/images/loaded.react.svg?url";
@@ -86,13 +87,13 @@ const LinkRow = (props) => {
       .finally(() => setIsLoading(false));
   };
 
-  const onLockClick = () => {
+  const onCopyPassword = () => {
     copy(password);
     toastr.success(t("Files:PasswordSuccessfullyCopied"));
   };
 
   const onEmbeddingClick = () => {
-    setLinkParams({ link });
+    setLinkParams({ link, roomId });
     setEmbeddingPanelIsVisible(true);
   };
 
@@ -130,6 +131,14 @@ const LinkRow = (props) => {
         icon: CodeReactSvgUrl,
         onClick: onEmbeddingClick,
       },
+
+      !disabled && {
+        key: "copy-link-settings-key",
+        label: t("SharingPanel:CopyExternalLink"),
+        icon: CopyToReactSvgUrl,
+        onClick: onCopyExternalLink,
+      },
+
       disabled
         ? {
             key: "enable-link-key",
@@ -160,7 +169,6 @@ const LinkRow = (props) => {
   return (
     <StyledLinkRow {...rest} isExpired={isExpired}>
       <Avatar
-        className="avatar"
         size="min"
         source={EyeReactSvgUrl}
         roleIcon={expiryDate ? <ClockReactSvg /> : null}
@@ -198,7 +206,8 @@ const LinkRow = (props) => {
                 className="locked-icon"
                 size={16}
                 iconName={LockedReactSvgUrl}
-                onClick={onLockClick}
+                onClick={onCopyPassword}
+                title={t("Files:CopyLinkPassword")}
               />
             )}
             <IconButton
@@ -206,12 +215,17 @@ const LinkRow = (props) => {
               size={16}
               iconName={CopyReactSvgUrl}
               onClick={onCopyExternalLink}
+              title={t("SharingPanel:CopyExternalLink")}
             />
           </>
         )}
 
         {!isArchiveFolder && (
-          <ContextMenuButton getData={getData} isDisabled={false} />
+          <ContextMenuButton
+            getData={getData}
+            isDisabled={false}
+            title={t("Files:ShowLinkActions")}
+          />
         )}
       </div>
     </StyledLinkRow>
