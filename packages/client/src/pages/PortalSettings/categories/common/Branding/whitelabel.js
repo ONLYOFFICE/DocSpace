@@ -35,6 +35,7 @@ const WhiteLabel = (props) => {
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
@@ -43,6 +44,14 @@ const WhiteLabel = (props) => {
 
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  const init = async () => {
+    await initSettings();
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
 
   useEffect(() => {
     const companyNameFromSessionStorage = getFromSessionStorage("companyName");
@@ -220,13 +229,17 @@ const WhiteLabel = (props) => {
       </Text>
 
       <div className="wl-helper">
-        <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
-        <HelpButton
-          tooltipContent={<Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>}
-          place="right"
-          offsetRight={0}
-          className="settings_unavailable"
-        />
+        <Text className="wl-helper-label settings_unavailable" as="div">
+          {t("WhiteLabelHelper")}
+          <HelpButton
+            tooltipContent={
+              <Text fontSize="12px">{t("WhiteLabelTooltip")}</Text>
+            }
+            place="right"
+            offsetRight={0}
+            className="settings_unavailable"
+          />
+        </Text>
       </div>
       <div className="settings-block">
         <FieldContainer
@@ -480,6 +493,7 @@ export default inject(({ setup, auth, common }) => {
     whiteLabelLogoUrls,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls: getWhiteLabelLogoUrlsAction,
+    initSettings,
   } = common;
 
   const {
@@ -500,5 +514,6 @@ export default inject(({ setup, auth, common }) => {
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoUrlsAction,
     isSettingPaid: isBrandingAndCustomizationAvailable,
+    initSettings,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));

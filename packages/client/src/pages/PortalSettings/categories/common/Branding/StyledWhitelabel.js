@@ -29,6 +29,11 @@ const WhiteLabelWrapper = styled.div`
     gap: 4px;
     align-items: center;
     margin-bottom: 16px;
+
+    .wl-helper-label > div {
+      display: inline-flex;
+      margin-left: 4px;
+    }
   }
 
   .use-as-logo {
