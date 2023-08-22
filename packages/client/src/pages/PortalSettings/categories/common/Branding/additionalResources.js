@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import withLoading from "SRC_DIR/HOCs/withLoading";
@@ -9,7 +11,7 @@ import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 import isEqual from "lodash/isEqual";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
-import { smallTablet } from "@docspace/components/utils/device";
+import { smallTablet, size } from "@docspace/components/utils/device";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
@@ -60,6 +62,8 @@ const AdditionalResources = (props) => {
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   } = props;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [additionalSettings, setAdditionalSettings] = useState({});
   const [hasChange, setHasChange] = useState(false);
@@ -89,6 +93,18 @@ const AdditionalResources = (props) => {
     } else {
       setAdditionalSettings(defaultData);
     }
+  };
+
+  useEffect(() => {
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    window.innerWidth > size.smallTablet &&
+      location.pathname.includes("additional-resources") &&
+      navigate("/portal-settings/customization/branding");
   };
 
   useEffect(() => {
