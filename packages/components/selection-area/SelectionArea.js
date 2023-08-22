@@ -271,11 +271,11 @@ class SelectionArea extends React.Component {
     )
       return;
 
-    if (e.target.tagName === "A") {
-      const node = e.target.closest("." + selectableClass);
-      node && onMove && onMove({ added: [node], removed: [], clear: true });
-      return;
-    }
+    // if (e.target.tagName === "A") {
+    //   const node = e.target.closest("." + selectableClass);
+    //   node && onMove && onMove({ added: [node], removed: [], clear: true });
+    //   return;
+    // }
 
     const selectables = document.getElementsByClassName(selectableClass);
     if (!selectables.length) return;
