@@ -1371,7 +1371,10 @@ class FilesActionStore {
     newFilter.search = item.title;
     newFilter.folder = ExtraLocation;
 
-    setIsLoading(true);
+    setIsLoading(
+      window.DocSpace.location.search !== `?${newFilter.toUrlParams()}` ||
+        url !== window.DocSpace.location.pathname
+    );
 
     window.DocSpace.navigate(`${url}?${newFilter.toUrlParams()}`, { state });
   };

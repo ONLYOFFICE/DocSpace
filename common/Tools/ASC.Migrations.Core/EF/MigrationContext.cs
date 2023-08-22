@@ -70,8 +70,8 @@ public class MigrationContext : DbContext
 
     public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
 
-    public DbSet<AuditEvent> AuditEvents { get; set; }
-    public DbSet<LoginEvent> LoginEvents { get; set; }
+    public DbSet<DbAuditEvent> AuditEvents { get; set; }
+    public DbSet<DbLoginEvent> LoginEvents { get; set; }
 
     public DbSet<BackupRecord> Backups { get; set; }
     public DbSet<BackupSchedule> Schedules { get; set; }
