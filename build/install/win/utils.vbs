@@ -400,6 +400,22 @@ Function TestSqlConnection
     Set ConnectionObject = Nothing
 End Function
 
+Function EnterpriseConfigure
+    On Error Resume Next
+
+    Const HKLM = &H80000002
+
+    Dim strKeyPath, strValueName, strNewDisplayName
+
+    strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\ONLYOFFICE DocSpace Community " & Session.Property("ProductVersion") 
+    strValueName = "DisplayName"
+    strNewDisplayName = "ONLYOFFICE DocSpace Enterprise"
+
+    Set registry = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
+    registry.SetStringValue HKLM, strKeyPath, strValueName, strNewDisplayName
+
+End Function
+
 Function ReadIni( myFilePath, mySection, myKey )
     ' This function returns a value read from an INI file
     '
