@@ -208,6 +208,8 @@ public class DbTenantService : ITenantService
                 }
             }
 
+            var updateTenant = false;
+
             if (tenant.Id == Tenant.DefaultTenant)
             {
                 tenant.Version = await tenantDbContext.TenantVersion
@@ -239,6 +241,7 @@ public class DbTenantService : ITenantService
 
                 if (dbTenant != null)
                 {
+                    updateTenant = true;
                     dbTenant.Alias = tenant.Alias.ToLowerInvariant();
                     dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
                     dbTenant.Version = tenant.Version;
@@ -259,7 +262,6 @@ public class DbTenantService : ITenantService
                     dbTenant.OwnerId = tenant.OwnerId;
                 }
 
-                await tenantDbContext.SaveChangesAsync();
             }
 
             if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
@@ -272,6 +274,11 @@ public class DbTenantService : ITenantService
                 if (p != null)
                 {
                     tenantDbContext.TenantPartner.Remove(p);
+                }
+                if (updateTenant)
+                {
+                    tenantDbContext.Tenants.Update(dbTenant);
+                    await tenantDbContext.SaveChangesAsync();
                 }
             }
             else
