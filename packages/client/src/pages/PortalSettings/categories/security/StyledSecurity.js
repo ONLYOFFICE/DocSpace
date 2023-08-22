@@ -8,6 +8,9 @@ export const StyledArrowRightIcon = styled(ArrowRightIcon)`
   path {
     fill: ${(props) => props.theme.client.settings.security.arrowFill};
   }
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
 `;
 
 StyledArrowRightIcon.defaultProps = { theme: Base };
@@ -26,7 +29,9 @@ export const MainContainer = styled.div`
 
   .page_loader {
     position: fixed;
-    left: 50%;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right: 50%;` : `left: 50%;`}
   }
 `;
 
@@ -68,7 +73,10 @@ export const StyledMobileCategoryWrapper = styled.div`
   }
 
   .inherit-title-link {
-    margin-right: 7px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 7px;`
+        : `margin-right: 7px;`}
     font-size: 16px;
     font-weight: 600;
   }
