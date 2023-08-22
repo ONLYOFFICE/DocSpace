@@ -32,7 +32,7 @@ const getRoomLogo = (roomType: number) => {
   return iconSize32.get(path);
 };
 
-const convertRoomsToItems = (rooms: any) => {
+export const convertRoomsToItems = (rooms: any) => {
   const items = rooms.map((room: any) => {
     const {
       id,
