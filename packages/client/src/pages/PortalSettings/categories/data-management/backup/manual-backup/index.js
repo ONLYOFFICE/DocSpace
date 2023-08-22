@@ -20,6 +20,7 @@ import {
 } from "@docspace/common/api/settings";
 import FloatingButton from "@docspace/common/components/FloatingButton";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 let selectedStorageType = "";
 
@@ -41,6 +42,8 @@ class ManualBackup extends React.Component {
       : false;
 
     this.timerId = null;
+
+    setDocumentTitle(props.t("DataBackup"));
 
     this.state = {
       selectedFolder: "",
