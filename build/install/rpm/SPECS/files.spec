@@ -1,5 +1,5 @@
 %files
-%attr(744, root, root) %{_bindir}/*
+%attr(744, root, root) %{_bindir}/%{product}-configuration
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -75,6 +75,7 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/nginx/includes/*
 %config %{_sysconfdir}/nginx/conf.d/*
+%attr(744, root, root) %{_bindir}/%{product}-letsencrypt
 %{buildpath}/public/
 %{buildpath}/client/
 

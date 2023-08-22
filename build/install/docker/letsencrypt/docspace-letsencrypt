@@ -4,10 +4,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LETSENCRYPT_CERTIFICATE_PATH="/etc/letsencrypt/live";
 DOCKERCOMPOSE_DIR=$(dirname "$DIR")
 SERVICES_FILES="-f ${DOCKERCOMPOSE_DIR}/notify.yml -f ${DOCKERCOMPOSE_DIR}/healthchecks.yml -f ${DOCKERCOMPOSE_DIR}/docspace.yml"
-CONTAINER_NAME="onlyoffice-proxy"
+NGINX_CONF_DIR="/etc/nginx/conf.d"
+DS_NGINX_CONF_DIR="/etc/onlyoffice/documentserver/nginx/"
 
 if [ "$#" -ge "2" ]; then
-
     # Install certbot if not already installed
     if ! type "certbot" &> /dev/null; then
         if command_exists apt-get; then
@@ -22,10 +22,7 @@ if [ "$#" -ge "2" ]; then
     LETS_ENCRYPT_DOMAIN=$2
 
     if [ -f "${DOCKERCOMPOSE_DIR}/proxy.yml" ]; then
-        docker-compose ${SERVICES_FILES} -f "${DOCKERCOMPOSE_DIR}/proxy.yml" down
-    else
-        echo "Error: The file '${DOCKERCOMPOSE_DIR}/proxy.yml' does not exist."
-        exit 1
+        docker-compose -f ${DOCKERCOMPOSE_DIR}/proxy.yml down
     fi
     
     # Request and generate Let's Encrypt SSL certificate
@@ -39,23 +36,40 @@ if [ "$#" -ge "2" ]; then
             sed -i "s~\(LETS_ENCRYPT_DOMAIN=\).*~\1\"${LETS_ENCRYPT_DOMAIN}\"~g" ${DOCKERCOMPOSE_DIR}/.env
             sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${LETS_ENCRYPT_DOMAIN}\"~g" ${DOCKERCOMPOSE_DIR}/.env
 
+            docker-compose ${SERVICES_FILES} down
             docker-compose ${SERVICES_FILES} -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml up -d
 
-            # Create and set permissions for renew_letsencrypt.sh
-            echo '#!/bin/bash' > ${DIR}/renew_letsencrypt.sh
-            echo "docker ps -f name=$CONTAINER_NAME | grep -q $CONTAINER_NAME && docker stop $CONTAINER_NAME" >> ${DIR}/renew_letsencrypt.sh
-            echo "certbot renew >> /var/log/le-renew.log" >> ${DIR}/renew_letsencrypt.sh
-            echo "docker-compose -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml up -d" >> ${DIR}/renew_letsencrypt.sh
-            chmod a+x ${DIR}/renew_letsencrypt.sh
+            # Create and set permissions for docspace-renew-letsencrypt
+            echo '#!/bin/bash' > ${DIR}/docspace-renew-letsencrypt
+            echo "docker-compose -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml down" >> ${DIR}/docspace-renew-letsencrypt
+            echo "certbot renew >> /var/log/le-renew.log" >> ${DIR}/docspace-renew-letsencrypt
+            echo "docker-compose -f ${DOCKERCOMPOSE_DIR}/proxy-ssl.yml up -d" >> ${DIR}/docspace-renew-letsencrypt
+            chmod a+x ${DIR}/docspace-renew-letsencrypt
 
             # Add cron job if /etc/cron.d directory exists
-            [ -d /etc/cron.d ] && echo -e "@weekly root ${DIR}/renew_letsencrypt.sh" | tee /etc/cron.d/letsencrypt
+            [ -d /etc/cron.d ] && echo -e "@weekly root ${DIR}/docspace-renew-letsencrypt" | tee /etc/cron.d/docspace-letsencrypt
+        elif [ -f "${NGINX_CONF_DIR}/onlyoffice-proxy-ssl.conf.template" ]; then
+            cp -f ${NGINX_CONF_DIR}/onlyoffice-proxy-ssl.conf.template ${NGINX_CONF_DIR}/onlyoffice-proxy.conf
+
+            sed -i "s~\(ssl_certificate \).*;~\1${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/fullchain.pem;~g" ${NGINX_CONF_DIR}/onlyoffice-proxy.conf
+            sed -i "s~\(ssl_certificate_key \).*;~\1${LETSENCRYPT_CERTIFICATE_PATH}/${LETS_ENCRYPT_DOMAIN}/privkey.pem;~g" ${NGINX_CONF_DIR}/onlyoffice-proxy.conf
+
+            [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ] && systemctl reload nginx || service nginx reload
+
+            # Create and set permissions for docspace-renew-letsencrypt
+            echo '#!/bin/bash' > ${DIR}/docspace-renew-letsencrypt
+            echo "certbot renew >> /var/log/le-renew.log" >> ${DIR}/docspace-renew-letsencrypt
+            echo '[ $(pgrep -x ""systemd"" | wc -l) -gt 0 ] && systemctl reload nginx || service nginx reload' >> ${DIR}/docspace-renew-letsencrypt
+            chmod a+x ${DIR}/docspace-renew-letsencrypt
+
+            # Add cron job if /etc/cron.d directory exists
+            [ -d /etc/cron.d ] && echo -e "@weekly root ${DIR}/docspace-renew-letsencrypt" | tee /etc/cron.d/docspace-letsencrypt
         fi
     fi
 else
     echo "This script provided to automatically get Let's Encrypt SSL Certificates for DocSpace"
     echo "usage:"
-    echo "  docspace-letsencrypt.sh EMAIL DOMAIN"
+    echo "  docspace-letsencrypt EMAIL DOMAIN"
     echo "      EMAIL       Email used for registration and recovery contact. Use"
     echo "                  comma to register multiple emails, ex:"
     echo "                  u1@example.com,u2@example.com."

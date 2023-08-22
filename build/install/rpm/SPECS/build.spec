@@ -21,6 +21,7 @@ json -I -f %{_builddir}/%{sourcename}/config/apisystem.json -e "this.core.notify
 sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i %{_builddir}/%{sourcename}/config/nlog.config
 
 sed 's/teamlab.info/onlyoffice.com/g' -i %{_builddir}/%{sourcename}/config/autofac.consumers.json
+sed -e 's/$router_host/127.0.0.1/g' -e '/proxy_set_header/d' -i %{_builddir}/%{sourcename}/build/install/docker/config/nginx/onlyoffice-proxy*.conf
 
 find %{_builddir}/%{sourcename}/publish/ \
      %{_builddir}/%{sourcename}/ASC.Migration.Runner \

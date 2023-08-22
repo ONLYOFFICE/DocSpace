@@ -1301,7 +1301,7 @@ install_product () {
 	fi
 
 	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
-		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt.sh "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
 
