@@ -77,11 +77,16 @@ export function getObjectByLocation(location) {
     .replace(/\\\\"\]/g, '"]')
     .replace(/"\[/g, "[")
     .replace(/\]"/g, "]")
-    .replace(/\\\\",\\\\"/g, '","');
+    .replace(/\\\\",\\\\"/g, '","')
+    .replace(/\\\\\\\\"/g, '\\"');
 
-  const object = JSON.parse(`{"${decodedString}"}`);
+  try {
+    const object = JSON.parse(`{"${decodedString}"}`);
 
-  return object;
+    return object;
+  } catch (e) {
+    return {};
+  }
 }
 
 export function changeLanguage(i18n, currentLng = getCookie(LANGUAGE)) {
