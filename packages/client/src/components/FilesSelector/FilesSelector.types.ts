@@ -42,6 +42,22 @@ export type useLoadersHelperProps = {
   items: Item[] | null;
 };
 
+export type setItemsCallback = (value: Item[] | null) => Item[] | null;
+export type setBreadCrumbsCallback = (
+  value: BreadCrumb[] | []
+) => BreadCrumb[] | [];
+export type setTotalCallback = (value: number) => number;
+
+export type useSocketHelperProps = {
+  socketHelper: any;
+  socketSubscribersId: Set<string>;
+  setItems: (callback: setItemsCallback) => void;
+  setBreadCrumbs: (callback: setBreadCrumbsCallback) => void;
+  setTotal: (callback: setTotalCallback) => void;
+  disabledItems: string[] | number[];
+  filterParam?: string;
+};
+
 export type useRootHelperProps = {
   setBreadCrumbs: (items: BreadCrumb[]) => void;
   setIsBreadCrumbsLoading: (value: boolean) => void;
@@ -81,6 +97,7 @@ export type useFilesHelpersProps = {
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
+  getRootData?: () => Promise<void>;
 };
 
 export type FilesSelectorProps = {
@@ -152,4 +169,9 @@ export type FilesSelectorProps = {
 
   descriptionText?: string;
   setSelectedItems: () => void;
+
+  includeFolder?: boolean;
+
+  socketHelper: any;
+  socketSubscribersId: Set<string>;
 };
