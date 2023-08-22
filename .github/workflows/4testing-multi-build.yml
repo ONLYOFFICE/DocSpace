@@ -34,8 +34,8 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
-          if [[ $GITHUB_REF_NAME =~ feature/v([0-9.]*)-(.*) ]]; then
-            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/v([0-9.]*)(-.*)?-build-action|\1\2-action|")
+          if [[ $GITHUB_REF_NAME =~ feature/(.*) ]]; then
+            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/(.*)-build-action|\1-action|")
           else
             TAG=${{github.run_number}}
             DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///').$TAG
