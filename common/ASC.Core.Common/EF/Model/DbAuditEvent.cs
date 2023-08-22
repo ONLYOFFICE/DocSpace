@@ -28,7 +28,7 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.MessagingSystem.EF.Model;
 
-public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
+public class DbAuditEvent : MessageEvent, IMapFrom<EventMessage>
 {
     public string Initiator { get; set; }
     public string Target { get; set; }
@@ -37,8 +37,8 @@ public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<MessageEvent, AuditEvent>();
-        profile.CreateMap<EventMessage, AuditEvent>()
+        profile.CreateMap<MessageEvent, DbAuditEvent>();
+        profile.CreateMap<EventMessage, DbAuditEvent>()
             .ConvertUsing<EventTypeConverter>();
     }
 }
@@ -47,7 +47,7 @@ public static class AuditEventExtension
 {
     public static ModelBuilderWrapper AddAuditEvent(this ModelBuilderWrapper modelBuilder)
     {
-        modelBuilder.Entity<AuditEvent>().Navigation(e => e.Tenant).AutoInclude(false);
+        modelBuilder.Entity<DbAuditEvent>().Navigation(e => e.Tenant).AutoInclude(false);
 
         modelBuilder
             .Add(MySqlAddAuditEvent, Provider.MySql)
@@ -58,7 +58,7 @@ public static class AuditEventExtension
 
     public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AuditEvent>(entity =>
+        modelBuilder.Entity<DbAuditEvent>(entity =>
         {
             entity.ToTable("audit_events")
                 .HasCharSet("utf8");
@@ -133,7 +133,7 @@ public static class AuditEventExtension
     }
     public static void PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AuditEvent>(entity =>
+        modelBuilder.Entity<DbAuditEvent>(entity =>
         {
             entity.ToTable("audit_events", "onlyoffice");
 

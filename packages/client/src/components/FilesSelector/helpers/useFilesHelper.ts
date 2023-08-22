@@ -171,7 +171,7 @@ const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   return iconSize32.get(path);
 };
 
-const convertFoldersToItems = (
+export const convertFoldersToItems = (
   folders: any,
   disabledItems: any[],
   filterParam?: string
@@ -215,9 +215,17 @@ const convertFoldersToItems = (
   return items;
 };
 
-const convertFilesToItems = (files: any, filterParam?: string) => {
+export const convertFilesToItems = (files: any, filterParam?: string) => {
   const items = files.map((file: any) => {
-    const { id, title, security, parentId, rootFolderType, fileExst } = file;
+    const {
+      id,
+      title,
+      security,
+      parentId,
+      folderId,
+      rootFolderType,
+      fileExst,
+    } = file;
 
     const isImage = file.viewAccessability.ImageView;
     const isMedia = file.viewAccessability.MediaView;
@@ -231,9 +239,8 @@ const convertFilesToItems = (files: any, filterParam?: string) => {
       label: title.replace(fileExst, ""),
       title,
       icon,
-
       security,
-      parentId,
+      parentId: parentId || folderId,
       rootFolderType,
       isFolder: false,
       isDisabled: !filterParam,

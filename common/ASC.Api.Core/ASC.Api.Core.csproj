@@ -26,6 +26,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.3" />
+    <PackageReference Include="RedisRateLimiting" Version="1.0.11" />
+    <PackageReference Include="RedisRateLimiting.AspNetCore" Version="1.0.8" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="9.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="9.1.0" />
 	<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
