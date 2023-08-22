@@ -82,4 +82,19 @@
   <data name="Personal" xml:space="preserve">
     <value>Cá nhân</value>
   </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Mục ưa thích</value>
+  </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Các tập tin sẽ được nén vào tập tin {0}.tar.gz{1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Các tập tin sẽ được nén vào tập tin {0}.zip{1}</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Phòng riêng</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Gần đây</value>
+  </data>
 </root>

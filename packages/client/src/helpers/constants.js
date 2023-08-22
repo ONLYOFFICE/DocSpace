@@ -32,6 +32,8 @@ export const ValidationResult = Object.freeze({
   Ok: 0,
   Invalid: 1,
   Expired: 2,
+  Password: 3,
+  InvalidPassword: 4,
 });
 
 export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";
@@ -53,6 +55,7 @@ export const CategoryType = Object.freeze({
   Trash: 7,
   Settings: 8,
   Accounts: 9,
+  PublicRoom: 10,
 });
 
 /**
@@ -116,6 +119,11 @@ export const SortByFieldName = Object.freeze({
   Room: "Room",
   Tags: "Tags",
   RoomType: "roomType",
+});
+
+export const LinkType = Object.freeze({
+  Invite: 0,
+  External: 1,
 });
 
 export const SSO_LABEL = "SSO";

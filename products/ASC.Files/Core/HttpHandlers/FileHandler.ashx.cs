@@ -29,12 +29,13 @@ using SixLabors.ImageSharp.Processing;
 using Image = SixLabors.ImageSharp.Image;
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
+using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Web.Files;
 
 public class FileHandler
 {
-    public FileHandler(RequestDelegate next)
+    public FileHandler(RequestDelegate _)
     {
     }
 
@@ -82,6 +83,8 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly ExternalLinkHelper _externalLinkHelper;
+    private readonly ExternalShare _externalShare;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -112,7 +115,9 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        ExternalLinkHelper externalLinkHelper, 
+        ExternalShare externalShare)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -143,6 +148,8 @@ public class FileHandlerService
         _logger = logger;
         _clientFactory = clientFactory;
         _thumbnailSettings = thumbnailSettings;
+        _externalLinkHelper = externalLinkHelper;
+        _externalShare = externalShare;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -207,13 +214,14 @@ public class FileHandlerService
 
     private async ValueTask BulkDownloadFile(HttpContext context)
     {
-        if (!_securityContext.IsAuthenticated)
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+        var sessionKey = context.Request.Query["session"].FirstOrDefault();
+
+        if (!_securityContext.IsAuthenticated && string.IsNullOrEmpty(sessionKey))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return;
         }
-
-        var filename = context.Request.Query["filename"].FirstOrDefault();
 
         if (String.IsNullOrEmpty(filename))
         {
@@ -225,7 +233,29 @@ public class FileHandlerService
             filename = _instanceCrypto.Decrypt(Uri.UnescapeDataString(filename));
         }
 
-        var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        string path;
+
+        if (!string.IsNullOrEmpty(sessionKey))
+        {
+            var session = await _externalShare.ParseDownloadSessionKeyAsync(sessionKey);
+            var sessionId = await _externalShare.GetSessionIdAsync();
+
+            if (session != null && sessionId != default && session.Id == sessionId &&
+                (await _externalShare.ValidateAsync(session.LinkId)) == Status.Ok)
+            {
+                path = string.Format(@"{0}\{1}\{2}", session.LinkId, session.Id, filename);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+        }
+        else
+        {
+            path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        }
+        
         var store = await _globalStore.GetStoreAsync();
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
@@ -237,7 +267,9 @@ public class FileHandlerService
 
         if (store.IsSupportedPreSignedUri)
         {
-            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
+            var headers = _securityContext.IsAuthenticated ? null : new[] { SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider) };
+
+            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), headers);
             var url = tmp.ToString();
             context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
@@ -248,7 +280,7 @@ public class FileHandlerService
         try
         {
             var flushed = false;
-            using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
+            await using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
             {
                 long offset = 0;
                 var length = readStream.Length;
@@ -315,8 +347,14 @@ public class FileHandlerService
 
             if (!readLink && !await _fileSecurity.CanDownloadAsync(file))
             {
-                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                var linkId = await _externalShare.GetLinkIdAsync();
+
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title) || FileUtility.GetFileExtension(file.Title) == ".pdf") || 
+                    linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return;
+                }
             }
 
             if (readLink && (linkShare == FileShare.Comment || linkShare == FileShare.Read) && file.DenyDownload)
@@ -620,10 +658,34 @@ public class FileHandlerService
                 version = 0;
             }
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
+            var share = context.Request.Query[FilesLinkUtility.FolderShareKey];
 
             await fileDao.InvalidateCacheAsync(id);
 
-            var (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            var linkRight = FileShare.Restrict;
+            File<T> file = null;
+
+            if (!string.IsNullOrEmpty(share))
+            {
+                var result = await _externalLinkHelper.ValidateAsync(share);
+
+                if (result.Access != FileShare.Restrict)
+                {
+                    file = version > 0
+                        ? await fileDao.GetFileAsync(id, version)
+                        : await fileDao.GetFileAsync(id);
+
+                    if (file != null && await _fileSecurity.CanDownloadAsync(file))
+                    {
+                        linkRight = result.Access;
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(doc))
+            {
+                (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            }
+            
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey];
@@ -665,7 +727,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                         var stringPayload = JwtBuilder.Create()
                                                 .WithAlgorithm(new HMACSHA256Algorithm())
-                                                .WithSerializer(new JwtSerializer())
+                                                .WithJsonSerializer(new JwtSerializer())
                                                 .WithSecret(_fileUtility.SignatureSecret)
                                                 .MustVerifySignature()
                                                 .Decode(header);
@@ -731,7 +793,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(file.Title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(file.Title);
 
-            using var stream = await fileDao.GetFileStreamAsync(file);
+            await using var stream = await fileDao.GetFileStreamAsync(file);
             context.Response.Headers.Add("Content-Length",
                 stream.CanSeek
                 ? stream.Length.ToString(CultureInfo.InvariantCulture)
@@ -779,7 +841,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                                                     .WithAlgorithm(new HMACSHA256Algorithm())
-                                                    .WithSerializer(new JwtSerializer())
+                                                    .WithJsonSerializer(new JwtSerializer())
                                                     .WithSecret(_fileUtility.SignatureSecret)
                                                     .MustVerifySignature()
                                                     .Decode(header);
@@ -832,7 +894,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(fileName));
             context.Response.ContentType = MimeMapping.GetMimeMapping(fileName);
 
-            using var stream = await storeTemplate.GetReadStreamAsync("", path);
+            await using var stream = await storeTemplate.GetReadStreamAsync("", path);
             context.Response.Headers.Add("Content-Length",
                 stream.CanSeek
                 ? stream.Length.ToString(CultureInfo.InvariantCulture)
@@ -891,7 +953,7 @@ public class FileHandlerService
             return;
         }
 
-        using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
+        await using (var readStream = await store.GetReadStreamAsync(FileConstant.StorageDomainTmp, path))
         {
             context.Response.Headers.Add("Content-Length", readStream.Length.ToString(CultureInfo.InvariantCulture));
             await readStream.CopyToAsync(context.Response.Body);
@@ -982,7 +1044,7 @@ public class FileHandlerService
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
             context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-            using var stream = await fileDao.GetDifferenceStreamAsync(file);
+            await using var stream = await fileDao.GetDifferenceStreamAsync(file);
             context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
             await stream.CopyToAsync(context.Response.Body);
         }
@@ -1078,7 +1140,7 @@ public class FileHandlerService
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".jpeg");
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".jpeg", true));
 
-                using (var stream = await fileDao.GetFileStreamAsync(file))
+                await using (var stream = await fileDao.GetFileStreamAsync(file))
                 {
                     var processedImage = await Image.LoadAsync(stream);
 
@@ -1099,7 +1161,7 @@ public class FileHandlerService
 
                 var thumbnailFilePath = fileDao.GetUniqThumbnailPath(file, width, height);
 
-                using (var stream = await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(thumbnailFilePath))
+                await using (var stream = await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(thumbnailFilePath))
                 {
                     context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
                     await stream.CopyToAsync(context.Response.Body);
@@ -1133,7 +1195,7 @@ public class FileHandlerService
         }
     }
 
-    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id, bool force)
+    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id, bool _)
     {
         try
         {
@@ -1161,7 +1223,7 @@ public class FileHandlerService
 
             var fileDao = _daoFactory.GetFileDao<string>();
 
-            using (var stream = await fileDao.GetThumbnailAsync(id, width, height))
+            await using (var stream = await fileDao.GetThumbnailAsync(id, width, height))
             {
                 await stream.CopyToAsync(context.Response.Body);
             }
@@ -1375,7 +1437,7 @@ public class FileHandlerService
         var fileDao = _daoFactory.GetFileDao<T>();
         var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using var fileStream = await response.Content.ReadAsStreamAsync();
+        await using var fileStream = await response.Content.ReadAsStreamAsync();
 
         if (fileStream.CanSeek)
         {
@@ -1384,7 +1446,7 @@ public class FileHandlerService
         }
         else
         {
-            using var buffered = _tempStream.GetBuffered(fileStream);
+            await using var buffered = _tempStream.GetBuffered(fileStream);
             file.ContentLength = buffered.Length;
             return await fileDao.SaveFileAsync(file, buffered);
         }
@@ -1516,7 +1578,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var dataString = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
-                            .WithSerializer(new JwtSerializer())
+                            .WithJsonSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(fileData.Token);
@@ -1551,7 +1613,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
-                            .WithSerializer(new JwtSerializer())
+                            .WithJsonSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(header);

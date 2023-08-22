@@ -51,6 +51,7 @@ const AddSpCertificateModal = (props) => {
         </Text>
 
         <TextArea
+          id="sp-certificate"
           className="text-area"
           name="spCertificate"
           onChange={setInput}
@@ -64,6 +65,7 @@ const AddSpCertificateModal = (props) => {
         </Text>
 
         <TextArea
+          id="sp-privateKey"
           className="text-area"
           name="spPrivateKey"
           onChange={setInput}
@@ -80,6 +82,7 @@ const AddSpCertificateModal = (props) => {
 
       <ModalDialog.Footer>
         <Button
+          id="ok-button"
           label={t("Common:OKButton")}
           onClick={() => addSpCertificate(t)}
           primary
@@ -88,6 +91,7 @@ const AddSpCertificateModal = (props) => {
           isDisabled={isGeneratedCertificate || !spCertificate || !spPrivateKey}
         />
         <Button
+          id="cancel-button"
           label={t("Common:CancelButton")}
           onClick={closeSpModal}
           size="normal"

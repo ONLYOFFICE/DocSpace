@@ -15,6 +15,7 @@ const SsoFormField = ({
   tooltipContent,
   value,
   hasError,
+  tooltipClass,
 }) => {
   const { t } = useTranslation("Common");
 
@@ -27,6 +28,7 @@ const SsoFormField = ({
       labelText={labelText}
       place="top"
       tooltipContent={tooltipContent}
+      tooltipClass={tooltipClass}
     >
       {children}
       <SsoTextInput

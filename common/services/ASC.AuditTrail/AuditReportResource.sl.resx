@@ -413,7 +413,7 @@
     <value>SSO omogočen</value>
   </data>
   <data name="SystemAccount" xml:space="preserve">
-    <value>Račun sistema</value>
+    <value>Sistemski račun</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Predloga ekipe spremenjena</value>
@@ -470,7 +470,7 @@
     <value>Uporabnik ustvarjen: {0}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
-    <value>Uporabnik ustvarjen preko vabila: {0}</value>
+    <value>Uporabnik ustvarjen prek povabila: {0}</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
     <value>Uporabnik izbrisan: {0}</value>
@@ -585,5 +585,137 @@
   </data>
   <data name="TagsDeleted" xml:space="preserve">
     <value>Oznake izbrisane: {0}</value>
+  </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>ID akcije</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Nastavitve življenjske dobe revizije so posodobljene</value>
+  </data>
+  <data name="AuthorizationKeysSetting" xml:space="preserve">
+    <value>Posodobljeni avtorizacijski ključi tretjih strani</value>
+  </data>
+  <data name="CookieSettingsUpdated" xml:space="preserve">
+    <value>Nastavitve piškotkov posodobljene</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Posodobljene nastavitve navigacije po meri</value>
+  </data>
+  <data name="DocumentServiceLocationSetting" xml:space="preserve">
+    <value>Lokacija storitve dokumentov je posodobljena</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Nastavitve Forcesave posodobljene</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Nastavitve Forcesave shranjevanja posodobljene</value>
+  </data>
+  <data name="FileChangeOwner" xml:space="preserve">
+    <value>Nastavi lastnika [{0}] od [{1}]</value>
+  </data>
+  <data name="FileRestoreVersion" xml:space="preserve">
+    <value>Datoteke [{0}]. Revizija: {1}. Verzija obnovljena</value>
+  </data>
+  <data name="FilesDocumentSigned" xml:space="preserve">
+    <value>Dokument {1} podpisan preko {0}</value>
+  </data>
+  <data name="FileSendAccessLink" xml:space="preserve">
+    <value>Poslana deljena povezava na [{0}] datoteko. Prejemniki: [{1}]</value>
+  </data>
+  <data name="FilesRequestSign" xml:space="preserve">
+    <value>Dokument {1} poslan v podpis preko {0}</value>
+  </data>
+  <data name="FullTextSearchSetting" xml:space="preserve">
+    <value>Sphinx nastavitve posodobljene</value>
+  </data>
+  <data name="LicenseKeyUploaded" xml:space="preserve">
+    <value>Licenčni ključ je naložen</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Prijava ni uspela. Preveč poskusov</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Prijava ni uspela. Recaptcha je neveljaven</value>
+  </data>
+  <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
+    <value>Prijava prek API in družbenih medijev ni uspela</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Neuspešna prijava prek API in aplikacije za preverjanje pristnosti</value>
+  </data>
+  <data name="LoginFailViaSSO" xml:space="preserve">
+    <value>Prijava prek SSO ni uspela</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Prijava prek aplikacije za preverjanje pristnosti ni uspela</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Uspešna prijava prek socialne aplikacije</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Uspešna prijava preko API in aplikacije za avtentikacijo</value>
+  </data>
+  <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
+    <value>Uspešna prijava preko API &amp; socialnih medijev</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Uspešna prijava prek aplikacije za avtentikacijo</value>
+  </data>
+  <data name="MailServiceSettingsUpdated" xml:space="preserve">
+    <value>Nastavitve mail storitev posodobljene</value>
+  </data>
+  <data name="PortalAccessSettingsUpdated" xml:space="preserve">
+    <value>Nastavitve dostopa do portala posodobljene</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Zasebna soba je onemogočena</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Zasebna soba je omogočena</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Prerazporeditve</value>
+  </data>
+  <data name="StartBackupSetting" xml:space="preserve">
+    <value>Začni varnostno kopiranje</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Začni dešifriranje pomnilnika</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Začni šifriranje pomnilnika</value>
+  </data>
+  <data name="StartTransferSetting" xml:space="preserve">
+    <value>Začni selitev regije portala</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Ciljni ID</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Posodobljene nastavitve dvofaktorske avtentikacije: dvofaktorska avtentikacija je bila onemogočena</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Posodobljene nastavitve dvofaktorske avtentikacije: dvofaktorska avtentikacija je bila omogočena</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Nastavitve dvofaktorske avtentikacije posodobljene: aplikacija za avtentikacijo je bila omogočena</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>Podatki prerazporejeni: od uporabnika {0} do uporabnika {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Uporabniški podatki za {0} so bili izbrisani</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Povezava z aplikacijo Authenticator je prekinjena: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Ustvarjene so nove varnostne kode</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Email posodobljen</value>
+  </data>
+  <data name="UserUpdatedMobileNumber" xml:space="preserve">
+    <value>Uporabniki [{0}]. Mobilna številka posodobljena: {1}</value>
   </data>
 </root>

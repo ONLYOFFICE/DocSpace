@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Tip de conectare la cont",
   "DeleteSelfProfile": "Ștergere profil",
   "DisabledEmployeeStatus": "Dezactivat",
   "DisableUserButton": "Dezactivează",
@@ -12,6 +13,7 @@
   "RemoveData": "Șterge datele cu caracter personal",
   "ResetAuth": "Reinițializarea autentificării",
   "SendInviteAgain": "Trimiteți invitația din nou",
+  "StandardLogin": "Conectarea standard",
   "SuccessChangeUserStatus": "Statutul utilizatorului a fost schimbat cu succes",
   "SuccessDeletePersonalData": "Datele cu caracter personal au fost șterse cu succes",
   "SuccessSentInvitation": "Invitația a fost trimisă cu succes",

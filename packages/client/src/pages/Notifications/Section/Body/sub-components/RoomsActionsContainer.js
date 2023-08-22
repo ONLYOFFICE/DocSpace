@@ -38,7 +38,7 @@ const RoomsActionsContainer = ({
         </Text>
       </div>
       <ToggleButton
-        className="toggle-btn"
+        className="rooms-actions toggle-btn"
         onChange={onChangeBadgeSubscription}
         isChecked={badgesSubscription}
       />

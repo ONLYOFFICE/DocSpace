@@ -52,7 +52,7 @@ public class CommonChunkedUploadSessionHolder
 
     public async Task StoreAsync(CommonChunkedUploadSession s)
     {
-        using var stream = s.Serialize();
+        await using var stream = s.Serialize();
         await DataStore.SavePrivateAsync(_domain, GetPathWithId(s.Id), stream, s.Expired);
     }
 
@@ -152,7 +152,7 @@ public class CommonChunkedUploadSessionHolder
                 uploadSession.ChunksBuffer = _tempPath.GetTempFileName();
             }
 
-            using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
+            await using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
             {
                 await stream.CopyToAsync(bufferStream);
             }

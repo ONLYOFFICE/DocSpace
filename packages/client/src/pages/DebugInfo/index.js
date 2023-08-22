@@ -53,7 +53,9 @@ const DebugInfoDialog = (props) => {
       <ModalDialog.Header>Debug Info</ModalDialog.Header>
       <ModalDialog.Body className="debug-info-body">
         {/* <Text>{`# Build version: ${BUILD_VERSION}`}</Text> */}
-        <Text>{`# Version: ${VERSION}`}</Text>
+        <Text>
+          # Version: <span className="version">{VERSION}</span>
+        </Text>
         <Text>{`# Build date: ${BUILD_AT}`}</Text>
         {user && (
           <Text>{`# Current User: ${user?.displayName} (id:${user?.id})`}</Text>

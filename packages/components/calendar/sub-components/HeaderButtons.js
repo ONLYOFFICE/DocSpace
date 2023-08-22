@@ -1,6 +1,7 @@
 import React from "react";
 import { ButtonsContainer, ArrowIcon } from "../styled-components";
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
+import { useTheme } from "styled-components";
 
 export const HeaderButtons = ({
   onLeftClick,
@@ -8,11 +9,14 @@ export const HeaderButtons = ({
   isLeftDisabled,
   isRightDisabled,
 }) => {
+  const theme = useTheme();
+  const isRtl = theme.interfaceDirection === "rtl";
   return (
     <ButtonsContainer>
       <ColorTheme
+        className="arrow-previous"
         themeId={ThemeType.RoundButton}
-        style={{ marginRight: "12px" }}
+        style={isRtl ? { marginLeft: "12px" } : { marginRight: "12px" }}
         onClick={onLeftClick}
         disabled={isLeftDisabled}
       >
@@ -20,6 +24,7 @@ export const HeaderButtons = ({
       </ColorTheme>
 
       <ColorTheme
+        className="arrow-next"
         themeId={ThemeType.RoundButton}
         onClick={onRightClick}
         disabled={isRightDisabled}

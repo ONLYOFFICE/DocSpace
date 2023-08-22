@@ -15,7 +15,6 @@ describe("<ErrorContainer />", () => {
         headerText="Some error has happened"
         bodyText="Try again later"
         buttonText="Go back"
-        buttonUrl="/page"
       />
     );
 
@@ -23,7 +22,6 @@ describe("<ErrorContainer />", () => {
     expect(wrapper.prop("headerText")).toEqual("Some error has happened");
     expect(wrapper.prop("bodyText")).toEqual("Try again later");
     expect(wrapper.prop("buttonText")).toEqual("Go back");
-    expect(wrapper.prop("buttonUrl")).toEqual("/page");
   });
 
   it("accepts id", () => {

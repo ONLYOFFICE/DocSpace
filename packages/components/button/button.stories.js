@@ -12,6 +12,10 @@ export default {
         component: "Button is used for a action on a page.",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=62-3582&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
   },
 };
 
@@ -222,6 +226,10 @@ const HoveredTemplate = (args) => {
   );
 };
 
+const InterfaceDirectionTemplate = (args) => {
+  return <Button label="أزرار" icon={<Icon />} {...args} />;
+};
+
 export const Default = Template.bind({});
 Default.args = {
   size: "extraSmall",
@@ -235,6 +243,7 @@ export const ScaleButtons = ScaleTemplate.bind({});
 export const DisabledButtons = DisabledTemplate.bind({});
 export const ClickedButtons = ClickedTemplate.bind({});
 export const HoveredButtons = HoveredTemplate.bind({});
+export const InterfaceDirection = InterfaceDirectionTemplate.bind({});
 HoveredButtons.argTypes = {
   isHovered: { table: { disable: true } },
 };

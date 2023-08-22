@@ -640,4 +640,82 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>ゴミ箱を空にする</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>追加されたタグ： [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>削除されたタグ： [{1}]</value>
+  </data>
+  <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
+    <value>アップロードフォーマット設定が更新されました</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>ルームがアーカイブされました</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>ユーザーが追加されました： {0}。 役割: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>ルームが削除されました</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>リンクが作成されました。役割: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>リンクが削除されました</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>リンクがアップデートされました。役割: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>ロゴが作成されました</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>ロゴが削除されました</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>削除されたユーザー：{0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>ルーム名が変更されました：{0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>ルームのアーカイブが解除されました</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0}が任命されました: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>タグが作成されました：{0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>タグが削除されました：{0}</value>
+  </data>
+  <data name="UpdateAccessActionType" xml:space="preserve">
+    <value>アップデートされたアクセス</value>
+  </data>
+  <data name="UserAddedAvatar" xml:space="preserve">
+    <value>ユーザー[{0}]。アバターが追加されました</value>
+  </data>
+  <data name="UserCreatedViaInvite" xml:space="preserve">
+    <value>招待で作成したユーザー：{0}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>{0}のユーザーデータが削除されました</value>
+  </data>
+  <data name="UserDeletedAvatar" xml:space="preserve">
+    <value>ユーザー[{0}]。アバターが削除されました</value>
+  </data>
+  <data name="UserSentEmailInstructions" xml:space="preserve">
+    <value>ユーザー[{0}]。メール変更ガイドが送信済み</value>
+  </data>
+  <data name="UserSentPasswordInstructions" xml:space="preserve">
+    <value>ユーザー[{0}]。パスワード変更ガイドが送信済み</value>
+  </data>
+  <data name="UsersUpdatedStatus" xml:space="preserve">
+    <value>ユーザー[{0}]。ステータスが更新されました</value>
+  </data>
+  <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
+    <value>ユーザー[{0}]。アバターサムネイルが更新されました</value>
+  </data>
 </root>

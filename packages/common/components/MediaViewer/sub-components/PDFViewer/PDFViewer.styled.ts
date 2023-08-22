@@ -57,6 +57,7 @@ export const ErrorMessage = styled.p`
   padding: 20px 30px;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 4px;
+  color: rgb(238, 238, 238);
 `;
 
 export const DesktopTopBar = styled(DesktopDetails)<Panel>`

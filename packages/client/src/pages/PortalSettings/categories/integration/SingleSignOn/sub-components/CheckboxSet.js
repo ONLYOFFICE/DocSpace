@@ -38,6 +38,11 @@ const CheckboxSet = (props) => {
   return (
     <Box marginProp="16px 0">
       <Checkbox
+        id={
+          prefix === "idp"
+            ? "idp-verify-auth-responses-sign"
+            : "sp-sign-auth-requests"
+        }
         className="checkbox-input"
         isDisabled={!enableSso || isLoadingXml}
         onChange={setCheckbox}
@@ -49,6 +54,11 @@ const CheckboxSet = (props) => {
         }
       />
       <Checkbox
+        id={
+          prefix === "idp"
+            ? "idp-verify-logout-requests-sign"
+            : "sp-sign-logout-requests"
+        }
         className="checkbox-input"
         isDisabled={!enableSso || isLoadingXml}
         onChange={setCheckbox}
@@ -62,6 +72,11 @@ const CheckboxSet = (props) => {
         }
       />
       <Checkbox
+        id={
+          prefix === "idp"
+            ? "idp-verify-logout-responses-sign"
+            : "sp-sign-logout-responses"
+        }
         className="checkbox-input"
         isDisabled={!enableSso || isLoadingXml}
         onChange={setCheckbox}
@@ -81,6 +96,7 @@ const CheckboxSet = (props) => {
 
       {prefix === "sp" && (
         <Checkbox
+          id="sp-encrypt-assertions"
           className="checkbox-input"
           isDisabled={!enableSso || isLoadingXml}
           onChange={setCheckbox}

@@ -24,6 +24,9 @@ const PrivateRoute = ({ children, ...rest }) => {
     withManager,
     withCollaborator,
     isLogout,
+    standalone,
+    isCommunity,
+    isEnterprise,
   } = rest;
 
   const location = useLocation();
@@ -43,6 +46,8 @@ const PrivateRoute = ({ children, ...rest }) => {
     const isPortalDeletionUrl =
       location.pathname === "/portal-settings/delete-data/deletion" ||
       location.pathname === "/portal-settings/delete-data/deactivation";
+
+    const isBonusPage = location.pathname === "/portal-settings/bonus";
 
     if (isLoaded && !isAuthenticated) {
       // console.log("PrivateRoute render Redirect to login", rest);x
@@ -66,7 +71,10 @@ const PrivateRoute = ({ children, ...rest }) => {
     if (
       isLoaded &&
       ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
-        (!user.isOwner && isPortalDeletionUrl))
+        (!user.isOwner && isPortalDeletionUrl) ||
+        (standalone && isPortalDeletionUrl) ||
+        (isCommunity && isPaymentsUrl) ||
+        (isEnterprise && isBonusPage))
     ) {
       return <Navigate replace to={"/"} />;
     }
@@ -186,13 +194,17 @@ export default inject(({ auth }) => {
     settingsStore,
     currentTariffStatusStore,
     isLogout,
+    isCommunity,
+    isEnterprise,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
 
-  const { wizardCompleted, tenantStatus } = settingsStore;
+  const { setModuleInfo, wizardCompleted, personal, tenantStatus, standalone } =
+    settingsStore;
 
   return {
+    isCommunity,
     isNotPaidPeriod,
     user,
     isAuthenticated,
@@ -203,5 +215,7 @@ export default inject(({ auth }) => {
     tenantStatus,
 
     isLogout,
+    standalone,
+    isEnterprise,
   };
 })(observer(PrivateRoute));

@@ -164,7 +164,7 @@ const Table = ({
         itemHeight={49}
         useReactWindow={!withPaging}
       >
-        {peopleList.map((item) => (
+        {peopleList.map((item, index) => (
           <TableRow
             theme={theme}
             key={item.id}
@@ -175,6 +175,7 @@ const Table = ({
             userId={userId}
             canChangeUserType={canChangeUserType}
             hideColumns={hideColumns}
+            itemIndex={index}
           />
         ))}
       </TableBody>

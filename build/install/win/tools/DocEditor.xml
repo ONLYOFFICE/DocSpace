@@ -1,7 +1,7 @@
 <service>
 	<id>ASC.DocEditor</id>
-	<name>ASC.DocEditor</name>
-	<description>This service runs ASC.DocEditor</description>
+	<name>ONLYOFFICE DocSpace DocEditor</name>
+	<description>ONLYOFFICE DocSpace DocEditor</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
 	<onfailure action="restart" delay="10 sec"/>

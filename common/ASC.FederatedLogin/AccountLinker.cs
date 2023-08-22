@@ -85,12 +85,8 @@ public class AccountLinker
 
     public async Task<IEnumerable<string>> GetLinkedObjectsByHashIdAsync(string hashid)
     {
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-        return await accountLinkContext.AccountLinks
-            .Where(r => r.UId == hashid)
-            .Where(r => r.Provider != string.Empty)
-            .Select(r => r.Id)
-            .ToListAsync();
+        await using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        return await Queries.LinkedObjectsByHashIdAsync(accountLinkContext, hashid).ToListAsync();
     }
 
     public async Task<IEnumerable<LoginProfile>> GetLinkedProfilesAsync(string obj, string provider)
@@ -119,7 +115,7 @@ public class AccountLinker
             Linked = DateTime.UtcNow
         };
 
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        await using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         await accountLinkContext.AddOrUpdateAsync(a => a.AccountLinks, accountLink);
         await accountLinkContext.SaveChangesAsync();
 
@@ -143,21 +139,10 @@ public class AccountLinker
 
     public async Task RemoveProviderAsync(string obj, string provider = null, string hashId = null)
     {
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        await using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
-        var accountLinkQuery = accountLinkContext.AccountLinks.Where(r => r.Id == obj);
+        var accountLink = await Queries.AccountLinkAsync(accountLinkContext, obj, provider, hashId);
 
-        if (!string.IsNullOrEmpty(provider))
-        {
-            accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
-        }
-
-        if (!string.IsNullOrEmpty(hashId))
-        {
-            accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
-        }
-
-        var accountLink = await accountLinkQuery.FirstOrDefaultAsync();
         accountLinkContext.AccountLinks.Remove(accountLink);
         await accountLinkContext.SaveChangesAsync();
 
@@ -166,22 +151,45 @@ public class AccountLinker
 
     private async Task<List<LoginProfile>> GetLinkedProfilesFromDBAsync(string obj)
     {
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-
+        await using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         //Retrieve by uinque id
-        return (await accountLinkContext.AccountLinks
-                .Where(r => r.Id == obj)
-                .Select(r => r.Profile)
-                .ToListAsync())
+        return (await Queries.LinkedProfilesFromDbAsync(accountLinkContext, obj).ToListAsync())
                 .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x));
     }
 
     private async Task<IDictionary<string, LoginProfile>> GetLinkedProfilesAsync(IEnumerable<string> objects)
     {
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
+        await using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
         return await accountLinkContext.AccountLinks.Where(r => objects.Contains(r.Id))
             .Select(r => new { r.Id, r.Profile })
             .ToDictionaryAsync(k => k.Id, v => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, v.Profile));
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedObjectsByHashIdAsync =
+        EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string hashId) =>
+                ctx.AccountLinks
+                    .Where(r => r.UId == hashId)
+                    .Where(r => r.Provider != string.Empty)
+                    .Select(r => r.Id));
+
+    public static readonly Func<AccountLinkContext, string, string, string, Task<AccountLinks>> AccountLinkAsync =
+        EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string id, string provider, string hashId) =>
+                ctx.AccountLinks
+                    .Where(r => r.Id == id)
+                    .Where(r => string.IsNullOrEmpty(provider) || r.Provider == provider)
+                    .Where(r => string.IsNullOrEmpty(hashId) || r.UId == hashId)
+                    .FirstOrDefault());
+
+    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedProfilesFromDbAsync =
+        EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string id) =>
+                ctx.AccountLinks
+                    .Where(r => r.Id == id)
+                    .Select(r => r.Profile));
 }

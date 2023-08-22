@@ -24,6 +24,7 @@
   "DaysRemaining": "남은 일수: {{daysRemaining}}",
   "DisableNotifications": "알림 비활성화",
   "Document": "문서",
+  "DocumentEdited": "문서가 편집 중이므로 작업을 수행할 수 없습니다.",
   "EditRoom": "방 편집",
   "EmptyFile": "빈 파일",
   "EmptyFilterDescriptionText": "이 필터에 해당하는 파일이나 폴더가 없습니다. 다르게 시도하거나 필터를 삭제하여 모든 파일을 확인하세요.",

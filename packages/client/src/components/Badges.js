@@ -160,6 +160,7 @@ const Badges = ({
         />
       )}
       {item.viewAccessability?.Convert &&
+        item.security?.Convert &&
         !isTrashFolder &&
         !isArchiveFolderRoot && (
           <ColorTheme

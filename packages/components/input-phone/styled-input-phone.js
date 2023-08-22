@@ -1,5 +1,5 @@
 import Box from "@docspace/components/box";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 export const StyledBox = styled(Box)`
@@ -28,10 +28,23 @@ export const StyledBox = styled(Box)`
 
   .input-phone {
     height: ${(props) => props.theme.inputPhone.height};
+    direction: ltr;
     padding-left: 20px;
     margin-left: -8px;
     border-left: 1px solid
       ${(props) => props.theme.inputPhone.inactiveBorderColor};
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0;
+        padding-right: 20px;
+        border-left: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: 1px solid
+          ${(props) => props.theme.inputPhone.inactiveBorderColor};
+      `}
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
@@ -41,6 +54,7 @@ export const StyledBox = styled(Box)`
     position: relative;
     top: 0;
     left: 12px;
+
     font-size: 14px;
     font-weight: 400;
   }
@@ -58,6 +72,12 @@ export const StyledBox = styled(Box)`
       width: 26px;
       height: 20px;
       margin-left: 6px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          margin-left: 0px;
+          margin-right: 6px;
+        `}
       margin-top: 9px;
     }
 
@@ -88,6 +108,12 @@ export const StyledBox = styled(Box)`
     position: absolute;
     top: 20px;
     right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        left: 8px;
+        right: auto;
+      `}
     svg {
       path {
         fill: ${(props) => props.theme.inputPhone.placeholderColor};
@@ -119,11 +145,23 @@ export const StyledBox = styled(Box)`
 
   .country-name {
     margin-left: 10px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0px;
+        margin-right: 10px;
+      `}
     color: ${(props) => props.theme.inputPhone.color};
   }
 
   .country-prefix {
     margin-left: 5px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 0px;
+        margin-right: 5px;
+      `}
     color: ${(props) => props.theme.inputPhone.dialCodeColor};
   }
 
@@ -134,6 +172,7 @@ export const StyledBox = styled(Box)`
   .country-item {
     display: flex;
     align-items: center;
+
     max-width: 100%;
     padding: 0;
     height: 36px;

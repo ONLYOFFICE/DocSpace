@@ -1,6 +1,7 @@
 import React, { createRef } from "react";
 import { StyledSelectionArea } from "./StyledSelectionArea";
 import { frames } from "./selector-helpers";
+import { withTheme } from "styled-components";
 
 class SelectionArea extends React.Component {
   constructor(props) {
@@ -45,7 +46,10 @@ class SelectionArea extends React.Component {
       foldersTileHeight,
       filesTileHeight,
       filesHeaderHeight,
+      theme,
     } = this.props;
+
+    const isRtl = theme.interfaceDirection === "rtl";
 
     const itemHeight = this.props.itemHeight ?? this.elemRect.height;
 
@@ -86,6 +90,11 @@ class SelectionArea extends React.Component {
       let fileIndex = itemIndex % countTilesInRow;
       if (itemType === "file") {
         fileIndex = (itemIndex + countOfMissingTiles) % countTilesInRow;
+      }
+
+      // Mirror fileIndex for RTL interface (2, 1, 0 => 0, 1, 2)
+      if (isRtl && viewAs === "tile") {
+        fileIndex = countTilesInRow - 1 - fileIndex;
       }
 
       if (fileIndex == 0) {
@@ -183,7 +192,7 @@ class SelectionArea extends React.Component {
     const removed = [];
     const newSelected = [];
 
-    const { selectableClass, onMove, viewAs } = this.props;
+    const { selectableClass, onMove, viewAs, itemClass } = this.props;
     const selectableItems = document.getElementsByClassName(selectableClass);
 
     const selectables = [...selectableItems, ...this.selectableNodes];
@@ -195,7 +204,7 @@ class SelectionArea extends React.Component {
         viewAs === "tile"
           ? node.getAttribute("value").split("_")
           : node
-              .getElementsByClassName("files-item")[0]
+              .getElementsByClassName(itemClass)[0]
               .getAttribute("value")
               .split("_");
 
@@ -416,4 +425,4 @@ SelectionArea.defaultProps = {
   selectableClass: "",
 };
 
-export default SelectionArea;
+export default withTheme(SelectionArea);

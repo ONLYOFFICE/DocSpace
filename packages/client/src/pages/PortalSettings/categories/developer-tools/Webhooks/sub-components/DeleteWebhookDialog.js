@@ -20,8 +20,14 @@ const Footer = styled.div`
   }
 `;
 
-export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) => {
-  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onClose();
+export const DeleteWebhookDialog = ({
+  visible,
+  onClose,
+  header,
+  handleSubmit,
+}) => {
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && onClose();
 
   const { t } = useTranslation(["Webhooks", "Common", "EmptyTrashDialog"]);
 
@@ -47,12 +53,18 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
       <ModalDialog.Footer>
         <Footer>
           <Button
+            id="delete-forever-button"
             label={t("EmptyTrashDialog:DeleteForeverButton")}
             size="normal"
             primary={true}
             onClick={handleDeleteClick}
           />
-          <Button label={t("Common:CancelButton")} size="normal" onClick={onClose} />
+          <Button
+            id="cancel-button"
+            label={t("Common:CancelButton")}
+            size="normal"
+            onClick={onClose}
+          />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

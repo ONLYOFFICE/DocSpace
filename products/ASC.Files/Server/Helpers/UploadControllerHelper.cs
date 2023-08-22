@@ -113,7 +113,7 @@ public class UploadControllerHelper : FilesHelperBase
         //}
 
         using var response = await httpClient.SendAsync(request);
-        using var responseStream = await response.Content.ReadAsStreamAsync();
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
         using var streamReader = new StreamReader(responseStream);
 
         var responseAsString = await streamReader.ReadToEndAsync();

@@ -245,7 +245,7 @@ public class DocuSignHelper
         }
 
         byte[] fileBytes;
-        using (var stream = await fileDao.GetFileStreamAsync(file))
+        await using (var stream = await fileDao.GetFileStreamAsync(file))
         {
             var buffer = new byte[16 * 1024];
             using var ms = new MemoryStream();
@@ -400,7 +400,7 @@ public class DocuSignHelper
 
         var envelopesApi = new EnvelopesApi(apiClient);
         _logger.InformationDocuSignWebhookGetStream(documentId);
-        using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
+        await using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
         {
             file.ContentLength = stream.Length;
             file = await fileDao.SaveFileAsync(file, stream);

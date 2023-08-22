@@ -20,7 +20,7 @@ export default {
 
 const Template = (args) => {
   return (
-    <div style={{ marginTop: "20px", marginLeft: "100px" }}>
+    <div>
       <HelpButton {...args} />
     </div>
   );

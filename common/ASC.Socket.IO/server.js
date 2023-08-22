@@ -66,7 +66,8 @@ const options = {
     const token =
       req?.headers?.authorization ||
       req?.cookies?.authorization ||
-      req?.cookies?.asc_auth_key;
+      req?.cookies?.asc_auth_key ||
+      req?._query?.share;
 
     if (!token) {
       winston.info(`not allowed request: empty token`);

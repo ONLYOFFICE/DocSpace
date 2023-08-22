@@ -57,6 +57,8 @@ export default function withContent(WrappedContent) {
         t,
         viewer,
         titleWithoutExt,
+        isPublicRoom,
+        publicRoomKey,
       } = this.props;
 
       const { access, createdBy, fileStatus, href } = item;
@@ -66,7 +68,7 @@ export default function withContent(WrappedContent) {
 
       const fileOwner =
         createdBy &&
-        ((viewer.id === createdBy.id && t("Common:MeLabel")) ||
+        ((viewer?.id === createdBy.id && t("Common:MeLabel")) ||
           createdBy.displayName);
 
       const accessToEdit =
@@ -78,7 +80,9 @@ export default function withContent(WrappedContent) {
         : { onClick: onFilesClick };
 
       if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
-        linkStyles.href = href;
+        linkStyles.href = isPublicRoom
+          ? `${href}&share=${publicRoomKey}`
+          : href;
       }
 
       const newItems =
@@ -106,7 +110,14 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
+      {
+        filesStore,
+        treeFoldersStore,
+        auth,
+        dialogsStore,
+        uploadDataStore,
+        publicRoomStore,
+      },
       { item }
     ) => {
       const {
@@ -123,6 +134,8 @@ export default function withContent(WrappedContent) {
         addActiveItems,
         setCreatedItem,
       } = filesStore;
+
+      const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolder } =
@@ -174,6 +187,8 @@ export default function withContent(WrappedContent) {
 
         setCreatedItem,
         personal,
+        isPublicRoom,
+        publicRoomKey,
       };
     }
   )(observer(WithContent));

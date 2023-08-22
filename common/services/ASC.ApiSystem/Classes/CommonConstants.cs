@@ -58,8 +58,6 @@ public class CommonConstants
 
     }
 
-    public const string BaseDbConnKeyString = "core";
-
     public const string DefaultLanguage = "en-US";
 
     public CultureInfo DefaultCulture { get; }

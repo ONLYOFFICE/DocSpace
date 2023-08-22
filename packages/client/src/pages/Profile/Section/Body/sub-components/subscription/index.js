@@ -22,6 +22,7 @@ const Subscription = (props) => {
         {t("Notifications:Notifications")}
       </Text>
       <Button
+        className="notifications"
         size="small"
         label={t("Notifications:ManageNotifications")}
         onClick={onButtonClick}

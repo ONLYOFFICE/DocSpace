@@ -11,7 +11,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import { smallTablet } from "@docspace/components/utils/device";
-import { showLoader } from "@docspace/common/utils";
+import { showLoader, getSystemTheme } from "@docspace/common/utils";
 
 import ThemePreview from "./theme-preview";
 
@@ -20,8 +20,8 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 
-  .system-theme-checkbox{
-    display:inline-flex;
+  .system-theme-checkbox {
+    display: inline-flex;
   }
 
   .checkbox {
@@ -89,11 +89,7 @@ const InterfaceTheme = (props) => {
   };
 
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
-  const systemThemeValue =
-    window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? ThemeKeys.DarkStr
-      : ThemeKeys.BaseStr;
+  const systemThemeValue = getSystemTheme();
 
   return (
     <StyledWrapper>
@@ -115,6 +111,7 @@ const InterfaceTheme = (props) => {
       </div>
       <div className="themes-container">
         <ThemePreview
+          className="light-theme"
           label={t("LightTheme")}
           theme="Light"
           accentColor={currentColorScheme.main.accent}
@@ -127,6 +124,7 @@ const InterfaceTheme = (props) => {
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
+          className="dark-theme"
           label={t("DarkTheme")}
           theme="Dark"
           accentColor={currentColorScheme.main.accent}

@@ -114,7 +114,7 @@ class ContextMenuButton extends React.Component {
 
   onDropDownItemClick = (item, e) => {
     const open = this.state.displayType === "dropdown";
-    item.onClick && item.onClick(e, open);
+    item.onClick && item.onClick(e, open, item);
     this.toggle(!this.state.isOpen);
   };
 

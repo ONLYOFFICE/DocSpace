@@ -75,7 +75,7 @@ public class SocketServiceClient
 
             //async
             using (var response = await httpClient.SendAsync(request))
-            using (var stream = await response.Content.ReadAsStreamAsync())
+            await using (var stream = await response.Content.ReadAsStreamAsync())
             using (var streamReader = new StreamReader(stream))
             {
                 return await streamReader.ReadToEndAsync();

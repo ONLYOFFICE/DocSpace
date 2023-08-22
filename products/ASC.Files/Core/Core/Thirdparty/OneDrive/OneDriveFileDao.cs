@@ -42,7 +42,8 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
         IFileDao<int> fileDao,
         IDaoBase<Item, Item, Item> dao,
         SetupInfo setupInfo,
-        TempPath tempPath) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
+        TempPath tempPath,
+        TenantManager tenantManager) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, tenantManager)
     {
         _setupInfo = setupInfo;
         _tempPath = tempPath;
@@ -108,7 +109,7 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
         else
         {
             var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-            using var fs = new FileStream(tempPath, FileMode.Append);
+            await using var fs = new FileStream(tempPath, FileMode.Append);
             await stream.CopyToAsync(fs);
         }
 
@@ -142,7 +143,7 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
             return Dao.ToFile(await Dao.GetFileAsync(oneDriveSession.FileId));
         }
 
-        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+        await using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
 
         return await SaveFileAsync(uploadSession.File, fs);
     }

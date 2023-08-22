@@ -1,11 +1,15 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings(withPassword = false) {
-  return request({
+export function getSettings(withPassword = false, headers = null) {
+  const options = {
     method: "get",
     url: `/settings?withPassword=${withPassword}`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function getPortalCultures() {
@@ -42,10 +46,18 @@ export function setMailDomainSettings(data) {
   });
 }
 
+// export function setDNSSettings(dnsName, enable) {
+//   return request({
+//     method: "post",
+//     url: "/settings/maildomainsettings",
+//     data: { dnsName, enable },
+//   });
+// }
+
 export function setDNSSettings(dnsName, enable) {
   return request({
-    method: "post",
-    url: "/settings/maildomainsettings",
+    method: "put",
+    url: "/settings/dns",
     data: { dnsName, enable },
   });
 }
@@ -88,11 +100,11 @@ export function setMessageSettings(turnOn) {
   });
 }
 
-export function setCookieSettings(lifeTime) {
+export function setCookieSettings(lifeTime, enabled) {
   return request({
     method: "put",
     url: "/settings/cookiesettings",
-    data: { lifeTime },
+    data: { lifeTime, enabled },
   });
 }
 
@@ -166,11 +178,15 @@ export function restoreGreetingSettings() {
   });
 }
 
-export function getAppearanceTheme() {
-  return request({
+export function getAppearanceTheme(headers = null) {
+  const options = {
     method: "get",
     url: "/settings/colortheme",
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function sendAppearanceTheme(data) {
@@ -195,11 +211,15 @@ export function getLogoText() {
   });
 }
 
-export function getLogoUrls() {
-  return request({
+export function getLogoUrls(headers = null) {
+  const options = {
     method: "get",
     url: `/settings/whitelabel/logos`,
-  });
+  };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function setWhiteLabelSettings(data) {
@@ -541,11 +561,13 @@ export function getBackupStorage() {
   return request(options);
 }
 
-export function getBuildVersion() {
+export function getBuildVersion(headers = null) {
   const options = {
     method: "get",
     url: "/settings/version/build",
   };
+  if (headers) options.headers = headers;
+
   return request(options);
 }
 
@@ -800,4 +822,42 @@ export function muteRoomNotification(id, isMute) {
   };
 
   return request(options);
+}
+
+export function setSMTPSettings(data) {
+  const options = {
+    method: "post",
+    url: `/smtpsettings/smtp`,
+    data,
+  };
+
+  return request(options);
+}
+
+export function getSMTPSettings() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp`,
+  });
+}
+
+export function resetSMTPSettings() {
+  return request({
+    method: "delete",
+    url: `/smtpsettings/smtp`,
+  });
+}
+
+export function sendingTestMail() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp/test`,
+  });
+}
+
+export function getSendingTestMailStatus() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp/test/status`,
+  });
 }

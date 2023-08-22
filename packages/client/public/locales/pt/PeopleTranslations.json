@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Tipo de login da conta",
   "DeleteSelfProfile": "Eliminar perfil",
   "DisabledEmployeeStatus": "Desativado",
   "DisableUserButton": "Desativar",
@@ -12,6 +13,7 @@
   "RemoveData": "Eliminar dados pessoais",
   "ResetAuth": "Repor a autenticação",
   "SendInviteAgain": "Enviar convite novamente",
+  "StandardLogin": "Login normal",
   "SuccessChangeUserStatus": "O estado do utilizador foi alterado com êxito",
   "SuccessDeletePersonalData": "Os dados pessoais foram eliminados com êxito",
   "SuccessSentInvitation": "O convite foi enviado com êxito",

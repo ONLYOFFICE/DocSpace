@@ -33,8 +33,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     getIsTrash,
     isRootFolder,
-    // rootFolderType,
-    // selectionParentRoom,
   } = props;
 
   const [isTablet, setIsTablet] = useState(false);
@@ -174,9 +172,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsTrash,
 
     isRootFolder,
-    //  rootFolderType,
-
-    //selectionParentRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

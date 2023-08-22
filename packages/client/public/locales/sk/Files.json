@@ -24,6 +24,7 @@
   "DaysRemaining": "Zostávajúce dni: {{daysRemaining}}",
   "DisableNotifications": "Vypnúť upozornenia",
   "Document": "Dokument",
+  "DocumentEdited": "Nie je možné vykonať operáciu, kým sa dokument upravuje.",
   "EditRoom": "Upraviť miestnosť",
   "EmptyFile": "Prázdny súbor",
   "EmptyFilterDescriptionText": "Tomuto filtru nevyhovujú žiadne súbory ani priečinky. Skúste použiť iný alebo vyčistite filter a zobrazte všetky súbory. ",

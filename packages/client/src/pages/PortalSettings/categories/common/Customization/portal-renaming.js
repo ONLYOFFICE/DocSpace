@@ -313,6 +313,7 @@ const PortalRenaming = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
+            className="portal-renaming-help-button"
             offsetRight={0}
             iconName={CombinedShapeSvgUrl}
             size={12}
@@ -337,6 +338,8 @@ const PortalRenaming = (props) => {
         reminderTest={t("YouHaveUnsavedChanges")}
         displaySettings={true}
         hasScroll={hasScroll}
+        additionalClassSaveButton="portal-renaming-save"
+        additionalClassCancelButton="portal-renaming-cancel"
       />
       <PortalRenamingDialog
         visible={isShowModal}

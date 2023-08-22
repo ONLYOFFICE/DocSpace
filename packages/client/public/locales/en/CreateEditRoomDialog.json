@@ -23,5 +23,7 @@
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "To connect a third-party storage, you need to add the corresponding service in the Integration section of DocSpace settings. Contact DocSpace owner or administrator to enable the integration.",
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing.",
-  "ViewOnlyRoomTitle": "View-only room"
+  "ViewOnlyRoomTitle": "View-only room",
+  "PublicRoomDescription": "Invite users via external links to view documents without registration. You can also embed this room into any web interface.",
+  "PublicRoomBarDescription": "This room is available to anyone with the link. External users will have View Only permission for all the files."
 }

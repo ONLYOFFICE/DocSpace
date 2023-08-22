@@ -26,9 +26,16 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class RoomInvitation
 {
+    /// <summary>ID of the user with whom we want to share a room</summary>
     public Guid Id { get; set; }
+
+    /// <summary>User email address</summary>
     public string Email { get; set; }
+
+    /// <summary>Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing)</summary>
     public FileShare Access { get; set; }
 }

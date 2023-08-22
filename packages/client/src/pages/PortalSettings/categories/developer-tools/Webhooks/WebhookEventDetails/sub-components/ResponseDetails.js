@@ -79,7 +79,9 @@ const ResponseDetails = ({ eventDetails }) => {
   const openRawPayload = () => {
     const rawPayload = window.open("");
     isJSON(responsePayload)
-      ? rawPayload.document.write(beautifiedJSON.replace(/(?:\r\n|\r|\n)/g, "<br/>"))
+      ? rawPayload.document.write(
+          beautifiedJSON.replace(/(?:\r\n|\r|\n)/g, "<br/>")
+        )
       : rawPayload.document.write(responsePayload);
     rawPayload.focus();
   };
@@ -91,6 +93,7 @@ const ResponseDetails = ({ eventDetails }) => {
       </Text>
       {isJSON(eventDetails.responseHeaders) ? (
         <Textarea
+          classNameCopyIcon="response-header-copy"
           value={eventDetails.responseHeaders}
           enableCopy
           hasNumeration
@@ -99,7 +102,11 @@ const ResponseDetails = ({ eventDetails }) => {
           copyInfoText={t("ResponseHeaderCopied")}
         />
       ) : (
-        <Textarea value={eventDetails.responseHeaders} heightScale className="textareaBody" />
+        <Textarea
+          value={eventDetails.responseHeaders}
+          heightScale
+          className="textareaBody"
+        />
       )}
       <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("ResponsePostBody")}
@@ -110,6 +117,7 @@ const ResponseDetails = ({ eventDetails }) => {
             {t("PayloadIsTooLarge")}
           </Text>
           <Button
+            className="view-raw-payload"
             size="small"
             onClick={openRawPayload}
             label={t("ViewRawPayload")}
@@ -120,6 +128,7 @@ const ResponseDetails = ({ eventDetails }) => {
         <Textarea isDisabled />
       ) : isJSON(responsePayload) ? (
         <Textarea
+          classNameCopyIcon="response-body-copy"
           value={responsePayload}
           isJSONField
           enableCopy
@@ -129,6 +138,7 @@ const ResponseDetails = ({ eventDetails }) => {
         />
       ) : (
         <Textarea
+          classNameCopyIcon="response-body-copy"
           value={responsePayload}
           enableCopy
           heightScale

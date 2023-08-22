@@ -326,6 +326,7 @@ const WelcomePageSettings = (props) => {
         <div className="category-item-heading">
           <div className="category-item-title">{t("CustomTitlesWelcome")}</div>
           <HelpButton
+            className="welcome-page-help-button"
             offsetRight={0}
             iconName={CombinedShapeSvgUrl}
             size={12}
@@ -351,6 +352,8 @@ const WelcomePageSettings = (props) => {
         displaySettings={true}
         hasScroll={state.hasScroll}
         disableRestoreToDefault={greetingSettingsIsDefault}
+        additionalClassSaveButton="welcome-page-save"
+        additionalClassCancelButton="welcome-page-cancel"
       />
     </StyledSettingsComponent>
   );

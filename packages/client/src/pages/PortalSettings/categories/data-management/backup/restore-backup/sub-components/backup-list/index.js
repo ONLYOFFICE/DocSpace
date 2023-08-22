@@ -209,6 +209,7 @@ const BackupListModalDialog = (props) => {
                   {t("BackupListWarningText")}
                 </Text>
                 <Link
+                  id="delete-backups"
                   onClick={this.onCleanBackupList}
                   fontWeight={600}
                   style={{ textDecoration: "underline dotted" }}
@@ -269,6 +270,7 @@ const BackupListModalDialog = (props) => {
 
           <div className="restore_dialog-button">
             <Button
+              className="restore"
               primary
               size="normal"
               label={t("Common:Restore")}
@@ -276,6 +278,7 @@ const BackupListModalDialog = (props) => {
               isDisabled={isCopyingToLocal || !isChecked}
             />
             <Button
+              className="close"
               size="normal"
               label={t("Common:CloseButton")}
               onClick={onModalClose}

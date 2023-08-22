@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import ArticleTeamTrainingAlert from "./article-team-training";
 import ArticleSubmitToFormGalleryAlert from "./article-submit-to-form-gallery";
 import ArticlePaymentAlert from "./article-payment-alert";
+import ArticleEnterpriseAlert from "./article-enterprise-alert";
 import { StyledArticleAlertsComponent } from "../styled-article";
 import { ARTICLE_ALERTS } from "@docspace/client/src/helpers/constants";
 
@@ -14,32 +15,37 @@ const ArticleAlerts = ({
   isFreeTariff,
   isPaymentPageAvailable,
   isTeamTrainingAlertAvailable,
-  isSubmitToGalleryAlertAvailable,
-  articleAlertsData,
-  incrementIndexOfArticleAlertsData,
+  isLicenseExpiring,
+  isLicenseDateExpired,
+  isEnterprise,
+  isTrial,
+  standalone,
 }) => {
-  useEffect(() => {
-    incrementIndexOfArticleAlertsData();
-  }, []);
+  const paymentsAlertsComponent = () => {
+    if (!standalone) {
+      return (
+        isPaymentPageAvailable &&
+        !isNonProfit &&
+        (isFreeTariff || isGracePeriod) &&
+        showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />
+      );
+    }
+
+    const isVisibleStandaloneAlert =
+      isTrial || isLicenseExpiring || isLicenseDateExpired;
+
+    return (
+      isPaymentPageAvailable &&
+      isEnterprise &&
+      isVisibleStandaloneAlert &&
+      showText && <ArticleEnterpriseAlert />
+    );
+  };
 
   return (
     <StyledArticleAlertsComponent>
-      {isPaymentPageAvailable &&
-        !isNonProfit &&
-        (isFreeTariff || isGracePeriod) &&
-        showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
-
-      {isTeamTrainingAlertAvailable &&
-        articleAlertsData.current === ARTICLE_ALERTS.TeamTraining &&
-        articleAlertsData.available.includes(ARTICLE_ALERTS.TeamTraining) &&
-        showText && <ArticleTeamTrainingAlert />}
-
-      {isSubmitToGalleryAlertAvailable &&
-        articleAlertsData.current === ARTICLE_ALERTS.SubmitToFormGallery &&
-        articleAlertsData.available.includes(
-          ARTICLE_ALERTS.SubmitToFormGallery
-        ) &&
-        showText && <ArticleSubmitToFormGalleryAlert />}
+      {paymentsAlertsComponent()}
+      {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
     </StyledArticleAlertsComponent>
   );
 };
@@ -52,21 +58,24 @@ export default inject(({ auth }) => {
     isTeamTrainingAlertAvailable,
     isSubmitToGalleryAlertAvailable,
     currentTariffStatusStore,
+    isEnterprise,
   } = auth;
-  const { isFreeTariff, isNonProfit } = currentQuotaStore;
-  const { isGracePeriod } = currentTariffStatusStore;
-  const { showText, articleAlertsData, incrementIndexOfArticleAlertsData } =
-    settingsStore;
+  const { isFreeTariff, isNonProfit, isTrial } = currentQuotaStore;
+  const { isGracePeriod, isLicenseExpiring, isLicenseDateExpired } =
+    currentTariffStatusStore;
+  const { showText, standalone } = settingsStore;
 
   return {
+    isEnterprise,
     showText,
     isNonProfit,
     isGracePeriod,
     isFreeTariff,
     isPaymentPageAvailable,
     isTeamTrainingAlertAvailable,
-    isSubmitToGalleryAlertAvailable,
-    articleAlertsData,
-    incrementIndexOfArticleAlertsData,
+    isLicenseExpiring,
+    isLicenseDateExpired,
+    isTrial,
+    standalone,
   };
 })(observer(ArticleAlerts));

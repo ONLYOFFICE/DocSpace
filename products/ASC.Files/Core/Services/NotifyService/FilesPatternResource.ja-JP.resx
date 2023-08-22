@@ -125,4 +125,31 @@ $Message</value>
  
 $__AuthorName さんが次のルームを削除しました：$RoomTitle</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>すべての署名者が完了しました $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>署名の状態が変更されました</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpaceの通知です。ドキュメントにメンションされました</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>ドキュメントにメンションされました</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>郵送が完了しました。</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpaceの通知です。ルームが削除されました</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>ドキュメントへのアクセスが許可されました: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>暗号化されたドキュメントへのアクセスが許可されました: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>フォルダへのアクセスが許可されました: $DocumentTitle</value>
+  </data>
 </root>

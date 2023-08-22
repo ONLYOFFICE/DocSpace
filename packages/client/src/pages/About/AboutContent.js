@@ -143,8 +143,16 @@ const AboutContent = (props) => {
             &nbsp;ONLYOFFICE DocSpace&nbsp;
           </ColorTheme>
 
-          <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.docspace}
+          <Text
+            className="row-el select-el"
+            fontSize="13px"
+            fontWeight="600"
+            title={`${BUILD_AT}`}
+          >
+            v.
+            <span className="version-document-management">
+              {buildVersionInfo.docspace}
+            </span>
           </Text>
         </div>
 
@@ -166,7 +174,10 @@ const AboutContent = (props) => {
             &nbsp;ONLYOFFICE Docs&nbsp;
           </ColorTheme>
           <Text className="row-el select-el" fontSize="13px" fontWeight="600">
-            v.{buildVersionInfo.documentServer}
+            v.
+            <span className="version-online-editors">
+              {buildVersionInfo.documentServer}
+            </span>
           </Text>
         </div>
 

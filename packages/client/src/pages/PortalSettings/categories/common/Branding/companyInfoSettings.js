@@ -59,7 +59,9 @@ const CompanyInfoSettings = (props) => {
   };
 
   const [companySettings, setCompanySettings] = useState({});
-  const [companySettingsError, setCompanySettingsError] = useState(defaultCompanySettingsError);
+  const [companySettingsError, setCompanySettingsError] = useState(
+    defaultCompanySettingsError
+  );
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -112,7 +114,9 @@ const CompanyInfoSettings = (props) => {
   }, [isLoading]);
 
   useEffect(() => {
-    const defaultCompanySettings = getFromSessionStorage("defaultCompanySettings");
+    const defaultCompanySettings = getFromSessionStorage(
+      "defaultCompanySettings"
+    );
 
     const newSettings = {
       address: companySettings.address,
@@ -190,7 +194,10 @@ const CompanyInfoSettings = (props) => {
     const companyName = e.target.value;
     validateEmpty(companyName, "companyName");
     setCompanySettings({ ...companySettings, companyName });
-    saveToSessionStorage("companySettings", {...companySettings, companyName });
+    saveToSessionStorage("companySettings", {
+      ...companySettings,
+      companyName,
+    });
   };
 
   const onChangePhone = (e) => {
@@ -411,6 +418,8 @@ const CompanyInfoSettings = (props) => {
           displaySettings={true}
           showReminder={(isSettingPaid && showReminder) || isLoading}
           disableRestoreToDefault={companyInfoSettingsIsDefault || isLoading}
+          additionalClassSaveButton="company-info-save"
+          additionalClassCancelButton="company-info-cancel"
         />
       </StyledComponent>
     </>

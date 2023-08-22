@@ -51,6 +51,17 @@ const StyledBlock = styled.div`
   @media ${tablet} {
     margin-bottom: 24px;
   }
+
+  .article-folder-loader {
+    @media ${tablet} {
+      ${(props) => (props.showText ? "width: 200px" : "width: 20px")};
+    }
+
+    ${isMobile &&
+    css`
+      ${(props) => (props.showText ? "width: 200px" : "width: 20px")};
+    `}
+  }
 `;
 
 const StyledRectangleLoader = styled(RectangleLoader)`
@@ -60,14 +71,12 @@ const StyledRectangleLoader = styled(RectangleLoader)`
 
   @media ${tablet} {
     height: 20px;
-    width: 20px;
     padding: 0 0 24px;
   }
 
   ${isMobile &&
   css`
     height: 20px;
-    width: 20px;
     padding: 0 0 24px;
   `}
 

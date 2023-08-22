@@ -1,0 +1,1053 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Բիզնես</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Սկսնակ</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Ֆայլի առավելագույն չափը</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Ֆայլի չափը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Ադմինիստրատորների թիվը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Ադմինների թիվը</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Հետևել օգտվողների մուտքերին &amp; գործողություն</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Ավտոմատ կրկնօրինակում &amp; վերականգնում</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Անսահմանափակ թվով ակտիվ սենյակներ</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Սենյակների թիվը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} պահեստային տարածք</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Օգտագործված պահեստի չափը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Պահեստային տարածք</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Ադմինիստրատորների/հզոր օգտագործողների թիվը:</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Սենյակներ:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Օգտագործված պահեստային տարածք:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Օգտագործողները սենյակում:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Անսահմանափակ թվով օգտվողներ</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Օգտատերերի թիվը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Օգտագործողները սենյակում</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Սենյակում օգտվողների թիվը չպետք է գերազանցի {0}-ը</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Բրենդինգ &amp; հարմարեցում</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Սխալ կոդը</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA հավելվածի կարգավորումները հասանելի չեն</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Դուք չափազանց շատ տեքստային հաղորդագրություններ եք ուղարկել: Խնդրում եմ փորձեք մի փոքր ուշ.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>ԱՄՆ Արևմտյան (Օրեգոն) շրջան</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Ինչ նորություն կա</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Օգտագործեք այս հավելվածը՝ SMS կենտրոնի ծառայության միջոցով երկգործոն նույնականացումը միացնելու համար: {0}Մուտքագրեք ձեր smsc հաշվի մուտքը և ձեր գաղտնաբառը (կամ գաղտնաբառը MD5 հեշ) փոքրատառով:</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Մուտք գործել</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Գաղտնաբառ կամ գաղտնաբառը MD5 հեշ փոքրատառով</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Բոտի օգտանունը</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Բոտի նշան</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Միացրեք Telegram հաշիվը՝ Telegram-ի միջոցով պորտալի ծանուցումներ ստանալու համար.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Telegram-ի միջոցով պորտալի ծանուցումներ ստանալու համար միացրեք Telegram bot-ը: Դուք կարող եք ստեղծել նոր բոտ՝ օգտագործելով BotFather-ը Telegram Desktop-ում: Այս բոտն օգտագործելու համար պորտալի օգտատերերը պետք է միացնեն Telegram-ի ծանուցումները իրենց պրոֆիլի էջում: {0}Տեղադրեք բոտի օգտանունը և ձեր ստացած նշանը ստորև դաշտերում.</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Հաշիվ Սի</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Auth Token</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ Twilio-ով CRM կոնտակտներ կանչելու համար.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերը կարողանան զանգահարել իրենց կոնտակտներին CRM մոդուլից՝ օգտագործելով Twilio: {0}Գնացեք Twilio Console և տեղադրեք հետևյալ տվյալները ստորև՝</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Հեռախոսահամար Twilio-ից (պահանջվում է SMS թույլտվության համար)</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Հաճախորդի ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Հաճախորդի գաղտնիք</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին պորտալ մուտք գործելու համար՝ օգտագործելով Twitter հաշիվ և որոնել կոնտակտներ.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ թույլ տալու ձեր օգտատերերին մուտք գործել ONLYOFFICE՝ օգտագործելով իրենց Twitter-ը և կապել իրենց հաճախորդների Twitter հաշիվները CRM մոդուլին: {0}Գնացեք Twitter Developers Portal և ստեղծեք նոր հավելված ONLYOFFICE ինտեգրում: Տեղադրեք ստորև ստացված տվյալները՝</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API բանալի</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API հիմնական գաղտնի</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace օգտվողի անուն</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Դիմումի ID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Ապահով բանալին</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին մուտք գործելու պորտալ՝ օգտագործելով VK հաշիվ.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Երբ ավելացնում եք VK հավելվածը, կարող եք միացնել մուտքը պորտալ՝ օգտագործելով ձեր պրոֆիլի էջում VK հաշիվը.</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին փաստաթղթերը ուղղակիորեն WordPress-ում հրապարակելու համար.</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress բանալի</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress բանալի</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Հաճախորդի I</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Հաճախորդի գաղտնիք</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածը Yahoo-ի ծառայությունից օգտվողներին ներմուծելու համար.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Yahoo-ի կոնտակտների ցանկից պորտալի նոր օգտվողներ ավելացնելու համար: {0}Գնացեք Yahoo Developer Network-ի Ստեղծել հավելվածի էջ և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները՝</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Գաղտնաբառ</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին մուտք գործելու պորտալ՝ օգտագործելով Yandex հաշիվը.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Գաղտնաբառի վերականգնման գործողությունն արգելված է LDAP օգտագործողի համար</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Երբ ավելացնում եք Yandex հավելվածը, կարող եք միացնել մուտքը պորտալ՝ օգտագործելով ձեր պրոֆիլի էջում Yandex հաշիվը.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Գաղտնաբառի վերականգնման գործողությունն արգելված է SSO օգտագործողի համար</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Պատվերով</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Գործողությունը հաստատող հղում է ուղարկվել {0}-ին (պորտալի սեփականատիրոջ էլ. հասցեն).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Սխալ օրինակի ID.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Սխալ էլփոստի հասցե</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Այս գործողությունն իրականացնելու թույլտվություններ չկան</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Պորտալ մուտքը սահմանափակված է.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Վատ բանալիներ</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Ձեր պրոֆիլը կասեցված է</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!Օգտվող} այս էլփոստով արդեն գրանցված է</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Այս տիրույթից էլեկտրոնային նամակները գրանցման համար չեն թույլատրվում</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Էլփոստի դաշտը դատարկ է</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Ընթացիկ էլփոստը և նոր էլփոստը նույնն են</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Խնդրում ենք լրացնել բոլոր դաշտերը</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Հաղորդագրության տեքստը դատարկ</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Չհաջողվեց գտնել վերբեռնված ֆայլը</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Պատկերի ֆայլի անհայտ տեսակ</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Պատկերի չափը գերազանցում է թույլատրելի պարամետրերը</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Պատկերի ֆայլի չափը չափազանց մեծ</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Սխալ անուն կամ ազգանու</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Պորտալ մուտքը սահմանափակված է</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Ձեր գնային պլանը չի աջակցում այս տարբերակը</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Սխալ էլ</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Դոմենի անվավեր անուն</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Գաղտնաբառը դատարկ է.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>{0}-ից մինչև {1} նիշ</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>թվանշաններ</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>բացատներ չկան</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>հատուկ կերպարներ</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>մեծատառեր</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>միայն լատինական տառեր</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Հարցման սահմանաչափը գերազանցված է</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Վարձակալի տիրույթը չի կարող դատարկ լինել.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Դոմենի անունը պետք է կազմի {0}-ից {1} նիշ.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Օգտագործողին չհաջողվեց գտնել</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>"{0}" էլփոստով օգտվողին չի հաջողվել գտնել</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>ԵՄ (Ֆրանկֆուրտ) տարածաշրջան</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Ֆայլի առավելագույն չափը գերազանցված է</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Նշում. ֆայլի չափը չի կարող գերազանցել {1}{0}{2}-ը</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>բայթ, ԿԲ, ՄԲ, ԳԲ, ՏԲ</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Ձեր հաշիվը հաստատելու հղումն ուղարկվել է նշված էլ</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Անուն</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Ազգանուն</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Կապի սխալ</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Օգտատերերը չհաջողվեց ստեղծել, ստացված տվյալները սխալ են.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Սերվերը չկարողացավ ստանալ կարգավորումներ.</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Սերվերը չկարողացավ պահպանել կարգավորումները.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Սխալ մուտք կամ գաղտնաբառ.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP տիրույթը չի գտն.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Խմբեր չեն գտնվել.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Օգտատիրոջ ֆիլտրի անվավեր արժեք.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Դուք փորձել եք ձեզնից խլել ադմինիստրատորի իրավունքները: Ձեր ադմինիստրատորի իրավունքները չեն ազդել.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Ձեր հաշիվը կապված չէ LDAP գրացուցակին և ձեր LDAP գաղտնաբառը այլևս ակտիվ չէ: Խնդրում ենք փոխել կամ սահմանել ձեր հաշվի գաղտնաբառը պրոֆիլի կարգավորումների էջում.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Անհայտ սխալ.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Ոչ մի օգտատեր չի գտնվել.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Չհաջողվեց ստանալ խմբի հատկանիշ մեկ կամ մի քանի խմբերի համար.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Խմբի սխալ զտիչ.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Չհաջողվեց ձեռք բերել խմբի անվան հատկանիշ մեկ կամ մի քանի խմբերի համար.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Չհաջողվեց ստանալ մուտքի հատկանիշ մեկ կամ մի քանի օգտատերերի համար.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Հնարավոր չէ միանալ LDAP սերվերին: Խնդրում ենք ստուգել, արդյոք սերվերի հասցեն և պորտի համարը ճիշտ են.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Չհաջողվեց ստանալ Օգտատիրոջ հատկանիշ մեկ կամ մի քանի օգտատերերի համար.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Սերվերի ներքին սխալ.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>LDAP օգտվողների փոփոխում սովորական պորտալի օգտագործողների վրա</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>օգտվողի ավելացում</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Վկայագրի ստուգում</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAP-ի աջակցության կարգավորումների ստուգում</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP-ի անջատում</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Խմբերի ցուցակի առբերում LDAP սերվերից</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Օգտագործողների ցուցակի առբերում LDAP սերվերից</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Օգտատիրոջ {0}-ը որպես {1} ադմինիստրատոր սահմանել</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Բեռնվում է LDAP բազայի տվյալները</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>օգտատիրոջ հեռացում</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Հեռացնելով հնացած խմբերը, որոնք ավելի վաղ բեռնվել են LDAP-ի միջոցով</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Հեռացնելով հնացած մուտքի իրավունքները, որոնք ավելի վաղ բեռնվել են LDAP-ի միջոցով</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Անջատել հնացած օգտվողների պրոֆիլները, որոնք ավելի վաղ բեռնվել են LDAP-ի միջոցով</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Խմբերի պահպանում</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Պարամետրերի պահպանում</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Լուսանկարը պահվում է</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Օգտագործողների խնայողություն</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Օգտատերերի համաժամացում</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Օգտագործողների մուտքի իրավունքները թարմացվում են</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Օգտատիրոջ լուսանկարների թարմացում</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Ավելի ապահով նույնականացման տեսակ է պահանջվում: Խնդրում ենք օգտագործել ծածկագրված կապ կամ միացնել պարզ իսկությունը սերվերում.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Ներկայիս գնային պլանի օգտատերերի սահմանաչափը հասել է</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS-ը չի աջակցվում ընթացիկ LDAP սերվերի համար.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Չափից շատ LDAP գործողություններ.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Օգտատիրոջ/խմբի օբյեկտների եզակի ID-ն չհաջողվեց ձեռք բերել: Լռելյայնորեն համակարգը կփորձի համապատասխանեցնել հետևյալ նույնացուցիչներից մեկին՝ entryUUID, nsuniqueid, GUID, objectSid: Եթե ատրիբուտներից ոչ մեկը չի համապատասխանում ձեր LDAP սերվերին, խնդրում ենք նշել անհրաժեշտ հատկանիշը web.appsettings.config ֆայլի ldap.unique.id կարգավորումներում.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Լիցենզիան ճիշտ չէ</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Լիցենզիան վավեր չէ այս պորտալի տարբերակի համար.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Պորտալների թիվը գերազանցում է արտոնագրով թույլատրվածը</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Օգտատերերի թիվը գերազանցում է արտոնագրով թույլատրվածը</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Հաջողությամբ վերբեռնվեց</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Հաջողությամբ վերբեռնվեց: {0}Աջակցություն և թարմացումներ հասանելի չեն այս լիցենզիայի համար {2}-ից սկսած:{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Հաջողությամբ վերբեռնվեց: {0}Աջակցություն այս լիցենզիայի համար հասանելի չէ {2}-ից:{1}</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Էլփոստի փոփոխության հրահանգները հաջողությամբ ուղարկվել են</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Եթե կա {0} էլփոստով օգտվող, ապա գաղտնաբառի փոփոխման հրահանգն ուղարկվել է այս էլ. հասցեին.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Համարը փոխելու համար դուք պետք է ջնջեք ձեր ընթացիկ հեռախոսահամարը</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG մարզ</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Սեփականատեր</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Սկավառակի տարածքի սահմանաչափը գերազանցվել է</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Ամպային տարածք ձեր գրասենյակային փաստաթղթերի համար</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Պորտալ մուտք</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Տվյալների վերաբաշխման գործընթացը {0}-ի համար ավարտված չէ.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Անվավեր Recaptcha</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Ասիա Խաղաղ օվկիանոս (Սինգապուր)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Սխալ կոդը</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Կոդ՝ {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Կոդն օգտագործելու ժամանակը սպառվել է: Խնդրում ենք նոր տեքստային հաղորդագրություն խնդրել.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS-ի կարգավորումները հասանելի չեն</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Դուք չափազանց շատ տեքստային հաղորդագրություններ եք ուղարկել: Խնդրում եմ փորձեք մի փոքր ուշ.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Չհաջողվեց պահել կարգավորումները</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Կարգավորումները չեն կարող զրոյական լինել</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Անվավեր պարտադիր՝ {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Անվավեր սուբյեկտի ID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Անվավեր դաշտերի քարտեզագրում</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Բարի գալուստ էջի կարգավորումները հաջողությամբ պահպանվել են</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Կարգավորումները հաջողությամբ թարմացվել են</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Ձեր պրոֆիլը ջնջելու ցուցումները ուղարկվել են {0} էլփոստի հասցեին</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Վավերացման կոդի դաշտը չի կարող դատարկ լինել</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Մուտքագրեք բջջային հեռախոսահամարը</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Վավերացման կոդի դաշտը չի կարող դատարկ լինել</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Ադմինիստրատորի ծանուցումներ</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Ձեր հաղորդագրությունը հաջողությամբ ուղարկվեց: Ձեզ հետ կապ կհաստատի պորտալի ադմինիստրատորը.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>SMS-ով</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Authenticator հավելվածով</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Գործողությունը հաստատող հղում է ուղարկվել : էլ. հասցե(պորտալի սեփականատիրոջ էլ. հասցեն).</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 մատչմանբանալին</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Ներկառուցվածբացատ apiԲանալի</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Գործադիր հաճախորդի ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Ակտիվացրեք հավելվածին մուտք գործել պորտալ՝ օգտագործելով Apple ID հաշիվ.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերին թույլ տա մուտք գործել ONLYOFFICE՝ օգտագործելով Apple ID-ն. {0} Գնացեք Apple Developers Պորտալ և ստեղծեք նոր հավելված ONLYOFFICE ինտեգրում: Տեղադրեք ստորև ստացված տվյալները:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10 նիշանոց բանալի նույնացուցիչ, որը ստեղծվել է Apple-ի անձնական բանալիով Մուտք գործելու համար</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Անձնական բանալին ներբեռնվել է Apple Developer-ից</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10 նիշից բաղկացած մշակողի հաշվի Թիմի ID</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Ընտրված authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Ընտրված հեղ.Օգտվող</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>մուտք</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiԲանալի</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի կրճատի պորտալի հրավերի հղումները և համօգտագործվող հղումները Փաստաթղթերի մոդուլում Bitly ծառայության միջոցով.</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box(Տուփ)</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box(տուփի) ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box(տուփի) Բանալի</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածը Box(տուփ) ֆայլերն թղթապանակները կառավարելու համար.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiԲանալի</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Միացնել հավելվածը երկու գործոնով իսկորոշման համար Clickatell-ի միջոցով.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Օգտագործեք այս հավելվածը՝ Clickatell ծառայության միջոցով երկգործոն նույնականացումը միացնելու համար: {0}Մուտք գործեք ձեր SMS հարթակի հաշիվ և ստեղծեք նոր ինտեգրում ONLYOFFICE-ի համար: Պատճենեք apiԲանալին և տեղադրեք այն ստորև:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Բանալի</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Գաղտնիք</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին, որպեսզի թվային կերպով ստորագրի ձեր փաստաթղթերը DocuSign-ով.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign վավերացման վերջնակետ</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածը՝ Dropbox ֆայլերն ու թղթապանակները կառավարելու համար.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Բան</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>App Բանալի</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ EasyBib-ով փաստաթղթերում մատենագիտական ցուցակներ ստեղծելու համար.</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>App հետքանշիչ</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook Բանալի</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին Facebook-ի հաշվի միջոցով պորտալ մուտք գործելու համար.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Վեբ API բանալի</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Սերվերի բանալի</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Ուղարկողի ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Նախագծի ID</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը Firebase Cloud Messaging-ով ձեզ ուղարկված հաղորդագրությունների մասին ծանուցումներ ստանալու համար.</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Բանալի</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google ամպային պահեստավորում</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Պարունակ</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Պարունակ</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Մուտքագրեք Google Cloud պարունակի անունը՝ կրկնօրինակները պահելու համար.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Միացրեք Google Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար.</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Միացրեք նախագիծը, որպեսզի մուտք գործեք պորտալ՝ օգտագործելով Google հաշիվ և կառավարեք Google Drive-ի ֆայլերն ու պանակները.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Թույլ տվեք հավելվածին մուտք գործել պորտալ՝ օգտագործելով LinkedIn հաշիվը.</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Բանալի</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.r</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Գաղտնի բանալի</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին պորտալ մուտք գործելու համար՝ օգտագործելով Mail.ru հաշիվը.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Երբ ավելացնում եք Mail.ru հավելվածը, կարող եք միացնել մուտքը պորտալ՝ օգտագործելով ձեր պրոֆիլի էջում Mail.ru հաշիվը.</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Դիմումի հաճախորդի ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Հաճախորդի գաղտնի</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Հաճախորդի գաղտնի</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածին պորտալ մուտք գործելու համար՝ օգտագործելով Microsoft հաշիվ.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ թույլ տալու ձեր օգտատերերին մուտք գործել ONLYOFFICE՝ օգտագործելով Microsoft-ը: {0}Գնացեք Microsoft Azure և ստեղծեք նոր հավելված ONLYOFFICE ինտեգրում: Տեղադրեք ստորև ստացված տվյալները:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloud Stor</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Միացրեք Rackspace Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Անձնական կոնտեյներ</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Մուտքագրեք Rackspace մասնավոր կոնտեյների URL հասցեն՝ կրկնօրինակներ պահելու համար.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Հանրային կոնտեյներ</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Հանրային կոնտեյներ</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Մուտքագրեք Rackspace հանրային կոնտեյների URL հասցեն՝ կրկնօրինակներ պահելու համար.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Տարածաշրջան</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Տարածաշրջան</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Մուտքագրեք այն տարածաշրջանը, որտեղ գտնվում են ձեր Rackspace կոնտեյներները.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Մուտքագրեք Amazon դույլի եզակի անունը կրկնօրինակներ պահելու համար.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Միացրեք Amazon AWS S3-ը՝ ձեր պորտալից տվյալները կրկնօրինակելու և պահելու համար.</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Մուտքագրեք AWS տարածաշրջանը, որտեղ գտնվում է ձեր Amazon դույլը.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 գաղտնի մուտքի բանալի</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Գաղտնաբառ՝ պահեստ մուտք գործելու համար</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Auth User</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Միացրեք Selectel Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Անձնական կոնտեյներ</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Մուտքագրեք Selectel մասնավոր կոնտեյների անունը՝ կրկնօրինակներ պահելու համար.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Մուտքագրեք Selectel հանրային կոնտեյների անունը՝ կրկնօրինակներ պահելու համար.</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>Դիմումի ID</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Միացրեք հավելվածը OneDrive ֆայլերը և պանակներ կառավարելու համար.</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS կենտրոն</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Միացնել երկգործոն նույնականացման հավելվածը SMS կենտրոնի միջոցով.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ հրավերի և փաստաթղթերի հղումները կրճատելու համար: {0}Տեղադրեք ձեր Bitly մուտքի և API բանալին ստորև՝</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Box հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել Box-ի ֆայլերը ONLYOFFICE-ի օգտատերերի հետ: {0}Մուտք գործեք ձեր հաշիվ Box մշակողների էջում և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը DocuSign-ի միջոցով փաստաթղթերը թվային ստորագրելու համար: {0}Գնացեք ձեր DocuSign Admin Console և ավելացրեք ONLYOFFICE ինտեգրումը: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Dropbox հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը Dropbox-ից ONLYOFFICE օգտվողների հետ: {0}Մուտք գործեք ձեր հաշիվ Dropbox Developers կայքում և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ONLYOFFICE խմբագիրներում մատենագիտություններ ստեղծելու համար: {0}Գնացեք EasyBib-ի գրանցման էջ և լրացրեք ձևը՝ ONLYOFFICE-ի ինտեգրումն ավելացնելու համար: Հավելվածի բանալի ստանալուց հետո տեղադրեք այն ստորև՝</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերին թույլ տա մուտք գործել ONLYOFFICE՝ օգտագործելով Facebook-ը և կապել իրենց հաճախորդների Facebook հաշիվները CRM մոդուլին: {0}Գնացեք Facebook Developers Portal և ստեղծեք նոր հավելված ONLYOFFICE ինտեգրում: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերը ծանուցումներ ստանան հաղորդագրությունների մասին նույնիսկ անցանց: {0}Գնացեք Firebase կոնսոլ և ավելացրեք նոր նախագիծ ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստորև ստացված տվյալները.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Միացրեք Google Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Գնացեք Google Cloud Պլատֆորմ Console և ստեղծեք ծառայության նոր հաշիվ ONLYOFFICE-ի համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր Google Drive հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը Google Drive-ով ONLYOFFICE օգտվողների հետ: {0}Գնացեք Google API-ների վահանակ և ստեղծեք նոր նախագիծ ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը, որպեսզի ձեր օգտատերերին թույլ տա մուտք գործել ONLYOFFICE՝ օգտագործելով իրենց LinkedIn հաշիվները: {0}Գնացեք LinkedIn Developers-ի կայք և ստեղծեք նոր հավելված՝ ONLYOFFICE ինտեգրում: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Միացրեք Rackspace Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Rackspace Cloud Control Panel-ի անվտանգության կարգավորումներում սեղմեք Rackspace API բանալի կողքին գտնվող Ցուցադրել հղումը: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Միացրեք Amazon AWS S3-ը՝ ձեր պորտալից տվյալները կրկնօրինակելու և պահելու համար: {0}Գնացեք AWS Management Console և ստեղծեք մուտքի բանալիներ ONLYOFFICE-ի համար: Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Միացրեք Selectel Cloud Storage ծառայությունը՝ ձեր պորտալից տվյալները պահուստավորելու և պահելու համար: {0}Ստացեք մուտքի տվյալներ օգտատիրոջ համար, ով ունի «Կարդալ/գրել» իրավունքներ այն բեռնարկղերի համար, որտեղ դուք նախատեսում եք պահել ձեր կրկնօրինակները և տեղադրեք դրանք ստորև՝</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Միացրեք այս հավելվածը՝ ձեր OneDrive հաշիվը Փաստաթղթերի մոդուլին միացնելու համար: Դուք կկարողանաք կառավարել, խմբագրել և համօգտագործել ֆայլերը OneDrive-ով ONLYOFFICE օգտատերերի հետ: &lt;b&gt;{0}Մուտք գործեք ձեր Microsoft Azure հաշիվ և ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար:&lt;/b&gt; &lt;b&gt;Տեղադրեք ստացված տվյալները ստորև.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Միացրեք հավելվածը հեշտությամբ հրապարակելու փաստաթղթեր ձեր WordPress կայքում: {0}Wordpress Developers էջում ստեղծեք նոր հավելված ONLYOFFICE-ի ինտեգրման համար: Տեղադրեք ձեր ստացած տվյալները ստորև.</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Գաղտնաբառը պետք է պարունակի</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Երրորդ կողմի ինտեգրումներ</value>
+  </data>
+</root>

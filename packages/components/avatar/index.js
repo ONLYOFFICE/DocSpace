@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import PencilReactSvgUrl from "PUBLIC_DIR/images/pencil.react.svg?url";
 
 import { GuestReactSvg, AdministratorReactSvg, OwnerReactSvg } from "./svg";
@@ -69,6 +69,9 @@ const Avatar = (props) => {
     tooltipContent,
     withTooltip,
   } = props;
+
+  const { interfaceDirection } = useTheme();
+
   let isDefault = false,
     isIcon = false;
 
@@ -94,6 +97,7 @@ const Avatar = (props) => {
   const roleIcon = getRoleIcon(role);
 
   const uniqueTooltipId = withTooltip ? `roleTooltip_${Math.random()}` : "";
+  const tooltipPlace = interfaceDirection === "rtl" ? "left" : "right";
 
   return (
     <StyledAvatar {...props}>
@@ -117,8 +121,9 @@ const Avatar = (props) => {
                 size={size}
                 data-for={uniqueTooltipId}
                 data-tip={tooltipContent}
+                className="avatar_role-wrapper"
               >
-                {roleIcon}
+                {props.roleIcon ? props.roleIcon : roleIcon}
               </RoleWrapper>
               {withTooltip && (
                 <Tooltip
@@ -127,7 +132,7 @@ const Avatar = (props) => {
                     <Text fontSize="12px">{dataTip}</Text>
                   )}
                   effect="float"
-                  place="right"
+                  place={tooltipPlace}
                 />
               )}
             </>

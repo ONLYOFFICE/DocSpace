@@ -77,10 +77,10 @@ public class NotifyCleanerService : BackgroundService
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
             using var scope = _scopeFactory.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
-            var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4);
-            var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date);
+            var info = await Queries.NotifyInfosAsync(dbContext, date).ToListAsync();
+            var queue = await Queries.NotifyQueuesAsync(dbContext, date).ToListAsync();
             
             dbContext.NotifyInfo.RemoveRange(info);
             dbContext.NotifyQueue.RemoveRange(queue);
@@ -97,4 +97,19 @@ public class NotifyCleanerService : BackgroundService
             _logger.ErrorClear(err);
         }
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> NotifyInfosAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyInfo
+                    .Where(r => r.ModifyDate < date && r.State == 4));
+
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> NotifyQueuesAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyQueue
+                    .Where(r => r.CreationDate < date));
 }

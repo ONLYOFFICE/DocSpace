@@ -173,7 +173,6 @@ class ComboBox extends React.Component {
     }
 
     const disableMobileView = optionsCount < 4 || hideMobileView;
-
     return (
       <StyledComboBox
         ref={this.ref}
@@ -249,6 +248,7 @@ class ComboBox extends React.Component {
                   return (
                     <DropDownItem
                       {...option}
+                      className="drop-down-item"
                       textOverflow={textOverflow}
                       key={option.key}
                       disabled={disabled}

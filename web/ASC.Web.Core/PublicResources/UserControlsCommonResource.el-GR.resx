@@ -73,4 +73,10 @@
   <data name="UnknownLastName" xml:space="preserve">
     <value>Επώνυμο</value>
   </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Η άδεια χρήσης έληξε ή η ποσόστωση χρήστη δεν αντιστοιχεί στην άδεια χρήσης</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Πρέπει να εισαγάγετε ένα κλειδί άδειας χρήσης</value>
+  </data>
 </root>

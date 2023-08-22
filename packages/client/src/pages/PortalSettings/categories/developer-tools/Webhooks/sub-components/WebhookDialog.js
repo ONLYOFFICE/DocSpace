@@ -38,7 +38,15 @@ function validateUrl(url) {
 }
 
 const WebhookDialog = (props) => {
-  const { visible, onClose, header, isSettingsModal, onSubmit, webhook } = props;
+  const {
+    visible,
+    onClose,
+    header,
+    isSettingsModal,
+    onSubmit,
+    webhook,
+    additionalId,
+  } = props;
 
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
 
@@ -72,7 +80,10 @@ const WebhookDialog = (props) => {
   const onInputChange = (e) => {
     if (e.target.name) {
       !isValid[e.target.name] &&
-        setIsValid((prevIsValid) => ({ ...prevIsValid, [e.target.name]: true }));
+        setIsValid((prevIsValid) => ({
+          ...prevIsValid,
+          [e.target.name]: true,
+        }));
       setWebhookInfo((prevWebhookInfo) => ({
         ...prevWebhookInfo,
         [e.target.name]: e.target.value,
@@ -125,15 +136,22 @@ const WebhookDialog = (props) => {
     });
   }, [webhook]);
 
-  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && onModalClose();
 
   return (
-    <ModalDialog withFooterBorder visible={visible} onClose={onModalClose} displayType="aside">
+    <ModalDialog
+      withFooterBorder
+      visible={visible}
+      onClose={onModalClose}
+      displayType="aside"
+    >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <StyledWebhookForm onSubmit={onFormSubmit}>
           {!isSettingsModal && <Hint>{t("WebhookCreationHint")}</Hint>}
           <LabledInput
+            id={additionalId + "-name-input"}
             label={t("WebhookName")}
             placeholder={t("EnterWebhookName")}
             name="name"
@@ -144,6 +162,7 @@ const WebhookDialog = (props) => {
             required
           />
           <LabledInput
+            id={additionalId + "-payload-url-input"}
             label={t("PayloadUrl")}
             placeholder={t("EnterUrl")}
             name="uri"
@@ -162,6 +181,7 @@ const WebhookDialog = (props) => {
             setIsPasswordValid={setIsPasswordValid}
             setIsResetVisible={setIsResetVisible}
             passwordInputKey={passwordInputKey}
+            additionalId={additionalId}
           />
 
           <button type="submit" ref={submitButtonRef} hidden></button>
@@ -171,12 +191,20 @@ const WebhookDialog = (props) => {
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={isSettingsModal ? t("Common:SaveButton") : t("Common:Create")}
+            id={isSettingsModal ? "save-button" : "create-button"}
+            label={
+              isSettingsModal ? t("Common:SaveButton") : t("Common:Create")
+            }
             size="normal"
             primary={true}
             onClick={handleSubmitClick}
           />
-          <Button label={t("Common:CancelButton")} size="normal" onClick={onModalClose} />
+          <Button
+            id="cancel-button"
+            label={t("Common:CancelButton")}
+            size="normal"
+            onClick={onModalClose}
+          />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

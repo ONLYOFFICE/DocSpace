@@ -119,6 +119,8 @@ export const getCategoryType = (location) => {
         pathname.indexOf("shared/filter") > -1
           ? CategoryType.Shared
           : CategoryType.SharedRoom;
+    } else if (pathname.indexOf("share") > -1) {
+      categoryType = CategoryType.PublicRoom;
     } else if (pathname.indexOf("archive") > -1) {
       categoryType = CategoryType.Archive;
     }
@@ -187,11 +189,14 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
     case CategoryType.Trash:
       return "/files/trash/filter";
 
+    case CategoryType.PublicRoom:
+      return "/rooms/share";
+
     case CategoryType.Accounts:
       return "/accounts/filter";
 
     case CategoryType.Settings:
-      return "/settings/common";
+      return "/settings/personal";
 
     default:
       throw new Error("Unknown category type");

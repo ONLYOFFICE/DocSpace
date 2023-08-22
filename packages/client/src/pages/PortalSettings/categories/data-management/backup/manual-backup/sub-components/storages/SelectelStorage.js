@@ -47,6 +47,7 @@ class SelectelStorage extends React.Component {
 
         <div className="manual-backup_buttons">
           <Button
+            id="create-copy"
             label={t("Common:CreateCopy")}
             onClick={onMakeCopyIntoStorage}
             primary

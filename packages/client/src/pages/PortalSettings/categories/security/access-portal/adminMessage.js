@@ -145,10 +145,12 @@ const AdminMessage = (props) => {
         spacing="8px"
         options={[
           {
+            id: "admin-message-disabled",
             label: t("Disabled"),
             value: "disabled",
           },
           {
+            id: "admin-message-enable",
             label: t("Common:Enable"),
             value: "enable",
           },
@@ -167,6 +169,8 @@ const AdminMessage = (props) => {
         cancelButtonLabel={t("Common:CancelButton")}
         displaySettings={true}
         hasScroll={false}
+        additionalClassSaveButton="admin-message-save"
+        additionalClassCancelButton="admin-message-cancel"
       />
     </MainContainer>
   );

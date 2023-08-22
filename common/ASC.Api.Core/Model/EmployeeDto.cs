@@ -24,17 +24,36 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
+using System.Collections.Concurrent;
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class EmployeeDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>Display name</summary>
+    /// <type>System.String, System</type>
     public string DisplayName { get; set; }
+
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Small avatar</summary>
+    /// <type>System.String, System</type>
     public string AvatarSmall { get; set; }
+
+    /// <summary>Profile URL</summary>
+    /// <type>System.String, System</type>
     public string ProfileUrl { get; set; }
+
+    /// <summary>Specifies if the user has an avatar or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool HasAvatar { get; set; }
 
     public static EmployeeDto GetSample()
@@ -54,36 +73,39 @@ public class EmployeeDtoHelper
 {
     protected readonly UserPhotoManager _userPhotoManager;
     protected readonly UserManager _userManager;
-
+    private readonly ILogger<EmployeeDtoHelper> _logger;
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly Dictionary<Guid, EmployeeDto> _dictionary;
+    private readonly ConcurrentDictionary<Guid, EmployeeDto> _dictionary;
 
     public EmployeeDtoHelper(
         ApiContext httpContext,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserPhotoManager userPhotoManager,
         CommonLinkUtility commonLinkUtility,
-        UserManager userManager)
+        UserManager userManager,
+        ILogger<EmployeeDtoHelper> logger)
     {
         _userPhotoManager = userPhotoManager;
         _userManager = userManager;
+        _logger = logger;
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
-        _dictionary = new Dictionary<Guid, EmployeeDto>();
+        _dictionary = new ConcurrentDictionary<Guid, EmployeeDto>();
     }
 
     public async Task<EmployeeDto> GetAsync(UserInfo userInfo)
     {
-        if (_dictionary.ContainsKey(userInfo.Id))
+        if (!_dictionary.TryGetValue(userInfo.Id, out var employee))
         {
-            return _dictionary[userInfo.Id];
-        }
-        var employee = await InitAsync(new EmployeeDto(), userInfo);
-        _dictionary.Add(userInfo.Id, employee);
+            employee = await InitAsync(new EmployeeDto(), userInfo);
 
+            _dictionary.AddOrUpdate(userInfo.Id, i => employee, (i, v) => employee);
+
+        }
+        
         return employee;
     }
 
@@ -93,8 +115,9 @@ public class EmployeeDtoHelper
         {
             return await GetAsync(await _userManager.GetUsersAsync(userId));
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            _logger.ErrorWithException(e);
             return await GetAsync(ASC.Core.Users.Constants.LostUser);
         }
     }

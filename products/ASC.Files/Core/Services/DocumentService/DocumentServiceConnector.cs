@@ -148,7 +148,7 @@ public class DocumentServiceConnector
         if (!string.IsNullOrEmpty(inputScript))
         {
             using (var stream = new MemoryStream())
-            using (var writer = new StreamWriter(stream))
+            await using (var writer = new StreamWriter(stream))
             {
                 await writer.WriteAsync(inputScript);
                 await writer.FlushAsync();

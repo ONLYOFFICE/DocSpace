@@ -1,7 +1,8 @@
 import { getCustomToolbar } from "../../helpers/getCustomToolbar";
-import { ContextMenuModel, PlaylistType } from "../../types";
+import type { ContextMenuModel, IFile, PlaylistType } from "../../types";
 
 interface ViewerProps {
+  targetFile?: IFile;
   title: string;
   fileUrl?: string;
   isAudio: boolean;

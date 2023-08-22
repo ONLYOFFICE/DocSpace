@@ -15,6 +15,10 @@ export default {
           "Display catalog item. Can show only icon. If is it end of block - adding margin bottom.",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=474-2027&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
   },
 };
 

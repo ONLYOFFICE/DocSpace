@@ -5,8 +5,9 @@ import { observer, inject } from "mobx-react";
 import { Trans, withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import styled from "styled-components";
-import SelectFileDialog from "@docspace/client/src/components/panels/SelectFileDialog";
-
+// import SelectFileDialog from "@docspace/client/src/components/panels/SelectFileDialog";
+import FilesSelector from "@docspace/client/src/components/FilesSelector";
+import { FilesSelectorFilterTypes } from "@docspace/common/constants";
 export const StyledModalDialog = styled(ModalDialog)`
   .modal-body {
     display: flex;
@@ -25,14 +26,15 @@ export const StyledFormItem = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  padding: 8px 20px;
+  padding: 8px 16px;
   align-items: center;
   justify-content: start;
-  gap: 12px;
+  gap: 8px;
   border-radius: 6px;
   background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
 
   .icon {
+    margin: 4px;
     width: 24px;
     height: 24px;
     svg {
@@ -42,8 +44,10 @@ export const StyledFormItem = styled.div`
   }
 
   .item-title {
+    margin: 8px 0;
     font-weight: 600;
     font-size: 14px;
+    line-height: 16px;
     display: flex;
     min-width: 0;
     gap: 0;
@@ -65,8 +69,11 @@ const SubmitToFormGallery = ({
   t,
   visible,
   setVisible,
+  selectFileDialogVisible,
+  setSelectFileDialogVisible,
   formItem,
   setFormItem,
+  getIcon,
   currentColorScheme,
   canSubmitToFormGallery,
 }) => {
@@ -79,8 +86,14 @@ const SubmitToFormGallery = ({
     formItem.exst = splitted.length !== 1 ? `.${splitted.at(-1)}` : null;
   }
 
+  console.log(formItem);
+
+  const onSelectForm = (data) => setFormItem(data);
+
   //TODO-mushka add final step to form submition
   const onSubmitToGallery = () => onClose();
+
+  const onCloseSelectFormDialog = () => setIsSelectingForm(false);
 
   const onClose = () => {
     setVisible(false);
@@ -92,20 +105,12 @@ const SubmitToFormGallery = ({
 
   if (isSelectingForm)
     return (
-      <SelectFileDialog
-        key="select-form-dialog"
-        displayType="aside"
-        onSelectFile={onSubmitToGallery}
+      <FilesSelector
+        key="select-file-dialog"
+        filterParam={FilesSelectorFilterTypes.OFORM}
         isPanelVisible={true}
-        onClose={onClose}
-        filteredType="exceptPrivacyTrashArchiveFolders"
-        ByExtension
-        searchParam={".docxf"}
-        dialogName={t("Common:SelectAction")}
-        filesListTitle={t("Common:SelectDOCXFFormat")}
-        creationButtonPrimary
-        withSubfolders={false}
-        primaryButtonName={t("FormGallery:SubmitToGallery")}
+        onSelectFile={onSelectForm}
+        onClose={onCloseSelectFormDialog}
       />
     );
 
@@ -138,7 +143,7 @@ const SubmitToFormGallery = ({
 
         {formItem && (
           <StyledFormItem>
-            <ReactSVG className="icon" src={formItem.icon} />
+            <ReactSVG className="icon" src={getIcon(24, formItem.exst)} />
             <div className="item-title">
               {formItem.title ? (
                 [
@@ -187,11 +192,16 @@ const SubmitToFormGallery = ({
   );
 };
 
-export default inject(({ auth, accessRightsStore, dialogsStore }) => ({
-  visible: dialogsStore.submitToGalleryDialogVisible,
-  setVisible: dialogsStore.setSubmitToGalleryDialogVisible,
-  formItem: dialogsStore.formItem,
-  setFormItem: dialogsStore.setFormItem,
-  currentColorScheme: auth.settingsStore.currentColorScheme,
-  canSubmitToFormGallery: accessRightsStore.canSubmitToFormGallery,
-}))(withTranslation("Common", "FormGallery")(observer(SubmitToFormGallery)));
+export default inject(
+  ({ auth, accessRightsStore, dialogsStore, settingsStore }) => ({
+    visible: dialogsStore.submitToGalleryDialogVisible,
+    setVisible: dialogsStore.setSubmitToGalleryDialogVisible,
+    selectFileDialogVisible: dialogsStore.selectFileDialogVisible,
+    setSelectFileDialogVisible: dialogsStore.setSelectFileDialogVisible,
+    formItem: dialogsStore.formItem,
+    setFormItem: dialogsStore.setFormItem,
+    getIcon: settingsStore.getIcon,
+    currentColorScheme: auth.settingsStore.currentColorScheme,
+    canSubmitToFormGallery: accessRightsStore.canSubmitToFormGallery,
+  })
+)(withTranslation("Common", "FormGallery")(observer(SubmitToFormGallery)));

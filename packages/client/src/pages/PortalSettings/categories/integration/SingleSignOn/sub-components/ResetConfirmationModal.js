@@ -28,6 +28,7 @@ const ResetConfirmationModal = (props) => {
 
       <ModalDialog.Footer>
         <Button
+          id="ok-button"
           label={t("Common:OKButton")}
           onClick={confirmReset}
           primary
@@ -35,6 +36,7 @@ const ResetConfirmationModal = (props) => {
           size="normal"
         />
         <Button
+          id="cancel-button"
           label={t("Common:CancelButton")}
           onClick={closeResetModal}
           scale

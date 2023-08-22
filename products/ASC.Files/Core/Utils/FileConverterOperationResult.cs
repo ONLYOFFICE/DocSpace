@@ -53,4 +53,7 @@ public class FileConverterOperationResult : FileOperationResult
     [ProtoMember(8)]
     //hack for download
     public string ServerRootPath { get; set; }
+    
+    [ProtoMember(9)]
+    public string ExternalShareData { get; set; }
 }

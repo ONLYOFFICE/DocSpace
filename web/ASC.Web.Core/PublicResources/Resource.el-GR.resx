@@ -83,7 +83,7 @@
     <value>Λανθασμένη διεύθυνση email</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Δεν έχετε δικαιώματα για να εκτελέσετε αυτήν την ενέργεια</value>
+    <value>Δεν υπάρχουν δικαιώματα για την εκτέλεση αυτής της ενέργειας</value>
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Το προφίλ σας βρίσκεται σε αναστολή</value>
@@ -495,5 +495,500 @@
   </data>
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Βασικό</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Ενσωματώσεις τρίτων</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Το πεδίο κωδικός επικύρωσης δεν μπορεί να είναι κενό</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Το πεδίο κωδικός επικύρωσης δεν μπορεί να είναι κενό</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Το μήνυμά σας στάλθηκε με επιτυχία. Θα επικοινωνήσει μαζί σας ο διαχειριστής της πύλης.</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Κλειδί πρόσβασης S3</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Αναγνωριστικό πελάτη εφαρμογής</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να συνδεθούν στο ONLYOFFICE χρησιμοποιώντας το Apple ID. {0}Πηγαίνετε στην Πύλη προγραμματιστών της Apple και δημιουργήστε μια νέα ενσωμάτωση εφαρμογής ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Ένα αναγνωριστικό κλειδί 10 χαρακτήρων που δημιουργήθηκε για το ιδιωτικό κλειδί Συνδεθείτε με την Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Ιδιωτικό κλειδί που λήφθηκε από τον προγραμματιστή της Apple</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>Αναγνωριστικό ομάδας λογαριασμού προγραμματιστή 10 χαρακτήρων</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συντομεύετε τους συνδέσμους πρόσκλησης πύλης και τους κοινόχρηστους συνδέσμους στην ενότητα «Έγγραφα» με την υπηρεσία Bitly.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συντομεύσετε τους συνδέσμους πρόσκλησης και εγγράφων. {0}Εισάγετε τη σύνδεσή σας στο Bitly και το κλειδί API παρακάτω:</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Κλειδί Box</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για τη διαχείριση αρχείων και φακέλων Box.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συνδέσετε τον λογαριασμό Box σας με την ενότητα εγγράφων. Θα μπορείτε να διαχειρίζεστε, να επεξεργάζεστε και να μοιράζεστε αρχεία από το Box με τους χρήστες του ONLYOFFICE. {0}Συνδεθείτε στον λογαριασμό σας στη σελίδα προγραμματιστών του Box και δημιουργήστε μια νέα εφαρμογή για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Χρησιμοποιήστε αυτήν την εφαρμογή για να ενεργοποιήσετε τον έλεγχο ταυτότητας δύο παραγόντων με την υπηρεσία Clickatell. {0}Συνδεθείτε στον λογαριασμό σας στην Πλατφόρμα SMS και δημιουργήστε μια νέα ενσωμάτωση για το ONLYOFFICE. Αντιγράψτε ένα apiKey και εισάγετέ το παρακάτω:</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Κλειδί DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Μυστικός κωδικός DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Τελικό σημείο αυθεντικοποίησης DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για την ψηφιακή υπογραφή εγγράφων με τη χρήση του DocuSign. {0}Πηγαίνετε στην κονσόλα διαχείρισης DocuSign και προσθέστε την ενσωμάτωση ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συνδέσετε τον λογαριασμό Dropbox σας με την ενότητα εγγράφων. Θα μπορείτε να διαχειρίζεστε, να επεξεργάζεστε και να μοιράζεστε αρχεία από το Dropbox με τους χρήστες του ONLYOFFICE. {0}Συνδεθείτε στον λογαριασμό σας στον ιστότοπο Dropbox Developers και δημιουργήστε μια νέα εφαρμογή για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για τη δημιουργία βιβλιογραφικών καταλόγων σε έγγραφα με το EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για τη δημιουργία βιβλιογραφικών καταλόγων σε προγράμματα επεξεργασίας κειμένου του ONLYOFFICE. {0}Πηγαίνετε στη σελίδα εγγραφής στο EasyBib και συμπληρώστε τη φόρμα για να προσθέσετε την ενσωμάτωση του ONLYOFFICE. Αφού λάβετε ένα κλειδί εφαρμογής, επικολλήστε το παρακάτω:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Διακριτικό εφαρμογής</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Κλειδί Facebook</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό στο Facebook.</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να συνδεθούν στο ONLYOFFICE χρησιμοποιώντας το Facebook και να συνδέσουν τους λογαριασμούς Facebook των πελατών τους με την ενότητα CRM. {0}Πηγαίνετε στην πύλη προγραμματιστών του Facebook και δημιουργήστε μια νέα ενσωμάτωση εφαρμογής ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Κλειδί API ιστού</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να λαμβάνετε ειδοποιήσεις σχετικά με τα μηνύματα που σας αποστέλλονται με το Firebase Cloud Messaging.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να λαμβάνουν ειδοποιήσεις σχετικά με τα μηνύματα ακόμη και εκτός σύνδεσης. {0}Πηγαίνετε στην κονσόλα Firebase και προσθέστε ένα νέο έργο για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Κλειδί Google</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Αποθήκευση στο νέφος της Google</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Κάδος</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Κάδος</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Εισάγετε το όνομα του κάδου του Google Cloud για την αποθήκευση των αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Google Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Google Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας. {0}Πηγαίνετε στο Google Cloud Platform Console και δημιουργήστε έναν νέο λογαριασμό υπηρεσίας για το ONLYOFFICE. Επικολλήστε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Συνδέστε το έργο για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό Google και να διαχειριστείτε τα αρχεία και τους φακέλους του Google Drive.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συνδέσετε τον λογαριασμό σας στο Google Drive με την ενότητα εγγράφων. Θα μπορείτε να διαχειρίζεστε, να επεξεργάζεστε και να μοιράζεστε αρχεία από το Google Drive με τους χρήστες του ONLYOFFICE. {0}Πηγαίνετε στην κονσόλα Google API και δημιουργήστε ένα νέο έργο για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να συνδεθούν στο ONLYOFFICE χρησιμοποιώντας τους λογαριασμούς τους στο LinkedIn. {0}Μπείτε στον ιστότοπο LinkedIn Developers και δημιουργήστε μια νέα ενσωμάτωση εφαρμογής ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Κλειδί Linkedin</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>Αναγνωριστικό</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Μυστικό κλειδί</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Όταν προσθέσετε την εφαρμογή Mail.ru, μπορείτε να ενεργοποιήσετε την είσοδο στην πύλη χρησιμοποιώντας τον λογαριασμό Mail.ru στη σελίδα του προφίλ σας.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Αναγνωριστικό πελάτη εφαρμογής</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Μυστικός κωδικός πελάτη</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Μυστικός κωδικός πελάτη</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Μυστικός κωδικός πελάτη</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Μυστικός κωδικός πελάτη</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό της Microsoft.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να συνδεθούν στο ONLYOFFICE χρησιμοποιώντας τη Microsoft. {0}Μπείτε στο Microsoft Azure και δημιουργήστε μια νέα ενσωμάτωση εφαρμογής ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloud Storage</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Rackspace Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Rackspace Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας. {0}Στις ρυθμίσεις ασφαλείας του πίνακα ελέγχου του Rackspace Cloud, κάντε κλικ στον σύνδεσμο Εμφάνιση δίπλα στο Κλειδί API Rackspace. Επικολλήστε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Ιδιωτικό κοντέινερ</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Ιδιωτικό κοντέινερ</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Εισάγετε τη διεύθυνση URL του ιδιωτικού κοντέινερ της Rackspace για την αποθήκευση αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Δημόσιο κοντέινερ</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Δημόσιο κοντέινερ</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Εισάγετε τη διεύθυνση URL του δημόσιου κοντέινερ Rackspace για την αποθήκευση αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Περιοχή</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Περιοχή</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Εισάγετε την περιοχή στην οποία βρίσκονται τα κοντέινερ της Rackspace.</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Εισάγετε το μοναδικό όνομα του κάδου της Amazon για την αποθήκευση αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Συνδέστε το Amazon AWS S3 για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Συνδέστε το Amazon AWS S3 για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας. {0}Πηγαίνετε στο AWS Management Console και δημιουργήστε κλειδιά πρόσβασης για το ONLYOFFICE. Επικολλήστε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Εισάγετε την περιοχή AWS όπου βρίσκεται ο κάδος Amazon σας.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Μυστικό κλειδί πρόσβασης S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Χρήστης εξουσιοδότησης</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Selectel Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Συνδέστε την υπηρεσία Selectel Cloud Storage για τη δημιουργία αντιγράφων ασφαλείας και την αποθήκευση δεδομένων από την πύλη σας. {0}Αποκτήστε τα δεδομένα πρόσβασης για έναν χρήστη με δικαιώματα ανάγνωσης/εγγραφής για τα κοντέινερ όπου σκοπεύετε να αποθηκεύσετε τα αντίγραφα ασφαλείας σας και επικολλήστε τα παρακάτω:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Εισάγετε το όνομα του ιδιωτικού κοντέινερ Selectel για την αποθήκευση των αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Εισάγετε το όνομα του δημόσιου κοντέινερ Selectel για την αποθήκευση των αντιγράφων ασφαλείας.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να συνδέσετε τον λογαριασμό σας OneDrive με την ενότητα εγγράφων. Θα μπορείτε να διαχειρίζεστε, να επεξεργάζεστε και να μοιράζεστε αρχεία από το OneDrive με τους χρήστες του ONLYOFFICE. {0}Συνδεθείτε στον λογαριασμό σας στο Microsoft Azure και δημιουργήστε μια νέα εφαρμογή για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Χρησιμοποιήστε αυτήν την εφαρμογή για να ενεργοποιήσετε τον έλεγχο ταυτότητας δύο παραγόντων με την υπηρεσία SMS Center. {0}Εισάγετε το όνομα χρήστη του λογαριασμού σας smsc και τον κωδικό πρόσβασής σας (ή τον κωδικό πρόσβασης MD5 hash) με πεζά γράμματα:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Κωδικός πρόσβασης ή κωδικός πρόσβασης MD5 hash με πεζά γράμματα</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Όνομα χρήστη bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Διακριτικό bot</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Συνδέστε τον λογαριασμό Telegram για να λαμβάνετε ειδοποιήσεις της πύλης μέσω του Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Για να λαμβάνετε ειδοποιήσεις πύλης μέσω Telegram, ενεργοποιήστε το bot Telegram. Μπορείτε να δημιουργήσετε ένα νέο bot χρησιμοποιώντας το BotFather στο Telegram για υπολογιστές. Για να χρησιμοποιήσετε αυτό το bot, οι χρήστες της πύλης πρέπει να ενεργοποιήσουν τις ειδοποιήσεις Telegram στη σελίδα προφίλ τους. {0}Επικολλήστε το όνομα χρήστη του bot και το διακριτικό που λάβατε στα παρακάτω πεδία.</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Λογαριασμός Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Διακριτικό εξουσιοδότησης</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να καλέσετε τις επαφές του CRM με το Twilio.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να καλούν τις επαφές τους από την ενότητα CRM χρησιμοποιώντας το Twilio. {0}Πηγαίνετε στην κονσόλα Twilio και επικολλήστε τα παρακάτω δεδομένα παρακάτω:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Αναγνωριστικό πελάτη</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό Twitter και να αναζητήσετε επαφές.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να επιτρέψετε στους χρήστες σας να συνδεθούν στο ONLYOFFICE χρησιμοποιώντας το Twitter τους και να συνδέσουν τους λογαριασμούς Twitter των πελατών τους με την ενότητα CRM. {0}Πηγαίνετε στην πύλη προγραμματιστών του Twitter και δημιουργήστε μια νέα ενσωμάτωση εφαρμογής ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>Κλειδί API</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>Μυστικό κλειδί API</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Όνομα χρήστη Rackspace</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Αναγνωριστικό εφαρμογής</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Ασφαλές κλειδί</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Όταν προσθέτετε την εφαρμογή VK, μπορείτε να ενεργοποιήσετε την είσοδο στην πύλη χρησιμοποιώντας τον λογαριασμό VK στη σελίδα του προφίλ σας.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για την εύκολη δημοσίευση εγγράφων στον ιστότοπό σας WordPress. {0}Στη σελίδα Wordpress Developers, δημιουργήστε μια νέα εφαρμογή για την ενσωμάτωση του ONLYOFFICE. Επικολλήστε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Κλειδί WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>Μυστικός κωδικός WordPress</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Αναγνωριστικό πελάτη</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτήν την εφαρμογή για να προσθέσετε νέους χρήστες της πύλης από τη λίστα επαφών σας στο Yahoo. {0}Πηγαίνετε στη σελίδα «Δημιουργία εφαρμογής» στο δίκτυο προγραμματιστών της Yahoo και δημιουργήστε μια νέα εφαρμογή για την ενσωμάτωση του ONLYOFFICE. Εισάγετε τα δεδομένα που λάβατε παρακάτω:</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Ενεργοποιήστε την εφαρμογή για να συνδεθείτε στην πύλη χρησιμοποιώντας έναν λογαριασμό Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Όταν προσθέσετε την εφαρμογή Yandex, μπορείτε να ενεργοποιήσετε την είσοδο στην πύλη χρησιμοποιώντας τον λογαριασμό Yandex στη σελίδα του προφίλ σας.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Η λειτουργία ανάκτησης κωδικού πρόσβασης απαγορεύεται για τους χρήστες LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Η λειτουργία ανάκτησης κωδικού πρόσβασης απαγορεύεται για τους χρήστες SSO</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Λανθασμένο αναγνωριστικό Instance.</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Η πρόσβαση στην πύλη είναι περιορισμένη.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Κακά κλειδιά</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Τα μηνύματα ηλεκτρονικού ταχυδρομείου από αυτόν τον τομέα δεν επιτρέπονται για εγγραφή</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Η πρόσβαση στην πύλη είναι περιορισμένη</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Το τιμολογιακό σας πρόγραμμα δεν υποστηρίζει αυτήν την επιλογή</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>από {0} έως {1} χαρακτήρες</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Το όριο αιτήσεων έχει ξεπεραστεί</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Ο τομέας του μισθωτή δεν μπορεί να είναι άδειος.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Το όνομα τομέα πρέπει να έχει μήκος μεταξύ {0} και {1} χαρακτήρων.</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Περιοχή ΕΕ (Φρανκφούρτη)</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Ο τομέας LDAP δεν βρέθηκε.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Μη έγκυρη τιμή φίλτρου χρήστη.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Ο λογαριασμός σας δεν είναι συνδεδεμένος με τον κατάλογο LDAP και ο κωδικός πρόσβασης LDAP δεν είναι πλέον ενεργός. Αλλάξτε ή ορίστε τον κωδικό πρόσβασης του λογαριασμού σας στη σελίδα ρυθμίσεων προφίλ.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η λήψη του χαρακτηριστικού ομάδας για μία ή περισσότερες ομάδες.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Λανθασμένο φίλτρο ομάδας.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η λήψη του χαρακτηριστικού ονόματος ομάδας για μία ή περισσότερες ομάδες.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η λήψη του χαρακτηριστικού σύνδεσης για έναν ή περισσότερους χρήστες.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Αδυναμία σύνδεσης με τον διακομιστή LDAP. Ελέγξτε αν η διεύθυνση του διακομιστή και ο αριθμός θύρας είναι σωστοί.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η λήψη του χαρακτηριστικού χρήστη για έναν ή περισσότερους χρήστες.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Τροποποίηση χρηστών LDAP σε απλούς χρήστες της πύλης</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Ανάκτηση της λίστας ομάδων από τον διακομιστή LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Ανάκτηση της λίστας χρηστών από τον διακομιστή LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Φόρτωση πληροφοριών βάσης LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Αφαίρεση παρωχημένων ομάδων που έχουν φορτωθεί μέσω LDAP νωρίτερα</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Αφαίρεση παρωχημένων δικαιωμάτων πρόσβασης που έχουν φορτωθεί μέσω LDAP νωρίτερα</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Απενεργοποίηση παρωχημένων προφίλ χρηστών που έχουν φορτωθεί μέσω LDAP νωρίτερα</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Απαιτείται ένας πιο ασφαλής τύπος αυθεντικοποίησης. Χρησιμοποιήστε κρυπτογραφημένη σύνδεση ή ενεργοποιήστε τον απλό έλεγχο ταυτότητας στον διακομιστή.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Έχει επιτευχθεί το όριο χρηστών του τρέχοντος προγράμματος τιμολόγησης</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>Το StartTLS δεν υποστηρίζεται για τον τρέχοντα διακομιστή LDAP.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Πάρα πολλές λειτουργίες LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η λήψη μοναδικού αναγνωριστικού για αντικείμενα χρήστη/ομάδας. Από προεπιλογή, το σύστημα θα προσπαθήσει να ταιριάξει με ένα από τα ακόλουθα αναγνωριστικά: entryUUID, nsuniqueid, GUID, objectSid. Εάν κανένα από τα χαρακτηριστικά δεν αντιστοιχεί στον διακομιστή LDAP που διαθέτετε, καθορίστε το απαραίτητο χαρακτηριστικό στη ρύθμιση ldap.unique.id του αρχείου web.appsettings.config.</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Η άδεια χρήσης δεν ισχύει για αυτήν την έκδοση της πύλης.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Ο αριθμός των πυλών υπερβαίνει τον επιτρεπόμενο από την άδεια χρήσης</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Η φόρτωση έγινε με επιτυχία. {0}Η υποστήριξη και οι ενημερώσεις δεν είναι διαθέσιμες για αυτήν την άδεια από {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Μεταφορτώθηκε με επιτυχία. {0}Η υποστήριξη δεν είναι διαθέσιμη για αυτήν την άδεια από {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Εάν υπάρχει χρήστης με το email {0}, η εντολή αλλαγής κωδικού πρόσβασης έχει σταλεί σε αυτήν τη διεύθυνση email.</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>Περιοχή ORG</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Υπέρβαση της ποσόστωσης χώρου στον δίσκο</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Χώρος στο νέφος για τα έγγραφα του γραφείου σας</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Πρόσβαση στην πύλη</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Η διαδικασία επαναπροσδιορισμού δεδομένων για {0} δεν έχει ολοκληρωθεί.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Μη έγκυρο Recaptcha</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Έχετε στείλει πάρα πολλά μηνύματα κειμένου. Προσπαθήστε ξανά αργότερα.</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Αδυναμία μηδενισμού ρυθμίσεων</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Μη έγκυρη δέσμευση: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Μη έγκυρη αντιστοίχιση πεδίων</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Οι ρυθμίσεις της εφαρμογής TFA δεν είναι διαθέσιμες</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Έχετε στείλει πάρα πολλά μηνύματα κειμένου. Προσπαθήστε ξανά αργότερα.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Περιφέρεια Δυτικής Αμερικής (Όρεγκον)</value>
   </data>
 </root>

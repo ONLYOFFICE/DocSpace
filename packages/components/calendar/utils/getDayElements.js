@@ -23,6 +23,7 @@ export const getDayElements = (
   const monthDays = {
     prevMonthDays: calendarDays.prevMonthDays.map((day) => (
       <ColorTheme
+        className="day"
         themeId={ThemeType.DateItem}
         isSecondary
         key={day.key}
@@ -37,6 +38,7 @@ export const getDayElements = (
     )),
     currentMonthDays: calendarDays.currentMonthDays.map((day) => (
       <ColorTheme
+        className="day"
         themeId={ThemeType.DateItem}
         key={day.key}
         onClick={() => onClick(moment(day.key, dateFormat))}
@@ -50,6 +52,7 @@ export const getDayElements = (
     )),
     nextMonthDays: calendarDays.nextMonthDays.map((day) => (
       <ColorTheme
+        className="day"
         themeId={ThemeType.DateItem}
         isSecondary
         key={day.key}
@@ -73,6 +76,7 @@ export const getDayElements = (
       if (day.key === currentDate) {
         monthDays[key][index] = (
           <ColorTheme
+            className="day"
             themeId={ThemeType.DateItem}
             isCurrent
             key={day.key}
@@ -88,6 +92,7 @@ export const getDayElements = (
       } else if (day.key === selectedDateFormated) {
         monthDays[key][index] = (
           <ColorTheme
+            className="day"
             themeId={ThemeType.DateItem}
             key={day.key}
             focused

@@ -145,7 +145,7 @@ public class MailMergeTaskRunner
         string responseAttachString;
         var httpClient = clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
-        using (var stream = await response.Content.ReadAsStreamAsync())
+        await using (var stream = await response.Content.ReadAsStreamAsync())
         {
             if (stream == null)
             {

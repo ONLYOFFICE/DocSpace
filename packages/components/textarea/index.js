@@ -49,6 +49,7 @@ const Textarea = ({
   enableCopy,
   hasNumeration,
   isFullHeight,
+  classNameCopyIcon,
 }) => {
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
@@ -81,6 +82,10 @@ const Textarea = ({
   }
 
   useEffect(() => {
+    hasError !== isError && setIsError(hasError);
+  }, [hasError]);
+
+  useEffect(() => {
     setIsError(isJSONField && (!value || !isJSON(value)));
   }, [isJSONField, value]);
 
@@ -102,6 +107,7 @@ const Textarea = ({
     >
       {isJSONField && (
         <CopyIconWrapper
+          className={classNameCopyIcon}
           isJSONField={isJSONField}
           onClick={() => {
             copy(modifiedValue);
@@ -128,7 +134,6 @@ const Textarea = ({
             {numerationValue.join("\n")}
           </Numeration>
         )}
-
         <StyledTextarea
           id={id}
           paddingLeftProp={paddingLeftProp}
@@ -147,6 +152,7 @@ const Textarea = ({
           color={color}
           autoFocus={autoFocus}
           ref={areaRef}
+          dir="auto"
         />
       </ColorTheme>
     </Wrapper>
@@ -203,12 +209,11 @@ Textarea.propTypes = {
 };
 
 Textarea.defaultProps = {
-  className: "",
   isDisabled: false,
   isReadOnly: false,
   hasError: false,
   heightScale: false,
-  placeholder: "",
+  placeholder: " ",
   tabIndex: -1,
   value: "",
   fontSize: 13,

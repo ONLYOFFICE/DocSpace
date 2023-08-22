@@ -441,7 +441,8 @@ class AutomaticBackup extends React.PureComponent {
           {renderTooltip(
             t("AutoBackupHelp") +
               " " +
-              t("AutoBackupHelpNote", { organizationName })
+              t("AutoBackupHelpNote", { organizationName }),
+            "automatic-backup"
           )}
           {!isEnableAuto && (
             <Badge
@@ -457,7 +458,7 @@ class AutomaticBackup extends React.PureComponent {
         </Text>
         <div className="backup_toggle-wrapper">
           <ToggleButton
-            className="backup_toggle-btn"
+            className="enable-automatic-backup backup_toggle-btn"
             label={t("EnableAutomaticBackup")}
             onChange={this.onClickPermissions}
             isChecked={selectedEnableSchedule}
@@ -472,6 +473,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
+                id="backup-room"
                 label={t("RoomsModule")}
                 name={`${DocumentModuleType}`}
                 key={0}
@@ -493,6 +495,7 @@ class AutomaticBackup extends React.PureComponent {
             >
               <RadioButton
                 {...commonRadioButtonProps}
+                id="third-party-resource"
                 label={t("ThirdPartyResource")}
                 name={`${ResourcesModuleType}`}
                 isChecked={isCheckedThirdParty}
@@ -515,6 +518,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
+                id="third-party-storage"
                 label={t("Common:ThirdPartyStorage")}
                 name={`${StorageModuleType}`}
                 isChecked={isCheckedThirdPartyStorage}

@@ -57,6 +57,9 @@ export const getDefaultRoomName = (room, t) => {
 
     case RoomsType.ReadOnlyRoom:
       return t("Files:ViewOnlyRooms");
+
+    case RoomsType.PublicRoom:
+      return t("Files:PublicRoom");
   }
 };
 
@@ -95,6 +98,10 @@ export const getDefaultFileName = (format) => {
   }
 };
 
+export const getUnexpectedErrorText = () => {
+  return i18n.t("Common:UnexpectedError");
+};
+
 export const addFileToRecent = async (fileId) => {
   try {
     await addFileToRecentlyViewed(fileId);
@@ -108,22 +115,31 @@ export const openDocEditor = async (
   providerKey = null,
   tab = null,
   url = null,
-  isPrivacy
+  isPrivacy,
+  isPreview = false,
+  shareKey = null
 ) => {
-  if (!providerKey && id && !isPrivacy) {
+  if (!providerKey && id && !isPrivacy && !shareKey) {
     await addFileToRecent(id);
   }
+
+  const share = shareKey ? `&share=${shareKey}` : "";
+  const preview = isPreview ? "&action=view" : "";
 
   if (!url && id) {
     url = combineUrl(
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
-      `/doceditor?fileId=${encodeURIComponent(id)}`
+      `/doceditor?fileId=${encodeURIComponent(id)}${preview}${share}`
     );
   }
 
   if (tab) {
-    url ? (tab.location = url) : tab.close();
+    if (url) {
+      tab.location = url.indexOf("share") !== -1 ? url : `${url}${share}`;
+    } else {
+      tab.close();
+    }
   } else {
     window.open(url, "_blank");
   }

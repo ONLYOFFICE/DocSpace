@@ -181,7 +181,7 @@ public class SharePointProviderInfo : IProviderInfo<File, Folder, ClientObject>
         _clientContext.ExecuteQuery();
 
         var tempBuffer = _tempStream.Create();
-        using (var str = fileInfo.Stream)
+        await using (var str = fileInfo.Stream)
         {
             if (str != null)
             {

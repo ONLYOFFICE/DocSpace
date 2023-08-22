@@ -1,8 +1,8 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack").container
-  .ModuleFederationPlugin;
+const ModuleFederationPlugin =
+  require("webpack").container.ModuleFederationPlugin;
 const DefinePlugin = require("webpack").DefinePlugin;
 
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
@@ -222,7 +222,7 @@ const config = {
             loader: "babel-loader",
             options: {
               presets: [
-                "@babel/preset-react",
+                ["@babel/preset-react", { runtime: "automatic" }],
                 "@babel/preset-env",
                 "@babel/preset-typescript",
               ],
@@ -299,11 +299,11 @@ module.exports = (env, argv) => {
         "./SharingDialog": "./src/components/panels/SharingDialog",
         "./utils": "./src/helpers/filesUtils.js",
         "./SelectFileDialog":
-          "./src/components/panels/SelectFileDialog/SelectFileDialogWrapper",
+          "./src/components/FilesSelector/FilesSelectorWrapper",
         "./SelectFileInput":
           "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":
-          "./src/components/panels/SelectFolderDialog/SelectFolderDialogWrapper",
+          "./src/components/FilesSelector/FilesSelectorWrapper",
         "./SelectFolderInput":
           "./src/components/panels/SelectFolderInput/SelectFolderInputWrapper",
         "./PeopleSelector": "./src/components/PeopleSelector",

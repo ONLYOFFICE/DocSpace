@@ -29,14 +29,24 @@ class TreeFoldersStore {
 
   listenTreeFolders = (treeFolders) => {
     const { socketHelper } = this.authStore.settingsStore;
+    const { addSocketSubscribersId, deleteSocketSubscribersId } =
+      this.selectedFolderStore;
 
     if (treeFolders.length > 0) {
+      treeFolders.forEach((f) => {
+        deleteSocketSubscribersId(`DIR-${f.id}`);
+      });
+
       socketHelper.emit({
         command: "unsubscribe",
         data: {
           roomParts: treeFolders.map((f) => `DIR-${f.id}`),
           individual: true,
         },
+      });
+
+      treeFolders.forEach((f) => {
+        addSocketSubscribersId(`DIR-${f.id}`);
       });
 
       socketHelper.emit({
@@ -139,6 +149,10 @@ class TreeFoldersStore {
 
   get archiveRoomsId() {
     return this.rootFoldersTitles[FolderType.Archive]?.id;
+  }
+
+  get recycleBinFolderId() {
+    return this.rootFoldersTitles[FolderType.TRASH]?.id;
   }
 
   get myFolder() {

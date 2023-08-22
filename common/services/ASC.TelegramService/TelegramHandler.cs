@@ -188,7 +188,7 @@ public class TelegramHandler
         var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken);
 
         client.StartReceiving(updateHandler: (botClient, exception, cancellationToken) => HandleUpdateAsync(botClient, exception, cancellationToken, tenantId),
-                              errorHandler: HandleErrorAsync,
+                              pollingErrorHandler: HandleErrorAsync,
                               cancellationToken: linkedCts.Token);
     }
 

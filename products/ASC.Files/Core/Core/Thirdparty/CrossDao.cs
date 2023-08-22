@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.Classes;
-
 namespace ASC.Files.Core.Thirdparty;
 
 [Scope]
@@ -84,9 +82,9 @@ internal class CrossDao //Additional SharpBox
         fromFile.Id = fromConverter(fromFile.Id);
 
         var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
-        using (var fromFileStream = mustConvert
-                                        ? await _fileConverter.ExecAsync(fromFile)
-                                        : await fromFileDao.GetFileStreamAsync(fromFile))
+        await using (var fromFileStream = mustConvert
+                         ? await _fileConverter.ExecAsync(fromFile)
+                         : await fromFileDao.GetFileStreamAsync(fromFile))
         {
             toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
             toFile = await toFileDao.SaveFileAsync(toFile, fromFileStream);

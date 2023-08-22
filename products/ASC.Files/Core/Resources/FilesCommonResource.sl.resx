@@ -182,10 +182,7 @@
     <value>Stori enako kot uporabnik|Poveži Dropbox, Box in druge račune v oddelku 'pogosti dokument'|Ustvarite pravice dostopa za dokumente in mape v oddelku 'pogosti dokumenti'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Ustvari, uredi, shrani in deli dokumente. Poveži svoje Google Drive, Dropbox in Box račune in imej vse dokumente na enem mestu.</value>
-  </data>
-  <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Ustvari, uredi, shrani in deli dokumente. Poveži svoje Google Drive, Dropbox in Box račune in imej vse dokumente na enem mestu.</value>
+    <value>Ustvari, uredi, shrani in deli dokumente. Delajte na njih skupaj v realnem času. Zagotovljena maksimalna združljivost z docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Dokumenti</value>
@@ -285,5 +282,138 @@
   </data>
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Filter po meri</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Skrbnik sobe</value>
+  </data>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>Zunanji portal</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Komentar</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Izpolnjevanje obrazca</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>Pregled</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Samodejno shranjeno</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Spremenjen lastnik</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>Pretvorjeno iz {0}</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>Kopirano</value>
+  </data>
+  <data name="CommentCreate" xml:space="preserve">
+    <value>Ustvarjeno</value>
+  </data>
+  <data name="CommentCreateByDocuSign" xml:space="preserve">
+    <value>Ustvarjeno z DocuSign</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Ustvarjeno za izpolnitev obrazca</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>Urejeno</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Urejeno s šifriranjem</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Šifrirano</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Shranjeno</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Prepisano</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>Obnovljeno iz revizije {0}</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>Obnovljeno iz spremembe dokumenta {0}</value>
+  </data>
+  <data name="CommentUpload" xml:space="preserve">
+    <value>Naloženo</value>
+  </data>
+  <data name="DocuSignStatusDeclined" xml:space="preserve">
+    <value>Zavrnjeno</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>Med pošiljanjem je prišlo do napake</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>Pošiljanje dokumenta prek DocuSign je bilo preklicano</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>Dokument je bil poslan v podpis prek DocuSign</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>Razveljavljeno</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>Tega uporabnika ne morete izbrati</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>Pretvorba traja predolgo.</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>Datoteko je za urejanje odprl {0}. Trenutno funkcija sourejanja ni podprta za ta format datoteke.</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>Datoteko je za urejanje v mobilni aplikaciji odprl {0}</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>Datoteka, ki je večja od {0}, ne bo kopirana</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>Datoteka, ki je večja od {0}, ne bo urejena</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>Datoteka, ki je večja od {0}, ne bo premaknjena</value>
+  </data>
+  <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
+    <value>Vsaj {0} email sporočil ni bilo mogoče poslati. Obiščite modul za email, da poiščete razlog za težavo.</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Nimate dovolj dovoljenj za premikanje datoteke</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Nimate dovolj dovoljenj za premikanje mape</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>Vsebina mape tretjih strani ni na voljo. Poskusite znova povezati račun.</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Uporabnika ni bilo mogoče najti</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Iskanje po vsebini dokumentov</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Datoteka ustvarjena v mapi "{0}"</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Dokument OFORM za izpolnjevanje je pripravljen. Shranjen je v {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Kopija OFORM je ustvarjena v mapi {0}. Izpolnite obrazec in prenesite rezultat kot datoteko PDF ali DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Datoteka ni več osnutek za izpolnjevanje obrazca.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Urejajte, delite in sodelujte pri dokumentih v realnem času. Ustvarjajte in upravljajte skupne dokumente, do katerih lahko dostopa celotna ekipa.
+Najvišja združljivost z docx, xlsx, pptx.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Ogled in prenos dokumentov v skupni rabi. Naložite datoteke v mape v skupni rabi. Zagotovljena maksimalna združljivost z docx, xlsx, pptx.</value>
   </data>
 </root>

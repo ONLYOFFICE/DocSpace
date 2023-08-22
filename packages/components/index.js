@@ -12,6 +12,7 @@ export { default as ContextMenu } from "./context-menu";
 export { default as ContextMenuButton } from "./context-menu-button";
 export { default as CustomScrollbarsVirtualList } from "./scrollbar/custom-scrollbars-virtual-list";
 export { default as DatePicker } from "./date-picker";
+export { default as DateTimePicker } from "./date-time-picker";
 export { default as DropDown } from "./drop-down";
 export { default as DropDownItem } from "./drop-down-item";
 export { default as EmailInput } from "./email-input";

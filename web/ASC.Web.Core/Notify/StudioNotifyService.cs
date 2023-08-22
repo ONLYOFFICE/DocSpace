@@ -664,13 +664,15 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
+            return;
+            //var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
+            //notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceAdminWelcomeV1;
-            tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
+            return;
+            //notifyAction = Actions.OpensourceAdminWelcomeV1;
+            //tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
         }
         else
         {
@@ -791,7 +793,7 @@ public class StudioNotifyService
             var userId = u.Id;
             var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(u.Email, ConfirmType.EmailActivation, null, userId);
 
-            _settingsManager.Save(new FirstEmailConfirmSettings() { IsFirst = true});
+            _settingsManager.Save(new FirstEmailConfirmSettings() { IsFirst = true });
 
             var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
 

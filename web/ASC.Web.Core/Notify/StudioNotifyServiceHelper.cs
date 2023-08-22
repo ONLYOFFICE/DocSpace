@@ -140,7 +140,7 @@ public class StudioNotifyServiceHelper
 
         if (args != null)
         {
-            item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
+            item.Tags.AddRange(args.Where(r => r.Value != null).Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
         }
 
         _cache.Publish(item, CacheNotifyAction.Any);

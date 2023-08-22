@@ -184,7 +184,7 @@ public class DiscDataStore : BaseStorage
         }
         else
         {
-            using var fs = File.Open(target, FileMode.Create);
+            await using var fs = File.Open(target, FileMode.Create);
             await buffered.CopyToAsync(fs);
             fslen = fs.Length;
         }
@@ -214,7 +214,7 @@ public class DiscDataStore : BaseStorage
         var target = GetTarget(domain, path);
         var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 
-        using (var fs = new FileStream(target, mode))
+        await using (var fs = new FileStream(target, mode))
         {
             await stream.CopyToAsync(fs);
         }
@@ -428,7 +428,15 @@ public class DiscDataStore : BaseStorage
         }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
-        var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();
+        var size = entries.Where(r =>
+        {
+            if (QuotaController == null || string.IsNullOrEmpty(QuotaController.ExcludePattern))
+            {
+                return true;
+            }
+            return !Path.GetFileName(r).StartsWith(QuotaController.ExcludePattern);
+        }
+        ).Select(_crypt.GetFileSize).Sum();
 
         var subDirs = Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories).ToList();
         subDirs.Reverse();

@@ -41,4 +41,39 @@ public static class SecureHelper
             return false;
         }
     }
+
+    public static string GenerateSecureKeyHeader(string path, EmailValidationKeyProvider keyProvider)
+    {
+        var ticks = DateTime.UtcNow.Ticks;
+        var data = path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + '.' + ticks;
+        var key = keyProvider.GetEmailKey(data);
+
+        return Constants.SecureKeyHeader + ':' + ticks + '-' + key;
+    }
+
+    public static async Task<bool> CheckSecureKeyHeader(string queryHeaders, string path, EmailValidationKeyProvider keyProvider)
+    {
+        if (string.IsNullOrEmpty(queryHeaders))
+        {
+            return false;
+        }
+        
+        var headers = queryHeaders.Length > 0 ? queryHeaders.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
+
+        var headerKey = headers.FirstOrDefault(h => h.StartsWith(Constants.SecureKeyHeader))?.
+            Replace(Constants.SecureKeyHeader + ':', string.Empty);
+
+        if (string.IsNullOrEmpty(headerKey))
+        {
+            return false;
+        }
+
+        var separatorPosition = headerKey.IndexOf('-');
+        var ticks = headerKey[..separatorPosition];
+        var key = headerKey[(separatorPosition + 1)..];
+
+        var result = await keyProvider.ValidateEmailKeyAsync(path + '.' + ticks, key);
+
+        return result == EmailValidationKeyProvider.ValidationResult.Ok;
+    }
 }

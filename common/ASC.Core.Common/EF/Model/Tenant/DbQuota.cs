@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Profile = AutoMapper.Profile;
+
 namespace ASC.Core.Common.EF;
 
 public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
@@ -52,7 +54,9 @@ public static class DbQuotaExtension
     {
         modelBuilder
             .Add(MySqlAddDbQuota, Provider.MySql)
-            .Add(PgSqlAddDbQuota, Provider.PostgreSql)
+            .Add(PgSqlAddDbQuota, Provider.PostgreSql);
+
+        modelBuilder
             .HasData(
                 new DbQuota
                 {

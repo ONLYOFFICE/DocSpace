@@ -127,7 +127,7 @@ export default inject(({ auth, treeFoldersStore }) => {
   return { theme: auth.settingsStore.theme, isRooms };
 })(
   observer(
-    withTranslation(["Files", "Translations"])(
+    withTranslation(["Files", "Translations", "Notifications"])(
       withContent(withBadges(FilesTileContent))
     )
   )

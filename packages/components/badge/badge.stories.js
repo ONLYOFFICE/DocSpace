@@ -11,6 +11,10 @@ export default {
         component: "Used for buttons, numbers or status markers next to icons.",
       },
     },
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=6057-171831&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
   },
 };
 

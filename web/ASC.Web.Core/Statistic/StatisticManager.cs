@@ -39,10 +39,10 @@ public class StatisticManager
         _dbContextFactory = dbContextFactory;
     }
 
-    public async ValueTask SaveUserVisitAsync(int tenantID, Guid userID, Guid productID)
+    public async ValueTask SaveUserVisitAsync(int tenantId, Guid userId, Guid productId)
     {
         var now = DateTime.UtcNow;
-        var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
+        var key = string.Format("{0}|{1}|{2}|{3}", tenantId, userId, productId, now.Date);
 
         lock (_cache)
         {
@@ -50,9 +50,9 @@ public class StatisticManager
                             _cache[key] :
                             new UserVisit
                             {
-                                TenantID = tenantID,
-                                UserID = userID,
-                                ProductID = productID,
+                                TenantID = tenantId,
+                                UserID = userId,
+                                ProductID = productId,
                                 VisitDate = now
                             };
 
@@ -67,53 +67,16 @@ public class StatisticManager
         }
     }
 
-    public async Task<List<Guid>> GetVisitorsTodayAsync(int tenantID, Guid productID)
+    public async Task<List<UserVisit>> GetHitsByPeriodAsync(int tenantID, DateTime startPeriod, DateTime endPeriod)
     {
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var users = await webstudioDbContext.WebstudioUserVisit
-            .Where(r => r.VisitDate == DateTime.UtcNow.Date)
-            .Where(r => r.TenantId == tenantID)
-            .Where(r => r.ProductId == productID)
-            .OrderBy(r => r.FirstVisitTime)
-            .GroupBy(r => r.UserId)
-            .Select(r => r.Key)
-            .ToListAsync();
-
-        lock (_cache)
-        {
-            foreach (var visit in _cache.Values)
-            {
-                if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
-                {
-                    users.Add(visit.UserID);
-                }
-            }
-        }
-        return users;
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.UserVisitsAsync(webstudioDbContext, tenantID, startPeriod, endPeriod).ToListAsync();
     }
 
-    public async Task<List<UserVisit>> GetHitsByPeriodAsync(int tenantID, DateTime startDate, DateTime endPeriod)
+    public async Task<List<UserVisit>> GetHostsByPeriodAsync(int tenantID, DateTime startPeriod, DateTime endPeriod)
     {
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        return await webstudioDbContext.WebstudioUserVisit
-            .Where(r => r.TenantId == tenantID)
-            .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-            .OrderBy(r => r.VisitDate)
-            .GroupBy(r => r.VisitDate)
-            .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) })
-            .ToListAsync();
-    }
-
-    public async Task<List<UserVisit>> GetHostsByPeriodAsync(int tenantID, DateTime startDate, DateTime endPeriod)
-    {
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        return await webstudioDbContext.WebstudioUserVisit
-            .Where(r => r.TenantId == tenantID)
-            .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-            .OrderBy(r => r.VisitDate)
-            .GroupBy(r => new { r.UserId, r.VisitDate })
-            .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId })
-            .ToListAsync();
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.UserVisitsGroupByUserIdAsync(webstudioDbContext, tenantID, startPeriod, endPeriod).ToListAsync();
     }
 
     private async Task FlushCacheAsync()
@@ -131,7 +94,7 @@ public class StatisticManager
             _lastSave = DateTime.UtcNow;
         }
 
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
 
         foreach (var v in visits)
         {
@@ -154,4 +117,27 @@ public class StatisticManager
         }
         await webstudioDbContext.SaveChangesAsync();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
+        UserVisitsAsync = EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
+                ctx.WebstudioUserVisit
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                    .OrderBy(r => r.VisitDate)
+                    .GroupBy(r => r.VisitDate)
+                    .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) }));
+
+    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
+        UserVisitsGroupByUserIdAsync = EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
+                ctx.WebstudioUserVisit
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                    .OrderBy(r => r.VisitDate)
+                    .GroupBy(r => new { r.UserId, r.VisitDate })
+                    .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId }));
 }

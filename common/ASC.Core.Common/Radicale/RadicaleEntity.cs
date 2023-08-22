@@ -68,7 +68,11 @@ public abstract class RadicaleEntity
     }
 
     public string GetSystemAuthorization()
-    {
+    {   
+        if(_configuration["radicale:admin"] == null || _configuration["radicale:admin"] == "")
+        {
+            return null;
+        }
         return _configuration["radicale:admin"] + ":" + _instanceCrypto.Encrypt(_configuration["radicale:admin"]);
     }
 

@@ -36,4 +36,6 @@ public interface IQuotaController
     Task QuotaUsedSetAsync(string module, string domain, string dataTag, long size);
 
     Task QuotaUsedCheckAsync(long size);
+
+    string ExcludePattern { get; set; }
 }

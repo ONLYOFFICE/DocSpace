@@ -32,7 +32,7 @@ export const MonthsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title onClick={onTitleClick}>
+      <Title className="months-header" onClick={onTitleClick}>
         {observedDate.year()}
         <HeaderActionIcon />
       </Title>

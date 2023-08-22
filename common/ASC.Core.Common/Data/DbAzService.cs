@@ -40,7 +40,7 @@ class DbAzService : IAzService
 
     public async Task<IEnumerable<AzRecord>> GetAcesAsync(int tenant, DateTime from)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
 
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces = await
@@ -79,12 +79,12 @@ class DbAzService : IAzService
         if (!await ExistEscapeRecordAsync(r))
         {
             await InsertRecordAsync(r);
-            }
-            else
-            {
-                // unescape
+        }
+        else
+        {
+            // unescape
             await DeleteRecordAsync(r);
-            }
+        }
 
         return r;
     }
@@ -95,39 +95,27 @@ class DbAzService : IAzService
 
         if (await ExistEscapeRecordAsync(r))
         {
-                // escape
+            // escape
             await InsertRecordAsync(r);
-            }
-            else
-            {
+        }
+        else
+        {
             await DeleteRecordAsync(r);
-            }
+        }
 
     }
 
 
     private async Task<bool> ExistEscapeRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        return await userDbContext.Acl
-            .Where(a => a.TenantId == Tenant.DefaultTenant)
-            .Where(a => a.Subject == r.Subject)
-            .Where(a => a.Action == r.Action)
-            .Where(a => a.Object == (r.Object ?? string.Empty))
-            .Where(a => a.AceType == r.AceType)
-            .AnyAsync();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.AnyAclAsync(userDbContext, Tenant.DefaultTenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
     }
 
     private async Task DeleteRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        var record = await userDbContext.Acl
-            .Where(a => a.TenantId == r.TenantId)
-            .Where(a => a.Subject == r.Subject)
-            .Where(a => a.Action == r.Action)
-            .Where(a => a.Object == (r.Object ?? string.Empty))
-            .Where(a => a.AceType == r.AceType)
-            .FirstOrDefaultAsync();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        var record = await Queries.AclAsync(userDbContext, r.TenantId, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
 
         if (record != null)
         {
@@ -138,8 +126,33 @@ class DbAzService : IAzService
 
     private async Task InsertRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        await userDbContext.AddOrUpdateAsync(q=> q.Acl, _mapper.Map<AzRecord, Acl>(r));
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
+        await userDbContext.AddOrUpdateAsync(q => q.Acl, _mapper.Map<AzRecord, Acl>(r));
         await userDbContext.SaveChangesAsync();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<bool>> AnyAclAsync =
+        EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
+                ctx.Acl
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Subject == subject)
+                    .Where(r => r.Action == action)
+                    .Where(r => r.Object == obj)
+                    .Where(r => r.AceType == aceType)
+                    .Any());
+
+    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<Acl>> AclAsync =
+        EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
+                ctx.Acl
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Subject == subject)
+                    .Where(r => r.Action == action)
+                    .Where(r => r.Object == obj)
+                    .Where(r => r.AceType == aceType)
+                    .FirstOrDefault());
 }

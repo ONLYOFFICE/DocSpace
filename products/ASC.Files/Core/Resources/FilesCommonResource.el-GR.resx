@@ -359,4 +359,61 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Δεν μπορείτε να καρφιτσώσετε ένα δωμάτιο</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Διαχειριστής Δωματίου</value>
+  </data>
+  <data name="AceShareLink" xml:space="preserve">
+    <value>Εξωτερική πύλη</value>
+  </data>
+  <data name="AppAccessDenied" xml:space="preserve">
+    <value>Για να εργαστείτε με το αρχείο πρέπει να του χορηγήσετε πρόσβαση</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Δημιουργήθηκε για τη συμπλήρωση της φόρμας</value>
+  </data>
+  <data name="CommentOverwrite" xml:space="preserve">
+    <value>Αντικαταστάθηκε</value>
+  </data>
+  <data name="CommentRevert" xml:space="preserve">
+    <value>Έγινε επαναφορά από την αναθεώρηση του {0}</value>
+  </data>
+  <data name="CommentRevertChanges" xml:space="preserve">
+    <value>Αποκαταστάθηκε από την αλλαγή εγγράφου του {0}</value>
+  </data>
+  <data name="DocuSignStatusError" xml:space="preserve">
+    <value>Υπήρξε σφάλμα κατά τη διάρκεια της λειτουργίας αποστολής</value>
+  </data>
+  <data name="DocuSignStatusVoided" xml:space="preserve">
+    <value>Ακυρωμένο</value>
+  </data>
+  <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η αποστολή τουλάχιστον {0} μηνυμάτων email. Επισκεφθείτε την ενότητα αλληλογραφίας για να δείτε ποιος μπορεί να είναι ο λόγος της αποτυχίας.</value>
+  </data>
+  <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
+    <value>Το αρχείο καταστράφηκε όταν προσπαθήσατε να το αποθηκεύσετε</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
+    <value>Δεν είναι δυνατή η εξουσιοδότηση στον πάροχο {0} με τα συγκεκριμένα διαπιστευτήρια.</value>
+  </data>
+  <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
+    <value>Το περιεχόμενο του φακέλου τρίτου μέρους δεν είναι διαθέσιμο. Προσπαθήστε να επανασυνδέσετε τον λογαριασμό.</value>
+  </data>
+  <data name="ErrorMassage_StartEditing" xml:space="preserve">
+    <value>Σφάλμα έναρξης επεξεργασίας αρχείου</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Το έγγραφο OFORM με δυνατότητα συμπλήρωσης είναι έτοιμο. Έχει αποθηκευτεί στο {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Το αντίγραφο OFORM δημιουργείται στον φάκελο {0}. Συμπληρώστε τη φόρμα και κατεβάστε το αποτέλεσμα ως αρχείο PDF ή DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Το αρχείο δεν αποτελεί πλέον προσχέδιο για τη συμπλήρωση της φόρμας.</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>Κάντε το ίδιο ως χρήστης|Συνδεθείτε σε Dropbox, Box και άλλους λογαριασμούς στην ενότητα «Κοινά»|Ρυθμίστε τα δικαιώματα πρόσβασης στα έγγραφα και τους φακέλους στην ενότητα "Κοινά»</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>Δημιουργήστε και επεξεργαστείτε τα δικά σας έγγραφα καθώς και τα κοινόχρηστα έγγραφα με τα κατάλληλα δικαιώματα πρόσβασης|Δώστε πρόσβαση ανάγνωσης/επεξεργασίας σε άλλους χρήστες στα έγγραφα και τους φακέλους|Συνδεθείτε σε Dropbox, Box και άλλους λογαριασμούς στην ενότητα «Τα έγγραφά μου»</value>
+  </data>
 </root>

@@ -140,7 +140,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
             throw new FileNotFoundException("Folder not found.");
         }
 
-        using var source = File.OpenRead(localPath);
+        await using var source = File.OpenRead(localPath);
         var newFile = _serviceProvider.GetService<File<T>>();
         newFile.Title = Path.GetFileName(localPath);
         newFile.ParentId = folder.Id;
@@ -176,8 +176,8 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
             throw new FileNotFoundException("File not found.");
         }
 
-        using var source = await fileDao.GetFileStreamAsync(file);
-        using var destination = File.OpenWrite(targetLocalPath);
+        await using var source = await fileDao.GetFileStreamAsync(file);
+        await using var destination = File.OpenWrite(targetLocalPath);
         await source.CopyToAsync(destination);
     }
 

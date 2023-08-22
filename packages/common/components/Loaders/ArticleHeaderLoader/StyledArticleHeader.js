@@ -5,12 +5,13 @@ const StyledContainer = styled.div`
   max-width: 211px;
   margin-left: 1px;
 
-  @media ${tablet} {
+  ${isMobile} {
     margin-left: 0;
   }
 
-  ${isMobile} {
-    margin-left: 0;
+  @media ${tablet} {
+
+    ${(props) => (props.showText ? "margin-left: 10px" : "margin-left:0")};
   }
 `;
 

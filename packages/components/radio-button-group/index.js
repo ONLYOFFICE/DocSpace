@@ -45,6 +45,7 @@ class RadioButtonGroup extends React.Component {
             );
           return (
             <RadioButton
+              id={option.id}
               key={option.value}
               name={this.props.name}
               value={option.value}

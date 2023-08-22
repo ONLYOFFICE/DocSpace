@@ -175,6 +175,7 @@ class ChangeEmailDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            className="send"
             key="ChangeEmailSendBtn"
             label={t("Common:SendButton")}
             size="normal"
@@ -184,6 +185,7 @@ class ChangeEmailDialogComponent extends React.Component {
             isLoading={isRequestRunning}
           />
           <Button
+            className="cancel-button"
             key="CloseBtn"
             label={t("Common:CancelButton")}
             size="normal"

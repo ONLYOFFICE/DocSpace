@@ -69,7 +69,13 @@ const DetailsNavigationHeader = (props) => {
       <Headline type="content" truncate={true} className="headline">
         {t("WebhookDetails")}
       </Headline>
-      <IconButton iconName={RetryIcon} size="17" isFill={true} onClick={handleRetryEvent} />
+      <IconButton
+        className="retry"
+        iconName={RetryIcon}
+        size="17"
+        isFill={true}
+        onClick={handleRetryEvent}
+      />
 
       <NoBoxShadowToast />
     </HeaderContainer>

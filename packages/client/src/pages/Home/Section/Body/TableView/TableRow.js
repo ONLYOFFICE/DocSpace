@@ -168,6 +168,9 @@ const FilesTableRow = (props) => {
   );
 };
 
-export default withTranslation(["Files", "Common", "InfoPanel"])(
-  withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
-);
+export default withTranslation([
+  "Files",
+  "Common",
+  "InfoPanel",
+  "Notifications",
+])(withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow)))));

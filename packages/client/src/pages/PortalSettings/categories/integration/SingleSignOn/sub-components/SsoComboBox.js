@@ -30,6 +30,7 @@ const SsoComboBox = (props) => {
     <FieldContainer isVertical labelText={labelText}>
       <StyledInputWrapper>
         <ComboBox
+          id={name}
           isDisabled={!enableSso || isLoadingXml || isDisabled}
           onSelect={onSelect}
           options={options}

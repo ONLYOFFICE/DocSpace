@@ -146,7 +146,7 @@
     <value>귀하의 계정을 확인 할 수있는 링크가 지정된 이메일로 보냈습니다</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>이메일 변경 방법은 {0} 이메일 주소로 보냈습니다</value>
+    <value>이메일 변경 방법은 이메일 주소로 보냈습니다</value>
   </data>
   <data name="SmsAuthenticationMessageError" xml:space="preserve">
     <value>잘못된 코드</value>
@@ -234,5 +234,11 @@
   </data>
   <data name="Tariffs_admin" xml:space="preserve">
     <value>비즈니스</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>성</value>
   </data>
 </root>

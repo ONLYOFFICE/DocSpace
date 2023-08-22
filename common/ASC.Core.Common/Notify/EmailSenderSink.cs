@@ -97,7 +97,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
         var tenant = await _tenantManager.GetCurrentTenantAsync(false);
         m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-        var settings = await _coreConfiguration.GetSmtpSettingsAsync();
+        var settings = await _coreConfiguration.GetDefaultSmtpSettingsAsync();
         var from = MailAddressUtils.Create(settings.SenderAddress, settings.SenderDisplayName);
         var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
         if ((settings.IsDefaultSettings || string.IsNullOrEmpty(settings.SenderDisplayName)) &&

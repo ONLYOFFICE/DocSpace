@@ -30,15 +30,15 @@ namespace ASC.Files.Thirdparty.SharePoint;
 internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
 {
     public SharePointTagDao(IServiceProvider serviceProvider,
-        UserManager userManager, 
+        UserManager userManager,
         TenantManager tenantManager,
-        TenantUtil tenantUtil, 
+        TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        SetupInfo setupInfo, 
+        SetupInfo setupInfo,
         FileUtility fileUtility,
-        TempPath tempPath, 
-        AuthContext authContext, 
-        RegexDaoSelectorBase<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject> regexDaoSelectorBase) 
+        TempPath tempPath,
+        AuthContext authContext,
+        RegexDaoSelectorBase<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject> regexDaoSelectorBase)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
@@ -48,30 +48,14 @@ internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
         var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
-        var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.Id.StartsWith(PathPrefix))
-                   .Select(r => r.HashId)
-                   .ToListAsync();
+        var entryIds = await Queries.HashIdsAsync(filesDbContext, PathPrefix).ToListAsync();
 
-        if (!entryIDs.Any())
+        if (!entryIds.Any())
         {
             yield break;
         }
 
-        var q = from r in filesDbContext.Tag
-                from l in filesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
-                select new { tag = r, tagLink = l };
-
-        if (subject != Guid.Empty)
-        {
-            q = q.Where(r => r.tag.Owner == subject);
-        }
-
-        var qList = await q
-            .Distinct()
-            .AsAsyncEnumerable()
-            .ToListAsync();
+        var qList = await Queries.TagLinkTagPairAsync(filesDbContext, _tenantId, entryIds, subject).ToListAsync();
 
         var tags = new List<Tag>();
 
@@ -79,13 +63,13 @@ internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
         {
             tags.Add(new Tag
             {
-                Name = r.tag.Name,
-                Type = r.tag.Type,
-                Owner = r.tag.Owner,
-                EntryId = await MappingIDAsync(r.tagLink.EntryId),
-                EntryType = r.tagLink.EntryType,
-                Count = r.tagLink.Count,
-                Id = r.tag.Id
+                Name = r.Tag.Name,
+                Type = r.Tag.Type,
+                Owner = r.Tag.Owner,
+                EntryId = await MappingIDAsync(r.TagLink.EntryId),
+                EntryType = r.TagLink.EntryType,
+                Count = r.TagLink.Count,
+                Id = r.Tag.Id
             });
         }
 
@@ -107,4 +91,32 @@ internal class SharePointTagDao : SharePointDaoBase, IThirdPartyTagDao
             yield return e;
         }
     }
+}
+
+file class TagLinkTagPair
+{
+    public DbFilesTag Tag { get; set; }
+    public DbFilesTagLink TagLink { get; set; }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, string, IAsyncEnumerable<string>> HashIdsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.Id.StartsWith(idStart))
+                    .Select(r => r.HashId));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Guid, IAsyncEnumerable<TagLinkTagPair>>
+        TagLinkTagPairAsync =
+            EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIds, Guid owner) =>
+                    (from r in ctx.Tag
+                     from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                     where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
+                           entryIds.Contains(l.EntryId)
+                     select new TagLinkTagPair { Tag = r, TagLink = l })
+                    .Where(r => owner == Guid.Empty || r.Tag.Owner == owner)
+                    .Distinct());
 }

@@ -26,9 +26,9 @@
 
 
 namespace ASC.Core.Common.EF.Model;
-public class ShortLinks
+public class ShortLink
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string Short { get; set; }
     public string Link { get; set; }
 }
@@ -46,7 +46,7 @@ public static class ShortLinksExtension
 
     public static void MySqlAddShortLinks(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ShortLinks>(entity =>
+        modelBuilder.Entity<ShortLink>(entity =>
         {
             entity.ToTable("short_links")
                 .HasCharSet("utf8")
@@ -61,7 +61,7 @@ public static class ShortLinksExtension
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
-                .HasColumnType("int(10)");
+                .HasColumnType("bigint(19)");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
@@ -80,7 +80,7 @@ public static class ShortLinksExtension
 
     public static void PgSqlAddShortLinks(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ShortLinks>(entity =>
+        modelBuilder.Entity<ShortLink>(entity =>
         {
             entity.ToTable("short_links")
                 .HasCharSet("utf8")
@@ -95,7 +95,7 @@ public static class ShortLinksExtension
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
-                .HasColumnType("int(10)");
+                .HasColumnType("bigint(19)");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")

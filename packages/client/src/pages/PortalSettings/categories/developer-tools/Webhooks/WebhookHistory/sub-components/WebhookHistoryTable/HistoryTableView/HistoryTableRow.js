@@ -25,6 +25,17 @@ const StyledTableRow = styled(TableRow)`
     text-overflow: ellipsis;
   }
 
+  .p-menuitem-icon {
+    svg {
+      path {
+        fill: red;
+      }
+    }
+  }
+  .p-menuitem-text {
+    color: red;
+  }
+
   ${(props) =>
     props.isHighlight &&
     css`
@@ -48,13 +59,18 @@ const HistoryTableRow = (props) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
+  const redirectToDetails = () =>
+    navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
+    if (isRetryPending) {
+      return;
+    }
     await retryWebhookEvent(item.id);
     await fetchHistoryItems({
       ...(historyFilters ? formatFilters(historyFilters) : {}),
@@ -65,20 +81,24 @@ const HistoryTableRow = (props) => {
 
   const contextOptions = [
     {
+      id: "webhook-details",
       key: "Webhook details dropdownItem",
       label: t("WebhookDetails"),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
+      id: "retry",
       key: "Retry dropdownItem",
       label: t("Retry"),
       icon: RetryIcon,
       onClick: handleRetryEvent,
+      disabled: isRetryPending,
     },
   ];
 
-  const formattedDelivery = moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
+  const formattedDelivery =
+    moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC";
 
   const onChange = (e) => {
     if (
@@ -96,11 +116,22 @@ const HistoryTableRow = (props) => {
   const isChecked = isIdChecked(item.id);
 
   return (
-    <StyledWrapper className={isChecked ? "selected-table-row" : ""} onClick={onChange}>
-      <StyledTableRow contextOptions={contextOptions} checked={isChecked} hideColumns={hideColumns}>
+    <StyledWrapper
+      className={isChecked ? "selected-table-row" : ""}
+      onClick={onChange}
+    >
+      <StyledTableRow
+        contextOptions={contextOptions}
+        checked={isChecked}
+        hideColumns={hideColumns}
+      >
         <TableCell>
           <TableCell checked={isChecked} className="checkboxWrapper">
-            <Checkbox onChange={onChange} isChecked={isChecked} />
+            <Checkbox
+              className="checkbox"
+              onChange={onChange}
+              isChecked={isChecked}
+            />
           </TableCell>
 
           <Text fontWeight={600}>{item.id}</Text>
@@ -126,6 +157,7 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   } = webhooksStore;
 
   return {
@@ -135,5 +167,6 @@ export default inject(({ webhooksStore }) => {
     fetchHistoryItems,
     historyFilters,
     formatFilters,
+    isRetryPending,
   };
 })(observer(HistoryTableRow));

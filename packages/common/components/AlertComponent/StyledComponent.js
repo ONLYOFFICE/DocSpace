@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 const StyledAlertComponent = styled.div`
+  width: 100%;
   position: relative;
   border: ${(props) => `1px solid ${props.borderColor}`};
   border-radius: 6px;

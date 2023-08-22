@@ -31,7 +31,7 @@ const RoomsActivityContainer = ({
         <Text {...textDescriptionsProps}>{t("RoomsActivityDescription")}</Text>
       </div>
       <ToggleButton
-        className="toggle-btn"
+        className="rooms-activity toggle-btn"
         onChange={onChangeEmailSubscription}
         isChecked={roomsActivitySubscription}
       />

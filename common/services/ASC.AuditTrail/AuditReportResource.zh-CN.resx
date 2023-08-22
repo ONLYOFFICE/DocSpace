@@ -631,4 +631,91 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>垃圾箱已清空</value>
   </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>审计生命周期设置已更新</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>自定义导航设置已更新</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>已删除标签：[{1}]</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>强制保存设置已更新</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>登录失败。reCAPTCHA 无效</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>通过 API 与身份验证器应用程序登录失败</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>通过 API 与身份验证器应用程序登录成功</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>私密房间已禁用</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>私密房间已启用</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>房间已归档</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>已添加用户：{0}。角色：{1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>房间已删除</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>链接已创建。角色：{1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>链接已删除</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>链接已更新。角色：{1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>徽标已创建</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>徽标已删除</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>已删除用户：{0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>已重命名房间：{0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>已取消归档房间</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0}已指定：{1}</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>开始存储解密</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>开始存储加密</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>标签已创建：{0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>标签已删除：{0}</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>双因素身份认证设置已更新：短信确认已启用</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>双因素身份认证设置已更新：身份验证应用已启用</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>{0} 用户数据已删除</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>身份验证应用已断开连接：{0}</value>
+  </data>
 </root>

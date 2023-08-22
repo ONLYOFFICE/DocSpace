@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Feed.Context;
+
 namespace ASC.Feed.Data;
 
 [Scope]
@@ -52,12 +54,8 @@ public class FeedReadedDataProvider
 
     public async Task<DateTime> GetTimeReadedAsync(Guid user, string module, int tenant)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await feedDbContext.FeedReaded
-            .Where(r => r.TenantId == tenant)
-            .Where(r => r.UserId == user)
-            .Where(r => r.Module == module)
-            .MaxAsync(r => r.TimeStamp);
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.MaxTimeStampAsync(feedDbContext, tenant, user, module);
     }
 
     public async Task SetTimeReadedAsync()
@@ -90,7 +88,7 @@ public class FeedReadedDataProvider
             TenantId = tenant
         };
 
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
         await feedDbContext.AddOrUpdateAsync(q => q.FeedReaded, feedReaded);
         await feedDbContext.SaveChangesAsync();
     }
@@ -102,13 +100,8 @@ public class FeedReadedDataProvider
 
     public async Task<IEnumerable<string>> GetReadedModulesAsync(Guid user, int tenant, DateTime fromTime)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await feedDbContext.FeedReaded
-            .Where(r => r.TenantId == tenant)
-            .Where(r => r.UserId == user)
-            .Where(r => r.TimeStamp >= fromTime)
-            .Select(r => r.Module)
-            .ToListAsync();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
+        return await Queries.ModulesAsync(feedDbContext, tenant, user, fromTime).ToListAsync();
     }
 
     private async Task<int> GetTenantAsync()
@@ -120,4 +113,25 @@ public class FeedReadedDataProvider
     {
         return _authContext.CurrentAccount.ID;
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FeedDbContext, int, Guid, string, Task<DateTime>> MaxTimeStampAsync =
+        EF.CompileAsyncQuery(
+            (FeedDbContext ctx, int tenantId, Guid userId, string module) =>
+                ctx.FeedReaded
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.Module == module)
+                    .Max(r => r.TimeStamp));
+
+    public static readonly Func<FeedDbContext, int, Guid, DateTime, IAsyncEnumerable<string>> ModulesAsync =
+        EF.CompileAsyncQuery(
+            (FeedDbContext ctx, int tenantId, Guid userId, DateTime fromTime) =>
+                ctx.FeedReaded
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.TimeStamp >= fromTime)
+                    .Select(r => r.Module));
 }

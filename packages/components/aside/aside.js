@@ -36,7 +36,7 @@ const Aside = React.memo((props) => {
       )}
 
       {visible && (
-        <StyledControlContainer onClick={onClose}>
+        <StyledControlContainer className="close-button" onClick={onClose}>
           <StyledCrossIcon />
         </StyledControlContainer>
       )}

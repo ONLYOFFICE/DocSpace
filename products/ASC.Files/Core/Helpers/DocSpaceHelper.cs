@@ -35,7 +35,22 @@ public static class DocSpaceHelper
             FolderType.EditingRoom or 
             FolderType.ReviewRoom or 
             FolderType.ReadOnlyRoom or 
-            FolderType.FillingFormsRoom;
+            FolderType.FillingFormsRoom or
+            FolderType.PublicRoom;
+    }
+
+    public static RoomType? GetRoomType(FolderType folderType)
+    {
+        return folderType switch
+        {
+            FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
+            FolderType.EditingRoom => RoomType.EditingRoom,
+            FolderType.ReviewRoom => RoomType.ReviewRoom,
+            FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
+            FolderType.CustomRoom => RoomType.CustomRoom,
+            FolderType.PublicRoom => RoomType.PublicRoom,
+            _ => null,
+        };
     }
 
     public static async Task<bool> LocatedInPrivateRoomAsync<T>(File<T> file, IFolderDao<T> folderDao)

@@ -70,7 +70,6 @@ public class CommonMethods
         _tenantManager = tenantManager;
         _clientFactory = clientFactory;
         _hostedSolution = hostedSolution;
-        _hostedSolution.Init(CommonConstants.BaseDbConnKeyString);
     }
 
     public object ToTenantWrapper(Tenant t)
@@ -92,7 +91,7 @@ public class CommonMethods
         };
     }
 
-    public string CreateReference(int tenantId,string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
+    public string CreateReference(int tenantId, string requestUriScheme, string tenantDomain, string email, bool first = false, string module = "", bool sms = false)
     {
         var url = _commonLinkUtility.GetConfirmationUrlRelative(tenantId, email, ConfirmType.Auth, (first ? "true" : "") + module + (sms ? "true" : ""));
         return $"{requestUriScheme}{Uri.SchemeDelimiter}{tenantDomain}/{url}{(first ? "&first=true" : "")}{(string.IsNullOrEmpty(module) ? "" : "&module=" + module)}{(sms ? "&sms=true" : "")}";

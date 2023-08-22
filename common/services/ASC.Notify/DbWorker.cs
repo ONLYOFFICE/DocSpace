@@ -46,13 +46,13 @@ public class DbWorker : IDisposable
 
         var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+        await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var tx = await dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            await using var tx = await dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
             var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
             notifyQueue.Attachments = JsonConvert.SerializeObject(m.Attachments);
@@ -86,7 +86,7 @@ public class DbWorker : IDisposable
 
             var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
             var q = dbContext.NotifyQueue
                 .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
@@ -133,19 +133,20 @@ public class DbWorker : IDisposable
     public async Task ResetStatesAsync()
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+        await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
-        await dbContext.NotifyInfo.Where(r => r.State == 1).ExecuteUpdateAsync(q => q.SetProperty(p => p.State, 0));
+        await Queries.ResetStatesAsync(dbContext);
     }
 
     public async Task SetStateAsync(int id, MailSendingState result)
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+        await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         if (result == MailSendingState.Sended)
         {
-            var d = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefaultAsync();
+            var d = await Queries.NotifyInfoAsync(dbContext, id);
+
             dbContext.NotifyInfo.Remove(d);
             await dbContext.SaveChangesAsync();
         }
@@ -153,18 +154,14 @@ public class DbWorker : IDisposable
         {
             if (result == MailSendingState.Error)
             {
-                var attempts = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefaultAsync();
+                var attempts = await Queries.AttemptsAsync(dbContext, id);
                 if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
                 {
                     result = MailSendingState.FatalError;
                 }
             }
 
-            await dbContext.NotifyInfo.Where(r => r.NotifyId == id)
-            .ExecuteUpdateAsync(q =>
-                q.SetProperty(p => p.State, (int)result)
-                .SetProperty(p => p.Attempts, p => p.Attempts + 1)
-                .SetProperty(p => p.ModifyDate, DateTime.UtcNow));
+            await Queries.UpdateNotifyInfoAsync(dbContext, id, (int)result);
         }
     }
 
@@ -172,4 +169,38 @@ public class DbWorker : IDisposable
     {
         _semaphore.Dispose();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<NotifyDbContext, Task<int>> ResetStatesAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx) =>
+                ctx.NotifyInfo
+                    .Where(r => r.State == 1)
+                    .ExecuteUpdate(q => q.SetProperty(p => p.State, 0)));
+
+    public static readonly Func<NotifyDbContext, int, Task<NotifyInfo>> NotifyInfoAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id) =>
+                ctx.NotifyInfo
+                    .FirstOrDefault(r => r.NotifyId == id));
+
+    public static readonly Func<NotifyDbContext, int, Task<int>> AttemptsAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id) =>
+                ctx.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .Select(r => r.Attempts)
+                    .FirstOrDefault());
+
+    public static readonly Func<NotifyDbContext, int, int, Task<int>> UpdateNotifyInfoAsync =
+        EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id, int result) =>
+                ctx.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .ExecuteUpdate(q =>
+                        q.SetProperty(p => p.State, result)
+                            .SetProperty(p => p.Attempts, p => p.Attempts + 1)
+                            .SetProperty(p => p.ModifyDate, DateTime.UtcNow)));
 }

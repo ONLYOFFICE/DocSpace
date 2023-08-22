@@ -35,8 +35,8 @@ class TargetUserStore {
   get getDisableProfileType() {
     const res =
       this.peopleStore.authStore.userStore.user.id === this.targetUser.id ||
-        !this.peopleStore.authStore.isAdmin ||
-        this.peopleStore.isPeoplesAdmin
+      !this.peopleStore.authStore.isAdmin ||
+      this.peopleStore.isPeoplesAdmin
         ? false
         : true;
 
@@ -47,14 +47,14 @@ class TargetUserStore {
     return (
       this.targetUser &&
       this.targetUser.userName ===
-      this.peopleStore.authStore.userStore.user.userName
+        this.peopleStore.authStore.userStore.user.userName
     );
   }
 
   setHasAvatar = (value) => {
     this.targetUser.hasAvatar = value;
     this.peopleStore.authStore.userStore.user.hasAvatar = value;
-  }
+  };
 
   getTargetUser = async (userName) => {
     /*if (this.peopleStore.authStore.userStore.user.userName === userName) {
@@ -127,14 +127,23 @@ class TargetUserStore {
     this.isEditTargetUser = isEditTargetUser;
   };
 
-  setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
+  setChangeEmailVisible = (visible) => {
+    //console.log("setChangeEmailVisible", { visible });
+    this.changeEmailVisible = visible;
+  };
 
   setChangePasswordVisible = (visible) =>
     (this.changePasswordVisible = visible);
 
-  setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
+  setChangeNameVisible = (visible) => {
+    //console.log("setChangeNameVisible", { visible });
+    this.changeNameVisible = visible;
+  };
 
-  setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
+  setChangeAvatarVisible = (visible) => {
+    //console.log("setChangeAvatarVisible", { visible });
+    this.changeAvatarVisible = visible;
+  };
 
   setSubscriptions = (
     isEnableBadges,

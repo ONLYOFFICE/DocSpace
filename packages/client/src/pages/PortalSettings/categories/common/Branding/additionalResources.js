@@ -56,11 +56,8 @@ const AdditionalResources = (props) => {
   const [hasChange, setHasChange] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    feedbackAndSupportEnabled,
-    videoGuidesEnabled,
-    helpCenterEnabled,
-  } = additionalSettings;
+  const { feedbackAndSupportEnabled, videoGuidesEnabled, helpCenterEnabled } =
+    additionalSettings;
 
   const getSettings = () => {
     const additionalSettings = getFromSessionStorage("additionalSettings");
@@ -213,7 +210,7 @@ const AdditionalResources = (props) => {
         <div className="branding-checkbox">
           <Checkbox
             tabIndex={12}
-            className="checkbox"
+            className="show-feedback-support checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowFeedbackAndSupport")}
             isChecked={feedbackAndSupportEnabled}
@@ -222,7 +219,7 @@ const AdditionalResources = (props) => {
 
           <Checkbox
             tabIndex={13}
-            className="checkbox"
+            className="show-video-guides checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowVideoGuides")}
             isChecked={videoGuidesEnabled}
@@ -230,7 +227,7 @@ const AdditionalResources = (props) => {
           />
           <Checkbox
             tabIndex={14}
-            className="checkbox"
+            className="show-help-center checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowHelpCenter")}
             isChecked={helpCenterEnabled}
@@ -247,6 +244,8 @@ const AdditionalResources = (props) => {
           reminderTest={t("YouHaveUnsavedChanges")}
           showReminder={(isSettingPaid && hasChange) || isLoading}
           disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
+          additionalClassSaveButton="additional-resources-save"
+          additionalClassCancelButton="additional-resources-cancel"
         />
       </StyledComponent>
     </>
@@ -256,10 +255,8 @@ const AdditionalResources = (props) => {
 export default inject(({ auth, common }) => {
   const { settingsStore } = auth;
 
-  const {
-    setIsLoadedAdditionalResources,
-    isLoadedAdditionalResources,
-  } = common;
+  const { setIsLoadedAdditionalResources, isLoadedAdditionalResources } =
+    common;
 
   const {
     getAdditionalResources,

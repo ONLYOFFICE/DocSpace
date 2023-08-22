@@ -42,16 +42,16 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
     public async Task AddOrUpdateAsync(InstanceRegistration obj)
     {
-        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        var inst = await _instanceRegistrationContext.InstanceRegistrations.FindAsync(obj.InstanceRegistrationId);
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        var inst = await instanceRegistrationContext.InstanceRegistrations.FindAsync(obj.InstanceRegistrationId);
 
         if (inst == null)
         {
-            await _instanceRegistrationContext.AddAsync(obj);
+            await instanceRegistrationContext.AddAsync(obj);
         }
         else
         {
-            _instanceRegistrationContext.Entry(inst).CurrentValues.SetValues(obj);
+            instanceRegistrationContext.Entry(inst).CurrentValues.SetValues(obj);
         }
 
         bool saveFailed;
@@ -62,7 +62,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
             try
             {
-                await _instanceRegistrationContext.SaveChangesAsync();
+                await instanceRegistrationContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -83,27 +83,25 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
     public async Task<IEnumerable<InstanceRegistration>> GetAllAsync()
     {
-        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        return await _instanceRegistrationContext.InstanceRegistrations
-                                                .Where(x => x.WorkerTypeName == typeof(T).GetFormattedName())
-                                                .ToListAsync();
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        return await Queries.InstanceRegistrationsAsync(instanceRegistrationContext, typeof(T).GetFormattedName()).ToListAsync();
     }
 
     public async Task DeleteAsync(string instanceId)
     {
-        using var _instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        var item = await _instanceRegistrationContext.InstanceRegistrations.FindAsync(instanceId);
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        var item = await instanceRegistrationContext.InstanceRegistrations.FindAsync(instanceId);
 
         if (item == null)
         {
             return;
         }
 
-        _instanceRegistrationContext.InstanceRegistrations.Remove(item);
+        instanceRegistrationContext.InstanceRegistrations.Remove(item);
 
         try
         {
-            await _instanceRegistrationContext.SaveChangesAsync();
+            await instanceRegistrationContext.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -117,3 +115,12 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
     }
 
 }
+
+ static file class Queries
+ {
+     public static readonly Func<InstanceRegistrationContext, string, IAsyncEnumerable<InstanceRegistration>>
+         InstanceRegistrationsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+             (InstanceRegistrationContext ctx, string workerTypeName) =>
+                 ctx.InstanceRegistrations
+                     .Where(x => x.WorkerTypeName == workerTypeName));
+ }

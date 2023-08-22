@@ -35,8 +35,11 @@ public enum EditorType
     External,
 }
 
+/// <summary>
+/// </summary>
 public class ActionLinkConfig
 {
+    /// <summary>The information about the comment in the document that will be scrolled to</summary>
     [JsonPropertyName("action")]
     public ActionConfig Action { get; set; }
 
@@ -45,11 +48,15 @@ public class ActionLinkConfig
         return JsonSerializer.Serialize(actionLinkConfig);
     }
 
+    /// <summary>
+    /// </summary>
     public class ActionConfig
     {
+        /// <summary>Comment data</summary>
         [JsonPropertyName("data")]
         public string Data { get; set; }
 
+        /// <summary>Action type</summary>
         [JsonPropertyName("type")]
         public string Type { get; set; }
     }
@@ -66,6 +73,8 @@ public class CoEditingConfig
     }
 }
 
+/// <summary>
+/// </summary>
 public class Configuration<T>
 {
     internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
@@ -77,8 +86,12 @@ public class Configuration<T>
 
     private FileType _fileTypeCache = FileType.Unknown;
 
+    /// <summary>Document config</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.DocumentConfig, ASC.Files.Core</type>
     public DocumentConfig<T> Document { get; set; }
 
+    /// <summary>Document type</summary>
+    /// <type>System.String, System</type>
     public string DocumentType
     {
         get
@@ -89,21 +102,31 @@ public class Configuration<T>
         }
     }
 
+    /// <summary>Editor config</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.EditorConfiguration, ASC.Files.Core</type>
     public EditorConfiguration<T> EditorConfig { get; set; }
 
+    /// <summary>Editor type</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.EditorType, ASC.Files.Core</type>
     public EditorType EditorType
     {
         set => Document.Info.Type = value;
         get => Document.Info.Type;
     }
 
+    /// <summary>Editor URL</summary>
+    /// <type>System.String, System</type>
     public string EditorUrl { get; }
 
     [JsonPropertyName("Error")]
     public string ErrorMessage { get; set; }
 
+    /// <summary>Token</summary>
+    /// <type>System.String, System</type>
     public string Token { get; set; }
 
+    /// <summary>Platform type</summary>
+    /// <type>System.String, System</type>
     public string Type
     {
         set => EditorType = (EditorType)Enum.Parse(typeof(EditorType), value, true);
@@ -162,6 +185,7 @@ public class DocumentConfig<T>
     }
 
     public PermissionsConfig Permissions { get; set; }
+    public string SharedLinkParam { get; set; }
     public string SharedLinkKey { get; set; }
     public FileReferenceData<T> ReferenceData
     {
@@ -197,7 +221,7 @@ public class DocumentConfig<T>
             }
 
             var last = Permissions.Edit || Permissions.Review || Permissions.Comment;
-            _fileUri = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(Info.GetFile(), SharedLinkKey, last));
+            _fileUri = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(Info.GetFile(), SharedLinkKey, SharedLinkParam, last));
 
             return _fileUri;
         }
@@ -629,19 +653,45 @@ public class PermissionsConfig
     public bool Review { get; set; } = true;
 }
 
+/// <summary>
+/// </summary>
 public class FileReference<T>
 {
+    /// <summary>File reference data</summary>
+    /// <type>ASC.Web.Files.Services.DocumentService.FileReferenceData, ASC.Files.Core</type>
     public FileReferenceData<T> ReferenceData { get; set; }
+
+    /// <summary>Error</summary>
+    /// <type>System.String, System</type>
     public string Error { get; set; }
+
+    /// <summary>Path</summary>
+    /// <type>System.String, System</type>
     public string Path { get; set; }
+
+    /// <summary>URL</summary>
+    /// <type>System.String, System</type>
     public string Url { get; set; }
+
+    /// <summary>File type</summary>
+    /// <type>System.String, System</type>
     public string FileType { get; set; }
+
+    /// <summary>Token</summary>
+    /// <type>System.String, System</type>
     public string Token { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class FileReferenceData<T>
 {
+    /// <summary>File key</summary>
+    /// <type>System.Int32, System</type>
     public T FileKey { get; set; }
+
+    /// <summary>Instance ID</summary>
+    /// <type>System.String, System</type>
     public string InstanceId { get; set; }
 }
 

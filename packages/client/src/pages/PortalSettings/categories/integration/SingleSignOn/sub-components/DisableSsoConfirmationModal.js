@@ -32,6 +32,7 @@ const DisableSsoConfirmationModal = (props) => {
 
       <ModalDialog.Footer>
         <Button
+          id="ok-button"
           label={t("Common:OKButton")}
           onClick={confirmDisable}
           primary
@@ -39,6 +40,7 @@ const DisableSsoConfirmationModal = (props) => {
           size="normal"
         />
         <Button
+          id="cancel-button"
           label={t("Common:CancelButton")}
           onClick={closeConfirmationDisableModal}
           scale

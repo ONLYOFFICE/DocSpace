@@ -37,6 +37,7 @@ global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Files.Services.WCFService;
 global using ASC.Web.Studio.Core.Notify;
 
 global using Microsoft.AspNetCore.Http;

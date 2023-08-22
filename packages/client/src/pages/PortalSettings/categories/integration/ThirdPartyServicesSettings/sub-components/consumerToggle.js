@@ -60,6 +60,7 @@ class ConsumerToggle extends React.Component {
     return (
       <>
         <StyledToggle
+          className={consumer.name}
           onChange={onToggleClick}
           isDisabled={!consumer.canSet || isDisabled}
           isChecked={

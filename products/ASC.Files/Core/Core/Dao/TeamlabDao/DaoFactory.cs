@@ -69,7 +69,7 @@ public static class DaoFactoryExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<TenantDateTimeConverter>();
-        services.TryAdd<FolderMappingAction>();
+        services.TryAdd<FilesMappingAction>();
 
         services.TryAdd<File<int>>();
         services.TryAdd<IFileDao<int>, FileDao>();

@@ -237,7 +237,7 @@ public class TenantLogoManager
             return null;
         }
 
-        using (inputStream)
+        await using (inputStream)
         {
             using var memoryStream = new MemoryStream();
             await inputStream.CopyToAsync(memoryStream);
@@ -248,7 +248,7 @@ public class TenantLogoManager
     private static async Task<byte[]> GetDefaultMailLogoAsync()
     {
         var myAssembly = Assembly.GetExecutingAssembly();
-        using var stream = myAssembly.GetManifestResourceStream("ASC.Web.Core.PublicResources.logo.png");
+        await using var stream = myAssembly.GetManifestResourceStream("ASC.Web.Core.PublicResources.logo.png");
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream);
         return memoryStream.ToArray();

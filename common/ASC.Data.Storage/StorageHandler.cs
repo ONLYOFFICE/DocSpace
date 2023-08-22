@@ -56,7 +56,7 @@ public class StorageHandler
         var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
         var storageExpire = storage.GetExpire(_domain);
 
-        if (_checkAuth && !securityContext.IsAuthenticated && String.IsNullOrEmpty(auth))
+        if (_checkAuth && !securityContext.IsAuthenticated && !await SecureHelper.CheckSecureKeyHeader(header, path, emailValidationKeyProvider))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return;
@@ -158,7 +158,7 @@ public class StorageHandler
         context.Response.Headers["Connection"] = "Keep-Alive";
         context.Response.Headers["Content-Length"] = length.ToString(CultureInfo.InvariantCulture);
 
-        using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
+        await using (var stream = await storage.GetReadStreamAsync(_domain, path, offset))
         {
             var responseBufferingFeature = context.Features.Get<IHttpResponseBodyFeature>();
             responseBufferingFeature?.DisableBuffering();

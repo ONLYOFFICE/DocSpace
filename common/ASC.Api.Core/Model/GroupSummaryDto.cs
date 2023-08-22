@@ -28,10 +28,20 @@ using GroupInfo = ASC.Core.Users.GroupInfo;
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class GroupSummaryDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>Manager</summary>
+    /// <type>System.String, System</type>
     public string Manager { get; set; }
 
     protected GroupSummaryDto() { }

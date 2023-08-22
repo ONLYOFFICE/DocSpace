@@ -26,31 +26,81 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class AuthRequestsDto
 {
+    /// <summary>Username / email</summary>
+    /// <type>System.String, System</type>
     public string UserName { get; set; }
+
+    /// <summary>Password</summary>
+    /// <type>System.String, System</type>
     public string Password { get; set; }
+
+    /// <summary>Password hash</summary>
+    /// <type>System.String, System</type>
     public string PasswordHash { get; set; }
+
+    /// <summary>Provider type</summary>
+    /// <type>System.String, System</type>
     public string Provider { get; set; }
+
+    /// <summary>Provider access token</summary>
+    /// <type>System.String, System</type>
     public string AccessToken { get; set; }
+
+    /// <summary>Serialized user profile</summary>
+    /// <type>System.String, System</type>
     public string SerializedProfile { get; set; }
+
+    /// <summary>Two-factor authentication code</summary>
+    /// <type>System.String, System</type>
     public string Code { get; set; }
+
+    /// <summary>Code for getting a token</summary>
+    /// <type>System.String, System</type>
     public string CodeOAuth { get; set; }
+
+    /// <summary>Session based authentication or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Session { get; set; }
 
+    /// <summary>Confirmation data</summary>
+    /// <type>ASC.Web.Api.ApiModel.RequestsDto.ConfirmData, ASC.Web.Api</type>
     public ConfirmData ConfirmData { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class MobileRequestsDto
 {
+    /// <summary>Mobile phone</summary>
+    /// <type>System.String, System</type>
     public string MobilePhone { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class ConfirmData
 {
+    /// <summary>Email address</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>Module</summary>
+    /// <type>System.String, System</type>
     public string Module { get; set; }
+
+    /// <summary>Access an account for the first time or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? First { get; set; }
+
+    /// <summary>Sends SMS code or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? Sms { get; set; }
+
+    /// <summary>Key</summary>
+    /// <type>System.String, System</type>
     public string Key { get; set; }
 }

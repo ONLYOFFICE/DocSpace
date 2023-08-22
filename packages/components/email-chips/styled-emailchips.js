@@ -2,6 +2,7 @@ import styled from "styled-components";
 import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
 import TextInput from "../text-input";
+import { getCorrectFourValuesStyle } from "../utils/rtlUtils";
 
 const StyledChipWithInput = styled.div`
   min-height: 32px;
@@ -10,6 +11,7 @@ const StyledChipWithInput = styled.div`
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
+  cursor: auto;
   width: ${(props) => props.length === 0 && "100%"};
 `;
 
@@ -26,6 +28,11 @@ const StyledChipGroup = styled.div`
   height: fit-content;
   ${commonInputStyle} :focus-within {
     border-color: ${(props) => props.theme.inputBlock.borderColor};
+  }
+
+  .ScrollbarsCustom-Wrapper,
+  .ScrollbarsCustom-Scroller {
+    position: inherit !important;
   }
 
   .scroll {
@@ -66,24 +73,36 @@ const StyledChip = styled.div`
 
   height: 32px;
   margin: 2px 4px;
-  padding: ${(props) => (props.isSelected ? "5px 7px" : "6px 8px")};
+  padding: 5px 7px;
 
   border-radius: 3px 0 0 3px;
-  border: ${(props) => props.isSelected && "1px dashed #000"};
-  background: ${(props) => (props.isValid ? "#ECEEF1" : "#F7CDBE")};
+  background: ${(props) =>
+    props.isValid ? props.theme.selectedItem.background : "#F7CDBE"};
+  border: ${(props) =>
+    props.isSelected
+      ? props.theme.emailChips.dashedBorder
+      : props.theme.selectedItem.border};
 
   user-select: none;
 
   .warning_icon_wrap {
     cursor: pointer;
     .warning_icon {
-      margin-right: 4px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? `margin-left: 4px;`
+          : `margin-right: 4px;`}
     }
   }
 `;
+StyledChip.defaultProps = { theme: Base };
 
 const StyledChipValue = styled.div`
-  margin-right: 4px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `margin-left: 8px;`
+      : `margin-right: 8px;`}
+
   min-width: 0px;
   max-width: 395px;
   white-space: nowrap;
@@ -93,7 +112,8 @@ const StyledChipValue = styled.div`
   font-weight: normal;
   font-size: 13px;
 
-  color: #333333;
+  color: ${(props) =>
+    props.isValid ? props.theme.selectedItem.text.color : "#333"};
 
   :hover {
     cursor: pointer;
@@ -102,6 +122,8 @@ const StyledChipValue = styled.div`
 
 const StyledContainer = styled.div`
   position: relative;
+  height: 32px;
+  margin: 3px 4px;
 `;
 
 const StyledChipInput = styled(TextInput)`
@@ -120,7 +142,11 @@ const StyledInputWithLink = styled.div`
   .textInput {
     width: calc(100% - 8px);
     padding: 0px;
-    margin: 8px 0px 10px 8px;
+    margin: ${(props) =>
+      getCorrectFourValuesStyle(
+        "8px 0px 10px 8px",
+        props.theme.interfaceDirection
+      )};
   }
 
   .link {
@@ -129,14 +155,20 @@ const StyledInputWithLink = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    margin-right: 8px;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 `;
 
 const StyledTooltip = styled.div`
   position: absolute;
   top: -49px;
-  left: 0;
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" ? `right: 0;` : `left: 0;`}
 
   max-width: 435px;
   padding: 16px;

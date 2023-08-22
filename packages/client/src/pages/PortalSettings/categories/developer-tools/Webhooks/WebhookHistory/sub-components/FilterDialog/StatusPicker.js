@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -18,14 +17,25 @@ const RoundedButton = styled(Button)`
   line-height: 20px;
 `;
 
-const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick }) => {
+const Selectors = styled.div`
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 16px;
+`;
+
+const StatusBadgeSelector = ({ label, statusCode, isStatusSelected, handleStatusClick, id }) => {
   const handleOnClick = () => handleStatusClick(statusCode);
   return (
-    <RoundedButton label={label} onClick={handleOnClick} primary={isStatusSelected(statusCode)} />
+    <RoundedButton
+      id={id}
+      label={label}
+      onClick={handleOnClick}
+      primary={isStatusSelected(statusCode)}
+    />
   );
 };
 
-const StatusPicker = ({ Selectors, filters, setFilters }) => {
+const StatusPicker = ({ filters, setFilters }) => {
   const { t } = useTranslation(["Webhooks", "People"]);
 
   const StatusCodes = ["Not sent", "2XX", "3XX", "4XX", "5XX"];
@@ -45,6 +55,7 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
   const StatusBadgeElements = StatusCodes.map((code) =>
     code === "Not sent" ? (
       <StatusBadgeSelector
+        id="not-sent"
         label={t("NotSent")}
         statusCode={code}
         isStatusSelected={isStatusSelected}
@@ -53,13 +64,14 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
       />
     ) : (
       <StatusBadgeSelector
+        id={code}
         label={code}
         statusCode={code}
         isStatusSelected={isStatusSelected}
         handleStatusClick={handleStatusClick}
         key={code}
       />
-    ),
+    )
   );
 
   return (
@@ -72,8 +84,4 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
   );
 };
 
-export default inject(({ webhooksStore }) => {
-  const {} = webhooksStore;
-
-  return {};
-})(observer(StatusPicker));
+export default StatusPicker;

@@ -24,6 +24,7 @@
   "DaysRemaining": "Pozostało dni: {{daysRemaining}}",
   "DisableNotifications": "Wyłącz powiadomienia",
   "Document": "Dokument",
+  "DocumentEdited": "Nie można wykonać akcji, ponieważ dokument jest w trakcie edycji.",
   "EditRoom": "Pokój do edytowania",
   "EmptyFile": "Pusty plik",
   "EmptyFilterDescriptionText": "Żaden plik ani folder nie pasują do wybranego filtra. Wypróbuj inny lub usuń go, aby zobaczyć wszystkie pliki. ",

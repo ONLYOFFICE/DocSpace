@@ -46,8 +46,9 @@ internal class FileMoveCopyOperationData<T> : FileOperationData<T>
     public FileConflictResolveType ResolveType { get; }
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
-        : base(folders, files, tenant, holdResult)
+    public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType,
+        ExternalShareData externalShareData, bool holdResult = true, IDictionary<string, StringValues> headers = null)
+        : base(folders, files, tenant, externalShareData, holdResult)
     {
         if (toFolderId.ValueKind == JsonValueKind.String)
         {
@@ -196,8 +197,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
-            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
-                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom :
+                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom :
                 FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
             return;
@@ -470,7 +471,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
 
                                         var (name, value) = await tenantQuotaFeatureStatHelper.GetStatAsync<CountRoomFeature, int>();
-                                        _ =  quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
+                                        _ = quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
                                     }
                                     else
                                     {
@@ -580,7 +581,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
             }
-            else if (checkPermissions && !await FilesSecurity.CanDownloadAsync(file))
+            else if (checkPermissions && file.RootFolderType != FolderType.TRASH && !await FilesSecurity.CanDownloadAsync(file))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
@@ -686,7 +687,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     {
                         if (_resolveType == FileConflictResolveType.Overwrite)
                         {
-                            if (checkPermissions && !await FilesSecurity.CanEditAsync(conflict))
+                            if (checkPermissions && !await FilesSecurity.CanEditAsync(conflict) && !await FilesSecurity.CanFillFormsAsync(conflict))
                             {
                                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
                             }
@@ -710,7 +711,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 newFile.ThumbnailStatus = file.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
 
-                                using (var stream = await FileDao.GetFileStreamAsync(file))
+                                await using (var stream = await FileDao.GetFileStreamAsync(file))
                                 {
                                     newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
 
@@ -720,11 +721,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                 if (file.ThumbnailStatus == Thumbnail.Created)
                                 {
                                     foreach (var size in _thumbnailSettings.Sizes)
-                                    {                                       
-                                        await(await globalStorage.GetStoreAsync()).CopyAsync(String.Empty,
+                                    {
+                                        await (await globalStorage.GetStoreAsync()).CopyAsync(String.Empty,
                                                                                 FileDao.GetUniqThumbnailPath(file, size.Width, size.Height),
                                                                                 String.Empty,
-                                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));                                      
+                                                                                fileDao.GetUniqThumbnailPath(newFile, size.Width, size.Height));
                                     }
 
                                     await fileDao.SetThumbnailStatusAsync(newFile, Thumbnail.Created);

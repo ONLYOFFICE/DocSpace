@@ -27,6 +27,7 @@ export const getMonthElements = (
 
   const monthsElements = months.map((month) => (
     <ColorTheme
+      className="month"
       themeId={ThemeType.DateItem}
       big
       key={month.key}
@@ -42,6 +43,7 @@ export const getMonthElements = (
   for (let i = 12; i < 16; i++) {
     monthsElements[i] = (
       <ColorTheme
+        className="month"
         themeId={ThemeType.DateItem}
         isSecodary
         big
@@ -66,6 +68,7 @@ export const getMonthElements = (
     if (month.key === currentDate) {
       monthsElements[index] = (
         <ColorTheme
+          className="month"
           themeId={ThemeType.DateItem}
           isCurrent
           big
@@ -82,6 +85,7 @@ export const getMonthElements = (
     } else if (month.key === formattedDate) {
       monthsElements[index] = (
         <ColorTheme
+          className="month"
           themeId={ThemeType.DateItem}
           big
           key={month.key}

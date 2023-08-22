@@ -25,7 +25,7 @@ class ContextHelper {
       return;
     }
 
-    const options = this.getContextOptions(this.selection, false);
+    const options = this.getContextOptions(this.selection, true);
 
     excludeGeneralOptions.forEach((excludeOption) => {
       const idx = options.findIndex((o) => o === excludeOption);

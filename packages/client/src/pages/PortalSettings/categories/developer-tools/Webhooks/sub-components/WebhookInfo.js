@@ -19,9 +19,11 @@ const InfoText = styled(Text)`
   margin: 0 0 8px 0;
   line-height: 20px;
 
-  color: ${(props) => (props.theme.isBase ? "#657077" : "rgba(255, 255, 255, 0.6)")};
+  color: ${(props) =>
+    props.theme.isBase ? "#657077" : "rgba(255, 255, 255, 0.6)"};
   &:hover {
-    color: ${(props) => (props.theme.isBase ? "#657077" : "rgba(255, 255, 255, 0.6)")};
+    color: ${(props) =>
+      props.theme.isBase ? "#657077" : "rgba(255, 255, 255, 0.6)"};
   }
 `;
 
@@ -44,11 +46,13 @@ const WebhookInfo = (props) => {
     <InfoWrapper>
       <InfoText as="p">{t("WebhooksInfo")}</InfoText>
       <StyledGuideLink
+        id="webhooks-info-link"
         fontWeight={600}
         isHovered
         type="page"
         href={webhooksGuideUrl}
-        target="_blank">
+        target="_blank"
+      >
         {t("WebhooksGuide")}
       </StyledGuideLink>
     </InfoWrapper>

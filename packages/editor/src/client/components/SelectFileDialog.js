@@ -21,12 +21,10 @@ const SelectFileDialog = ({
           url: CLIENT_REMOTE_ENTRY_URL,
           module: "./SelectFileDialog",
         }}
-        resetTreeFolders
-        filteredType="exceptPrivacyTrashArchiveFolders"
         isPanelVisible={isVisible}
         onClose={onCloseFileDialog}
         onSelectFile={onSelectFile}
-        filesListTitle={filesListTitle}
+        descriptionText={filesListTitle}
         settings={settings}
       />
     )) ||

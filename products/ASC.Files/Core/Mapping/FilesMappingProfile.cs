@@ -46,7 +46,18 @@ public class FilesMappingProfile : AutoMapper.Profile
             .IncludeMembers(r => r.Folder)
             .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
             .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
-            .AfterMap<FolderMappingAction>()
+            .AfterMap<FilesMappingAction>()
             .ConstructUsingServiceLocator();
+
+        CreateMap<FileShareRecord, DbFilesSecurity>()
+            .ForMember(dest => dest.TimeStamp, cfg =>
+                cfg.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.Options, cfg =>
+                cfg.MapFrom(src => src.Options != null ? JsonSerializer.Serialize(src.Options, JsonSerializerOptions.Default) : null))
+            .BeforeMap<FilesMappingAction>();
+        
+        CreateMap<DbFilesSecurity, FileShareRecord>()
+            .ForMember(dest => dest.Options, cfg => 
+                cfg.MapFrom(src => JsonSerializer.Deserialize<FileShareOptions>(src.Options, JsonSerializerOptions.Default)));
     }
 }

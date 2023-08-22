@@ -15,7 +15,15 @@ const StyledTag = styled.div`
   box-sizing: border-box;
 
   padding: 2px 10px;
-  margin-right: ${(props) => (props.isLast ? "0" : "4px")};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: ${props.isLast ? "0" : "4px"};
+        `
+      : css`
+          margin-right: ${props.isLast ? "0" : "4px"};
+        `}
 
   background: ${(props) =>
     props.isDisabled
@@ -36,7 +44,15 @@ const StyledTag = styled.div`
   }
 
   .tag-icon {
-    margin-left: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 12px;
+          `
+        : css`
+            margin-left: 12px;
+          `}
+
     cursor: pointer;
   }
 
@@ -62,6 +78,12 @@ const StyledDropdownIcon = styled(ReactSVG)`
   display: flex;
   align-items: center;
 
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      transform: scaleX(-1);
+    `}
+
   pointer-events: none;
 
   svg {
@@ -75,12 +97,16 @@ const StyledDropdownIcon = styled(ReactSVG)`
 `;
 
 const StyledDropdownText = styled(Text)`
-  display: flex;
-  align-items: center;
-
   line-height: 30px;
 
-  margin-left: 8px !important;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 8px !important;
+        `
+      : css`
+          margin-left: 8px !important;
+        `}
 
   display: block;
 

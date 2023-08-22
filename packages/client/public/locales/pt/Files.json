@@ -24,6 +24,7 @@
   "DaysRemaining": "Dias restantes: {{daysRemaining}}",
   "DisableNotifications": "Desativar notificações",
   "Document": "Documento",
+  "DocumentEdited": "Não é possível executar a ação porque o documento está a ser editado.",
   "EditRoom": "Editar sala",
   "EmptyFile": "Ficheiro vazio",
   "EmptyFilterDescriptionText": "Nenhum ficheiro ou pasta corresponde a este filtro. Tente um filtro diferente ou limpe-o para ver todos os ficheiros. ",

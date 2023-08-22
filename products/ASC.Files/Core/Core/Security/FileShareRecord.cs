@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.Security;
 
-public class FileShareRecord : IMapFrom<DbFilesSecurity>
+public class FileShareRecord
 {
     public int TenantId { get; set; }
     public object EntryId { get; set; }
@@ -35,15 +35,9 @@ public class FileShareRecord : IMapFrom<DbFilesSecurity>
     public Guid Subject { get; set; }
     public Guid Owner { get; set; }
     public FileShare Share { get; set; }
-    public FileShareOptions FileShareOptions { get; set; }
+    public FileShareOptions Options { get; set; }
     public int Level { get; set; }
-    public bool IsLink => SubjectType == SubjectType.InvitationLink || SubjectType == SubjectType.ExternalLink;
-
-    public void Mapping(AutoMapper.Profile profile)
-    {
-        profile.CreateMap<DbFilesSecurity, FileShareRecord>()
-            .ForMember(dest => dest.FileShareOptions, opt => opt.MapFrom(src => JsonSerializer.Deserialize<FileShareOptions>(src.FileShareOptions, new JsonSerializerOptions())));
-    }
+    public bool IsLink => SubjectType is SubjectType.InvitationLink or SubjectType.ExternalLink;
 
     public class ShareComparer : IComparer<FileShare>
     {

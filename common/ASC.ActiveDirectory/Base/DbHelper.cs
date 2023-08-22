@@ -40,19 +40,19 @@ public class DbHelper
         _ldapSettings = ldapSettings;
     }
 
-    public List<int> GetTenants()
+    public async Task<List<int>> TenantsAsync()
     {
         var id = _ldapSettings.ID;
         var enableLdapAuthentication = _ldapSettings.EnableLdapAuthentication;
 
-        using var activeDirectoryDbContext = _activeDirectoryDbContextFactory.CreateDbContext();
-        var data = activeDirectoryDbContext.WebstudioSettings
+        await using var activeDirectoryDbContext = _activeDirectoryDbContextFactory.CreateDbContext();
+        var data = await activeDirectoryDbContext.WebstudioSettings
             .Where(r => r.Id == id)
             .Join(activeDirectoryDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
-            .Select(r => JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), enableLdapAuthentication.ToString()))
+            .Select(r => DbFunctionsExtension.JsonValue(nameof(r.settings.Data).ToLower(), enableLdapAuthentication.ToString()))
             .Distinct()
             .Select(r => r != null ? Convert.ToInt32(r) : 0)
-            .ToList();
+            .ToListAsync();
 
         return data;
     }

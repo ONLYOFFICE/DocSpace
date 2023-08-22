@@ -39,8 +39,8 @@ public class NovellLdapObject : LdapObject
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="ldapEntry">init ldap entry</param>
-    /// <param name="ldapUniqueIdAttribute"></param>
+    /// <param name="logger">init ldap entry</param>
+    /// <param name="novellLdapEntryExtension"></param>
     public NovellLdapObject(ILogger logger, NovellLdapEntryExtension novellLdapEntryExtension)
     {
         _novellLdapEntryExtension = novellLdapEntryExtension;
@@ -114,6 +114,7 @@ public class NovellLdapObject : LdapObject
     /// Get property object
     /// </summary>
     /// <param name="propertyName">property name</param>
+    /// <param name="getBytes"></param>
     /// <returns>value object</returns>
     public sealed override object GetValue(string propertyName, bool getBytes = false)
     {

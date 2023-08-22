@@ -60,10 +60,22 @@ const StyledTree = styled(Tree)`
       display: flex;
       align-items: center;
       padding-left: 16px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          padding-left: 0;
+          padding-right: 16px;
+        `}
       span.rc-tree-switcher {
         ${(props) => props.switcherIcon != null && "background: none"};
 
         margin-right: 10px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            margin-left: 10px;
+            transform: scaleX(-1);
+          `}
         vertical-align: 1px;
         height: 24px;
         min-width: 8px;
@@ -79,6 +91,12 @@ const StyledTree = styled(Tree)`
         width: 83%;
         span.rc-tree-iconEle {
           margin-right: 8px;
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl" &&
+            css`
+              margin-right: auto;
+              margin-left: 8px;
+            `}
           vertical-align: 5px;
           svg {
             path {

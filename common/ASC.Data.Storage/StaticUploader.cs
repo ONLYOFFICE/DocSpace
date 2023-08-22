@@ -204,7 +204,7 @@ public class UploadOperation
             {
                 if (!await dataStore.IsFileAsync(path))
                 {
-                    using var stream = File.OpenRead(mappedPath);
+                    await using var stream = File.OpenRead(mappedPath);
                     await dataStore.SaveAsync(path, stream);
                 }
                 var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);

@@ -1,11 +1,11 @@
 const globalTypes = {
-  theme: {
-    description: "Global theme for components",
-    defaultValue: "Light",
+  direction: {
+    description: "Interface direction",
+    defaultValue: "ltr",
     toolbar: {
-      title: "Theme",
-      icon: "photo",
-      items: ["Light", "Dark"],
+      title: "Dir",
+      icon: "paragraph",
+      items: ["ltr", "rtl"],
       dynamicTitle: true,
     },
   },

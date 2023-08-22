@@ -513,8 +513,8 @@ public class DocumentServiceTrackerHelper
                     };
 
                     using (var responseDownload = await httpClient.SendAsync(requestDownload))
-                    using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
-                    using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
+                    await using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
+                    await using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
                     {
                         const int bufferSize = 2048;
                         var buffer = new byte[bufferSize];
@@ -549,7 +549,7 @@ public class DocumentServiceTrackerHelper
                     };
 
                     using (var httpResponse = await httpClient.SendAsync(httpRequest))
-                    using (var stream = await httpResponse.Content.ReadAsStreamAsync())
+                    await using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                     {
                         if (stream != null)
                         {
@@ -627,8 +627,8 @@ public class DocumentServiceTrackerHelper
 
             var httpClient = _clientFactory.CreateClient();
             using (var response = await httpClient.SendAsync(request))
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            using (var fileStream = new ResponseStream(stream, stream.Length))
+            await using (var stream = await response.Content.ReadAsStreamAsync())
+            await using (var fileStream = new ResponseStream(stream, stream.Length))
             {
                 await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
             }
@@ -667,9 +667,9 @@ public class DocumentServiceTrackerHelper
 
             var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var stream = await response.Content.ReadAsStreamAsync();
+            await using var stream = await response.Content.ReadAsStreamAsync();
 
-            using var differenceStream = new ResponseStream(stream, stream.Length);
+            await using var differenceStream = new ResponseStream(stream, stream.Length);
             await fileDao.SaveEditHistoryAsync(file, changes, differenceStream);
         }
         catch (Exception ex)

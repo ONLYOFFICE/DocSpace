@@ -34,6 +34,7 @@ const SubmitResetButtons = (props) => {
         isLoading={isSubmitLoading}
       />
       <Button
+        className="restore-button"
         label={t("Settings:RestoreDefaultButton")}
         onClick={isSsoEnabled ? openResetModal : resetForm}
         size="small"

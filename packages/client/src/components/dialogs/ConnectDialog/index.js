@@ -273,6 +273,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("Common:RequiredField")}
               >
                 <TextInput
+                  id="connection-url-input"
                   isAutoFocussed={true}
                   hasError={!isUrlValid}
                   isDisabled={isLoading}
@@ -292,6 +293,7 @@ const PureConnectDialogContainer = (props) => {
               errorMessage={t("Common:RequiredField")}
             >
               <TextInput
+                id="login-input"
                 isAutoFocussed={!showUrlField}
                 hasError={!isLoginValid}
                 isDisabled={isLoading}
@@ -310,6 +312,7 @@ const PureConnectDialogContainer = (props) => {
               style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
+                id="password-input"
                 hasError={!isPasswordValid}
                 isDisabled={isLoading}
                 tabIndex={3}
@@ -342,6 +345,7 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="save"
           tabIndex={5}
           label={t("Common:SaveButton")}
           size="normal"
@@ -352,6 +356,7 @@ const PureConnectDialogContainer = (props) => {
           isLoading={isLoading}
         />
         <Button
+          id="cancel"
           tabIndex={5}
           label={t("Common:CancelButton")}
           size="normal"

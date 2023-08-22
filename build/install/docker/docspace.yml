@@ -24,6 +24,8 @@ x-service: &x-service-base
     APP_KNOWN_PROXIES: ${APP_KNOWN_PROXIES}
     APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN}
     APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+    APP_URL_PORTAL: ${APP_URL_PORTAL}
+    INSTALLATION_TYPE: ${INSTALLATION_TYPE}
     DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
     DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
     DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
@@ -159,17 +161,21 @@ services:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
-    restart: always
     expose:
       - "5013"
+    healthcheck:
+     <<: *x-healthcheck
+     test: curl --fail http://${SERVICE_DOCEDITOR}/health/ || exit 1
 
   onlyoffice-login:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
     container_name: ${LOGIN_HOST}
-    restart: always
     expose:
       - "5011"
+    healthcheck:
+     <<: *x-healthcheck
+     test: curl --fail http://${SERVICE_LOGIN}/health/ || exit 1
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"

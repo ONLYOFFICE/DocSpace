@@ -148,45 +148,40 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
             return;
         }
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
-            var oldIDs = await Query(filesDbContext.ThirdpartyIdMapping)
-            .Where(r => r.Id.StartsWith(oldValue))
-            .Select(r => r.Id)
-            .ToListAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            var oldIds = Queries.IdsAsync(filesDbContext, _tenantId, oldValue);
 
-            foreach (var oldID in oldIDs)
+            await foreach (var oldId in oldIds)
             {
-                var oldHashID = await MappingIDAsync(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = await MappingIDAsync(newID);
+                var oldHashId = await MappingIDAsync(oldId);
+                var newId = oldId.Replace(oldValue, newValue);
+                var newHashId = await MappingIDAsync(newId);
 
-                var mappingForDelete = await Query(filesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID).ToListAsync();
+                var mappingForDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var mappingForInsert = mappingForDelete.Select(m => new DbFilesThirdpartyIdMapping
                 {
                     TenantId = m.TenantId,
-                    Id = newID,
-                    HashId = newHashID
+                    Id = newId,
+                    HashId = newHashId
                 });
 
                 filesDbContext.RemoveRange(mappingForDelete);
                 await filesDbContext.AddRangeAsync(mappingForInsert);
 
-                var securityForDelete = await Query(filesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+                var securityForDelete = await Queries.DbFilesSecuritiesAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var securityForInsert = securityForDelete.Select(s => new DbFilesSecurity
                 {
                     TenantId = s.TenantId,
                     TimeStamp = DateTime.Now,
-                    EntryId = newHashID,
+                    EntryId = newHashId,
                     Share = s.Share,
                     Subject = s.Subject,
                     EntryType = s.EntryType,
@@ -196,12 +191,11 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
                 filesDbContext.RemoveRange(securityForDelete);
                 await filesDbContext.AddRangeAsync(securityForInsert);
 
-                var linkForDelete = await Query(filesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID).ToListAsync();
+                var linkForDelete = await Queries.DbFilesTagLinksAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var linkForInsert = linkForDelete.Select(l => new DbFilesTagLink
                 {
-                    EntryId = newHashID,
+                    EntryId = newHashId,
                     Count = l.Count,
                     CreateBy = l.CreateBy,
                     CreateOn = l.CreateOn,
@@ -214,13 +208,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
                 await filesDbContext.AddRangeAsync(linkForInsert);
 
 
-                var filesSourceForDelete = await Query(filesDbContext.FilesLink)
-                    .Where(l => l.SourceId == oldHashID).ToListAsync();
+                var filesSourceForDelete = await Queries.FilesLinksBySourceIdAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var filesSourceForInsert = filesSourceForDelete.Select(l => new DbFilesLink
                 {
                     TenantId = l.TenantId,
-                    SourceId = newHashID,
+                    SourceId = newHashId,
                     LinkedId = l.LinkedId,
                     LinkedFor = l.LinkedFor,
                 });
@@ -228,14 +221,13 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
                 filesDbContext.RemoveRange(filesSourceForDelete);
                 await filesDbContext.AddRangeAsync(filesSourceForInsert);
 
-                var filesLinkedForDelete = await Query(filesDbContext.FilesLink)
-                    .Where(l => l.LinkedId == oldHashID).ToListAsync();
+                var filesLinkedForDelete = await Queries.FilesLinksByLinkedIdAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var filesLinkedForInsert = filesLinkedForDelete.Select(l => new DbFilesLink
                 {
                     TenantId = l.TenantId,
                     SourceId = l.SourceId,
-                    LinkedId = newHashID,
+                    LinkedId = newHashId,
                     LinkedFor = l.LinkedFor,
                 });
 
@@ -586,4 +578,50 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
 
         return string.Format(" ({0}){1}", index + 1, staticText);
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> IdsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id.StartsWith(idStart))
+                    .Select(r => r.Id));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.HashId == hashId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> DbFilesSecuritiesAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> DbFilesTagLinksAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesLink>> FilesLinksBySourceIdAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string sourceId) =>
+                ctx.FilesLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(l => l.SourceId == sourceId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesLink>> FilesLinksByLinkedIdAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string linkedId) =>
+                ctx.FilesLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(l => l.LinkedId == linkedId));
 }

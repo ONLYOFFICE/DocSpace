@@ -17,7 +17,7 @@ import BackgroundPatternBlackReactSvgUrl from "PUBLIC_DIR/images/background.patt
 
 import moment from "moment";
 
-import { LANGUAGE } from "../constants";
+import { LANGUAGE, ThemeKeys } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
@@ -263,9 +263,10 @@ export function toCommunityHostname(hostname) {
 }
 
 export function getProviderTranslation(provider, t, linked = false) {
-  const capitalizeProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
+  const capitalizeProvider =
+    provider.charAt(0).toUpperCase() + provider.slice(1);
   if (linked) {
-    return `${t("Common:Disconnect")} ${capitalizeProvider}`
+    return `${t("Common:Disconnect")} ${capitalizeProvider}`;
   }
 
   switch (provider) {
@@ -429,6 +430,16 @@ export const frameCallbackData = (methodReturnData: any) => {
   );
 };
 
+export const frameCallEvent = (eventReturnData: any) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onEventReturn",
+      eventReturnData,
+    }),
+    "*"
+  );
+};
+
 export const frameCallCommand = (commandName: string, commandData: any) => {
   window.parent.postMessage(
     JSON.stringify({
@@ -518,10 +529,11 @@ export const getLogoFromPath = (path) => {
   return path;
 };
 
+export const getDaysLeft = (date) => {
+  return moment(date).startOf("day").diff(moment().startOf("day"), "days");
+};
 export const getDaysRemaining = (autoDelete) => {
-  let daysRemaining = moment(autoDelete)
-    .startOf("day")
-    .diff(moment().startOf("day"), "days");
+  let daysRemaining = getDaysLeft(autoDelete);
 
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
@@ -537,4 +549,25 @@ export const checkFilterInstance = (filterObject, certainClass) => {
     );
 
   return isInstance;
+};
+
+export const getFileExtension = (fileTitle: string) => {
+  if (!fileTitle) {
+    return "";
+  }
+  fileTitle = fileTitle.trim();
+  const posExt = fileTitle.lastIndexOf(".");
+  return 0 <= posExt ? fileTitle.substring(posExt).trim().toLowerCase() : "";
+};
+
+export const getSystemTheme = () => {
+  const isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  return isDesktopClient
+    ? window?.RendererProcessVariable?.theme?.type === "dark"
+      ? ThemeKeys.DarkStr
+      : ThemeKeys.BaseStr
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? ThemeKeys.DarkStr
+    : ThemeKeys.BaseStr;
 };

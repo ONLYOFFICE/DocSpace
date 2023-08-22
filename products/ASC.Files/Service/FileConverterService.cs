@@ -127,6 +127,12 @@ internal class FileConverterService<T> : BackgroundService
 
                 try
                 {
+                    var externalShare = scope.ServiceProvider.GetRequiredService<ExternalShare>();
+
+                    if (!string.IsNullOrEmpty(converter.ExternalShareData))
+                    {
+                        externalShare.SetCurrentShareData(JsonSerializer.Deserialize<ExternalShareData>(converter.ExternalShareData));
+                    }
 
                     var user = await userManager.GetUsersAsync(converter.Account);
 

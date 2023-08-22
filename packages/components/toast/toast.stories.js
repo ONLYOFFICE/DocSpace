@@ -22,6 +22,13 @@ export default {
       description: "Any components or data inside a toast",
     },
   },
+
+  parameters: {
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?node-id=648%3A4421&mode=dev",
+    },
+  },
 };
 
 const BaseTemplate = ({ type, data, title, timeout, withCross, ...args }) => {

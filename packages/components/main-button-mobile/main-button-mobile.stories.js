@@ -1,10 +1,11 @@
 import React from "react";
+import styled, { css } from "styled-components";
 import MainButtonMobile from ".";
 import { useEffect, useReducer, useState } from "react";
 import MobileActionsFolderReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.folder.react.svg?url";
 import MobileActionsRemoveReactSvgUrl from "PUBLIC_DIR/images/mobile.actions.remove.react.svg?url";
 import MobileStartReactSvgUrl from "PUBLIC_DIR/images/mobile.star.react.svg?url";
-
+import { useTheme } from "styled-components";
 import MobileMainButtonDocs from "./main-button-mobile-docs.mdx";
 
 export default {
@@ -66,6 +67,29 @@ const buttonOptions = [
     onClick: () => setIsOpenButton(false),
   },
 ];
+
+const StyledWrapper = styled.div`
+  width: 500px;
+  height: 600px;
+
+  ${(props) =>
+    props.isAutoDocs &&
+    css`
+      width: calc(100% + 40px);
+      height: 500px;
+      position: relative;
+      margin: 0 0 -20px -20px;
+    `}
+
+  ${(props) =>
+    props.isMobile &&
+    css`
+      .mainBtnDropdown {
+        right: 5px !important;
+        bottom: 5px !important;
+      }
+    `}
+`;
 
 const Template = ({ ...args }) => {
   const maxUploads = 10;
@@ -158,13 +182,40 @@ const Template = ({ ...args }) => {
     },
   ];
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1245);
+
+  useEffect(() => {
+    const handleResize = () => {
+      isMobile !== window.innerWidth && setIsMobile(window.innerWidth < 1025);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isAutoDocs =
+    typeof window !== "undefined" && window?.location?.href.includes("docs");
+  const { interfaceDirection } = useTheme();
+  const style = {
+    position: "absolute",
+    bottom: "26px",
+    [interfaceDirection === "rtl" ? "left" : "right"]: "44px",
+  };
+  const dropdownStyle = {
+    position: "absolute",
+    [interfaceDirection === "rtl" ? "left" : "right"]: "60px",
+    bottom: "25px",
+  };
   return (
-    <div style={{ width: "600px", height: "500px" }}>
+    <StyledWrapper isAutoDocs={isAutoDocs} isMobile={isMobile}>
       <MainButtonMobile
         {...args}
-        style={{ position: "absolute", bottom: "26px", right: "44px" }}
+        style={style}
         actionOptions={actionOptions}
-        dropdownStyle={{ position: "absolute", right: "60px", bottom: "25px" }}
+        dropdownStyle={dropdownStyle}
         progressOptions={progressOptions}
         buttonOptions={buttonOptions}
         onUploadClick={onUploadClick}
@@ -175,7 +226,7 @@ const Template = ({ ...args }) => {
         percent={uploadPercent}
         opened={opened}
       />
-    </div>
+    </StyledWrapper>
   );
 };
 

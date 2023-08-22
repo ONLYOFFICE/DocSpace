@@ -183,14 +183,17 @@ const TrustedMail = (props) => {
         spacing="8px"
         options={[
           {
+            id: "trusted-mail-disabled",
             label: t("Disabled"),
             value: "0",
           },
           {
+            id: "any-domains",
             label: t("AllDomains"),
             value: "2",
           },
           {
+            id: "custom-domains",
             label: t("CustomDomains"),
             value: "1",
           },
@@ -207,6 +210,7 @@ const TrustedMail = (props) => {
           onDeleteInput={onDeleteInput}
           onClickAdd={onClickAdd}
           regexp={regexp}
+          classNameAdditional="add-trusted-domain"
         />
       )}
 
@@ -221,6 +225,8 @@ const TrustedMail = (props) => {
         displaySettings={true}
         hasScroll={false}
         isSaving={isSaving}
+        additionalClassSaveButton="trusted-mail-save"
+        additionalClassCancelButton="trusted-mail-cancel"
       />
     </MainContainer>
   );

@@ -278,7 +278,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     setFirsElemChecked,
     setHeaderBorder,
     theme,
-    userId: auth.userStore.user.id,
+    userId: auth.userStore.user?.id,
     infoPanelVisible,
     fetchMoreFiles,
     hasMoreFiles,

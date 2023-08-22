@@ -60,7 +60,7 @@ public class ChunkedUploadSessionHolder
 
     public async Task<ChunkedUploadSession<T>> GetSessionAsync<T>(string sessionId)
     {
-        using var stream = await (await CommonSessionHolderAsync(false)).GetStreamAsync(sessionId);
+        await using var stream = await (await CommonSessionHolderAsync(false)).GetStreamAsync(sessionId);
         var chunkedUploadSession = ChunkedUploadSession<T>.Deserialize(stream, _fileHelper);
 
         return chunkedUploadSession;

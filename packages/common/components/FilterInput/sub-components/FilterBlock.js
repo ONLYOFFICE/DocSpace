@@ -18,6 +18,8 @@ import FilterBlockItem from "./FilterBlockItem";
 import PeopleSelector from "client/PeopleSelector";
 import RoomSelector from "@docspace/client/src/components/RoomSelector";
 
+import { FilterGroups } from "../../../constants";
+
 import {
   StyledFilterBlock,
   StyledFilterBlockHeader,
@@ -49,6 +51,25 @@ const FilterBlock = ({
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const setFilterDataFn = (data) => {
+    const filterSubject = data.find(
+      (f) => f.group === FilterGroups.roomFilterSubject
+    );
+
+    if (filterSubject) {
+      const filterOwner = data.find(
+        (f) => f.group === FilterGroups.roomFilterOwner
+      );
+
+      const isSelected =
+        filterSubject.groupItem.findIndex((i) => i.isSelected) > -1;
+
+      filterOwner.groupItem[0].isDisabled = !isSelected;
+    }
+
+    setFilterData(data);
+  };
 
   const changeShowSelector = React.useCallback((selectorType, group) => {
     setShowSelector((val) => ({
@@ -101,7 +122,7 @@ const FilterBlock = ({
         }
       });
 
-      setFilterData(data);
+      setFilterDataFn(data);
     },
     [filterData]
   );
@@ -259,7 +280,7 @@ const FilterBlock = ({
       };
     });
 
-    setFilterData(items);
+    setFilterDataFn(items);
     setFilterValues(newFilterValues);
 
     setTimeout(() => {

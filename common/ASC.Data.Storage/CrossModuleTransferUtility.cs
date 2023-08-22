@@ -59,7 +59,7 @@ public class CrossModuleTransferUtility
         ArgumentNullException.ThrowIfNull(destDomain);
         ArgumentNullException.ThrowIfNull(destPath);
 
-        using var stream = await _source.GetReadStreamAsync(srcDomain, srcPath);
+        await using var stream = await _source.GetReadStreamAsync(srcDomain, srcPath);
         if (stream.Length < _maxChunkUploadSize)
         {
             await _destination.SaveAsync(destDomain, destPath, stream);

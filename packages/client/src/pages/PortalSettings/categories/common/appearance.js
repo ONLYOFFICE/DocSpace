@@ -107,6 +107,7 @@ const Appearance = (props) => {
   const array_items = useMemo(
     () => [
       {
+        id: "light-theme",
         key: "0",
         title: t("Profile:LightTheme"),
         content: (
@@ -120,6 +121,7 @@ const Appearance = (props) => {
         ),
       },
       {
+        id: "dark-theme",
         key: "1",
         title: t("Profile:DarkTheme"),
         content: (
@@ -733,7 +735,7 @@ const Appearance = (props) => {
 
         <div className="buttons-container">
           <Button
-            className="button"
+            className="save button"
             label={t("Common:SaveButton")}
             onClick={onSave}
             primary
@@ -742,7 +744,7 @@ const Appearance = (props) => {
           />
 
           <Button
-            className="button"
+            className="edit-current-theme button"
             label={t("Settings:EditCurrentTheme")}
             onClick={onClickEdit}
             size="small"
@@ -750,7 +752,7 @@ const Appearance = (props) => {
           />
           {isShowDeleteButton && (
             <Button
-              className="button"
+              className="delete-theme button"
               label={t("Settings:DeleteTheme")}
               onClick={onOpenDialogDelete}
               size="small"

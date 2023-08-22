@@ -82,4 +82,19 @@
   <data name="Personal" xml:space="preserve">
     <value>Henkilökohtainen</value>
   </data>
+  <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
+    <value>Tiedostot pakataan {0}.tar.gz-tiedostoon {1}</value>
+  </data>
+  <data name="FilesWillBeCompressedZip" xml:space="preserve">
+    <value>Tiedostot pakataan {0}.zip-tiedostoon {1}</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Suosikit</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Yksityinen huone</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Viimeaikainen</value>
+  </data>
 </root>

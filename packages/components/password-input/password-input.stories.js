@@ -84,7 +84,6 @@ const Template = ({
         tooltipPasswordLength={`${tooltipPasswordLength} ${settingMinLength}`}
         passwordSettings={fakeSettings}
         onValidateInput={onValidateInputHandler}
-        tooltipOffsetLeft={150}
       />
     </div>
   );

@@ -147,4 +147,111 @@ Odkaz je platný 7 dní.
 
 Nechcete měnit heslo? Tuto zprávu ignorujte.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Vítejte v ONLYOFFICE Personal
+
+Právě jste si vytvořili osobní kancelář v cloudu.
+
+h3.Je to virtuální pracovní prostor, v němž můžete upravovat a ukládat dokumenty, pracovat s nimi odkudkoli a udělovat k nim přístup svým přátelům nebo kolegům.
+
+h3.Nejprve se podívejte, co můžete v ONLYOFFICE dělat:
+
+- Vytvářet, prohlížet a upravovat textové dokumenty, tabulky a prezentace.
+
+- Pracovat se všemi oblíbenými formáty. Nejvyšší kompatibilita se soubory MS Office.
+
+- Vytvářet a spolueditovat "formuláře připravené k vyplnění":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Sdílet dokumenty a spolupracovat na nich online.
+
+- Pomocí různých zásuvných modulů můžete používat další funkce.
+
+- Získat snadný přístup k osobnímu cloudu prostřednictvím "rozšíření Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Dokumenty můžete také upravovat offline pomocí našich bezplatných "desktopových editorů":"https://www.onlyoffice.com/download-desktop.aspx" nebo si pořiďte mobilní editační sadu pro zařízení se systémem "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" nebo "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+S pozdravem,
+tým ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Chcete změnit e-mail na svém účtu pro cloudovou kancelář?
+
+Klikněte na tlačítko níže a přihlaste se* do svého cloudu.
+
+$GreenButton
+
+Odkaz je platný 7 dní.
+
+*Pokud nejste v tomto prohlížeči přihlášeni ke své cloudové kanceláři, budete muset pro potvrzení použít svůj starý e-mail.
+
+Nechcete měnit e-mail? Tuto zprávu ignorujte.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Dobrý den,
+
+právě jste si zaregistrovali účet v řešení ONLYOFFICE pro osobní použití. Kliknutím na "zde":"$InviteLink" potvrďte registraci a vytvořte si heslo.
+
+Pokud nemůžete odkaz otevřít, zkopírujte následující "$InviteLink":"$InviteLink" a vložte jej do adresního řádku prohlížeče.
+
+S pozdravem,
+tým ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Požádali jste o ukončení svého účtu na personal.onlyoffice.com. Žádost dokončete pomocí odkazu (odkaz je aktivní po dobu 7 dnů): 
+
+Potvrdit ukončení účtu
+
+*Poznámka*: Po smazání bude váš účet a všechny údaje s ním spojené trvale vymazány v souladu s naším "Prohlášením o ochraně osobních údajů":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Více informací o ukončení účtu":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Pokud nechcete pokračovat, ignorujte tento e-mail. 
+
+V případě dotazů nás prosím kontaktujte na adrese "support@onlyoffice.com":"mailto:support@onlyoffice.com".
+
+S pozdravem,
+tým ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Vážený/vážená $UserName,
+
+Proces odebrání dat uživatele "$FromUserName":"$FromUserLink" byl úspěšně dokončen.
+
+Výmaz osobních údajů povolen:
+
+# Dokumenty - $DocsSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Nový portál byl zaregistrován
+
+# Url adresa portálu: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Křestní jméno: $UserName
+# Příjmení: $UserLastName
+# E-mail: $UserEmail
+# Telefon: $Phone
+# Datum vytvoření: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Proveďte totéž jako uživatel|V sekci "Společné" propojte účty Dropbox, Box a další|V sekci "Společné" nastavte přístupová práva k dokumentům a složkám</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Vytvářejte a upravujte vlastní dokumenty i sdílené dokumenty s příslušnými přístupovými právy|Udělte ostatním uživatelům přístup ke čtení/editaci dokumentů a složek|Propojte Dropbox, Box a další účty v sekci "Moje dokumenty"</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Aktivujte prosím svou e-mailovou adresu</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Ukončení osobního účtu ONLYOFFICE</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Odstranění uživatelských dat je dokončeno</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Byl zaregistrován nový portál</value>
+  </data>
 </root>

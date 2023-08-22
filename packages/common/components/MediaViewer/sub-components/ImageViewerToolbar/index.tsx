@@ -78,6 +78,8 @@ function ImageViewerToolbar(
   }
 
   function renderToolbarItem(item: ToolbarItemType) {
+    if (item.disabled) return null;
+
     if (item.key === "context-menu") {
       return getContextMenu(item);
     }

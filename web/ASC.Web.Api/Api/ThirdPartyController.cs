@@ -26,6 +26,10 @@
 
 namespace ASC.Web.Api.Controllers;
 
+///<summary>
+/// Third-party API.
+///</summary>
+///<name>thirdparty</name>
 [Scope(Additional = typeof(BaseLoginProviderExtension))]
 [DefaultRoute]
 [ApiController]
@@ -38,6 +42,15 @@ public class ThirdPartyController : ControllerBase
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
+    /// <summary>
+    /// Returns a request to get the confirmation code from URL.
+    /// </summary>
+    /// <short>Get the code request</short>
+    /// <param type="ASC.FederatedLogin.LoginProviders.LoginProviderEnum, ASC.FederatedLogin.LoginProviders" method="url" name="provider">Provider</param>
+    /// <returns type="System.Object, System">Code request</returns>
+    /// <remarks>List of providers: Google, Dropbox, Docusign, Box, OneDrive, Wordpress.</remarks>
+    /// <path>api/2.0/thirdparty/{provider}</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("{provider}")]
     public object Get(LoginProviderEnum provider)
     {
@@ -89,6 +102,16 @@ public class ThirdPartyController : ControllerBase
         return null;
     }
 
+    /// <summary>
+    /// Returns the confirmation code for requesting an OAuth token.
+    /// </summary>
+    /// <short>Get the confirmation code</short>
+    /// <param type="System.String, System" name="redirect">URL where the user will be redirected to after they have granted the application access</param>
+    /// <param type="System.String, System" method="url" name="code">Confirmation code that can be exchanged for an OAuth token</param>
+    /// <param type="System.String, System" name="error">Error</param>
+    /// <returns type="System.Object, System">Confirmation code</returns>
+    /// <path>api/2.0/thirdparty/{provider}/code</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("{provider}/code")]
     public object GetCode(string redirect, string code, string error)
     {

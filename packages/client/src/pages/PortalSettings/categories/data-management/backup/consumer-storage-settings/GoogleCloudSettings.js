@@ -47,6 +47,7 @@ class GoogleCloudSettings extends React.Component {
     return (
       <>
         <TextInput
+          id="bucket-input"
           name={bucket}
           className="backup_text-input"
           scale
@@ -60,6 +61,7 @@ class GoogleCloudSettings extends React.Component {
 
         {isNeedFilePath && (
           <TextInput
+            id="file-path-input"
             name={filePath}
             className="backup_text-input"
             scale

@@ -305,7 +305,7 @@ public class EventBusActiveMQ : IEventBus, IDisposable
 
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {
-            using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
+            await using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
             {
                 var subscriptions = _subsManager.GetHandlersForEvent(eventName);
 

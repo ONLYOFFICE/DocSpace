@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import React from "react";
 
 import commonInputStyle from "../text-input/common-input-styles";
@@ -13,6 +13,12 @@ const StyledIconBlock = styled.div`
   height: ${(props) => props.theme.inputBlock.height};
   padding-right: ${(props) => props.theme.inputBlock.paddingRight};
   padding-left: ${(props) => props.theme.inputBlock.paddingLeft};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      padding-left: ${(props) => props.theme.inputBlock.paddingRight};
+      padding-right: ${(props) => props.theme.inputBlock.paddingLeft};
+    `}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 StyledIconBlock.defaultProps = { theme: Base };
@@ -37,6 +43,16 @@ const CustomInputGroup = ({
 /* eslint-enable react/prop-types, no-unused-vars */
 const StyledInputGroup = styled(CustomInputGroup)`
   display: ${(props) => props.theme.inputBlock.display};
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #23232329;
+  }
 
   .prepend {
     display: ${(props) => props.theme.inputBlock.display};

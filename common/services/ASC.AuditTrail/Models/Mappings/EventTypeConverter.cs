@@ -29,8 +29,8 @@ using ASC.Core.Tenants;
 namespace ASC.AuditTrail.Models.Mappings;
 
 [Scope]
-internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDto>,
-                                  ITypeConverter<AuditEventQuery, AuditEventDto>
+internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEvent>,
+                                  ITypeConverter<AuditEventQuery, AuditEvent>
 {
     private readonly UserFormatter _userFormatter;
     private readonly AuditActionMapper _auditActionMapper;
@@ -49,9 +49,9 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         _tenantUtil = tenantUtil;
     }
 
-    public LoginEventDto Convert(LoginEventQuery source, LoginEventDto destination, ResolutionContext context)
+    public LoginEvent Convert(LoginEventQuery source, LoginEvent destination, ResolutionContext context)
     {
-        var result = context.Mapper.Map<LoginEventDto>(source.Event);
+        var result = context.Mapper.Map<LoginEvent>(source.Event);
 
         if (source.Event.DescriptionRaw != null)
         {
@@ -95,11 +95,11 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         return result;
     }
 
-    public AuditEventDto Convert(AuditEventQuery source, AuditEventDto destination, ResolutionContext context)
+    public AuditEvent Convert(AuditEventQuery source, AuditEvent destination, ResolutionContext context)
     {
         var target = source.Event.Target;
         source.Event.Target = null;
-        var result = context.Mapper.Map<AuditEventDto>(source.Event);
+        var result = context.Mapper.Map<AuditEvent>(source.Event);
 
         result.Target = _messageTarget.Parse(target);
 

@@ -29,7 +29,9 @@ using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 namespace System.Web;
 
 public static class HttpRequestExtensions
-{      
+{
+    public static readonly string RequestTokenHeader = "Request-Token";
+
     public static Uri Url(this HttpRequest request)
     {
         return request != null ? new Uri(request.GetDisplayUrl()) : null;

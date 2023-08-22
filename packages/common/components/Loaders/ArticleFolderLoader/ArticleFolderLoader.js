@@ -12,7 +12,6 @@ const ArticleFolderLoader = ({
   className,
   style,
   showText,
-
   isVisitor,
   ...rest
 }) => {
@@ -25,27 +24,54 @@ const ArticleFolderLoader = ({
     >
       {isVisitor ? (
         <>
-          <StyledBlock>
-            <StyledRectangleLoader {...rest} />
-            <StyledRectangleLoader {...rest} />
+          <StyledBlock showText={showText}>
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
           </StyledBlock>
 
-          <StyledBlock>
-            <StyledRectangleLoader {...rest} />
+          <StyledBlock showText={showText}>
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
           </StyledBlock>
         </>
       ) : (
         <>
-          <StyledBlock>
-            <StyledRectangleLoader {...rest} />
-            <StyledRectangleLoader {...rest} />
-            <StyledRectangleLoader {...rest} />
+          <StyledBlock showText={showText}>
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
           </StyledBlock>
 
-          <StyledBlock>
-            <StyledRectangleLoader {...rest} />
-            <StyledRectangleLoader {...rest} />
-            <StyledRectangleLoader {...rest} />
+          <StyledBlock showText={showText}>
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
+            <StyledRectangleLoader
+              {...rest}
+              className="article-folder-loader"
+            />
           </StyledBlock>
         </>
       )}

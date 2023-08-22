@@ -225,7 +225,7 @@ class ClientLoadingStore {
   }
 
   get showHeaderLoader() {
-    return this.isSectionHeaderLoading || this.isArticleLoading;
+    return this.isSectionHeaderLoading || this.showArticleLoader;
   }
 
   get showFilterLoader() {

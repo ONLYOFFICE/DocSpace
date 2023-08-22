@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import moment from "moment";
 
-import { getDaysRemaining } from "@docspace/common/utils";
+import { getDaysLeft, getDaysRemaining } from "@docspace/common/utils";
 
 import api from "../api";
 import { TariffState } from "../constants";
@@ -15,14 +15,6 @@ class CurrentTariffStatusStore {
   constructor() {
     makeAutoObservable(this);
   }
-
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalTariff();
-
-    this.setIsLoaded(true);
-  };
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
@@ -56,6 +48,10 @@ class CurrentTariffStatusStore {
     return this.portalTariffStatus.portalStatus;
   }
 
+  get licenseDate() {
+    return this.portalTariffStatus.licenseDate;
+  }
+
   setPayerInfo = async () => {
     try {
       if (!this.customerId || !this.customerId?.length) {
@@ -82,12 +78,19 @@ class CurrentTariffStatusStore {
     return moment(this.dueDate).format("LL");
   }
 
+  isValidDate = (date) => {
+    return moment(date).year() !== 9999;
+  };
   get isPaymentDateValid() {
-    moment.locale(authStore.language);
-    if (this.dueDate === null) return "";
-    return moment(this.dueDate).year() !== 9999;
-  }
+    if (this.dueDate === null) return false;
 
+    return this.isValidDate(this.dueDate);
+  }
+  get isLicenseDateExpired() {
+    if (!this.isPaymentDateValid) return;
+
+    return moment() > moment(this.dueDate);
+  }
   get gracePeriodEndDate() {
     moment.locale(authStore.language);
     if (this.delayDueDate === null) return "";
@@ -100,17 +103,29 @@ class CurrentTariffStatusStore {
     return getDaysRemaining(this.delayDueDate);
   }
 
+  get isLicenseExpiring() {
+    if (!this.dueDate || !authStore.isEnterprise) return;
+
+    const days = getDaysLeft(this.dueDate);
+
+    if (days <= 7) return true;
+
+    return false;
+  }
+  get trialDaysLeft() {
+    if (!this.dueDate) return;
+
+    return getDaysLeft(this.dueDate);
+  }
+
+  setPortalTariffValue = async (res) => {
+    this.portalTariffStatus = res;
+
+    this.setIsLoaded(true);
+  };
+
   setPortalTariff = async () => {
-    let refresh = false;
-
-    if (window.location.search === "?complete=true") {
-      refresh = true;
-    }
-
-    const res = await api.portal.getPortalTariff(refresh);
-
-    if (refresh)
-      window.history.replaceState({}, document.title, window.location.pathname);
+    const res = await api.portal.getPortalTariff();
 
     if (!res) return;
 

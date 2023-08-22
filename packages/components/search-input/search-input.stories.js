@@ -5,6 +5,12 @@ import Button from "../button";
 export default {
   title: "Components/SearchInput",
   component: SearchInput,
+  parameters: {
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/ZiW5KSwb4t7Tj6Nz5TducC/UI-Kit-DocSpace-1.0.0?type=design&node-id=58-2238&mode=design&t=TBNCKMQKQMxr44IZ-0",
+    },
+  },
   argTypes: {
     onChange: { action: "onChange" },
   },

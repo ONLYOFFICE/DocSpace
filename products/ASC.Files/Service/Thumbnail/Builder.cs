@@ -185,14 +185,14 @@ public class Builder<T>
 
         try
         {
-            using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+            await using (var fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
             {
                 await streamFile.CopyToAsync(fileStream);
             }
 
             await _fFmpegService.CreateThumbnail(tempFilePath, thumbPath);
 
-            using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
+            await using (var streamThumb = new FileStream(thumbPath, FileMode.Open, FileAccess.ReadWrite, System.IO.FileShare.Read))
             {
                 await CropAsync(fileDao, file, streamThumb);
             }
@@ -326,7 +326,7 @@ public class Builder<T>
 
         var httpClient = _clientFactory.CreateClient();
         using var response = httpClient.Send(request);
-        using (var stream = await response.Content.ReadAsStreamAsync())
+        await using (var stream = await response.Content.ReadAsStreamAsync())
         {
             using (var sourceImg = await Image.LoadAsync(stream))
             {
@@ -367,7 +367,7 @@ public class Builder<T>
     {
         _logger.DebugCropImage(file.Id.ToString());
 
-        using (var stream = await fileDao.GetFileStreamAsync(file))
+        await using (var stream = await fileDao.GetFileStreamAsync(file))
         {
             await CropAsync(fileDao, file, stream);
         }
@@ -406,7 +406,7 @@ public class Builder<T>
                                       AnchorPositionMode anchorPositionMode = AnchorPositionMode.Center)
     {
         using var targetImg = GetImageThumbnail(sourceImg, width, height, resizeMode, anchorPositionMode);
-        using var targetStream = _tempStream.Create();
+        await using var targetStream = _tempStream.Create();
 
         switch (_global.ThumbnailExtension)
         {

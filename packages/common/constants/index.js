@@ -60,6 +60,25 @@ export const AccountLoginType = Object.freeze({
   STANDART: "2",
 });
 /**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const ApplyFilterOption = Object.freeze({
+  All: "All",
+  Files: "Files",
+  Folder: "Folder",
+});
+/**
+ * Enum for files selector filter.
+ * @readonly
+ */
+export const FilesSelectorFilterTypes = Object.freeze({
+  DOCX: "DOCX",
+  IMG: "IMG",
+  GZ: "GZ",
+  OFORM: "OFORM",
+});
+/**
  * Enum for filter subject.
  * @readonly
  */
@@ -113,6 +132,7 @@ export const RoomsType = Object.freeze({
   EditingRoom: 2,
   // ReviewRoom: 3, //TODO: Restore when certs will be done
   // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
+  PublicRoom: 6,
   CustomRoom: 5,
 });
 
@@ -128,6 +148,7 @@ export const RoomsTypeTranslations = Object.freeze({
   3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
+  6: "Files:PublicRoom",
 });
 /**
  * Enum for room provider type.

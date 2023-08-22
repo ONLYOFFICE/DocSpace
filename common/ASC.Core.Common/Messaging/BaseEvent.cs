@@ -24,9 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Profile = AutoMapper.Profile;
+
 namespace ASC.AuditTrail.Models;
 
-public class BaseEvent : IMapFrom<LoginEvent>
+public class BaseEvent : IMapFrom<DbLoginEvent>
 {
     public int Id { get; set; }
     public int TenantId { get; set; }
@@ -36,6 +38,12 @@ public class BaseEvent : IMapFrom<LoginEvent>
 
     [Event("IpCol")]
     public string IP { get; set; }
+
+    [Event("CountryCol")]
+    public string Country { get; set; }
+
+    [Event("CityCol")]
+    public string City { get; set; }
 
     [Event("BrowserCol")]
     public string Browser { get; set; }
@@ -57,7 +65,7 @@ public class BaseEvent : IMapFrom<LoginEvent>
 
     public virtual void Mapping(Profile profile)
     {
-        profile.CreateMap<LoginEvent, BaseEvent>()
+        profile.CreateMap<DbLoginEvent, BaseEvent>()
             .ForMember(r => r.IP, opt => opt.MapFrom<BaseEventTypeIpResolver>())
             .ForMember(r => r.Date, opt => opt.MapFrom<BaseEventTypeDateResolver>())
             ;

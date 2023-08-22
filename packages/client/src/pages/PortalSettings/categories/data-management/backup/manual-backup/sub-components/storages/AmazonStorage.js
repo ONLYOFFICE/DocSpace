@@ -8,11 +8,8 @@ import { ThirdPartyStorages } from "@docspace/common/constants";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const {
-      selectedStorage,
-      setCompletedFormFields,
-      storageRegions,
-    } = this.props;
+    const { selectedStorage, setCompletedFormFields, storageRegions } =
+      this.props;
 
     const basicValues = AmazonSettings.formNames(storageRegions[0].systemName);
 
@@ -50,6 +47,7 @@ class AmazonStorage extends React.Component {
 
         <div className="manual-backup_buttons">
           <Button
+            id="create-copy"
             label={t("Common:CreateCopy")}
             onClick={onMakeCopyIntoStorage}
             primary

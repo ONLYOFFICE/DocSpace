@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EmailSettings } from "../utils/email";
 import EmailInput from "./";
 
@@ -46,6 +46,11 @@ const Template = ({
     allowName,
     allowLocalDomainName,
   });
+
+  useEffect(() => {
+    setEmailValue(rest.value);
+  }, [rest.value]);
+
   return (
     <div style={{ margin: "7px" }}>
       <EmailInput

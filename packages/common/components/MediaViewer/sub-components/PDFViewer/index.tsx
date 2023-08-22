@@ -121,6 +121,8 @@ function PDFViewer({
 
     fetch(src)
       .then((value) => {
+        if (!value.ok) throw new Error(value.statusText);
+
         return value.blob();
       })
       .then((value) => {
