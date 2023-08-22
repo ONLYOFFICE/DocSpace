@@ -49,9 +49,17 @@ const template: Template = (
       });
   }
 
+  const initialLoginStateStringify = JSON.stringify(initLoginState);
+
+  const initialLoginStateString = initialLoginStateStringify.includes(
+    "</script>"
+  )
+    ? initialLoginStateStringify.replace(/<\/script>/g, "<\\/script>")
+    : initialLoginStateStringify;
+
   const scripts = `   
     <script id="__ASC_INITIAL_LOGIN_STATE__">
-      window.__ASC_INITIAL_LOGIN_STATE__ = ${JSON.stringify(initLoginState)}
+      window.__ASC_INITIAL_LOGIN_STATE__ = ${initialLoginStateString}
     </script>
     <script id="__ASC_INITIAL_LOGIN_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
