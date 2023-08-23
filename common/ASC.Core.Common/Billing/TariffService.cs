@@ -195,7 +195,7 @@ public class TariffService : ITariffService
             {
                 try
                 {
-                    var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId));
+                    var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId), refresh);
                     if (currentPayments.Length == 0)
                     {
                         throw new BillingNotFoundException("Empty PaymentLast");
