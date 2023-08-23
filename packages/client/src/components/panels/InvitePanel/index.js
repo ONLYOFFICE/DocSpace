@@ -54,6 +54,7 @@ const InvitePanel = ({
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
   const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
   const [activeLink, setActiveLink] = useState({});
+  const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
 
   const inputsRef = useRef();
   const invitePanelBodyRef = useRef();
@@ -247,6 +248,8 @@ const InvitePanel = ({
           roomUsers={roomUsers}
           roomType={roomType}
           inputsRef={inputsRef}
+          addUsersPanelVisible={addUsersPanelVisible}
+          setAddUsersPanelVisible={setAddUsersPanelVisible}
         />
         {hasInvitedUsers && (
           <ItemsList
@@ -277,7 +280,11 @@ const InvitePanel = ({
   ]);
 
   const invitePanelComponent = (
-    <StyledInvitePanel hasInvitedUsers={hasInvitedUsers}>
+    <StyledInvitePanel
+      hasInvitedUsers={hasInvitedUsers}
+      scrollAllPanelContent={scrollAllPanelContent}
+      addUsersPanelVisible={addUsersPanelVisible}
+    >
       <Backdrop
         onClick={onClose}
         visible={visible}

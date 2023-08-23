@@ -34,15 +34,28 @@ const StyledInvitePanel = styled.div`
       padding-right: 0px !important;
     }
 
-    ${!isMobileOnly &&
+    ${(props) =>
+      !props.addUsersPanelVisible &&
+      css`
+        .trackYVisible {
+          .scroller {
+            margin-right: ${isMobileOnly
+              ? `-20px !important`
+              : `-17px !important`};
+          }
+        }
+      `}
+  }
+
+  ${(props) =>
+    !props.scrollAllPanelContent &&
     css`
       .trackYVisible {
         .scroller {
-          margin-right: -17px !important;
+          margin-right: -20px !important;
         }
       }
     `}
-  }
 `;
 
 const ScrollList = styled.div`

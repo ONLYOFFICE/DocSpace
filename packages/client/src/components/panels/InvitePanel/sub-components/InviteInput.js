@@ -37,11 +37,12 @@ const InviteInput = ({
   t,
   isOwner,
   inputsRef,
+  addUsersPanelVisible,
+  setAddUsersPanelVisible,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [searchPanelVisible, setSearchPanelVisible] = useState(false);
-  const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
