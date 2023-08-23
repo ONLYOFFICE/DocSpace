@@ -140,7 +140,10 @@ const PeopleSelector = ({
     const pageCount = 100;
 
     setIsNextPageLoading(true);
-    setIsLoading(true);
+
+    if (startIndex === 0) {
+      setIsLoading(true);
+    }
 
     const currentFilter =
       typeof filter === "function" ? filter() : filter ?? Filter.getDefault();
@@ -179,7 +182,7 @@ const PeopleSelector = ({
           : response.total - totalDifferent;
 
         setHasNextPage(newItems.length < newTotal);
-        setItemsList(newItems);
+        setItemsList(tempItems);
         setTotal(newTotal);
 
         setIsNextPageLoading(false);
