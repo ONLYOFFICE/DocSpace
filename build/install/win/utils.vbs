@@ -409,7 +409,7 @@ Function EnterpriseConfigure
 
     strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\ONLYOFFICE DocSpace Community " & Session.Property("ProductVersion") 
     strValueName = "DisplayName"
-    strNewDisplayName = "ONLYOFFICE DocSpace Enterprise"
+    strNewDisplayName = Session.Property("ProductName")
 
     Set registry = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
     registry.SetStringValue HKLM, strKeyPath, strValueName, strNewDisplayName
