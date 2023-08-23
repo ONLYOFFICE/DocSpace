@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,30 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.MessagingSystem.EF.Context;
+namespace ASC.AuditTrail.Models;
 
-public class MessagesContext : DbContext
+public class AuditEvent : BaseEvent, IMapFrom<AuditEventQuery>
 {
-    public DbSet<AuditEvent> AuditEvents { get; set; }
-    public DbSet<LoginEvent> LoginEvents { get; set; }
-    public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
-    public DbSet<DbTenant> Tenants { get; set; }
-    public DbSet<User> Users { get; set; }
+    public string Initiator { get; set; }
 
-    public MessagesContext(DbContextOptions<MessagesContext> options) : base(options)
+    [Event("ActionIdCol", 33)]
+    public int Action { get; set; }
+
+    [Event("ActionTypeCol", 30)]
+    public string ActionTypeText { get; set; }
+
+    [Event("ProductCol", 31)]
+    public string Product { get; set; }
+
+    [Event("ModuleCol", 32)]
+    public string Module { get; set; }
+
+    [Event("TargetIdCol", 34)]
+    public MessageTarget Target { get; set; }
+    public string Context { get; set; }
+
+    public override void Mapping(Profile profile)
     {
+        profile.CreateMap<DbAuditEvent, AuditEvent>();
 
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        ModelBuilderWrapper
-            .From(modelBuilder, Database)
-            .AddAuditEvent()
-            .AddLoginEvents()
-            .AddUser()
-            .AddWebstudioSettings()
-            .AddDbTenant()
-            .AddDbFunctions();
+        profile.CreateMap<AuditEventQuery, AuditEvent>()
+            .ConvertUsing<EventTypeConverter>();
     }
 }

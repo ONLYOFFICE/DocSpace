@@ -4,8 +4,6 @@ const SHOW_LOADER_TIMER = 500;
 const MIN_LOADER_TIMER = 500;
 
 class ClientLoadingStore {
-  publicRoomStore;
-
   isLoaded = false;
   firstLoad = true;
 
@@ -33,10 +31,8 @@ class ClientLoadingStore {
     body: null,
   };
 
-  constructor(publicRoomStore) {
+  constructor() {
     makeAutoObservable(this);
-
-    this.publicRoomStore = publicRoomStore;
   }
 
   setIsLoaded = (isLoaded) => {
@@ -217,7 +213,7 @@ class ClientLoadingStore {
 
   get isLoading() {
     return (
-      (this.isArticleLoading && !this.publicRoomStore.isPublicRoom) ||
+      this.isArticleLoading ||
       this.pendingSectionLoaders.header ||
       this.pendingSectionLoaders.filter ||
       this.pendingSectionLoaders.body
@@ -225,7 +221,6 @@ class ClientLoadingStore {
   }
 
   get showArticleLoader() {
-    if (this.publicRoomStore.isPublicRoom) return false;
     return this.isArticleLoading;
   }
 
