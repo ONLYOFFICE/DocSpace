@@ -9,7 +9,7 @@ import Button from "@docspace/components/button";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 import ToggleButton from "@docspace/components/toggle-button";
-
+import { isMobileOnly } from "react-device-detect";
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
 import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
@@ -34,11 +34,14 @@ const StyledInvitePanel = styled.div`
       padding-right: 0px !important;
     }
 
-    .trackYVisible {
-      .scroller {
-        margin-right: -17px !important;
+    ${!isMobileOnly &&
+    css`
+      .trackYVisible {
+        .scroller {
+          margin-right: -17px !important;
+        }
       }
-    }
+    `}
   }
 `;
 

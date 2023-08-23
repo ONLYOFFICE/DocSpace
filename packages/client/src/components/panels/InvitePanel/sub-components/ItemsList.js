@@ -82,7 +82,13 @@ const ItemsList = ({
         )
       : heightList - FOOTER_HEIGHT;
 
-    setBodyHeight(isOpenItemAccess ? calculatedHeight : totalHeightItems);
+    const finalHeight = scrollAllPanelContent
+      ? isOpenItemAccess
+        ? calculatedHeight
+        : totalHeightItems
+      : calculatedHeight;
+
+    setBodyHeight(finalHeight);
     setOffsetTop(bodyRef.current.offsetTop);
 
     if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
