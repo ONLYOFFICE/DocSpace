@@ -140,13 +140,13 @@ public class SettingsController : ControllerBase
             });
         }
 
-        var clientIP = CommonMethods.GetClientIp();
+        var currentHostIps = await CommonMethods.GetHostIpsAsync();
 
         var hostIps = await Dns.GetHostAddressesAsync(model.HostName);
 
         return Ok(new
         {
-            value = Array.IndexOf(hostIps, clientIP) > -1
+            value = currentHostIps.Any(ip => Array.IndexOf(hostIps, ip) > -1)
         });
     }
 

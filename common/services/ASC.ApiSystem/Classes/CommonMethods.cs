@@ -252,6 +252,13 @@ public class CommonMethods
         //return null;
     }
 
+    public async Task<IEnumerable<string>> GetHostIpsAsync()
+    {
+        var hostName = Dns.GetHostName();
+        var hostEntry = await Dns.GetHostEntryAsync(hostName);
+        return hostEntry.AddressList.Select(ip => ip.ToString());
+    }
+
     public bool ValidateRecaptcha(string response, RecaptchaType recaptchaType, string ip)
     {
         try
