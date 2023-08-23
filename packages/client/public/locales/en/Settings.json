@@ -35,6 +35,7 @@
   "AutoSavePeriod": "Autosave period",
   "AutoSavePeriodHelp": "The time shown below corresponds to the time zone set in the DocSpace.",
   "Backup": "Backup",
+  "BetaLabel": "BETA",
   "BackupCreatedError": "An error has been encountered. Please contact your administrator.",
   "BackupCreatedSuccess": "The backup copy has been successfully created.",
   "BackupList": "Backup List",

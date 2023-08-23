@@ -83,6 +83,7 @@ const SectionFilterContent = ({
   fetchPeople,
   filter,
   groups,
+  standalone,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
@@ -293,7 +294,7 @@ const SectionFilterContent = ({
     filterOptions.push(...statusItems);
     filterOptions.push(...typeItems);
     // filterOptions.push(...roleItems);
-    filterOptions.push(...accountItems);
+    if (!standalone) filterOptions.push(...accountItems);
     // filterOptions.push(...roomItems);
     filterOptions.push(...accountLoginTypeItems);
 
@@ -551,7 +552,8 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { loadingStore, filterStore, usersStore, groupsStore, viewAs } =
       peopleStore;
-    const { userStore, isLoaded, isAdmin } = auth;
+    const { userStore, isLoaded, isAdmin, settingsStore } = auth;
+    const { standalone } = settingsStore;
     const { user } = userStore;
     const { groups } = groupsStore;
     const { getUsersList: fetchPeople } = usersStore;
@@ -567,6 +569,7 @@ export default withRouter(
       filter,
       setIsLoading,
       viewAs,
+      standalone,
     };
   })(
     observer(

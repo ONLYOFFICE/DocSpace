@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Furnizorul nu este conectat la contul dvs.",
   "PunycodeDomain": "Domeniile Punycode nu sunt acceptate",
   "PunycodeLocalPart": "Partea locală Punycode nu este acceptată",
+  "QuotaPaidUserLimitError": "S-a atins limita maximă de utilizatori cu plată.",
   "ReconnectStorage": "Reconectați spaţiu de stocare",
   "RecoverDescribeYourProblemPlaceholder": "Descrieți problema",
   "RecoverTitle": "Restabilirea accesului",

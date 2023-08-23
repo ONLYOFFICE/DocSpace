@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Provayder sizin hesabınızla əlaqəli deyil",
   "PunycodeDomain": "Domen icazəsi olmayan simvollardan ibarətdir",
   "PunycodeLocalPart": "Lokal yolda icazə verilməyən simvollardan istifadə olunur",
+  "QuotaPaidUserLimitError": "Ödənişli istifadəçi limitinə çatıldı.",
   "ReconnectStorage": "Yaddaşı yenidən birləşdirin",
   "RecoverDescribeYourProblemPlaceholder": "Probleminizi təsvir edin",
   "RecoverTitle": "Girişin bərpası",

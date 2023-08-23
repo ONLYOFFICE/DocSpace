@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Provider is niet verbonden met uw account",
   "PunycodeDomain": "Punycode domeinen worden niet ondersteund",
   "PunycodeLocalPart": "Punycode lokaal deel wordt niet ondersteund",
+  "QuotaPaidUserLimitError": "De limiet voor betaalde gebruikers is bereikt.",
   "ReconnectStorage": "Opslag opnieuw aansluiten",
   "RecoverDescribeYourProblemPlaceholder": "Beschrijf uw probleem",
   "RecoverTitle": "Toegang herstel",

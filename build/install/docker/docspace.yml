@@ -165,7 +165,7 @@ services:
       - "5013"
     healthcheck:
      <<: *x-healthcheck
-     test: curl --fail http://${SERVICE_DOCEDITOR}/health/ || exit 1
+     test: curl --fail http://${SERVICE_DOCEDITOR}/health || exit 1
 
   onlyoffice-login:
     <<: *x-service-base
@@ -175,7 +175,7 @@ services:
       - "5011"
     healthcheck:
      <<: *x-healthcheck
-     test: curl --fail http://${SERVICE_LOGIN}/health/ || exit 1
+     test: curl --fail http://${SERVICE_LOGIN}/health || exit 1
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
@@ -222,6 +222,7 @@ services:
       - SERVICE_LOGIN=${SERVICE_LOGIN}
       - SERVICE_HELTHCHECKS=${SERVICE_HELTHCHECKS}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
+      - REDIS_HOST=${REDIS_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
       - proxy_log:/var/log/nginx

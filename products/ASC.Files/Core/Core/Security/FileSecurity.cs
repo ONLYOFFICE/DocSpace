@@ -54,6 +54,7 @@ public class FileSecurity : IFileSecurity
     public readonly FileShare DefaultMyShare = FileShare.Restrict;
     public readonly FileShare DefaultCommonShare = FileShare.Read;
     public readonly FileShare DefaultPrivacyShare = FileShare.Restrict;
+    public readonly FileShare DefaultArchiveShare = FileShare.Restrict;
     public readonly FileShare DefaultVirtualRoomsShare = FileShare.Restrict;
 
     public static readonly Dictionary<FolderType, HashSet<FileShare>> AvailableRoomRights = new()
@@ -935,18 +936,16 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        var defaultShare = userId == FileConstant.ShareLinkId
-                ? FileShare.Restrict
-                : e.RootFolderType == FolderType.VirtualRooms
-                ? DefaultVirtualRoomsShare
-                : e.RootFolderType == FolderType.USER
-                ? DefaultMyShare
-            : e.RootFolderType == FolderType.Privacy
-                ? DefaultPrivacyShare
-                : DefaultCommonShare;
+        var defaultShare =
+            userId == FileConstant.ShareLinkId ? FileShare.Restrict :
+            e.RootFolderType == FolderType.VirtualRooms ? DefaultVirtualRoomsShare :
+            e.RootFolderType == FolderType.USER ? DefaultMyShare :
+            e.RootFolderType == FolderType.Privacy ? DefaultPrivacyShare :
+            e.RootFolderType == FolderType.Archive ? DefaultArchiveShare :
+            DefaultCommonShare;
 
         e.Access = ace?.Share ?? defaultShare;
-        e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
+        e.Access = e.RootFolderType is FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
         if (ace is { IsLink: false } && !isRoom && e.RootFolderType is FolderType.VirtualRooms or FolderType.Archive && e.Access != FileShare.None)
         {
