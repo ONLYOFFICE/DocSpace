@@ -182,7 +182,7 @@ const PeopleSelector = ({
           : response.total - totalDifferent;
 
         setHasNextPage(newItems.length < newTotal);
-        setItemsList(tempItems);
+        setItemsList(newItems);
         setTotal(newTotal);
 
         setIsNextPageLoading(false);
