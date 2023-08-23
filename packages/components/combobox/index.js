@@ -133,6 +133,7 @@ class ComboBox extends React.Component {
       isLoading,
       isNoFixedHeightOptions,
       hideMobileView,
+      forceCloseClickOutside,
     } = this.props;
     const { tabIndex, ...props } = this.props;
     const { isOpen, selectedOption } = this.state;
@@ -231,6 +232,7 @@ class ComboBox extends React.Component {
             withBackground={withBackground}
             isMobileView={isMobileView && !disableMobileView}
             isNoFixedHeightOptions={isNoFixedHeightOptions}
+            forceCloseClickOutside={forceCloseClickOutside}
           >
             {advancedOptions
               ? advancedOptions

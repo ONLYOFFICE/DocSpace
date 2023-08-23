@@ -107,6 +107,7 @@ const Footer = React.memo(
               showDisabledItems
               directionX={"right"}
               directionY={"top"}
+              forceCloseClickOutside={true}
             />
           )}
 
