@@ -34,11 +34,9 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
-          if [[ $GITHUB_REF_NAME =~ feature/(.*) ]]; then
+          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/\|hotfix.*\///; s/-build-action$//').${{github.run_number}}
+          if [[ $GITHUB_REF_NAME =~ feature/(.*)-build-action ]]; then
             DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/(.*)-build-action|\1-action|")
-          else
-            TAG=${{github.run_number}}
-            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///').$TAG
           fi
           export DOCKER_TAG       
 
