@@ -18,10 +18,13 @@ const Spaces = () => {
   const { isConnected, domainDialogVisible, createPortalDialogVisible } =
     spacesStore;
   const { setDocumentTitle } = authStore;
-  const { portals } = authStore.settingsStore;
+  const { portals, getAllPortals } = authStore.settingsStore;
 
   React.useEffect(() => {
     setDocumentTitle(t("Common:Spaces"));
+    if (portals.length === 0) {
+      getAllPortals();
+    }
   }, []);
 
   if (!(portals.length > 0))
