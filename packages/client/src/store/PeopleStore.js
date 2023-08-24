@@ -99,7 +99,7 @@ class PeopleStore {
   };
 
   onChangeType = (e) => {
-    const action = e?.action ? e.action : e?.target?.dataset?.action;
+    const action = e?.action ? e.action : e?.currentTarget?.dataset?.action;
 
     const { getUsersToMakeEmployees } = this.selectionStore;
 
