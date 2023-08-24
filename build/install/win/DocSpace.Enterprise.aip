@@ -617,6 +617,7 @@
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_VerifyPrereq" Type="1" Source="Prereq.dll" Target="VerifyPrereq"/>
+    <ROW Action="EnterpriseConfigure" Type="6" Source="utils.vbs" Target="EnterpriseConfigure"/>
     <ROW Action="MySQLConfigure" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="PostgreSqlConfigure" Type="4102" Source="utils.vbs" Target="PostgreSqlConfigure"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
@@ -692,6 +693,7 @@
     <ROW Action="StartWebApi" Condition="( NOT Installed )" Sequence="1504"/>
     <ROW Action="AI_DATA_SETTER_10" Condition="( NOT Installed )" Sequence="1503"/>
     <ROW Action="Set_LICENSE_PATH" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) OR ( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) AND UPGRADINGPRODUCTCODE ) )" Sequence="201"/>
+    <ROW Action="EnterpriseConfigure" Condition="( NOT Installed ) AND ( DOCSPACE_INSTALLED )" Sequence="6601"/>
     <ATTRIBUTE name="RegisterProduct" value="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
