@@ -5,7 +5,7 @@ on:
     branches: 
       - 'hotfix/v**'
       - 'release/v**'
-      - 'feature/*-build-action'
+      - 'feature/*-git-action'
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
@@ -34,10 +34,7 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
-          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/\|hotfix.*\///; s/-build-action$//').${{github.run_number}}
-          if [[ $GITHUB_REF_NAME =~ feature/(.*)-build-action ]]; then
-            DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed -E "s|feature/(.*)-build-action|\1-action|")
-          fi
+          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///; s/-git-action$//').${{github.run_number}}
           export DOCKER_TAG       
 
           docker buildx bake -f build.yml \
