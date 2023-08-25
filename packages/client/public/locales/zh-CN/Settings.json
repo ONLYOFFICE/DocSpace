@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "备份副本已成功创建。",
   "BackupList": "备份列表",
   "BackupListWarningText": "若您从列表中删除任何项目，其相应的文件也将被删除。此操作无法撤消。若想删除所有文件，请使用以下链接：",
+  "BetaLabel": "测试版（BETA)",
   "Branding": "品牌",
   "BrandingSectionDescription": "在协作空间界面中展示您的公司信息，添加外部资源链接与邮件地址。",
   "BrandingSubtitle": "为用户提供更好的品牌体验",

@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "La copie de sauvegarde a été créée avec succès.",
   "BackupList": "Liste des sauvegardes",
   "BackupListWarningText": "Si vous supprimez certains éléments de la liste, leurs fichiers correspondants seront également supprimés. Cette action ne peut être annulée. Pour supprimer tous les fichiers, utilisez le lien:",
+  "BetaLabel": "BETA",
   "Branding": "Personnalisation",
   "BrandingSectionDescription": "Précisez les informations relatives à votre entreprise, ajoutez des liens vers des ressources externes et des adresses e-mail affichées dans l’interface de DocSpace.",
   "BrandingSubtitle": "Utilisez cette option pour offrir aux utilisateurs une expérience conforme à la marque.",
