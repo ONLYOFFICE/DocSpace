@@ -76,6 +76,10 @@
 %config %{_sysconfdir}/nginx/includes/*
 %config %{_sysconfdir}/nginx/conf.d/*
 %attr(744, root, root) %{_bindir}/%{product}-letsencrypt
+%config %{_sysconfdir}/onlyoffice/%{product}/nginx/nginx.conf.template
+%dir %{_sysconfdir}/onlyoffice/
+%dir %{_sysconfdir}/onlyoffice/%{product}/
+%dir %{_sysconfdir}/onlyoffice/%{product}/nginx/
 %{buildpath}/public/
 %{buildpath}/client/
 

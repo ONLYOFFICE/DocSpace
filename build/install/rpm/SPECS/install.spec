@@ -62,4 +62,5 @@ cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.HealthChecks.UI/servi
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Web.Studio/service/* "%{buildroot}%{buildpath}/studio/ASC.Web.Studio/"
 cp -rf %{_builddir}/%{sourcename}/build/install/docker/config/nginx/onlyoffice-proxy.conf "%{buildroot}%{_sysconfdir}/nginx/conf.d/onlyoffice-proxy.conf"
 cp -rf %{_builddir}/%{sourcename}/build/install/docker/config/nginx/onlyoffice-proxy-ssl.conf "%{buildroot}%{_sysconfdir}/nginx/conf.d/onlyoffice-proxy-ssl.conf.template"
+cp -rf %{_builddir}/%{sourcename}/build/install/docker/config/nginx/templates/nginx.conf.template "%{buildroot}%{_sysconfdir}/onlyoffice/%{product}/nginx/nginx.conf.template"
 cp -rf %{_builddir}/%{sourcename}/build/install/docker/letsencrypt/%{product}-letsencrypt "%{buildroot}%{_bindir}/%{product}-letsencrypt"
