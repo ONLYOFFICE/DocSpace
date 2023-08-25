@@ -97,6 +97,7 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
+    selectFileDialogVisible,
     showArticleLoader,
     isFavoritesFolder,
     isRecentFolder,
@@ -465,7 +466,10 @@ const ArticleMainButtonContent = (props) => {
   let mainButtonVisible = true;
 
   if (isMobileOnly) {
-    mainButtonVisible = moveToPanelVisible || copyPanelVisible ? false : true;
+    mainButtonVisible =
+      moveToPanelVisible || copyPanelVisible || selectFileDialogVisible
+        ? false
+        : true;
   }
 
   if (showArticleLoader)
@@ -570,6 +574,7 @@ export default inject(
       setInviteUsersWarningDialogVisible,
       copyPanelVisible,
       moveToPanelVisible,
+      selectFileDialogVisible,
     } = dialogsStore;
 
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
@@ -600,6 +605,7 @@ export default inject(
       startUpload,
 
       setSelectFileDialogVisible,
+      selectFileDialogVisible,
       setInvitePanelOptions,
 
       currentFolderId,
