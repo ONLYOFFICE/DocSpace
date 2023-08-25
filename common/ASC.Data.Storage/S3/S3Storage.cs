@@ -55,7 +55,7 @@ public class S3Storage : BaseStorage
     private bool _cdnEnabled;
     private string _cdnKeyPairId;
     private string _cdnPrivateKeyPath;
-    private string _cdnDistributionDomain;
+    public string CdnDistributionDomain { get; private set; }
     private string _subDir = "";
 
     private EncryptionMethod _encryptionMethod = EncryptionMethod.None;
@@ -159,7 +159,7 @@ public class S3Storage : BaseStorage
 
         var proto = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? "https" : "http";
 
-        var baseUrl = $"{proto}://{_cdnDistributionDomain}/{MakePath(domain, path)}";
+        var baseUrl = $"{proto}://{CdnDistributionDomain}/{MakePath(domain, path)}";
 
         var uriBuilder = new UriBuilder(baseUrl)
         {
@@ -1051,7 +1051,7 @@ public class S3Storage : BaseStorage
             {
                 _cdnKeyPairId = props["cdn_keyPairId"];
                 _cdnPrivateKeyPath = props["cdn_privateKeyPath"];
-                _cdnDistributionDomain = props["cdn_distributionDomain"];
+                CdnDistributionDomain = props["cdn_distributionDomain"];
             }
         }
 
@@ -1109,7 +1109,7 @@ public class S3Storage : BaseStorage
 
     private Task InvalidateCloudFrontAsync(params string[] paths)
     {
-        if (!_cdnEnabled || string.IsNullOrEmpty(_cdnDistributionDomain))
+        if (!_cdnEnabled || string.IsNullOrEmpty(CdnDistributionDomain))
         {
             return Task.CompletedTask;
         }
@@ -1122,7 +1122,7 @@ public class S3Storage : BaseStorage
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
-            DistributionId = _cdnDistributionDomain,
+            DistributionId = CdnDistributionDomain,
             InvalidationBatch = new InvalidationBatch
             {
                 CallerReference = Guid.NewGuid().ToString(),
