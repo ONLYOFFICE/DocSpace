@@ -53,10 +53,6 @@ class DropDown extends React.PureComponent {
   }
 
   componentDidMount() {
-    if (this.props.forceCloseClickOutside) {
-      window.addEventListener("click", this.onClickOutsideAccessRightSelect);
-    }
-
     if (this.props.open) {
       this.props.enableOnClickOutside();
       if (this.props.isDefaultMode) {
@@ -67,10 +63,6 @@ class DropDown extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.props.forceCloseClickOutside) {
-      window.removeEventListener("click", this.onClickOutsideAccessRightSelect);
-    }
-
     this.props.disableOnClickOutside();
     this.unbindDocumentResizeListener();
   }
@@ -89,11 +81,6 @@ class DropDown extends React.PureComponent {
       }
     }
   }
-
-  onClickOutsideAccessRightSelect = (e) => {
-    if (!this.props.open) return;
-    if (!this.dropDownRef.current.contains(e.target)) this.toggleDropDown(e);
-  };
 
   handleClickOutside = (e) => {
     if (e.type !== "touchstart") {
@@ -402,8 +389,11 @@ class DropDownContainer extends React.Component {
       isAside,
       withBackground,
       eventTypes,
+      forceCloseClickOutside,
     } = this.props;
-    const eventTypesProp = isMobile
+    const eventTypesProp = forceCloseClickOutside
+      ? {}
+      : isMobile
       ? { eventTypes: ["click, touchend"] }
       : eventTypes
       ? { eventTypes }
