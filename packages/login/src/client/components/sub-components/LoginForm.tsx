@@ -53,9 +53,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
-    IS_ROOMS_MODE
-  );
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
+    useState(IS_ROOMS_MODE);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -311,7 +310,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                     className="login-checkbox"
                     isChecked={isChecked}
                     onChange={onChangeCheckbox}
-                    label={t("Remember")}
+                    label={t("Common:Remember")}
                     helpButton={
                       !checkIsSSR() && (
                         <HelpButton
