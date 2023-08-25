@@ -48,6 +48,15 @@ public class IpRestrictionsController : BaseSettingsController
         _iPRestrictionsService = iPRestrictionsService;
     }
 
+    /// <summary>
+    /// Returns the IP portal restrictions.
+    /// </summary>
+    /// <short>Get the IP portal restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <returns type="ASC.IPSecurity.IPRestriction, ASC.IPSecurity">List of IP restrictions parameters</returns>
+    /// <path>api/2.0/settings/iprestrictions</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("iprestrictions")]
     public IEnumerable<IPRestriction> GetIpRestrictions()
     {
@@ -55,6 +64,16 @@ public class IpRestrictionsController : BaseSettingsController
         return _iPRestrictionsService.Get(Tenant.Id);
     }
 
+    /// <summary>
+    /// Saves the new portal IP restrictions specified in the request.
+    /// </summary>
+    /// <short>Save the IP restrictions</short>
+    /// <category>IP restrictions</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api" name="inDto">IP restrictions request parameters</param>
+    /// <returns type="ASC.IPSecurity.IpRestrictionBase, ASC.IPSecurity">List of updated IP restrictions</returns>
+    /// <path>api/2.0/settings/iprestrictions</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("iprestrictions")]
     public IEnumerable<IpRestrictionBase> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
@@ -62,6 +81,14 @@ public class IpRestrictionsController : BaseSettingsController
         return _iPRestrictionsService.Save(inDto.IpRestrictions, Tenant.Id);
     }
 
+    /// <summary>
+    /// Returns the IP restriction settings.
+    /// </summary>
+    /// <short>Get the IP restriction settings</short>
+    /// <category>IP restrictions</category>
+    /// <returns type="ASC.IPSecurity.IPRestrictionsSettings, ASC.IPSecurity">IP restriction settings</returns>
+    /// <path>api/2.0/settings/iprestrictions/settings</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("iprestrictions/settings")]
     public IPRestrictionsSettings ReadIpRestrictionsSettings()
     {
@@ -70,6 +97,15 @@ public class IpRestrictionsController : BaseSettingsController
         return _settingsManager.Load<IPRestrictionsSettings>();
     }
 
+    /// <summary>
+    /// Updates the IP restriction settings with a parameter specified in the request.
+    /// </summary>
+    /// <short>Update the IP restriction settings</short>
+    /// <category>IP restrictions</category>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api" name="inDto">New IP restriction settings</param>
+    /// <returns type="ASC.IPSecurity.IPRestrictionsSettings, ASC.IPSecurity">Updated IP restriction settings</returns>
+    /// <path>api/2.0/settings/iprestrictions/settings</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("iprestrictions/settings")]
     public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {

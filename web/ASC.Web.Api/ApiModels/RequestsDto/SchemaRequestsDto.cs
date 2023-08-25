@@ -26,17 +26,51 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SchemaRequestsDto
 {
+    /// <summary>Team template ID</summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
+
+    /// <summary>Team template name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
+
+    /// <summary>User caption</summary>
+    /// <type>System.String, System</type>
     public string UserCaption { get; set; }
+
+    /// <summary>Users caption</summary>
+    /// <type>System.String, System</type>
     public string UsersCaption { get; set; }
+
+    /// <summary>Group caption</summary>
+    /// <type>System.String, System</type>
     public string GroupCaption { get; set; }
+
+    /// <summary>Groups caption</summary>
+    /// <type>System.String, System</type>
     public string GroupsCaption { get; set; }
+
+    /// <summary>User status caption</summary>
+    /// <type>System.String, System</type>
     public string UserPostCaption { get; set; }
+
+    /// <summary>Registration date caption</summary>
+    /// <type>System.String, System</type>
     public string RegDateCaption { get; set; }
+
+    /// <summary>Group lead caption</summary>
+    /// <type>System.String, System</type>
     public string GroupHeadCaption { get; set; }
+
+    /// <summary>Guest caption</summary>
+    /// <type>System.String, System</type>
     public string GuestCaption { get; set; }
+
+    /// <summary>Guests caption</summary>
+    /// <type>System.String, System</type>
     public string GuestsCaption { get; set; }
 }

@@ -198,6 +198,7 @@
   "ProviderNotConnected": "供应商未连接至您的账户",
   "PunycodeDomain": "不支持Punycode域",
   "PunycodeLocalPart": "不支持Punycode本地部分",
+  "QuotaPaidUserLimitError": "已达到付费用户限制。",
   "ReconnectStorage": "重新连接存储空间",
   "RecoverDescribeYourProblemPlaceholder": "描述您的问题",
   "RecoverTitle": "访问恢复",

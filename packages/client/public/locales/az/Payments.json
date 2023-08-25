@@ -27,7 +27,6 @@
   "PayerDescription": "Bu istifadəçi ödəniş təfərrüatlarına daxil ola bilər və kvota təyin edib ödəniş edə bilən yeganə istifadəçidir. DocSpace sahibi və ödəniş meneceri özləri Stripe müştəri portalından istifadə edərək ödəniş meneceri rolunu yenidən təyin edə bilərlər.",
   "PaymentOverdue": "Yeni istifadəçilər əlavə etmək mümkün deyil.",
   "PriceCalculation": "Qiymətinizi hesablayın",
-  "QuotaPaidUserLimitError": "Ödənişli istifadəçi limitinə çatıldı. <1>Ödənişlər</1>",
   "RenewSubscription": "{{planName}} Plan abunəliyini yeniləyin",
   "RoomManagerDescription": "Otağın idarə edilməsi və arxivləşdirilməsi, istifadəçi dəvəti və idarə edilməsi. Otağa bir neçə admin təyin edilə bilər.",
   "StartupSuggestion": "{{planName}} planı ilə daha çox şey edin",

@@ -198,6 +198,7 @@
   "ProviderNotConnected": "O provedor não está conectado à sua conta",
   "PunycodeDomain": "Os domínios Punycode não são suportados",
   "PunycodeLocalPart": "A peça local Punycode não é suportada",
+  "QuotaPaidUserLimitError": "O limite de usuários pagos foi atingido.",
   "ReconnectStorage": "Reconectar o armazenamento",
   "RecoverDescribeYourProblemPlaceholder": "Descreva seu problema",
   "RecoverTitle": "Recuperação de acesso",

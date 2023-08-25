@@ -437,7 +437,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
             return preventresponse;
         }
 
-        await channel.SendAsync(noticeMessage);
+        await channel.SendAsync(noticeMessage, serviceScope);
 
         return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
     }

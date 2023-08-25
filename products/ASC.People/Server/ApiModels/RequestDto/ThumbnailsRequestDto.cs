@@ -26,11 +26,27 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ThumbnailsRequestDto
 {
+    /// <summary>Path to the temporary file</summary>
+    /// <type>System.String, System</type>
     public string TmpFile { get; set; }
+
+    /// <summary>Horizontal coordinate</summary>
+    /// <type>System.Int32, System</type>
     public int X { get; set; }
+
+    /// <summary>Vertical coordinate</summary>
+    /// <type>System.Int32, System</type>
     public int Y { get; set; }
+
+    /// <summary>Thumbnail width</summary>
+    /// <type>System.Int32, System</type>
     public int Width { get; set; }
+
+    /// <summary>Thumbnail height</summary>
+    /// <type>System.Int32, System</type>
     public int Height { get; set; }
 }

@@ -12,6 +12,7 @@ import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledAboutBody = styled.div`
   width: 100%;
+  user-select: text;
 
   .avatar {
     margin-top: ${!isMobile ? "0px" : "32px"};

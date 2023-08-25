@@ -27,7 +27,6 @@
   "PayerDescription": "Dany użytkownik ma dostęp do szczegółów płatności i jest jedynym użytkownikiem, który może dostosować limit oraz dokonać płatności. Właściciel DocSpace i sam płacący menedżer mogą przypisać lub przekazać rolę płacącego menedżera za pomocą portalu klienta Stripe.",
   "PaymentOverdue": "Nie można dodać nowych użytkowników.",
   "PriceCalculation": "Oblicz swoją cenę",
-  "QuotaPaidUserLimitError": "Osiągnięto limit płatnych użytkowników. <1>Płatności</1>",
   "RenewSubscription": "Odnów subskrypcję planu {{planName}}",
   "RoomManagerDescription": "Administracja i archiwizowanie pokoi, zapraszanie i zarządzanie użytkownikami. Do pokoju można przypisać kilku administratorów.",
   "StartupSuggestion": "Osiągnij więcej z planem {{planName}}",

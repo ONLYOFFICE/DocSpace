@@ -30,15 +30,13 @@ public class EmailSenderSink : Sink
 {
     private static readonly string _senderName = Configuration.Constants.NotifyEMailSenderSysName;
     private readonly INotifySender _sender;
-    private readonly IServiceProvider _serviceProvider;
 
-    public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+    public EmailSenderSink(INotifySender sender)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-        _serviceProvider = serviceProvider;
     }
 
-    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope scope)
     {
         if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
         {
@@ -48,7 +46,6 @@ public class EmailSenderSink : Sink
         var responce = new SendResponse(message, _senderName, default(SendResult));
         try
         {
-            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             var result = await _sender.Send(m);
 
