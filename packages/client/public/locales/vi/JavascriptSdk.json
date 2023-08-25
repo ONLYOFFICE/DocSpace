@@ -1,6 +1,6 @@
 {
   "AdvancedDisplay": "Cài đặt hiển thị nâng cao",
-  "APILink": "Thư viện API",
+  "APILink": "thư viện API",
   "Ascending": "Tăng dần",
   "Code": "Mã để chèn",
   "CopyWindowCode": "Sao chép mã nhúng cửa sổ",
@@ -27,7 +27,7 @@
   "Page": "Hiển thị trang (số)",
   "RoomOrFolder": "Phòng hoặc Thư mục",
   "RoomOrFolderDescription": "Bạn có thể chọn phần, phòng hoặc thư mục bạn muốn hiển thị",
-  "SDKDescription": "Sử dụng JavaScript SDK, bạn có thể nhúng một phòng hoặc một thư mục từ ONLYOFFICE DocSpace vào giao diện web của bạn dưới dạng iframe. Tại đây, bạn có thể tìm thấy cài đặt để tạo iframe mẫu và định cấu hình CSP. Để sử dụng SDK hoàn chỉnh, xin vui lòng tham khảo (liên kết: thư viện API)",
+  "SDKDescription": "Sử dụng JavaScript SDK, bạn có thể nhúng một phòng hoặc một thư mục từ ONLYOFFICE DocSpace vào giao diện web của bạn dưới dạng iframe. Tại đây, bạn có thể tìm thấy cài đặt để tạo iframe mẫu và định cấu hình CSP. Để sử dụng SDK hoàn chỉnh, xin vui lòng tham khảo",
   "SearchTerm": "Cụm từ tìm kiếm",
   "SortOrder": "Thứ tự sắp xếp",
   "Title": "Điều hướng và Tiêu đề"
