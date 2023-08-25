@@ -30,6 +30,7 @@ function MediaViewer({
   nextMedia,
   prevMedia,
   pluginContextMenuItems,
+  setActiveFiles,
   ...props
 }: MediaViewerProps): JSX.Element {
   const TiffXMLHttpRequestRef = useRef<XMLHttpRequest>();
@@ -195,10 +196,14 @@ function MediaViewer({
 
     if (pluginContextMenuItems) {
       pluginContextMenuItems.forEach((item) => {
-        const onClick = (): void => {
-          item.value.onClick(targetFile.id);
-
+        const onClick = async (): Promise<void> => {
           props.onClose();
+
+          if (item.value.withActiveItem) setActiveFiles([targetFile.id]);
+
+          await item.value.onClick(targetFile.id);
+
+          if (item.value.withActiveItem) setActiveFiles([]);
         };
 
         if (

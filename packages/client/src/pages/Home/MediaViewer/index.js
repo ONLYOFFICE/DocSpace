@@ -57,6 +57,7 @@ const FilesMediaViewer = (props) => {
     activeFiles,
     activeFolders,
     onClickDownloadAs,
+    setActiveFiles,
     pluginContextMenuItems,
   } = props;
 
@@ -226,6 +227,7 @@ const FilesMediaViewer = (props) => {
         nextMedia={nextMedia}
         prevMedia={prevMedia}
         pluginContextMenuItems={pluginContextMenuItems}
+        setActiveFiles={setActiveFiles}
       />
     )
   );
@@ -284,6 +286,8 @@ export default inject(
       setAlreadyFetchingRooms,
       activeFiles,
       activeFolders,
+
+      setActiveFiles,
     } = filesStore;
     const {
       visible,
@@ -364,6 +368,7 @@ export default inject(
       getFirstUrl,
       activeFiles,
       activeFolders,
+      setActiveFiles,
       pluginContextMenuItems,
     };
   }

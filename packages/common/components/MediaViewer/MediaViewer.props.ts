@@ -34,11 +34,14 @@ export interface MediaViewerProps {
     key: string;
     value: {
       label: string;
-      onClick: (id: number) => void;
+      onClick: (id: number) => Promise<void>;
       icon: string;
       fileType?: ["video", "image"];
+      withActiveItem?: boolean;
     };
   }[];
+
+  setActiveFiles: (files: number[], destId?: number) => void;
 
   getIcon: (size: number, ext: string, ...arg: any) => string;
 
