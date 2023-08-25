@@ -120,7 +120,8 @@ public class BackupFileUploadHandler
         return new BackupFileUploadResult
         {
             Success = true,
-            ChunkSize = chunk
+            ChunkSize = chunk,
+            EndUpload = endUpload
         };
     }
 
