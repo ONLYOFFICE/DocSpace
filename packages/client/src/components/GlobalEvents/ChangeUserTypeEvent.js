@@ -16,6 +16,10 @@ const ChangeUserTypeEvent = ({
   updateUserType,
   getUsersList,
   onClose,
+  setSelected,
+  getPeopleListItem,
+  setSelection,
+  needResetUserSelection,
 }) => {
   const { toType, fromType, userIDs, successCallback, abortCallback } =
     peopleDialogData;
@@ -59,6 +63,12 @@ const ChangeUserTypeEvent = ({
       .then((users) => {
         toastr.success(t("SuccessChangeUserType"));
 
+        if (!needResetUserSelection) {
+          const user = getPeopleListItem(users[0]);
+
+          setSelection(user);
+        }
+
         successCallback && successCallback(users);
       })
       .catch((err) => {
@@ -76,6 +86,9 @@ const ChangeUserTypeEvent = ({
         );
 
         abortCallback && abortCallback();
+      })
+      .finally(() => {
+        if (needResetUserSelection) setSelected("close");
       });
   };
 
@@ -119,19 +132,29 @@ const ChangeUserTypeEvent = ({
   );
 };
 
-export default inject(({ dialogsStore, peopleStore }) => {
+export default inject(({ auth, dialogsStore, peopleStore }) => {
   const {
     changeUserTypeDialogVisible: visible,
     setChangeUserTypeDialogVisible: setVisible,
   } = dialogsStore;
-
+  const { setSelection } = auth.infoPanelStore;
   const { dialogStore, filterStore, usersStore } = peopleStore;
 
   const { data: peopleDialogData } = dialogStore;
   const { filter: peopleFilter } = filterStore;
-  const { updateUserType, getUsersList } = usersStore;
-
+  const {
+    updateUserType,
+    getUsersList,
+    getPeopleListItem,
+    needResetUserSelection,
+  } = usersStore;
+  const { setSelected } = peopleStore.selectionStore;
   return {
+    needResetUserSelection,
+    getPeopleListItem,
+    setSelection,
+    setSelected,
+
     visible,
     setVisible,
     peopleDialogData,
