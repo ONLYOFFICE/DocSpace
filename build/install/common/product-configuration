@@ -11,8 +11,8 @@ PRODUCT_DIR="/var/www/${PRODUCT}"
 LOG_DIR="/var/log/${PACKAGE_SYSNAME}/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 
+NGINX_CONF="/usr/local/openresty/nginx/conf/nginx.conf"
 NGINX_DIR="/etc/nginx"
-NGINX_CONF="${NGINX_DIR}/conf.d"
 
 DB_HOST="localhost"
 DB_PORT="3306"
@@ -445,22 +445,23 @@ change_mysql_config(){
 	systemctl restart ${MYSQL_PACKAGE}
 }
 
-setup_nginx(){
-	echo -n "Configuring nginx... "
+setup_openresty(){
+	echo -n "Configuring openresty... "
 	
-	# Remove default nginx website
-	rm -f $NGINX_CONF/default.conf $NGINX_DIR/sites-enabled/default 
-    sed -i "s_\(listen\).*;_\1 $APP_PORT;_" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
+	if systemctl is-active nginx | grep -q "active"; then
+		systemctl disable nginx && systemctl stop nginx 
+	fi
 
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_DIR}/nginx.conf 
+	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
+
+	# Remove default nginx website
+	rm -f ${NGINX_DIR}/conf.d/default.conf ${NGINX_DIR}/sites-enabled/default 
+
+	sed -i "s_\(listen\).*;_\1 $APP_PORT;_" ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_CONF}
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_CONF}
 
 	if [ "$DIST" = "RedHat" ]; then
-		# Remove default nginx settings
-		if grep -q "server {"  ${NGINX_DIR}/nginx.conf ; then
-			sed -e '$a}' -e '/server {/,$d' -i ${NGINX_DIR}/nginx.conf
-		fi
-
 		shopt -s nocasematch
 		PORTS=()
 		if command -v getenforce &> /dev/null; then
@@ -506,21 +507,15 @@ setup_nginx(){
 		fi
 	elif [ "$DIST" = "Debian" ]; then
 		if ! id "nginx" &>/dev/null; then
-			systemctl stop nginx
-
 			rm -dfr /var/log/nginx/*
 			rm -dfr /var/cache/nginx/*
 			useradd -s /bin/false nginx
-
-			systemctl start nginx
-		else
-			systemctl reload nginx
 		fi
 	fi
 
     chown nginx:nginx /etc/nginx/* -R
-	systemctl enable nginx >/dev/null 2>&1
-	systemctl restart nginx
+	systemctl enable openresty >/dev/null 2>&1
+	systemctl restart openresty
 	echo "OK"
 }
 
@@ -532,7 +527,7 @@ setup_docs() {
 	
 	#Changing the Docs port in nginx conf
 	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf 
 	
 	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.secret.inbox.string)
 	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.token.inbox.header)
@@ -703,8 +698,8 @@ if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAG
 	setup_enterprise
 fi
 
-if $PACKAGE_MANAGER nginx >/dev/null 2>&1 || $PACKAGE_MANAGER nginx-extras >/dev/null 2>&1; then
-    setup_nginx
+if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
+    setup_openresty
 fi
 
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
