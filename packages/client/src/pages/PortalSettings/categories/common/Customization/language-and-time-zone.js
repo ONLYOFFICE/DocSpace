@@ -458,6 +458,7 @@ class LanguageAndTimeZone extends React.Component {
             selectedOption={language}
             onSelect={this.onLanguageSelect}
             isDisabled={isLoading}
+            directionY="both"
             noBorder={false}
             scaled={true}
             scaledOptions={true}
@@ -478,6 +479,7 @@ class LanguageAndTimeZone extends React.Component {
             selectedOption={timezone}
             onSelect={this.onTimezoneSelect}
             isDisabled={isLoading}
+            directionY="both"
             noBorder={false}
             scaled={true}
             scaledOptions={true}

@@ -26,7 +26,11 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class DarkThemeSettingsRequestDto
 {
+    /// <summary>Portal theme (Base, System, or Dark)</summary>
+    /// <type>ASC.Web.Core.Users.DarkThemeSettingsEnum, ASC.Core.Common</type>
     public DarkThemeSettingsEnum Theme { get; set; }
 }

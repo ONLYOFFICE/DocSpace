@@ -221,6 +221,11 @@ public class PortalController : ControllerBase
             info.AffiliateId = model.AffiliateId;
         }
 
+        if (!string.IsNullOrEmpty(model.PartnerId))
+        {
+            info.PartnerId = model.PartnerId;
+        }
+
         if (!string.IsNullOrEmpty(model.Campaign))
         {
             info.Campaign = model.Campaign;

@@ -10,6 +10,7 @@ import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import StyledDropdown from "./styled-drop-down";
 import VirtualList from "./VirtualList";
+import { withTheme } from "styled-components";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
@@ -45,6 +46,7 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY,
       manualY: props.manualY,
+      borderOffset: props.theme.isBase ? 0 : 2, // need to remove the difference in width with the parent in a dark theme
     };
 
     this.dropDownRef = React.createRef();
@@ -119,7 +121,7 @@ class DropDown extends React.PureComponent {
   checkPosition = () => {
     if (!this.dropDownRef.current || this.props.fixedDirection) return;
     const { smallSectionWidth, forwardedRef } = this.props;
-    const { manualY } = this.state;
+    const { manualY, borderOffset } = this.state;
 
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const parentRects = forwardedRef?.current?.getBoundingClientRect();
@@ -162,13 +164,16 @@ class DropDown extends React.PureComponent {
       directionX: x,
       directionY: y,
       manualY: mY,
-      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      width: this.dropDownRef
+        ? this.dropDownRef.current.offsetWidth - borderOffset
+        : 240,
     });
   };
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
     if (!parent.current || this.props.fixedDirection) return;
+    const { borderOffset } = this.state;
 
     const rects = parent.current.getBoundingClientRect();
 
@@ -211,7 +216,9 @@ class DropDown extends React.PureComponent {
     this.setState({
       directionX: this.props.directionX,
       directionY: this.props.directionY,
-      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      width: this.dropDownRef
+        ? this.dropDownRef.current.offsetWidth - borderOffset
+        : 240,
     });
   };
 
@@ -323,7 +330,7 @@ class DropDown extends React.PureComponent {
   }
 }
 
-const EnhancedComponent = onClickOutside(DropDown);
+const EnhancedComponent = withTheme(onClickOutside(DropDown));
 
 class DropDownContainer extends React.Component {
   toggleDropDown = () => {

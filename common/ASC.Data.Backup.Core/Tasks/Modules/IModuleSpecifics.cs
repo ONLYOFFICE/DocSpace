@@ -33,7 +33,8 @@ public enum ModuleName
     Files,
     Files2,
     Tenants,
-    WebStudio
+    WebStudio,
+    RoomLogos
 }
 
 public interface IModuleSpecifics

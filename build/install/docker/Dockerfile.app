@@ -123,7 +123,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM nginx AS router
+FROM openresty/openresty:focal AS router
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -133,6 +133,8 @@ ENV DNS_NAMESERVER=127.0.0.11 \
 
 RUN apt-get -y update && \
     apt-get install -yq vim && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
@@ -141,15 +143,14 @@ COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
+COPY /config/nginx/docker-entrypoint.sh /docker-entrypoint.sh
+COPY /config/nginx/docker-entrypoint.d /docker-entrypoint.d
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
 
-# add defualt user and group for no-root run
-RUN chown nginx:nginx /etc/nginx/* -R && \
-    chown nginx:nginx /docker-entrypoint.d/* && \
-    # changes for upstream configure
-    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+# changes for upstream configure
+RUN sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
@@ -162,6 +163,10 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+
+ENTRYPOINT  [ "/docker-entrypoint.sh" ]
+
+CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
 
 ## Doceditor ##
 FROM noderun as doceditor
@@ -324,18 +329,14 @@ ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 
 ## image for k8s bin-share ##
 FROM busybox:latest AS bin_share
-RUN mkdir -p /app/appserver/ASC.Files/server && \
-    mkdir -p /app/appserver/ASC.People/server/ && \
-    mkdir -p /app/appserver/ASC.CRM/server/ && \
-    mkdir -p /app/appserver/ASC.Projects/server/ && \
-    mkdir -p /app/appserver/ASC.Calendar/server/ && \
-    mkdir -p /app/appserver/ASC.Mail/server/ && \
+RUN mkdir -p /app/ASC.Files/server && \
+    mkdir -p /app/ASC.People/server && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 
 COPY bin-share-docker-entrypoint.sh /app/docker-entrypoint.sh
-COPY --from=base /var/www/products/ASC.Files/server/ /app/appserver/ASC.Files/server/
-COPY --from=base /var/www/products/ASC.People/server/ /app/appserver/ASC.People/server/
+COPY --from=base /var/www/products/ASC.Files/server/ /app/ASC.Files/server/
+COPY --from=base /var/www/products/ASC.People/server/ /app/ASC.People/server/
 ENTRYPOINT ["./app/docker-entrypoint.sh"]
 
 ## image for k8s wait-bin-share ##

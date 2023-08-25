@@ -189,6 +189,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
             return null;
         }
 
+        _logger.Error($"googleDriveError:{driveEntry.Error},{driveEntry.ErrorId}");
         var folder = GetErrorFolder(new ErrorEntry(driveEntry.Error, driveEntry.ErrorId));
 
         folder.Title = MakeFolderTitle(driveEntry);

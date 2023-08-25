@@ -11,6 +11,8 @@
     <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -40,6 +42,9 @@
       <EmbeddedResource Include="img\total_size.svg" />
       <EmbeddedResource Include="img\users.svg" />
       <EmbeddedResource Include="img\whitelabel.svg" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Joonasw.AspNetCore.SecurityHeaders" Version="4.0.1" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />

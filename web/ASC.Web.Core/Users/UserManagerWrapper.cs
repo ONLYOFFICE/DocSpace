@@ -36,7 +36,7 @@ namespace ASC.Web.Core.Users;
 public sealed class UserManagerWrapper
 {
     private Tenant Tenant => _tenantManager.GetCurrentTenant();
-    
+
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
@@ -152,7 +152,7 @@ public sealed class UserManagerWrapper
         {
             await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
-        else if(type == EmployeeType.RoomAdmin)
+        else if (type == EmployeeType.RoomAdmin)
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
             _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
@@ -176,7 +176,7 @@ public sealed class UserManagerWrapper
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (makeUniqueName)
+        if (makeUniqueName && !updateExising)
         {
             userInfo.UserName = MakeUniqueName(userInfo);
         }
@@ -190,7 +190,16 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav, !updateExising);
+        UserInfo newUserInfo;
+        if (updateExising)
+        {
+            newUserInfo = await _userManager.UpdateUserInfo(userInfo);
+        }
+        else
+        {
+            newUserInfo = await _userManager.SaveUserInfo(userInfo, type, isCardDav, !updateExising);
+        }
+
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -265,9 +274,9 @@ public sealed class UserManagerWrapper
         {
             return await Task.FromResult(false);
         }
-        
+
         var currentType = _userManager.GetUserType(user.Id);
-        
+
         if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
         {
             if (currentType is EmployeeType.RoomAdmin)

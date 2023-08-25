@@ -23,6 +23,14 @@ echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
 echo "APP_URL_PORTAL: $portal_url"
 
+force=false
+
+if [ "$1" = "--force" ]; then
+    force=true
+fi
+
+echo "FORCE BUILD BASE IMAGES: $force"
+
 # Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
 
@@ -48,11 +56,44 @@ rm -rf $dir/publish
 echo "Build backend services (to "publish/" folder)"
 bash $dir/build/install/common/build-services.sh -pb backend-publish -pc Debug -de "$dockerDir/docker-entrypoint.py"
 
+dotnet_version=dev
+
+exists=$(docker images | egrep "onlyoffice/4testing-docspace-dotnet-runtime" | egrep "$dotnet_version" | awk 'NR>0 {print $1 ":" $2}') 
+
+if [ "${exists}" = "" ] || [ "$force" = true ]; then
+    echo "Build dotnet base image from source (apply new dotnet config)"
+    docker build -t onlyoffice/4testing-docspace-dotnet-runtime:$dotnet_version  -f ./build/install/docker/Dockerfile.runtime --target dotnetrun .
+else 
+    echo "SKIP build dotnet base image (already exists)"
+fi
+
+node_version=dev
+
+exists=$(docker images | egrep "onlyoffice/4testing-docspace-nodejs-runtime" | egrep "$node_version" | awk 'NR>0 {print $1 ":" $2}') 
+
+if [ "${exists}" = "" ] || [ "$force" = true ]; then
+    echo "Build nodejs base image from source"
+    docker build -t onlyoffice/4testing-docspace-nodejs-runtime:$node_version  -f ./build/install/docker/Dockerfile.runtime --target noderun .
+else 
+    echo "SKIP build nodejs base image (already exists)"
+fi
+
+router_version=dev
+
+exists=$(docker images | egrep "onlyoffice/4testing-docspace-router-runtime" | egrep "$router_version" | awk 'NR>0 {print $1 ":" $2}') 
+
+if [ "${exists}" = "" ] || [ "$force" = true ]; then
+    echo "Build router base image from source (apply new nginx config)"
+    docker build -t onlyoffice/4testing-docspace-router-runtime:$router_version  -f ./build/install/docker/Dockerfile.runtime --target router .
+else 
+    echo "SKIP build router base image (already exists)"
+fi
+
 echo "Run migration and services"
 ENV_EXTENSION="dev" \
-Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
-Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
-Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:v1.0.0" \
+Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:$dotnet_version" \
+Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:$node_version" \
+Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:$router_version" \
 DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \

@@ -118,6 +118,13 @@ Function SetDocumentServerJWTSecretProp
 
 End Function
 
+Function SetMACHINEKEY
+    On Error Resume Next
+
+    Session.Property("MACHINE_KEY") = RandomString( 12 )
+
+End Function
+
 Function MySQLConfigure
     On Error Resume Next
     
@@ -391,6 +398,22 @@ Function TestSqlConnection
     End If
     
     Set ConnectionObject = Nothing
+End Function
+
+Function EnterpriseConfigure
+    On Error Resume Next
+
+    Const HKLM = &H80000002
+
+    Dim strKeyPath, strValueName, strNewDisplayName
+
+    strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\ONLYOFFICE DocSpace Community " & Session.Property("ProductVersion") 
+    strValueName = "DisplayName"
+    strNewDisplayName = Session.Property("ProductName")
+
+    Set registry = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\default:StdRegProv")
+    registry.SetStringValue HKLM, strKeyPath, strValueName, strNewDisplayName
+
 End Function
 
 Function ReadIni( myFilePath, mySection, myKey )

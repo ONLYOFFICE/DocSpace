@@ -26,7 +26,11 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class GenerateSharedLinkRequestDto
 {
+    /// <summary>Sharing rights</summary>
+    /// <type>ASC.Files.Core.Security.FileShare, ASC.Files.Core</type>
     public FileShare Share { get; set; }
 }

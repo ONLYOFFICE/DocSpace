@@ -198,6 +198,7 @@
   "ProviderNotConnected": "プロバイダーがお客様のアカウントに接続されていない場合",
   "PunycodeDomain": "ピュニコード・ドメインはサポートされていません",
   "PunycodeLocalPart": "ピュニコードのローカルパートには対応されていません",
+  "QuotaPaidUserLimitError": "有料ユーザー数の上限に達しました。",
   "ReconnectStorage": "ストレージを再接続する",
   "RecoverDescribeYourProblemPlaceholder": "ご質問を説明ください",
   "RecoverTitle": "アクセス回復機能",

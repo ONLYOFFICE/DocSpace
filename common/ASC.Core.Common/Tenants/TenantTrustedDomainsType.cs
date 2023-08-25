@@ -26,6 +26,8 @@
 
 namespace ASC.Core.Tenants;
 
+/// <summary>
+/// </summary>
 public enum TenantTrustedDomainsType
 {
     None,

@@ -26,6 +26,8 @@
 
 namespace ASC.Web.Core.Utility;
 
+/// <summary>
+/// </summary>
 [Serializable]
 public sealed class PasswordSettings : ISettings<PasswordSettings>
 {
@@ -58,11 +60,12 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
         }
     }
 
-    /// <summary>
-    /// Minimal length password has
-    /// </summary>
+    /// <summary>Minimum password length</summary>
+    /// <type>System.Int32, System</type>
     public int MinLength { get; set; }
 
+    /// <summary>Allowed characters for the password in the regex string format</summary>
+    /// <type>System.String, System</type>
     public string AllowedCharactersRegexStr
     {
         get
@@ -71,16 +74,16 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
         }
     }
 
-    /// <summary>
-    /// Password must contains upper case
-    /// </summary>
+    /// <summary>Specifies if the password must include the uppercase letters or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool UpperCase { get; set; }
 
-    /// <summary>
-    /// Password must contains digits
-    /// </summary>
+    /// <summary>Specifies if the password must include the digits or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Digits { get; set; }
 
+    /// <summary>Allowed digits for the password in the regex string format</summary>
+    /// <type>System.String, System</type>
     public string DigitsRegexStr
     {
         get
@@ -89,6 +92,8 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
         }
     }
 
+    /// <summary>Allowed uppercase letters for the password in the regex string format</summary>
+    /// <type>System.String, System</type>
     public string UpperCaseRegexStr
     {
         get
@@ -97,10 +102,12 @@ public sealed class PasswordSettings : ISettings<PasswordSettings>
         }
     }
 
-    /// <summary>
-    /// Password must contains special symbols
-    /// </summary>
+    /// <summary>Specifies if the password must include the special symbols or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool SpecSymbols { get; set; }
+
+    /// <summary>Allowed special symbols for the password in the regex string format</summary>
+    /// <type>System.String, System</type>
     public string SpecSymbolsRegexStr
     {
         get

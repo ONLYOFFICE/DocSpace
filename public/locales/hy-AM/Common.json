@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Մատակարարը միացված չէ ձեր հաշվին",
   "PunycodeDomain": "Punycode տիրույթները չեն աջակցվում",
   "PunycodeLocalPart": "Punycode տեղական մասը չի աջակցվում",
+  "QuotaPaidUserLimitError": "Վճարովի օգտագործողի սահմանաչափը հասել է:",
   "ReconnectStorage": "Կրկին միացրեք պահեստը",
   "RecoverDescribeYourProblemPlaceholder": "Նկարագրեք ձեր խնդիրը",
   "RecoverTitle": "Մատչման վերականգնում",

@@ -168,6 +168,38 @@ namespace ASC.Migrations.MySql.Migrations.Backups
                         });
                 });
 
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("AffiliateId")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("affiliate_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("Campaign")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("campaign")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("PartnerId")
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("partner_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasKey("TenantId")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("tenants_partners", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupRecord", b =>
                 {
                     b.Property<string>("Id")
@@ -304,6 +336,22 @@ namespace ASC.Migrations.MySql.Migrations.Backups
                     b.ToTable("backup_schedule", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
+                {
+                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
+                        .WithOne("Partner")
+                        .HasForeignKey("ASC.Core.Common.EF.Model.DbTenantPartner", "TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
+                {
+                    b.Navigation("Partner");
                 });
 #pragma warning restore 612, 618
         }

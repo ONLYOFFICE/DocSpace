@@ -26,9 +26,19 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class GroupRequestDto
 {
+    /// <summary>Group manager ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid GroupManager { get; set; }
+
+    /// <summary>Group name</summary>
+    /// <type>System.String, System</type>
     public string GroupName { get; set; }
+
+    /// <summary>List of group member IDs</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.Guid}, System.Collections.Generic</type>
     public IEnumerable<Guid> Members { get; set; }
 }

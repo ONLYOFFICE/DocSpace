@@ -35,22 +35,17 @@ class PushSenderSink : Sink
     private static readonly string _senderName = Constants.NotifyPushSenderSysName;
     private readonly INotifySender _sender;
 
-    public PushSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+    public PushSenderSink(INotifySender sender)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-        _serviceProvider = serviceProvider;
     }
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope scope)
     {
         try
         {
 
             var result = SendResult.OK;
-            await using var scope = _serviceProvider.CreateAsyncScope();
-
             var m = scope.ServiceProvider.GetRequiredService<PushSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             if (string.IsNullOrEmpty(m.Reciever))
             {
@@ -100,7 +95,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
         {
             _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
             tenant = _tenantManager.GetCurrentTenant(false);
-        }      
+        }
 
         var user = _userManager.GetUsers(new Guid(message.Recipient.ID));
         var username = user.UserName;

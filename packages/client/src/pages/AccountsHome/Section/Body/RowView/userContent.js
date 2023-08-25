@@ -39,6 +39,7 @@ const UserContent = ({
 
   t,
   theme,
+  standalone,
 }) => {
   const {
     displayName,
@@ -67,6 +68,8 @@ const UserContent = ({
       ? t("Common:User")
       : t("Common:RoomAdmin");
 
+  const isPaidUser = !standalone && !isVisitor;
+
   return (
     <StyledRowContent
       sideColor={sideInfoColor}
@@ -91,7 +94,7 @@ const UserContent = ({
           : email}
       </Link>
 
-      <Badges statusType={statusType} isPaid={!isVisitor} isSSO={isSSO} />
+      <Badges statusType={statusType} isPaid={isPaidUser} isSSO={isSSO} />
 
       <Link
         containerMinWidth="140px"

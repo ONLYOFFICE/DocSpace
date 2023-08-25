@@ -27,7 +27,6 @@
   "PayerDescription": "Người dùng này có quyền truy cập vào thông tin thanh toán và là người dùng duy nhất có thể điều chỉnh định mức và thực hiện thanh toán. Chủ sở hữu DocSpace, cũng như chính người quản lý thanh toán, có thể chỉ định lại vai trò người quản lý thanh toán bằng cổng thông tin khách hàng Stripe.",
   "PaymentOverdue": "Không thể thêm người dùng mới.",
   "PriceCalculation": "Tính phí của bạn",
-  "QuotaPaidUserLimitError": "Đã đạt đến giới hạn người dùng trả phí. <1>Thanh toán</1>",
   "RenewSubscription": "Gia hạn gói dịch vụ {{planName}}",
   "RoomManagerDescription": "Quản trị và lưu trữ phòng, mời và quản lý người dùng. Một số quản trị viên có thể được chỉ định vào phòng.",
   "StartupSuggestion": "Làm nhiều hơn với gói dịch vụ {{planName}}",

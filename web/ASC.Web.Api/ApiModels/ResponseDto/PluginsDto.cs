@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class PluginsDto
 {
+    /// <summary>Specifies if the plugins are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Enabled { get; set; }
+
+    /// <summary>The allowed actions with the plugins ("upload", "delete", etc.)</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic</type>
     public IEnumerable<string> Allow { get; set; }
 
 }

@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class UserQuotaSettingsRequestsDto
 {
+    /// <summary>Specifies if the quota settings are enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool EnableUserQuota { get; set; }
+
+    /// <summary>Default user quota</summary>
+    /// <type>System.Int64, System</type>
     public long DefaultUserQuota { get; set; }
 
 }

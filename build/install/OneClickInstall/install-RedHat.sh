@@ -4,15 +4,15 @@ set -e
 
 package_manager="yum"
 package_sysname="onlyoffice";
-product="docspace"
-GIT_BRANCH="master"
+product_name="DocSpace"
+product=$(tr '[:upper:]' '[:lower:]' <<< ${product_name})
 INSTALLATION_TYPE="ENTERPRISE"
 MAKESWAP="true"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
-RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product^^}.";
-RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
+RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product_name}.";
+RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://forum.onlyoffice.com"
 RES_MARIADB="To continue the installation, you need to remove MariaDB"
 
 res_unsupported_version () {
@@ -131,7 +131,11 @@ enabled=1
 gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
 END
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
+if [ -z $GIT_BRANCH ]; then
+	DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/${product}/install-RedHat"
+else
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
+fi
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
 	source install-RedHat/tools.sh

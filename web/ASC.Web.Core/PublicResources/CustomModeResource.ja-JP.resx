@@ -87,7 +87,7 @@ ONLYOFFICEチーム</value>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>今日は、
 
-個人使用のONLYOFFICEアカウントを登録されたところです。”こちら”："$InviteLink"　をクリックして、登録を承認し、パスワードを作成します。
+個人使用のONLYOFFICEアカウントを登録されたところです。"こちら":"$InviteLink"　をクリックして、登録を承認し、パスワードを作成します。
 
 リンクを開けない場合に、"$InviteLink":"$InviteLink"をコピーして、ブラウザのアドレスバーに貼り付けできます。
 
@@ -169,7 +169,7 @@ ONLYOFFICE DocSpaceへようこそ！あなたのユーザープロファイル�
  
 * 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
  
-* *テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディアなど、さまざまな形式のファイルを扱うことができます。
+* テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディアなど、さまざまな形式のファイルを扱うことができます。
  
 * *リアルタイムまたは段落ロックという2つの共同編集モードにより、文書*の共同編集が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
  
@@ -180,7 +180,7 @@ $GreenButton
 お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
 
 ONLYOFFICE チーム
-"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+"www.onlyoffice.com":"https://www.onlyoffice.com/ja"</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>クラウドオフィスアカウントのメールアドレスを変更したいですか？

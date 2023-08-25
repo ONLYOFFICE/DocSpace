@@ -5,7 +5,6 @@ import ErrorBoundary from "./ErrorBoundary";
 import App from "../App";
 import i18n from "../i18n";
 import { I18nextProvider } from "react-i18next";
-import { fonts } from "@docspace/common/fonts";
 import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
@@ -51,7 +50,7 @@ const ClientAppWrapper: React.FC<IClientApp> = (props) => {
   };
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyles fonts={fonts} />
+      <GlobalStyles />
       <ClientApp {...props} />
     </ErrorBoundary>
   );
