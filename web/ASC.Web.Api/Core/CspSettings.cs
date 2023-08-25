@@ -32,6 +32,7 @@ public class CspSettings : ISettings<CspSettings>
     public Guid ID => new Guid("27504162-16FF-405F-8530-1537B0F2B89D");
 
     public IEnumerable<string> Domains { get; set; }
+    public bool SetDefaultIfEmpty { get; set; }
 
     public CspSettings GetDefault()
     {
@@ -68,7 +69,7 @@ public class CspSettingsHelper
         _configuration = configuration;
     }
 
-    public async Task<string> Save(IEnumerable<string> domains)
+    public async Task<string> Save(IEnumerable<string> domains, bool setDefaultIfEmpty)
     {
         var tenant = _tenantManager.GetCurrentTenant();
         var domain = tenant.GetTenantDomain(_coreSettings);
@@ -83,7 +84,7 @@ public class CspSettingsHelper
             headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
         }
 
-        var headerValue = CreateHeader(domains);
+        var headerValue = CreateHeader(domains, setDefaultIfEmpty);
 
         if (!string.IsNullOrEmpty(headerValue))
         {
@@ -96,6 +97,7 @@ public class CspSettingsHelper
 
         var current = _settingsManager.Load<CspSettings>();
         current.Domains = domains;
+        current.SetDefaultIfEmpty = setDefaultIfEmpty;
         _settingsManager.Save(current);
 
         return headerValue;
@@ -117,11 +119,18 @@ public class CspSettingsHelper
         }
     }
 
-    public string CreateHeader(IEnumerable<string> domains)
+    public string CreateHeader(IEnumerable<string> domains, bool setDefaultIfEmpty = false)
     {
         if (domains == null || !domains.Any())
         {
-            return null;
+            if (setDefaultIfEmpty)
+            {
+                domains = Enumerable.Empty<string>();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         var csp = new CspBuilder();
@@ -161,6 +170,7 @@ public class CspSettingsHelper
             def.From("*.zendesk.com");
             def.From("*.zopim.com");
             def.From("wss:");
+
             scriptBuilder
                 .From("*.zopim.com")
                 .AllowUnsafeEval();//zendesk;

@@ -403,7 +403,7 @@ public class SecurityController : ControllerBase
 
         ArgumentNullException.ThrowIfNull(request);
 
-        var header = await _cspSettingsHelper.Save(request.Domains);
+        var header = await _cspSettingsHelper.Save(request.Domains, request.SetDefaultIfEmpty);
 
         return new CspDto { Domains = request.Domains, Header = header };
     }
@@ -413,7 +413,7 @@ public class SecurityController : ControllerBase
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var settings = _cspSettingsHelper.Load();
-        return new CspDto { Domains = settings.Domains, Header = _cspSettingsHelper.CreateHeader(settings.Domains) };
+        return new CspDto { Domains = settings.Domains, Header = _cspSettingsHelper.CreateHeader(settings.Domains, settings.SetDefaultIfEmpty) };
     }
 
     private void DemandAuditPermission()
