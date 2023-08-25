@@ -65,7 +65,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 break;
             case BruteForceCredentialException:
             case RecaptchaException:
-                status = HttpStatusCode.TooManyRequests;
+                status = HttpStatusCode.Forbidden;
                 withStackTrace = false;
                 break;
             case AuthenticationException:
