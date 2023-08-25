@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Đây là một thuộc tính tùy chọn; chỉ thay đổi nó nếu bạn muốn thử một điểm cuối dịch vụ khác",
   "AmazonSSE": "Mã hóa phía máy chủ",
   "AmazonSSETip": "Thuật toán mã hóa phía máy chủ được sử dụng khi lưu trữ đối tượng này trong S3.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Tạo nền tảng làm việc hiệu suất của riêng bạn dựa trên ONLYOFFICE DocSpace và cộng tác trên các tài liệu với các nhóm, khách hàng và đối tác.",
   "ApiPageHeader": "Xây dựng nền tảng cộng tác của riêng bạn",
   "Appearance": "Hình thức",

@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Esta é uma propriedade opcional; mude-a apenas se quiser experimentar um ponto de chegada de serviço diferente.",
   "AmazonSSE": "Encriptação por Parte do Servidor",
   "AmazonSSETip": "O algoritmo de encriptação do lado do servidor utilizado no armazenamento deste objeto em S3.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Crie a sua própria plataforma de produtividade com base no ONLYOFFICE DocSpace e colabore em documentos com equipas, clientes e parceiros.",
   "ApiPageHeader": "Construa a sua própria plataforma de colaboração",
   "Appearance": "Aparência",

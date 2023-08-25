@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Dies ist eine zusätzliche Einstellung; ändern Sie diese nur, wenn Sie einen anderen Dienstendpunkt ausprobieren möchten.",
   "AmazonSSE": "Serverseitige Verschlüsselung",
   "AmazonSSETip": "Der serverseitige Verschlüsselungsalgorithmus, der bei der Speicherung dieses Objekts in S3 verwendet wird.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Erstellen Sie Ihre eigene Produktivitätsplattform auf Basis von ONLYOFFICE DocSpace und arbeiten Sie gemeinsam mit Teams, Kunden und Partnern an Dokumenten.",
   "ApiPageHeader": "Erstellen Sie Ihre eigene Plattform für die Zusammenarbeit",
   "Appearance": "Erscheinungsbild",

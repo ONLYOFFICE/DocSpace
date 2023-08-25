@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Aceasta este o proprietate opţională, modificaţi-o numai dacă doriţi să încercaţi un alt punct final al serviciului.",
   "AmazonSSE": "Criptarea pe partea de server",
   "AmazonSSETip": "Algoritmul de criptare pe partea de server utilizat pentru stocarea acestui obiect în S3.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Creați propria soluție de productivitate bazată pe ONLYOFFICE DocSpace și colaborați la documente cu echipe, clienți și parteneri.",
   "ApiPageHeader": "Creați propria platformă de colaborare",
   "Appearance": "Aspect",
