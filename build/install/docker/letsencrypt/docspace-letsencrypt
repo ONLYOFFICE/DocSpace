@@ -55,15 +55,15 @@ if [ "$#" -ge "2" ]; then
       sed -i "s~\(ssl_certificate_key \).*;~\1${LETSENCRYPT_DIR}/privkey.pem;~g" ${PROXY_CONF}
       sed -i "s/\(\"portal\":\).*/\1 \"https:\/\/${DOMAIN}\"/" /etc/onlyoffice/docspace/appsettings.$ENVIRONMENT.json
 
-      [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ] && systemctl reload nginx || service nginx reload
+      [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ] && systemctl reload openresty || service openresty reload
 
       # Create and set permissions for ${PRODUCT}-renew-letsencrypt
       echo '#!/bin/bash' > ${DIR}/${PRODUCT}-renew-letsencrypt
       echo "certbot renew >> /var/log/le-renew.log" >> ${DIR}/${PRODUCT}-renew-letsencrypt
       if [ $(pgrep -x ""systemd"" | wc -l) -gt 0 ]; then
-        echo 'systemctl reload nginx' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo 'systemctl reload openresty' >> ${DIR}/${PRODUCT}-renew-letsencrypt
       else 
-        echo 'service nginx reload' >> ${DIR}/${PRODUCT}-renew-letsencrypt
+        echo 'service openresty reload' >> ${DIR}/${PRODUCT}-renew-letsencrypt
       fi
     fi
     
