@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "A cópia de backup foi criada com sucesso.",
   "BackupList": "Lista de backup",
   "BackupListWarningText": "Se você excluir qualquer item da lista, seus arquivos correspondentes também serão excluídos. Esta ação não pode ser desfeita. Para excluir todos os arquivos use o link:",
+  "BetaLabel": "BETA",
   "Branding": "Marca",
   "BrandingSectionDescription": "Especifique as informações da sua empresa, adicione links para recursos externos e endereços de e-mail exibidos na interface do DocSpace.",
   "BrandingSubtitle": "Use esta opção para fornecer experiência on-brand aos usuários.",
