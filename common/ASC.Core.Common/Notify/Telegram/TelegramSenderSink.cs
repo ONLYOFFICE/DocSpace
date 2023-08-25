@@ -32,20 +32,18 @@ class TelegramSenderSink : Sink
     private readonly INotifySender _sender;
     private readonly IServiceProvider _serviceProvider;
 
-    public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+    public TelegramSenderSink(INotifySender sender)
     {
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
-        _serviceProvider = serviceProvider;
     }
 
 
-    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope scope)
     {
         try
         {
             const SendResult result = SendResult.OK;
 
-            await using var scope = _serviceProvider.CreateAsyncScope();
             var m = scope.ServiceProvider.GetRequiredService<TelegramSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
             await _sender.Send(m);
 

@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Common.EF.Model;
 
-public class DbTenantPartner
+public class DbTenantPartner : BaseEntity
 {
     public int TenantId { get; set; }
     public string PartnerId { get; set; }
@@ -34,6 +34,11 @@ public class DbTenantPartner
     public string Campaign { get; set; }
 
     public DbTenant Tenant { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { TenantId };
+    }
 }
 
 public static class DbTenantPartnerExtension
