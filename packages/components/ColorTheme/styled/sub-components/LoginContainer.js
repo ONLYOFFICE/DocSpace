@@ -52,6 +52,7 @@ const LoginContainer = styled.div`
 
   .greeting-title {
     width: 100%;
+    max-width: 480px;
     padding-bottom: 32px;
     min-height: 32px;
     color: ${(props) => props.theme.login.headerColor};
