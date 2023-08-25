@@ -23,6 +23,9 @@ if [ "$#" -ge "2" ]; then
 
   if [ -f "${DOCKERCOMPOSE}/proxy.yml" ]; then
     docker-compose -f ${DOCKERCOMPOSE}/proxy.yml down
+  elif [ ! -f "${NGINX}/onlyoffice-proxy-ssl.conf.template" ]
+      echo "Error: proxy configuration file not found."
+      exit 1
   fi
 
   # Request and generate Let's Encrypt SSL certificate
