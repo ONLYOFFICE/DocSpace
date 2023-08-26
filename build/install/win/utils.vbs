@@ -400,6 +400,81 @@ Function TestSqlConnection
     Set ConnectionObject = Nothing
 End Function
 
+Function OpenRestySetup
+   On Error Resume Next
+
+   Dim objShell, sourcePath, destinationPath, openRestyServicePath, openRestyFolder
+
+   Set objShell = CreateObject("WScript.Shell")
+
+   openRestyFolder = "openresty-1.21.4.2-win64"
+   sourcePath = Session.Property("APPDIR") & openRestyFolder
+   destinationPath = Session.Property("APPDIR")
+   openRestyServicePath = Session.Property("APPDIR") & "tools\OpenResty.exe"
+
+   ' Run XCopy to copy files and folders
+   objShell.Run "xcopy """ & sourcePath & """ """ & destinationPath & """ /E /I /Y", 0, True
+
+   objShell.CurrentDirectory = destinationPath
+
+   ' Run the RMDIR command to delete the folder
+   objShell.Run "cmd /c RMDIR /S /Q """ & openRestyFolder & """", 0, True
+
+   objShell.Run """" & openRestyServicePath & """ install", 0, True
+
+   Set objShell = Nothing
+
+End Function
+
+Function MoveNginxConfigs
+    On Error Resume Next
+
+    Dim objFSO, sourceFolder, targetFolder, nginxFolder
+
+    ' Define source and target paths
+    Set objFSO = CreateObject("Scripting.FileSystemObject")
+    sourceFolder = Session.Property("APPDIR") & "nginx\conf"
+    targetFolder = "C:\OpenResty\conf"
+    nginxFolder =  Session.Property("APPDIR") & "nginx"
+
+    ' Check if source folder exists
+    If objFSO.FolderExists(sourceFolder) Then
+        ' Check if target folder exists, if not, create it
+        If Not objFSO.FolderExists(targetFolder) Then
+            objFSO.CreateFolder(targetFolder)
+        End If
+
+        ' Copy files and folders from source to target
+        CopyFolderContents objFSO.GetFolder(sourceFolder), targetFolder, objFSO
+
+        ' Delete source folder
+        objFSO.DeleteFolder nginxFolder, True ' "True" parameter for recursive deletion
+
+        WScript.Echo "Files and folders moved, and source folder deleted."
+    Else
+        WScript.Echo "Source folder does not exist."
+    End If
+
+    Set objFSO = Nothing
+End Function
+
+Sub CopyFolderContents(sourceFolder, targetFolder, objFSO)
+    Dim subFolder, objFile
+
+    ' Copy files
+    For Each objFile In sourceFolder.Files
+        objFSO.CopyFile objFile.Path, targetFolder & "\" & objFile.Name, True
+    Next
+
+    ' Recursively copy subfolders
+    For Each subFolder In sourceFolder.SubFolders
+        Dim newTargetFolder
+        newTargetFolder = targetFolder & "\" & subFolder.Name
+        objFSO.CreateFolder newTargetFolder
+        CopyFolderContents subFolder, newTargetFolder, objFSO
+    Next
+End Sub
+
 Function EnterpriseConfigure
     On Error Resume Next
 
