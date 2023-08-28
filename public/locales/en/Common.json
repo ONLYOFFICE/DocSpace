@@ -129,7 +129,9 @@
   "IncorrectDomain": "Incorrect domain",
   "IncorrectEmail": "Incorrect email",
   "IncorrectLocalPart": "Incorrect local part",
+  "IncorrectPassword": "Incorrect password",
   "Info": "Info",
+  "InfoPanel": "Info panel",
   "Invite": "Invite",
   "InviteUsers": "Invite users",
   "IpAddress": "IP address",
@@ -160,6 +162,7 @@
   "Members": "Members",
   "MoveTo": "Move to",
   "Name": "Name",
+  "NeedPassword": "You need a password to access the room",
   "NewDocument": "New document",
   "NewFolder": "New folder",
   "NewMasterForm": "New form template",
@@ -205,8 +208,8 @@
   "RecoverDescribeYourProblemPlaceholder": "Describe your problem",
   "RecoverTitle": "Access recovery",
   "RegistrationEmail": "Your registration email address",
-  "Remember": "Remember me",
   "ReloadPage": "Reload page",
+  "Remember": "Remember me",
   "Rename": "Rename",
   "RenewSubscription": "Renew subscription?",
   "RepeatInvitation": "Repeat invitation",
@@ -277,8 +280,5 @@
   "WantToContinue": "Are you sure you want to continue?",
   "Warning": "Warning",
   "Website": "Website",
-  "Yesterday": "Yesterday",
-  "InfoPanel": "Info panel",
-  "NeedPassword": "You need a password to access the room",
-  "IncorrectPassword": "Incorrect password"
+  "Yesterday": "Yesterday"
 }
