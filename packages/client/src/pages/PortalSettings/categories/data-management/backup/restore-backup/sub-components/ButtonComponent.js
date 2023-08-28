@@ -8,7 +8,6 @@ import { TenantStatus } from "@docspace/common/constants";
 import { startRestore } from "@docspace/common/api/portal";
 import { combineUrl } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
-import { request } from "@docspace/common/api/client";
 
 const ButtonContainer = (props) => {
   const {
@@ -28,28 +27,11 @@ const ButtonContainer = (props) => {
     setTenantStatus,
     isFormReady,
     getStorageParams,
+    uploadLocalFile,
   } = props;
 
   const [isUploadingLocalFile, setIsUploadingLocalFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const localFileUploading = async () => {
-    try {
-      const checkedFile = await request({
-        baseURL: combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage),
-        method: "post",
-        url: `/backupFileUpload.ashx`,
-        responseType: "text",
-        data: restoreResource,
-      });
-
-      return checkedFile;
-    } catch (e) {
-      toastr.error(e);
-      setIsUploadingLocalFile(false);
-      return null;
-    }
-  };
 
   const onRestoreClick = async () => {
     if (isCheckedThirdPartyStorage) {
@@ -74,7 +56,7 @@ const ButtonContainer = (props) => {
     }
 
     if (isCheckedLocalFile) {
-      const isUploadedFile = await localFileUploading();
+      const isUploadedFile = await uploadLocalFile();
 
       if (!isUploadedFile) {
         setIsLoading(false);
@@ -89,6 +71,7 @@ const ButtonContainer = (props) => {
       }
     }
 
+    return;
     try {
       await startRestore(backupId, storageType, storageParams, isNotification);
       setTenantStatus(TenantStatus.PortalRestore);
@@ -154,11 +137,13 @@ export default inject(({ auth, backup }) => {
     isFormReady,
     getStorageParams,
     restoreResource,
+    uploadLocalFile,
   } = backup;
 
   const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const isMaxProgress = downloadingProgress === 100;
   return {
+    uploadLocalFile,
     isMaxProgress,
     setTenantStatus,
     isEnableRestore: isRestoreAndAutoBackupAvailable,

@@ -8,6 +8,10 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
 //import api from "@docspace/common/api";
+import { request } from "@docspace/common/api/client";
+import { combineUrl } from "@docspace/common/utils";
+import config from "PACKAGE_FILE";
+import { uploadBackup } from "@docspace/common/api/files";
 
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
@@ -616,6 +620,69 @@ class BackupStore {
 
   setRestoreResource = (value) => {
     this.restoreResource = value;
+  };
+
+  setChunkUploadSize = (chunkUploadSize) => {
+    this.chunkUploadSize = chunkUploadSize;
+  };
+
+  uploadFileChunks = async (requestsDataArray) => {
+    const length = requestsDataArray.length;
+
+    for (let index = 0; index < length; index++) {
+      const res = await uploadBackup(
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          "/backupFileUpload.ashx"
+        ),
+        requestsDataArray[index]
+      );
+      console.log("=== CHUNKS res", res);
+      if (res.data.Message) return Promise.reject(res.data.Message);
+    }
+  };
+  uploadLocalFile = async () => {
+    console.log("this.restoreResource", this.restoreResource);
+
+    try {
+      const res = await uploadBackup(
+        combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          `/backupFileUpload.ashx?init=true&totalSize=${this.restoreResource.size}`
+        )
+      );
+
+      const chunkUploadSize = res.data.ChunkSize;
+
+      const chunks = Math.ceil(
+        this.restoreResource.size / chunkUploadSize,
+        chunkUploadSize
+      );
+
+      const requestsDataArray = [];
+
+      let chunk = 0;
+
+      while (chunk < chunks) {
+        const offset = chunk * chunkUploadSize;
+        const formData = new FormData();
+        formData.append(
+          "file",
+          this.restoreResource.slice(offset, offset + chunkUploadSize)
+        );
+
+        requestsDataArray.push(formData);
+        chunk++;
+      }
+
+      console.log("res", res, requestsDataArray, chunk);
+      await this.uploadFileChunks(requestsDataArray);
+    } catch (e) {
+      toastr.error(e);
+      return null;
+    }
   };
 }
 
