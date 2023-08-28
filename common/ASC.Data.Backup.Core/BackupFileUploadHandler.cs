@@ -70,7 +70,7 @@ public class BackupFileUploadHandler
                     {
                         File.Delete(path);
                     }
-                    cache.Insert($"{tenantId} backupTotalSize", size, TimeSpan.FromMinutes(10));
+                    cache.Insert($"{tenantId} backupTotalSize", size.ToString(), TimeSpan.FromMinutes(10));
 
                     int.TryParse(configuration["files:uploader:chunk-size"], out var chunkSize);
                     chunkSize = chunkSize == 0 ? 10 * 1024 * 1024 : chunkSize;
