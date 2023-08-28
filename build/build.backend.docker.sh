@@ -38,6 +38,12 @@ echo "Run MySQL"
 
 arch_name="$(uname -m)"
 
+existsnetwork=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
+
+if [[ -z ${existsnetwork} ]]; then
+    docker network create --driver bridge ${NETWORK_NAME}
+fi
+
 if [ "${arch_name}" = "x86_64" ]; then
     echo "CPU Type: x86_64 -> run db.yml"
     docker compose -f $dockerDir/db.yml up -d

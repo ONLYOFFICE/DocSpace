@@ -29,6 +29,12 @@ if ($args[0] -eq "--force") {
 
 Write-Host "FORCE BUILD BASE IMAGES: $Force" -ForegroundColor Blue
 
+$existsnetwork = (docker network ls | ForEach-Object { $_.Split()[1] }) -contains onlyoffice
+
+if (-not $existsnetwork) {
+    docker network create --driver bridge onlyoffice
+}
+
 Write-Host "Run MySQL" -ForegroundColor Green
 docker compose -f "$DockerDir\db.yml" up -d
 
