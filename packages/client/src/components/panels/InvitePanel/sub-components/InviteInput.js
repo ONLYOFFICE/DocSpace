@@ -39,6 +39,7 @@ const InviteInput = ({
   inputsRef,
   addUsersPanelVisible,
   setAddUsersPanelVisible,
+  isMobileView,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -311,6 +312,7 @@ const InviteInput = ({
           onSelectAccess={onSelectAccess}
           containerRef={inputsRef}
           isOwner={isOwner}
+          isMobileView={isMobileView}
         />
 
         {!hideSelector && addUsersPanelVisible && (
@@ -325,6 +327,8 @@ const InviteInput = ({
             isMultiSelect
             isEncrypted={true}
             defaultAccess={selectedAccess}
+            withoutBackground={isMobileView}
+            withBlur={!isMobileView}
           />
         )}
       </StyledInviteInputContainer>

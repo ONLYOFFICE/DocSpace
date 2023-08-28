@@ -21,6 +21,7 @@ const Row = memo(({ data, index, style }) => {
     isOwner,
     inputsRef,
     setIsOpenItemAccess,
+    isMobileView,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -40,6 +41,7 @@ const Row = memo(({ data, index, style }) => {
         isOwner={isOwner}
         inputsRef={inputsRef}
         setIsOpenItemAccess={setIsOpenItemAccess}
+        isMobileView={isMobileView}
       />
     </StyledRow>
   );
@@ -57,6 +59,7 @@ const ItemsList = ({
   scrollAllPanelContent,
   inputsRef,
   invitePanelBodyRef,
+  isMobileView,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
@@ -116,6 +119,9 @@ const ItemsList = ({
 
   const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
+  const willChangeStyle =
+    isMobileView && isOpenItemAccess ? "auto" : "transform";
+
   return (
     <ScrollList
       offsetTop={offsetTop}
@@ -124,7 +130,7 @@ const ItemsList = ({
       isTotalListHeight={isTotalListHeight}
     >
       <List
-        style={{ overflow: overflowStyle }}
+        style={{ overflow: overflowStyle, willChange: willChangeStyle }}
         height={bodyHeight}
         width="auto"
         itemCount={inviteItems.length}
@@ -138,6 +144,7 @@ const ItemsList = ({
           isOwner,
           inputsRef,
           setIsOpenItemAccess,
+          isMobileView,
           t,
         }}
         outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
