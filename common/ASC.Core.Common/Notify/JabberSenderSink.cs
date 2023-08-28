@@ -36,8 +36,6 @@ class JabberSenderSink : Sink
         _sender = sender ?? throw new ArgumentNullException(nameof(sender));
     }
 
-    private readonly IServiceProvider _serviceProvider;
-
     public override async Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope scope)
     {
         try

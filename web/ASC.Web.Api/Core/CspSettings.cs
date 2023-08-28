@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Data.Storage.S3;
+using ASC.Web.Files.Classes;
+
 namespace ASC.Web.Api.Core;
 
 public class CspSettings : ISettings<CspSettings>
@@ -32,6 +35,7 @@ public class CspSettings : ISettings<CspSettings>
     public Guid ID => new Guid("27504162-16FF-405F-8530-1537B0F2B89D");
 
     public IEnumerable<string> Domains { get; set; }
+    public bool SetDefaultIfEmpty { get; set; }
 
     public CspSettings GetDefault()
     {
@@ -46,6 +50,7 @@ public class CspSettingsHelper
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly TenantManager _tenantManager;
     private readonly CoreSettings _coreSettings;
+    private readonly GlobalStore _globalStore;
     private readonly IDistributedCache _distributedCache;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
@@ -55,6 +60,7 @@ public class CspSettingsHelper
         FilesLinkUtility filesLinkUtility,
         TenantManager tenantManager,
         CoreSettings coreSettings,
+        GlobalStore globalStore,
         IDistributedCache distributedCache,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
@@ -63,12 +69,13 @@ public class CspSettingsHelper
         _filesLinkUtility = filesLinkUtility;
         _tenantManager = tenantManager;
         _coreSettings = coreSettings;
+        _globalStore = globalStore;
         _distributedCache = distributedCache;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
     }
 
-    public async Task<string> Save(IEnumerable<string> domains)
+    public async Task<string> Save(IEnumerable<string> domains, bool setDefaultIfEmpty)
     {
         var tenant = _tenantManager.GetCurrentTenant();
         var domain = tenant.GetTenantDomain(_coreSettings);
@@ -83,7 +90,7 @@ public class CspSettingsHelper
             headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
         }
 
-        var headerValue = CreateHeader(domains);
+        var headerValue = CreateHeader(domains, setDefaultIfEmpty);
 
         if (!string.IsNullOrEmpty(headerValue))
         {
@@ -96,6 +103,7 @@ public class CspSettingsHelper
 
         var current = _settingsManager.Load<CspSettings>();
         current.Domains = domains;
+        current.SetDefaultIfEmpty = setDefaultIfEmpty;
         _settingsManager.Save(current);
 
         return headerValue;
@@ -117,31 +125,40 @@ public class CspSettingsHelper
         }
     }
 
-    public string CreateHeader(IEnumerable<string> domains)
+    public string CreateHeader(IEnumerable<string> domains, bool setDefaultIfEmpty = false)
     {
         if (domains == null || !domains.Any())
         {
-            return null;
+            if (setDefaultIfEmpty)
+            {
+                domains = Enumerable.Empty<string>();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         var csp = new CspBuilder();
 
         var def = csp.ByDefaultAllow
             .FromSelf()
+            .From(_filesLinkUtility.DocServiceUrl);
+
+        var scriptBuilder = csp.AllowScripts
+            .FromSelf()
             .From(_filesLinkUtility.DocServiceUrl)
-            .From("*.googleapis.com"); //firebase
+            .AllowUnsafeInline();
 
         var firebaseDomain = _configuration["firebase:authDomain"];
         if (!string.IsNullOrEmpty(firebaseDomain))
         {
             def.From(firebaseDomain);
-        }
 
-        var scriptBuilder = csp.AllowScripts
-            .FromSelf()
-            .From(_filesLinkUtility.DocServiceUrl)
-            .From("*.googleapis.com") //firebase
-            .AllowUnsafeInline();
+            var googleapi = "*.googleapis.com";
+            def.From(googleapi);
+            scriptBuilder.From(googleapi);
+        }
 
         var styleBuilder = csp.AllowStyles
             .FromSelf()
@@ -161,6 +178,7 @@ public class CspSettingsHelper
             def.From("*.zendesk.com");
             def.From("*.zopim.com");
             def.From("wss:");
+
             scriptBuilder
                 .From("*.zopim.com")
                 .AllowUnsafeEval();//zendesk;
@@ -174,6 +192,11 @@ public class CspSettingsHelper
             styleBuilder.From(domain);
             imageBuilder.From(domain);
             frameBuilder.From(domain);
+        }
+
+        if (_globalStore.GetStore() is S3Storage s3Storage && !string.IsNullOrEmpty(s3Storage.CdnDistributionDomain))
+        {
+            imageBuilder.From(s3Storage.CdnDistributionDomain);
         }
 
         var (_, headerValue) = csp.BuildCspOptions().ToString(null);
