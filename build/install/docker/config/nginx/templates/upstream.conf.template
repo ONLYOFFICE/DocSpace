@@ -85,3 +85,15 @@ map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server" {
     default "$DOCUMENT_SERVER_URL_EXTERNAL";
     "" "http://$DOCUMENT_CONTAINER_NAME";
 }
+
+map "$REDIS_HOST" "$server_redis" {
+    volatile;
+    default "$REDIS_HOST";
+    "" "$REDIS_CONTAINER_NAME";
+}
+
+map "$REDIS_PORT" "$server_redis_port" {
+    volatile;
+    default "$REDIS_PORT";
+    "" "6379";
+}
