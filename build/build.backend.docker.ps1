@@ -29,9 +29,9 @@ if ($args[0] -eq "--force") {
 
 Write-Host "FORCE BUILD BASE IMAGES: $Force" -ForegroundColor Blue
 
-$existsnetwork = (docker network ls | ForEach-Object { $_.Split()[1] }) -contains onlyoffice
+$ExistsNetwork= docker network ls --format '{{.Name}}' | findstr "onlyoffice" 
 
-if (-not $existsnetwork) {
+if (-not $ExistsNetwork) {
     docker network create --driver bridge onlyoffice
 }
 

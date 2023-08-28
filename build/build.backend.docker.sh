@@ -38,10 +38,10 @@ echo "Run MySQL"
 
 arch_name="$(uname -m)"
 
-existsnetwork=$(docker network ls | awk '{print $2;}' | { grep -x ${NETWORK_NAME} || true; });
+existsnetwork=$(docker network ls | awk '{print $2;}' | { grep -x onlyoffice || true; });
 
 if [[ -z ${existsnetwork} ]]; then
-    docker network create --driver bridge ${NETWORK_NAME}
+    docker network create --driver bridge onlyoffice
 fi
 
 if [ "${arch_name}" = "x86_64" ]; then
