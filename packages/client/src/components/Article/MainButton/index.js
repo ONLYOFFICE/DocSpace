@@ -14,6 +14,7 @@ import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
 
+import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import MainButton from "@docspace/components/main-button";
@@ -98,6 +99,7 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
+    selectFileDialogVisible,
     showArticleLoader,
     isFavoritesFolder,
     isRecentFolder,
@@ -117,6 +119,8 @@ const ArticleMainButtonContent = (props) => {
     setInvitePanelOptions,
 
     mainButtonMobileVisible,
+    moveToPanelVisible,
+    copyPanelVisible,
 
     security,
     isGracePeriod,
@@ -461,6 +465,15 @@ const ArticleMainButtonContent = (props) => {
 
   const isProfile = location.pathname.includes("/profile");
 
+  let mainButtonVisible = true;
+
+  if (isMobileOnly) {
+    mainButtonVisible =
+      moveToPanelVisible || copyPanelVisible || selectFileDialogVisible
+        ? false
+        : true;
+  }
+
   if (showArticleLoader)
     return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
 
@@ -475,7 +488,9 @@ const ArticleMainButtonContent = (props) => {
               actionOptions={actions}
               buttonOptions={uploadActions}
               isRooms={isRoomsFolder}
-              mainButtonMobileVisible={mainButtonMobileVisible}
+              mainButtonMobileVisible={
+                mainButtonMobileVisible && mainButtonVisible
+              }
               onMainButtonClick={onCreateRoom}
             />
           )}
@@ -559,6 +574,9 @@ export default inject(
       setSelectFileDialogVisible,
       setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
+      copyPanelVisible,
+      moveToPanelVisible,
+      selectFileDialogVisible,
     } = dialogsStore;
 
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
@@ -589,6 +607,7 @@ export default inject(
       startUpload,
 
       setSelectFileDialogVisible,
+      selectFileDialogVisible,
       setInvitePanelOptions,
 
       currentFolderId,
@@ -600,6 +619,8 @@ export default inject(
       isOwner,
 
       mainButtonMobileVisible,
+      moveToPanelVisible,
+      copyPanelVisible,
       security,
     };
   }
