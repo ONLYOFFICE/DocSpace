@@ -169,9 +169,9 @@ public class SetupInfo
         SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
         _webAutotestSecretEmail = (configuration["web:autotest:secret-email"] ?? "").Trim();
 
-        RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
-        RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
-        RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
+        RecaptchaPublicKey = GetAppSettings("web:recaptcha:public-key", null);
+        RecaptchaPrivateKey = GetAppSettings("web:recaptcha:private-key", null);
+        RecaptchaVerifyUrl = GetAppSettings("web:recaptcha:verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
 
         _webDisplayMobappsBanner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
         ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
