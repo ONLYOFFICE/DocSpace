@@ -403,14 +403,22 @@ End Function
 Function OpenRestySetup
    On Error Resume Next
 
-   Dim objShell, sourcePath, destinationPath, openRestyServicePath, openRestyFolder
+   Dim objShell, sourcePath, destinationPath, openRestyServicePath, openRestyFolder, objFSO, objFolder
 
    Set objShell = CreateObject("WScript.Shell")
 
-   openRestyFolder = "openresty-1.21.4.2-win64"
-   sourcePath = Session.Property("APPDIR") & openRestyFolder
    destinationPath = Session.Property("APPDIR")
    openRestyServicePath = Session.Property("APPDIR") & "tools\OpenResty.exe"
+   openRestyFolder = ""
+   Set objFSO = CreateObject("Scripting.FileSystemObject")
+    For Each objFolder In objFSO.GetFolder(destinationPath).SubFolders
+        If Left(objFolder.Name, 9) = "openresty" Then
+          openRestyFolder = objFolder.Name
+        End If
+    Next
+    Set objFSO = Nothing
+
+   sourcePath = Session.Property("APPDIR") & openRestyFolder
 
    ' Run XCopy to copy files and folders
    objShell.Run "xcopy """ & sourcePath & """ """ & destinationPath & """ /E /I /Y", 0, True
