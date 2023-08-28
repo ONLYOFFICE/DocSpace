@@ -112,7 +112,10 @@ public class BackupFileUploadHandler
             result = Error(error.Message);
         }
 
-        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result));
+        await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(result, new System.Text.Json.JsonSerializerOptions()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+        }));
     }
 
     private BackupFileUploadResult Success(int chunk = 0, bool endUpload = false)
