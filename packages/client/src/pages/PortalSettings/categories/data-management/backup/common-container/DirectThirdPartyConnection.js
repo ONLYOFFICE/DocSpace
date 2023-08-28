@@ -96,6 +96,8 @@ const DirectThirdPartyConnection = (props) => {
     try {
       if (!isDirectConnection()) setState({ isUpdatingInfo: true });
 
+      onSelectFolder && onSelectFolder("");
+
       let account;
       [account, capabilities] = await Promise.all([
         getSettingsThirdParty(),
@@ -186,6 +188,7 @@ const DirectThirdPartyConnection = (props) => {
 
   const onConnect = () => {
     clearLocalStorage();
+    onSelectFolder && onSelectFolder("");
 
     const {
       provider_key,
