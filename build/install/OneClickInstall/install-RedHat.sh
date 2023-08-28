@@ -6,7 +6,6 @@ package_manager="yum"
 package_sysname="onlyoffice";
 product_name="DocSpace"
 product=$(tr '[:upper:]' '[:lower:]' <<< ${product_name})
-GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 MAKESWAP="true"
 RES_APP_INSTALLED="is already installed";
@@ -132,7 +131,11 @@ enabled=1
 gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
 END
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
+if [ -z $GIT_BRANCH ]; then
+	DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/${product}/install-RedHat"
+else
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
+fi
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
 	source install-RedHat/tools.sh

@@ -96,6 +96,7 @@ public abstract class TagsController<T> : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true - the file is favorite, false - the file is not favorite</returns>
     /// <path>api/2.0/files/favorites/{fileId}</path>
     /// <httpMethod>GET</httpMethod>
+    /// <visible>false</visible>
     [HttpGet("favorites/{fileId}")]
     public Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
     {
@@ -127,6 +128,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/favorites</path>
     /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("favorites")]
     public async Task<bool> AddFavoritesAsync(BaseBatchRequestDto inDto)
     {
@@ -165,6 +167,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/favorites</path>
     /// <httpMethod>DELETE</httpMethod>
+    /// <visible>false</visible>
     [HttpDelete("favorites")]
     [Consumes("application/json")]
     public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto inDto)

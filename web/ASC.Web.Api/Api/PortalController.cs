@@ -44,7 +44,6 @@ public class PortalController : ControllerBase
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly UrlShortener _urlShortener;
     private readonly AuthContext _authContext;
-    private readonly WebItemSecurity _webItemSecurity;
     protected readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;
     private readonly IMobileAppInstallRegistrator _mobileAppInstallRegistrator;
@@ -69,6 +68,7 @@ public class PortalController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly QuotaHelper _quotaHelper;
+    private readonly CspSettingsHelper _cspSettingsHelper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -79,7 +79,6 @@ public class PortalController : ControllerBase
         CommonLinkUtility commonLinkUtility,
         UrlShortener urlShortener,
         AuthContext authContext,
-        WebItemSecurity webItemSecurity,
         SecurityContext securityContext,
         SettingsManager settingsManager,
         IMobileAppInstallRegistrator mobileAppInstallRegistrator,
@@ -102,7 +101,8 @@ public class PortalController : ControllerBase
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         IMapper mapper,
         IHttpContextAccessor httpContextAccessor,
-        QuotaHelper quotaHelper)
+        QuotaHelper quotaHelper,
+        CspSettingsHelper cspSettingsHelper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -112,7 +112,6 @@ public class PortalController : ControllerBase
         _commonLinkUtility = commonLinkUtility;
         _urlShortener = urlShortener;
         _authContext = authContext;
-        _webItemSecurity = webItemSecurity;
         _securityContext = securityContext;
         _settingsManager = settingsManager;
         _mobileAppInstallRegistrator = mobileAppInstallRegistrator;
@@ -136,6 +135,7 @@ public class PortalController : ControllerBase
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _quotaHelper = quotaHelper;
+        _cspSettingsHelper = cspSettingsHelper;
     }
 
     /// <summary>
@@ -487,7 +487,7 @@ public class PortalController : ControllerBase
     /// <returns type="System.Object, System">Confirmation email about authentication to the portal with a new name</returns>
     /// <path>api/2.0/portal/portalrename</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <visible>false</visible>
+    ///<visible>false</visible>
     [HttpPut("portalrename")]
     public async Task<object> UpdatePortalName(PortalRenameRequestsDto inDto)
     {
@@ -535,9 +535,12 @@ public class PortalController : ControllerBase
                 await _apiSystemHelper.AddTenantToCacheAsync(newAlias, user.Id);
             }
 
+            var oldDomain = tenant.GetTenantDomain(_coreSettings);
             tenant.Alias = alias;
             tenant = _tenantManager.SaveTenant(tenant);
             _tenantManager.SetCurrentTenant(tenant);
+
+            await _cspSettingsHelper.RenameDomain(oldDomain, tenant.GetTenantDomain(_coreSettings));
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {

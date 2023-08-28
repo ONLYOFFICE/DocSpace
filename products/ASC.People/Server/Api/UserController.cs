@@ -155,6 +155,7 @@ public class UserController : PeopleControllerBase
     /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Newly added user with the detailed information</returns>
     /// <path>api/2.0/people/active</path>
     /// <httpMethod>POST</httpMethod>
+    /// <visible>false</visible>
     [HttpPost("active")]
     public async Task<EmployeeFullDto> AddMemberAsActivated(MemberRequestDto inDto)
     {
@@ -438,6 +439,7 @@ public class UserController : PeopleControllerBase
             _messageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
+        _cookiesManager.AuthenticateMeAndSetCookies(Tenant.Id, userid);
         return await _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
@@ -744,6 +746,7 @@ public class UserController : PeopleControllerBase
     /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">Module information</returns>
     /// <path>api/2.0/people/info</path>
     /// <httpMethod>GET</httpMethod>
+    /// <visible>false</visible>
     [HttpGet("info")]
     public Module GetModule()
     {

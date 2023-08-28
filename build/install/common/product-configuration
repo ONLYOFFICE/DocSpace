@@ -11,8 +11,8 @@ PRODUCT_DIR="/var/www/${PRODUCT}"
 LOG_DIR="/var/log/${PACKAGE_SYSNAME}/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 
+NGINX_CONF="/usr/local/openresty/nginx/conf/nginx.conf"
 NGINX_DIR="/etc/nginx"
-NGINX_CONF="${NGINX_DIR}/conf.d"
 
 DB_HOST="localhost"
 DB_PORT="3306"
@@ -36,7 +36,6 @@ REDIS_HOST="localhost"
 REDIS_PORT="6379"
 
 JSON="json -I -f"
-JSON_USERCONF="$JSON $USER_CONF -e"
 
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
@@ -230,8 +229,11 @@ set_core_machinekey () {
 		fi
 	fi
 
-	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
+	save_undefined_param "${USER_CONF}" "core.machinekey" "${CORE_MACHINEKEY}"
+	save_undefined_param "${USER_CONF}" "core['base-domain']" "${APP_HOST}"
+	save_undefined_param "${APP_DIR}/apisystem.${ENVIRONMENT}.json" "core.machinekey" "${CORE_MACHINEKEY}"
+	save_undefined_param "${APP_DIR}/apisystem.${ENVIRONMENT}.json" "core['base-domain']" "${CORE_MACHINEKEY}"
+
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
@@ -242,6 +244,21 @@ install_json() {
 		chmod 755 /usr/bin/json
 		echo "OK"
 	fi
+}
+
+save_undefined_param() {
+	local JSON_FILE="$1"
+	local FIELD_PATH="$2"
+	local FIELD_VALUE="$3"
+	[ "$4" != "rewrite" ] && local CONDITION="if(this.${FIELD_PATH}===undefined)"
+
+	IFS='.' read -ra PATH_ELEMENTS <<< "${FIELD_PATH}"
+	for ELEMENT in "${PATH_ELEMENTS[@]::${#PATH_ELEMENTS[@]}-1}"; do
+		local CURRENT_PATH+=".$ELEMENT"
+		${JSON} ${JSON_FILE} -e "if(this${CURRENT_PATH}===undefined)this${CURRENT_PATH}={};" >/dev/null 2>&1
+	done
+
+	${JSON} ${JSON_FILE} -e "${CONDITION}this.${FIELD_PATH}=\"${FIELD_VALUE}\"" >/dev/null 2>&1
 }
 
 restart_services() {
@@ -320,13 +337,13 @@ establish_mysql_conn(){
 	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true; \
 Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
-	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
-	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
+	save_undefined_param "${USER_CONF}" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
+	save_undefined_param "${APP_DIR}/apisystem.${ENVIRONMENT}.json" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
 
 	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//_/\\_}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 
 	#Enable database migration
-	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
+	save_undefined_param "${USER_CONF}" "migration.enabled" "true"
 
 	echo "OK"
 }
@@ -409,7 +426,7 @@ change_mysql_config(){
 		sed "s/collation_server.*/collation_server = utf8_general_ci/" -i ${CNF_PATH} || true # ignore errors
 	fi
 	
-	MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}')
+	MYSQL_AUTHENTICATION_PLUGIN=$($MYSQL -e "SHOW VARIABLES LIKE 'default_authentication_plugin';" -s | awk '{print $2}' >/dev/null 2>&1)
 	MYSQL_AUTHENTICATION_PLUGIN=${MYSQL_AUTHENTICATION_PLUGIN:-caching_sha2_password}
 
 	if ! grep -q "^default-authentication-plugin"  ${CNF_PATH}; then
@@ -439,22 +456,23 @@ change_mysql_config(){
 	systemctl restart ${MYSQL_PACKAGE}
 }
 
-setup_nginx(){
-	echo -n "Configuring nginx... "
+setup_openresty(){
+	echo -n "Configuring openresty... "
 	
-	# Remove default nginx website
-	rm -f $NGINX_CONF/default.conf $NGINX_DIR/sites-enabled/default 
-    sed -i "s_\(listen\).*;_\1 $APP_PORT;_" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
+	if systemctl is-active nginx | grep -q "active"; then
+		systemctl disable nginx && systemctl stop nginx 
+	fi
 
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_DIR}/nginx.conf 
+	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
+
+	# Remove default nginx website
+	rm -f ${NGINX_DIR}/conf.d/default.conf ${NGINX_DIR}/sites-enabled/default 
+
+	sed -i "s_\(listen\).*;_\1 $APP_PORT;_" ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_CONF}
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_CONF}
 
 	if [ "$DIST" = "RedHat" ]; then
-		# Remove default nginx settings
-		if grep -q "server {"  ${NGINX_DIR}/nginx.conf ; then
-			sed -e '$a}' -e '/server {/,$d' -i ${NGINX_DIR}/nginx.conf
-		fi
-
 		shopt -s nocasematch
 		PORTS=()
 		if command -v getenforce &> /dev/null; then
@@ -500,21 +518,15 @@ setup_nginx(){
 		fi
 	elif [ "$DIST" = "Debian" ]; then
 		if ! id "nginx" &>/dev/null; then
-			systemctl stop nginx
-
 			rm -dfr /var/log/nginx/*
 			rm -dfr /var/cache/nginx/*
 			useradd -s /bin/false nginx
-
-			systemctl start nginx
-		else
-			systemctl reload nginx
 		fi
 	fi
 
     chown nginx:nginx /etc/nginx/* -R
-	systemctl enable nginx >/dev/null 2>&1
-	systemctl restart nginx
+	systemctl enable openresty >/dev/null 2>&1
+	systemctl restart openresty
 	echo "OK"
 }
 
@@ -545,21 +557,24 @@ setup_docs() {
 		local APP_HOST=$(curl -s ifconfig.me)
 	fi
 
-	#Save Docs address and JWT in .json
-	$JSON_USERCONF "this.files={'docservice': {\
-	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"${DOCUMENT_SERVER_URL_EXTERNAL:-"/ds-vpath/"}\", 'internal': \"${DOCUMENT_SERVER_URL_EXTERNAL:-"http://$DOCUMENT_SERVER_HOST:$DOCUMENT_SERVER_PORT"}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
-
 	#Changing the Docs port in nginx conf
 	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$DOCUMENT_SERVER_HOST:$DOCUMENT_SERVER_PORT};#}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
+	#Save Docs address and JWT in .json
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER}" "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.public" ${DOCUMENT_SERVER_URL_EXTERNAL:-"/ds-vpath/"} "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.internal" ${DOCUMENT_SERVER_URL_EXTERNAL:-"http://$DOCUMENT_SERVER_HOST:$DOCUMENT_SERVER_PORT"} "rewrite"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.portal" "http://${APP_HOST}:${APP_PORT}" "rewrite"
+	
 	echo "OK"
 }
 
 setup_enterprise() {
 	if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then 
 		[ ! -d /var/www/$PACKAGE_SYSNAME/Data/ ] && mkdir -p /var/www/$PACKAGE_SYSNAME/Data/
-		$JSON $APP_DIR/appsettings.json -e "this.license.file={'path': \"/var/www/$PACKAGE_SYSNAME/Data/license.lic\"}" >/dev/null 2>&1
+		LICENCE_PATH="/var/www/$PACKAGE_SYSNAME/Data/license.lic"
+    save_undefined_param "${USER_CONF}" "license.file.path" ${LICENCE_PATH} "rewrite"
 	fi
 }
 
@@ -625,7 +640,10 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	$JSON $APP_DIR/elastic.$ENVIRONMENT.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" >/dev/null 2>&1
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Scheme" "${ELK_SHEME}"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Host" "${ELK_HOST}"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Port" "${ELK_PORT}"
+	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Threads" "1"
 
 	if [ $1 == "LOCAL_ELASTIC_SERVER"]; then
 		change_elasticsearch_config
@@ -655,13 +673,17 @@ setup_redis() {
 setup_rabbitmq() {
 	echo -n "Configuring rabbitmq... "
 
-	$JSON $APP_DIR/rabbitmq.$ENVIRONMENT.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\",'Port': \"${RABBITMQ_PORT}\",'VirtualHost': \"/\" }" >/dev/null 2>&1
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Hostname" "${RABBITMQ_HOST}"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.UserName" "${RABBITMQ_USER}"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Password" "${RABBITMQ_PASSWORD}"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Port" "${RABBITMQ_PORT}"
+	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.VirtualHost" "/"
 
 	if [ $1 == "LOCAL_RABBITMQ_SERVER" ]; then
 		systemctl enable rabbitmq-server >/dev/null 2>&1
 		systemctl restart rabbitmq-server
 	fi
-
+  
 	echo "OK"
 }
 
@@ -678,7 +700,6 @@ product_configuration(){
 		fi
 	done
 
-	$JSON $APP_DIR/plugins.json -e "this.pluginsConf={'path': \"$PRODUCT_DIR/Tools/radicale/plugins/\" }" >/dev/null 2>&1 
 	set_core_machinekey
 
 	echo "OK"
@@ -727,8 +748,8 @@ elif [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
     setup_docs "EXTERNAL_DOCS_SERVER"
 fi
 
-if $PACKAGE_MANAGER nginx >/dev/null 2>&1 || $PACKAGE_MANAGER nginx-extras >/dev/null 2>&1; then
-    setup_nginx
+if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
+    setup_openresty
 fi
 
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then

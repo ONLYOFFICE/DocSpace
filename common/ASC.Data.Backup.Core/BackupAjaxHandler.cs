@@ -277,7 +277,7 @@ public class BackupAjaxHandler
             restoreRequest.StorageType = storageType;
             restoreRequest.FilePathOrId = storageParams["filePath"];
 
-            if (restoreRequest.StorageType == BackupStorageType.Local && !_coreBaseSettings.Standalone)
+            if (restoreRequest.StorageType == BackupStorageType.Local)
             {
                 restoreRequest.FilePathOrId = GetTmpFilePath();
             }

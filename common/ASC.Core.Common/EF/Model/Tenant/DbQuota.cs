@@ -72,7 +72,7 @@ public static class DbQuotaExtension
                     Name = "admin",
                     Description = null,
                     Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,total_size:107374182400,file_size:1024,manager:1",
-                    Price = 30,
+                    Price = 15,
                     ProductId = "1002",
                     Visible = true
                 },
@@ -82,6 +82,46 @@ public static class DbQuotaExtension
                     Name = "startup",
                     Description = null,
                     Features = "free,total_size:2147483648,manager:3,room:12",
+                    Price = 0,
+                    ProductId = null,
+                    Visible = false
+                },
+                new DbQuota
+                {
+                    Tenant = -4,
+                    Name = "disk",
+                    Description = null,
+                    Features = "total_size:1073741824",
+                    Price = 0,
+                    ProductId = "1004",
+                    Visible = false
+                },
+                new DbQuota
+                {
+                    Tenant = -5,
+                    Name = "admin1",
+                    Description = null,
+                    Features = "manager:1",
+                    Price = 0,
+                    ProductId = "1005",
+                    Visible = false
+                },
+                new DbQuota
+                {
+                    Tenant = -6,
+                    Name = "subscription",
+                    Description = null,
+                    Features = "audit,ldap,sso,whitelabel,thirdparty,restore,oauth,contentsearch,file_size:1024",
+                    Price = 0,
+                    ProductId = "1001",
+                    Visible = false
+                },
+                new DbQuota
+                {
+                    Tenant = -7,
+                    Name = "nonprofit",
+                    Description = null,
+                    Features = "non-profit,audit,ldap,sso,thirdparty,restore,oauth,contentsearch,total_size:2147483648,file_size:1024,manager:20",
                     Price = 0,
                     ProductId = null,
                     Visible = false
