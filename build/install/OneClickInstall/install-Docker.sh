@@ -1162,6 +1162,10 @@ set_docspace_params() {
 	
 	LETS_ENCRYPT_DOMAIN=${LETS_ENCRYPT_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_DOMAIN")};
 	LETS_ENCRYPT_MAIL=${LETS_ENCRYPT_MAIL:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_MAIL")};
+	
+	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_PATH")};
+	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_KEY_PATH")};
+	DHPARAM_PATH=${DHPARAM_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "DHPARAM_PATH")};
 
 	[ -f ${PROXY_YML} ] && EXTERNAL_PORT=${EXTERNAL_PORT:-"$(grep -oP '(?<=- ).*?(?=:80$)' ${PROXY_YML})"}
 }
@@ -1297,13 +1301,16 @@ install_product () {
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
-
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
+	reconfigure CERTIFICATE_PATH ${CERTIFICATE_PATH}
+	reconfigure CERTIFICATE_KEY_PATH ${CERTIFICATE_KEY_PATH}
+	reconfigure DHPARAM_PATH ${DHPARAM_PATH}
 
 	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
 		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
+
+	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d

@@ -40,6 +40,9 @@ if [ "$#" -ge "2" ]; then
       # Update .env file with Let's Encrypt domain
       sed -i "s~\(LETS_ENCRYPT_DOMAIN=\).*~\1\"${DOMAIN}\"~g" ${DOCKERCOMPOSE}/.env
       sed -i "s~\(APP_URL_PORTAL=\).*~\1\"https://${DOMAIN}\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(CERTIFICATE_PATH=\).*~\1\"${LETSENCRYPT_DIR}/fullchain.pem\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(CERTIFICATE_KEY_PATH=\).*~\1\"${LETSENCRYPT_DIR}/privkey.pem\"~g" ${DOCKERCOMPOSE}/.env
+      sed -i "s~\(DHPARAM_PATH=\).*~\1\"/etc/ssl/certs/dhparam.pem\"~g" ${DOCKERCOMPOSE}/.env
 
       docker-compose ${SERVICES} down
       docker-compose ${SERVICES} -f ${DOCKERCOMPOSE}/proxy-ssl.yml up -d
