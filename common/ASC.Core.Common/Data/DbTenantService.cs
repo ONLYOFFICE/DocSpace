@@ -208,8 +208,6 @@ public class DbTenantService : ITenantService
                 }
             }
 
-            var updateTenant = false;
-
             if (tenant.Id == Tenant.DefaultTenant)
             {
                 tenant.Version = await tenantDbContext.TenantVersion
@@ -230,18 +228,15 @@ public class DbTenantService : ITenantService
                 await tenantDbContext.SaveChangesAsync();
 
                 tenant.Id = dbTenant.Id;
-                entity.State = EntityState.Detached;
             }
             else
             {
                 dbTenant = await tenantDbContext.Tenants
-                    .AsNoTracking()
                     .Where(r => r.Id == tenant.Id)
                     .FirstOrDefaultAsync();
 
                 if (dbTenant != null)
                 {
-                    updateTenant = true;
                     dbTenant.Alias = tenant.Alias.ToLowerInvariant();
                     dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
                     dbTenant.Version = tenant.Version;
@@ -262,37 +257,17 @@ public class DbTenantService : ITenantService
                     dbTenant.OwnerId = tenant.OwnerId;
                 }
 
+                await tenantDbContext.SaveChangesAsync();
             }
 
             if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
             {
-                var p = tenantDbContext.TenantPartner
-                    .AsNoTracking()
-                    .Where(r => r.TenantId == tenant.Id)
-                    .FirstOrDefault();
+                var p = dbTenant.Partner;
 
                 if (p != null)
                 {
                     tenantDbContext.TenantPartner.Remove(p);
                 }
-                if (updateTenant)
-                {
-                    tenantDbContext.Tenants.Update(dbTenant);
-                    await tenantDbContext.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                var tenantPartner = new DbTenantPartner
-                {
-                    TenantId = tenant.Id,
-                    PartnerId = tenant.PartnerId,
-                    AffiliateId = tenant.AffiliateId,
-                    Campaign = tenant.Campaign,
-                    Tenant = dbTenant
-                };
-
-                tenantDbContext.TenantPartner.Add(tenantPartner);
             }
 
             await tx.CommitAsync();

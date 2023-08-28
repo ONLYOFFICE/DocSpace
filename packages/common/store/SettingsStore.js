@@ -27,6 +27,7 @@ const themes = {
 };
 
 const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+const systemTheme = getSystemTheme();
 
 class SettingsStore {
   isLoading = false;
@@ -39,14 +40,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = isDesktopEditors
-    ? window.RendererProcessVariable?.theme?.type === "dark"
-      ? Dark
-      : Base
-    : window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? Dark
-    : Base;
+  theme = themes[systemTheme];
   trustedDomains = [];
   trustedDomainsType = 0;
   ipRestrictionEnable = false;

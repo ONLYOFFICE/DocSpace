@@ -179,6 +179,7 @@ class BackupListModalDialog extends React.Component {
       t,
       isCopyingToLocal,
       theme,
+      standalone,
     } = this.props;
     const { filesList, isLoading, selectedFileIndex, isChecked } = this.state;
 
@@ -186,9 +187,11 @@ class BackupListModalDialog extends React.Component {
       <>
         <Text className="restore-backup_warning-description">
           {t("RestoreBackupWarningText")}{" "}
-          <Text as="span" className="restore-backup_warning-link">
-            {t("RestoreBackupResetInfoWarningText")}
-          </Text>
+          {!standalone && (
+            <Text as="span" className="restore-backup_warning-link">
+              {t("RestoreBackupResetInfoWarningText")}
+            </Text>
+          )}
         </Text>
       </>
     );
@@ -305,7 +308,7 @@ BackupListModalDialog.propTypes = {
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
   const { downloadingProgress } = backup;
-  const { socketHelper, theme, setTenantStatus } = settingsStore;
+  const { socketHelper, theme, setTenantStatus, standalone } = settingsStore;
   const isCopyingToLocal = downloadingProgress !== 100;
 
   return {
@@ -313,6 +316,7 @@ export default inject(({ auth, backup }) => {
     theme,
     socketHelper,
     isCopyingToLocal,
+    standalone,
   };
 })(
   withTranslation(["Settings", "Common", "Translations"])(

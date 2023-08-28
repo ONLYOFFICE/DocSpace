@@ -5,6 +5,7 @@ on:
     branches: 
       - 'hotfix/v**'
       - 'release/v**'
+      - 'feature/v*-git-action'
 env:
     DOCKER_PATH: "/build/install/docker"
     REPO: "onlyoffice"
@@ -34,8 +35,8 @@ jobs:
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
-          TAG=${{github.run_number}}
-          export DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b/s/release.*\/v\|hotfix.*\/v//').$TAG
+          DOCKER_TAG=$(echo "${GITHUB_REF_NAME}" | sed '/^release\b\|^hotfix\b\|^feature\b/s/release.*\/\|hotfix.*\/\|feature.*\///; s/-git-action$//; s/^v//').${{github.run_number}}
+          export DOCKER_TAG
 
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
