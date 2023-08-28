@@ -57,11 +57,10 @@ public class BackupFileUploadHandler
                     throw new ArgumentException("Total size must be greater than 0.");
                 }
 
-                long.TryParse(configuration["backup:MaxLocalSize"], out var maxSize);
-                maxSize = maxSize == 0 ? 1000 * 1024 * 1024 : maxSize;
+                var maxSize = tenantManager.GetCurrentTenantQuota().MaxTotalSize;
                 if (size > maxSize)
                 {
-                    throw new ArgumentException($"Max total size is {maxSize}b.");
+                    throw new ArgumentException(BackupResource.LargeBackup);
                 }
 
                 try
