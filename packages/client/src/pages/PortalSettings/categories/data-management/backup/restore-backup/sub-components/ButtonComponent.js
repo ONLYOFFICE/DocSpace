@@ -30,7 +30,6 @@ const ButtonContainer = (props) => {
     uploadLocalFile,
   } = props;
 
-  const [isUploadingLocalFile, setIsUploadingLocalFile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const onRestoreClick = async () => {
@@ -56,22 +55,21 @@ const ButtonContainer = (props) => {
     }
 
     if (isCheckedLocalFile) {
-      const isUploadedFile = await uploadLocalFile();
+      const uploadedFile = await uploadLocalFile();
 
-      if (!isUploadedFile) {
+      if (!uploadedFile) {
+        toastr.error(t("BackupCreatedError"));
         setIsLoading(false);
         return;
       }
 
-      if (isUploadedFile?.Message) {
-        toastr.error(isUploadedFile.Message);
-        setIsUploadingLocalFile(false);
+      if (!uploadedFile.data.EndUpload) {
+        toastr.error(uploadedFile.data.Message ?? t("BackupCreatedError"));
         setIsLoading(false);
         return;
       }
     }
 
-    return;
     try {
       await startRestore(backupId, storageType, storageParams, isNotification);
       setTenantStatus(TenantStatus.PortalRestore);
@@ -90,19 +88,17 @@ const ButtonContainer = (props) => {
     } catch (e) {
       toastr.error(e);
 
-      setIsUploadingLocalFile(false);
       setIsLoading(false);
     }
   };
 
   const isButtonDisabled =
     isLoading ||
-    isUploadingLocalFile ||
     !isMaxProgress ||
     !isConfirmed ||
     !isEnableRestore ||
     !restoreResource;
-  const isLoadingButton = isUploadingLocalFile || isLoading;
+  const isLoadingButton = isLoading;
 
   return (
     <>

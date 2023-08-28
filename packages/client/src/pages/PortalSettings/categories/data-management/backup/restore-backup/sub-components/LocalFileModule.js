@@ -5,9 +5,6 @@ import FileInput from "@docspace/components/file-input";
 
 const LocalFile = ({ setRestoreResource, isEnableRestore, t }) => {
   const onClickInput = (file) => {
-    //let data = new FormData();
-    // data.append("file", file);
-
     setRestoreResource(file);
   };
 

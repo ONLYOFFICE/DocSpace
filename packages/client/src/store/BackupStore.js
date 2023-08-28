@@ -7,8 +7,6 @@ import {
 } from "../pages/PortalSettings/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
-//import api from "@docspace/common/api";
-import { request } from "@docspace/common/api/client";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { uploadBackup } from "@docspace/common/api/files";
@@ -626,33 +624,38 @@ class BackupStore {
     this.chunkUploadSize = chunkUploadSize;
   };
 
-  uploadFileChunks = async (requestsDataArray) => {
+  uploadFileChunks = async (requestsDataArray, url) => {
     const length = requestsDataArray.length;
+    let res;
 
     for (let index = 0; index < length; index++) {
-      const res = await uploadBackup(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/backupFileUpload.ashx"
-        ),
+      res = await uploadBackup(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, url),
         requestsDataArray[index]
       );
-      console.log("=== CHUNKS res", res);
-      if (res.data.Message) return Promise.reject(res.data.Message);
+
+      if (!res) return false;
+
+      if (res.data.Message || !res.data.Success) return res;
     }
+
+    return res;
   };
   uploadLocalFile = async () => {
-    console.log("this.restoreResource", this.restoreResource);
-
     try {
+      const url = "/backupFileUpload.ashx";
+
       const res = await uploadBackup(
         combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           config.homepage,
-          `/backupFileUpload.ashx?init=true&totalSize=${this.restoreResource.size}`
+          `${url}?init=true&totalSize=${this.restoreResource.size}`
         )
       );
+
+      if (!res) return false;
+
+      if (res.data.Message || !res.data.Success) return res;
 
       const chunkUploadSize = res.data.ChunkSize;
 
@@ -677,8 +680,7 @@ class BackupStore {
         chunk++;
       }
 
-      console.log("res", res, requestsDataArray, chunk);
-      await this.uploadFileChunks(requestsDataArray);
+      return await this.uploadFileChunks(requestsDataArray, url);
     } catch (e) {
       toastr.error(e);
       return null;
