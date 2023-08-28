@@ -389,8 +389,12 @@ class DropDownContainer extends React.Component {
       isAside,
       withBackground,
       eventTypes,
+      forceCloseClickOutside,
+      withoutBackground,
     } = this.props;
-    const eventTypesProp = isMobile
+    const eventTypesProp = forceCloseClickOutside
+      ? {}
+      : isMobile
       ? { eventTypes: ["click, touchend"] }
       : eventTypes
       ? { eventTypes }
@@ -406,6 +410,7 @@ class DropDownContainer extends React.Component {
             withoutBlur={!withBlur}
             isAside={isAside}
             withBackground={withBackground}
+            withoutBackground={withoutBackground}
           />
         ) : null}
         <EnhancedComponent
