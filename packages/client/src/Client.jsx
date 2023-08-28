@@ -121,7 +121,6 @@ const ClientContent = (props) => {
     setEncryptionKeys,
     isLoaded,
     isDesktop,
-    isDesktopInit,
   ]);
 
   React.useEffect(() => {
