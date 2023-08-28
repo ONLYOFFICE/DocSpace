@@ -44,7 +44,6 @@ const StyledComponent = styled.div`
   }
 
   .checkbox {
-    width: max-content;
     margin-right: 9px;
   }
 `;
