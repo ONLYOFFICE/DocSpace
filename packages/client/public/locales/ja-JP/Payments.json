@@ -27,7 +27,6 @@
   "PayerDescription": "このユーザーは、支払いの詳細へのアクセス権を持ち、クォータの調整と支払いを行うことができる唯一のユーザーです。DocSpaceの所有者だけでなく、支払いマネージャー自身も、Stripeカスタマーポータルを使用してペイイングマネージャーの役割を再割り当てすることができます。",
   "PaymentOverdue": "新しいユーザーを追加することができません。",
   "PriceCalculation": "価格を計算する",
-  "QuotaPaidUserLimitError": "有料ユーザー数の上限に達しました。<1>支払額</1>",
   "RenewSubscription": "{{planName}}プランの契約を更新する",
   "RoomManagerDescription": "ルームの管理・アーカイブ、ユーザーの招待・管理。ルームに複数の管理者を割り当てることができます。",
   "StartupSuggestion": "{{planName}}プランに切り替えて、DocSpaceをもっと便利に活用",

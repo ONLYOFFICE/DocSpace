@@ -100,7 +100,9 @@ public class PaymentController : ControllerBase
 
         var currency = await _regionHelper.GetCurrencyFromRequestAsync();
 
-        return await _tariffService.GetShoppingUriAsync(Tenant.Id, currency,
+        return await _tariffService.GetShoppingUriAsync(Tenant.Id,
+            Tenant.AffiliateId,
+            currency,
             CultureInfo.CurrentCulture.TwoLetterISOLanguageName,
             (await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).Email,
             inDto.Quantity,

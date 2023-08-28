@@ -27,7 +27,7 @@
   "Page": "表示ページ（数）",
   "RoomOrFolder": "ルームまたはフォルダ",
   "RoomOrFolderDescription": "表示したいセクション、ルーム、フォルダを選択できます。",
-  "SDKDescription": "JavaScript SDKを使用すると、ONLYOFFICE DocSpaceのルームやフォルダをiframeとしてWebインターフェイスに埋め込むことができます。ここでは、サンプルのiframeを作成するための設定と、CSPを設定するための設定を見つけることができます。完全なSDKを使用するには、（リンク：APIライブラリ）をご参照ください。",
+  "SDKDescription": "JavaScript SDKを使用すると、ONLYOFFICE DocSpaceのルームやフォルダをiframeとしてWebインターフェイスに埋め込むことができます。ここでは、サンプルのiframeを作成するための設定と、CSPを設定するための設定を見つけることができます。完全なSDKを使用するには、をご参照ください",
   "SearchTerm": "検索語句",
   "SortOrder": "並べ替え順序",
   "Title": "ナビゲーションとタイトル"

@@ -67,14 +67,14 @@ const ClientContent = (props) => {
     isLoading,
     setIsFilterLoading,
     setIsHeaderLoading,
+    isDesktopClientInit,
+    setIsDesktopClientInit,
   } = props;
 
   const location = useLocation();
 
   const isEditor = location.pathname.indexOf("doceditor") !== -1;
   const isFormGallery = location.pathname.split("/").includes("form-gallery");
-
-  const [isDesktopInit, setIsDesktopInit] = React.useState(false);
 
   React.useEffect(() => {
     loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
@@ -94,8 +94,8 @@ const ClientContent = (props) => {
   }, []);
 
   React.useEffect(() => {
-    if (isAuthenticated && !isDesktopInit && isDesktop && isLoaded) {
-      setIsDesktopInit(true);
+    if (isAuthenticated && !isDesktopClientInit && isDesktop && isLoaded) {
+      setIsDesktopClientInit(true);
       regDesktop(
         user,
         isEncryption,
@@ -163,19 +163,26 @@ const Client = inject(
       encryptionKeys,
       setEncryptionKeys,
       isEncryptionSupport,
+      isDesktopClientInit,
+      setIsDesktopClientInit,
     } = auth.settingsStore;
 
     if (!auth.userStore.user) return;
 
     const { isVisitor } = auth.userStore.user;
 
-    const { isLoading, setIsSectionFilterLoading, setIsSectionHeaderLoading } =
-      clientLoadingStore;
+    const {
+      isLoading,
+      setIsSectionFilterLoading,
+      setIsSectionHeaderLoading,
+    } = clientLoadingStore;
 
     const withMainButton = !isVisitor;
 
     return {
       isDesktop: isDesktopClient,
+      isDesktopClientInit,
+      setIsDesktopClientInit,
       isFrame,
       showMenu: frameConfig?.showMenu,
       user: auth.userStore.user,
