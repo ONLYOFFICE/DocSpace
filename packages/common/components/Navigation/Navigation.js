@@ -221,6 +221,7 @@ const Navigation = ({
             isDesktopClient={isDesktopClient}
             isInfoPanelVisible={isInfoPanelVisible}
             withLogo={!!withLogo}
+            className="navigation-container"
           >
             {withLogo && (
               <NavigationLogo
@@ -253,10 +254,14 @@ const Navigation = ({
               onPlusClick={onPlusClick}
               isFrame={isFrame}
               isPublicRoom={isPublicRoom}
+              isTrashFolder={isTrashFolder}
             />
           </StyledContainer>
           {isTrashFolder && !isEmptyPage && (
-            <TrashWarning title={titles.trashWarning} />
+            <TrashWarning
+              title={titles.trashWarning}
+              isTabletView={isTabletView}
+            />
           )}
           {infoPanelIsVisible && !hideInfoPanel && (
             <ToggleInfoPanelButton

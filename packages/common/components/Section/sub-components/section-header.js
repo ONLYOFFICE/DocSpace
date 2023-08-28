@@ -18,6 +18,30 @@ const StyledSectionHeader = styled.div`
     height: 61px;
     min-height: 61px;
 
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 109px;
+        min-height: 109px;
+
+        .header-container {
+          flex-direction: column;
+          height: 109px !important;
+          min-height: 109px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
+
     .header-container {
       margin-bottom: 1px;
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -28,28 +52,90 @@ const StyledSectionHeader = styled.div`
   css`
     height: 61px;
     min-height: 61px;
+
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 109px;
+        min-height: 109px;
+
+        .header-container {
+          flex-direction: column;
+          height: 109px !important;
+          min-height: 109px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
   `}
 
   @media ${mobile} {
     height: 53px;
     min-height: 53px;
+
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 101px;
+        min-height: 101px;
+
+        .header-container {
+          flex-direction: column;
+          height: 101px !important;
+          min-height: 101px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
   }
 
   ${isMobileOnly &&
   css`
     height: 53px;
     min-height: 53px;
-  `}
 
-  ${({ isTrashFolder, isEmptyPage }) =>
-    isTrashFolder &&
-    !isEmptyPage &&
-    css`
-      @media ${tablet} {
-        height: 109px;
-        min-height: 109px;
-      }
-    `}
+    ${({ isTrashFolder, isEmptyPage }) =>
+      isTrashFolder &&
+      !isEmptyPage &&
+      css`
+        height: 101px;
+        min-height: 101px;
+
+        .header-container {
+          flex-direction: column;
+          height: 101px !important;
+          min-height: 101px !important;
+
+          .navigation-container {
+            height: calc(100% - 32px);
+          }
+          .trash-warning {
+            min-height: 32px;
+            height: 32px;
+
+            margin-bottom: 15px;
+          }
+        }
+      `}
+  `}
 
   padding-right: 20px;
 
