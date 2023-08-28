@@ -19,9 +19,12 @@ interface IClientApp extends IInitialState {
   setTheme: (theme: IUserTheme) => void;
 }
 
-const ThemeProviderWrapper = inject(({ auth }) => {
+const ThemeProviderWrapper = inject(({ auth }, props) => {
+  const { currentColorScheme } = props;
   const { settingsStore } = auth;
-  return { theme: settingsStore.theme };
+  const { theme, interfaceDirection } = settingsStore;
+
+  return { theme: { ...theme, interfaceDirection }, currentColorScheme };
 })(observer(ThemeProvider));
 
 const ClientApp: React.FC<IClientApp> = ({
@@ -30,12 +33,12 @@ const ClientApp: React.FC<IClientApp> = ({
   ...rest
 }) => {
   useSSR(initialI18nStoreASC, initialLanguage);
-
+  const { currentColorScheme } = rest;
   return (
     <BrowserRouter forceRefresh={true}>
       <MobxProvider {...store}>
         <I18nextProvider i18n={i18n}>
-          <ThemeProviderWrapper>
+          <ThemeProviderWrapper currentColorScheme={currentColorScheme}>
             <App {...rest} />
           </ThemeProviderWrapper>
         </I18nextProvider>
