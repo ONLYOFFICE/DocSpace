@@ -325,7 +325,7 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        if (inDto.IsUser)
+        if (inDto.IsUser.GetValueOrDefault(false))
         {
             _messageService.Send(MessageAction.GuestCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         }
@@ -1354,20 +1354,23 @@ public class UserController : PeopleControllerBase
         // change user type
         var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
+        if (inDto.IsUser.HasValue)
         {
-            await _countUserChecker.CheckAppend();
-            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
-            _webItemSecurityCache.ClearCache(Tenant.Id);
-        }
+            var isUser = inDto.IsUser.Value;
+            if (isUser && !_userManager.IsUser(user) && canBeGuestFlag)
+            {
+                await _countUserChecker.CheckAppend();
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+            }
 
-        if (!self && !inDto.IsUser && _userManager.IsUser(user))
-        {
-            await _countPaidUserChecker.CheckAppend();
-            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-            _webItemSecurityCache.ClearCache(Tenant.Id);
+            if (!self && !isUser && _userManager.IsUser(user))
+            {
+                await _countPaidUserChecker.CheckAppend();
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
+            }
         }
-
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
