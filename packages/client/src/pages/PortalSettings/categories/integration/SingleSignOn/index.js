@@ -29,11 +29,7 @@ const SingleSignOn = (props) => {
 
   useEffect(() => {
     isSSOAvailable && init();
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
     setDocumentTitle(t("Settings:SingleSignOn"));
-
-    return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
   return (
