@@ -93,10 +93,10 @@ const paddingStyles = css`
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            padding: 0px 24px 16px 0 !important;
+            padding: 0px 16px 16px 0 !important;
           `
         : css`
-            padding: 0px 0 16px 24px !important;
+            padding: 0px 0 16px 16px !important;
           `}
   `};
 `;
@@ -380,8 +380,7 @@ class SectionBody extends React.Component {
             <Scrollbar
               id="sectionScroll"
               scrollclass="section-scroll"
-              stype="mediumBlack"
-            >
+              stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
