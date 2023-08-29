@@ -136,7 +136,7 @@ Description: {{product}}-studio
 Package: {{product}}-proxy
 Architecture: all
 Multi-Arch: foreign
-Depends: {{product}}-common (= {{package_header_tag_version}}), nginx-extras (>= 1.9.5), ${misc:Depends}, ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), openresty, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-proxy
 	The service which is used as a web server and reverse proxy, 
 	it receives and handles requests, transmits them to other services, 

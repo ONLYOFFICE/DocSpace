@@ -19,6 +19,9 @@ import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 import Loaders from "@docspace/common/components/Loaders";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
+import Badge from "@docspace/components/badge";
+
+import CSP from "./sub-components/csp";
 
 const Controls = styled(Box)`
   min-width: 350px;
@@ -51,6 +54,7 @@ const CategorySubHeader = styled.div`
 `;
 
 const CategoryDescription = styled(Box)`
+  margin-top: 20px;
   max-width: 700px;
 `;
 
@@ -156,6 +160,7 @@ const PortalIntegration = (props) => {
     showTitle: true,
     showMenu: true,
     showFilter: true,
+    init: true,
   });
 
   const params = objectToGetParams(config);
@@ -352,6 +357,7 @@ const PortalIntegration = (props) => {
             >
               {t("APILink")}.
             </Link>
+            <CSP t={t} />
           </CategoryDescription>
           <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
           <Container>
@@ -367,6 +373,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeWidth}
                     placeholder={t("EnterWidth")}
                     value={width}
+                    tabIndex={2}
                   />
                   <ComboBox
                     size="content"
@@ -387,6 +394,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeHeight}
                     placeholder={t("EnterHeight")}
                     value={height}
+                    tabIndex={3}
                   />
                   <ComboBox
                     size="content"
@@ -407,6 +415,7 @@ const PortalIntegration = (props) => {
                   onChange={onChangeFrameId}
                   placeholder={t("EnterId")}
                   value={config.frameId}
+                  tabIndex={4}
                 />
               </ControlsGroup>
               <CategorySubHeader>{t("InterfaceElements")}</CategorySubHeader>
@@ -470,6 +479,7 @@ const PortalIntegration = (props) => {
                     onChange={onChangeSearch}
                     placeholder={t("Common:Search")}
                     value={config.search}
+                    tabIndex={5}
                   />
                   <Checkbox
                     label={t("Files:WithSubfolders")}
@@ -522,6 +532,7 @@ const PortalIntegration = (props) => {
                   onChange={onChangeCount}
                   placeholder={t("EnterCount")}
                   value={config.count}
+                  tabIndex={6}
                 />
               </ControlsGroup>
               <ControlsGroup>
@@ -532,6 +543,7 @@ const PortalIntegration = (props) => {
                   placeholder={t("EnterPage")}
                   value={config.page}
                   isDisabled={!config.count}
+                  tabIndex={7}
                 />
               </ControlsGroup>
             </Controls>

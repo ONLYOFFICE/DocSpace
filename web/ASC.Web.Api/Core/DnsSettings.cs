@@ -37,6 +37,7 @@ public class DnsSettings
     private readonly StudioNotifyService _studioNotifyService;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly MessageService _messageService;
+    private readonly CspSettingsHelper _cspSettingsHelper;
 
     public DnsSettings(
         PermissionContext permissionContext,
@@ -46,7 +47,8 @@ public class DnsSettings
         CoreSettings coreSettings,
         StudioNotifyService studioNotifyService,
         CommonLinkUtility commonLinkUtility,
-        MessageService messageService)
+        MessageService messageService,
+        CspSettingsHelper cspSettingsHelper)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;
@@ -56,6 +58,7 @@ public class DnsSettings
         _studioNotifyService = studioNotifyService;
         _commonLinkUtility = commonLinkUtility;
         _messageService = messageService;
+        _cspSettingsHelper = cspSettingsHelper;
     }
 
     public async Task<string> SaveDnsSettingsAsync(string dnsName, bool enableDns)
@@ -80,8 +83,12 @@ public class DnsSettings
             {
                 if (_coreBaseSettings.Standalone)
                 {
+                    var oldDomain = tenant.GetTenantDomain(_coreSettings);
+
                     tenant.MappedDomain = dnsName;
                     await _tenantManager.SaveTenantAsync(tenant);
+
+                    await _cspSettingsHelper.RenameDomain(oldDomain, tenant.GetTenantDomain(_coreSettings));
                     return null;
                 }
 

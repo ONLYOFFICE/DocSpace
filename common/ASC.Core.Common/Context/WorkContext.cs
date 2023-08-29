@@ -150,10 +150,10 @@ public class WorkContext
                 emailSender.Init(properties);
             }
 
-            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider));
-            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
-            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
-            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyPushSenderSysName, new PushSenderSink(pushSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyPushSenderSysName, new PushSenderSink(pushSender));
 
             NotifyEngine.AddAction<NotifyTransferRequest>();
 

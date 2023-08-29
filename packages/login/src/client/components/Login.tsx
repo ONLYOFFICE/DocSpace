@@ -35,9 +35,13 @@ import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-import { getLogoFromPath } from "@docspace/common/utils";
-import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
+import { getLogoFromPath, getSystemTheme } from "@docspace/common/utils";
 import { TenantStatus } from "@docspace/common/constants";
+
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -82,21 +86,12 @@ const Login: React.FC<ILoginProps> = ({
   const ssoUrl = capabilities?.ssoUrl || "";
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
-  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
-    const theme =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? Dark
-        : Base;
+    const systemTheme = getSystemTheme();
+    const theme = themes[systemTheme];
     setTheme(theme);
   }, []);
-
-  useIsomorphicLayoutEffect(() => {
-    if (systemTheme === "Base") setTheme(Base);
-    else setTheme(Dark);
-  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;

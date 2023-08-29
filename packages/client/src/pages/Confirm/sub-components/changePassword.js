@@ -9,7 +9,6 @@ import { StyledPage, StyledBody, StyledContent } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import { createPasswordHash } from "@docspace/common/utils";
-import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
 import toastr from "@docspace/components/toast/toastr";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
@@ -21,10 +20,10 @@ const ChangePasswordForm = (props) => {
     settings,
     hashSettings,
     defaultPage,
-    logout,
     changePassword,
     linkData,
     getSettings,
+    history,
   } = props;
 
   const [password, setPassword] = useState("");
@@ -64,10 +63,9 @@ const ChangePasswordForm = (props) => {
       const hash = createPasswordHash(password, hashSettings);
       const { uid, confirmHeader } = linkData;
       await changePassword(uid, hash, confirmHeader);
-      logout();
       setIsLoading(false);
       toastr.success(t("ChangePasswordSuccess"));
-      tryRedirectTo(defaultPage);
+      history.push(defaultPage);
     } catch (error) {
       let errorMessage = "";
       if (typeof error === "object") {
@@ -184,7 +182,6 @@ export default inject(({ auth, setup }) => {
     greetingTitle: greetingSettings,
     hashSettings,
     defaultPage,
-    logout: auth.logout,
     changePassword,
     isAuthenticated: auth.isAuthenticated,
     getSettings,

@@ -30,7 +30,8 @@ class Backdrop extends React.Component {
   }
 
   checkingExistBackdrop = () => {
-    const { visible, isAside, withBackground, withoutBlur } = this.props;
+    const { visible, isAside, withBackground, withoutBlur, withoutBackground } =
+      this.props;
     if (visible) {
       const isTablet = window.innerWidth < 1024;
       const backdrops = document.querySelectorAll(".backdrop-active");
@@ -41,7 +42,7 @@ class Backdrop extends React.Component {
       let needBackground =
         needBackdrop && ((isTablet && !withoutBlur) || withBackground);
 
-      if (isAside && needBackdrop) needBackground = true;
+      if (isAside && needBackdrop && !withoutBackground) needBackground = true;
 
       this.setState({
         needBackdrop: needBackdrop,

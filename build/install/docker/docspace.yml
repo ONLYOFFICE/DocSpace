@@ -13,6 +13,7 @@ x-service: &x-service-base
   expose:
     - ${SERVICE_PORT}
   environment:
+    MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
     MYSQL_HOST: ${MYSQL_HOST}
     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -26,13 +27,31 @@ x-service: &x-service-base
     APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
     APP_URL_PORTAL: ${APP_URL_PORTAL}
     INSTALLATION_TYPE: ${INSTALLATION_TYPE}
+    OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
     DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
     DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
     DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
-    DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
+    DOCUMENT_CONTAINER_NAME: ${DOCUMENT_CONTAINER_NAME}
+    DOCUMENT_SERVER_URL_EXTERNAL: ${DOCUMENT_SERVER_URL_EXTERNAL}
     KAFKA_HOST: ${KAFKA_HOST}
+    ELK_CONTAINER_NAME: ${ELK_CONTAINER_NAME}
+    ELK_SHEME: ${ELK_SHEME}
     ELK_HOST: ${ELK_HOST}
+    ELK_PORT: ${ELK_PORT}
+    REDIS_CONTAINER_NAME: ${REDIS_CONTAINER_NAME}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_USER_NAME: ${REDIS_USER_NAME}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+    RABBIT_CONTAINER_NAME: ${RABBIT_CONTAINER_NAME}
+    RABBIT_HOST: ${RABBIT_HOST}
+    RABBIT_PORT: ${RABBIT_PORT}
+    RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
+    RABBIT_USER_NAME: ${RABBIT_USER_NAME}
+    RABBIT_PASSWORD: ${RABBIT_PASSWORD}
     PROXY_HOST: ${PROXY_HOST}
+    LOG_LEVEL: ${LOG_LEVEL}
+    DEBUG_INFO: ${DEBUG_INFO}
   volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data
@@ -40,28 +59,6 @@ x-service: &x-service-base
     - people_data:/var/www/products/ASC.People/server/
 
 services:
-  onlyoffice-elasticsearch:
-    image: onlyoffice/elasticsearch:${ELK_VERSION}
-    container_name: ${ELK_HOST}
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
-      - "indices.fielddata.cache.size=30%"
-      - "indices.memory.index_buffer_size=30%" 
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65535
-        hard: 65535
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-    expose:
-      - "9200"
-      - "9300"
   onlyoffice-backup-background-tasks:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
@@ -165,7 +162,7 @@ services:
       - "5013"
     healthcheck:
      <<: *x-healthcheck
-     test: curl --fail http://${SERVICE_DOCEDITOR}/health/ || exit 1
+     test: curl --fail http://${SERVICE_DOCEDITOR}/health || exit 1
 
   onlyoffice-login:
     <<: *x-service-base
@@ -175,7 +172,7 @@ services:
       - "5011"
     healthcheck:
      <<: *x-healthcheck
-     test: curl --fail http://${SERVICE_LOGIN}/health/ || exit 1
+     test: curl --fail http://${SERVICE_LOGIN}/health || exit 1
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
@@ -221,7 +218,9 @@ services:
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
       - SERVICE_LOGIN=${SERVICE_LOGIN}
       - SERVICE_HELTHCHECKS=${SERVICE_HELTHCHECKS}
-      - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
+      - DOCUMENT_CONTAINER_NAME=${DOCUMENT_CONTAINER_NAME}
+      - DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL}
+      - REDIS_HOST=${REDIS_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
       - proxy_log:/var/log/nginx
@@ -232,7 +231,6 @@ networks:
     external: true
 
 volumes:
-  es_data:
   proxy_log:
   app_data:
   files_data:

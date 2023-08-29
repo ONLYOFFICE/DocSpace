@@ -80,12 +80,10 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	echo mysql-server-8.0 mysql-server/root_password password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-server-8.0 mysql-server/root_password_again password ${MYSQL_SERVER_PASS} | debconf-set-selections
 
-	apt-get -y update
 elif dpkg -l | grep -q "mysql-apt-config" && [ "$(apt-cache policy mysql-apt-config | awk 'NR==2{print $2}')" != "${MYSQL_REPO_VERSION}" ]; then
 	curl -OL http://repo.mysql.com/${MYSQL_PACKAGE_NAME}
 	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
 	rm -f ${MYSQL_PACKAGE_NAME}
-	apt-get -y update
 fi
 
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
@@ -99,17 +97,22 @@ if [ "$DIST" = "ubuntu" ]; then
 	chmod 644 /usr/share/keyrings/redis.gpg
 fi
 
-#add nginx repo
-curl -s http://nginx.org/keys/nginx_signing.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nginx.gpg --import
-echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/$DIST/ $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
-chmod 644 /usr/share/keyrings/nginx.gpg
-#Temporary fix for missing nginx repository for debian bookworm
-[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/buster/g" /etc/apt/sources.list.d/nginx.list
+#add openresty repo
+curl -fsSL https://openresty.org/package/pubkey.gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/openresty.gpg --import
+echo "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/$DIST $DISTRIB_CODENAME $([ "$DIST" = "ubuntu" ] && echo "main" || echo "openresty" )" | tee /etc/apt/sources.list.d/openresty.list
+chmod 644 /usr/share/keyrings/openresty.gpg
+#Temporary fix for missing openresty repository for debian bookworm
+[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/bullseye/g" /etc/apt/sources.list.d/openresty.list
+
+if systemctl is-active nginx | grep -q "active"; then
+	systemctl disable nginx && systemctl stop nginx
+fi
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
 # install
+apt-get -y update
 apt-get install -o DPkg::options::="--force-confnew" -yq \
 				expect \
 				nano \
@@ -122,7 +125,7 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras \
+				openresty \
 				ffmpeg 
 
 if ! dpkg -l | grep -q "elasticsearch"; then
