@@ -93,10 +93,10 @@ const paddingStyles = css`
     ${props =>
       props.theme.interfaceDirection === "rtl"
         ? css`
-            padding: 0px 16px 16px 0 !important;
+            padding: 0px 24px 16px 0 !important;
           `
         : css`
-            padding: 0px 0 16px 16px !important;
+            padding: 0px 0 16px 24px !important;
           `}
   `};
 `;
