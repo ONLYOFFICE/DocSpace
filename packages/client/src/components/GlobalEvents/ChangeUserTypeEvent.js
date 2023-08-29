@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { ChangeUserTypeDialog } from "../dialogs";
 import toastr from "@docspace/components/toast/toastr";
 import Link from "@docspace/components/link";
+import Text from "@docspace/components/text";
 import { combineUrl } from "@docspace/common/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -73,12 +74,12 @@ const ChangeUserTypeEvent = ({
       })
       .catch((err) => {
         toastr.error(
-          <Trans t={t} i18nKey="QuotaPaidUserLimitError" ns="Payments">
-            The paid user limit has been reached.
+          <>
+            <Text>{t("Common:QuotaPaidUserLimitError")}</Text>
             <Link color="#5387AD" isHovered={true} onClick={onClickPayments}>
               {t("Common:PaymentsTitle")}
             </Link>
-          </Trans>,
+          </>,
           false,
           0,
           true,

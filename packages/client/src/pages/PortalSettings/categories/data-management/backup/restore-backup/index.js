@@ -20,6 +20,7 @@ import BackupListModalDialog from "./sub-components/backup-list";
 import RoomsModule from "./sub-components/RoomsModule";
 import ButtonContainer from "./sub-components/ButtonComponent";
 import { StyledRestoreBackup } from "../StyledBackup";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 const LOCAL_FILE = "localFile",
   BACKUP_ROOM = "backupRoom",
@@ -47,6 +48,7 @@ const RestoreBackup = (props) => {
     isEnableRestore,
     setRestoreResource,
     buttonSize,
+    standalone,
   } = props;
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
@@ -60,6 +62,10 @@ const RestoreBackup = (props) => {
   const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] =
     useState(false);
   const [path, setPath] = useState("");
+
+  useEffect(() => {
+    setDocumentTitle(t("RestoreBackup"));
+  }, []);
 
   const startRestoreBackup = useCallback(async () => {
     try {
@@ -212,12 +218,14 @@ const RestoreBackup = (props) => {
       >
         {t("RestoreBackupWarningText")}
       </Text>
-      <Text
-        className="restore-backup_warning-link settings_unavailable"
-        noSelect
-      >
-        {t("RestoreBackupResetInfoWarningText")}
-      </Text>
+      {!standalone && (
+        <Text
+          className="restore-backup_warning-link settings_unavailable"
+          noSelect
+        >
+          {t("RestoreBackupResetInfoWarningText")}
+        </Text>
+      )}
     </>
   );
 
@@ -287,7 +295,7 @@ const RestoreBackup = (props) => {
 
 export default inject(({ auth, backup }) => {
   const { settingsStore, currentQuotaStore } = auth;
-  const { isTabletView } = settingsStore;
+  const { isTabletView, standalone } = settingsStore;
   const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const {
     getProgress,
@@ -301,6 +309,7 @@ export default inject(({ auth, backup }) => {
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
+    standalone,
     isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,

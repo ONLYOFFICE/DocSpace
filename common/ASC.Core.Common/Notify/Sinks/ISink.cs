@@ -29,6 +29,6 @@ namespace ASC.Notify.Sinks;
 public interface ISink
 {
     ISink NextSink { get; set; }
-    Task<SendResponse> ProcessMessage(INoticeMessage message);
-    Task ProcessMessageAsync(INoticeMessage message);
+    Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope serviceScope);
+    Task ProcessMessageAsync(INoticeMessage message, IServiceScope serviceScope);
 }

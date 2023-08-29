@@ -361,6 +361,9 @@ public abstract class BaseStartup
 
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
+        services.AddBillingHttpClient();
+
+
         if (!_hostEnvironment.IsDevelopment())
         {
             services.AddStartupTask<WarmupServicesStartupTask>()
