@@ -7,7 +7,7 @@ import styled, { css } from "styled-components";
 import ContextMenu from "@docspace/components/context-menu";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
-import { withTheme } from 'styled-components'
+import { withTheme } from "styled-components";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
@@ -50,35 +50,35 @@ const roomsStyles = css`
     align-items: center;
     align-content: center;
 
-    border-bottom: ${props => props.theme.filesSection.tilesView.tile.border};
-    background: ${props =>
-    props.theme.filesSection.tilesView.tile.backgroundColor};
+    border-bottom: ${(props) => props.theme.filesSection.tilesView.tile.border};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
 
     border-radius: ${({ theme, isRooms }) =>
-    isRooms
-      ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
-      : theme.filesSection.tilesView.tile.upperBorderRadius};
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsUpperBorderRadius
+        : theme.filesSection.tilesView.tile.upperBorderRadius};
   }
 
   .room-tile_bottom-content {
-    display: ${props => props.isThirdParty && "flex"};
+    display: ${(props) => props.isThirdParty && "flex"};
     width: 100%;
     height: 56px;
 
     box-sizing: border-box;
 
     padding: 16px;
-    background: ${props =>
-    props.theme.filesSection.tilesView.tile.backgroundColor};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
     border-radius: ${({ theme, isRooms }) =>
-    isRooms
-      ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
-      : theme.filesSection.tilesView.tile.bottomBorderRadius};
+      isRooms
+        ? theme.filesSection.tilesView.tile.roomsBottomBorderRadius
+        : theme.filesSection.tilesView.tile.bottomBorderRadius};
   }
 `;
 
 const FolderStyles = css`
-  height: ${props => (props.isRoom ? "120px" : "64px")};
+  height: ${(props) => (props.isRoom ? "120px" : "64px")};
 `;
 
 const FileStyles = css`
@@ -93,7 +93,7 @@ const checkedStyle = css`
 `;
 
 const bottomFileBorder = css`
-  border-top: ${props => props.theme.filesSection.tilesView.tile.border};
+  border-top: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 0 0 6px 6px;
 `;
 
@@ -102,7 +102,7 @@ const animationStyles = css`
 
   @keyframes Highlight {
     0% {
-      background: ${props => props.theme.filesSection.animationColor};
+      background: ${(props) => props.theme.filesSection.animationColor};
     }
 
     100% {
@@ -112,9 +112,9 @@ const animationStyles = css`
 `;
 
 const StyledTile = styled.div`
-  cursor: ${props =>
+  cursor: ${(props) =>
     !props.isRecycleBin && !props.isArchiveFolder ? "pointer" : "default"};
-  ${props =>
+  ${(props) =>
     props.inProgress &&
     css`
       pointer-events: none;
@@ -122,19 +122,20 @@ const StyledTile = styled.div`
     `}
   box-sizing: border-box;
   width: 100%;
-  border: ${props => props.theme.filesSection.tilesView.tile.border};
+  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
 
   border-radius: ${({ isRooms, theme }) =>
     isRooms
       ? theme.filesSection.tilesView.tile.roomsBorderRadius
       : theme.filesSection.tilesView.tile.borderRadius};
-  ${props => props.showHotkeyBorder && "border-color: #2DA7DB"};
-  ${props => props.isFolder && !props.isRooms && "border-top-left-radius: 6px;"}
+  ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  ${(props) =>
+    props.isFolder && !props.isRooms && "border-top-left-radius: 6px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${props => props.isFolder && (props.isRoom ? roomsStyles : FlexBoxStyles)};
-  ${props => (props.isFolder ? FolderStyles : FileStyles)};
-  ${props =>
+  ${(props) => props.isFolder && (props.isRoom ? roomsStyles : FlexBoxStyles)};
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)};
+  ${(props) =>
     !props.isEdit &&
     props.isFolder &&
     (props.checked || props.isActive) &&
@@ -151,7 +152,7 @@ const StyledTile = styled.div`
     }
   }
 
-  ${props =>
+  ${(props) =>
     !props.isDragging &&
     !isMobile &&
     css`
@@ -163,7 +164,7 @@ const StyledTile = styled.div`
       }
     `}
 
-  ${props =>
+  ${(props) =>
     props.isHighlight &&
     css`
       .file-tile-bottom {
@@ -173,17 +174,17 @@ const StyledTile = styled.div`
 
   &:before,
   &:after {
-    ${props => props.showHotkeyBorder && "border-color: #2DA7DB"};
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
   &:before,
   &:after {
-    ${props => (props.checked || props.isActive) && checkedStyle};
+    ${(props) => (props.checked || props.isActive) && checkedStyle};
   }
 
   .checkbox {
     display: flex;
-    opacity: ${props => (props.checked ? 1 : 0)};
+    opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
     justify-content: center;
 
@@ -193,42 +194,42 @@ const StyledTile = styled.div`
   }
 
   .file-checkbox {
-    display: ${props => (props.checked ? "flex" : "none")};
+    display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-top: 8px;
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-            margin-right: ${props => (props.isFolder ? "8px" : "7px")};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${(props) => (props.isFolder ? "8px" : "7px")};
           `
-      : css`
-            margin-left: ${props => (props.isFolder ? "8px" : "7px")};
+        : css`
+            margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
           `}
   }
 
   .file-icon {
-    display: ${props => (props.checked ? "none" : "flex")};
+    display: ${(props) => (props.checked ? "none" : "flex")};
     flex: 0 0 auto;
     user-select: none;
-    margin-top: ${props => (props.isFolder ? "0" : "-2px")};
+    margin-top: ${(props) => (props.isFolder ? "0" : "-2px")};
   }
 
   .file-icon_container {
     width: 32px;
     height: 32px;
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-            margin-right: ${props =>
-          props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
-            margin-left: ${props =>
-          props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${(props) =>
+              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+            margin-left: ${(props) =>
+              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
           `
-      : css`
-            margin-left: ${props =>
-          props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
-            margin-right: ${props =>
-          props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+        : css`
+            margin-left: ${(props) =>
+              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+            margin-right: ${(props) =>
+              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
           `}
   }
 
@@ -236,24 +237,24 @@ const StyledTile = styled.div`
     padding-top: 16px;
     width: 32px;
     height: 32px;
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
             margin-right: 21px;
             margin-left: 14px;
           `
-      : css`
+        : css`
             margin-left: 21px;
             margin-right: 14px;
           `}
   }
 
   .file-icon_container:hover {
-    ${props =>
-    !props.dragging &&
-    !props.inProgress &&
-    !isMobile &&
-    css`
+    ${(props) =>
+      !props.dragging &&
+      !props.inProgress &&
+      !isMobile &&
+      css`
         .checkbox {
           opacity: 1;
         }
@@ -270,7 +271,7 @@ const StyledTile = styled.div`
     min-width: 16px;
   }
 
-  ${props =>
+  ${(props) =>
     props.isHighlight &&
     css`
       ${animationStyles}
@@ -279,37 +280,23 @@ const StyledTile = styled.div`
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
-  background: ${props =>
+  background: ${(props) =>
     props.theme.filesSection.tilesView.tile.backgroundColorTop};
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
   position: relative;
-  ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-          border-radius: 6px 0 0 6px;
-        `
-      : css`
-          border-radius: 6px 6px 0 0;
-        `}
+  border-radius: 6px 6px 0 0;
 
   .thumbnail-image {
     pointer-events: none;
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: ${props => (props.thumbnails1280x720 ? "cover" : "none")};
-    object-position: ${props => (props.isImageOrMedia ? "center" : "top")};
+    object-fit: ${(props) => (props.thumbnails1280x720 ? "cover" : "none")};
+    object-position: ${(props) => (props.isImageOrMedia ? "center" : "top")};
     z-index: 0;
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
-            border-radius: 6px 0 0 6px;
-          `
-      : css`
-            border-radius: 6px 6px 0 0;
-          `}
+    border-radius: 6px 6px 0 0;
   }
 
   .temporary-icon > .injected-svg {
@@ -318,7 +305,7 @@ const StyledFileTileTop = styled.div`
     bottom: 16px;
   }
 
-  ${props =>
+  ${(props) =>
     props.isHighlight &&
     css`
       ${animationStyles}
@@ -327,11 +314,12 @@ const StyledFileTileTop = styled.div`
 
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles};
-  ${props => !props.isEdit && (props.checked || props.isActive) && checkedStyle}
+  ${(props) =>
+    !props.isEdit && (props.checked || props.isActive) && checkedStyle}
 
   border-top: 1px solid transparent;
 
-  ${props =>
+  ${(props) =>
     !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
 
   padding: 9px 0;
@@ -342,13 +330,13 @@ const StyledFileTileBottom = styled.div`
     padding-top: 16px;
     width: 32px;
     height: 32px;
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
             margin-right: 23px;
             margin-left: 14px;
           `
-      : css`
+        : css`
             margin-left: 23px;
             margin-right: 14px;
           `}
@@ -390,13 +378,13 @@ const StyledContent = styled.div`
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
-          margin-left: ${props => (props.isRoom ? "8px" : "4px")};
+          margin-left: ${(props) => (props.isRoom ? "8px" : "4px")};
         `
       : css`
-          margin-right: ${props => (props.isRoom ? "8px" : "4px")};
+          margin-right: ${(props) => (props.isRoom ? "8px" : "4px")};
         `}
   user-select: none;
   margin-top: 3px;
@@ -409,12 +397,12 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    ${props =>
-    props.theme.interfaceDirection === "rtl"
-      ? css`
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
             padding: 8px 8px 8px 21px;
           `
-      : css`
+        : css`
             padding: 8px 21px 8px 8px;
           `}
   }
@@ -423,7 +411,7 @@ const StyledOptionButton = styled.div`
 StyledOptionButton.defaultProps = { theme: Base };
 
 const badgesPosition = css`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           right: 9px;
@@ -454,7 +442,7 @@ const badgesPosition = css`
 `;
 
 const quickButtonsPosition = css`
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           left: 9px;
@@ -475,16 +463,16 @@ const StyledIcons = styled.div`
   position: absolute;
   top: 8px;
 
-  ${props => props.isBadges && badgesPosition}
-  ${props => props.isQuickButtons && quickButtonsPosition}
+  ${(props) => props.isBadges && badgesPosition}
+  ${(props) => props.isQuickButtons && quickButtonsPosition}
   
   .badge {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 8px;
-    background: ${props =>
-    props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundBadgeColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
@@ -533,7 +521,7 @@ class Tile extends React.PureComponent {
     );
   };
 
-  changeCheckbox = e => {
+  changeCheckbox = (e) => {
     const { onSelect, item } = this.props;
     onSelect && onSelect(!e.target.checked, item);
   };
@@ -545,7 +533,7 @@ class Tile extends React.PureComponent {
     onSelect && onSelect(true, item);
   };
 
-  onFileClick = e => {
+  onFileClick = (e) => {
     const {
       onSelect,
       item,
@@ -637,7 +625,7 @@ class Tile extends React.PureComponent {
       return contextOptions;
     };
 
-    const onContextMenu = e => {
+    const onContextMenu = (e) => {
       tileContextClick && tileContextClick(e.button === 2);
       if (!this.cm.current.menuRef.current) {
         this.tile.current.click(e); //TODO: need fix context menu to global
@@ -705,7 +693,8 @@ class Tile extends React.PureComponent {
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
         isThirdParty={item.providerType}
-        isHighlight={isHighlight}>
+        isHighlight={isHighlight}
+      >
         {isFolder || (!fileExst && id === -1) ? (
           isRoom ? (
             <>
@@ -715,11 +704,13 @@ class Tile extends React.PureComponent {
                     {!inProgress ? (
                       <div
                         className="file-icon_container"
-                        ref={this.checkboxContainerRef}>
+                        ref={this.checkboxContainerRef}
+                      >
                         <StyledElement
                           className="file-icon"
                           isRoom={isRoom}
-                          onClick={this.onFileIconClick}>
+                          onClick={this.onFileIconClick}
+                        >
                           {element}
                         </StyledElement>
 
@@ -740,9 +731,8 @@ class Tile extends React.PureComponent {
                   </>
                 )}
                 <StyledContent
-                  isFolder={
-                    (isFolder && !fileExst) || (!fileExst && id === -1)
-                  }>
+                  isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+                >
                   {FilesTileContent}
                   {badges}
                 </StyledContent>
@@ -812,7 +802,8 @@ class Tile extends React.PureComponent {
                       <StyledElement
                         className="file-icon"
                         isRoom={isRoom}
-                        onClick={this.onFileIconClick}>
+                        onClick={this.onFileIconClick}
+                      >
                         {element}
                       </StyledElement>
 
@@ -833,7 +824,8 @@ class Tile extends React.PureComponent {
                 </>
               )}
               <StyledContent
-                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}>
+                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+              >
                 {FilesTileContent}
                 {badges}
               </StyledContent>
@@ -871,7 +863,8 @@ class Tile extends React.PureComponent {
               isImageOrMedia={
                 item?.viewAccessability?.ImageView ||
                 item?.viewAccessability?.MediaView
-              }>
+              }
+            >
               {icon}
             </StyledFileTileTop>
 
@@ -885,7 +878,8 @@ class Tile extends React.PureComponent {
               checked={checked}
               isActive={isActive}
               isEdit={isEdit}
-              className="file-tile-bottom">
+              className="file-tile-bottom"
+            >
               {id !== -1 && !isEdit && (
                 <>
                   {!inProgress ? (
@@ -910,7 +904,8 @@ class Tile extends React.PureComponent {
                 </>
               )}
               <StyledContent
-                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}>
+                isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
+              >
                 {FilesTileContent}
               </StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
