@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Tämä on vaihtoehtoinen tila; voit vaihtaa sen ainoastaan jos haluat kokeilla erilaista palvelun päätepistettä.",
   "AmazonSSE": "Palvelinpuolen salaus",
   "AmazonSSETip": "Käytössä oleva palvelinpuolen salausalgoritmi tallennettaessa tätä kohdetta S3:ssa.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Luo oma tuottavuusalustasi ONLYOFFICE DocSpacesta ja tee yhteistyötä tiimien, asiakkaiden ja yhteistyökumppaneiden kanssa.",
   "ApiPageHeader": "Rakenna oma yhteistyöalustasi",
   "Appearance": "Ulkomuoto",
