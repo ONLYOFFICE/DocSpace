@@ -867,6 +867,26 @@ read_continue_installation () {
 }
 
 domain_check () {
+	if ! command_exists dig; then
+		install_service dig dnsutils
+	fi
+
+	if ! command_exists ping; then
+		if command_exists apt-get; then
+			install_service ping iputils-ping
+		elif command_exists yum; then
+			install_service ping iputils
+		fi
+	fi
+
+	if ! command_exists ip; then
+		if command_exists apt-get; then
+			install_service ip iproute2
+		elif command_exists yum; then
+			install_service ip iproute
+		fi
+	fi
+
 	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
 
 	if [[ -n "$DOMAINS" ]]; then
