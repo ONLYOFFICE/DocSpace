@@ -11,6 +11,8 @@ echo "Docker files root directory:" $dockerDir
 
 local_ip=$(ipconfig getifaddr en0)
 
+[ -z "$local_ip" ] && local_ip=192.168.0.36
+
 echo "LOCAL IP: $local_ip"
 
 doceditor=${local_ip}:5013
@@ -53,7 +55,7 @@ ENV_EXTENSION="dev" \
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
 Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \
-DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \

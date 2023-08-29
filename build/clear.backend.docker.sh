@@ -8,10 +8,10 @@ DockerDir="${RootDir}/build/install/docker"
 echo "Clean up containers, volumes or networks"
 
 if [[ $Containers != "" ]]
-then    
+then
     echo "Remove all backend containers"
 
-    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver:latest \
     Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:v1.0.0" \
     Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:v1.0.0" \
     Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:v1.0.0" \

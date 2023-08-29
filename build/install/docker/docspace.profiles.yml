@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 x-healthcheck: &x-healthcheck
   test: curl --fail http://127.0.0.1 || exit 1
   interval: 60s
@@ -7,13 +7,13 @@ x-healthcheck: &x-healthcheck
   timeout: 10s
 
 x-profiles-backend: &x-profiles-backend
-  profiles: ["prod", "backend"]
+  profiles: ['prod', 'backend']
 
 x-profiles-frontend: &x-profiles-frontend
-  profiles: ["prod", "frontend"]
+  profiles: ['prod', 'frontend']
 
 x-profiles-extra-services: &x-profiles-extra-services
-  profiles: ["prod", "extra-services"]
+  profiles: ['prod', 'extra-services']
 
 x-service: &x-service-base
   container_name: base
@@ -55,9 +55,9 @@ services:
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
-      - "indices.fielddata.cache.size=30%"
-      - "indices.memory.index_buffer_size=30%"
+      - 'ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true'
+      - 'indices.fielddata.cache.size=30%'
+      - 'indices.memory.index_buffer_size=30%'
     ulimits:
       memlock:
         soft: -1
@@ -68,8 +68,8 @@ services:
     volumes:
       - es_data:/usr/share/elasticsearch/data
     expose:
-      - "9200"
-      - "9300"
+      - '9200'
+      - '9300'
 
   onlyoffice-rabbitmq:
     <<: [*x-profiles-extra-services]
@@ -77,8 +77,8 @@ services:
     container_name: onlyoffice-rabbitmq
     restart: always
     expose:
-      - "5672"
-      - "80"
+      - '5672'
+      - '80'
 
   onlyoffice-redis:
     <<: [*x-profiles-extra-services]
@@ -86,11 +86,11 @@ services:
     container_name: onlyoffice-redis
     restart: always
     expose:
-      - "6379"
+      - '6379'
 
   onlyoffice-document-server:
     <<: [*x-profiles-extra-services]
-    image: "${DOCUMENT_SERVER_IMAGE_NAME}"
+    image: '${DOCUMENT_SERVER_IMAGE_NAME}'
     container_name: ${DOCUMENT_SERVER_HOST}
     # Strings below enable the JSON Web Token validation.
     environment:
@@ -99,14 +99,14 @@ services:
       - JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER}
       - JWT_IN_BODY=true
     expose:
-      - "80"
+      - '80'
     stdin_open: true
     restart: always
     stop_grace_period: 60s
 
   onlyoffice-notify:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-notify:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-notify:${DOCKER_TAG}'
     container_name: ${NOTIFY_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -114,7 +114,7 @@ services:
 
   onlyoffice-backup-background-tasks:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}'
     container_name: ${BACKUP_BACKGRUOND_TASKS_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -122,7 +122,7 @@ services:
 
   onlyoffice-backup:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-backup:${DOCKER_TAG}'
     container_name: ${BACKUP_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -130,7 +130,7 @@ services:
 
   onlyoffice-clear-events:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}'
     container_name: ${CLEAR_EVENTS_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -138,7 +138,7 @@ services:
 
   onlyoffice-files:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-files:${DOCKER_TAG}'
     container_name: ${FILES_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -146,7 +146,7 @@ services:
 
   onlyoffice-files-services:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files-services:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-files-services:${DOCKER_TAG}'
     container_name: ${FILES_SERVICES_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -154,7 +154,7 @@ services:
 
   onlyoffice-people-server:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-people-server:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-people-server:${DOCKER_TAG}'
     container_name: ${PEOPLE_SERVER_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -162,14 +162,14 @@ services:
 
   onlyoffice-socket:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-socket:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-socket:${DOCKER_TAG}'
     container_name: ${SOCKET_HOST}
     expose:
       - ${SERVICE_PORT}
 
   onlyoffice-studio-notify:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}'
     container_name: ${STUDIO_NOTIFY_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -177,7 +177,7 @@ services:
 
   onlyoffice-api:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}'
     container_name: ${API_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -185,7 +185,7 @@ services:
 
   onlyoffice-api-system:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}'
     container_name: ${API_SYSTEM_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -193,7 +193,7 @@ services:
 
   onlyoffice-studio:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}'
     container_name: ${STUDIO_HOST}
     healthcheck:
       <<: *x-healthcheck
@@ -201,40 +201,40 @@ services:
 
   onlyoffice-ssoauth:
     <<: [*x-service-base, *x-profiles-backend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}'
     container_name: ${SSOAUTH_HOST}
     expose:
       - ${SERVICE_PORT}
-      - "9834"
+      - '9834'
 
   onlyoffice-doceditor:
     <<: [*x-service-base, *x-profiles-frontend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}'
     container_name: ${DOCEDITOR_HOST}
     restart: always
     expose:
-      - "5013"
+      - '5013'
 
   onlyoffice-login:
     <<: [*x-service-base, *x-profiles-frontend]
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}'
     container_name: ${LOGIN_HOST}
     restart: always
     expose:
-      - "5011"
+      - '5011'
 
   onlyoffice-proxy:
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
-    profiles: ["prod", "backend", frontend]
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}'
+    profiles: ['prod', 'backend', frontend]
     container_name: ${PROXY_HOST}
     restart: always
     healthcheck:
       <<: *x-healthcheck
       test: nginx -t || exit 1
     expose:
-      - "8081"
-      - "8099"
-      - "8092"
+      - '8081'
+      - '8099'
+      - '8092'
     ports:
       - 8092:8092
     environment:
@@ -259,10 +259,10 @@ services:
       - proxy_log:/var/log/nginx
 
   onlyoffice-migration-runner:
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
-    profiles: ["migration-runner", "backend-local"]
+    image: '${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}'
+    profiles: ['migration-runner', 'backend-local']
     container_name: ${MIGRATION_RUNNER_HOST}
-    restart: "no"
+    restart: 'no'
     environment:
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -280,3 +280,7 @@ volumes:
   app_data:
   files_data:
   people_data:
+  crm_data:
+  project_data:
+  calendar_data:
+  mail_data:

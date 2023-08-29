@@ -1,11 +1,11 @@
-version: "3.8"
+version: '3.8'
 x-profiles-local: &x-profiles-local
-  profiles: ["backend-local"]
+  profiles: ['backend-local']
   environment:
-    BUILD_PATH: "/var/www"
-    SRC_PATH: "/app/services"
-    ROOT_DIR: ""
-    ENV_EXTENSION: "dev"
+    BUILD_PATH: '/var/www'
+    SRC_PATH: '/app/services'
+    ROOT_DIR: ''
+    ENV_EXTENSION: 'dev'
 
 services:
   onlyoffice-backup-background-tasks:
@@ -14,9 +14,9 @@ services:
     working_dir: ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
     command:
       [
-        "ASC.Data.Backup.BackgroundTasks.dll",
-        "ASC.Data.Backup.BackgroundTasks",
-        "core:eventBus:subscriptionClientName=asc_event_bus_backup_queue",
+        'ASC.Data.Backup.BackgroundTasks.dll',
+        'ASC.Data.Backup.BackgroundTasks',
+        'core:eventBus:subscriptionClientName=asc_event_bus_backup_queue',
       ]
     volumes:
       - ${SRC_PATH}/ASC.Data.Backup.BackgroundTasks/service:${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
@@ -32,7 +32,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/services/ASC.Data.Backup/service/
-    command: ["ASC.Data.Backup.dll", "ASC.Data.Backup"]
+    command: ['ASC.Data.Backup.dll', 'ASC.Data.Backup']
     volumes:
       - ${SRC_PATH}/ASC.Data.Backup/service:${BUILD_PATH}/services/ASC.Data.Backup/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -47,7 +47,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/products/ASC.Files/server/
-    command: ["ASC.Files.dll", "ASC.Files"]
+    command: ['ASC.Files.dll', 'ASC.Files']
     volumes:
       - ${SRC_PATH}/ASC.Files/service:${BUILD_PATH}/products/ASC.Files/server/
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
@@ -63,9 +63,9 @@ services:
     working_dir: ${BUILD_PATH}/products/ASC.Files/service/
     command:
       [
-        "ASC.Files.Service.dll",
-        "ASC.Files.Service",
-        "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue",
+        'ASC.Files.Service.dll',
+        'ASC.Files.Service',
+        'core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue',
       ]
     volumes:
       - ${SRC_PATH}/ASC.Files.Service/service:${BUILD_PATH}/products/ASC.Files/service/
@@ -81,7 +81,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/products/ASC.People/server/
-    command: ["ASC.People.dll", "ASC.People"]
+    command: ['ASC.People.dll', 'ASC.People']
     volumes:
       - ${SRC_PATH}/ASC.People/service:${BUILD_PATH}/products/ASC.People/server/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -95,7 +95,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Nodejs_Run}
     working_dir: ${BUILD_PATH}/services/ASC.Socket.IO/
-    command: ["server.js", "ASC.Socket.IO"]
+    command: ['server.js', 'ASC.Socket.IO']
     volumes:
       - ${SRC_PATH}/ASC.Socket.IO/service:${BUILD_PATH}/services/ASC.Socket.IO/
     depends_on:
@@ -106,9 +106,24 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/services/ASC.Studio.Notify/service/
-    command: ["ASC.Studio.Notify.dll", "ASC.Studio.Notify"]
+    command: ['ASC.Studio.Notify.dll', 'ASC.Studio.Notify']
     volumes:
       - ${SRC_PATH}/ASC.Studio.Notify/service:${BUILD_PATH}/services/ASC.Studio.Notify/service/
+      - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
+      - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
+      - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
+      - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
+    depends_on:
+      onlyoffice-migration-runner:
+        condition: service_completed_successfully
+
+  onlyoffice-notify:
+    <<: *x-profiles-local
+    image: ${Baseimage_Dotnet_Run}
+    working_dir: ${BUILD_PATH}/services/ASC.Notify/service/
+    command: ['ASC.Notify.dll', 'ASC.Notify']
+    volumes:
+      - ${SRC_PATH}/ASC.Notify/service:${BUILD_PATH}/services/ASC.Notify/service/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
       - ${SRC_PATH}/ASC.People/service/:${BUILD_PATH}/products/ASC.People/server/
       - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
@@ -121,7 +136,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/studio/ASC.Web.Api/
-    command: ["ASC.Web.Api.dll", "ASC.Web.Api"]
+    command: ['ASC.Web.Api.dll', 'ASC.Web.Api']
     volumes:
       - ${SRC_PATH}/ASC.Web.Api/service:${BUILD_PATH}/studio/ASC.Web.Api/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -136,7 +151,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Dotnet_Run}
     working_dir: ${BUILD_PATH}/studio/ASC.Web.Studio/
-    command: ["ASC.Web.Studio.dll", "ASC.Web.Studio"]
+    command: ['ASC.Web.Studio.dll', 'ASC.Web.Studio']
     volumes:
       - ${SRC_PATH}/ASC.Web.Studio/service:${BUILD_PATH}/studio/ASC.Web.Studio/
       - ${SRC_PATH}/ASC.Files/service/:${BUILD_PATH}/products/ASC.Files/server/
@@ -151,7 +166,7 @@ services:
     <<: *x-profiles-local
     image: ${Baseimage_Nodejs_Run}
     working_dir: ${BUILD_PATH}/services/ASC.SsoAuth/
-    command: ["app.js", "ASC.SsoAuth"]
+    command: ['app.js', 'ASC.SsoAuth']
     volumes:
       - ${SRC_PATH}/ASC.SsoAuth/service:${BUILD_PATH}/services/ASC.SsoAuth/
     depends_on:

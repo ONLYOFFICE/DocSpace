@@ -15,6 +15,8 @@ echo "Docker directory:" $docker_dir
 
 local_ip=$(ipconfig getifaddr en0)
 
+[ -z "$local_ip" ] && local_ip=192.168.0.36
+
 echo "LOCAL IP: $local_ip"
 
 doceditor=${local_ip}:5013
@@ -36,5 +38,5 @@ SERVICE_CLIENT=$client \
 ROOT_DIR=$dir \
 DATA_DIR="$dir/Data" \
 ENV_EXTENSION="dev" \
-DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver:latest \
 docker-compose -f docspace.profiles.yml -f docspace.overcome.yml --profile backend-local start
