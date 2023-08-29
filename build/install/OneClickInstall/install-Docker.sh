@@ -450,6 +450,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-cf | --certfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_PATH=$2
+				shift
+			fi
+		;;
+
+		-ckf | --certkeyfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_KEY_PATH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -496,6 +510,8 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
 			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
 			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
+			echo "      -cf, --certfile                   path to the certificate file for the domain"
+			echo "      -ckf, --certkeyfile               path to the private key file for the certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -1328,6 +1344,9 @@ install_product () {
 
 	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
 		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
+	elif [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
 
