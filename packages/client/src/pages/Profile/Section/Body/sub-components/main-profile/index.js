@@ -55,6 +55,7 @@ const MainProfile = props => {
     currentColorScheme,
     updateProfileCulture,
     documentationEmail,
+    setDialogData,
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
@@ -80,6 +81,12 @@ const MainProfile = props => {
 
   const sendActivationLinkAction = () => {
     sendActivationLink && sendActivationLink().then(showEmailActivationToast);
+  };
+
+  const onChangePasswordClick = () => {
+    const email = profile.email;
+    setDialogData({ email });
+    setChangePasswordVisible(true);
   };
 
   const userAvatar = profile.hasAvatar
@@ -268,7 +275,7 @@ const MainProfile = props => {
                 className="edit-button password-edit-button"
                 iconName={PencilOutlineReactSvgUrl}
                 size="12"
-                onClick={() => setChangePasswordVisible(true)}
+                onClick={onChangePasswordClick}
               />
             </div>
             <div className="language-combo-box-wrapper">
@@ -378,7 +385,7 @@ const MainProfile = props => {
               className="edit-button"
               iconName={PencilOutlineReactSvgUrl}
               size="12"
-              onClick={() => setChangePasswordVisible(true)}
+              onClick={onChangePasswordClick}
             />
           </div>
 
@@ -445,6 +452,8 @@ export default inject(({ auth, peopleStore }) => {
     updateProfileCulture,
   } = peopleStore.targetUserStore;
 
+  const { setDialogData } = peopleStore.dialogStore;
+
   return {
     theme,
     profile,
@@ -461,5 +470,6 @@ export default inject(({ auth, peopleStore }) => {
     currentColorScheme,
     updateProfileCulture,
     documentationEmail,
+    setDialogData,
   };
 })(withCultureNames(observer(MainProfile)));

@@ -458,6 +458,7 @@ const LanguageAndTimeZone = (props) => {
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
       <FieldContainer
@@ -478,6 +479,7 @@ const LanguageAndTimeZone = (props) => {
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
     </div>

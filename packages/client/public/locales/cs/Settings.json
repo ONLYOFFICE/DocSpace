@@ -22,7 +22,7 @@
   "AmazonServiceTip": "Toto je nepovinná vlastnost; změňte ji pouze v případě, že chcete vyzkoušet jiný koncový bod služby.",
   "AmazonSSE": "Šifrování na straně serveru",
   "AmazonSSETip": "Šifrovací algoritmus na straně serveru použitý při ukládání tohoto objektu do S3.",
-  "Api": "Api",
+  "Api": "API",
   "ApiPageDescription": "Vytvořte si vlastní platformu pro produktivitu založenou na ONLYOFFICE DocSpace a spolupracujte na dokumentech s týmy, klienty a partnery.",
   "ApiPageHeader": "Vytvořte si vlastní platformu pro spolupráci",
   "Appearance": "Vzhled",

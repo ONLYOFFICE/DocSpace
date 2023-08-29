@@ -77,11 +77,16 @@ export function getObjectByLocation(location) {
     .replace(/\\\\"\]/g, '"]')
     .replace(/"\[/g, "[")
     .replace(/\]"/g, "]")
-    .replace(/\\\\",\\\\"/g, '","');
+    .replace(/\\\\",\\\\"/g, '","')
+    .replace(/\\\\\\\\"/g, '\\"');
 
-  const object = JSON.parse(`{"${decodedString}"}`);
+  try {
+    const object = JSON.parse(`{"${decodedString}"}`);
 
-  return object;
+    return object;
+  } catch (e) {
+    return {};
+  }
 }
 
 export function changeLanguage(i18n, currentLng = getCookie(LANGUAGE)) {
@@ -192,8 +197,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-        "=([^;]*)"
+      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+      "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -392,7 +397,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -589,12 +594,16 @@ export const getFileExtension = (fileTitle: string) => {
 
 export const getSystemTheme = () => {
   const isDesktopClient = window["AscDesktopEditor"] !== undefined;
+  const desktopClientTheme = window?.RendererProcessVariable?.theme;
+  const isDark = desktopClientTheme?.id === "theme-dark" || desktopClientTheme?.id === "theme-contrast-dark" ||
+    (desktopClientTheme?.id === "theme-system" && desktopClientTheme?.system === "dark");
+
   return isDesktopClient
-    ? window?.RendererProcessVariable?.theme?.type === "dark"
+    ? isDark
       ? ThemeKeys.DarkStr
       : ThemeKeys.BaseStr
     : window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? ThemeKeys.DarkStr
-    : ThemeKeys.BaseStr;
+      ? ThemeKeys.DarkStr
+      : ThemeKeys.BaseStr;
 };

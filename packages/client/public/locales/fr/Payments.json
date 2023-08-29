@@ -27,7 +27,6 @@
   "PayerDescription": "Cet utilisateur a accès aux détails des paiements et est le seul à pouvoir ajuster le quota et effectuer des paiements. Le propriétaire de DocSpace, ainsi que le gestionnaire de paiement lui-même, peuvent réattribuer le rôle de gestionnaire de paiement en utilisant le portail client Stripe.",
   "PaymentOverdue": "Impossible d’ajouter de nouveaux utilisateurs.",
   "PriceCalculation": "Calculez votre prix",
-  "QuotaPaidUserLimitError": "La limite d’utilisateurs payants a été atteinte. <1>Payements</1>",
   "RenewSubscription": "Renouveler l’abonnement au plan tarifaire {{planName}}",
   "RoomManagerDescription": "Administration et archivage des salles, invitation et gestion des utilisateurs. Plusieurs administrateurs peuvent être affectés à la salle.",
   "StartupSuggestion": "Faites plus avec le plan tarifaire {{planName}}",

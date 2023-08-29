@@ -9,9 +9,11 @@ import Button from "@docspace/components/button";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 import ToggleButton from "@docspace/components/toggle-button";
-
+import { isMobileOnly, isTablet } from "react-device-detect";
+import { hugeMobile } from "@docspace/components/utils/device";
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
+import CrossIconMobile from "PUBLIC_DIR/images/cross.react.svg";
 import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -26,6 +28,33 @@ const fillAvailableWidth = css`
 `;
 
 const StyledInvitePanel = styled.div`
+  @media ${hugeMobile} {
+    user-select: none;
+    height: auto;
+    width: auto;
+    background: ${(props) => props.theme.infoPanel.blurColor};
+    backdrop-filter: blur(3px);
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .invite_panel {
+      background-color: ${(props) => props.theme.infoPanel.backgroundColor};
+      border-left: ${(props) =>
+        `1px solid ${props.theme.infoPanel.borderColor}`};
+      position: absolute;
+      border: none;
+      right: 0;
+      bottom: 0;
+      height: calc(100% - 64px);
+      width: 100vw;
+      max-width: 100vw;
+    }
+  }
+
   .invite-panel-body {
     height: ${(props) =>
       props.hasInvitedUsers ? "calc(100% - 55px - 73px)" : "calc(100% - 55px)"};
@@ -40,7 +69,29 @@ const StyledInvitePanel = styled.div`
               padding-right: 0px !important;
             `}
     }
+
+    ${(props) =>
+      !props.addUsersPanelVisible &&
+      css`
+        .trackYVisible {
+          .scroller {
+            margin-right: ${isMobileOnly || isTablet
+              ? `-20px !important`
+              : `-17px !important`};
+          }
+        }
+      `}
   }
+
+  ${(props) =>
+    !props.scrollAllPanelContent &&
+    css`
+      .trackYVisible {
+        .scroller {
+          margin-right: -20px !important;
+        }
+      }
+    `}
 `;
 
 const ScrollList = styled.div`
@@ -332,6 +383,36 @@ const StyledToggleButton = styled(ToggleButton)`
   margin-top: -4px;
 `;
 
+const StyledControlContainer = styled.div`
+  width: 17px;
+  height: 17px;
+  position: absolute;
+
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+
+  @media (max-width: 428px) {
+    display: flex;
+
+    top: -27px;
+    right: 10px;
+    left: unset;
+  }
+`;
+
+const StyledCrossIconMobile = styled(CrossIconMobile)`
+  width: 17px;
+  height: 17px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 export {
   StyledBlock,
   StyledHeading,
@@ -355,4 +436,6 @@ export {
   StyledAccessSelector,
   StyledToggleButton,
   StyledDescription,
+  StyledControlContainer,
+  StyledCrossIconMobile,
 };
