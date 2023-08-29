@@ -81,8 +81,8 @@ class BackupStore {
   get isTheSameThirdPartyAccount() {
     if (this.connectedThirdPartyAccount && this.selectedThirdPartyAccount)
       return (
-        this.connectedThirdPartyAccount.providerKey ===
-        this.selectedThirdPartyAccount.provider_key
+        this.connectedThirdPartyAccount.title ===
+        this.selectedThirdPartyAccount.title
       );
     return true;
   }
