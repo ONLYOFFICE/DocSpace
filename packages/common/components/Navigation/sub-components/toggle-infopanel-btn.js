@@ -13,6 +13,12 @@ const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   margin-bottom: 1px;
   padding: 0;
 
+  ${(props) =>
+    props.isInfoPanelVisible &&
+    css`
+      display: none;
+    `}
+
   @media ${tablet} {
     display: none;
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
