@@ -72,6 +72,17 @@ const ConfirmRoute = (props) => {
               "/error"
             );
             break;
+          case ValidationResult.TariffLimit:
+            console.error("tariff limit", {
+              confirmLinkData,
+              validationResult,
+            });
+            window.location.href = combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              path,
+              "/error?messageKey=20"
+            );
+            break;
           default:
             console.error("unknown link", {
               confirmLinkData,

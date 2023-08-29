@@ -28,6 +28,7 @@ const themes = {
 };
 
 const isDesktopEditors = window["AscDesktopEditor"] !== undefined;
+const systemTheme = getSystemTheme();
 
 class SettingsStore {
   isLoading = false;
@@ -40,14 +41,7 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
-  theme = isDesktopEditors
-    ? window.RendererProcessVariable?.theme?.type === "dark"
-      ? Dark
-      : Base
-    : window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? Dark
-    : Base;
+  theme = themes[systemTheme];
   trustedDomains = [];
   trustedDomainsType = 0;
   ipRestrictionEnable = false;
@@ -80,6 +74,7 @@ class SettingsStore {
   logoUrl = "";
 
   isDesktopClient = isDesktopEditors;
+  isDesktopClientInit = false;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
@@ -157,6 +152,7 @@ class SettingsStore {
   legalTerms = null;
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
+  cspDomains = [];
   publicRoomKey = "";
 
   interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
@@ -298,7 +294,7 @@ class SettingsStore {
   }
 
   get sdkLink() {
-    return `${this.apiDocsLink}/docspace/jssdk`;
+    return `${this.apiDocsLink}/docspace/jssdk/`;
   }
 
   get apiBasicLink() {
@@ -308,6 +304,10 @@ class SettingsStore {
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }
+
+  setIsDesktopClientInit = (isDesktopClientInit) => {
+    this.isDesktopClientInit = isDesktopClientInit;
+  };
 
   get isPublicRoom() {
     return window.location.pathname === "/rooms/share";
@@ -870,6 +870,30 @@ class SettingsStore {
 
   deleteAppearanceTheme = async (id) => {
     return api.settings.deleteAppearanceTheme(id);
+  };
+
+  setCSPDomains = (domains) => {
+    this.cspDomains = domains;
+  };
+
+  getCSPSettings = async () => {
+    const { domains } = await api.settings.getCSPSettings();
+
+    this.setCSPDomains(domains || []);
+
+    return domains;
+  };
+
+  setCSPSettings = async (data) => {
+    try {
+      const { domains } = await api.settings.setCSPSettings(data);
+
+      this.setCSPDomains(domains);
+
+      return domains;
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   setInterfaceDirection = (direction) => {
