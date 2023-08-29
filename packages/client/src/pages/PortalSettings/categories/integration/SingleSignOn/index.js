@@ -10,7 +10,6 @@ import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 import ToggleSSO from "./sub-components/ToggleSSO";
-
 import MobileView from "./MobileView";
 import { useIsMobileView } from "../../../utils/useIsMobileView";
 
@@ -29,8 +28,12 @@ const SingleSignOn = (props) => {
   const isMobileView = useIsMobileView();
 
   useEffect(() => {
-    setDocumentTitle(t("Settings:SingleSignOn"));
     isSSOAvailable && init();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+    setDocumentTitle(t("Settings:SingleSignOn"));
+
+    return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
   return (

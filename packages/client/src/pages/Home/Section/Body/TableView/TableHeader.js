@@ -368,7 +368,8 @@ class FilesTableHeader extends React.Component {
   };
 
   onRoomsFilter = (sortBy) => {
-    const { roomsFilter, setIsLoading, navigate, location } = this.props;
+    const { roomsFilter, setIsLoading, navigate, location, setRoomsFilter } =
+      this.props;
 
     const newFilter = roomsFilter.clone();
     if (newFilter.sortBy !== sortBy) {
@@ -379,7 +380,7 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-
+    setRoomsFilter(newFilter);
     navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
@@ -455,6 +456,7 @@ export default inject(
       firstElemChecked,
       headerBorder,
       roomsFilter,
+      setRoomsFilter,
     } = filesStore;
     const { isRecentFolder, isRoomsFolder, isArchiveFolder, isTrashFolder } =
       treeFoldersStore;
@@ -495,6 +497,7 @@ export default inject(
     const { isPublicRoom, publicRoomKey } = publicRoomStore;
 
     return {
+      setRoomsFilter,
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,

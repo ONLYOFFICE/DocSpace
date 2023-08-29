@@ -35,7 +35,6 @@ PARAMETERS="$PARAMETERS -it COMMUNITY";
 DOCKER="";
 LOCAL_SCRIPTS="false"
 product="docspace"
-GIT_BRANCH="master"
 FILE_NAME="$(basename "$0")"
 
 while [ "$1" != "" ]; do
@@ -140,7 +139,11 @@ if [ -z "$DOCKER" ]; then
 	read_installation_method;
 fi
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall"
+if [ -z $GIT_BRANCH ]; then
+	DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/${product}"
+else
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall"
+fi
 
 if [ "$DOCKER" == "true" ]; then
 	if [ "$LOCAL_SCRIPTS" == "true" ]; then

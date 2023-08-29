@@ -220,14 +220,14 @@ const StyledRestoreBackup = styled.div`
     color: ${(props) => props.theme.client.settings.backup.warningColor};
   }
   .restore-backup_warning-link {
-    margin: 16px 0 24px 0;
+    margin-top: 16px;
     max-width: ${TEXT_LENGTH};
   }
   .restore-backup_warning-description {
     max-width: ${TEXT_LENGTH};
   }
   .restore-backup-checkbox {
-    margin-bottom: 24px;
+    margin: 24px 0;
   }
   .restore-backup-checkbox_notification {
     margin-top: 11px;

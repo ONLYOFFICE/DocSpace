@@ -92,6 +92,12 @@ class UsersStore {
     await this.getUsersList(filter);
   };
 
+  get needResetUserSelection() {
+    const { isVisible: infoPanelVisible } = this.authStore.infoPanelStore;
+    const { isOneUserSelection } = this.peopleStore.selectionStore;
+
+    return !infoPanelVisible || !isOneUserSelection;
+  }
   updateUserStatus = async (status, userIds) => {
     return api.people.updateUserStatus(status, userIds).then((users) => {
       if (users) {
@@ -131,6 +137,10 @@ class UsersStore {
     }
 
     await this.getUsersList(filter);
+
+    if (users && !this.needResetUserSelection) {
+      this.peopleStore.selectionStore.updateSelection(this.peopleList);
+    }
 
     return users;
   };
