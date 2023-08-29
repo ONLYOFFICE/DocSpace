@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "Yedekleme kopyası başarıyla oluşturuldu.",
   "BackupList": "Yedekleme listesi",
   "BackupListWarningText": "Listeden herhangi bir öğe silerseniz bu öğe ile ilgili dosyalar da silinir. Bu işlem geri alınamaz. Tüm dosyaları silmek için linke tıklayın:",
+  "BetaLabel": "BETA",
   "Branding": "Markalaşma",
   "BrandingSectionDescription": "Şirket bilgilerinizi belirtin, DocSpace arayüzünde görüntülenen harici kaynaklara ve e-posta adreslerine bağlantılar ekleyin.",
   "BrandingSubtitle": "Kullanıcılara markayla ilgili deneyim sağlamak için bu seçeneği kullanın.",

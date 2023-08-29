@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "Turvatallenteen kopio on luotu onnistuneesti.",
   "BackupList": "Varmuuskopiolista",
   "BackupListWarningText": "Jos poistat luettelosta kohteita, myös vastaavat tiedostot poistetaan. Tätä toimintoa ei voi kumota. Jos haluat poistaa kaikki tiedostot, käytä linkkiä:",
+  "BetaLabel": "BETA",
   "Branding": "Brändäys",
   "BrandingSectionDescription": "Tarkenna yrityksesi tiedot, lisää linkit Docspace-käyttöliittymässä näkyvät ulkoiset resurssit ja sähköpostiosoitteet.",
   "BrandingSubtitle": "Käytä tätä vaihtoehtoa tarjotaksesi käyttäjille brändikokemusta.",
