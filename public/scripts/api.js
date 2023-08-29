@@ -438,4 +438,8 @@
   window.DocSpace = window.DocSpace || {};
 
   window.DocSpace.SDK = new DocSpace(config);
+
+  if (config.init) {
+    window.DocSpace.SDK.initFrame(config);
+  }
 })();

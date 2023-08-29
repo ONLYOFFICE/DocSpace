@@ -27,7 +27,6 @@
   "PayerDescription": "此用户可访问付款详情，且是唯一可调整配额并进行付款的用户。协作空间所有者及付费管理者可使用 Stripe 客户门户重新指派付费管理者角色。",
   "PaymentOverdue": "无法添加新用户。",
   "PriceCalculation": "计算价格",
-  "QuotaPaidUserLimitError": "已达到付费用户限制。<1>付款</1>",
   "RenewSubscription": "将订阅更新至{{planName}}版本",
   "RoomManagerDescription": "房间管理和归档，用户邀请和管理可为房间指派多名管理员。",
   "StartupSuggestion": "升级为{{planName}}版获得更多权限",

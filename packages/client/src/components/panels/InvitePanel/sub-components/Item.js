@@ -29,6 +29,7 @@ const Item = ({
   isOwner,
   inputsRef,
   setIsOpenItemAccess,
+  isMobileView,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -147,6 +148,7 @@ const Item = ({
           withRemove={true}
           filteredAccesses={filteredAccesses}
           setIsOpenItemAccess={setIsOpenItemAccess}
+          isMobileView={isMobileView}
         />
       )}
     </>

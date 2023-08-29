@@ -35,6 +35,9 @@ public class TenantModel : IModel
     [StringLength(255)]
     public string AffiliateId { get; set; }
 
+    [StringLength(255)]
+    public string PartnerId { get; set; }
+
     public string Campaign { get; set; }
 
     [StringLength(255)]
