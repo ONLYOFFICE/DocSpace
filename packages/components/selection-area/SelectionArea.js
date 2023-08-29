@@ -100,7 +100,7 @@ class SelectionArea extends React.Component {
 
       // Mirror fileIndex for RTL interface (2, 1, 0 => 0, 1, 2)
       if (isRtl && viewAs === "tile") {
-        // columnIndex = countTilesInRow - 1 - columnIndex;
+        columnIndex = countTilesInRow - 1 - columnIndex;
       }
 
       // LEFT/RIGHT item position
