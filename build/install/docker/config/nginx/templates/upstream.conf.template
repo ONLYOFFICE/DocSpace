@@ -71,3 +71,9 @@ map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server" {
     default "$DOCUMENT_SERVER_URL_EXTERNAL";
     "" "http://$DOCUMENT_CONTAINER_NAME";
 }
+
+map $SERVICE_CLIENT $service_client {
+    volatile;
+    "" 127.0.0.1:5001;
+    default $SERVICE_CLIENT;
+}
