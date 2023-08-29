@@ -56,7 +56,6 @@ global using ASC.AuditTrail.Types;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
-global using ASC.Web.Core.RemovePortal;
 global using ASC.Common.Mapping;
 global using ASC.Common.Radicale;
 global using ASC.Common.Radicale.Core;
@@ -94,11 +93,13 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Feed;
 global using ASC.Feed.Data;
+global using ASC.Files.Core;
 global using ASC.Files.Core.Core;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
-global using ASC.Files.Core.VirtualRooms;
+global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
+global using ASC.Files.Core.VirtualRooms;
 global using ASC.Geolocation;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem;
@@ -122,6 +123,7 @@ global using ASC.Web.Core.Mobile;
 global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
+global using ASC.Web.Core.RemovePortal;
 global using ASC.Web.Core.Sms;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility;
@@ -149,16 +151,21 @@ global using AutoMapper;
 
 global using Google.Authenticator;
 
+global using Joonasw.AspNetCore.SecurityHeaders.Csp.Builder;
+
 global using MailKit.Security;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Primitives;
 
 global using MimeKit;
+
+global using ProtoBuf;
 
 global using static ASC.ActiveDirectory.Base.Settings.LdapSettings;
 global using static ASC.Security.Cryptography.EmailValidationKeyProvider;

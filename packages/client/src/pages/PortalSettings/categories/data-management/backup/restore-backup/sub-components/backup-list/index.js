@@ -170,16 +170,18 @@ const BackupListModalDialog = (props) => {
     setState((val) => ({ ...val, isChecked: !val.isChecked }));
   };
 
-  const { onModalClose, isVisibleDialog, t, isCopyingToLocal, theme } = props;
+  const { onModalClose, isVisibleDialog, t, isCopyingToLocal, theme, standalone } = props;
   const { filesList, isLoading, selectedFileIndex, isChecked } = state;
 
-  const helpContent = () => (
-    <>
-      <Text className="restore-backup_warning-description">
-        {t("RestoreBackupWarningText")}{" "}
-        <Text as="span" className="restore-backup_warning-link">
-          {t("RestoreBackupResetInfoWarningText")}
-        </Text>
+    const helpContent = () => (
+      <>
+        <Text className="restore-backup_warning-description">
+          {t("RestoreBackupWarningText")}{" "}
+          {!standalone && (
+            <Text as="span" className="restore-backup_warning-link">
+              {t("RestoreBackupResetInfoWarningText")}
+            </Text>
+          )}
       </Text>
     </>
   );
@@ -298,7 +300,7 @@ BackupListModalDialog.propTypes = {
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
   const { downloadingProgress } = backup;
-  const { socketHelper, theme, setTenantStatus } = settingsStore;
+  const { socketHelper, theme, setTenantStatus, standalone } = settingsStore;
   const isCopyingToLocal = downloadingProgress !== 100;
 
   return {
@@ -306,6 +308,7 @@ export default inject(({ auth, backup }) => {
     theme,
     socketHelper,
     isCopyingToLocal,
+    standalone,
   };
 })(
   withTranslation(["Settings", "Common", "Translations"])(

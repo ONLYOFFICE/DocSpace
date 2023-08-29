@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useTransition, Suspense } from "react";
 import styled, { css } from "styled-components";
 import Submenu from "@docspace/components/submenu";
+import Badge from "@docspace/components/badge";
+import Box from "@docspace/components/box";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -27,6 +29,10 @@ const StyledSubmenu = styled(Submenu)`
         top: 58px;
       `}
   }
+
+  #javascript-sdk {
+    gap: 0px;
+  }
 `;
 
 const DeveloperToolsWrapper = (props) => {
@@ -43,6 +49,22 @@ const DeveloperToolsWrapper = (props) => {
   ]);
   const [isPending, startTransition] = useTransition();
 
+  const sdkLabel = (
+    <Box displayProp="flex" style={{ gap: "8px" }}>
+      {t("JavascriptSdk")}
+      <Box>
+        <Badge
+          label={t("Settings:BetaLabel")}
+          backgroundColor="#7763F0"
+          fontSize="9px"
+          borderRadius="50px"
+          noHover={true}
+          isHovered={false}
+        />
+      </Box>
+    </Box>
+  );
+
   const data = [
     {
       id: "api",
@@ -51,7 +73,7 @@ const DeveloperToolsWrapper = (props) => {
     },
     {
       id: "javascript-sdk",
-      name: t("JavascriptSdk"),
+      name: sdkLabel,
       content: <JavascriptSDK />,
     },
     {
@@ -74,7 +96,7 @@ const DeveloperToolsWrapper = (props) => {
   );
 
   const load = async () => {
-    await loadBaseInfo();
+    //await loadBaseInfo();
   };
 
   useEffect(() => {

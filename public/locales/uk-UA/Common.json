@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Постачальник не під'єднаний до вашого облікового запису",
   "PunycodeDomain": "Домени в панікоді не підтримуються",
   "PunycodeLocalPart": "Локальна частина в панікоді не підтримується",
+  "QuotaPaidUserLimitError": "Досягнуто обмеження кількості платних користувачів.",
   "ReconnectStorage": "Повторно під’єднати сховище",
   "RecoverDescribeYourProblemPlaceholder": "Опишіть свою проблему",
   "RecoverTitle": "Відновлення доступу",
