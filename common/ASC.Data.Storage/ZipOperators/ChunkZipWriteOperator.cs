@@ -109,6 +109,7 @@ public class ChunkZipWriteOperator : IDataWriteOperator
                     
                     theMemStream.Position = 0;
                     StoragePath = await _sessionHolder.UploadChunkAsync(_chunkedUploadSession, theMemStream, theMemStream.Length);
+                    _sha.TransformBlock(buffer, 0, bytesRead, buffer, 0);
                 }
                 else
                 {
@@ -119,7 +120,6 @@ public class ChunkZipWriteOperator : IDataWriteOperator
                     await theMemStream.CopyToAsync(_fileStream);
                     _fileStream.Flush();
                 }
-                _sha.TransformBlock(buffer, 0, bytesRead, buffer, 0);
             }
         }
         if (last)

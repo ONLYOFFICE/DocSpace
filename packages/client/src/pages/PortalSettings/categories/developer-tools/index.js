@@ -72,7 +72,7 @@ const DeveloperToolsWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
 
-    await loadBaseInfo();
+    //await loadBaseInfo();
     setIsLoading(true);
   };
 
