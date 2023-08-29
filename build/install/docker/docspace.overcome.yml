@@ -167,7 +167,7 @@ services:
 
   onlyoffice-router:
     <<: *x-profiles-local
-    image: ${Baseimage_Router_Run}
+    image: ${Baseimage_Proxy_Run}
     environment:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
     volumes:
