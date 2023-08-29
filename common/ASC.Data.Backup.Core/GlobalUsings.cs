@@ -32,6 +32,8 @@ global using System.Reflection;
 global using System.Security.Cryptography;
 global using System.ServiceModel;
 global using System.Text;
+
+global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Xml;
 global using System.Xml.Linq;
@@ -80,7 +82,6 @@ global using ASC.Notify.Recipients;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;
-global using ASC.Web.Core.Utility;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;

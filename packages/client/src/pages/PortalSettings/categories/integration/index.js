@@ -16,15 +16,8 @@ import SSOLoader from "./sub-components/ssoLoader";
 import SMTPSettings from "./SMTPSettings";
 
 const IntegrationWrapper = (props) => {
-  const {
-    t,
-    tReady,
-    history,
-    loadBaseInfo,
-    enablePlugins,
-    toDefault,
-    isSSOAvailable,
-  } = props;
+  const { t, tReady, history, enablePlugins, toDefault, isSSOAvailable } =
+    props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -67,7 +60,6 @@ const IntegrationWrapper = (props) => {
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
 
-    await loadBaseInfo();
     setIsLoading(true);
   };
 
@@ -91,16 +83,12 @@ const IntegrationWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup, auth, ssoStore }) => {
-  const { initSettings } = setup;
+export default inject(({ auth, ssoStore }) => {
   const { load: toDefault } = ssoStore;
   const { enablePlugins } = auth.settingsStore;
   const { isSSOAvailable } = auth.currentQuotaStore;
 
   return {
-    loadBaseInfo: async () => {
-      await initSettings();
-    },
     enablePlugins,
     toDefault,
     isSSOAvailable,
