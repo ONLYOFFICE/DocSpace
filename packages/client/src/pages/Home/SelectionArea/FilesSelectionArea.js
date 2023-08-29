@@ -46,6 +46,21 @@ const SelectionArea = (props) => {
     return division ? countTilesInRow - division : 0;
   };
 
+  const arrayTypes = [
+    {
+      type: "file",
+      rowCount: Math.ceil(filesLength / countTilesInRow),
+      rowGap: 14,
+      countOfMissingTiles: getCountOfMissingFilesTiles(filesLength),
+    },
+    {
+      type: "folder",
+      rowCount: Math.ceil(foldersLength / countTilesInRow),
+      rowGap: 12,
+      countOfMissingTiles: getCountOfMissingFilesTiles(foldersLength),
+    },
+  ];
+
   return isMobile || dragging ? (
     <></>
   ) : (
@@ -61,26 +76,7 @@ const SelectionArea = (props) => {
       isRooms={isRooms}
       folderHeaderHeight={35}
       defaultHeaderHeight={46}
-      arrayTypes={[
-        {
-          type: "dash",
-          rowCount: 1,
-          rowGap: 12,
-          countOfMissingTiles: 3,
-        },
-        {
-          type: "file",
-          rowCount: Math.ceil(filesLength / countTilesInRow),
-          rowGap: 14,
-          countOfMissingTiles: getCountOfMissingFilesTiles(filesLength),
-        },
-        {
-          type: "folder",
-          rowCount: Math.ceil(foldersLength / countTilesInRow),
-          rowGap: 12,
-          countOfMissingTiles: getCountOfMissingFilesTiles(foldersLength),
-        },
-      ]}
+      arrayTypes={arrayTypes}
     />
   );
 };

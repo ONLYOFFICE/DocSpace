@@ -25,7 +25,6 @@ class SelectionArea extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.isRooms !== prevProps.isRooms) {
-      console.log("aaaaaaaaaaaaaaaaaa");
       this.arrayOfTypes = [];
     }
   }
