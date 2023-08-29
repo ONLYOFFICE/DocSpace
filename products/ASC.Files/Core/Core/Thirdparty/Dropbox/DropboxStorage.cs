@@ -273,9 +273,11 @@ internal class DropboxStorage : IDisposable
 
     public async Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFilePath, long offset)
     {
+        using var tempBody = new MemoryStream();
         return await _dropboxClient.Files.UploadSessionFinishAsync(
             new UploadSessionCursor(dropboxSession, (ulong)offset),
-            new CommitInfo(dropboxFilePath, WriteMode.Overwrite.Instance));
+            new CommitInfo(dropboxFilePath, WriteMode.Overwrite.Instance),
+            body: tempBody);
     }
 
     public void Dispose()
