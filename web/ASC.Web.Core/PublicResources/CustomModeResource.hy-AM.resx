@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1. Բարի գալուստ ONLYOFFICE Personal
+
+Դուք հենց նոր եք ստեղծել ձեր անձնական գրասենյակը ամպի մեջ.
+
+h3. Դա վիրտուալ աշխատանքային տարածք է, որտեղ դուք կարող եք խմբագրել և պահել փաստաթղթերը, աշխատել դրանց հետ ցանկացած վայրից՝ ապահովելով ձեր ընկերներին կամ գործընկերներին հասանելիություն:
+
+h3. Արագ սկսելու համար ահա թե ինչ կարող եք անել ONLYOFFICE-ում:
+
+- Ստեղծեք, դիտեք և խմբագրեք տեքստային փաստաթղթեր, աղյուսակներ, ներկայացումներ.
+
+- Աշխատեք բոլոր հայտնի ձևաչափերով: Ամենաբարձր համատեղելիությունը MS Office ֆայլերի հետ. 
+
+- Ստեղծեք և համատեղ խմբագրեք "պատրաստի լրացման ձևեր":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Համօգտագործեք և համագործակցեք փաստաթղթերի վրա առցանց.
+
+- Լրացուցիչ հնարավորություններ կիրառելու համար օգտագործեք տարբեր պլագիններ.
+
+- Հեշտ մուտք դեպի ձեր անձնական ամպ միջոցով "Chrome ընդլայնման":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Դուք կարող եք նաև փաստաթղթեր խմբագրել անցանց մեր անվճար միջոցով միջոցով "սեղանի խմբագրի":"https://www.onlyoffice.com/download-desktop.aspx " կամ ստացեք բջջային խմբագրման փաթեթ ձեզ համար "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" կամ "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Սիրով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել նամակը ձեր ամպային գրասենյակի հաշվին:
+
+Սեղմեք ստորև նշված կոճակը և մուտք գործեք* ձեր ամպ:
+
+$GreenButton
+
+Հղումը գործում է 7 օր.
+
+* Եթե այս բրաուզերով մուտք չեք գործել ձեր ամպային գրասենյակ, հաստատման համար պետք է օգտագործեք ձեր հին էլ․ հասցեն.
+
+Չե՞ք ուզում փոխել ձեր էլ.հասցեն։ Պարզապես անտեսեք այս հաղորդագրությունը.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Ցանկանու՞մ եք փոխել գաղտնաբառը ձեր ամպային գրասենյակի հաշվի վրա: Հաստատելու համար սեղմեք ստորև նշված կոճակը:
+
+$GreenButton
+
+Հղումը գործում է 7 օր.
+
+Չե՞ք ուզում փոխել ձեր գաղտնաբառը: Պարզապես անտեսեք այս հաղորդագրությունը.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Բարեւ,
+
+դուք հենց նոր հաշիվ եք գրանցել ONLYOFFICE լուծումում՝ անձնական օգտագործման համար: Սեղմել "այստեղ":"$InviteLink" գրանցումը հաստատելու և գաղտնաբառ ստեղծելու համար:
+
+Եթե չեք կարող բացել հղումը, խնդրում ենք պատճենեք հետևյալ "$InviteLink":"$InviteLink" և տեղադրեք այն ձեր դիտարկիչի հասցեագոտում:.
+
+Սիրով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Դուք խնդրել եք դադարեցնել ձեր հաշիվը personal.onlyoffice.com. Հարցումը լրացնելու համար հետևեք հղմանը (հղումը ակտիվ է 7-օրյա ժամկետով)։ 
+
+Հաստատեք հաշվի դադարեցումը
+
+*Նշում*. Ջնջումից հետո ձեր հաշիվը և դրա հետ կապված բոլոր տվյալները ընդմիշտ կջնջվեն՝ համաձայն մեր "Գաղտնիության քաղաքականությունը":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Կարդացեք ավելին հաշվի դադարեցման մասին":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Անտեսեք այս նամակը, եթե չեք ցանկանում շարունակել. 
+
+Եթե ունեք հարցեր, խնդրում ենք կապվել մեզ հետ "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Սիրով՝
+ONLYOFFICE թիմ</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Հարգելի $UserName,
+
+Օգտագործողից տվյալների հեռացման գործընթացը "$FromUserName":"$FromUserLink" հաջողությամբ ավարտվել է.
+
+Անձնական տվյալների ջնջումը թույլատրվում է անվճար:
+
+# Փաստաթղթեր - $DocsSpace
+# Էլ․փոստ - $MailSpace
+# Խոսելու համար - $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3. Գրանցվել է նոր պորտալ
+
+# Պորտալի url: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Անուն: $UserName
+# Ազգանուն: $UserLastName
+# Էլ․հասցե: $UserEmail
+# Հեռախոս: $Phone
+# Ստեղծման ամսաթիվ: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Կատարեք նույնը, ինչ օգտատերը|Կապեք Dropbox-ը, Box-ը և այլ հաշիվները 'Ընդհանուր' բաժնում| Սահմանեք փաստաթղթերի և թղթապանակների մուտքի իրավունքները 'Ընդհանուր' բաժնում</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Ստեղծեք և խմբագրեք ձեր սեփական փաստաթղթերը, ինչպես նաև համօգտագործվող փաստաթղթերը՝ համապատասխան մուտքի իրավունքով | Տվեք այլ օգտատերերի փաստաթղթերի և թղթապանակների ընթերցման/խմբագրման հնարավորություն|Կցել Dropbox-ը, Box-ը և այլ հաշիվները «Իմ փաստաթղթերը» բաժնում</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Բարի գալուստ ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Խնդրում ենք ակտիվացնել ձեր էլ.փոստի հասցեն</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>ONLYOFFICE Personal հաշվի դադարեցում</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Օգտագործողի տվյալների հեռացումն ավարտված է</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Գրանցվել է նոր պորտալ</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Ողջույն, $UserName!
+
+Բարի գալուստ ONLYOFFICE DocSpace: Ձեր օգտվողի պրոֆիլը հաջողությամբ ավելացվել է "${__VirtualRootPath}":"${__VirtualRootPath}". Այժմ դուք կարող եք: 
+
+* Աշխատեք այլ օգտատերերի հետ այն սենյակում, որտեղ հրավիրված եք *: Համագործակցության սենյակներ իրական ժամանակի համահեղինակության համար կամ հատուկ սենյակներ՝ ցանկացած նպատակով ճկուն կարգավորումներով*. 
+
+* *Աշխատեք տարբեր ձևաչափերի ֆայլերի հետ*: տեքստային փաստաթղթեր, աղյուսակներ, շնորհանդեսներ, թվային ձևեր, PDF-ներ, էլեկտրոնային գրքեր, մուլտիմեդիա.
+
+* *Համագործակցեք փաստաթղթերի շուրջ * երկու համատեղ խմբագրման ռեժիմներով՝ իրական ժամանակում կամ պարբերության կողպում: Հետևեք փոփոխություններին, շփվեք իրական ժամանակում՝ օգտագործելով ներկառուցված զրույցարանը կամ կատարելով աուդիո և տեսազանգեր:
+
+* *Միացրեք ցանկացած ամպային պահեստ* և աշխատեք առանց հավելվածների միջև անցնելու. 
+
+$GreenButton
+
+Եթե օգնության կարիք ունեք, այցելեք մեր "Օգնության կենտրոնը":"https://helpcenter.onlyoffice.com/" կամ հարցրեք մեր "աջակցող թիմ":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Սիրով Ձեր՝
+ONLYOFFICE թիմ
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+</root>

@@ -181,8 +181,9 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
-    const { enablePlugins } = this.authStore.settingsStore;
+    const { enablePlugins, standalone } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+    const isCommunity = this.authStore.isCommunity;
 
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -254,12 +255,13 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
-      isAdmin && {
-        key: "user-menu-payments",
-        icon: PaymentsReactSvgUrl,
-        label: t("Common:PaymentsTitle"),
-        onClick: this.onPaymentsClick,
-      },
+      isAdmin &&
+        !isCommunity && {
+          key: "user-menu-payments",
+          icon: PaymentsReactSvgUrl,
+          label: t("Common:PaymentsTitle"),
+          onClick: this.onPaymentsClick,
+        },
       {
         isSeparator: true,
         key: "separator1",

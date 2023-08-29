@@ -83,6 +83,12 @@ export const ControlContainer = styled.div`
 export const PlayerControlsWrapper = styled.div`
   padding: 0 30px;
   width: 100%;
+  margin-top: 80px;
+
+  ${isMobile &&
+  css`
+    margin-top: 0px;
+  `}
 
   ${isMobileOnly &&
   css`

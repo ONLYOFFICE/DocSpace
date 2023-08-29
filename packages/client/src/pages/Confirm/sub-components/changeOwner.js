@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import { inject, observer } from "mobx-react";
@@ -21,6 +22,7 @@ const ChangeOwnerForm = (props) => {
   const [newOwner, setNewOwner] = useState("");
   const [isOwnerChanged, setIsOwnerChanged] = useState(false);
 
+  const navigate = useNavigate();
   const ownerId = linkData.uid;
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const ChangeOwnerForm = (props) => {
   };
 
   const onCancelClick = () => {
-    history.push("/");
+    navigate("/");
   };
 
   return (

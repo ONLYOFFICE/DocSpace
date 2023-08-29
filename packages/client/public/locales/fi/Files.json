@@ -24,6 +24,7 @@
   "DaysRemaining": "Päiviä jäljellä: {{daysRemaining}}",
   "DisableNotifications": "Poista ilmoitukset käytöstä",
   "Document": "Asiakirja",
+  "DocumentEdited": "Toimintoa ei voida suorittaa, koska asiakirjaa muokataan.",
   "EditRoom": "Muokkaa huonetta",
   "EmptyFile": "Tyhjä tiedosto",
   "EmptyFilterDescriptionText": "Yksikään tiedosto tai kansio ei vastaa tätä suodatinta. Kokeile toista suodatinta tai poista suodatin nähdäksesi kaikki tiedostot.",

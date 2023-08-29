@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Hesaba giriş növü",
   "DeleteSelfProfile": "Profilin silinməsi",
   "DisabledEmployeeStatus": "Söndürülüb",
   "DisableUserButton": "Bloklamaq",
@@ -12,6 +13,7 @@
   "RemoveData": "Şəxsi məlumatların silinməsi",
   "ResetAuth": "Doğrulamanı sıfırlayın",
   "SendInviteAgain": "Dəvəti bir daha göndər",
+  "StandardLogin": "Standart giriş",
   "SuccessChangeUserStatus": "İstifadəçinin statusu müvəffəqiyyətlə dəyişdirilmişdir",
   "SuccessDeletePersonalData": "Şəxsi məlumatlar müvəffəqiyyətlə silindi",
   "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi",

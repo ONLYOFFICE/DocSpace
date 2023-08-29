@@ -601,4 +601,394 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Trường mã xác thực không được để trống</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Qua tin nhắn SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Qua ứng dụng xác thực</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID ứng dụng khách</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng đăng nhập vào cổng thông tin bằng tài khoản Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn đăng nhập vào ONLYOFFICE bằng Apple ID. {0}Truy cập Cổng thông tin Nhà phát triển Apple và tạo tích hợp ứng dụng ONLYOFFICE mới. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Mã định danh khóa 10 ký tự đã được tạo cho Đăng nhập bằng khóa riêng của Apple</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Khóa riêng được tải xuống từ Nhà phát triển Apple</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID nhóm tài khoản nhà phát triển gồm 10 ký tự</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để rút ngắn liên kết tài liệu và lời mời. {0}Chèn khóa API và đăng nhập Bitly của bạn bên dưới:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Key</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để kết nối tài khoản Box của bạn với mô-đun Tài liệu. Bạn sẽ có thể quản lý, chỉnh sửa và chia sẻ tệp từ Box với người dùng ONLYOFFICE. {0}Đăng nhập vào tài khoản của bạn trên trang Nhà phát triển Box và tạo một ứng dụng mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Sử dụng ứng dụng này để bật xác thực hai yếu tố với dịch vụ Clickatell. {0}Đăng nhập vào tài khoản Nền tảng SMS của bạn và tạo tích hợp mới cho ONLYOFFICE. Sao chép một apiKey và chèn nó dưới đây:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Kích hoạt ứng dụng này để ký điện tử các tài liệu bằng DocuSign. {0}Chuyển đến Bảng điều khiển quản trị DocuSign của bạn và thêm tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để kết nối tài khoản Dropbox của bạn với mô-đun Tài liệu. Bạn sẽ có thể quản lý, chỉnh sửa và chia sẻ tập tin từ Dropbox với người dùng ONLYOFFICE. {0}Đăng nhập vào tài khoản của bạn trên trang Nhà phát triển Dropbox và tạo một ứng dụng mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>App key</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Bật ứng dụng này để tạo danh sách thư mục trong tài liệu với EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để tạo thư mục trong trình chỉnh sửa ONLYOFFICE. {0}Chuyển đến trang đăng ký EasyBib và điền vào biểu mẫu để thêm tích hợp ONLYOFFICE. Sau khi bạn nhận được app key, hãy dán nó vào bên dưới:</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>App Token</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn đăng nhập vào ONLYOFFICE bằng Facebook và liên kết tài khoản Facebook của khách hàng với mô-đun CRM. {0}Truy cập Cổng thông tin Nhà phát triển Facebook và tạo tích hợp ứng dụng ONLYOFFICE mới. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Server key</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn nhận thông báo về tin nhắn ngay cả khi ngoại tuyến. {0}Chuyển đến bảng điều khiển Firebase và thêm một dự án mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Nhập tên của Google Cloud bucket để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Kết nối dịch vụ Google Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Kết nối dịch vụ Google Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn. {0}Truy cập Bảng điều khiển nền tảng Google Cloud và tạo tài khoản dịch vụ mới cho ONLYOFFICE. Dán dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để kết nối tài khoản Google Drive của bạn với mô-đun Tài liệu. Bạn sẽ có thể quản lý, chỉnh sửa và chia sẻ tệp từ Google Drive với người dùng ONLYOFFICE. {0}Chuyển đến bảng điều khiển Google APIs và tạo một dự án mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn đăng nhập vào ONLYOFFICE bằng tài khoản LinkedIn của họ. {0}Truy cập trang web của Nhà phát triển LinkedIn và tạo tích hợp ứng dụng ONLYOFFICE mới. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Key</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Secret key</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng đăng nhập vào cổng thông tin bằng tài khoản Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Khi bạn thêm ứng dụng Mail.ru, bạn có thể cho phép đăng nhập vào cổng thông tin bằng cách sử dụng tài khoản Mail.ru trên trang hồ sơ của bạn.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID ứng dụng khách</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng đăng nhập vào cổng thông tin bằng tài khoản Microsoft.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn đăng nhập vào ONLYOFFICE bằng Microsoft. {0}Truy cập Microsoft Azure và tạo tích hợp ứng dụng ONLYOFFICE mới. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace Cloud Storage</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Kết nối dịch vụ lưu trữ đám mây Rackspace Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Kết nối dịch vụ lưu trữ đám mây Rackspace Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn. {0}Trong cài đặt bảo mật của Rackspace Cloud Control Panel, hãy nhấp vào liên kết Show bên cạnh Rackspace API Key. Dán dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Private Container</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Private Container</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Nhập địa chỉ URL của Rackspace private container để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Public Container</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Public Container</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Nhập địa chỉ URL của Rackspace public container để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Nhập Region nơi các Rackspace container của bạn được đặt.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Bucket</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Nhập tên riêng của Amazon bucket để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Kết nối Amazon AWS S3 để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Kết nối Amazon AWS S3 để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn. {0}Chuyển đến Bảng điều khiển AWS Management Console và tạo khóa truy cập cho ONLYOFFICE. Dán dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Nhập AWS region nơi Amazon bucket của bạn được đặt.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Khóa truy cập bí mật S3</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel Cloud Storage</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Mật khẩu để truy cập bộ nhớ</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Auth User</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Kết nối dịch vụ lưu trữ đám mây Selectel Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Kết nối dịch vụ lưu trữ đám mây Selectel Cloud Storage để sao lưu và lưu trữ dữ liệu từ cổng thông tin của bạn. {0}Lấy dữ liệu truy cập cho người dùng có quyền Đọc/Ghi cho các container nơi bạn dự định lưu trữ các bản sao lưu của mình và dán nó bên dưới:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Nhập tên của Selectel private container để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Nhập tên của Selectel public container để lưu trữ các bản sao lưu.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID Ứng dụng</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Client secret</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để kết nối tài khoản OneDrive của bạn với mô-đun Tài liệu. Bạn sẽ có thể quản lý, chỉnh sửa và chia sẻ tập tin từ OneDrive với người dùng ONLYOFFICE. {0}Đăng nhập vào tài khoản Microsoft Azure của bạn và tạo một ứng dụng mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Sử dụng ứng dụng này để bật xác thực hai yếu tố với dịch vụ SMS Center. {0}Chèn thông tin đăng nhập tài khoản smsc và mật khẩu của bạn (hoặc hàm băm MD5 của mật khẩu) bằng chữ thường:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Tên người dùng bot</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Token Bot</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Kết nối tài khoản Telegram để nhận thông báo cổng thông tin qua Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Để nhận thông báo cổng thông tin qua Telegram, hãy bật Telegram bot. Bạn có thể tạo một bot mới bằng cách sử dụng BotFather trong Telegram cho máy tính. Để sử dụng bot này, người dùng cổng thông tin cần bật thông báo Telegram trên Trang hồ sơ của họ. {0}Dán tên người dùng bot và mã token bạn nhận được trong các trường bên dưới.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn gọi danh bạ của họ từ mô-đun CRM bằng Twilio. {0}Đi đến Bảng điều khiển Twilio và dán dữ liệu sau vào bên dưới:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để cho phép người dùng của bạn đăng nhập vào ONLYOFFICE bằng Twitter và liên kết tài khoản Twitter của khách hàng với mô-đun CRM. {0}Truy cập Cổng thông tin Nhà phát triển Twitter và tạo tích hợp ứng dụng ONLYOFFICE mới. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API Key Secret</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Tên người dùng Rackspace</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID Ứng dụng</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Khóa bảo mật</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng đăng nhập vào cổng thông tin bằng tài khoản VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Khi bạn thêm ứng dụng VK, bạn có thể cho phép đăng nhập vào cổng thông tin bằng cách sử dụng tài khoản VK trên trang hồ sơ của bạn.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng xuất bản tài liệu trực tiếp trong WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Cho phép ứng dụng dễ dàng xuất bản tài liệu lên trang web WordPress của bạn. {0}Trên trang Nhà phát triển Wordpress, tạo một ứng dụng mới để tích hợp ONLYOFFICE. Dán dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Khóa WordPress</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress Secret</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Bật ứng dụng này để thêm người dùng cổng thông tin mới từ danh sách liên hệ Yahoo của bạn. {0}Truy cập trang Tạo ứng dụng trong Mạng Nhà phát triển Yahoo và tạo một ứng dụng mới để tích hợp ONLYOFFICE. Chèn dữ liệu bạn nhận được bên dưới:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Cho phép ứng dụng đăng nhập vào cổng thông tin bằng tài khoản Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Khi bạn thêm ứng dụng Yandex, bạn có thể cho phép đăng nhập vào cổng thông tin bằng cách sử dụng tài khoản Yandextrên trang hồ sơ của bạn.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Id sao chép không chính xác.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Tin nhắn không có nội dung</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Tên hoặc họ không chính xác</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>không có dấu cách</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>chỉ các chữ cái Latinh</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Đã vượt quá giới hạn yêu cầu</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Miền của người thuê không được để trống.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Tên miền phải dài từ {0} đến {1} ký tự.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Bạn đã cố gắng lấy đi quyền quản trị từ chính mình. Quyền quản trị của bạn không bị ảnh hưởng.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Tài khoản của bạn không được liên kết với thư mục LDAP và mật khẩu LDAP của bạn không còn hoạt động. Vui lòng thay đổi hoặc đặt mật khẩu cho tài khoản của bạn tại trang cài đặt hồ sơ.</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Lập người dùng {0} làm quản trị viên {1}</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Loại bỏ các quyền truy cập lỗi thời đã được tải qua LDAP trước đó</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Đang lưu ảnh</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Đang cập nhật quyền truy cập của người dùng</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Đang cập nhật ảnh người dùng</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Tải lên thành công. {0}Hỗ trợ và cập nhật không có sẵn cho giấy phép này kể từ {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Tải lên thành công. {0}Hỗ trợ không khả dụng cho giấy phép này kể từ {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Nếu tồn tại người dùng có email {0}, hướng dẫn thay đổi mật khẩu đã được gửi đến địa chỉ email này.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Vượt quá không gian đĩa được phép</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Không gian đám mây cho tài liệu văn phòng của bạn</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptcha không hợp lệ</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Tích hợp bên thứ ba</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Mã không chính xác</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Cài đặt ứng dụng TFA không khả dụng</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Bạn đã gửi quá nhiều tin nhắn văn bản. Vui lòng thử lại sau.</value>
+  </data>
 </root>

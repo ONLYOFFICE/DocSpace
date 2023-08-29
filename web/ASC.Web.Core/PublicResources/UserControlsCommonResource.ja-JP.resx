@@ -76,4 +76,7 @@
   <data name="UnknownLastName" xml:space="preserve">
     <value>姓</value>
   </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>ライセンスキーの入力が必要です</value>
+  </data>
 </root>

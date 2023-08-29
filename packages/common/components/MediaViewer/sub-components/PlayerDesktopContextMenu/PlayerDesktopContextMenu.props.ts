@@ -4,6 +4,7 @@ interface PlayerDesktopContextMenuProps {
     right?: string,
     bottom?: string
   ) => JSX.Element;
+  canDownload: boolean;
   isPreviewFile: boolean;
   hideContextMenu: boolean;
   onDownloadClick: VoidFunction;

@@ -646,4 +646,76 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Usunięte znaczniki: {0}</value>
   </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>ID działania</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Zaktualizowano ustawienia okresu przechowywania audytu</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Zaktualizowano niestandardowe ustawienia nawigacji</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Zaktualizowano ustawienia wymuszania zapisywania</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Zaktualizowano ustawienia przechowywania wymuszonych zapisów</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Logowanie nie powiodło się. Zbyt wiele prób</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Logowanie nie powiodło się. Nieprawidłowy kod reCAPTCHA</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Logowanie za pomocą API i aplikacji uwierzytelniającej nie powiodło się</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Logowanie za pomocą aplikacji uwierzytelniającej nie powiodło się</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Logowanie za pomocą aplikacji społecznościowej powiodło się</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Logowanie za pomocą API i aplikacji uwierzytelniającej powiodło się</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Logowanie za pomocą aplikacji uwierzytelniającej powiodło się</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Prywatny pokój jest wyłączony</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Prywatny pokój jest włączony</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Rozpocznij odszyfrowywanie pamięci</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Rozpocznij szyfrowanie pamięci</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>ID celu</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Zaktualizowano ustawienia uwierzytelniania dwuetapowego: wyłączono uwierzytelnianie dwuetapowe</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Zaktualizowano ustawienia uwierzytelniania dwuetapowego: włączono potwierdzenie SMS</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Zaktualizowano ustawienia uwierzytelniania dwuetapowego: włączono aplikację uwierzytelniającą</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Dane użytkownika dla {0} zostały usunięte</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Aplikacja uwierzytelniająca została odłączona: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Tworzone są nowe kody zapasowe</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>Zaktualizowano adres e-mail</value>
+  </data>
 </root>

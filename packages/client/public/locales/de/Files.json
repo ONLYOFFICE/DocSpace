@@ -24,6 +24,7 @@
   "DaysRemaining": "Verbleibende Tage: {{daysRemaining}}",
   "DisableNotifications": "Benachrichtigungen deaktivieren",
   "Document": "Dokument",
+  "DocumentEdited": "Die Aktion kann nicht ausgeführt werden, da das Dokument gerade bearbeitet wird.",
   "EditRoom": "Raum bearbeiten",
   "EmptyFile": "Leere Datei",
   "EmptyFilterDescriptionText": "Keine Dateien oder Ordner entsprechen diesem Filter. Versuchen Sie einen anderen Filter oder entfernen Sie diesen, um alle Dateien zu sehen.",

@@ -20,6 +20,7 @@ const Details = ({
   openUser,
   isVisitor,
   isCollaborator,
+  selectTag,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -37,6 +38,7 @@ const Details = ({
     navigate,
     personal,
     culture,
+    selectTag,
   });
 
   const createThumbnailAction = useCallback(async () => {
@@ -121,12 +123,14 @@ const Details = ({
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { userStore } = auth;
   const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
   const { user } = userStore;
+
+  const { selectTag } = filesActionsStore;
 
   const isVisitor = user.isVisitor;
   const isCollaborator = user.isCollaborator;
@@ -140,5 +144,6 @@ export default inject(({ auth, filesStore }) => {
     openUser,
     isVisitor,
     isCollaborator,
+    selectTag,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

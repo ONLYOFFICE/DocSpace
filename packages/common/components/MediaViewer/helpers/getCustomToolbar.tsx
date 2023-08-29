@@ -11,8 +11,11 @@ import ViewerSeparator from "PUBLIC_DIR/images/viewer.separator.react.svg";
 import PanelReactSvg from "PUBLIC_DIR/images/panel.react.svg";
 
 import { ToolbarActionType } from ".";
+import type { IFile } from "../types";
 
 export const getCustomToolbar = (
+  targetFile: IFile,
+  isEmptyContextMenu: boolean,
   onDeleteClick: VoidFunction,
   onDownloadClick: VoidFunction
 ) => {
@@ -67,6 +70,7 @@ export const getCustomToolbar = (
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: !targetFile.security.Download,
     },
     {
       key: "download",
@@ -77,6 +81,7 @@ export const getCustomToolbar = (
         </div>
       ),
       onClick: onDownloadClick,
+      disabled: !targetFile.security.Download,
     },
     {
       key: "context-separator",
@@ -87,10 +92,12 @@ export const getCustomToolbar = (
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: isEmptyContextMenu,
     },
     {
       key: "context-menu",
       actionType: -1,
+      disabled: isEmptyContextMenu,
     },
     {
       key: "delete",
@@ -101,6 +108,7 @@ export const getCustomToolbar = (
         </div>
       ),
       onClick: onDeleteClick,
+      disabled: !targetFile.security.Delete,
     },
   ];
 };
@@ -125,6 +133,7 @@ export const getPDFToolbar = (): ReturnType<typeof getCustomToolbar> => {
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: false,
     },
     {
       key: "zoomOut",
@@ -186,6 +195,7 @@ export const getPDFToolbar = (): ReturnType<typeof getCustomToolbar> => {
           <ViewerSeparator size="scale" />
         </div>
       ),
+      disabled: false,
     },
     {
       key: "context-menu",

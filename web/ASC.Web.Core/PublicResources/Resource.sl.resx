@@ -361,4 +361,634 @@
   <data name="Tariffs_admin" xml:space="preserve">
     <value>Business</value>
   </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Polje potrditvene kode ne more biti prazno</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Uspešno naloženo</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Zahtevana je varnejša metoda avtentikacije. Uporabite šifrirano povezavo ali omogočite navadno avtentikacijo na strežniku.</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Preverjanje certifikata</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Napaka v povezav</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Nepravilni filter skupine.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Ni bilo mogoče pridobiti atributa imena skupine za eno ali več skupin.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>od {0} do {1} znakov</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Velikost slike presega dovoljene parametre</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Neznana vrsta slikovne datoteke</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Email naslovom iz te domene ni dovoljena registracija</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Slabi ključi</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Omogočite aplikaciji prijavo na portal z uporabo Twitter računa in za iskanje kontaktov.</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Račun Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Avtentikacijski žeton</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Omogočite to aplikacijo za klicanje stikov iz CRM s Twilio.</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Prijava</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za upravljanje datotek in map OneDrive.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Z SMS</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Z aplikacijo Avtentikator</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 ključ za dostop</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID odjemalca aplikacije</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z računom Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom ponudite prijavo v ONLYOFFICE z uporabo Apple ID. {0}Pojdite na Apple Developers Portal in ustvarite novo integracijo aplikacije ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10-mestni identifikator ključa, generiran za zasebni Apple ključ za prijavo</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Zasebni ključ, prenesen s strani Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-mestni ID ekipe razvijalskega računa</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>prijava</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da poenostavite povezave za vabila na portal in povezave v skupni rabi v modulu Dokumenti s storitvijo Bitly.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da poenostavite vabilo in povezave do dokumentov. {0}Spodaj vstavite svojo prijavo za Bitly in ključ API:</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za upravljanje Box datotek in map.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo za povezavo svojega Box računa z modulom Dokumenti. Datoteke iz Box boste lahko upravljali, urejali in delili z uporabniki ONLYOFFICE. {0}Prijavite se v svoj račun na strani za razvijalce Box in ustvarite novo aplikacijo za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za dvostopenjsko avtentikacijo preko Clickatell.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>S to aplikacijo omogočite dvostopenjsko avtentikacijo s storitvijo Clickatell. {0}Prijavite se v svoj SMS Platform račun in ustvarite novo integracijo za ONLYOFFICE. Kopirajte apiKey in ga vstavite spodaj:</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign ključ</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Skrivnost</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za digitalno podpisovanje vaših dokumentov z DocuSign.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign končna točka avtentikacije</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo za digitalno podpisovanje dokumentov z DocuSign. {0}Pojdite na skrbniško konzolo DocuSign in dodajte integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za upravljanje datotek in map Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo za povezavo svojega računa Dropbox z modulom Dokumenti. Datoteke iz Dropbox boste lahko upravljali, urejali in delili z uporabniki ONLYOFFICE. {0}Vpišite se v svoj račun na spletnem mestu Dropbox razvijalcev in ustvarite novo aplikacijo za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox ključ</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Ključ aplikacije</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Omogočite to aplikacijo za ustvarjanje bibliografskih seznamov v dokumentih z EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo za ustvarjanje bibliografij v urejevalnikih ONLYOFFICE. {0}Pojdite na stran za prijavo v EasyBib in izpolnite obrazec za dodajanje ONLYOFFICE integracije. Ko dobite ključ aplikacije, ga prilepite spodaj:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Žeton aplikacije</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook ključ</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z uporabo Facebook računa.</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom omogočite prijavo v ONLYOFFICE prek Facebooka in povežete Facebook račune svojih strank z modulom CRM. {0}Pojdite na Facebook Developers Portal in ustvarite novo integracijo aplikacije ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API ključ</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Ključ strežnika</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID pošiljatelja</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID projekta</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom omogočite prejemanje obvestil o sporočilih tudi brez povezave. {0}Pojdite na konzolo Firebase in dodajte nov projekt za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google ključ</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google shramba v oblaku</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Prostor za shranjevanje</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Prostor za shranjevanje</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Vnesite ime prostora za hrambo v Google Cloud za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Povežite storitev Google Cloud shrambe za varnostno kopiranje in shranjevanje podatkov iz vašega portala.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Povežite storitev Google Cloud shrambo za varnostno kopiranje in shranjevanje podatkov iz vašega portala. {0}Pojdite na konzolo Google Cloud platforme in ustvarite nov storitveni račun za ONLYOFFICE. Podatke, ki ste jih prejeli, prilepite spodaj:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Povežite projekt za prijavo v portal z Google Računom in upravljajte datoteke in mape na Google Drive.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo za povezavo svojega računa Google Drive z modulom Dokumenti. Datoteke iz storitve Google Drive boste lahko upravljali, urejali in delili z uporabniki ONLYOFFICE. {0}Pojdite na konzolo Google API in ustvarite nov projekt za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z računom LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom omogočite prijavo v ONLYOFFICE s svojimi računi LinkedIn. {0}Pojdite na spletno mesto za razvijalce LinkedIn in ustvarite novo integracijo aplikacije ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin ključ</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Skriti ključ</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z računom Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Z dodajanjem aplikacije Mail.ru lahko omogočite prijavo v portal z računom Mail.ru na strani svojega profila.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID odjemalca aplikacije</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Skrivnost klienta</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Skrivnost klienta</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za vpis v portal z Microsoftovim računom.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom dovolite prijavo v ONLYOFFICE z Microsoftom. {0}Pojdite v Microsoft Azure in ustvarite novo integracijo aplikacije ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace shramba v oblaku</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Povežite storitev Rackspace Cloud shranjevanje za varnostno kopiranje in shranjevanje podatkov iz vašega portala.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Povežite storitev Rackspace Cloud shranjevanje za varnostno kopiranje in shranjevanje podatkov iz vašega portala. {0}V varnostnih nastavitvah nadzorne plošče Rackspace Cloud kliknite povezavo Prikaži poleg ključa Rackspace API. Podatke, ki ste jih prejeli, prilepite spodaj:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Zasebni vsebnik</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Zasebni vsebnik</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Vnesite naslov URL zasebnega vsebnika Rackspace za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Javni vsebnik</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Javni vsebnik</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Vnesite naslov URL javnega vsebnika Rackspace za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Regija</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Regija</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Vnesite regijo, kjer se nahajajo vaši vsebniki Rackspace.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Vnesite enoumno ime prostora Amazon za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Povežite Amazon AWS S3 za varnostno kopiranje in shranjevanje podatkov iz vašega portala.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Povežite Amazon AWS S3 za varnostno kopiranje in shranjevanje podatkov iz vašega portala. {0}Pojdite na konzolo za upravljanje AWS in ustvarite ključe za dostop za ONLYOFFICE. Podatke, ki ste jih prejeli, prilepite spodaj:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Vnesite regijo AWS, kjer se nahaja vaš Amazon prostor za shranjevanje.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 tajni ključ za dostop</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel shramba v oblaku</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Geslo za dostop do shrambe</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Avtenticiran uporabnik</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Povežite storitev Selectel Cloud Storage za varnostno kopiranje in shranjevanje podatkov iz vašega portala.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Povežite storitev Selectel Cloud Storage za varnostno kopiranje in shranjevanje podatkov iz vašega portala. {0}Pridobite podatke o dostopu za uporabnika s pravicami za branje/pisanje za vsebnike, kamor nameravate shraniti svoje varnostne kopije, in jih prilepite spodaj:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Vnesite ime zasebnega vsebnika Selectel za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Vnesite ime javnega vsebnika Selectel za shranjevanje varnostnih kopij.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID aplikacije</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da povežete svoj račun OneDrive z modulom Dokumenti. Datoteke iz storitve OneDrive boste lahko upravljali, urejali in delili z uporabniki ONLYOFFICE. {0}Vpišite se v svoj račun Microsoft Azure in ustvarite novo aplikacijo za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS Center</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za dvostopenjsko avtentikacijo prek SMS centra.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>S to aplikacijo omogočite dvostopenjsko avtentikacijo s storitvijo SMS Center. {0}Vnesite prijavo za račun v SMS center in geslo (ali geslo MD5 hash) z malimi črkami:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Geslo ali geslo MD5 hash z malimi črkami</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Uporabniško ime bota</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Žeton bota</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Povežite račun Telegram za prejemanje obvestil portala prek Telegrama.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Če želite prejemati obvestila portala prek Telegrama, omogočite Telegram bot. Nov bot lahko ustvarite z uporabo BotFather v Telegram namizju. Za uporabo tega bota morajo uporabniki portala omogočiti obvestila Telegram na svoji profilni strani. {0}V spodnja polja prilepite uporabniško ime bota in žeton, ki ste ga prejeli.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom omogočite klicanje stikov iz modula CRM z uporabo Twilio. {0}Pojdite na konzolo Twilio in spodaj prilepite naslednje podatke:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Telefonska številka v Twilio (potrebna za avtorizacijo SMS)</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>ID stranke</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Skrivnost stranke</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, da svojim uporabnikom omogočite prijavo v ONLYOFFICE s svojim Twitter računom in povežite Twitter račune svojih strank z modulom CRM. {0}Pojdite na Twitter portal za razvijalce in ustvarite novo integracijo aplikacije ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API Ključ</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API skrivni ključ</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace uporabniško ime</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>ID aplikacije</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Varnostni ključ</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z računom VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Ko dodate aplikacijo VK, lahko omogočite prijavo v portal z uporabo računa VK na strani svojega profila.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za objavo dokumentov neposredno v WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Omogočite aplikacijo za enostavno objavo dokumentov na vašem spletnem mestu WordPress. {0}Na strani za razvijalce programa Wordpress ustvarite novo aplikacijo za integracijo ONLYOFFICE. Podatke, ki ste jih prejeli, prilepite spodaj:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress ključ</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress skrivnost</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>ID klienta</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Skrivnost klienta</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za uvoz uporabnikov iz storitve Yahoo.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Omogočite to aplikacijo, če želite dodati nove uporabnike portala s seznama stikov Yahoo. {0}Pojdite na stran za ustvarjanje aplikacije v Yahoo Developer Network in ustvarite novo aplikacijo za integracijo ONLYOFFICE. Spodaj vnesite podatke, ki ste jih prejeli:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Omogočite aplikacijo za prijavo v portal z računom Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Ko dodate aplikacijo Yandex, lahko omogočite prijavo v portal z računom Yandex na profilni strani.</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Postopek obnovitve gesla je za uporabnika LDAP onemogočen</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Postopek obnovitve gesla je za uporabnika SSO prepovedan</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Napačen ID instance.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Besedilo sporočila je prazno</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Napačno ime ali priimek</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>brez presledkov</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>samo latinske črke</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Omejitev zahtev je presežena</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Domena najemnika ne sme biti prazna.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Ime domene mora vsebovati med {0} in {1} znakov.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP domena ni najdena.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Poskušali ste si odvzeti skrbniške pravice. Vaše skrbniške pravice niso bile prizadete.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Vaš račun ni povezan z imenikom LDAP in vaše geslo LDAP ni več aktivno. Spremenite ali nastavite geslo za svoj račun na strani za nastavitve profila.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Spreminjanje uporabnikov LDAP na običajne uporabnike portala</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>dodajanje uporabnika</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Prekinitev povezave LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Nastavitev uporabnika {0} kot {1} skrbnika</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Nalaganje podatkov za bazo LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>odstranjevanje uporabnika</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Odstranjevanje zastarelih skupin, ki so prej bile naložene prek LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Odstranitev zastarelih pravic dostopa, ki so prej bile naložene prek LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Onemogočanje zastarelih uporabniških profilov, ki so prej bili naloženi prek LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Shranjevanje fotografije</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Sinhronizacija uporabnikov</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Posodabljanje pravic dostopa uporabnikov</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Posodabljanje uporabniških fotografij</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS ni podprt za trenutni LDAP strežnik.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Preveč LDAP operacij.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Enoličnega ID za objekte uporabnik/skupina ni bilo mogoče pridobiti. Privzeto bo sistem poskušal najti enega od naslednjih identifikatorjev: entryUUID, nsuniqueid, GUID, objectSid. Če nobeden od atributov ne ustreza vašemu strežniku LDAP, navedite potreben atribut v nastavitvi ldap.unique.id datoteke web.appsettings.config.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licenca ni pravilna</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Licenca ni veljavna za to različico portala.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Število portalov presega dovoljeno število z licenco</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Število uporabnikov presega dovoljeno število z licenco</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Uspešno naloženo. {0}Podpora in posodobitve za to licenco niso na voljo od {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Uspešno naloženo. {0}Podpora za to licenco ni na voljo od {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Če obstaja uporabnik z email naslovom {0}, so bila navodila za spremembo gesla poslana na ta email naslov.</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG Regija</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Kvota prostora na disku je presežena</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Prostor v oblaku za vaše pisarniške dokumente</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Postopek vnovične dodelitve podatkov za {0} ni dokončan.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Napačen Recaptcha</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Nastavitve ne morejo biti nične</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Neveljavno povezovanje: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Neveljaven entityID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Neveljavna preslikava polj</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Integracije tretjih strani</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Neveljavna koda</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>Nastavitve aplikacije TFA niso na voljo</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Poslali ste preveč besedilnih sporočil. Prosimo, poskusite kasneje.</value>
+  </data>
 </root>

@@ -26,10 +26,20 @@
 
 namespace ASC.Web.Files.Core.Entries;
 
+/// <summary>
+/// </summary>
 public class EncryptionKeyPairDto
 {
+    /// <summary>Private key</summary>
+    /// <type>System.String, System</type>
     public string PrivateKeyEnc { get; set; }
+
+    /// <summary>Public key</summary>
+    /// <type>System.String, System</type>
     public string PublicKey { get; set; }
+
+    /// <summary>User ID</summary>
+    /// <type>System.String, System</type>
     public Guid UserId { get; set; }
 }
 

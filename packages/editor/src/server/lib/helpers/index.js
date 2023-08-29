@@ -51,14 +51,15 @@ export const initDocEditor = async (req) => {
     }
 
     const doc = query?.doc || null;
+    const shareKey = query?.share ?? null;
     const view = url.indexOf("action=view") !== -1;
     const fileVersion = version || null;
 
     const baseSettings = [
-      getUser(),
-      getSettings(),
-      getAppearanceTheme(),
-      getLogoUrls(),
+      getUser(null, headers),
+      getSettings(false, headers),
+      getAppearanceTheme(headers),
+      getLogoUrls(headers),
     ];
 
     [user, settings, appearanceTheme, logoUrls] = await Promise.all(
@@ -71,15 +72,15 @@ export const initDocEditor = async (req) => {
     }
 
     [filesSettings, versionInfo] = await Promise.all([
-      getSettingsFiles(),
-      getBuildVersion(),
+      getSettingsFiles(headers),
+      getBuildVersion(headers),
     ]);
 
     const successAuth = !!user;
 
     personal = settings?.personal;
 
-    if (!successAuth && !doc) {
+    if (!successAuth && !doc && !shareKey) {
       error = {
         unAuthorized: true,
         // redirectPath: combineUrl(
@@ -90,7 +91,7 @@ export const initDocEditor = async (req) => {
       return { error };
     }
 
-    const config = await openEdit(fileId, fileVersion, doc, view);
+    const config = await openEdit(fileId, fileVersion, doc, view, headers, shareKey);
 
     //const sharingSettings = await getShareFiles([+fileId], []);
 

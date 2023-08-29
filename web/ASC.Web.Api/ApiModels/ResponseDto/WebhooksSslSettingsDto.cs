@@ -26,7 +26,11 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksSslSettingsDto : IMapFrom<WebHooksSettings>
 {
+    /// <summary>Specifies if the SSL certificate is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsEnabled { get; set; }
 }

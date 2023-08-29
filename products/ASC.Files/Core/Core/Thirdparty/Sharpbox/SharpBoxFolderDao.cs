@@ -102,10 +102,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -114,7 +114,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType))
         {

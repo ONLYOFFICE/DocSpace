@@ -15,7 +15,6 @@ import ViewerPlayer from "../ViewerPlayer";
 
 import type ViewerProps from "./Viewer.props";
 import PDFViewer from "../PDFViewer";
-import PDFViewerV2 from "../PDFViewerV2";
 
 function Viewer(props: ViewerProps) {
   const timerIDRef = useRef<NodeJS.Timeout>();
@@ -201,6 +200,8 @@ function Viewer(props: ViewerProps) {
               generateContextMenu={props.generateContextMenu}
               setIsOpenContextMenu={setIsOpenContextMenu}
               resetToolbarVisibleTimer={resetToolbarVisibleTimer}
+              contextModel={props.contextModel}
+              errorTitle={props.errorTitle}
             />,
             containerRef.current
           )
@@ -208,6 +209,7 @@ function Viewer(props: ViewerProps) {
         ? ReactDOM.createPortal(
             <ViewerPlayer
               isError={isError}
+              canDownload={!!props.targetFile?.security.Download}
               src={props.fileUrl}
               thumbnailSrc={targetFile.thumbnailUrl}
               isAudio={props.isAudio}

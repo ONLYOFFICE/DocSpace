@@ -46,6 +46,7 @@ function ViewerPlayer({
   errorTitle,
   isLastImage,
   isFistImage,
+  canDownload,
   isFullScreen,
   panelVisible,
   thumbnailSrc,
@@ -535,6 +536,14 @@ function ViewerPlayer({
   const onTouchStart = () => {
     if (isPlaying && isVideo) restartToolbarVisibleTimer();
   };
+
+  const stopPropagation = useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      event?.stopPropagation();
+    },
+    []
+  );
+
   const onTouchMove = () => {
     if (isPlaying && isVideo) restartToolbarVisibleTimer();
   };
@@ -602,8 +611,9 @@ function ViewerPlayer({
           $isShow={panelVisible && !isLoading}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
+          onClick={handleClickVideo}
         >
-          <PlayerControlsWrapper>
+          <PlayerControlsWrapper onClick={stopPropagation}>
             <PlayerTimeline
               value={timeline}
               duration={duration}
@@ -645,6 +655,7 @@ function ViewerPlayer({
                 />
                 {isDesktop && (
                   <PlayerDesktopContextMenu
+                    canDownload={canDownload}
                     isPreviewFile={isPreviewFile}
                     hideContextMenu={hideContextMenu}
                     onDownloadClick={onDownloadClick}

@@ -27,7 +27,6 @@
   "PayerDescription": "Ta uporabnik ima dostop do podrobnosti plačila in je edini uporabnik, ki lahko prilagaja račun in izvaja plačila. Lastnik DocSpace in sam upravitelj plačevanja lahko prerazporedita vlogo upravitelja plačevanja prek portala za stranke Stripe.",
   "PaymentOverdue": "Novih uporabnikov ni mogoče dodati.",
   "PriceCalculation": "Izračunajte vašo ceno",
-  "QuotaPaidUserLimitError": "Omejitev števila plačanih uporabnikov je bila dosežena. <1>Plačila</1>",
   "RenewSubscription": "Obnovi naročnino na {{planName}} paket",
   "RoomManagerDescription": "Administracija in arhiviranje sobe, vabljenje in vodenje uporabnikov. Sobi je mogoče dodeliti več skrbnikov.",
   "StartupSuggestion": "Naredite več z paketom {{planName}}",

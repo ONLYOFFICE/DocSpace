@@ -11,7 +11,7 @@ const StyledUserTypeHeader = styled.div`
 
   .title {
     font-weight: 600;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 20px;
     color: ${(props) => props.theme.infoPanel.members.subtitleColor};
   }

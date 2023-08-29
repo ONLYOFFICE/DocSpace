@@ -290,4 +290,6 @@ export default inject(({ auth, filesStore, treeFoldersStore }) => {
     isRecentFolder,
     isDesc,
   };
-})(observer(withTranslation(["Files", "Common"])(TileContainer)));
+})(
+  observer(withTranslation(["Files", "Common", "Notifications"])(TileContainer))
+);

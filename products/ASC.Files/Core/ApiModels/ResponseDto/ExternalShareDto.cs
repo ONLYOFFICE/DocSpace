@@ -29,14 +29,37 @@ using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class ExternalShareDto : IMapFrom<ValidationInfo>
 {
+    /// <summary></summary>
+    /// <type>ASC.Files.Core.Security.Status, ASC.Files.Core</type>
     public Status Status { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Id { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Files.Core.ApiModels.RequestDto.RoomType, ASC.Files.Core</type>
     public RoomType? RoomType { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Int32, System</type>
     public int TenantId { get; set; }
+
+    /// <summary></summary>
+    /// <type>ASC.Files.Core.VirtualRooms.Logo, ASC.Files.Core</type>
     public Logo Logo { get; set; }
+
+    /// <summary></summary>
+    /// <type>System.Boolean, System</type>
+    public bool Shared { get; set; }
 
     public void Mapping(Profile profile)
     {

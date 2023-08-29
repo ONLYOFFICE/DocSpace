@@ -22,6 +22,8 @@ const TableHeaderCell = ({
   const isActive = (sortBy && column.sortBy === sortBy) || active;
 
   const onClick = (e) => {
+    e.stopPropagation();
+
     if (!sortingVisible) return;
     column.onClick && column.onClick(column.sortBy, e);
   };

@@ -12,6 +12,8 @@ export const getRoomTypeTitleTranslation = (roomType = 1, t) => {
       return t("CreateEditRoomDialog:ViewOnlyRoomTitle");
     case RoomsType.CustomRoom:
       return t("CreateEditRoomDialog:CustomRoomTitle");
+    case RoomsType.PublicRoom:
+      return t("Files:PublicRoom");
   }
 };
 
@@ -27,6 +29,8 @@ export const getRoomTypeDescriptionTranslation = (roomType = 1, t) => {
       return t("CreateEditRoomDialog:ViewOnlyRoomDescription");
     case RoomsType.CustomRoom:
       return t("CreateEditRoomDialog:CustomRoomDescription");
+    case RoomsType.PublicRoom:
+      return t("CreateEditRoomDialog:PublicRoomDescription");
   }
 };
 
@@ -42,5 +46,7 @@ export const getRoomTypeDefaultTagTranslation = (roomType = 1, t) => {
       return t("Files:ViewOnlyRooms");
     case RoomsType.CustomRoom:
       return t("Files:CustomRooms");
+    case RoomsType.PublicRoom:
+      return t("Files:PublicRoom");
   }
 };

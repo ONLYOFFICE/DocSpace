@@ -371,4 +371,49 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Amministratore di stanza</value>
   </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>La nuova versione non può essere uguale a quella attuale</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Non hai autorizzazioni sufficienti per copiare il file</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Non hai autorizzazioni sufficienti per copiare la cartella</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Fornitore non valido</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Non è possibile utilizzare questa cartella per archiviare la stanza</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Il link di invito non è valido o scaduto</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Questo provider è già connesso alla stanza</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Il ruolo non è disponibile per questo tipo di utente</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per archiviare la stanza</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per copiare in questa cartella</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per modificare la stanza</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per spostarti in questa cartella</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Non disponi di autorizzazioni sufficienti per eliminare la stanza dall'archivio</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Non puoi modificare le stanze archiviate</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Non puoi fissare una stanza</value>
+  </data>
 </root>

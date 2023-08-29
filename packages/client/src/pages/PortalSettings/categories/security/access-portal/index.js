@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { MainContainer } from "../StyledSecurity";
@@ -46,7 +46,18 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("SettingPasswordStrength")}
-        tooltipTitle={t("SettingPasswordStrengthDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="SettingPasswordStrengthDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
         tooltipUrl={passwordStrengthSettingsUrl}
         currentColorScheme={currentColorScheme}
         classNameTooltip="password-strength"
@@ -56,7 +67,18 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("TwoFactorAuth")}
-        tooltipTitle={t("TwoFactorAuthDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="TwoFactorAuthDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
         tooltipUrl={tfaSettingsUrl}
         currentColorScheme={currentColorScheme}
         classNameTooltip="two-factor-auth"
@@ -66,7 +88,19 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("TrustedMail")}
-        tooltipTitle={t("TrustedMailDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="TrustedMailDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+              4: <strong></strong>,
+            }}
+          />
+        }
         tooltipUrl={trustedMailDomainSettingsUrl}
         currentColorScheme={currentColorScheme}
         classNameTooltip="trusted-mail"
@@ -76,8 +110,17 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("IPSecurity")}
+        tooltipTitle={
+          <Trans
+            i18nKey="IPSecurityDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
+        }
         tooltipContent={t("IPSecurityDescription")}
-        tooltipTitle={t("IPSecurityDescription")}
         classNameTooltip="ip-security"
       />
       <IpSecuritySection />
@@ -85,7 +128,18 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("AdminsMessage")}
-        tooltipTitle={t("AdminsMessageDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="AdminsMessageDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+              2: <strong></strong>,
+              3: <strong></strong>,
+            }}
+          />
+        }
         tooltipUrl={administratorMessageSettingsUrl}
         currentColorScheme={currentColorScheme}
         classNameTooltip="admins-message"
@@ -96,7 +150,16 @@ const AccessPortal = (props) => {
       <CategoryWrapper
         t={t}
         title={t("SessionLifetime")}
-        tooltipTitle={t("SessionLifetimeDescription")}
+        tooltipTitle={
+          <Trans
+            i18nKey="SessionLifetimeDescription"
+            ns="Settings"
+            t={t}
+            components={{
+              1: <strong></strong>,
+            }}
+          />
+        }
         classNameTooltip="session-lifetime"
       />
       <SessionLifetimeSection />

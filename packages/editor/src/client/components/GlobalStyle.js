@@ -4,7 +4,7 @@ const GlobalStyle = createGlobalStyle`
   html,
   body {
     height: 100%;
-    ${(props) => props?.fonts}
+
     font-family: 'Open Sans', sans-serif, Arial;
     font-size: 13px;
     overscroll-behavior: none;

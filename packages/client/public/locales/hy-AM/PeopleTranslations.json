@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Հաշվի մուտքի տեսակը",
   "DeleteSelfProfile": "Ջնջել կայքէջը",
   "DisabledEmployeeStatus": "Կասեցված",
   "DisableUserButton": "Կասեցնել",
@@ -12,6 +13,7 @@
   "RemoveData": "Ջնջել անձնական տվյալները",
   "ResetAuth": "Վերականգնել նույնականացումը",
   "SendInviteAgain": "Ուղարկեք հրավեր ևս մեկ անգամ",
+  "StandardLogin": "Ստանդարտ մուտք",
   "SuccessChangeUserStatus": "Օգտատիրոջ կարգավիճակը հաջողությամբ փոխվել է",
   "SuccessDeletePersonalData": "Անձնական տվյալները հաջողությամբ ջնջվել են",
   "SuccessSentInvitation": "Հրավերը հաջողությամբ ուղարկվեց",

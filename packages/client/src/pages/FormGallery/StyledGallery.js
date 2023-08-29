@@ -5,7 +5,7 @@ import Headline from "@docspace/common/components/Headline";
 import { Base } from "@docspace/components/themes";
 
 const StyledHeadline = styled(Headline)`
-  width: calc(100% + 1px);
+  width: 100%;
   font-weight: 700;
   font-size: ${isMobile ? "21px !important" : "18px"};
   line-height: ${isMobile ? "28px !important" : "24px"};

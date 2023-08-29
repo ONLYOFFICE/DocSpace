@@ -24,6 +24,7 @@
   "DaysRemaining": "Atlikušās dienas: {{daysRemaining}}",
   "DisableNotifications": "Atspējot paziņojumus",
   "Document": "Dokuments",
+  "DocumentEdited": "Nevar veikt darbību, jo dokuments tiek rediģēts.",
   "EditRoom": "Rediģēt telpu",
   "EmptyFile": "Tukšs fails",
   "EmptyFilterDescriptionText": "Šim filtram neatbilst neviens fails vai mape. Lai skatītu visus failus, izmēģiniet citu filtru vai notīriet filtru. ",

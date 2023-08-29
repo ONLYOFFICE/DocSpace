@@ -29,6 +29,11 @@ import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 import PortalRenamingDialog from "./PortalRenamingDialog";
+import UnsavedChangesDialog from "./UnsavedChangesDialog";
+import DeleteLinkDialog from "./DeleteLinkDialog";
+import RoomSharingDialog from "./RoomSharingDialog";
+import MoveToPublicRoom from "./MoveToPublicRoom";
+import ReportDialog from "./ReportDialog";
 
 export {
   EmptyTrashDialog,
@@ -62,4 +67,9 @@ export {
   InviteUsersWarningDialog,
   LogoutAllConnectionDialog,
   PortalRenamingDialog,
+  UnsavedChangesDialog,
+  DeleteLinkDialog,
+  RoomSharingDialog,
+  MoveToPublicRoom,
+  ReportDialog,
 };

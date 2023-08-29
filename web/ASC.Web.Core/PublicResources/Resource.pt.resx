@@ -247,4 +247,55 @@
   <data name="Tariffs_admin" xml:space="preserve">
     <value>Business</value>
   </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Código de validação não pode estar vazio</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Palavra-passe</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
 </root>

@@ -10,7 +10,7 @@ const StyledErrorContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0;
+  margin: 0 16px;
   padding-top: 36px;
   border: 0;
   box-sizing: border-box;
@@ -44,16 +44,14 @@ const StyledErrorContainer = styled.div`
   }
 
   #button-container {
-    margin: 0 0 auto 0;
+    width: 320px;
+    margin-top: 24px;
   }
 
-  #button {
-    display: inline-block;
-    margin: 0 0 36px 0;
-  }
   #customized-text {
     color: ${(props) => props.theme.errorContainer.bodyText};
   }
+
   @media screen and (max-width: 960px) {
     body {
       padding: 24px 24px 0 24px;
@@ -61,10 +59,6 @@ const StyledErrorContainer = styled.div`
 
     #container {
       margin: 12px 0 48px 0;
-    }
-
-    #button {
-      margin: 0 0 24px 0;
     }
   }
 
@@ -88,13 +82,11 @@ const StyledErrorContainer = styled.div`
     }
 
     #button-container {
-      align-self: stretch;
-      margin: auto 0 0 0;
+      width: 100%;
     }
 
     #button {
       width: 100%;
-      margin: 0 0 18px 0;
     }
   }
 

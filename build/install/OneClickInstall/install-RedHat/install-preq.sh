@@ -47,27 +47,25 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.r
 rpm -ivh https://rpms.remirepo.net/enterprise/remi-release-$REV.rpm || true
 yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusion-free-release-$REV.noarch.rpm
 
-MONOREV=$REV
 if [ "$REV" = "9" ]; then
-	MONOREV="8"
-	TESTING_REPO="--enablerepo=crb"
+	[ $DIST != "redhat" ] && TESTING_REPO="--enablerepo=crb" || /usr/bin/crb enable
+	update-crypto-policies --set DEFAULT:SHA1
 elif [ "$REV" = "8" ]; then
-	POWERTOOLS_REPO="--enablerepo=powertools"
+	[ $DIST != "redhat" ] && POWERTOOLS_REPO="--enablerepo=powertools" || /usr/bin/crb enable
 fi
 
 #add rabbitmq & erlang repo
-curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | os=centos dist=$MONOREV bash
-curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$MONOREV bash
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | os=centos dist=$REV bash
+curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | os=centos dist=$REV bash
 
 #add nodejs repo
-curl -sL https://rpm.nodesource.com/setup_16.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
+[ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
+curl -sL https://rpm.nodesource.com/setup_${NODE_VERSION}.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
 rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
 
 #add dotnet repo
 if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
 	rpm -Uvh https://packages.microsoft.com/config/centos/$REV/packages-microsoft-prod.rpm || true
-elif rpm -q packages-microsoft-prod; then
-	yum remove -y packages-microsoft-prod dotnet*
 fi
 
 #add mysql repo
@@ -94,16 +92,13 @@ autorefresh=1
 type=rpm-md
 END
 
-# add nginx repo
-cat > /etc/yum.repos.d/nginx.repo <<END
-[nginx-stable]
-name=nginx stable repo
-baseurl=https://nginx.org/packages/centos/$REV/\$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true
-END
+rpm --import https://openresty.org/package/pubkey.gpg
+OPENRESTY_REPO_FILE=$( [[ "$REV" -ge 9 ]] && echo "openresty2.repo" || echo "openresty.repo" )
+curl -o /etc/yum.repos.d/openresty.repo "https://openresty.org/package/centos/${OPENRESTY_REPO_FILE}"
+
+if systemctl is-active nginx | grep -q "active"; then
+	systemctl disable nginx && systemctl stop nginx
+fi
 
 ${package_manager} -y install epel-release \
 			python3 \
@@ -111,7 +106,7 @@ ${package_manager} -y install epel-release \
 			dotnet-sdk-7.0 \
 			elasticsearch-${ELASTIC_VERSION} --enablerepo=elasticsearch \
 			mysql-server \
-			nginx \
+			openresty \
 			postgresql \
 			postgresql-server \
 			rabbitmq-server$rabbitmq_version \
@@ -119,15 +114,6 @@ ${package_manager} -y install epel-release \
 			SDL2 $POWERTOOLS_REPO \
 			expect \
 			ffmpeg $TESTING_REPO
-	
-py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
-if [[ $py3_version -lt 6 ]]; then
-	curl -O https://bootstrap.pypa.io/pip/3.$py3_version/get-pip.py
-else
-	curl -O https://bootstrap.pypa.io/get-pip.py
-fi
-python3 get-pip.py || true
-rm get-pip.py
 
 if [[ $PSQLExitCode -eq $UPDATE_AVAILABLE_CODE ]]; then
 	yum -y install postgresql-upgrade
@@ -137,9 +123,4 @@ postgresql-setup initdb	|| true
 
 semanage permissive -a httpd_t
 
-if [ ! -e /usr/bin/json ]; then
-	npm i json -g >/dev/null 2>&1
-fi
-
-systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis nginx mysqld"
+package_services="rabbitmq-server postgresql redis openresty mysqld"

@@ -1,0 +1,185 @@
+name: Build packages
+
+on:
+  push:
+    branches:
+    - release/*
+    - develop
+    - hotfix/*
+    paths:
+    - build/install/deb**
+    - build/install/rpm**
+    - build/install/common**
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+  
+env:
+  BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
+  PRODUCT_LOW: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
+  PRODUCT: "${{ github.event.repository.name }}"
+  BUILD_NUMBER: "${{ github.run_number }}"
+
+
+jobs:
+  build_deb:
+    name: DEB packages
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
+      - name: Import GPG 
+        uses: crazy-max/ghaction-import-gpg@v5
+        id: gpg_step
+        with: 
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASS }}
+          
+      - name: Get files from repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+              
+      - name: Prepare build
+        id: get_vars
+        run: |
+          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | \
+          sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
+          sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
+          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | \
+          sudo tee /etc/apt/sources.list.d/yarn.list
+          wget https://packages.microsoft.com/config/$(lsb_release -is | \
+          tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename dpkg-sig lintian
+          sudo npm install -g json
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.1.0")" >> $GITHUB_OUTPUT
+          
+      - name: Build
+        shell: bash
+        run: |
+          cd build/install/deb/ 
+          rename -f -v "s/product([^\/]*)$/${{ env.PRODUCT_LOW }}\$1/g" debian/* ../common/* ../common/logrotate/*
+          find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT_LOW }}/g" {} ';'
+          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" \
+          debian/changelog debian/control
+          dpkg-buildpackage -uc -k${{ steps.gpg_step.outputs.fingerprint }}
+        
+      - name: Upload to Nexus
+        run: | 
+          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/*.deb; do
+            echo $file
+            curl --verbose --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} -H "Content-Type: multipart/form-data" \
+            --data-binary "@$file" ${{ secrets.REPO_URL_4TESTING_DEB }}
+          done
+          
+      - name: Lint 
+        run: |
+          lintian --suppress-tags=mismatched-override --profile debian /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/*.deb \
+            | tee -a file 
+          if grep -qE '^(W:|E:)' file; then echo \
+          "::warning Noticedeb=lintian::$(cat file | awk '/^W:/ { ws += 1 } /^E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')"; fi
+          
+  build_rpm:
+    name: RPM packages
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+ 
+    steps:
+      - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+    
+      - name: Import GPG 
+        uses: crazy-max/ghaction-import-gpg@v5
+        with: 
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASS }}
+
+      - name: Get files from repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Prepare build
+        id: get_vars
+        run: |     
+          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring \
+          gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
+          sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
+          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | \
+          sudo tee /etc/apt/sources.list.d/yarn.list
+          wget https://packages.microsoft.com/config/$(lsb_release -is | \
+          tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename python3-pip python3-rpm
+          sudo npm install -g json
+          sudo pip install rpmlint
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.1.0")" >> $GITHUB_OUTPUT
+          
+      - name: Build
+        run: |
+          cd build/install/rpm/SPECS
+          mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.PRODUCT_LOW }}.rpmlintrc
+          wget https://github.com/ONLYOFFICE/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz \
+          -O ./SOURCES/${{ env.PRODUCT }}-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
+          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz \
+          -O ./SOURCES/document-templates-main-community-server.tar.gz
+          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz \
+          -O ./SOURCES/dictionaries-master.tar.gz
+          sed -i -e '/BuildRequires/d' product.spec
+          rpmbuild -D "packager Ascensio System SIA <support@onlyoffice.com>" -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} \
+          | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" \
+          -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+
+      - name: Sign
+        run: |
+          cat << EOF >> $HOME/.rpmmacros
+          %_signature gpg
+          %_gpg_name ${{ secrets.GPG_KEY_NAME }}
+          %_gpg_path $HOME/.gnupg
+          %__gpg /usr/bin/gpg
+          EOF
+          gpg --export --armor --output onlyoffice-gpgkey.pub
+          rpm --import onlyoffice-gpgkey.pub
+          rpm --addsign /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
+          
+      - name: Upload
+        run: |
+          for file in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm; do
+            curl --verbose --user ${{ secrets.REPO_LOGIN }}:${{ secrets.REPO_PASS }} \
+            --upload-file "$file" ${{ secrets.REPO_URL_4TESTING_RPM }}
+          done
+
+      - name: Rpmlint  
+        run: |  
+          for package in /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/RPMS/noarch/*.rpm
+            do rpmlint --ignore-unused-rpmlintrc --rpmlintrc \
+            /home/runner/work/${{ env.PRODUCT }}/${{ env.PRODUCT }}/build/install/rpm/SPECS/SOURCES/${{ env.PRODUCT_LOW }}.rpmlintrc $package \
+            | tee -a file2
+          done
+          if grep -qE '^(W:|E:)' file2; then echo \
+          "::warning NoticeRpm=rpmLint::$(cat file2 | awk '/W:/ { ws += 1 } /E:/ { es += 1 } END { print "Warnings:", ws, "Errors:", es }')" ; fi

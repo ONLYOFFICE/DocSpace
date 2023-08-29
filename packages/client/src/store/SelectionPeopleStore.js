@@ -14,9 +14,57 @@ class SelectionStore {
     makeAutoObservable(this);
   }
 
+  updateSelection = (peopleList) => {
+    peopleList.some((el) => {
+      if (el.id === this.selection[0].id) this.setSelection([el]);
+    });
+  };
+
   setSelection = (selection) => {
     //console.log("setSelection", { selection });
     this.selection = selection;
+  };
+
+  setSelections = (added, removed, clear = false) => {
+    if (clear) {
+      this.selection = [];
+    }
+
+    let newSelections = JSON.parse(JSON.stringify(this.selection));
+
+    for (let item of added) {
+      if (!item) return;
+
+      const value = item.getElementsByClassName("user-item")
+        ? item.getElementsByClassName("user-item")[0]?.getAttribute("value")
+        : null;
+
+      if (!value) return;
+      const splitValue = value && value.split("_");
+      const id = splitValue.slice(1, -3).join("_");
+
+      const isFound = this.selection.findIndex((f) => f.id == id) === -1;
+
+      isFound &&
+        newSelections.push(
+          this.peopleStore.usersStore.peopleList.find((f) => f.id == id)
+        );
+    }
+
+    for (let item of removed) {
+      if (!item) return;
+
+      const value = item.getElementsByClassName("user-item")
+        ? item.getElementsByClassName("user-item")[0]?.getAttribute("value")
+        : null;
+
+      const splitValue = value && value.split("_");
+      const id = splitValue.slice(1, -3).join("_");
+
+      newSelections = newSelections.filter((f) => !(f.id == id));
+    }
+
+    this.setSelection(newSelections);
   };
 
   setBufferSelection = (bufferSelection, addToSelection = true) => {
@@ -129,6 +177,16 @@ class SelectionStore {
     const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
     return users.map((u) => u);
+  }
+
+  get userSelectionRole() {
+    if (this.selection.length !== 1) return null;
+
+    return this.selection[0].role;
+  }
+
+  get isOneUserSelection() {
+    return this.selection.length > 0 && this.selection.length === 1;
   }
 
   get hasFreeUsers() {

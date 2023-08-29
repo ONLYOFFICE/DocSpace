@@ -30,11 +30,6 @@ if ! dpkg -l | grep -q "software-properties-common"; then
 fi
 
 locale-gen en_US.UTF-8
-if [ -f /etc/needrestart/needrestart.conf ]; then
-	sed -e "s_#\$nrconf{restart}_\$nrconf{restart}_" -e "s_\(\$nrconf{restart} =\).*_\1 'a';_" -i /etc/needrestart/needrestart.conf
-fi
-
-locale-gen en_US.UTF-8
 
 # add elasticsearch repo
 ELASTIC_VERSION="7.10.0"
@@ -44,14 +39,19 @@ echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://
 chmod 644 /usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg
 
 # add nodejs repo
-curl -sL https://deb.nodesource.com/setup_16.x | bash - 
+[[ "$DISTRIB_CODENAME" =~ ^(bionic|stretch)$ ]] && NODE_VERSION="16" || NODE_VERSION="18"
+curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - 
 
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
 	curl https://packages.microsoft.com/config/$DIST/10/packages-microsoft-prod.deb -O
+elif [ "$DISTRIB_CODENAME" = "bookworm" ]; then
+	#Temporary fix for missing dotnet repository for debian bookworm
+	curl https://packages.microsoft.com/config/$DIST/11/packages-microsoft-prod.deb -O
 else
 	curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
 fi
+echo -e "Package: *\nPin: origin \"packages.microsoft.com\"\nPin-Priority: 1002" | tee /etc/apt/preferences.d/99microsoft-prod.pref
 dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 
 MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP 'mysql-apt-config_\K.*' | grep -o '^[^_]*' | sort --version-sort --field-separator=. | tail -n1)"
@@ -71,18 +71,19 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
 	rm -f ${MYSQL_PACKAGE_NAME}
 
+	#Temporary fix for missing mysql repository for debian bookworm
+	[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DIST/ubuntu/g; s/$DISTRIB_CODENAME/jammy/g" /etc/apt/sources.list.d/mysql.list
+
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-server/default-auth-override select "Use Strong Password Encryption (RECOMMENDED)" | debconf-set-selections
 	echo mysql-server-8.0 mysql-server/root_password password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-server-8.0 mysql-server/root_password_again password ${MYSQL_SERVER_PASS} | debconf-set-selections
 
-	apt-get -y update
 elif dpkg -l | grep -q "mysql-apt-config" && [ "$(apt-cache policy mysql-apt-config | awk 'NR==2{print $2}')" != "${MYSQL_REPO_VERSION}" ]; then
 	curl -OL http://repo.mysql.com/${MYSQL_PACKAGE_NAME}
 	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
 	rm -f ${MYSQL_PACKAGE_NAME}
-	apt-get -y update
 fi
 
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
@@ -96,17 +97,23 @@ if [ "$DIST" = "ubuntu" ]; then
 	chmod 644 /usr/share/keyrings/redis.gpg
 fi
 
-#add nginx repo
-curl -s http://nginx.org/keys/nginx_signing.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nginx.gpg --import
-echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/$DIST/ $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
-chmod 644 /usr/share/keyrings/nginx.gpg
+#add openresty repo
+curl -fsSL https://openresty.org/package/pubkey.gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/openresty.gpg --import
+echo "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/$DIST $DISTRIB_CODENAME $([ "$DIST" = "ubuntu" ] && echo "main" || echo "openresty" )" | tee /etc/apt/sources.list.d/openresty.list
+chmod 644 /usr/share/keyrings/openresty.gpg
+#Temporary fix for missing openresty repository for debian bookworm
+[ "$DISTRIB_CODENAME" = "bookworm" ] && sed -i "s/$DISTRIB_CODENAME/bullseye/g" /etc/apt/sources.list.d/openresty.list
+
+if systemctl is-active nginx | grep -q "active"; then
+	systemctl disable nginx && systemctl stop nginx
+fi
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
 # install
+apt-get -y update
 apt-get install -o DPkg::options::="--force-confnew" -yq \
-				python3-pip \
 				expect \
 				nano \
 				nodejs \
@@ -118,12 +125,8 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras \
+				openresty \
 				ffmpeg 
-
-if [ ! -e /usr/bin/json ]; then
-	npm i json -g >/dev/null 2>&1
-fi
 
 if ! dpkg -l | grep -q "elasticsearch"; then
 	apt-get install -yq elasticsearch=${ELASTIC_VERSION}

@@ -31,11 +31,13 @@ public class QuotaHelper
 {
     private readonly TenantManager _tenantManager;
     private readonly IServiceProvider _serviceProvider;
+    private readonly CoreBaseSettings _coreBaseSettings;
 
-    public QuotaHelper(TenantManager tenantManager, IServiceProvider serviceProvider)
+    public QuotaHelper(TenantManager tenantManager, IServiceProvider serviceProvider, CoreBaseSettings coreBaseSettings)
     {
         _tenantManager = tenantManager;
         _serviceProvider = serviceProvider;
+        _coreBaseSettings = coreBaseSettings;
     }
 
     public async IAsyncEnumerable<QuotaDto> GetQuotasAsync()
@@ -52,12 +54,12 @@ public class QuotaHelper
     {
         var quota = await _tenantManager.GetCurrentTenantQuotaAsync(refresh);
 
-        return await ToQuotaDto(quota, true, true);
+        return await ToQuotaDto(quota, true);
     }
 
-    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, bool getUsed = false, bool allFeatures = false)
+    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, bool getUsed = false)
     {
-        var features = await GetFeatures(quota, getUsed, allFeatures).ToListAsync();
+        var features = await GetFeatures(quota, getUsed).ToListAsync();
 
         return new QuotaDto
         {
@@ -78,17 +80,27 @@ public class QuotaHelper
         };
     }
 
-    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed, bool all)
+    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed)
     {
         var assembly = GetType().Assembly;
 
         var features = quota.Features.Split(' ', ',', ';');
 
-        foreach (var feature in quota.TenantQuotaFeatures.Where(r => all || r.Visible).OrderBy(r => r.Order))
+        foreach (var feature in quota.TenantQuotaFeatures.
+            Where(r =>
+             {
+                 if (r.Standalone)
+                 {
+                     return _coreBaseSettings.Standalone;
+                 }
+
+                 return r.Visible;
+             })
+           .OrderBy(r => r.Order))
         {
-            var result = new TenantQuotaFeatureDto()
+            var result = new TenantQuotaFeatureDto
             {
-                Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}")
+                Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}"),
             };
 
             if (feature.Paid)

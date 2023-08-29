@@ -4,6 +4,7 @@ import Base from "../../../themes/base";
 
 const StyledBody = styled.div<{
   footerVisible: boolean;
+  withHeader?: boolean;
   footerHeight: number;
   headerHeight: number;
 }>`
@@ -11,8 +12,12 @@ const StyledBody = styled.div<{
 
   height: ${(props) =>
     props.footerVisible
-      ? `calc(100% - 16px - ${props.footerHeight}px - ${props.headerHeight}px)`
-      : `calc(100% - 16px - ${props.headerHeight}px)`};
+      ? props.withHeader
+        ? `calc(100% - 16px - ${props.footerHeight}px - ${props.headerHeight}px)`
+        : `calc(100% - 16px - ${props.footerHeight}px)`
+      : props.withHeader
+      ? `calc(100% - 16px - ${props.headerHeight}px)`
+      : `calc(100% - 16px)`};
 
   padding: 16px 0 0 0;
 

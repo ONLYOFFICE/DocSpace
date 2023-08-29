@@ -28,6 +28,7 @@ global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
+global using System.Extensions;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Net;
@@ -137,6 +138,7 @@ global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Core.Utility.Skins;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Files;
@@ -226,6 +228,7 @@ global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracke
 global using static ASC.Web.Files.Utils.FileTracker;
 
 global using HttpException = ASC.Common.Web.HttpException;
+global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
 global using Constants = ASC.Core.Users.Constants;
 global using UserInfo = ASC.Core.Users.UserInfo;

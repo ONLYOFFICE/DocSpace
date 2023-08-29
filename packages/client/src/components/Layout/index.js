@@ -28,7 +28,7 @@ const StyledContainer = styled.div`
 
   #customScrollBar {
     z-index: 0;
-    > .scroll-body {
+    > .scroll-wrapper > .scroller > .scroll-body {
       -webkit-user-select: none;
     }
   }

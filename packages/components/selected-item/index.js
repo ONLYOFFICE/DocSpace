@@ -1,9 +1,7 @@
 import React from "react";
 import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
-import { StyledSelectedItem } from "./styled-selected-item";
+import { StyledSelectedItem, StyledLabel } from "./styled-selected-item";
 import PropTypes from "prop-types";
-
-import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
 const SelectedItem = (props) => {
@@ -17,6 +15,7 @@ const SelectedItem = (props) => {
     id,
     propKey,
     group,
+    forwardedRef,
     classNameCloseButton,
   } = props;
   if (!label) return <></>;
@@ -39,16 +38,16 @@ const SelectedItem = (props) => {
       className={className}
       isDisabled={isDisabled}
       id={id}
+      ref={forwardedRef}
     >
-      <Text
+      <StyledLabel
         className="selected-item_label"
-        title={label}
         truncate={true}
         noSelect
         isDisabled={isDisabled}
       >
         {label}
-      </Text>
+      </StyledLabel>
       <IconButton
         className={"selected-tag-removed " + classNameCloseButton}
         iconName={CrossReactSvgUrl}
@@ -82,6 +81,8 @@ SelectedItem.propTypes = {
   propKey: PropTypes.string,
   /** Accepts group key to remove item */
   group: PropTypes.string,
+  /** Passes ref to component */
+  forwardedRef: PropTypes.object,
 };
 
 SelectedItem.defaultProps = {

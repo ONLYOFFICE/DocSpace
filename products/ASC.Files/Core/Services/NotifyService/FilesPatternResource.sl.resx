@@ -135,4 +135,21 @@ $__AuthorName je izbrisal sobo: $RoomTitle</value>
   <data name="subject_ShareDocument_push" xml:space="preserve">
     <value>Dostop do dokumenta omogočen: $DocumentTitle</value>
   </data>
+  <data name="pattern_DocuSignComplete" xml:space="preserve">
+    <value>h1. Vsi podpisniki so zaključili $DocumentTitle
+
+To email obvestilo vas obvešča, da so vsi podpisniki zaključili "$DocumentTitle":"$DocumentURL".</value>
+  </data>
+  <data name="pattern_DocuSignStatus" xml:space="preserve">
+    <value>h1. $Message: $DocumentTitle
+
+Za več informacij se prijavite v svoj DocuSign račun.</value>
+  </data>
+  <data name="pattern_MailMergeEnd" xml:space="preserve">
+    <value>h1. Pošiljanje zaključeno
+
+To je email obvestilo, ki vas obvešča, da je na podlagi vašega zahtevka za pošiljanje $MailsCount sporočil ta postopek zdaj končan. $Message
+
+Uspešno poslana email sporočila najdete v mapi "Poslano":"$__VirtualRootPath/addons/mail/#sent" v email modulu.</value>
+  </data>
 </root>

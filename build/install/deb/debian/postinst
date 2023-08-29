@@ -16,7 +16,9 @@ case "$1" in
 		CORE_MACHINEKEY="$RET"
 
 		args+=(-e "$ENVIRONMENT" -ash "$APP_HOST" -asp "$APP_PORT" );
-		[ -n "$CORE_MACHINEKEY" ] && args+=(-mk "$CORE_MACHINEKEY" );
+
+		[ -z "$CORE_MACHINEKEY" ] && CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12) && db_set {{product}}/machinekey $CORE_MACHINEKEY
+		args+=(-mk "$CORE_MACHINEKEY" )
 
 		db_get {{product}}/db-host || true
 		DB_HOST="$RET"
@@ -29,6 +31,19 @@ case "$1" in
 
 		args+=(-mysqlh "$DB_HOST" -mysqld "$DB_NAME" -mysqlu "$DB_USER" );
 		[ -n "$DB_PWD" ] && args+=(-mysqlp "$DB_PWD" );
+
+		command -v mysql >/dev/null 2>&1 || { echo "MySQL client not found"; exit 1; }
+		MYSQL="mysql -h$DB_HOST -u$DB_USER"
+		if [ -n "$DB_PWD" ]; then
+			MYSQL="$MYSQL -p$DB_PWD"
+		fi
+
+		$MYSQL -e ";" >/dev/null 2>&1
+		ERRCODE=$?
+		if [ $ERRCODE -ne 0 ]; then
+			systemctl mysql start >/dev/null 2>&1
+			$MYSQL -e ";" >/dev/null 2>&1 || { echo "Trying to establish MySQL connection... FAILURE"; exit 1; }
+		fi
 
 		db_get {{product}}/redis-host || true
 		REDIS_HOST="$RET"
@@ -57,9 +72,9 @@ case "$1" in
 
 		args+=(-ess "$ELK_SHEME" -esh "$ELK_HOST" -esp "$ELK_PORT" );
 
-		db_get onlyoffice/db-host || true
+		db_get {{product}}/ds-host || true
 		DOCUMENT_SERVER_HOST="$RET"
-		db_get onlyoffice/ds-port || true
+		db_get {{product}}/ds-port || true
 		DOCUMENT_SERVER_PORT="$RET"
 
 		args+=(-dsh "$DOCUMENT_SERVER_HOST" -dsp "$DOCUMENT_SERVER_PORT" );

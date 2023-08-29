@@ -24,6 +24,7 @@
   "DaysRemaining": "Preostali dnevi: {{daysRemaining}}",
   "DisableNotifications": "Onemogoči obvestila",
   "Document": "Dokument",
+  "DocumentEdited": "Akcije ni mogoče izvesti, ker se dokument še ureja.",
   "EditRoom": "Uredi sobo",
   "EmptyFile": "Prazna datoteka",
   "EmptyFilterDescriptionText": "Nobena datoteka ali mapa se ne ujema s tem filtrom. Poskusite z drugim filtrom ali počistite filter za ogled vseh datotek. ",

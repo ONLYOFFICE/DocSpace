@@ -272,10 +272,7 @@
     <value>Zrób to też jako użytkownik|Powiąż konta Dropbox, Box i inne z działem 'Wspólne dokumenty'|Ustaw prawa dostępu do dokumentów i folderów w dziale 'Wspólne dokumenty'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Twórz, edytuj i udostępniaj dokumenty. Współtwórz je z innymi w czasie rzeczywistym. Gwarantowana 100% kompatybilność z formatem MS Office.</value>
-  </data>
-  <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Twórz, edytuj i udostępniaj dokumenty. Współtwórz je z innymi w czasie rzeczywistym. Gwarantowana 100% kompatybilność z formatem MS Office.</value>
+    <value>Twórz, edytuj i udostępniaj dokumenty. Współtwórz je z innymi w czasie rzeczywistym. Gwarantowana 100% kompatybilność z formatem docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Dokumenty</value>
@@ -321,9 +318,6 @@
   </data>
   <data name="AceStatusEnum_Collaborator" xml:space="preserve">
     <value>Współpracownik</value>
-  </data>
-  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
-    <value>Edytujący</value>
   </data>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Administrator pokoju</value>
@@ -375,5 +369,47 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Nie możesz przypiąć pokoju</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Edytujący</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Niestandardowy filtr</value>
+  </data>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Komentarz</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Wypełnianie formularzy</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Zapisano automatycznie</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Utworzono, aby wypełnić formularz</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Edytowano z szyfrowaniem</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Zaszyfrowano</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Zapisano</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Szukaj w treści dokumentów</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Dokument OFORM jest gotowy do wypełnienia. Został zapisany w katalogu {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Kopia OFORM jest tworzona w katalogu {0}. Wypełnij formularz i pobierz wynik w formacie PDF lub DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Plik nie jest już wersją roboczą umożliwiającą wypełnienie formularza.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Przeglądaj i pobieraj współdzielone dokumenty. Przesyłaj pliki do współdzielonych katalogów. Najwyższy poziom kompatybilność z docx, xlsx i pptx gwarantowany.</value>
   </data>
 </root>

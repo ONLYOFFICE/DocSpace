@@ -90,11 +90,11 @@ const PersonalSettings = ({
       hideAdminSettings={!showAdminSettings}
     >
       <Box className="settings-section">
-        {showTitle && (
+        {/* {showTitle && (
           <Heading className="heading" level={2} size="xsmall">
             {t("Common:Common")}
           </Heading>
-        )}
+        )} */}
         <ToggleButton
           className="toggle-btn"
           label={thumbnailsSizeLabel}
@@ -122,6 +122,14 @@ const PersonalSettings = ({
             label={t("DisplayNotification")}
             onChange={onChangeDeleteConfirm}
             isChecked={confirmDelete}
+          />
+        )}
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("UpdateOrCreate")}
+            onChange={onChangeUpdateIfExist}
+            isChecked={updateIfExist}
           />
         )}
       </Box>
@@ -154,7 +162,7 @@ const PersonalSettings = ({
         />
       </Box> */}
 
-      {!isVisitor && (
+      {/* {!isVisitor && (
         <Box className="settings-section">
           <Heading className="heading" level={2} size="xsmall">
             {t("StoringFileVersion")}
@@ -176,7 +184,7 @@ const PersonalSettings = ({
             />
           )}
         </Box>
-      )}
+      )} */}
     </StyledSettings>
   );
 };

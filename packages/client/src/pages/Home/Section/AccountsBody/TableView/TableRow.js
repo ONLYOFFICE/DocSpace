@@ -88,6 +88,7 @@ const StyledPeopleRow = styled(TableRow)`
   .type-combobox,
   .room-combobox {
     padding-left: 8px;
+    overflow: hidden;
     .combo-button {
       padding-left: 8px;
       margin-left: -8px;
@@ -139,6 +140,8 @@ const PeopleTableRow = (props) => {
     isSeveralSelection,
     canChangeUserType,
     hideColumns,
+    value,
+    standalone,
   } = props;
 
   const {
@@ -326,12 +329,13 @@ const PeopleTableRow = (props) => {
 
     onContentRowClick && onContentRowClick(!isChecked, item);
   };
-
+  const isPaidUser = !standalone && !isVisitor;
   return (
     <StyledWrapper
       className={`user-item ${
         isChecked || isActive ? "table-row-selected" : ""
       }`}
+      value={value}
     >
       <StyledPeopleRow
         key={item.id}
@@ -374,7 +378,7 @@ const PeopleTableRow = (props) => {
               ? displayName
               : email}
           </Link>
-          <Badges statusType={statusType} isPaid={!isVisitor} isSSO={isSSO} />
+          <Badges statusType={statusType} isPaid={isPaidUser} isSSO={isSSO} />
         </TableCell>
 
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>

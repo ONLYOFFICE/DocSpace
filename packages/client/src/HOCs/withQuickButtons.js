@@ -33,6 +33,10 @@ export default function withQuickButtons(WrappedComponent) {
       return;
     };
 
+    onClickDownload = () => {
+      window.open(this.props.item.viewUrl, "_self");
+    };
+
     onClickFavorite = (showFavorite) => {
       const { t, item, setFavoriteAction } = this.props;
 
@@ -59,6 +63,7 @@ export default function withQuickButtons(WrappedComponent) {
         sectionWidth,
         viewAs,
         folderCategory,
+        isPublicRoom,
       } = this.props;
 
       const quickButtonsComponent = (
@@ -70,7 +75,9 @@ export default function withQuickButtons(WrappedComponent) {
           isAdmin={isAdmin}
           viewAs={viewAs}
           isDisabled={isLoading}
+          isPublicRoom={isPublicRoom}
           onClickLock={this.onClickLock}
+          onClickDownload={this.onClickDownload}
           onClickFavorite={this.onClickFavorite}
           folderCategory={folderCategory}
         />
@@ -90,23 +97,19 @@ export default function withQuickButtons(WrappedComponent) {
       auth,
       filesActionsStore,
       dialogsStore,
-
+      publicRoomStore,
       treeFoldersStore,
     }) => {
-      const {
-        lockFileAction,
-        setFavoriteAction,
-        onSelectItem,
-      } = filesActionsStore;
-      const {
-        isPersonalFolderRoot,
-        isArchiveFolderRoot,
-        isTrashFolder,
-      } = treeFoldersStore;
+      const { lockFileAction, setFavoriteAction, onSelectItem } =
+        filesActionsStore;
+      const { isPersonalFolderRoot, isArchiveFolderRoot, isTrashFolder } =
+        treeFoldersStore;
       const { setSharingPanelVisible } = dialogsStore;
 
       const folderCategory =
         isTrashFolder || isArchiveFolderRoot || isPersonalFolderRoot;
+
+      const { isPublicRoom } = publicRoomStore;
 
       return {
         theme: auth.settingsStore.theme,
@@ -116,6 +119,7 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
         setSharingPanelVisible,
         folderCategory,
+        isPublicRoom,
       };
     }
   )(observer(WithQuickButtons));

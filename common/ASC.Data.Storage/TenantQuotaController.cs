@@ -50,6 +50,7 @@ public class TenantQuotaController : IQuotaController
     private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private Lazy<long> _lazyCurrentSize;
     private long _currentSize;
+    public string ExcludePattern { get; set; }
 
     public TenantQuotaController(TenantManager tenantManager, AuthContext authContext, TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker, TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
     {
@@ -58,13 +59,14 @@ public class TenantQuotaController : IQuotaController
         _maxTotalSizeChecker = maxTotalSizeChecker;
         _authContext = authContext;
     }
-    
-    public void Init(int tenant)
+
+    public void Init(int tenant, string excludePattern = null)
     {
         _tenant = tenant;
         _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRowsAsync(tenant).Result
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
+        ExcludePattern = excludePattern;
     }
 
     public async Task QuotaUsedAddAsync(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)

@@ -62,7 +62,9 @@
     <value>h1. Alle ondertekenaars hebben ondertekend.</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
-    <value>h1. $Message</value>
+    <value>h1. $Message: $DocumentTitle
+
+Log in op uw DocuSign account voor meer informatie.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Mailing voltooid

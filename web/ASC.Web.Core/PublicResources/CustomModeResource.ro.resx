@@ -132,11 +132,11 @@ Bun venit în spaţiu ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost ad
  
 $GreenButton
  
-Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+Dacă aveți nevoie de ajutor, navigați la "Centru de ajutor":"https://helpcenter.onlyoffice.com/" sau contactați echipa "noastră de asistență":"https://www.onlyoffice.com/support-contact-form.aspx".
  
 Cu deosebită considerație, 
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com</value>
+"www.onlyoffice.com":"http://onlyoffice.com"</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
     <value>Doriți să modificați parola biroului dvs în cloud? Faceți clic pe butonul de mai jos pentru a confirma.

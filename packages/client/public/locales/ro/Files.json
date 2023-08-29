@@ -24,6 +24,7 @@
   "DaysRemaining": "Zile rămase: {{daysRemaining}}",
   "DisableNotifications": "Dezactivare notificări",
   "Document": "Document",
+  "DocumentEdited": "Nu se poate efectua acțiunea, deoarece documentul este în curs de editare.",
   "EditRoom": "Editare sală",
   "EmptyFile": "Fișier gol",
   "EmptyFilterDescriptionText": "Niciun fișier sau dosar nu corespunde setărilor filtru. Aplicați un alt filtru sau îl eliminați ca să afișați toate fișiere.",

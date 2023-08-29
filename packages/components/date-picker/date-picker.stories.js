@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "./";
 import styled from "styled-components";
 
@@ -37,6 +37,8 @@ export default {
   argTypes: {
     minDate: { control: "date" },
     maxDate: { control: "date" },
+    initialDate: { control: "date" },
+    openDate: { control: "date" },
     onChange: { action: "onChange" },
     locale: { control: "select", options: locales },
   },
@@ -58,13 +60,18 @@ const Wrapper = styled.div`
 `;
 
 const Template = ({ ...args }) => {
-  const [date, setDate] = useState(null);
-
   return (
     <Wrapper>
-      <DatePicker {...args} date={date} setDate={setDate} />
+      <DatePicker {...args} />
     </Wrapper>
   );
 };
 
 export const Default = Template.bind({});
+
+Default.args = {
+  maxDate: new Date(new Date().getFullYear() + 10 + "/01/01"),
+  minDate: new Date("1970/01/01"),
+  openDate: new Date(),
+  initialDate: null,
+};

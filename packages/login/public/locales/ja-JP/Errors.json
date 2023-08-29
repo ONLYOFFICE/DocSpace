@@ -10,7 +10,7 @@
   "RecaptchaInvalid": "Recaptchaが間違っているようです",
   "SsoAttributesNotFound": "認証に失敗しました（属性値アサーションが見つかりません）",
   "SsoAuthFailed": "認証に失敗しました",
-  "SsoError": "内部サーバ・エラー",
+  "SsoError": "内部サーバーエラーです",
   "SsoSettingsCantCreateUser": "その認証トークンでユーザを作成できません",
   "SsoSettingsDisabled": "シングルサインオンは無効です",
   "SsoSettingsEmptyToken": "認証トークンは見つかりません。",

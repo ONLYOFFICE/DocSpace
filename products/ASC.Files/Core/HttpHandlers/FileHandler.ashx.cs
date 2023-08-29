@@ -35,7 +35,7 @@ namespace ASC.Web.Files;
 
 public class FileHandler
 {
-    public FileHandler(RequestDelegate next)
+    public FileHandler(RequestDelegate _)
     {
     }
 
@@ -349,7 +349,8 @@ public class FileHandlerService
             {
                 var linkId = await _externalShare.GetLinkIdAsync();
 
-                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title)) || linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
+                if (!(_fileUtility.CanImageView(file.Title) || _fileUtility.CanMediaView(file.Title) || FileUtility.GetFileExtension(file.Title) == ".pdf") || 
+                    linkId == default || !await _fileSecurity.CanReadAsync(file, linkId))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -726,7 +727,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                         var stringPayload = JwtBuilder.Create()
                                                 .WithAlgorithm(new HMACSHA256Algorithm())
-                                                .WithSerializer(new JwtSerializer())
+                                                .WithJsonSerializer(new JwtSerializer())
                                                 .WithSecret(_fileUtility.SignatureSecret)
                                                 .MustVerifySignature()
                                                 .Decode(header);
@@ -840,7 +841,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                                                     .WithAlgorithm(new HMACSHA256Algorithm())
-                                                    .WithSerializer(new JwtSerializer())
+                                                    .WithJsonSerializer(new JwtSerializer())
                                                     .WithSecret(_fileUtility.SignatureSecret)
                                                     .MustVerifySignature()
                                                     .Decode(header);
@@ -1194,7 +1195,7 @@ public class FileHandlerService
         }
     }
 
-    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id, bool force)
+    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id, bool _)
     {
         try
         {
@@ -1577,7 +1578,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var dataString = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
-                            .WithSerializer(new JwtSerializer())
+                            .WithJsonSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(fileData.Token);
@@ -1612,7 +1613,7 @@ public class FileHandlerService
 #pragma warning disable CS0618 // Type or member is obsolete
                     var stringPayload = JwtBuilder.Create()
                             .WithAlgorithm(new HMACSHA256Algorithm())
-                            .WithSerializer(new JwtSerializer())
+                            .WithJsonSerializer(new JwtSerializer())
                             .WithSecret(_fileUtility.SignatureSecret)
                             .MustVerifySignature()
                             .Decode(header);

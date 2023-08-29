@@ -1,21 +1,22 @@
 import React, { useEffect, useState, useTransition, Suspense } from "react";
 import styled, { css } from "styled-components";
 import Submenu from "@docspace/components/submenu";
+import Badge from "@docspace/components/badge";
+import Box from "@docspace/components/box";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
 import { useNavigate } from "react-router-dom";
-
 import JavascriptSDK from "./JavascriptSDK";
-import Webhooks from "./Webhooks";
+import Api from "./Api";
 
+import Webhooks from "./Webhooks";
+import { useTranslation } from "react-i18next";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 import { WebhookConfigsLoader } from "./Webhooks/sub-components/Loaders";
-
-import { useTranslation } from "react-i18next";
-import { isMobile, isMobileOnly } from "react-device-detect";
 
 const StyledSubmenu = styled(Submenu)`
   .sticky {
@@ -27,19 +28,50 @@ const StyledSubmenu = styled(Submenu)`
         top: 58px;
       `}
   }
+
+  #javascript-sdk {
+    gap: 0px;
+  }
 `;
 
 const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo } = props;
   const navigate = useNavigate();
 
-  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { t, ready } = useTranslation([
+    "JavascriptSdk",
+    "Webhooks",
+    "Settings",
+  ]);
   const [isPending, startTransition] = useTransition();
+
+  const sdkLabel = (
+    <Box displayProp="flex" style={{ gap: "8px" }}>
+      {t("JavascriptSdk")}
+      <Box>
+        <Badge
+          label={t("Settings:BetaLabel")}
+          backgroundColor="#7763F0"
+          fontSize="9px"
+          borderRadius="50px"
+          noHover={true}
+          isHovered={false}
+        />
+      </Box>
+    </Box>
+  );
 
   const data = [
     {
+      id: "api",
+      name: t("Settings:Api"),
+      content: <Api />,
+    },
+    {
       id: "javascript-sdk",
-      name: t("JavascriptSdk"),
+      name: sdkLabel,
       content: <JavascriptSDK />,
     },
     {
@@ -50,11 +82,11 @@ const DeveloperToolsWrapper = (props) => {
   ];
 
   const [currentTab, setCurrentTab] = useState(
-    data.findIndex((item) => location.pathname.includes(item.id)),
+    data.findIndex((item) => location.pathname.includes(item.id))
   );
 
   const load = async () => {
-    await loadBaseInfo();
+    //await loadBaseInfo();
   };
 
   useEffect(() => {
@@ -74,8 +106,8 @@ const DeveloperToolsWrapper = (props) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/developer-tools/${e.id}`,
-      ),
+        `/portal-settings/developer-tools/${e.id}`
+      )
     );
   };
 

@@ -29,6 +29,8 @@ using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttri
 
 namespace ASC.Web.Studio.Utility;
 
+/// <summary>
+/// </summary>
 //  emp-invite - confirm ivite by email
 //  portal-suspend - confirm portal suspending - Tenant.SetStatus(TenantStatus.Suspended)
 //  portal-continue - confirm portal continuation  - Tenant.SetStatus(TenantStatus.Active)

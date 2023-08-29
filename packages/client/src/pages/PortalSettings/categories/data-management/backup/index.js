@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
-import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
   automaticBackupUrl,
@@ -18,7 +17,6 @@ const Backup = ({
   t,
 
   isNotPaidPeriod,
-  currentColorScheme,
 }) => {
   const navigate = useNavigate();
 
@@ -39,7 +37,8 @@ const Backup = ({
                   as="a"
                   href={automaticBackupUrl}
                   target="_blank"
-                  color={currentColorScheme.main.accent}
+                  fontSize="13px"
+                  color="#333333"
                   isBold
                   isHovered
                 >

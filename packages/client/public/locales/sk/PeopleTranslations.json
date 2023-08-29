@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Typ prihlásenia na účet",
   "DeleteSelfProfile": "Odstrániť profil",
   "DisabledEmployeeStatus": "Deaktivovaný",
   "DisableUserButton": "Deaktivovať",
@@ -12,6 +13,7 @@
   "RemoveData": "Odstrániť osobné údaje",
   "ResetAuth": "Obnoviť autentifikáciu",
   "SendInviteAgain": "Poslať pozvánku ešte raz",
+  "StandardLogin": "Štandardné prihlásenie",
   "SuccessChangeUserStatus": "Stav používateľa bol úspešne zmenený",
   "SuccessDeletePersonalData": "Osobné údaje boli úspešne odstránené",
   "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná",

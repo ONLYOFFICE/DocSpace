@@ -646,4 +646,76 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Etiketler silindi: {0}</value>
   </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Zorunlu kaydetme saklama ayarları Güncellendi</value>
+  </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>Eylem Kimliği</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Denetim Ömrü Ayarları Güncellendi</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Özel Navigasyon Ayarları Güncellendi</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Zorunlu kaydetme ayarları Güncellendi</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Giriş hatası. Çok fazla deneme</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Giriş hatası. Recaptcha geçersiz</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>API ve kimlik doğrulama uygulaması aracılığıyla Giriş Başarısız</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Doğrulayıcı uygulaması aracılığıyla giriş Başarısız</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Sosyal uygulama aracılığıyla başarılı giriş</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>API ve kimlik doğrulayıcı uygulaması aracılığıyla başarılı Giriş</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Kimlik doğrulama uygulaması aracılığıyla Başarılı Giriş</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Özel Oda devre dışı bırakıldı</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Özel Oda etkinleştirildi</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Depolama şifre çözmeyi başlat</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Depolama şifrelemeyi başlat</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Hedef Kimliği</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>İki Faktörlü Kimlik Doğrulama Ayarları Güncellendi: İki faktörlü kimlik doğrulama devre dışı bırakıldı</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>İki Faktörlü Kimlik Doğrulama Ayarları Güncellendi: SMS onayı etkinleştirildi</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>İki Faktörlü Kimlik Doğrulama Ayarları Güncellendi: Kimlik doğrulama uygulaması etkinleştirildi</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>{0} için kullanıcı verileri silindi</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Kimlik doğrulama uygulaması bağlantısı kesildi: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Yeni yedekleme kodları oluşturuldu</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-posta Güncellendi</value>
+  </data>
 </root>

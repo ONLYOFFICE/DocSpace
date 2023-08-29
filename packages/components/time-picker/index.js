@@ -11,6 +11,7 @@ const TimeInput = styled.div`
   height: 32px;
   box-sizing: border-box;
   padding: 6px 8px;
+  direction: ltr;
 
   border: 1px solid #d0d5da;
   border-radius: 3px;
@@ -45,8 +46,7 @@ const TimeInput = styled.div`
 TimeInput.defaultProps = { theme: Base };
 
 const TimePicker = ({
-  date,
-  setDate,
+  initialTime,
   onChange,
   className,
   hasError,
@@ -58,6 +58,10 @@ const TimePicker = ({
 }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
+
+  const [date, setDate] = useState(
+    initialTime ? moment(initialTime) : moment().startOf("day")
+  );
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -222,10 +226,8 @@ const TimePicker = ({
   );
 };
 TimePicker.propTypes = {
-  /** Inital date */
-  date: PropTypes.object,
-  /** State setter function */
-  setDate: PropTypes.func,
+  /** Default time */
+  initialTime: PropTypes.object,
   /** Allows to set classname */
   className: PropTypes.string,
   /** Allow you to handle changing events of component */

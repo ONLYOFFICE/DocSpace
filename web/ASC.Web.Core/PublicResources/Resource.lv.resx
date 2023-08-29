@@ -592,4 +592,403 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
   </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Jūs esat nosūtījušī pārāk daudz īsziņu. Lūdzu, mēģiniet vēlāk vēlreiz.</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Pārbaudes koda lauks nevar būt tukšs</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>Ar īsziņu</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>Ar autentificētāja lietojumprogrammu</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 piekļuves atslēga</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Lietojumprogrammas klienta ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai pierakstītos portālā, izmantojot Apple ID kontu.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai ļautu lietotājiem pierakstīties ONLYOFFICE, izmantojot Apple ID. {0}Dodieties uz Apple izstrādātāju portālu un izveidojiet jaunu lietotnes ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10 rakstzīmju atslēgas identifikators, kas ģenerēts pierakstīšanai ar Apple privāto atslēgu</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Privātā atslēga lejupielādēta no Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10 rakstzīmju izstrādātāja konts Komandas ID</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai saīsinātu uzaicinājumu un dokumentu saites. {0}Ievadiet savu Bitly pieteikšanos un API atslēgu zemāk:</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai savienotu savu Box kontu ar dokumentu moduli. Jūs varēsiet pārvaldīt, rediģēt un koplietot Box failus ar ONLYOFFICE lietotājiem. {0}Pierakstieties savā kontā Box izstrādātāju lapā un izveidojiet jaunu lietojumprogrammu ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Izmantojiet šo lietojumprogrammu, lai iespējotu divfaktoru autentifikāciju, izmantojot pakalpojumu Clickatell. {0}Pierakstieties savā SMS platformas kontā un izveidojiet jaunu ONLYOFFICE integrāciju. Nokopējiet apiKey taustiņu un ievietojiet to zemāk:</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai ar ciparparakstu parakstītu dokumentus, izmantojot DocuSign. {0}Dodieties uz DocuSign administratora konsoli un pievienojiet ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai savienotu savu Box kontu ar dokumentu moduli. Jūs varēsiet pārvaldīt, rediģēt un koplietot Dropbox failus ar ONLYOFFICE lietotājiem. {0}Pierakstieties savā kontā Dropbox izstrādātāju tīmekļa vietnē un izveidojiet jaunu lietojumprogrammu ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Lietojumprogrammas taustiņš</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai izveidotu bibliogrāfiskos sarakstus dokumentos ar EasyBib.</value>
+  </data>
+  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai izveidotu bibliogrāfijas ONLYOFFICE redaktoros. {0}Dodieties uz EasyBib reģistrācijas lapu un aizpildiet veidlapu, lai pievienotu ONLYOFFICE integrāciju. Pēc programmas atslēgas saņemšanas ielīmējiet to tālāk:</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Lietotnes marķieris</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu saviem lietotājiem pierakstīties ONLYOFFICE, izmantojot Facebook, un saistīt savu klientu Facebook kontus ar CRM moduli. {0}Dodieties uz Facebook izstrādātāju portālu un izveidojiet jaunu lietotnes ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Iespējojiet šo lietojumprogrammu, lai saņemtu paziņojumus par ziņojumiem, kas jums nosūtīti, izmantojot Firebase Cloud Messaging.</value>
+  </data>
+  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu lietotājiem saņemt paziņojumus par ziņojumiem pat bezsaistē. {0}Dodieties uz Firebase konsoli un pievienojiet jaunu projektu ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Google mākoņkrātuve</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Grozs</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Ievadiet Google mākoņa kopnes nosaukumu dublējumu glabāšanai.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Pievienojiet Google mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla.</value>
+  </data>
+  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
+    <value>Pievienojiet Google mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla. {0}Dodieties uz Google Cloud Platform Console un izveidojiet jaunu pakalpojuma kontu ONLYOFFICE. Ielīmējiet tālāk saņemtos datus:</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai savienotu savu Google Drive kontu ar dokumentu moduli. Jūs varēsiet pārvaldīt, rediģēt un koplietot Google Drive failus ar ONLYOFFICE lietotājiem. {0}Dodieties uz Google API konsoli un izveidojiet jaunu projektu ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersLinkedInInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu lietotājiem pierakstīties ONLYOFFICE, izmantojot savus LinkedIn kontus. {0}Dodieties uz LinkedIn izstrādātāju tīmekļa vietni un izveidojiet jaunu lietotnes ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Slepenā atslēga</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai pierakstītos portālā, izmantojot Mail.ru kontu.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Pievienojot Mail.ru lietojumprogrammu, varat iespējot pierakstīšanos portālā, izmantojot Mail.ru kontu profila lapā.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Lietojumprogrammas klienta ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Klienta noslēpums</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai pierakstītos portālā, izmantojot Microsoft kontu.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu lietotājiem pierakstīties ONLYOFFICE, izmantojot Microsoft. {0}Dodieties uz Microsoft Azure un izveidojiet jaunu lietotnes ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspace mākoņkrātuve</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Pievienojiet Rackspace mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla.</value>
+  </data>
+  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
+    <value>Pievienojiet Rackspace mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla. {0} Rackspace mākoņa vadības paneļa drošības iestatījumos noklikšķiniet uz saites Rādīt blakus Rackspace API atslēgai. Ielīmējiet tālāk saņemtos datus:</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Privāts konteiners</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Privāts konteiners</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Ievadiet Rackspace privātā konteinera vietrāža URL adresi dublējumu glabāšanai.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Publiskais konteiners</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Publiskais konteiners</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Ievadiet Rackspace publiskā konteinera vietrāža URL adresi dublējumu glabāšanai.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Reģions</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Reģions</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Ievadiet reģionu, kurā atrodas jūsu Rackspace konteineri.</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersS3bucket" xml:space="preserve">
+    <value>Grozs</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Ievadiet unikālo Amazon groza nosaukumu dublējumu glabāšanai.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Pievienojiet Amazon AWS S3, lai dublētu un saglabātu datus no sava portāla.</value>
+  </data>
+  <data name="ConsumersS3Instruction" xml:space="preserve">
+    <value>Pievienojiet Amazon AWS S3, lai dublētu un saglabātu datus no sava portāla. {0}Dodieties uz AWS pārvaldības konsoli un izveidojiet piekļuves atslēgas ONLYOFFICE. Ielīmējiet tālāk saņemtos datus:</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Ievadiet AWS reģionu, kurā atrodas jūsu Amazon grozs.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 slepenās piekļuves atslēga</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectel mākoņkrātuve</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Parole, lai piekļūtu krātuvei</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Autentificēt lietotāju</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Pievienojiet Selectel mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Pievienojiet Selectel mākoņkrātuves pakalpojumu, lai dublētu un saglabātu datus no sava portāla. {0}Iegūstiet piekļuves datus lietotājam ar lasīšanas/rakstīšanas tiesībām konteineriem, kuros plānojat saglabāt dublējumkopijas, un ielīmējiet tos zemāk:</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Ievadiet Selectel privātā konteinera nosaukumu dublējumu glabāšanai.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Ievadiet Selectel publiskā konteinera nosaukumu dublējumu glabāšanai.</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>Lietojumprogramma ID</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Klienta noslēpums</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai savienotu savu OneDrive kontu ar dokumentu moduli. Jūs varēsiet pārvaldīt, rediģēt un koplietot OneDrive failus ar ONLYOFFICE lietotājiem. {0}Pierakstieties savā Microsoft Azure kontā un izveidojiet jaunu lietojumprogrammu ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS centrs</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Izmantojiet šo lietotni, lai iespējotu divfaktoru autentifikāciju, izmantojot SMS centra pakalpojumu. {0}Ievadiet savu smsc konta lietotājvārdu un paroli (vai paroli MD5 hash) ar mazajiem burtiem:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bota lietotājvārds</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bota marķieris</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Lai saņemtu portāla paziņojumus, izmantojot Telegram, iespējojiet Telegram botu. Jūs varat izveidot jaunu robotu, izmantojot BotFather programmā Telegram Desktop. Lai izmantotu šo robotu, portāla lietotājiem savā profila lapā ir jāiespējo Telegram paziņojumi. {0}Zemāk esošajos laukos ielīmējiet robota lietotājvārdu un saņemto marķieri.</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Pievienojiet Telegram kontu, lai saņemtu portāla paziņojumus, izmantojot Telegram.</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Autorizācijas marķieris</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu lietotājiem zvanīt savām kontaktpersonām no CRM moduļa, izmantojot Twilio. {0}Dodieties uz Twilio konsoli un ielīmējiet tālāk norādītos datus:</value>
+  </data>
+  <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
+    <value>Klienta ID</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Klienta noslēpums</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai ļautu saviem lietotājiem pierakstīties ONLYOFFICE, izmantojot viņu Twitter, un saistīt savu klientu Twitter kontus ar CRM moduli. {0}Dodieties uz Twitter izstrādātāju portālu un izveidojiet jaunu lietotnes ONLYOFFICE integrāciju. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersTwitterKey" xml:space="preserve">
+    <value>API atslēga</value>
+  </data>
+  <data name="ConsumersTwitterSecret" xml:space="preserve">
+    <value>API atslēgas noslēpums</value>
+  </data>
+  <data name="Consumersusername" xml:space="preserve">
+    <value>Rackspace lietotājvārds</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Lietojumprogramma ID</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Droša atslēga</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai pierakstītos portālā, izmantojot VK kontu.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Pievienojot VK lietojumprogrammu, varat iespējot pierakstīšanos portālā, izmantojot VK kontu profila lapā.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai publicētu dokumentus tieši WordPress.</value>
+  </data>
+  <data name="ConsumersWordpressInstruction" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai viegli publicētu dokumentus savā WordPress vietnē. {0} Wordpress izstrādātāju lapā izveidojiet jaunu lietotni ONLYOFFICE integrācijai. Ielīmējiet tālāk saņemtos datus:</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>WordPress atslēga</value>
+  </data>
+  <data name="ConsumerswpClientSecret" xml:space="preserve">
+    <value>WordPress noslēpums</value>
+  </data>
+  <data name="ConsumersyahooClientId" xml:space="preserve">
+    <value>Klienta ID</value>
+  </data>
+  <data name="ConsumersyahooClientSecret" xml:space="preserve">
+    <value>Klienta noslēpums</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Iespējojiet šo lietotni, lai pievienotu jaunus portāla lietotājus no sava Yahoo kontaktpersonu saraksta. {0}Dodieties uz Yahoo izstrādātāju tīkla lapu Izveidot pieteikumu un izveidojiet jaunu lietotni ONLYOFFICE integrācijai. Tālāk ievadiet saņemtos datus:</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Iespējojiet lietojumprogrammu, lai pierakstītos portālā, izmantojot Yandex kontu.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Pievienojot Yandex lietojumprogrammu, varat iespējot pierakstīšanos portālā, izmantojot Yandex kontu profila lapā.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Nepareizs instances ID.</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Ziņojuma teksts ir tukšs</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Nepareizs vārds vai uzvārds</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>nav atstarpju</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>tikai latīņu alfabēta burti</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Pārsniegts pieprasījumu ierobežojums</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Nomnieka domēns nevar būt tukšs.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Domēna nosaukumam jābūt no {0} līdz {1} rakstzīmēm garam.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Jūs mēģinājāt atņemt sev administratora tiesības. Jūsu administratora tiesības netika ietekmētas.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Jūsu konts nav saistīts ar LDAP direktoriju, un LDAP parole vairs nav aktīva. Mainiet vai iestatiet konta paroli profila iestatījumu lapā.</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Lietotāja {0} iestatīšana par {1} administratoru</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Novecojušu piekļuves tiesību noņemšana, kas ir ielādētas, izmantojot LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Notiek attēla saglabāšana</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Lietotāju piekļuves tiesību atjaunināšana</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Lietotāja fotoattēlu atjaunināšana</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Augšupielāde ir veiksmīga. {0}Šīs licences atbalsts un atjauninājumi nav pieejami kopš {2}.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Augšupielāde ir veiksmīga. {0}Šīs licences atbalsts nav pieejams kopš {2}.{1}</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Ja lietotājs ar e-pasta adresi {0} pastāv, paroles maiņas instrukcija tiek nosūtīta uz šo e-pasta adresi.</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Pārsniegta diska vietas kvota</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Mākoņa telpa jūsu biroja dokumentiem</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Nederīgs Recaptcha</value>
+  </data>
+  <data name="TariffsFeature_thirdparty" xml:space="preserve">
+    <value>Trešo pušu integrācija</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Administratoru/prasmīgo lietotāju skaits:</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Nepareizs kods</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA lietojumprogrammas iestatījumi nav pieejami</value>
+  </data>
 </root>

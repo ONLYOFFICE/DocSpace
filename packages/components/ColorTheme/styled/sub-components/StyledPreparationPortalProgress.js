@@ -31,7 +31,10 @@ const StyledPreparationPortalProgress = styled.div`
           ? props.theme.preparationPortalProgress.colorPercentBig
           : props.theme.preparationPortalProgress.colorPercentSmall};
       top: 2px;
-      left: calc(50% - 9px);
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `right: calc(50% - 9px);`
+          : `left: calc(50% - 9px);`}
     }
   }
 `;

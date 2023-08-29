@@ -189,10 +189,10 @@ public class RackspaceCloudStorage : BaseStorage
         return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
 
-        private bool EnableQuotaCheck(string domain)
-        {
-            return (QuotaController != null) && !domain.EndsWith("_temp");
-        }
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
 
     public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
                       string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
@@ -476,7 +476,15 @@ public class RackspaceCloudStorage : BaseStorage
         foreach (var obj in objToDel)
         {
             client.DeleteObject(_private_container, obj.Name);
-            await QuotaUsedDeleteAsync(domain, obj.Bytes);
+
+            if (QuotaController != null)
+            {
+                if (string.IsNullOrEmpty(QuotaController.ExcludePattern) ||
+                    !Path.GetFileName(obj.Name).StartsWith(QuotaController.ExcludePattern))
+                {
+                    await QuotaUsedDeleteAsync(domain, obj.Bytes);
+                }
+            }
         }
     }
 
@@ -749,7 +757,7 @@ public class RackspaceCloudStorage : BaseStorage
 
         var obj = client.ListObjects(_private_container, null, null, null, prefix, _region).FirstOrDefault();
 
-        var lastModificationDate  =  obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + prefix) : obj.LastModified.UtcDateTime;
 
         var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 

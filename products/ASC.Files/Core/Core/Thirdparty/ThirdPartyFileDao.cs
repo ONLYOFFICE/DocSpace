@@ -195,7 +195,7 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem> : IFileDao<stri
         }
     }
 
-    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -676,6 +676,12 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem> : IFileDao<stri
     }
 
     public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<int> GetFilesCountAsync(string parentId, FilterType filterType, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders = false,
+bool excludeSubject = false)
     {
         throw new NotImplementedException();
     }

@@ -78,12 +78,18 @@ const StyledSnackBar = styled(Box)`
     font-size: inherit;
     color: "#333";
     margin: 0px 4px 4px 24px;
+
     padding: 0;
 
     min-width: min-content;
     cursor: pointer;
     margin-left: 12px;
-
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 12px;
+        margin-left: 4px;
+      `}
     text-decoration: underline;
   }
 

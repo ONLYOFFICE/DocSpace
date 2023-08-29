@@ -8,7 +8,6 @@ import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
 
 import {
-  StyledComboBox,
   StyledEditInput,
   StyledEditButton,
   StyledCheckIcon,
@@ -16,8 +15,8 @@ import {
   StyledHelpButton,
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
-import AccessSelector from "./AccessSelector";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import AccessSelector from "./AccessSelector";
 
 const Item = ({
   t,
@@ -30,6 +29,7 @@ const Item = ({
   isOwner,
   inputsRef,
   setIsOpenItemAccess,
+  isMobileView,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -148,6 +148,7 @@ const Item = ({
           withRemove={true}
           filteredAccesses={filteredAccesses}
           setIsOpenItemAccess={setIsOpenItemAccess}
+          isMobileView={isMobileView}
         />
       )}
     </>

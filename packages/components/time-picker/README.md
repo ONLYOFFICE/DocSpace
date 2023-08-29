@@ -22,8 +22,7 @@ import TimePicker from "@docspace/components/time-picker";
 | Props           |   Type   | Required | Values | Default | Description                                      |
 | --------------- | :------: | :------: | :----: | :-----: | ------------------------------------------------ |
 | `className`     | `string` |    -     |   -    |   ''    | Allows to set classname                          |
-| `date`          | `object` |    -     |   -    |    -    | Inital date                                      |
-| `setDate`       |  `func`  |    -     |   -    |    -    | State setter function                            |
+| `initialDate`   | `object` |    -     |   -    |    -    | Inital date                                      |
 | `onChange`      |  `func`  |    -     |   -    |    -    | Allow you to handle changing events of component |
 | `hasError`      |  `bool`  |    -     |   -    |  false  | Indicates error                                  |
 | `onBlur`        |  `func`  |    -     |   -    |    -    | Triggers function on blur                        |

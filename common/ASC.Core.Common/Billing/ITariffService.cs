@@ -32,13 +32,15 @@ public interface ITariffService
     IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds);
     Task<IEnumerable<PaymentInfo>> GetPaymentsAsync(int tenantId);
     Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false);
-    Task<Uri> GetShoppingUriAsync(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null);
+    Task<Uri> GetShoppingUriAsync(int tenant, string affiliateId, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null);
     Task<Uri> GetShoppingUriAsync(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
     Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null);
     void ClearCache(int tenantId);
     Task DeleteDefaultBillingInfoAsync();
-    Task SetTariffAsync(int tenantId, Tariff tariff);
+    Task SetTariffAsync(int tenantId, Tariff tariff, List<TenantQuota> quotas = null);
     Task<Uri> GetAccountLinkAsync(int tenant, string backUrl);
     Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
     int GetPaymentDelay();
+    Task<Tariff> GetBillingInfoAsync(int? tenant = null, int? id = null);
+    bool IsConfigured();
 }

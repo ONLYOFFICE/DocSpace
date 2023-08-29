@@ -16,7 +16,7 @@ const tabletProps = css`
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
-    z-index: 202;
+    z-index: 201;
 
     ${isMobileOnly &&
     css`
@@ -77,6 +77,13 @@ const StyledSectionContainer = styled.section`
     position: fixed;
     right: ${(props) =>
       props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
+
+    .layout-progress-bar_close-icon {
+      position: fixed;
+      right: ${(props) =>
+        props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
+      bottom: 36px;
+    }
   }
 
   .layout-progress-bar {
@@ -84,13 +91,6 @@ const StyledSectionContainer = styled.section`
     right: ${(props) =>
       props.isInfoPanelVisible && !isMobile ? "424px" : "24px"};
     bottom: 24px;
-  }
-
-  .layout-progress-bar_close-icon {
-    position: fixed;
-    right: ${(props) =>
-      props.isInfoPanelVisible && !isMobile ? "480px" : "80px"};
-    bottom: 36px;
   }
 
   .layout-progress-second-bar {

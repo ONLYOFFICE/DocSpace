@@ -23,6 +23,11 @@ const MainContainer = styled.div`
     margin-bottom: 8px;
   }
 
+  .lifetime-input {
+    width: 100%;
+    max-width: 350px;
+  }
+
   .save-cancel-buttons {
     margin-top: 24px;
   }
@@ -33,12 +38,13 @@ const SessionLifetime = (props) => {
     t,
 
     lifetime,
+    enabled,
     setSessionLifetimeSettings,
     initSettings,
     isInit,
   } = props;
   const [type, setType] = useState(false);
-  const [sessionLifetime, setSessionLifetime] = useState("0");
+  const [sessionLifetime, setSessionLifetime] = useState("1440");
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -50,9 +56,10 @@ const SessionLifetime = (props) => {
     const currentSettings = getFromSessionStorage(
       "currentSessionLifetimeSettings"
     );
+
     const defaultData = {
-      lifetime: lifetime.toString(),
-      type: lifetime > 0 ? true : false,
+      lifetime: lifetime?.toString(),
+      type: enabled,
     };
     saveToSessionStorage("defaultSessionLifetimeSettings", defaultData);
 
@@ -60,16 +67,16 @@ const SessionLifetime = (props) => {
       setSessionLifetime(currentSettings.lifetime);
       setType(currentSettings.type);
     } else {
-      setSessionLifetime(lifetime.toString());
-      setType(lifetime > 0 ? true : false);
+      setSessionLifetime(lifetime?.toString());
+      setType(enabled);
     }
 
     if (currentSettings) {
       setType(currentSettings.type);
       setSessionLifetime(currentSettings.lifetime);
     } else {
-      setType(lifetime > 0 ? true : false);
-      setSessionLifetime(lifetime.toString());
+      setType(enabled);
+      setSessionLifetime(lifetime?.toString());
     }
     setIsLoading(true);
   };
@@ -96,7 +103,7 @@ const SessionLifetime = (props) => {
       "defaultSessionLifetimeSettings"
     );
     const newSettings = {
-      lifetime: type === false ? "0" : sessionLifetime,
+      lifetime: sessionLifetime?.toString(),
       type: type,
     };
 
@@ -120,11 +127,21 @@ const SessionLifetime = (props) => {
   };
 
   const onChangeInput = (e) => {
-    setSessionLifetime(e.target.value);
+    const inputValue = e.target.value.trim();
+
+    if (
+      (Math.sign(inputValue) !== 1 && inputValue !== "") ||
+      inputValue.indexOf(".") !== -1
+    )
+      return;
+
+    setSessionLifetime(inputValue);
   };
 
   const onBlurInput = () => {
-    !sessionLifetime ? setError(true) : setError(false);
+    const hasErrorInput = Math.sign(sessionLifetime) !== 1;
+
+    setError(hasErrorInput);
   };
 
   const onFocusInput = () => {
@@ -132,19 +149,28 @@ const SessionLifetime = (props) => {
   };
 
   const onSaveClick = async () => {
-    if (error) return;
-    try {
-      const lft = type === false ? "0" : sessionLifetime;
-      setSessionLifetimeSettings(lft);
-      toastr.success(t("SuccessfullySaveSettingsMessage"));
-      saveToSessionStorage("defaultSessionLifetimeSettings", {
-        lifetime: lft,
+    if (error && type) return;
+    let sessionValue = sessionLifetime;
+
+    if (!type) {
+      sessionValue = lifetime;
+
+      saveToSessionStorage("currentSessionLifetimeSettings", {
+        lifetime: sessionValue?.toString(),
         type: type,
       });
-      setShowReminder(false);
-    } catch (error) {
-      toastr.error(error);
     }
+
+    setSessionLifetimeSettings(sessionValue, type)
+      .then(() => {
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
+        saveToSessionStorage("defaultSessionLifetimeSettings", {
+          lifetime: sessionValue?.toString(),
+          type: type,
+        });
+        setShowReminder(false);
+      })
+      .catch((error) => toastr.error(error));
   };
 
   const onCancelClick = () => {
@@ -196,6 +222,7 @@ const SessionLifetime = (props) => {
           </Text>
           <TextInput
             className="lifetime-input"
+            maxLength={4}
             isAutoFocussed={false}
             value={sessionLifetime}
             onChange={onChangeInput}
@@ -224,10 +251,15 @@ const SessionLifetime = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { sessionLifetime, setSessionLifetimeSettings } = auth.settingsStore;
+  const {
+    sessionLifetime,
+    enabledSessionLifetime,
+    setSessionLifetimeSettings,
+  } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
+    enabled: enabledSessionLifetime,
     lifetime: sessionLifetime,
     setSessionLifetimeSettings,
     initSettings,

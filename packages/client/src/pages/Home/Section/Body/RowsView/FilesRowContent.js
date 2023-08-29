@@ -224,7 +224,7 @@ export default inject(({ auth, treeFoldersStore, filesStore }) => {
   };
 })(
   observer(
-    withTranslation(["Files", "Translations"])(
+    withTranslation(["Files", "Translations", "Notifications"])(
       withContent(withBadges(FilesRowContent))
     )
   )

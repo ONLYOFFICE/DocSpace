@@ -145,4 +145,16 @@
   <data name="EducationGroupHead" xml:space="preserve">
     <value>Skupina vodi</value>
   </data>
+  <data name="EducationAddUsers" xml:space="preserve">
+    <value>Dodaj Učitelje/Učence</value>
+  </data>
+  <data name="EducationSchemaName" xml:space="preserve">
+    <value>Izobraževalna ustanova</value>
+  </data>
+  <data name="EducationUser" xml:space="preserve">
+    <value>Učitelj/Učenec</value>
+  </data>
+  <data name="EducationUsers" xml:space="preserve">
+    <value>Učitelji/Učenci</value>
+  </data>
 </root>

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import TextInput from "../text-input";
 import { EmailSettings, parseAddress } from "../utils/email/";
-import equal from "fast-deep-equal/react";
+import StyledEmailInput from "./styled-email-input";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -12,7 +11,7 @@ const TextInputWrapper = ({
   emailSettings,
   customValidate,
   ...props
-}) => <TextInput {...props}></TextInput>;
+}) => <StyledEmailInput {...props} />;
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 

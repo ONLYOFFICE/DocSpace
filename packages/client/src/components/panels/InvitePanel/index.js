@@ -8,18 +8,22 @@ import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
 import Portal from "@docspace/components/portal";
+import { size } from "@docspace/components/utils/device";
 
 import {
   StyledBlock,
   StyledHeading,
   StyledInvitePanel,
   StyledButtons,
+  StyledControlContainer,
+  StyledCrossIconMobile,
 } from "./StyledInvitePanel";
 
 import ItemsList from "./sub-components/ItemsList";
 import InviteInput from "./sub-components/InviteInput";
 import ExternalLinks from "./sub-components/ExternalLinks";
 import Scrollbar from "@docspace/components/scrollbar";
+import { LinkType } from "../../../helpers/constants";
 const InvitePanel = ({
   folders,
   getFolderInfo,
@@ -53,8 +57,11 @@ const InvitePanel = ({
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
   const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
   const [activeLink, setActiveLink] = useState({});
+  const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(isMobileOnly);
 
   const inputsRef = useRef();
+  const invitePanelBodyRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
@@ -81,9 +88,10 @@ const InvitePanel = ({
       let links = [];
 
       users.map((user) => {
-        const { shareLink, id, title, expirationDate } = user.sharedTo;
+        const { shareLink, id, title, expirationDate, linkType } =
+          user.sharedTo;
 
-        if (!!shareLink) {
+        if (!!shareLink && linkType === LinkType.Invite) {
           links.push({
             id,
             title,
@@ -149,11 +157,21 @@ const InvitePanel = ({
     window.addEventListener("resize", onCheckHeight);
     return () => {
       window.removeEventListener("resize", onCheckHeight);
+      window.removeEventListener("mousedown", onMouseDown);
     };
   }, []);
 
+  useEffect(() => {
+    isMobileView && window.addEventListener("mousedown", onMouseDown);
+  }, [isMobileView]);
+
+  const onMouseDown = (e) => {
+    if (e.target.id === "InvitePanelWrapper") onClose();
+  };
+
   const onCheckHeight = () => {
     setScrollAllPanelContent(window.innerHeight < 1024);
+    setIsMobileView(window.innerWidth <= size.hugeMobile);
   };
 
   const onClose = () => {
@@ -236,6 +254,7 @@ const InvitePanel = ({
           externalLinksVisible={externalLinksVisible}
           onChangeActiveLink={onChangeActiveLink}
           activeLink={activeLink}
+          isMobileView={isMobileView}
         />
 
         <InviteInput
@@ -244,6 +263,9 @@ const InvitePanel = ({
           roomUsers={roomUsers}
           roomType={roomType}
           inputsRef={inputsRef}
+          addUsersPanelVisible={addUsersPanelVisible}
+          setAddUsersPanelVisible={setAddUsersPanelVisible}
+          isMobileView={isMobileView}
         />
         {hasInvitedUsers && (
           <ItemsList
@@ -253,6 +275,8 @@ const InvitePanel = ({
             externalLinksVisible={externalLinksVisible}
             scrollAllPanelContent={scrollAllPanelContent}
             inputsRef={inputsRef}
+            invitePanelBodyRef={invitePanelBodyRef}
+            isMobileView={isMobileView}
           />
         )}
       </>
@@ -269,58 +293,81 @@ const InvitePanel = ({
     setHasErrors,
     scrollAllPanelContent,
     hasInvitedUsers,
+    invitePanelBodyRef,
   ]);
 
+  const invitePanelNode = (
+    <>
+      <StyledBlock>
+        <StyledHeading>{t("Common:InviteUsers")}</StyledHeading>
+      </StyledBlock>
+
+      {scrollAllPanelContent ? (
+        <div className="invite-panel-body" ref={invitePanelBodyRef}>
+          <Scrollbar stype="mediumBlack">{bodyInvitePanel}</Scrollbar>
+        </div>
+      ) : (
+        bodyInvitePanel
+      )}
+
+      {hasInvitedUsers && (
+        <StyledButtons>
+          <Button
+            className="send-invitation"
+            scale={true}
+            size={"normal"}
+            isDisabled={hasErrors}
+            primary
+            onClick={onClickSend}
+            label={t("SendInvitation")}
+            isLoading={isLoading}
+          />
+          <Button
+            className="cancel-button"
+            scale={true}
+            size={"normal"}
+            onClick={onClose}
+            label={t("Common:CancelButton")}
+            isDisabled={isLoading}
+          />
+        </StyledButtons>
+      )}
+    </>
+  );
+
   const invitePanelComponent = (
-    <StyledInvitePanel hasInvitedUsers={hasInvitedUsers}>
-      <Backdrop
-        onClick={onClose}
-        visible={visible}
-        isAside={true}
-        zIndex={isMobileOnly ? 10 : 210}
-      />
-      <Aside
-        className="invite_panel"
-        visible={visible}
-        onClose={onClose}
-        withoutBodyScroll
-        zIndex={310}
-      >
-        <StyledBlock>
-          <StyledHeading>{t("Common:InviteUsers")}</StyledHeading>
-        </StyledBlock>
-
-        {scrollAllPanelContent ? (
-          <div className="invite-panel-body">
-            <Scrollbar stype="mediumBlack">{bodyInvitePanel}</Scrollbar>
-          </div>
-        ) : (
-          bodyInvitePanel
-        )}
-
-        {hasInvitedUsers && (
-          <StyledButtons>
-            <Button
-              className="send-invitation"
-              scale={true}
-              size={"normal"}
-              isDisabled={hasErrors}
-              primary
-              onClick={onClickSend}
-              label={t("SendInvitation")}
-              isLoading={isLoading}
-            />
-            <Button
-              className="cancel-button"
-              scale={true}
-              size={"normal"}
-              onClick={onClose}
-              label={t("Common:CancelButton")}
-              isDisabled={isLoading}
-            />
-          </StyledButtons>
-        )}
-      </Aside>
+    <StyledInvitePanel
+      id="InvitePanelWrapper"
+      hasInvitedUsers={hasInvitedUsers}
+      scrollAllPanelContent={scrollAllPanelContent}
+      addUsersPanelVisible={addUsersPanelVisible}
+    >
+      {isMobileView ? (
+        <div className="invite_panel">
+          <StyledControlContainer onClick={onClose}>
+            <StyledCrossIconMobile />
+          </StyledControlContainer>
+          {invitePanelNode}
+        </div>
+      ) : (
+        <>
+          <Backdrop
+            onClick={onClose}
+            visible={visible}
+            isAside={true}
+            zIndex={isMobileOnly ? 10 : 210}
+          />
+          <Aside
+            className="invite_panel"
+            visible={visible}
+            onClose={onClose}
+            withoutBodyScroll
+            zIndex={310}
+          >
+            {invitePanelNode}
+          </Aside>
+        </>
+      )}
     </StyledInvitePanel>
   );
 

@@ -104,10 +104,10 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         rooms = FilterByTags(rooms, withoutTags, tags, filesDbContext);
 
         await foreach (var room in rooms)
-        {
+    {
             yield return room;
         }
-    }
+        }
 
     public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
@@ -119,7 +119,8 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
+        bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -334,16 +335,16 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return moved;
     }
 
-    public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();

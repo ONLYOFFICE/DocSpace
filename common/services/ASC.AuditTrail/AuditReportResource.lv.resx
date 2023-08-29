@@ -658,4 +658,64 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Atzīmes ir izdzēstas: {0}</value>
   </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Audita mūža iestatījumi ir atjaunināti</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Piespiedu saglabāšanas iestatījumi ir atjaunināti</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Veikala piespiedu saglabāšanas iestatījumi ir atjaunināti</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Neizdevās pieteikties. Pārāk daudz mēģinājumu</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Neizdevās pieteikties. Recaptcha ir nederīgs</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Neizdevās pieteikties, izmantojot API un autentificētāja lietojumprogrammu</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Pieteikšanās, izmantojot autentificētāja lietojumprogrammu, neizdevās</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Veiksmīga pieteikšanās, izmantojot sociālo lietojumprogrammu</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Veiksmīga pieteikšanās, izmantojot API un autentificētāja lietojumprogrammu</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Veiksmīga pieteikšanās, izmantojot autentificētāja lietojumprogrammu</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Privāta telpa ir atspējota</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Privāta telpa ir iespējota</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Sākt krātuves atšifrēšanu</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Sākt krātuves šifrēšanu</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Divfaktoru autentifikācijas iestatījumi atjaunināti: divfaktoru autentifikācija tika atspējota</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Divfaktoru autentifikācijas iestatījumi ir atjaunināti: SMS apstiprinājums tika iespējots</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Divfaktoru autentifikācijas iestatījumi ir atjaunināti: autentifikācijas lietojumprogramma tika iespējota</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Autentificētāja lietojumprogramma ir atvienota: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Tiek izveidoti jauni rezerves kodi</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-pasta adrese ir atjaunināta</value>
+  </data>
 </root>

@@ -136,31 +136,33 @@ public class SearchSettingsHelper
         _cacheNotify.Publish(action, CacheNotifyAction.Any);
     }
 
-    public async Task<bool> CanIndexByContentAsync<T>(int tenantId) where T : class, ISearchItem
+    public async Task<bool> CanIndexByContentAsync<T>() where T : class, ISearchItem
     {
-        return await CanIndexByContentAsync(typeof(T), tenantId);
+        return await CanIndexByContentAsync(typeof(T));
     }
 
-    public async Task<bool> CanIndexByContentAsync(Type t, int tenantId)
+    public Task<bool> CanIndexByContentAsync(Type t)
     {
         if (!typeof(ISearchItemDocument).IsAssignableFrom(t))
         {
-            return false;
+            return Task.FromResult(false);
         }
 
-        if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
-        {
-            return true;
-        }
+        return Task.FromResult(true);
 
-        if (!_coreBaseSettings.Standalone)
-        {
-            return true;
-        }
+        //if (Convert.ToBoolean(_configuration["core:search-by-content"] ?? "false"))
+        //{
+        //    return true;
+        //}
 
-        var settings = await _settingsManager.LoadAsync<SearchSettings>(tenantId);
+        //if (!_coreBaseSettings.Standalone)
+        //{
+        //    return true;
+        //}
 
-        return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
+        //var settings = _settingsManager.Load<SearchSettings>(tenantId);
+
+        //return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }
 
     public async Task<bool> CanSearchByContentAsync<T>() where T : class, ISearchItem
@@ -171,7 +173,7 @@ public class SearchSettingsHelper
     public async Task<bool> CanSearchByContentAsync(Type t)
     {
         var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
-        if (!await CanIndexByContentAsync(t, tenantId))
+        if (!await CanIndexByContentAsync(t))
         {
             return false;
         }

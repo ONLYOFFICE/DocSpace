@@ -14,7 +14,12 @@ EmptyIcon.defaultProps = { theme: Base };
 const EditContainer = styled.div`
   position: absolute;
   display: flex;
-  right: ${(props) => props.theme.avatar.editContainer.right};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `left: ${props.theme.avatar.editContainer.right};`
+      : `right: ${props.theme.avatar.editContainer.right};`}
+
   bottom: ${(props) => props.theme.avatar.editContainer.bottom};
   background-color: ${(props) =>
     props.theme.avatar.editContainer.backgroundColor};
@@ -65,7 +70,11 @@ const bottomStyle = (props) =>
 
 const RoleWrapper = styled.div`
   position: absolute;
-  right: ${(props) => rightStyle(props)};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `left: ${rightStyle(props)};`
+      : `right ${rightStyle(props)};`}
+
   bottom: ${(props) => bottomStyle(props)};
 
   display: flex;

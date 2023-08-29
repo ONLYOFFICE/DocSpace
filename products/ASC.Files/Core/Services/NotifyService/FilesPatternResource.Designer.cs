@@ -279,7 +279,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access granted to the encrypted document: $DocumentTitle.
+        ///   Looks up a localized string similar to Access granted to document: $DocumentTitle.
         /// </summary>
         public static string subject_ShareEncryptedDocument_push {
             get {

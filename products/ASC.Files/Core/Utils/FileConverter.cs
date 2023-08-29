@@ -203,9 +203,10 @@ public class FileConverterQueue
     {
         var listTasks = queueTasks.ToList();
 
-        listTasks.RemoveAll(IsOrphanCacheItem);
-
-        SaveToCache(listTasks, cacheKey);
+        if (listTasks.RemoveAll(IsOrphanCacheItem) > 0)
+        {
+            SaveToCache(listTasks, cacheKey);
+        }
 
         return listTasks;
     }
@@ -568,6 +569,7 @@ public class FileConverter
         var folderDao = _daoFactory.GetFolderDao<T>();
         File<T> newFile = null;
         var markAsTemplate = false;
+        var isNewFile = false;
         var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, convertedFileType);
 
         if (!_filesSettingsHelper.StoreOriginalFiles && await _fileSecurity.CanEditAsync(file))
@@ -599,6 +601,7 @@ public class FileConverter
                 if (newFile != null && await _fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
                 {
                     newFile.Version++;
+                    newFile.VersionGroup++;
                 }
                 else
                 {
@@ -610,6 +613,7 @@ public class FileConverter
             {
                 newFile = _serviceProvider.GetService<File<T>>();
                 newFile.ParentId = folderId;
+                isNewFile = true;
             }
         }
 
@@ -631,6 +635,15 @@ public class FileConverter
             await using var convertedFileStream = new ResponseStream(response);
             newFile.ContentLength = convertedFileStream.Length;
             newFile = await fileDao.SaveFileAsync(newFile, convertedFileStream);
+
+            if (!isNewFile)
+            {
+                await _socketManager.UpdateFileAsync(newFile);
+            }
+            else
+            {
+                await _socketManager.CreateFileAsync(newFile);
+            }
         }
         catch (HttpRequestException e)
         {

@@ -147,4 +147,111 @@ $GreenButton
 
 Не хочете змінювати пароль? Просто проігноруйте це повідомлення.</value>
   </data>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Ласкаво просимо до ONLYOFFICE Personal!
+
+Ви щойно створили свій персональний офіс у хмарі.
+
+h3.Це віртуальний робочий простір, де можна редагувати та зберігати документи, працювати з ними з будь-якого місця, а також надавати до них доступ друзям і колегам.
+
+h3.Спочатку про те, що можна робити в ONLYOFFICE:
+
+- Створювати, переглядати й редагувати текстові документи, електронні таблиці й презентації.
+
+- Працювати з усіма популярними форматами. Забезпечується максимальна сумісність із файлами MS Office.
+
+- Створювати й спільно редагувати "готові до заповнення форми":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Надавати доступ до документів і спільно працювати над ними онлайн.
+
+- Використовувати різні плагіни для застосування додаткових функцій.
+
+- Легко отримувати доступ до своєї персональної хмари через "розширення для Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Крім того, ви можете редагувати документи в автономному режимі за допомогою наших  "настільних редакторів":"https://www.onlyoffice.com/download-desktop.aspx" і отримати набір застосунків для редагування на мобільному пристрої "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" або "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
+    <value>Хочете змінити адресу електронної пошти у своєму обліковому записі хмарного офісу?
+
+Натисніть кнопку нижче й увійдіть* до своєї хмари.
+
+$GreenButton
+
+Посилання дійсне протягом 7 днів.
+
+*Якщо ви не ввійшли до свого хмарного офісу у цьому браузері, вам потрібно буде використати стару адресу електронної пошти для підтвердження.
+
+Не хочете змінювати адресу електронної пошти? Просто проігноруйте це повідомлення.</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Вітаємо!
+
+Ви щойно зареєстрували обліковий запис ONLYOFFICE для особистого використання. Натисніть "тут":"$InviteLink", щоб підтвердити реєстрацію та створити пароль.
+
+Якщо ви не можете відкрити посилання, скопіюйте "$InviteLink":"$InviteLink" та вставте в адресний рядок браузера.
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Ви подали запит на закриття вашого облікового запису на personal.onlyoffice.com. Для виконання запиту перейдіть за посиланням (посилання активне протягом 7 днів): 
+
+Підтвердити закриття облікового запису
+
+*Примітка*. Після видалення ваш обліковий запис і всі пов’язані з ним дані буде знищено назавжди відповідно до нашого "Положення про конфіденційність":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Ознайомитися з додатковою інформацією про закриття облікового запису":"https://helpcenter.onlyoffice.com/administration/configuration.aspx"
+
+Якщо ви не хочете продовжувати, проігноруйте цей лист. 
+
+Якщо у вас виникли запитання, напишіть нам на адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+З повагою
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Вітаємо, $UserName!
+
+Процес видалення даних користувача "$FromUserName":"$FromUserLink" успішно завершено.
+
+Видалення персональних даних дозволило вивільнити:
+
+# Документи: $DocsSpace
+# Пошта: $MailSpace
+# Розмови: $TalkSpace</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Зареєстровано новий портал
+
+# Url-адреса порталу: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Ім’я: $UserName
+# Прізвище: $UserLastName
+# Адреса ел. пошти: $UserEmail
+# Телефон: $Phone
+# Дата створення: $Date</value>
+  </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Робіть те ж саме, що й користувач | Під’єднайте Dropbox, Box та інші облікові записи в розділі «Загальне» | Настройте права доступу до документів і папок у розділі «Загальне»</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Створюйте та редагуйте власні документи, а також спільні документи з відповідними правами доступу | Надавайте іншим користувачам доступ для читання/редагування документів і папок | Під’єднайте Dropbox, Box та інші облікові записи в розділі «Мої документи»</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Ласкаво просимо до ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Активуйте адресу електронної пошти</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Закриття облікового запису ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Видалення даних користувача завершено</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Новий портал зареєстровано</value>
+  </data>
 </root>

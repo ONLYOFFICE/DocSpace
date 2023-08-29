@@ -7,7 +7,7 @@ import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view) {
+export function openEdit(fileId, version, doc, view, headers = null, shareKey) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -22,12 +22,18 @@ export function openEdit(fileId, version, doc, view) {
     params.push(`doc=${doc}`);
   }
 
+  if (shareKey) {
+    params.push(`share=${shareKey}`);
+  }
+
   const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
 
   const options = {
     method: "get",
     url: `/files/file/${fileId}/openedit${paramsString}`,
   };
+
+  if (headers) options.headers = headers;
 
   return request(options);
 }
@@ -561,9 +567,14 @@ export function uploadFile(url, data) {
   return axios.post(url, data);
 }
 
-export function downloadFiles(fileIds, folderIds) {
+export function downloadFiles(fileIds, folderIds, shareKey) {
   const data = { fileIds, folderIds };
-  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
+  const share = shareKey ? `?share=${shareKey}` : "";
+  return request({
+    method: "put",
+    url: `/files/fileops/bulkdownload${share}`,
+    data,
+  });
 }
 
 export function getProgress() {
@@ -784,8 +795,12 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+export function getSettingsFiles(headers = null) {
+  const options = { method: "get", url: `/files/settings` };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function markAsFavorite(ids) {

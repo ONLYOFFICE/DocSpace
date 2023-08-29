@@ -9,6 +9,7 @@ import {
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
+import { withTheme } from "styled-components";
 
 const minColumnSize = 150;
 const defaultMinColumnSize = 110;
@@ -167,11 +168,15 @@ class TableHeader extends React.Component {
 
   onMouseMove = (e) => {
     const { columnIndex } = this.state;
-    const { containerRef } = this.props;
+    const { containerRef, theme } = this.props;
+    const isRtl = theme.interfaceDirection === "rtl";
+
     if (!columnIndex) return;
     const column = document.getElementById("column_" + columnIndex);
     const columnSize = column.getBoundingClientRect();
-    const newWidth = e.clientX - columnSize.left;
+    const newWidth = isRtl
+      ? columnSize.right - e.clientX
+      : e.clientX - columnSize.left;
 
     const tableContainer = containerRef.current.style.gridTemplateColumns;
     const widths = tableContainer.split(" ");
@@ -201,13 +206,13 @@ class TableHeader extends React.Component {
   onMouseUp = () => {
     !this.props.infoPanelVisible
       ? localStorage.setItem(
-        this.props.columnStorageName,
-        this.props.containerRef.current.style.gridTemplateColumns
-      )
+          this.props.columnStorageName,
+          this.props.containerRef.current.style.gridTemplateColumns
+        )
       : localStorage.setItem(
-        this.props.columnInfoPanelStorageName,
-        this.props.containerRef.current.style.gridTemplateColumns
-      );
+          this.props.columnInfoPanelStorageName,
+          this.props.containerRef.current.style.gridTemplateColumns
+        );
 
     window.removeEventListener("mousemove", this.onMouseMove);
     window.removeEventListener("mouseup", this.onMouseUp);
@@ -285,8 +290,7 @@ class TableHeader extends React.Component {
       return this.resetColumns(true);
     }
 
-
-    if (!container) return
+    if (!container) return;
 
     const containerWidth = +container.clientWidth;
 
@@ -417,12 +421,12 @@ class TableHeader extends React.Component {
                     ? `${defaultColumnSize}px`
                     : (currentContentWidth * percent) / 100 >
                       defaultMinColumnSize
-                      ? (currentContentWidth * percent) / 100 + "px"
-                      : defaultMinColumnSize + "px";
+                    ? (currentContentWidth * percent) / 100 + "px"
+                    : defaultMinColumnSize + "px";
 
                   if (
                     (currentContentWidth * percent) / 100 <
-                    defaultMinColumnSize &&
+                      defaultMinColumnSize &&
                     !defaultColumnSize
                   ) {
                     overWidth +=
@@ -481,9 +485,10 @@ class TableHeader extends React.Component {
                 const newItemWidth = defaultColumnSize
                   ? `${defaultColumnSize}px`
                   : index == 0
-                    ? `${contentWidth - enabledColumnsCount * defaultMinColumnSize
+                  ? `${
+                      contentWidth - enabledColumnsCount * defaultMinColumnSize
                     }px`
-                    : `${defaultMinColumnSize}px`;
+                  : `${defaultMinColumnSize}px`;
 
                 gridTemplateColumns.push(newItemWidth);
               } else {
@@ -526,9 +531,9 @@ class TableHeader extends React.Component {
             const newItemWidth = defaultColumnSize
               ? `${defaultColumnSize}px`
               : percent === 0
-                ? `${minColumnSize}px`
-                : ((containerWidth - defaultSize - settingsSize) * percent) /
-                100 +
+              ? `${minColumnSize}px`
+              : ((containerWidth - defaultSize - settingsSize) * percent) /
+                  100 +
                 "px";
 
             gridTemplateColumns.push(newItemWidth);
@@ -591,8 +596,9 @@ class TableHeader extends React.Component {
       columns,
       infoPanelVisible,
     } = this.props;
-    const defaultSize = this.props.columns.find((col) => col.defaultSize)
-      ?.defaultSize;
+    const defaultSize = this.props.columns.find(
+      (col) => col.defaultSize
+    )?.defaultSize;
 
     let str = "";
 
@@ -678,8 +684,9 @@ class TableHeader extends React.Component {
       <>
         <StyledTableHeader
           id="table-container_caption-header"
-          className={`${isLengthenHeader ? "lengthen-header" : ""
-            } table-container_header`}
+          className={`${
+            isLengthenHeader ? "lengthen-header" : ""
+          } table-container_header`}
           ref={this.headerRef}
           {...rest}
         >
@@ -690,7 +697,7 @@ class TableHeader extends React.Component {
 
               return (
                 <TableHeaderCell
-                  key={column.key}
+                  key={column.key ?? "empty-cell"}
                   index={index}
                   column={column}
                   sorted={sorted}
@@ -747,4 +754,4 @@ TableHeader.propTypes = {
   showSettings: PropTypes.bool,
 };
 
-export default TableHeader;
+export default withTheme(TableHeader);

@@ -26,8 +26,12 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class LdapCronSettingsDto : IMapFrom<LdapCronSettings>
 {
+    /// <summary>Cron expression</summary>
+    /// <type>System.String, System</type>
     public string Cron { get; set; }
     public void Mapping(Profile profile)
     {

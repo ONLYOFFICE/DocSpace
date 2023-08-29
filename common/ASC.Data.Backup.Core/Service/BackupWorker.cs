@@ -122,7 +122,8 @@ public class BackupWorker
             if (item == null)
             {
                 item = _serviceProvider.GetService<BackupProgressItem>();
-                item.Init(schedule, false, TempFolder, _limit);
+
+                item.Init(schedule, true, TempFolder, _limit);
 
                 _progressQueue.EnqueueTask(item);
             }

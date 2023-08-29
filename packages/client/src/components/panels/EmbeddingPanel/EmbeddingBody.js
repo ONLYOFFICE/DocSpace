@@ -1,101 +1,110 @@
-﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
-import React, { useEffect, useState, useCallback } from "react";
+﻿import React, { useState } from "react";
+import copy from "copy-to-clipboard";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
+import toastr from "@docspace/components/toast/toastr";
 import TextInput from "@docspace/components/text-input";
 import Textarea from "@docspace/components/textarea";
-import copy from "copy-to-clipboard";
-import toastr from "@docspace/components/toast/toastr";
 import IconButton from "@docspace/components/icon-button";
-import i18n from "./i18n";
-import { withTranslation, I18nextProvider } from "react-i18next";
-import StyledBody from "./StyledEmbeddingPanel";
+import Button from "@docspace/components/button";
+import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
+import { StyledBody } from "./StyledEmbeddingPanel";
+import { objectToGetParams } from "@docspace/common/utils";
 
-const EmbeddingBody = ({ embeddingLink, t, theme, isPersonal }) => {
+const EmbeddingBody = ({ t, link, roomId }) => {
   const [size, setSize] = useState("auto");
   const [widthValue, setWidthValue] = useState("100%");
   const [heightValue, setHeightValue] = useState("100%");
-  const getIframe = useCallback(
-    () =>
-      `<iframe src="${embeddingLink}" width="${widthValue}" height="${heightValue}" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
-    [embeddingLink, widthValue, heightValue]
-  );
-  const [link, setLink] = useState(getIframe());
 
-  useEffect(() => {
-    const link = getIframe();
-    setLink(link);
-  }, [embeddingLink, widthValue, heightValue]);
-
-  const onSelectSizeMiddle = () => {
-    if (size === "600x800") return;
-
-    setSize("600x800");
-    setWidthValue("600");
-    setHeightValue("800");
+  const config = {
+    width: `${widthValue}`,
+    height: `${heightValue}`,
+    frameId: "ds-frame",
+    init: true,
+    showHeader: true,
+    showTitle: true,
+    showMenu: false,
+    showFilter: true,
+    rootPath: "/rooms/shared/",
+    id: roomId,
   };
 
-  const onSelectSizeSmall = () => {
-    if (size === "400x600") return;
+  const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
+  const params = objectToGetParams(config);
+  const codeBlock = `<div id="${config.frameId}">Fallback text</div>\n<script src="${scriptUrl}${params}"></script>`;
 
-    setSize("400x600");
-    setWidthValue("400");
-    setHeightValue("600");
-  };
-  const onSelectSizeAuto = () => {
-    if (size === "auto") return;
-
-    setSize("auto");
-    setWidthValue("100%");
-    setHeightValue("100%");
-  };
-
-  const onChangeWidth = (e) => {
-    setWidthValue(e.target.value);
-  };
-  const onChangeHeight = (e) => {
-    setHeightValue(e.target.value);
-  };
-
+  const onChangeWidth = (e) => setWidthValue(e.target.value);
+  const onChangeHeight = (e) => setHeightValue(e.target.value);
   const onCopyLink = () => {
-    copy(link);
-    toastr.success(t("CodeCopySuccess"));
+    copy(codeBlock);
+    toastr.success(t("EmbeddingPanel:CodeCopySuccess"));
+  };
+
+  const getSizes = (size) => {
+    switch (size) {
+      case "auto":
+        return ["100%", "100%"];
+      case "mobile":
+        return ["400px", "600px"];
+      case "tablet":
+        return ["600px", "800px"];
+      default:
+        return ["100%", "100%"];
+    }
+  };
+
+  const onSelectSize = (e) => {
+    const size = e.currentTarget.dataset.size;
+    const [width, height] = getSizes(size);
+
+    setSize(size);
+    setWidthValue(width);
+    setHeightValue(height);
+  };
+
+  const onPreviewClick = () => {
+    console.log("onPreviewClick???");
+  };
+
+  const linkProps = {
+    isHovered: true,
+    type: "action",
+    onClick: onSelectSize,
   };
 
   return (
-    <StyledBody isPersonal={isPersonal}>
+    <StyledBody>
       <div className="embedding-panel_body">
         <Text className="embedding-panel_text">{t("Common:Size")}:</Text>
         <div className="embedding-panel_links-container">
           <Link
-            isHovered
-            type="action"
-            className={`embedding-panel_link  ${
-              size === "600x800" ? "embedding-panel_active-link" : ""
+            data-size="auto"
+            className={`embedding-panel_link ${
+              size === "auto" && "embedding-panel_link_active"
             }`}
-            onClick={onSelectSizeMiddle}
+            {...linkProps}
+          >
+            {t("Auto")}
+          </Link>
+
+          <Link
+            data-size="tablet"
+            className={`embedding-panel_link ${
+              size === "tablet" && "embedding-panel_link_active"
+            }`}
+            {...linkProps}
           >
             600 x 800 px
           </Link>
+
           <Link
-            isHovered
-            type="action"
-            className={`embedding-panel_link  ${
-              size === "400x600" ? "embedding-panel_active-link" : ""
+            data-size="mobile"
+            className={`embedding-panel_link ${
+              size === "mobile" && "embedding-panel_link_active"
             }`}
-            onClick={onSelectSizeSmall}
+            {...linkProps}
           >
             400 x 600 px
-          </Link>
-          <Link
-            isHovered
-            type="action"
-            className={`embedding-panel_link  ${
-              size === "auto" ? "embedding-panel_active-link" : ""
-            }`}
-            onClick={onSelectSizeAuto}
-          >
-            {t("Auto")}
           </Link>
         </div>
         <div className="embedding-panel_inputs-container">
@@ -115,32 +124,29 @@ const EmbeddingBody = ({ embeddingLink, t, theme, isPersonal }) => {
               onChange={onChangeHeight}
             />
           </div>
+          {/* <Button
+            className="embedding-panel_preview-button"
+            primary
+            size="small"
+            label={t("Common:Preview")}
+            onClick={onPreviewClick}
+          /> */}
         </div>
         <div className="embedding-panel_code-container">
-          <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
+          <Text className="embedding-panel_text">
+            {t("EmbeddingPanel:EmbedCode")}:
+          </Text>
           <IconButton
             className="embedding-panel_copy-icon"
             size="16"
             iconName={CopyReactSvgUrl}
-            // color={theme.filesPanels.embedding.iconColor}
             onClick={onCopyLink}
           />
-          <Textarea
-            className="embedding-panel_copy-textarea"
-            color={theme.filesPanels.embedding.textAreaColor}
-            isReadOnly
-            value={link}
-          />
+          <Textarea isReadOnly value={codeBlock} heightTextArea={150} />
         </div>
       </div>
     </StyledBody>
   );
 };
 
-const EmbeddingBodyWrapper = withTranslation("EmbeddingPanel")(EmbeddingBody);
-
-export default (props) => (
-  <I18nextProvider i18n={i18n}>
-    <EmbeddingBodyWrapper {...props} />
-  </I18nextProvider>
-);
+export default EmbeddingBody;

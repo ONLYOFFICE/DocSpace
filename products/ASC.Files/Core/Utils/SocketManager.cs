@@ -150,7 +150,7 @@ public class SocketManager : SocketServiceClient
         return JsonSerializer.Serialize(await _folderDtoHelper.GetAsync(folder), GetSerializerSettings()); ;
     }
 
-    private JsonSerializerOptions GetSerializerSettings()
+    public static JsonSerializerOptions GetSerializerSettings()
     {
         var serializerSettings = new JsonSerializerOptions()
         {

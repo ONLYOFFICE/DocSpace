@@ -239,7 +239,7 @@ class TableStore {
       isTrashFolder,
     } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
 
     return isRooms
       ? `${TABLE_ROOMS_COLUMNS}=${userId}`
@@ -255,7 +255,7 @@ class TableStore {
       isTrashFolder,
     } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
 
     return isRooms
       ? `${COLUMNS_ROOMS_SIZE}=${userId}`
@@ -271,7 +271,7 @@ class TableStore {
       isTrashFolder,
     } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
 
     return isRooms
       ? `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`
@@ -281,28 +281,28 @@ class TableStore {
   }
 
   get filesColumnStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_SIZE}=${userId}`;
   }
   get roomsColumnStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_ROOMS_SIZE}=${userId}`;
   }
   get trashColumnStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_TRASH_SIZE}=${userId}`;
   }
 
   get filesColumnInfoPanelStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_SIZE_INFO_PANEL}=${userId}`;
   }
   get roomsColumnInfoPanelStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`;
   }
   get trashColumnInfoPanelStorageName() {
-    const userId = this.authStore.userStore.user.id;
+    const userId = this.authStore.userStore.user?.id;
     return `${COLUMNS_TRASH_SIZE_INFO_PANEL}=${userId}`;
   }
 }

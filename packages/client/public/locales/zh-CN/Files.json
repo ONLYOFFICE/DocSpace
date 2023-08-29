@@ -24,6 +24,7 @@
   "DaysRemaining": "剩余天数：{{daysRemaining}}",
   "DisableNotifications": "禁用消息通知",
   "Document": "文档",
+  "DocumentEdited": "无法执行该操作，因为正在编辑该文档。",
   "EditRoom": "编辑房间",
   "EmptyFile": "空文件",
   "EmptyFilterDescriptionText": "没有符合此过滤条件的文件或文件夹。请尝试另一个过滤条件或清除条件以查看所有文件。",

@@ -640,4 +640,82 @@
   <data name="TagsDeleted" xml:space="preserve">
     <value>Tags verwijderd: {0}</value>
   </data>
+  <data name="ActionIdCol" xml:space="preserve">
+    <value>Action ID</value>
+  </data>
+  <data name="AuditSettingsUpdated" xml:space="preserve">
+    <value>Audittijd Instellingen Bijgewerkt</value>
+  </data>
+  <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
+    <value>Aangepaste Navigatie Instellingen Bijgewerkt</value>
+  </data>
+  <data name="DocumentsForcesave" xml:space="preserve">
+    <value>Forcesave instellingen bijgewerkt</value>
+  </data>
+  <data name="DocumentsStoreForcesave" xml:space="preserve">
+    <value>Sla forcesave instellingen op Bijgewerkt</value>
+  </data>
+  <data name="LoginFailBruteForce" xml:space="preserve">
+    <value>Inloggen Mislukt. Te veel pog</value>
+  </data>
+  <data name="LoginFailRecaptcha" xml:space="preserve">
+    <value>Inloggen Mislukt. Recaptcha is ongeldig</value>
+  </data>
+  <data name="LoginFailViaApiTfa" xml:space="preserve">
+    <value>Mislukte aanmelding via API &amp; authenticatie toepassing</value>
+  </data>
+  <data name="LoginFailViaTfaApp" xml:space="preserve">
+    <value>Inloggen via authenticatie toepassing mislukt</value>
+  </data>
+  <data name="LoginSuccessSocialApp" xml:space="preserve">
+    <value>Succesvol inloggen via sociale toepassing</value>
+  </data>
+  <data name="LoginSuccessViaApiTfa" xml:space="preserve">
+    <value>Succesvol inloggen via API &amp; authenticatie toepassing</value>
+  </data>
+  <data name="LoginSuccesViaTfaApp" xml:space="preserve">
+    <value>Succesvol Inloggen via authenticatie toepassing</value>
+  </data>
+  <data name="PrivacyRoomDisable" xml:space="preserve">
+    <value>Privé kamer is uitgeschakeld</value>
+  </data>
+  <data name="PrivacyRoomEnable" xml:space="preserve">
+    <value>Privé kamer is ingeschakeld</value>
+  </data>
+  <data name="ReassignsActionType" xml:space="preserve">
+    <value>Opnieuw toewijzen</value>
+  </data>
+  <data name="StartStorageDecryption" xml:space="preserve">
+    <value>Begin opslag ontsleuteling</value>
+  </data>
+  <data name="StartStorageEncryption" xml:space="preserve">
+    <value>Begin opslag versleuteling</value>
+  </data>
+  <data name="TargetIdCol" xml:space="preserve">
+    <value>Target ID</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
+    <value>Instellingen voor twee-factor authenticatie bijgewerkt: Twee-factor authenticatie is uitgeschakeld</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
+    <value>Twee-factor authenticatie instellingen bijgewerkt: SMS-bevestiging is ingeschakeld</value>
+  </data>
+  <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
+    <value>Twee-factor authenticatie instellingen bijgewerkt: Authenticatie app is ingeschakeld</value>
+  </data>
+  <data name="UserDataReassigns" xml:space="preserve">
+    <value>Gegevens opnieuw toegewezen: van gebruiker {0} naar gebruiker {1}</value>
+  </data>
+  <data name="UserDataRemoving" xml:space="preserve">
+    <value>Gebruikersgegevens voor {0} zijn verwijderd</value>
+  </data>
+  <data name="UserTfaDisconnected" xml:space="preserve">
+    <value>Authenticator app losgekoppeld: {0}</value>
+  </data>
+  <data name="UserTfaGenerateCodes" xml:space="preserve">
+    <value>Nieuwe back-upcodes zijn aangemaakt</value>
+  </data>
+  <data name="UserUpdatedEmail" xml:space="preserve">
+    <value>E-mail Bijgewerkt</value>
+  </data>
 </root>

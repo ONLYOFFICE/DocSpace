@@ -26,39 +26,136 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class EmployeeFullDto : EmployeeDto
 {
+    /// <summary>First name</summary>
+    /// <type>System.String, System</type>
     public string FirstName { get; set; }
+
+    /// <summary>Last name</summary>
+    /// <type>System.String, System</type>
     public string LastName { get; set; }
+
+    /// <summary>Username</summary>
+    /// <type>System.String, System</type>
     public string UserName { get; set; }
+
+    /// <summary>Email</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
+
+    /// <summary>List of contacts</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Api.Models.Contact}, System.Collections.Generic</type>
     public List<Contact> Contacts { get; set; }
+
+    /// <summary>Birthday</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Birthday { get; set; }
+
+    /// <summary>Sex (male or female)</summary>
+    /// <type>System.String, System</type>
     public string Sex { get; set; }
+
+    /// <summary>Employee status</summary>
+    /// <type>ASC.Core.Users.EmployeeStatus, ASC.Core.Common</type>
     public EmployeeStatus Status { get; set; }
+
+    /// <summary>Employee activation status</summary>
+    /// <type>ASC.Core.Users.EmployeeActivationStatus, ASC.Core.Common</type>
     public EmployeeActivationStatus ActivationStatus { get; set; }
+
+    /// <summary>The date when the user account was terminated</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime Terminated { get; set; }
+
+    /// <summary>Department</summary>
+    /// <type>System.String, System</type>
     public string Department { get; set; }
+
+    /// <summary>Registration date</summary>
+    /// <type>ASC.Api.Core.ApiDateTime, ASC.Api.Core</type>
     public ApiDateTime WorkFrom { get; set; }
+
+    /// <summary>List of groups</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Api.Models.GroupSummaryDto}, System.Collections.Generic</type>
     public List<GroupSummaryDto> Groups { get; set; }
+
+    /// <summary>Location</summary>
+    /// <type>System.String, System</type>
     public string Location { get; set; }
+
+    /// <summary>Notes</summary>
+    /// <type>System.String, System</type>
     public string Notes { get; set; }
+
+    /// <summary>Maximum size avatar</summary>
+    /// <type>System.String, System</type>
     public string AvatarMax { get; set; }
+
+    /// <summary>Medium size avatar</summary>
+    /// <type>System.String, System</type>
     public string AvatarMedium { get; set; }
+
+    /// <summary>Avatar</summary>
+    /// <type>System.String, System</type>
     public string Avatar { get; set; }
+
+    /// <summary>Specifies if the user is an administrator or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsAdmin { get; set; }
+
+    /// <summary>Is room admin or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsRoomAdmin { get; set; }
+
+    /// <summary>Specifies if the LDAP settings are enabled for the user or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsLDAP { get; set; }
+
+    /// <summary>List of administrator modules</summary>
+    /// <type>System.Collections.Generic.List{System.String}, System.Collections.Generic</type>
     public List<string> ListAdminModules { get; set; }
+
+    /// <summary>Specifies if the user is a portal owner or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsOwner { get; set; }
+
+    /// <summary>Specifies if the user is a portal visitor or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsVisitor { get; set; }
+
+    /// <summary>Specifies if the user is a portal collaborator or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsCollaborator { get; set; }
+
+    /// <summary>Language</summary>
+    /// <type>System.String, System</type>
     public string CultureName { get; set; }
+
+    /// <summary>Mobile phone number</summary>
+    /// <type>System.String, System</type>
     public string MobilePhone { get; set; }
+
+    /// <summary>Mobile phone activation status</summary>
+    /// <type>ASC.Core.Users.MobilePhoneActivationStatus, ASC.Core.Common</type>
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
+
+    /// <summary>Specifies if the SSO settings are enabled for the user or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsSSO { get; set; }
+
+    /// <summary>Theme</summary>
+    /// <type>System.Nullable{ASC.Web.Core.Users.DarkThemeSettingsEnum}, System</type>
     public DarkThemeSettingsEnum? Theme { get; set; }
+
+    /// <summary>Quota limit</summary>
+    /// <type>System.Int64, System</type>
     public long QuotaLimit { get; set; }
+
+    /// <summary>Portal used space</summary>
+    /// <type>System.Double, System</type>
     public double UsedSpace { get; set; }
 
     public static new EmployeeFullDto GetSample()
@@ -114,8 +211,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         ApiDateTimeHelper apiDateTimeHelper,
         WebItemManager webItemManager,
         SettingsManager settingsManager,
-        IQuotaService quotaService)
-    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
+        IQuotaService quotaService,
+        ILogger<EmployeeDtoHelper> logger)
+    : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager, logger)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;

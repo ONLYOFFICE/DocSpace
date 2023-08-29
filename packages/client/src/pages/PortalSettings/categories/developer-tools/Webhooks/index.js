@@ -131,6 +131,7 @@ const Webhooks = (props) => {
           onClose={closeCreateModal}
           header={t("CreateWebhook")}
           onSubmit={onCreateWebhook}
+          additionalId="create-webhook"
         />
         <WebhookDialog
           visible={isSettingsOpened}
@@ -139,6 +140,7 @@ const Webhooks = (props) => {
           isSettingsModal={true}
           webhook={currentWebhook}
           onSubmit={handleWebhookUpdate}
+          additionalId="settings-webhook"
         />
         <DeleteWebhookDialog
           visible={isDeleteOpened}

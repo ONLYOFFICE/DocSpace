@@ -26,20 +26,35 @@
 
 namespace ASC.Web.Files.Services.WCFService;
 
+/// <summary>
+/// </summary>
 public class ThirdPartyParams
 {
+    /// <summary>Authentication data</summary>
+    /// <type>ASC.Files.Core.AuthData, ASC.Files.Core</type>
     [JsonPropertyName("auth_data")]
     public AuthData AuthData { get; set; }
 
+    /// <summary>Specifies if this is a corporate account or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Corporate { get; set; }
+
+    /// <summary>Specifies if this is a room storage or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool RoomsStorage { get; set; }
 
+    /// <summary>Customer title</summary>
+    /// <type>System.String, System</type>
     [JsonPropertyName("customer_title")]
     public string CustomerTitle { get; set; }
 
+    /// <summary>Provider ID</summary>
+    /// <type>System.String, System</type>
     [JsonPropertyName("provider_id")]
     public string ProviderId { get; set; }
 
+    /// <summary>Provider key</summary>
+    /// <type>System.String, System</type>
     [JsonPropertyName("provider_key")]
     public string ProviderKey { get; set; }
 }

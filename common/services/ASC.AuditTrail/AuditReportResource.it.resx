@@ -670,4 +670,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Cestino svuotato</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Tag aggiunti: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Tag eliminati: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Stanza archiviata</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Utente aggiunto: {0}. Ruolo: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Stanza eliminata</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link creato. Ruolo: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link eliminato</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link aggiornato. Ruolo: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo creato</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo cancellato</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Utente eliminato: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Stanza rinominata: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Stanza eliminata dall'archivio</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} nominato: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag creato: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tag eliminati: {0}</value>
+  </data>
 </root>

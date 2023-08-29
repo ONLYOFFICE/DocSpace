@@ -72,7 +72,7 @@ const StatusBar = (props) => {
   ));
 
   const isEqualDates = (firstDate, secondDate) => {
-    return firstDate.format() === secondDate.format();
+    return firstDate.format("YYYY-MM-D HH:mm") === secondDate.format("YYYY-MM-D HH:mm");
   };
 
   useEffect(() => {

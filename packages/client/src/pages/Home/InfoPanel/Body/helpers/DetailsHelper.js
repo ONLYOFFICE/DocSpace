@@ -35,10 +35,15 @@ const link = (text, onClick) => (
   </Link>
 );
 
-const tagList = (tags) => (
+const tagList = (tags, selectTag) => (
   <div className="property-tag_list">
     {tags.map((tag, i) => (
-      <Tag key={i} className="property-tag" label={tag} />
+      <Tag
+        key={i}
+        className="property-tag"
+        label={tag}
+        onClick={() => selectTag(tag)}
+      />
     ))}
   </div>
 );
@@ -70,6 +75,7 @@ class DetailsHelper {
     this.culture = props.culture;
     this.isVisitor = props.isVisitor;
     this.isCollaborator = props.isCollaborator;
+    this.selectTag = props.selectTag;
   }
 
   getPropertyList = () => {
@@ -300,7 +306,7 @@ class DetailsHelper {
   };
 
   getItemTags = () => {
-    return tagList(this.item.tags);
+    return tagList(this.item.tags, this.selectTag);
   };
 }
 

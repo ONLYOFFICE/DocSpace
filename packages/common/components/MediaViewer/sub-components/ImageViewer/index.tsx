@@ -21,6 +21,7 @@ import {
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import { ToolbarActionType, KeyboardEventKeys, compareTo } from "../../helpers";
+import PlayerMessageError from "../PlayerMessageError";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -51,6 +52,8 @@ function ImageViewer({
   imageId,
   version,
   isTiff,
+  contextModel,
+  errorTitle,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -66,6 +69,7 @@ function ImageViewer({
   const toolbarRef = useRef<ImperativeHandle>(null);
 
   const [scale, setScale] = useState(1);
+  const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [backgroundBlack, setBackgroundBlack] = useState<boolean>(() => false);
 
@@ -977,6 +981,11 @@ function ImageViewer({
       handleAction(item.actionType);
     }
   }
+  const onError = () => {
+    setIsError(true);
+  };
+
+  const model = React.useMemo(contextModel, [contextModel]);
 
   return (
     <>
@@ -985,7 +994,16 @@ function ImageViewer({
         ref={containerRef}
         $backgroundBlack={backgroundBlack}
       >
-        <ViewerLoader isLoading={isLoading} />
+        {isError ? (
+          <PlayerMessageError
+            model={model}
+            onMaskClick={onMask}
+            errorTitle={errorTitle}
+          />
+        ) : (
+          <ViewerLoader isLoading={isLoading} />
+        )}
+
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
             src={
@@ -999,10 +1017,12 @@ function ImageViewer({
             style={style}
             onDoubleClick={handleDoubleTapOrClick}
             onLoad={imageLoaded}
+            onError={onError}
           />
         </ImageWrapper>
       </ImageViewerContainer>
-      {isDesktop && panelVisible && (
+
+      {isDesktop && panelVisible && !isError && (
         <ImageViewerToolbar
           ref={toolbarRef}
           toolbar={toolbar}

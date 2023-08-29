@@ -198,4 +198,7 @@
   <data name="ModuleNameUsers" xml:space="preserve">
     <value>Gebruikers</value>
   </data>
+  <data name="UserSkipped" xml:space="preserve">
+    <value>Gebruiker niet geïmporteerd: {0} ({1}/{2})</value>
+  </data>
 </root>

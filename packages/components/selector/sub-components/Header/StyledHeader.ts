@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import Base from "../../../themes/base";
 
@@ -18,6 +18,13 @@ const StyledHeader = styled.div`
   .arrow-button {
     cursor: pointer;
     margin-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-left: 12px;
+        margin-right: 0px;
+        transform: scaleX(-1);
+      `}
   }
 
   .heading-text {
