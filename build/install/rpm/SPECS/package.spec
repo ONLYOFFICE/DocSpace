@@ -67,7 +67,7 @@ Packager:       %{packager}
 Summary:        Proxy
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       nginx >= 1.9.5
+Requires:       openresty
 Requires:       mysql-community-client >= 5.7.0
 AutoReqProv:    no
 BuildArch:      noarch

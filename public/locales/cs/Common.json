@@ -198,6 +198,7 @@
   "ProviderNotConnected": "Poskytovatel není připojen k vašemu účtu",
   "PunycodeDomain": "Domény Punycode nejsou podporovány",
   "PunycodeLocalPart": "Místní část Punycode není podporována",
+  "QuotaPaidUserLimitError": "Byl dosažen limit placených uživatelů.",
   "ReconnectStorage": "Opětovné připojení úložiště",
   "RecoverDescribeYourProblemPlaceholder": "Popište svůj problém",
   "RecoverTitle": "Obnovení přístupu",

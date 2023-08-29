@@ -38,6 +38,6 @@ public class StudioTrustedDomainSettings : ISettings<StudioTrustedDomainSettings
 
     public StudioTrustedDomainSettings GetDefault()
     {
-        return new StudioTrustedDomainSettings { InviteAsUsers = false };
+        return new StudioTrustedDomainSettings { InviteAsUsers = true };
     }
 }

@@ -27,7 +27,6 @@
   "PayerDescription": "Deze gebruiker heeft toegang tot de betalingsgegevens en is de enige gebruiker die de quota kan aanpassen en betalingen kan verrichten. De DocSpace-eigenaar, evenals de betalende beheerder zelf, kan de rol van betalende beheerder opnieuw toewijzen via het Stripe klantenportaal.",
   "PaymentOverdue": "Kan geen nieuwe gebruikers toevoegen.",
   "PriceCalculation": "Bereken uw prijs",
-  "QuotaPaidUserLimitError": "De limiet voor betaalde gebruikers is bereikt. <1>Betalingen</1>",
   "RenewSubscription": "Verleng abonnement op {{planName}} plan",
   "RoomManagerDescription": "Ruimtebeheer en archivering, uitnodiging en beheer van gebruikers. Er kunnen meerdere beheerders aan de kamer worden toegewezen.",
   "StartupSuggestion": "Doe meer met {{planName}} plan",
