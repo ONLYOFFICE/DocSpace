@@ -424,7 +424,7 @@ public class FileSecurity : IFileSecurity
     private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
     {
         var shares = await GetSharesAsync(entry);
-        var copyShares = shares.ToList();
+        var copyShares = shares.GroupBy(k => k.Subject).ToDictionary(k => k.Key);
 
         FileShareRecord[] defaultRecords;
 
@@ -581,11 +581,22 @@ public class FileSecurity : IFileSecurity
 
         var result = new List<Guid>();
 
-        await foreach (var x in manyShares)
+        await foreach (var userId in manyShares)
         {
-            if (await CanAsync(entry, x, action, copyShares))
+            var userSubjects = await GetUserSubjectsAsync(userId);
+            var userShares = new List<FileShareRecord>();
+
+            foreach (var subject in userSubjects)
             {
-                result.Add(x);
+                if (copyShares.TryGetValue(subject, out var value))
+                {
+                    userShares.AddRange(value);
+                }
+            }
+            
+            if (await CanAsync(entry, userId, action, userShares))
+            {
+                result.Add(userId);
             }
         }
 
@@ -594,13 +605,18 @@ public class FileSecurity : IFileSecurity
 
     private async ValueTask<IAsyncEnumerable<Guid>> ToGuidAsync(FileShareRecord x)
     {
+        if (x.SubjectType != SubjectType.Group)
+        {
+            return new[] { x.Subject }.ToAsyncEnumerable();
+        }
+
         var groupInfo = await _userManager.GetGroupInfoAsync(x.Subject);
 
         if (groupInfo.ID != Constants.LostGroupInfo.ID)
         {
             return (await _userManager.GetUsersByGroupAsync(groupInfo.ID))
-            .Where(p => p.Status == EmployeeStatus.Active)
-            .Select(y => y.Id).ToAsyncEnumerable();
+                .Where(p => p.Status == EmployeeStatus.Active)
+                .Select(y => y.Id).ToAsyncEnumerable();
         }
 
         return new[] { x.Subject }.ToAsyncEnumerable();
