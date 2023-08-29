@@ -45,7 +45,6 @@ const DeveloperToolsWrapper = (props) => {
     "JavascriptSdk",
     "Webhooks",
     "Settings",
-    "PluginsSettings",
   ]);
   const [isPending, startTransition] = useTransition();
 
@@ -86,7 +85,7 @@ const DeveloperToolsWrapper = (props) => {
   if (enablePlugins) {
     data.push({
       id: "plugins",
-      name: t("PluginsSettings:Plugins"),
+      name: "Plugins",
       content: <PluginPage />,
     });
   }

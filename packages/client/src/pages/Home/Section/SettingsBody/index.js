@@ -32,7 +32,7 @@ const SectionBodyContent = ({
   enablePlugins,
   enabledPluginList,
 }) => {
-  const { t } = useTranslation(["FilesSettings", "Common", "PluginsSettings"]);
+  const { t } = useTranslation(["FilesSettings", "Common"]);
 
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ const SectionBodyContent = ({
 
   const pluginsSettings = {
     id: "plugins",
-    name: t("PluginsSettings:Plugins"),
+    name: "Plugins",
     content: <PluginsSettings />,
   };
 

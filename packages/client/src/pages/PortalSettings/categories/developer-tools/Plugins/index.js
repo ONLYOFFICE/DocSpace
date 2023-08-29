@@ -34,7 +34,7 @@ const PluginPage = ({
   updatePluginStatus,
   addPlugin,
 }) => {
-  const { t } = useTranslation(["PluginsSettings", "FilesSettings"]);
+  const { t } = useTranslation(["FilesSettings"]);
 
   const pluginInputRef = React.useRef(null);
 
@@ -60,7 +60,7 @@ const PluginPage = ({
         <>
           <Button
             className={"add-button"}
-            label={t("UploadPlugin")}
+            label={"UploadPlugin"}
             primary
             size={"normal"}
             onClick={onAddAction}

@@ -336,7 +336,7 @@ const PureHome = (props) => {
   );
 };
 
-const Home = withTranslation(["Files", "People", "PluginsSettings"])(PureHome);
+const Home = withTranslation(["Files", "People"])(PureHome);
 
 export default inject(
   ({

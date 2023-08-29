@@ -1127,7 +1127,8 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } = auth.settingsStore;
+    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } =
+      auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
@@ -1299,6 +1300,5 @@ export default inject(
     "People",
     "PeopleTranslations",
     "ChangeUserTypeDialog",
-    "PluginsSettings",
   ])(observer(SectionHeaderContent))
 );
