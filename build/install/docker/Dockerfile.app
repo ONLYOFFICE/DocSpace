@@ -162,9 +162,7 @@ RUN sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/\(redis_host =\).*/\1 "$server_redis"/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/\(redis_port =\).*/\1 $server_redis_port/' /etc/nginx/conf.d/onlyoffice.conf
+    sed -i 's/http:\/\/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
 ENTRYPOINT  [ "/docker-entrypoint.sh" ]
 
