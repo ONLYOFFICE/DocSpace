@@ -2,82 +2,68 @@ resolver $DNS_NAMESERVER valid=30s;
 
 map $SERVICE_LOGIN $service_login {
     volatile;
-    $SERVICE_LOGIN $SERVICE_LOGIN;
+    "" 127.0.0.1:5011;
+    default $SERVICE_LOGIN;
 }
 
 map $SERVICE_DOCEDITOR $service_doceditor {
     volatile;
-    $SERVICE_DOCEDITOR $SERVICE_DOCEDITOR;
-}
-
-map $SERVICE_CLIENT $service_client {
-    volatile;
-    $SERVICE_CLIENT $SERVICE_CLIENT;
+    "" 127.0.0.1:5013;
+    default $SERVICE_DOCEDITOR;
 }
 
 map $SERVICE_API_SYSTEM $service_api_system {
     volatile;
-    $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
+    "" 127.0.0.1:5010;
+    default $SERVICE_API_SYSTEM;
 }
 
 map $SERVICE_BACKUP $service_backup {
     volatile;
-    $SERVICE_BACKUP $SERVICE_BACKUP;
+    "" 127.0.0.1:5012;
+    default $SERVICE_BACKUP;
 }
 
 map $SERVICE_FILES $service_files {
     volatile;
-    $SERVICE_FILES $SERVICE_FILES;
-}
-
-map $SERVICE_FILES_SERVICES $service_files_services {
-    volatile;
-    $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
-}
-
-map $SERVICE_NOTIFY $service_notify {
-    volatile;
-    $SERVICE_NOTIFY $SERVICE_NOTIFY;
+    "" 127.0.0.1:5007;
+    default $SERVICE_FILES;
 }
 
 map $SERVICE_PEOPLE_SERVER $service_people_server {
     volatile;
-    $SERVICE_PEOPLE_SERVER $SERVICE_PEOPLE_SERVER;
+    "" 127.0.0.1:5004;
+    default $SERVICE_PEOPLE_SERVER;
 }
 
 map $SERVICE_SOCKET $service_socket {
     volatile;
-    $SERVICE_SOCKET $SERVICE_SOCKET;
-}
-
-map $SERVICE_STUDIO_NOTIFY $service_studio_notify {
-    volatile;
-    $SERVICE_STUDIO_NOTIFY $SERVICE_STUDIO_NOTIFY;
-}
-
-map $SERVICE_THUMBNAILS $service_thumbnails {
-    volatile;
-    $SERVICE_THUMBNAILS $SERVICE_THUMBNAILS;
+    "" 127.0.0.1:9899;
+    default $SERVICE_SOCKET;
 }
 
 map $SERVICE_API $service_api {
     volatile;
-    $SERVICE_API $SERVICE_API;
+    "" 127.0.0.1:5000;
+    default $SERVICE_API;
 }
 
 map $SERVICE_STUDIO $service_studio {
     volatile;
-    $SERVICE_STUDIO $SERVICE_STUDIO;
+    "" 127.0.0.1:5003;
+    default $SERVICE_STUDIO;
 }
 
 map $SERVICE_SSOAUTH $service_sso {
     volatile;
-    $SERVICE_SSOAUTH $SERVICE_SSOAUTH;
+    "" 127.0.0.1:9834;
+    default $SERVICE_SSOAUTH;
 }
 
 map $SERVICE_HELTHCHECKS $service_healthchecks {
     volatile;
-    $SERVICE_HELTHCHECKS $SERVICE_HELTHCHECKS;
+    "" 127.0.0.1:5033;
+    default $SERVICE_HELTHCHECKS;
 }
 
 map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server" {
