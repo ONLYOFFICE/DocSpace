@@ -11,7 +11,7 @@ if ($Containers -or $Images) {
   $Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
   $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:dev"
   $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:dev"
-  $Env:Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:dev"
+  $Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:dev"
   $Env:SERVICE_CLIENT="localhost:5001"
   $Env:BUILD_PATH="/var/www"
   $Env:SRC_PATH="$RootDir\publish\services"
