@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { isMobileOnly } from "react-device-detect";
 import ListComponent from "./List";
