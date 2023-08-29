@@ -709,7 +709,8 @@ const SectionHeaderContent = (props) => {
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
-        onClick: () => onClickInviteUsers(selectedFolder.id),
+        onClick: () =>
+          onClickInviteUsers(selectedFolder.id, selectedFolder.roomType),
         disabled: !isRoom || !security?.EditAccess,
       },
       {
@@ -1126,7 +1127,8 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } = auth.settingsStore;
+    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } =
+      auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
