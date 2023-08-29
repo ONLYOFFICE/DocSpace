@@ -14,7 +14,7 @@ $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
 $PortalUrl = ("http://" + $LocalIp + ":8092")
-$RouterVersion="v1.0.0"
+$ProxyVersion="v1.0.0"
 
 # Stop all backend services"
 & "$PSScriptRoot\start\stop.backend.docker.ps1"
@@ -45,11 +45,11 @@ Set-Location -Path $RootDir
 
 $DotnetVersion = "dev"
 $NodeVersion = "dev"
-$RouterVersion = "dev"
+$ProxyVersion = "dev"
 
 $ExistsDotnet= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
 $ExistsNode= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-nodejs-runtime:$NodeVersion"
-$ExistsRouter= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-router-runtime:$RouterVersion"
+$ExistsProxy= docker images --format "{{.Repository}}:{{.Tag}}" | findstr "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
 
 if (!$ExistsDotnet -or $Force) {
     Write-Host "Build dotnet base image from source (apply new dotnet config)" -ForegroundColor Green
@@ -65,18 +65,18 @@ if (!$ExistsNode -or $Force) {
     Write-Host "SKIP build node base image (already exists)" -ForegroundColor Blue
 }
 
-if (!$ExistsRouter -or $Force) {
-    Write-Host "Build router base image from source (apply new nginx config)" -ForegroundColor Green
-    docker build -t "onlyoffice/4testing-docspace-router-runtime:$RouterVersion"  -f "$DockerDir\Dockerfile.runtime" --target router .
+if (!$ExistsProxy -or $Force) {
+    Write-Host "Build proxy base image from source (apply new nginx config)" -ForegroundColor Green
+    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target router .
 } else { 
-    Write-Host "SKIP build router base image (already exists)" -ForegroundColor Blue
+    Write-Host "SKIP build proxy base image (already exists)" -ForegroundColor Blue
 }
 
 Write-Host "Run migration and services" -ForegroundColor Green
 $Env:ENV_EXTENSION="dev"
 $Env:Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:$DotnetVersion"
 $Env:Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:$NodeVersion"
-$Env:Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:$RouterVersion"
+$Env:Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"
 $Env:DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/documentserver-de:latest"
 $Env:SERVICE_DOCEDITOR=$Doceditor
 $Env:SERVICE_LOGIN=$Login

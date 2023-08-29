@@ -14,7 +14,7 @@ then
     DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
     Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:dev" \
     Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:dev" \
-    Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:dev" \
+    Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:dev" \
     SERVICE_CLIENT="localhost:5001" \
     BUILD_PATH="/var/www" \
     SRC_PATH="${RootDir}/publish/services" \

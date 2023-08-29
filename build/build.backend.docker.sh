@@ -84,22 +84,22 @@ else
     echo "SKIP build nodejs base image (already exists)"
 fi
 
-router_version=dev
+proxy_version=dev
 
-exists=$(docker images | egrep "onlyoffice/4testing-docspace-router-runtime" | egrep "$router_version" | awk 'NR>0 {print $1 ":" $2}') 
+exists=$(docker images | egrep "onlyoffice/4testing-docspace-proxy-runtime" | egrep "$proxy_version" | awk 'NR>0 {print $1 ":" $2}') 
 
 if [ "${exists}" = "" ] || [ "$force" = true ]; then
-    echo "Build router base image from source (apply new nginx config)"
-    docker build -t onlyoffice/4testing-docspace-router-runtime:$router_version  -f ./build/install/docker/Dockerfile.runtime --target router .
+    echo "Build proxy base image from source (apply new nginx config)"
+    docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target router .
 else 
-    echo "SKIP build router base image (already exists)"
+    echo "SKIP build proxy base image (already exists)"
 fi
 
 echo "Run migration and services"
 ENV_EXTENSION="dev" \
 Baseimage_Dotnet_Run="onlyoffice/4testing-docspace-dotnet-runtime:$dotnet_version" \
 Baseimage_Nodejs_Run="onlyoffice/4testing-docspace-nodejs-runtime:$node_version" \
-Baseimage_Router_Run="onlyoffice/4testing-docspace-router-runtime:$router_version" \
+Baseimage_Proxy_Run="onlyoffice/4testing-docspace-proxy-runtime:$proxy_version" \
 DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
