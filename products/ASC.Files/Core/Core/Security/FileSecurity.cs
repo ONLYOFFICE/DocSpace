@@ -180,7 +180,7 @@ public class FileSecurity : IFileSecurity
     private readonly BadgesSettingsHelper _badgesSettingsHelper;
     private readonly ExternalShare _externalShare;
     private readonly ConcurrentDictionary<string, FileShareRecord> _cachedRecords = new();
-    private readonly ConcurrentDictionary<string, bool> _cachedFullAccess = new();
+    private readonly ConcurrentDictionary<string, Guid> _cachedRoomOwner = new();
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -1707,17 +1707,18 @@ public class FileSecurity : IFileSecurity
             return entry.CreateBy == userId;
         }
 
-        if (_cachedFullAccess.TryGetValue(GetCacheKey(entry.ParentId, userId), out var value))
+        if (_cachedRoomOwner.TryGetValue(GetCacheKey(entry.ParentId), out var roomOwner))
         {
-            return value;
+            return roomOwner == userId;
         }
 
-        var entryInMyRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(entry.ParentId)
-            .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync() != null;
+        var room = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(entry.ParentId)
+            .Where(f => DocSpaceHelper.IsRoom(f.FolderType))
+            .FirstOrDefaultAsync();
 
-        _cachedFullAccess.TryAdd(GetCacheKey(entry.ParentId, userId), entryInMyRoom);
+        _cachedRoomOwner.TryAdd(GetCacheKey(entry.ParentId), room.CreateBy);
 
-        return entryInMyRoom;
+        return room.CreateBy == userId;
     }
 
     private async Task<bool> IsAllGeneralNotificationSettingsOffAsync()
@@ -1737,6 +1738,11 @@ public class FileSecurity : IFileSecurity
     private string GetCacheKey<T>(T parentId, Guid userId)
     {
         return $"{_tenantManager.GetCurrentTenant().Id}-{userId}-{parentId}";
+    }
+
+    private string GetCacheKey<T>(T parentId)
+    {
+        return $"{_tenantManager.GetCurrentTenant().Id}-{parentId}";
     }
 
     private sealed class SubjectComparer : IComparer<FileShareRecord>
