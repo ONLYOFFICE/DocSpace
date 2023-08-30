@@ -104,6 +104,7 @@
   "EncryptionKeysReload": "Şifreleme anahtarları yeniden girilmelidir",
   "EnterName": "İsim girin",
   "Error": "Hata",
+  "ErrorEmptyList": "Varlıkların listesi değiştirildi. Lütfen içeriği kontrol edip tekrar deneyin.",
   "ErrorInternalServer": "İç sunucu hatası. Daha sonra tekrar deneyin.",
   "ErrorReport": "Hata raporu",
   "ErrorReportDescription": "Hangi verilerin dahil edildiğini görmek için aşağıdaki raporu açın. Hata raporları, kullanıcıların herhangi bir kişisel verisini içermez. Ekibimizin sorunu daha iyi anlamasına yardımcı olmak için, yorum alanını kullanarak düz yazı olarak sorunu açıklayın.",

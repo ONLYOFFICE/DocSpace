@@ -104,6 +104,7 @@
   "EncryptionKeysReload": "Šifrovací klíče musí být zadány znovu",
   "EnterName": "Zadejte název",
   "Error": "Chyba",
+  "ErrorEmptyList": "Seznam entit byl změněn. Zkontrolujte prosím jeho obsah a zkuste to znovu.",
   "ErrorInternalServer": "Interní chyba serveru. Zkuste to později.",
   "ErrorReport": "Chybové hlášení",
   "ErrorReportDescription": "Otevřete níže uvedenou zprávu a podívejte se, jaké údaje obsahuje. Chybová hlášení neobsahují žádné osobní údaje uživatelů. Abyste našemu týmu pomohli lépe porozumět problému, popište jej ve volném formuláři pomocí pole pro komentář.",

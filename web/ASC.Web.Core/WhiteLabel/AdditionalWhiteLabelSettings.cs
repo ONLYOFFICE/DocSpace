@@ -240,7 +240,7 @@ public class AdditionalWhiteLabelSettingsHelperInit
         get
         {
             var site = _configuration["web:teamlab-site"];
-            return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
+            return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buydocspaceenterprise" : "";
         }
     }
 }

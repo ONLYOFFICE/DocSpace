@@ -104,6 +104,7 @@
   "EncryptionKeysReload": "Ključe za šifriranje je potrebno znova vnesti",
   "EnterName": "Vnesite ime",
   "Error": "Napaka",
+  "ErrorEmptyList": "Seznam entitet je spremenjen. Preverite vsebino in poskusite znova.",
   "ErrorInternalServer": "Notranja napaka strežnika. Ponovno poskusite kasneje.",
   "ErrorReport": "Poročilo o napaki",
   "ErrorReportDescription": "Odprite spodnje poročilo, da vidite, kateri podatki so vključeni. Poročila o napakah ne vsebujejo osebnih podatkov uporabnikov. Da bi naši ekipi pomagali bolje razumeti težavo, jo prosto opišite v polju za komentar.",

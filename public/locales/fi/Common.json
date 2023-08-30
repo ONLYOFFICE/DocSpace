@@ -104,6 +104,7 @@
   "EncryptionKeysReload": "Salausavaimet on syötettävä uudelleen",
   "EnterName": "Syötä nimi",
   "Error": "Virhe",
+  "ErrorEmptyList": "Kohteiden luetteloa on muutettu. Ole hyvä, tarkista sisältö ja yritä uudelleen.",
   "ErrorInternalServer": "Palvelimen sisäinen virhe. Yritä myöhemmin uudelleen.",
   "ErrorReport": "Vikaraportti",
   "ErrorReportDescription": "Avaan alla oleva raportti nähdäksesi sisällön. Vikaraportit eivät sisällä käyttäjien henkilökohtaisia tietoja. Auttaaksesi tiimiämme ymmärtämään paremmin, kuvaile ongelma vapaassa muodossa käyttäen kommenttikenttää.",
