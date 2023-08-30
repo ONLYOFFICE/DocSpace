@@ -104,6 +104,7 @@
   "EncryptionKeysReload": "Šifrovacie kľúče je potrebné zadať znova",
   "EnterName": "Zadajte meno",
   "Error": "Chyba",
+  "ErrorEmptyList": "Zoznam subjektov bol zmenený. Skontrolujte obsah a skúste znova.",
   "ErrorInternalServer": "Interná chyba servera. Skúste to znova neskôr.",
   "ErrorReport": "Hlásenie chyby",
   "ErrorReportDescription": "Otvorte hlásenie nižšie, aby ste zistili, aké údaje obsahuje. Hlásenie chyby neobsahuje žiadne osobné údaje používateľov. Ak chcete pomôcť nášmu tímu lepšie pochopiť problém, popíšte ho vo voľnej forme v poličke Komentár.",
