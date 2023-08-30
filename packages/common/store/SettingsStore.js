@@ -814,18 +814,20 @@ class SettingsStore {
     return res;
   };
 
-  getLoginSettings = async () => {
-    const res = await api.settings.getLoginSettings();
+  getBruteForceProtection = async () => {
+    const res = await api.settings.getBruteForceProtection();
 
-    console.log("getLoginSettings res", res);
     this.numberAttempt = res.attemptCount;
     this.blockingTime = res.blockTime;
     this.checkPeriod = res.checkPeriod;
   };
 
-  setLoginSettings = async (AttemptCount, BlockTime, CheckPeriod) => {
-    console.log("setLoginSettings ", AttemptCount, BlockTime, CheckPeriod);
-    return api.settings.setLoginSettings(AttemptCount, BlockTime, CheckPeriod);
+  setBruteForceProtection = async (AttemptCount, BlockTime, CheckPeriod) => {
+    return api.settings.setBruteForceProtection(
+      AttemptCount,
+      BlockTime,
+      CheckPeriod
+    );
   };
 
   setIsBurgerLoading = (isBurgerLoading) => {

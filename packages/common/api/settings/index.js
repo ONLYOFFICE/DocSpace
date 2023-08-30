@@ -128,14 +128,14 @@ export function setLifetimeAuditSettings(data) {
   });
 }
 
-export function getLoginSettings() {
+export function getBruteForceProtection() {
   return request({
     method: "get",
     url: "/settings/security/loginSettings",
   });
 }
 
-export function setLoginSettings(AttemptCount, BlockTime, CheckPeriod) {
+export function setBruteForceProtection(AttemptCount, BlockTime, CheckPeriod) {
   return request({
     method: "put",
     url: "/settings/security/loginSettings",
