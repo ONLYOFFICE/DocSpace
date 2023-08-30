@@ -36,7 +36,7 @@ export const StyledCategoryWrapper = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   align-items: center;
 `;
 
@@ -125,5 +125,30 @@ export const StyledBruteForceProtection = styled.div`
 
   .mobile-description {
     margin-bottom: 12px;
+  }
+
+  .description {
+    max-width: 700px;
+    padding-bottom: 19px;
+
+    .page-subtitle {
+      line-height: 20px;
+      color: ${(props) =>
+        props.theme.client.settings.security.descriptionColor};
+      padding-bottom: 7px;
+    }
+
+    .link {
+      line-height: 15px;
+      font-size: 13px;
+      font-weight: 600;
+      color: ${(props) =>
+        props.theme.client.settings.security.descriptionColor};
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      padding-bottom: 20px;
+    }
   }
 `;

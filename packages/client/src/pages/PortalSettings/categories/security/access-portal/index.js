@@ -128,19 +128,9 @@ const AccessPortal = (props) => {
 
       <StyledSettingsSeparator />
       <CategoryWrapper
+        notTooltip={true}
         t={t}
-        title="Brute Force Protection"
-        tooltipTitle={
-          <Trans
-            i18nKey="SessionLifetimeDescription"
-            ns="Settings"
-            t={t}
-            components={{
-              1: <strong></strong>,
-            }}
-          />
-        }
-        classNameTooltip="brute-force-protection"
+        title={t("BruteForceProtection")}
       />
       <BruteForceProtectionSection />
 
