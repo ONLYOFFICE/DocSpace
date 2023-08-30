@@ -53,6 +53,7 @@
   "ChangeLogoButton": "Change Logo",
   "Characters": "{{length}} characters",
   "ClearBackupList": "Delete all backups",
+  "CloseMenu": "Close menu",
   "CompanyInfoSettings": "Company info settings",
   "CompanyInfoSettingsDescription": "This information will be displayed in the <1>{{link}}</1> window.",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
@@ -201,6 +202,7 @@
   "TwoFactorAuth": "Two-factor authentication",
   "TwoFactorAuthDescription": "<1>Two-factor authentication</1> is a more secure way for the users to enter the DocSpace. After the credentials are entered, the user will have to enter the code from the SMS received to the mobile phone with the number which was specified at the first space login or the code from an authentication application. <br> Enable this option for a more secure DocSpace access by all the DocSpace users. <br> To apply the changes you made click the <2>Save</2> button below this section. <br> <3>Note</3>: SMS messages can be sent if you have a positive balance only. You can always check your current balance in your SMS provider account. Do not forget to replenish your balance in good time.",
   "TwoFactorAuthHelper": "Note: SMS messages can be sent if you have a positive balance only. You can always check your current balance in your SMS provider account. Do not forget to replenish your balance in good time.",
+  "UnsavedChangesBody": "If you close the link settings menu right now, your changes will not be saved.",
   "UseAsLogoButton": "Use as logo",
   "UseDigits": "Use digits",
   "UseHttp": "Use Http",
@@ -212,7 +214,5 @@
   "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
   "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
-  "YourCurrentDomain": "Your current domain",
-  "UnsavedChangesBody": "If you close the link settings menu right now, your changes will not be saved.",
-  "CloseMenu": "Close menu"
+  "YourCurrentDomain": "Your current domain"
 }

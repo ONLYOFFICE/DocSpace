@@ -3,7 +3,7 @@
   "CodeTitle": "تم إرسال الرمز إليك عبر البريد الإلكتروني.",
   "CookieSettingsTitle": "مدة الجلسة الحالية",
   "ErrorInvalidHeader": "رابط منتهي الصلاحية",
-  "ErrorInvalidText": "ي غضون 10 ثوانٍ، ستتم إعادة توجيهك إلى DocSpace<1></1>",
+  "ErrorInvalidText": "في غضون 10 ثوانٍ، ستتم إعادة توجيهك إلى <1>DocSpace</1>",
   "ExpiredCode": "هذا الرمز لم يعد صالحا. اطلب رمزًا جديدًا وحاول مرة أخرى.",
   "ForgotPassword": "نسيت كلمة السر؟",
   "InvalidCode": "هذا الرمز غير صالح. حاول مرة أخرى.",
