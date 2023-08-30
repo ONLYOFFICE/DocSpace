@@ -90,10 +90,10 @@ const BruteForceProtection = (props) => {
 
     if (
       finishBlockingTime === "" ||
-      finishBlockingTime.toString().replace(/^0+/, "") === ""
+      finishBlockingTime.replace(/^0+/, "") === ""
     )
       finishBlockingTime = "0";
-    else finishBlockingTime = finishBlockingTime.toString().replace(/^0+/, "");
+    else finishBlockingTime = finishBlockingTime.replace(/^0+/, "");
 
     const newSettings = {
       numberAttempt: currentNumberAttempt.replace(/^0+/, ""),
@@ -148,8 +148,7 @@ const BruteForceProtection = (props) => {
     }
   };
 
-  const onChangeNumberAttempt = (e) => {
-    const inputValue = e.target.value;
+  const onValidation = (inputValue) => {
     const isPositiveOrZeroNumber =
       Math.sign(inputValue) === 1 || Math.sign(inputValue) === 0;
 
@@ -158,41 +157,31 @@ const BruteForceProtection = (props) => {
       inputValue.indexOf(".") !== -1 ||
       inputValue.length > 4
     )
-      return;
+      return false;
 
-    setCurrentNumberAttempt(inputValue.trim());
-    setShowReminder(true);
+    return true;
+  };
+
+  const onChangeNumberAttempt = (e) => {
+    const inputValue = e.target.value;
+
+    onValidation(inputValue) &&
+      setCurrentNumberAttempt(inputValue.trim()) &&
+      setShowReminder(true);
   };
 
   const onChangeBlockingTime = (e) => {
     const inputValue = e.target.value;
-    const isPositiveOrZeroNumber =
-      Math.sign(inputValue) === 1 || Math.sign(inputValue) === 0;
 
-    if (
-      !isPositiveOrZeroNumber ||
-      inputValue.indexOf(".") !== -1 ||
-      inputValue.length > 4
-    )
-      return;
-
-    setCurrentBlockingTime(inputValue.trim());
+    onValidation(inputValue) && setCurrentBlockingTime(inputValue.trim());
   };
 
   const onChangeCheckPeriod = (e) => {
     const inputValue = e.target.value;
-    const isPositiveOrZeroNumber =
-      Math.sign(inputValue) === 1 || Math.sign(inputValue) === 0;
 
-    if (
-      !isPositiveOrZeroNumber ||
-      inputValue.indexOf(".") !== -1 ||
-      inputValue.length > 4
-    )
-      return;
-
-    setCurrentCheckPeriod(inputValue.trim());
-    setShowReminder(true);
+    onValidation(inputValue) &&
+      setCurrentCheckPeriod(inputValue.trim()) &&
+      setShowReminder(true);
   };
 
   const onSaveClick = () => {
@@ -213,7 +202,7 @@ const BruteForceProtection = (props) => {
       .then(() => {
         saveToSessionStorage("defaultBruteForceProtection", {
           numberAttempt: currentNumberAttempt.replace(/^0+/, ""),
-          blockingTime: finishBlockingTime,
+          blockingTime: finishBlockingTime.toString(),
           checkPeriod: currentCheckPeriod.replace(/^0+/, ""),
         });
 
@@ -250,7 +239,6 @@ const BruteForceProtection = (props) => {
         <TextInput
           className="brute-force-protection-input"
           tabIndex={5}
-          // scale={true}
           value={currentNumberAttempt}
           onChange={onChangeNumberAttempt}
           // isDisabled={
@@ -270,7 +258,6 @@ const BruteForceProtection = (props) => {
         <TextInput
           className="brute-force-protection-input"
           tabIndex={5}
-          // scale={true}
           value={currentBlockingTime}
           onChange={onChangeBlockingTime}
           // isDisabled={
@@ -284,14 +271,12 @@ const BruteForceProtection = (props) => {
         <TextInput
           className="brute-force-protection-input"
           tabIndex={5}
-          // scale={true}
           value={currentCheckPeriod}
           onChange={onChangeCheckPeriod}
           // isDisabled={
           //   state.isLoadingGreetingSave || state.isLoadingGreetingRestore
           // }
           placeholder="Enter time"
-          style={{ marginBottom: `24px` }}
           hasError={hasErrorCheckPeriod}
         />
         {hasErrorCheckPeriod && (
