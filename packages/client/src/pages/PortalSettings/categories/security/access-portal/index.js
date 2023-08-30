@@ -9,7 +9,7 @@ import TrustedMailSection from "./trustedMail";
 import IpSecuritySection from "./ipSecurity";
 import AdminMessageSection from "./adminMessage";
 import SessionLifetimeSection from "./sessionLifetime";
-import LoginSettingsSection from "./loginSettings";
+import BruteForceProtectionSection from "./bruteForceProtection";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
@@ -142,7 +142,7 @@ const AccessPortal = (props) => {
         }
         classNameTooltip="session-lifetime"
       />
-      <LoginSettingsSection />
+      <BruteForceProtectionSection />
 
       <StyledSettingsSeparator />
       <CategoryWrapper

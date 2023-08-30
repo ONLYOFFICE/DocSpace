@@ -93,3 +93,12 @@ export const LearnMoreWrapper = styled.div`
     margin-bottom: 10px;
   }
 `;
+
+export const StyledBruteForceProtection = styled.div`
+  width: 100%;
+
+  .brute-force-protection-input {
+    width: 100%;
+    max-width: 350px;
+  }
+`;

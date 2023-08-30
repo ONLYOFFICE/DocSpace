@@ -56,6 +56,12 @@ const MobileView = (props) => {
         onClickLink={onClickLink}
       />
       <MobileCategoryWrapper
+        title="Brute Force Protection"
+        subtitle="To protect the portal against brute-force attacks, you can set up the limits of unsuccessful login attempts by the user."
+        url="/portal-settings/security/access-portal/brute-force-protection"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
         title={t("AdminsMessage")}
         subtitle={
           <Trans i18nKey="AdminsMessageDescription" ns="Settings" t={t} />
