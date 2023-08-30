@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { isMobile } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import {
@@ -28,9 +28,9 @@ const BruteForceProtection = (props) => {
     isInit,
   } = props;
 
-  const defaultNumberAttempt = numberAttempt.toString();
-  const defaultBlockingTime = blockingTime.toString();
-  const defaultCheckPeriod = checkPeriod.toString();
+  const defaultNumberAttempt = numberAttempt?.toString();
+  const defaultBlockingTime = blockingTime?.toString();
+  const defaultCheckPeriod = checkPeriod?.toString();
 
   const [currentNumberAttempt, setCurrentNumberAttempt] =
     useState(defaultNumberAttempt);
@@ -51,11 +51,13 @@ const BruteForceProtection = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (parseInt(currentNumberAttempt) === 0 || !currentNumberAttempt.trim())
+    if (currentNumberAttempt == null || currentCheckPeriod == null) return;
+
+    if (parseInt(currentNumberAttempt) === 0 || !currentNumberAttempt?.trim())
       setHasErrorNumberAttempt(true);
     else if (hasErrorNumberAttempt) setHasErrorNumberAttempt(false);
 
-    if (parseInt(currentCheckPeriod) === 0 || !currentCheckPeriod.trim())
+    if (parseInt(currentCheckPeriod) === 0 || !currentCheckPeriod?.trim())
       setHasErrorCheckPeriod(true);
     else if (hasErrorCheckPeriod) setHasErrorCheckPeriod(false);
   }, [
@@ -228,9 +230,14 @@ const BruteForceProtection = (props) => {
     setShowReminder(false);
   };
 
+  //add ready
+  if (isMobile && !isInit && !isLoading) {
+    return <></>;
+  }
+
   return (
     <StyledBruteForceProtection>
-      <LearnMoreWrapper>
+      <LearnMoreWrapper className="mobile-description">
         <Text className="page-subtitle">
           When the specified limit is reached, attempts coming from the
           associated IP address will be banned (or, if captcha is configured,
@@ -238,7 +245,11 @@ const BruteForceProtection = (props) => {
         </Text>
       </LearnMoreWrapper>
 
-      <FieldContainer labelText={`Number of attempts:`} isVertical={true}>
+      <FieldContainer
+        className="input-container"
+        labelText={`Number of attempts:`}
+        isVertical={true}
+      >
         <TextInput
           className="brute-force-protection-input"
           tabIndex={1}
@@ -255,7 +266,11 @@ const BruteForceProtection = (props) => {
         )}
       </FieldContainer>
 
-      <FieldContainer labelText={`Blocking time (sec):`} isVertical={true}>
+      <FieldContainer
+        className="input-container"
+        labelText={`Blocking time (sec):`}
+        isVertical={true}
+      >
         <TextInput
           className="brute-force-protection-input"
           tabIndex={2}
@@ -266,7 +281,11 @@ const BruteForceProtection = (props) => {
         />
       </FieldContainer>
 
-      <FieldContainer labelText={`Check period (sec):`} isVertical={true}>
+      <FieldContainer
+        className="input-container"
+        labelText={`Check period (sec):`}
+        isVertical={true}
+      >
         <TextInput
           className="brute-force-protection-input"
           tabIndex={3}

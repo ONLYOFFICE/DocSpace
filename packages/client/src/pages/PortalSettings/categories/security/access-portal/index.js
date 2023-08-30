@@ -140,7 +140,7 @@ const AccessPortal = (props) => {
             }}
           />
         }
-        classNameTooltip="session-lifetime"
+        classNameTooltip="brute-force-protection"
       />
       <BruteForceProtectionSection />
 

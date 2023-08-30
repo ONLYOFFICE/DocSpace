@@ -52,7 +52,7 @@ export const StyledMobileCategoryWrapper = styled.div`
   .category-item-heading {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .category-item-subheader {
@@ -63,14 +63,15 @@ export const StyledMobileCategoryWrapper = styled.div`
 
   .category-item-description {
     color: ${(props) => props.theme.client.settings.security.descriptionColor};
-    font-size: 12px;
+    font-size: 13px;
     max-width: 1024px;
+    line-height: 20px;
   }
 
   .inherit-title-link {
     margin-right: 7px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .link-text {
@@ -87,6 +88,12 @@ export const LearnMoreWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    line-height: 20px;
+  }
+
+  .page-subtitle {
+    color: ${(props) =>
+      props.theme.client.settings.security.descriptionColor} !important;
   }
 
   .learn-subtitle {
@@ -100,5 +107,23 @@ export const StyledBruteForceProtection = styled.div`
   .brute-force-protection-input {
     width: 100%;
     max-width: 350px;
+  }
+
+  .errorText {
+    position: absolute;
+    font-size: 10px;
+    color: #f21c0e;
+  }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
+  }
+
+  .input-container {
+    margin-bottom: 8px;
+  }
+
+  .mobile-description {
+    margin-bottom: 12px;
   }
 `;
