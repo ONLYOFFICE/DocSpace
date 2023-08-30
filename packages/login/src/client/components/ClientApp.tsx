@@ -1,5 +1,5 @@
 import React from "react";
-import { useSSR } from "react-i18next";
+import { useSSR, useTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import ErrorBoundary from "./ErrorBoundary";
 import App from "../App";
@@ -21,10 +21,12 @@ interface IClientApp extends IInitialState {
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
+  const { i18n } = useTranslation();
+
   return {
     theme: {
       ...settingsStore.theme,
-      interfaceDirection: settingsStore.interfaceDirection,
+      interfaceDirection: i18n.dir(),
     },
   };
 })(observer(ThemeProvider));
