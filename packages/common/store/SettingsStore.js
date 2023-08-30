@@ -814,12 +814,16 @@ class SettingsStore {
     return res;
   };
 
+  setBruteForceProtectionSettings = (settings) => {
+    this.numberAttempt = settings.attemptCount;
+    this.blockingTime = settings.blockTime;
+    this.checkPeriod = settings.checkPeriod;
+  };
+
   getBruteForceProtection = async () => {
     const res = await api.settings.getBruteForceProtection();
 
-    this.numberAttempt = res.attemptCount;
-    this.blockingTime = res.blockTime;
-    this.checkPeriod = res.checkPeriod;
+    this.setBruteForceProtectionSettings(res);
   };
 
   setBruteForceProtection = async (AttemptCount, BlockTime, CheckPeriod) => {
