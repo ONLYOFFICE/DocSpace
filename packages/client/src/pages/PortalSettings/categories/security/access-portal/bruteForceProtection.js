@@ -231,23 +231,26 @@ const BruteForceProtection = (props) => {
     setShowReminder(false);
   };
 
-  if (isMobile && !isInit && !isLoading) {
+  if (
+    (isMobile && !isInit && !isLoading) ||
+    (isMobile && currentNumberAttempt == null)
+  ) {
     return <BruteForceProtectionLoader />;
   }
 
   return (
     <StyledBruteForceProtection>
-      <LearnMoreWrapper className="mobile-description">
+      <div className="description">
         <Text className="page-subtitle">
-          When the specified limit is reached, attempts coming from the
-          associated IP address will be banned (or, if captcha is configured,
-          captcha will be requested) for the chosen period of time.
+          {t("BruteForceProtectionDescription")}
         </Text>
-      </LearnMoreWrapper>
+
+        <div className="link"> {t("Common:LearnMore")}</div>
+      </div>
 
       <FieldContainer
         className="input-container"
-        labelText={`Number of attempts:`}
+        labelText={t("NumberOfAttempts")}
         isVertical={true}
       >
         <TextInput
@@ -256,19 +259,19 @@ const BruteForceProtection = (props) => {
           value={currentNumberAttempt}
           onChange={onChangeNumberAttempt}
           isDisabled={isLoadingSave}
-          placeholder="Enter number"
+          placeholder={t("EnterNumber")}
           hasError={hasErrorNumberAttempt}
         />
         {hasErrorNumberAttempt && (
           <div className="errorText">
-            Specified argument was out of the range of valid values.
+            {t("ErrorMessageBruteForceProtection")}
           </div>
         )}
       </FieldContainer>
 
       <FieldContainer
         className="input-container"
-        labelText={`Blocking time (sec):`}
+        labelText={t("BlockingTime")}
         isVertical={true}
       >
         <TextInput
@@ -277,13 +280,13 @@ const BruteForceProtection = (props) => {
           value={currentBlockingTime}
           onChange={onChangeBlockingTime}
           isDisabled={isLoadingSave}
-          placeholder="Enter time"
+          placeholder={t("EnterTime")}
         />
       </FieldContainer>
 
       <FieldContainer
         className="input-container"
-        labelText={`Check period (sec):`}
+        labelText={t("CheckPeriod")}
         isVertical={true}
       >
         <TextInput
@@ -292,12 +295,12 @@ const BruteForceProtection = (props) => {
           value={currentCheckPeriod}
           onChange={onChangeCheckPeriod}
           isDisabled={isLoadingSave}
-          placeholder="Enter time"
+          placeholder={t("EnterTime")}
           hasError={hasErrorCheckPeriod}
         />
         {hasErrorCheckPeriod && (
           <div className="errorText">
-            Specified argument was out of the range of valid values.
+            {t("ErrorMessageBruteForceProtection")}
           </div>
         )}
 
