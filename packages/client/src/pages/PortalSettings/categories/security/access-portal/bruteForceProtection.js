@@ -16,6 +16,7 @@ import { size } from "@docspace/components/utils/device";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import BruteForceProtectionLoader from "../sub-components/loaders/brute-force-protection-loader";
+import Link from "@docspace/components/link";
 
 const BruteForceProtection = (props) => {
   const {
@@ -27,6 +28,7 @@ const BruteForceProtection = (props) => {
     getBruteForceProtection,
     initSettings,
     isInit,
+    bruteForceProtectionUrl,
   } = props;
 
   const defaultNumberAttempt = numberAttempt?.toString();
@@ -245,7 +247,15 @@ const BruteForceProtection = (props) => {
           {t("BruteForceProtectionDescription")}
         </Text>
 
-        <div className="link"> {t("Common:LearnMore")}</div>
+        <Link
+          className="link"
+          fontSize="13px"
+          target="_blank"
+          isHovered
+          href={bruteForceProtectionUrl}
+        >
+          {t("Common:LearnMore")}
+        </Link>
       </div>
 
       <FieldContainer
@@ -330,6 +340,7 @@ export default inject(({ auth, setup }) => {
     checkPeriod,
     setBruteForceProtection,
     getBruteForceProtection,
+    bruteForceProtectionUrl,
   } = auth.settingsStore;
 
   const { initSettings, isInit } = setup;
@@ -342,5 +353,6 @@ export default inject(({ auth, setup }) => {
     getBruteForceProtection,
     initSettings,
     isInit,
+    bruteForceProtectionUrl,
   };
 })(withTranslation(["Settings", "Common"])(observer(BruteForceProtection)));

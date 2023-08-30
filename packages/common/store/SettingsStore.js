@@ -285,6 +285,10 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
   }
 
+  get bruteForceProtectionUrl() {
+    return `${this.helpLink}/administration/configuration.aspx#loginsettings`;
+  }
+
   get administratorMessageSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
   }

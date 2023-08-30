@@ -140,7 +140,6 @@ export const StyledBruteForceProtection = styled.div`
 
     .link {
       line-height: 15px;
-      font-size: 13px;
       font-weight: 600;
       color: ${(props) =>
         props.theme.client.settings.security.descriptionColor};
