@@ -468,6 +468,45 @@ internal abstract class BaseTagDao<T> : AbstractDao
         return t;
     }
 
+    public async Task IncrementNewTagsAsync(IEnumerable<Tag> tags, Guid createdBy = default)
+    {
+        if (tags == null || !tags.Any())
+        {
+            return;
+        }
+
+        try
+        {
+            await _semaphore.WaitAsync();
+            
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+            await strategy.ExecuteAsync(async () =>
+            {
+                await using var internalFilesDbContext = _dbContextFactory.CreateDbContext();
+                await using var tx = await internalFilesDbContext.Database.BeginTransactionAsync();
+
+                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                var tenantId = TenantID;
+
+                foreach (var tagsGroup in tags.GroupBy(t => new { t.EntryId, t.EntryType }))
+                {
+                    var mappedId = (await MappingIDAsync(tagsGroup.Key.EntryId)).ToString();
+                    
+                    await Queries.IncrementNewTagsAsync(filesDbContext, tenantId, tagsGroup.Select(t => t.Id), tagsGroup.Key.EntryType, 
+                        mappedId, createdBy, createOn);
+                }
+
+                await tx.CommitAsync();
+            });
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+    }
+
     public async Task UpdateNewTags(IEnumerable<Tag> tags, Guid createdBy = default)
     {
         if (tags == null || !tags.Any())
@@ -1323,4 +1362,18 @@ static file class Queries
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => tagsIds.Contains(r.Id))
                     .ExecuteDelete());
+    
+    public static readonly Func<FilesDbContext, int, IEnumerable<int>, FileEntryType, string, Guid, DateTime, Task<int>>
+        IncrementNewTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> tagsIds, FileEntryType tagEntryType, string mappedId, Guid createdBy,
+                    DateTime createOn) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => tagsIds.Contains(r.TagId))
+                    .Where(r => r.EntryType == tagEntryType)
+                    .Where(r => r.EntryId == mappedId)
+                    .ExecuteUpdate(f => f
+                        .SetProperty(p => p.CreateBy, createdBy)
+                        .SetProperty(p => p.CreateOn, createOn)
+                        .SetProperty(p => p.Count, p => p.Count + 1)));
 }
