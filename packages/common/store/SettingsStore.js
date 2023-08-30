@@ -155,8 +155,6 @@ class SettingsStore {
   cspDomains = [];
   publicRoomKey = "";
 
-  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -894,11 +892,6 @@ class SettingsStore {
     } catch (e) {
       toastr.error(e);
     }
-  };
-
-  setInterfaceDirection = (direction) => {
-    this.interfaceDirection = direction;
-    localStorage.setItem("interfaceDirection", direction);
   };
 }
 
