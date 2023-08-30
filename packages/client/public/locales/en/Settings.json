@@ -46,6 +46,7 @@
   "BreakpointSmallTextPrompt": "Please resize the window or enable full-screen mode",
   "BreakpointWarningText": "This section is only available in the desktop version",
   "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{sectionName}}</1> settings.",
+  "BruteForceProtection": "Brute Force Protection",
   "ButtonsColor": "Buttons",
   "ByApp": "By authenticator app",
   "BySms": "By sms",
