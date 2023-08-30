@@ -450,6 +450,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-cf | --certfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_PATH=$2
+				shift
+			fi
+		;;
+
+		-ckf | --certkeyfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_KEY_PATH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -496,6 +510,8 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
 			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
 			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
+			echo "      -cf, --certfile                   path to the certificate file for the domain"
+			echo "      -ckf, --certkeyfile               path to the private key file for the certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -1182,6 +1198,10 @@ set_docspace_params() {
 	
 	LETS_ENCRYPT_DOMAIN=${LETS_ENCRYPT_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_DOMAIN")};
 	LETS_ENCRYPT_MAIL=${LETS_ENCRYPT_MAIL:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_MAIL")};
+	
+	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_PATH")};
+	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_KEY_PATH")};
+	DHPARAM_PATH=${DHPARAM_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "DHPARAM_PATH")};
 
 	[ -f ${PROXY_YML} ] && EXTERNAL_PORT=${EXTERNAL_PORT:-"$(grep -oP '(?<=- ).*?(?=:80$)' ${PROXY_YML})"}
 }
@@ -1318,13 +1338,19 @@ install_product () {
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
-
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
+	reconfigure CERTIFICATE_PATH ${CERTIFICATE_PATH}
+	reconfigure CERTIFICATE_KEY_PATH ${CERTIFICATE_KEY_PATH}
+	reconfigure DHPARAM_PATH ${DHPARAM_PATH}
 
 	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
 		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
+	elif [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
+
+	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
