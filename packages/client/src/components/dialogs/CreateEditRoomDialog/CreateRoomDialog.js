@@ -11,6 +11,9 @@ import RoomTypeList from "./sub-components/RoomTypeList";
 import DialogHeader from "./sub-components/DialogHeader";
 
 const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    margin-bottom: -64px !important;
+  }
   .header-with-button {
     display: flex;
     align-items: center;
