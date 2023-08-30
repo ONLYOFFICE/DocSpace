@@ -233,6 +233,10 @@ const BruteForceProtection = (props) => {
     setShowReminder(false);
   };
 
+  const errorNode = (
+    <div className="error-text">{t("ErrorMessageBruteForceProtection")}</div>
+  );
+
   if (
     (isMobile && !isInit && !isLoading) ||
     (isMobile && currentNumberAttempt == null)
@@ -272,11 +276,7 @@ const BruteForceProtection = (props) => {
           placeholder={t("EnterNumber")}
           hasError={hasErrorNumberAttempt}
         />
-        {hasErrorNumberAttempt && (
-          <div className="errorText">
-            {t("ErrorMessageBruteForceProtection")}
-          </div>
-        )}
+        {hasErrorNumberAttempt && errorNode}
       </FieldContainer>
 
       <FieldContainer
@@ -308,11 +308,7 @@ const BruteForceProtection = (props) => {
           placeholder={t("EnterTime")}
           hasError={hasErrorCheckPeriod}
         />
-        {hasErrorCheckPeriod && (
-          <div className="errorText">
-            {t("ErrorMessageBruteForceProtection")}
-          </div>
-        )}
+        {hasErrorCheckPeriod && errorNode}
 
         <SaveCancelButtons
           className="save-cancel-buttons"

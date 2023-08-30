@@ -109,7 +109,7 @@ export const StyledBruteForceProtection = styled.div`
     max-width: 350px;
   }
 
-  .errorText {
+  .error-text {
     position: absolute;
     font-size: 10px;
     color: #f21c0e;
