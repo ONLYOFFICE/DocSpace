@@ -15,6 +15,7 @@ import Text from "@docspace/components/text";
 import { size } from "@docspace/components/utils/device";
 import { useNavigate, useLocation } from "react-router-dom";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
+import BruteForceProtectionLoader from "../sub-components/loaders/brute-force-protection-loader";
 
 const BruteForceProtection = (props) => {
   const {
@@ -230,9 +231,8 @@ const BruteForceProtection = (props) => {
     setShowReminder(false);
   };
 
-  //add ready
   if (isMobile && !isInit && !isLoading) {
-    return <></>;
+    return <BruteForceProtectionLoader />;
   }
 
   return (
