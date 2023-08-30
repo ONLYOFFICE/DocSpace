@@ -87,6 +87,13 @@ public class CspSettingsHelper
         if (domain == Tenant.LocalHost && tenant.Alias == Tenant.LocalHost)
         {
             headerKeys.Add(GetKey(Tenant.HostName));
+            var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
+
+            foreach (var ip in ips)
+            {
+                headerKeys.Add(GetKey(ip.ToString()));
+            }
+
             headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
         }
 
