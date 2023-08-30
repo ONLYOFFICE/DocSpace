@@ -328,7 +328,7 @@ class CachedTenantService : ITenantService
 
     public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
     {
-        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var cacheKey = GetCacheKey(tenant, key);
         var data = _cache.Get<byte[]>(cacheKey);
         if (data == null)
         {
@@ -342,7 +342,7 @@ class CachedTenantService : ITenantService
 
     public byte[] GetTenantSettings(int tenant, string key)
     {
-        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var cacheKey = GetCacheKey(tenant, key);
         var data = _cache.Get<byte[]>(cacheKey);
         if (data == null)
         {
@@ -357,7 +357,7 @@ class CachedTenantService : ITenantService
     public async Task SetTenantSettingsAsync(int tenant, string key, byte[] data)
     {
         await _service.SetTenantSettingsAsync(tenant, key, data);
-        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var cacheKey = GetCacheKey(tenant, key);
 
         _cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
     }
@@ -365,8 +365,13 @@ class CachedTenantService : ITenantService
     public void SetTenantSettings(int tenant, string key, byte[] data)
     {
         _service.SetTenantSettings(tenant, key, data);
-        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var cacheKey = GetCacheKey(tenant, key);
 
         _cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
+    }
+
+    private string GetCacheKey(int tenant, string key)
+    {
+        return string.Format("settings/{0}/{1}", tenant, key.ToLowerInvariant());
     }
 }
