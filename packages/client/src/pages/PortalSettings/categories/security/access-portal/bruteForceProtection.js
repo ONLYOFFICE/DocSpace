@@ -42,6 +42,7 @@ const BruteForceProtection = (props) => {
 
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSave, setIsLoadingSave] = useState(false);
 
   const [hasErrorNumberAttempt, setHasErrorNumberAttempt] = useState(false);
   const [hasErrorCheckPeriod, setHasErrorCheckPeriod] = useState(false);
@@ -186,6 +187,7 @@ const BruteForceProtection = (props) => {
 
   const onSaveClick = () => {
     if (hasErrorNumberAttempt || hasErrorCheckPeriod) return;
+    setIsLoadingSave(true);
 
     const numberCurrentNumberAttempt = parseInt(currentNumberAttempt);
     const numberCurrentBlockingTime = parseInt(currentBlockingTime);
@@ -208,6 +210,7 @@ const BruteForceProtection = (props) => {
 
         getBruteForceProtection();
         setShowReminder(false);
+        setIsLoadingSave(false);
         toastr.success(t("SuccessfullySaveSettingsMessage"));
       })
       .catch((error) => {
@@ -238,12 +241,10 @@ const BruteForceProtection = (props) => {
       <FieldContainer labelText={`Number of attempts:`} isVertical={true}>
         <TextInput
           className="brute-force-protection-input"
-          tabIndex={5}
+          tabIndex={1}
           value={currentNumberAttempt}
           onChange={onChangeNumberAttempt}
-          // isDisabled={
-          //   state.isLoadingGreetingSave || state.isLoadingGreetingRestore
-          // }
+          isDisabled={isLoadingSave}
           placeholder="Enter number"
           hasError={hasErrorNumberAttempt}
         />
@@ -257,12 +258,10 @@ const BruteForceProtection = (props) => {
       <FieldContainer labelText={`Blocking time (sec):`} isVertical={true}>
         <TextInput
           className="brute-force-protection-input"
-          tabIndex={5}
+          tabIndex={2}
           value={currentBlockingTime}
           onChange={onChangeBlockingTime}
-          // isDisabled={
-          //   state.isLoadingGreetingSave || state.isLoadingGreetingRestore
-          // }
+          isDisabled={isLoadingSave}
           placeholder="Enter time"
         />
       </FieldContainer>
@@ -270,12 +269,10 @@ const BruteForceProtection = (props) => {
       <FieldContainer labelText={`Check period (sec):`} isVertical={true}>
         <TextInput
           className="brute-force-protection-input"
-          tabIndex={5}
+          tabIndex={3}
           value={currentCheckPeriod}
           onChange={onChangeCheckPeriod}
-          // isDisabled={
-          //   state.isLoadingGreetingSave || state.isLoadingGreetingRestore
-          // }
+          isDisabled={isLoadingSave}
           placeholder="Enter time"
           hasError={hasErrorCheckPeriod}
         />
@@ -287,6 +284,7 @@ const BruteForceProtection = (props) => {
 
         <SaveCancelButtons
           className="save-cancel-buttons"
+          tabIndex={4}
           onSaveClick={onSaveClick}
           onCancelClick={onCancelClick}
           showReminder={showReminder}
