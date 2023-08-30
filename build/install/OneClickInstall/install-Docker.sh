@@ -895,7 +895,7 @@ domain_check () {
 			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
 				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
 			elif [[ -n "$IP_ADDRESS" ]]; then
-				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+				APP_URL_PORTAL=${APP_URL_PORTAL:-"http://${DOMAIN}:${EXTERNAL_PORT}"}
 			fi
 		done <<< "$DOMAINS"
 	fi
