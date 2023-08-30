@@ -321,8 +321,8 @@ const BruteForceProtection = (props) => {
           cancelButtonLabel={t("Common:CancelButton")}
           displaySettings={true}
           hasScroll={false}
-          additionalClassSaveButton="session-lifetime-save"
-          additionalClassCancelButton="session-lifetime-cancel"
+          additionalClassSaveButton="brute-force-protection-save"
+          additionalClassCancelButton="brute-force-protection-cancel"
         />
       </FieldContainer>
     </StyledBruteForceProtection>

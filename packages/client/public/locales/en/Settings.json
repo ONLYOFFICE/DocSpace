@@ -99,6 +99,7 @@
   "EnableAutomaticBackup": "Enable automatic backup.",
   "EnableAutomaticBackupDescription": "Use this option to back up the space data.",
   "EnterNumber": "Enter number",
+  "EnterTime": "Enter time",
   "EnterTitle": "Enter title",
   "ErrorMessageBruteForceProtection": "Specified argument was out of the range of valid values.",
   "EveryDay": "Every day",
