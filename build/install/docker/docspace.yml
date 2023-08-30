@@ -232,7 +232,6 @@ networks:
 
 volumes:
   router_log:
-  proxy_log:
   app_data:
   files_data:
   people_data:

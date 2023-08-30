@@ -1196,9 +1196,6 @@ set_docspace_params() {
 	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
 	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
 	
-	LETS_ENCRYPT_DOMAIN=${LETS_ENCRYPT_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_DOMAIN")};
-	LETS_ENCRYPT_MAIL=${LETS_ENCRYPT_MAIL:-$(get_container_env_parameter "${CONTAINER_NAME}" "LETS_ENCRYPT_MAIL")};
-	
 	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_PATH")};
 	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_KEY_PATH")};
 	DHPARAM_PATH=${DHPARAM_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "DHPARAM_PATH")};
@@ -1338,15 +1335,12 @@ install_product () {
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
-	reconfigure CERTIFICATE_PATH ${CERTIFICATE_PATH}
-	reconfigure CERTIFICATE_KEY_PATH ${CERTIFICATE_KEY_PATH}
-	reconfigure DHPARAM_PATH ${DHPARAM_PATH}
 
-	if [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
-		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
-	elif [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
-		bash $BASE_DIR/letsencrypt/${PRODUCT}-letsencrypt -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
 
