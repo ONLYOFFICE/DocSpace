@@ -92,13 +92,13 @@ const ThirdPartyStorage = ({
 
   return (
     <StyledThirdPartyStorage>
-      <ToggleParam
+      {/* <ToggleParam
         id="shared_third-party-storage-toggle"
         title={t("Common:ThirdPartyStorage")}
         description={t("ThirdPartyStorageDescription")}
         isChecked={storageLocation.isThirdparty}
         onCheckedChange={onChangeIsThirdparty}
-      />
+      /> */}
 
       {storageLocation.isThirdparty && (
         <ThirdPartyComboBox
@@ -137,11 +137,8 @@ const ThirdPartyStorage = ({
 export default inject(({ auth, settingsStore, dialogsStore }) => {
   const { currentColorScheme } = auth.settingsStore;
 
-  const {
-    openConnectWindow,
-    saveThirdParty,
-    deleteThirdParty,
-  } = settingsStore.thirdPartyStore;
+  const { openConnectWindow, saveThirdParty, deleteThirdParty } =
+    settingsStore.thirdPartyStore;
 
   const {
     setConnectItem,

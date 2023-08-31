@@ -58,7 +58,7 @@ const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 
 const publicRoomStore = new PublicRoomStore();
 
-const clientLoadingStore = new ClientLoadingStore(publicRoomStore);
+const clientLoadingStore = new ClientLoadingStore();
 
 const settingsStore = new SettingsStore(
   thirdPartyStore,

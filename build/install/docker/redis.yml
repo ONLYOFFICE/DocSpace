@@ -2,7 +2,7 @@ version: "3"
 services:
   onlyoffice-redis:
     image: redis:7
-    container_name: onlyoffice-redis
+    container_name: ${REDIS_CONTAINER_NAME}
     restart: always
     expose:
       - "6379"

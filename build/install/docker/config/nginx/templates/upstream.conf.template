@@ -80,7 +80,8 @@ map $SERVICE_HELTHCHECKS $service_healthchecks {
     $SERVICE_HELTHCHECKS $SERVICE_HELTHCHECKS;
 }
 
-map $DOCUMENT_SERVER $document_server {
+map "$DOCUMENT_SERVER_URL_EXTERNAL" "$document_server" {
     volatile;
-    $DOCUMENT_SERVER $DOCUMENT_SERVER;
+    default "$DOCUMENT_SERVER_URL_EXTERNAL";
+    "" "http://$DOCUMENT_CONTAINER_NAME";
 }

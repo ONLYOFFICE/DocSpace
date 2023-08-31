@@ -203,7 +203,7 @@ public class AuthenticationController : ControllerBase
                 throw new SecurityException("Auth code is not available");
             }
 
-            var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id, MessageAction.LoginSuccess);
+            var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id);
             var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
             var result = new AuthenticationTokenDto

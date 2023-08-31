@@ -235,7 +235,7 @@ public class CookiesManager
             await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenantAsync(tenant.Id);
         }
 
-        await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
+        await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID);
     }
 
     public async Task<TenantCookieSettings> GetLifeTimeAsync(int tenantId)
@@ -255,7 +255,7 @@ public class CookiesManager
 
         if (!userId.HasValue)
         {
-            await AuthenticateMeAndSetCookiesAsync(tenant, currentUserId, MessageAction.LoginSuccess);
+            await AuthenticateMeAndSetCookiesAsync(tenant, currentUserId);
         }
     }
 
@@ -275,7 +275,7 @@ public class CookiesManager
         await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenantAsync(tenant.Id);
     }
 
-    public async Task<string> AuthenticateMeAndSetCookiesAsync(int tenantId, Guid userId, MessageAction action, bool session = false)
+    public async Task<string> AuthenticateMeAndSetCookiesAsync(int tenantId, Guid userId, MessageAction action = MessageAction.LoginSuccess, bool session = false)
     {
         var isSuccess = true;
         var cookies = string.Empty;

@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,18 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.AuditTrail.Models;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-public class LoginEventDto : BaseEvent, IMapFrom<LoginEventQuery>
+public class CspRequestsDto
 {
-    public string Login { get; set; }
-    public int Action { get; set; }
-
-    public override void Mapping(Profile profile)
-    {
-        profile.CreateMap<LoginEvent, LoginEventDto>();
-
-        profile.CreateMap<LoginEventQuery, LoginEventDto>()
-            .ConvertUsing<EventTypeConverter>();
-    }
+    public IEnumerable<string> Domains { get; set; }
+    public bool SetDefaultIfEmpty { get; set; }
 }

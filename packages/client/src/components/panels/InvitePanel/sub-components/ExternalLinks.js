@@ -36,6 +36,7 @@ const ExternalLinks = ({
   externalLinksVisible,
   onChangeActiveLink,
   activeLink,
+  isMobileView,
 }) => {
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
 
@@ -220,6 +221,7 @@ const ExternalLinks = ({
             onSelectAccess={onSelectAccess}
             containerRef={inputsRef}
             isOwner={isOwner}
+            isMobileView={isMobileView}
           />
         </StyledInviteInputContainer>
       )}

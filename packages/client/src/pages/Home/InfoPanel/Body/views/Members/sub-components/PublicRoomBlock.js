@@ -29,7 +29,7 @@ const PublicRoomBlock = (props) => {
     <>
       {externalLinks.length > 0 && !isArchiveFolder && (
         <PublicRoomBar
-          headerText={t("Files:PublicRoom")}
+          headerText={t("Files:RoomAvailableViaExternalLink")}
           bodyText={t("CreateEditRoomDialog:PublicRoomBarDescription")}
         />
       )}
@@ -56,6 +56,7 @@ const PublicRoomBlock = (props) => {
                 onClick={onAddNewLink}
                 size={16}
                 isDisabled={externalLinks.length >= LINKS_LIMIT_COUNT}
+                title={t("Files:AddNewExternalLink")}
               />
 
               {externalLinks.length >= LINKS_LIMIT_COUNT && (
