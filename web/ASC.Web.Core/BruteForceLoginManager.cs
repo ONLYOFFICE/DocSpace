@@ -143,7 +143,7 @@ public class BruteForceLoginManager
 
         var blockCacheKey = GetBlockCacheKey(login, requestIp);
 
-        if (GetFromCache<string>(blockCacheKey) != null)
+        if (!recaptchaPassed && GetFromCache<string>(blockCacheKey) != null)
         {
             throw new BruteForceCredentialException();
         }
@@ -151,7 +151,7 @@ public class BruteForceLoginManager
         try
         {
             await _semaphore.WaitAsync();
-            if (GetFromCache<string>(blockCacheKey) != null)
+            if (!recaptchaPassed && GetFromCache<string>(blockCacheKey) != null)
             {
                 throw new BruteForceCredentialException();
             }
