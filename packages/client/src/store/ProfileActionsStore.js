@@ -158,12 +158,15 @@ class ProfileActionsStore {
   };
 
   onLogoutClick = () => {
-    this.authStore.logout().then(() => {
+    this.authStore.logout().then((ssoLogoutUrl) => {
       this.filesStore.reset();
       this.peopleStore.reset();
       setTimeout(() => {
         window.location.replace(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+          combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            ssoLogoutUrl || "/login"
+          )
         );
       }, 300);
     });

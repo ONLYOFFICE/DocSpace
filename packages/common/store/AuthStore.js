@@ -320,10 +320,9 @@ class AuthStore {
   };
 
   logout = async () => {
-    await api.user.logout();
+    const ssoLogoutUrl = await api.user.logout();
 
     this.isLogout = true;
-    //console.log("Logout response ", response);
 
     setWithCredentialsStatus(false);
 
@@ -331,26 +330,11 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
+    if (ssoLogoutUrl) return ssoLogoutUrl;
+
     this.reset(true);
     this.userStore.setUser(null);
     this.init();
-
-    // if (redirectToLogin) {
-    //   if (redirectPath) {
-    //     return window.location.replace(redirectPath);
-    //   }
-    //   if (personal) {
-    //     return window.location.replace("/");
-    //   } else {
-    //     this.reset(true);
-    //     this.userStore.setUser(null);
-    //     this.init();
-    //     return history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
-    //   }
-    // } else {
-    //   this.reset();
-    //   this.init();
-    // }
   };
 
   get isAuthenticated() {
