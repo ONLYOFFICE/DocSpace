@@ -261,8 +261,16 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
   }
 
+  get welcomePageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacetitle`;
+  }
+
   get dnsSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get renamingSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacerenaming`;
   }
 
   get passwordStrengthSettingsUrl() {
@@ -277,8 +285,16 @@ class SettingsStore {
     return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
   }
 
+  get ipSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#ipsecurity`;
+  }
+
   get administratorMessageSettingsUrl() {
     return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get lifetimeSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#sessionlifetime`;
   }
 
   get dataBackupUrl() {
