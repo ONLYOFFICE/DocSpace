@@ -22,6 +22,7 @@ services:
       - ROUTER_HOST=${ROUTER_HOST}
     volumes:
       - proxy_log:/var/log/nginx
+      - ./config/nginx/templates/nginx.conf.template:/etc/nginx/nginx.conf
       - ./config/nginx/templates/proxy.upstream.conf.template:/etc/nginx/templates/proxy.upstream.conf.template:ro
       - ./config/nginx/onlyoffice-proxy-ssl.conf:/etc/nginx/conf.d/default.conf
       - ${CERTIFICATE_PATH}:/usr/local/share/ca-certificates/tls.crt
