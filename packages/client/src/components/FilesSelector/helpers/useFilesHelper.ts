@@ -171,7 +171,7 @@ const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   return iconSize32.get(path);
 };
 
-const convertFoldersToItems = (
+export const convertFoldersToItems = (
   folders: any,
   disabledItems: any[],
   filterParam?: string
@@ -215,9 +215,17 @@ const convertFoldersToItems = (
   return items;
 };
 
-const convertFilesToItems = (files: any, filterParam?: string) => {
+export const convertFilesToItems = (files: any, filterParam?: string) => {
   const items = files.map((file: any) => {
-    const { id, title, security, parentId, rootFolderType, fileExst } = file;
+    const {
+      id,
+      title,
+      security,
+      parentId,
+      folderId,
+      rootFolderType,
+      fileExst,
+    } = file;
 
     const isImage = file.viewAccessability.ImageView;
     const isMedia = file.viewAccessability.MediaView;
@@ -231,9 +239,8 @@ const convertFilesToItems = (files: any, filterParam?: string) => {
       label: title.replace(fileExst, ""),
       title,
       icon,
-
       security,
-      parentId,
+      parentId: parentId || folderId,
       rootFolderType,
       isFolder: false,
       isDisabled: !filterParam,
@@ -259,6 +266,7 @@ export const useFilesHelper = ({
   onSelectTreeNode,
   setSelectedTreeNode,
   filterParam,
+  getRootData,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -305,68 +313,88 @@ export const useFilesHelper = ({
 
       filter.folder = id.toString();
 
-      const currentFolder = await getFolder(id, filter);
+      try {
+        if (isInit && getRootData) {
+          const folder = await getFolderInfo(id);
 
-      const { folders, files, total, count, pathParts, current } =
-        currentFolder;
+          if (
+            folder.rootFolderType === FolderType.TRASH ||
+            folder.rootFolderType === FolderType.Archive
+          ) {
+            await getRootData();
 
-      setSelectedItemSecurity(current.security);
-
-      const foldersList: Item[] = convertFoldersToItems(
-        folders,
-        disabledItems,
-        filterParam
-      );
-
-      const filesList: Item[] = convertFilesToItems(files, filterParam);
-
-      const itemList = [...foldersList, ...filesList];
-
-      setHasNextPage(count === PAGE_COUNT);
-
-      onSelectTreeNode && setSelectedTreeNode({ ...current, path: pathParts });
-
-      if (isInit) {
-        if (isThirdParty) {
-          const breadCrumbs: BreadCrumb[] = [
-            { label: current.title, isRoom: false, id: current.id },
-          ];
-
-          setBreadCrumbs(breadCrumbs);
-          setIsBreadCrumbsLoading(false);
-        } else {
-          const breadCrumbs: BreadCrumb[] = await Promise.all(
-            pathParts.map(async (folderId: number | string) => {
-              const folderInfo: any = await getFolderInfo(folderId);
-
-              const { title, id, parentId, rootFolderType } = folderInfo;
-
-              return {
-                label: title,
-                id: id,
-                isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
-              };
-            })
-          );
-
-          breadCrumbs.unshift({ ...defaultBreadCrumb });
-
-          setBreadCrumbs(breadCrumbs);
-          setIsBreadCrumbsLoading(false);
+            return;
+          }
         }
-      }
 
-      if (isFirstLoad || startIndex === 0) {
-        setTotal(total);
-        setItems(itemList);
-      } else {
-        setItems((prevState: Item[] | null) => {
-          if (prevState) return [...prevState, ...itemList];
-          return [...itemList];
-        });
+        const currentFolder = await getFolder(id, filter);
+
+        const { folders, files, total, count, pathParts, current } =
+          currentFolder;
+
+        setSelectedItemSecurity(current.security);
+
+        const foldersList: Item[] = convertFoldersToItems(
+          folders,
+          disabledItems,
+          filterParam
+        );
+
+        const filesList: Item[] = convertFilesToItems(files, filterParam);
+
+        const itemList = [...foldersList, ...filesList];
+
+        setHasNextPage(count === PAGE_COUNT);
+
+        onSelectTreeNode &&
+          setSelectedTreeNode({ ...current, path: pathParts });
+
+        if (isInit) {
+          if (isThirdParty) {
+            const breadCrumbs: BreadCrumb[] = [
+              { label: current.title, isRoom: false, id: current.id },
+            ];
+
+            setBreadCrumbs(breadCrumbs);
+            setIsBreadCrumbsLoading(false);
+          } else {
+            const breadCrumbs: BreadCrumb[] = await Promise.all(
+              pathParts.map(async (folderId: number | string) => {
+                const folderInfo: any = await getFolderInfo(folderId);
+
+                const { title, id, parentId, rootFolderType, roomType } =
+                  folderInfo;
+
+                return {
+                  label: title,
+                  id: id,
+                  isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                  roomType,
+                };
+              })
+            );
+
+            breadCrumbs.unshift({ ...defaultBreadCrumb });
+
+            setBreadCrumbs(breadCrumbs);
+            setIsBreadCrumbsLoading(false);
+          }
+        }
+
+        if (isFirstLoad || startIndex === 0) {
+          setTotal(total);
+          setItems(itemList);
+        } else {
+          setItems((prevState: Item[] | null) => {
+            if (prevState) return [...prevState, ...itemList];
+            return [...itemList];
+          });
+        }
+        setIsRoot(false);
+        setIsNextPageLoading(false);
+      } catch (e) {
+        getRootData && getRootData();
       }
-      setIsRoot(false);
-      setIsNextPageLoading(false);
     },
     [selectedItemId, searchValue, isFirstLoad, disabledItems]
   );

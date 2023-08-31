@@ -61,7 +61,7 @@ public class DbLoginEventsManager
         _mapper = mapper;
     }
 
-    public async Task<LoginEvent> GetByIdAsync(int id)
+    public async Task<DbLoginEvent> GetByIdAsync(int id)
     {
         if (id < 0) return null;
 
@@ -78,7 +78,7 @@ public class DbLoginEventsManager
 
         var loginInfo = await Queries.LoginEventsAsync(loginEventContext, tenantId, userId, _loginActions, date).ToListAsync();
 
-        return _mapper.Map<List<LoginEvent>, List<BaseEvent>>(loginInfo);
+        return _mapper.Map<List<DbLoginEvent>, List<BaseEvent>>(loginInfo);
     }
 
     public async Task LogOutEventAsync(int loginEventId)
@@ -135,7 +135,7 @@ public class DbLoginEventsManager
 
 static file class Queries
 {
-    public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<LoginEvent>>
+    public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<DbLoginEvent>>
         LoginEventsAsync = EF.CompileAsyncQuery(
             (MessagesContext ctx, int tenantId, Guid userId, IEnumerable<int> loginActions, DateTime date) =>
                 ctx.LoginEvents

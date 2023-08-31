@@ -51,7 +51,7 @@ i18next.init({
   load: "currentOnly",
 
   saveMissing: true,
-  ns: ["Editor", "Common"],
+  ns: ["Editor", "Common", "DeepLink"],
   defaultNS: "Editor",
 
   resources,

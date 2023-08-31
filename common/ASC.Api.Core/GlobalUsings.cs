@@ -40,6 +40,7 @@ global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
+global using System.Threading.RateLimiting;
 global using System.Web;
 global using System.Xml.Linq;
 
@@ -146,6 +147,10 @@ global using NLog.Web;
 
 global using RabbitMQ.Client;
 
+global using RedisRateLimiting;
+global using RedisRateLimiting.AspNetCore;
+
+global using StackExchange.Redis;
 global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
 

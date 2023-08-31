@@ -7,7 +7,7 @@ import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view, shareKey) {
+export function openEdit(fileId, version, doc, view, headers = null, shareKey) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -32,6 +32,8 @@ export function openEdit(fileId, version, doc, view, shareKey) {
     method: "get",
     url: `/files/file/${fileId}/openedit${paramsString}`,
   };
+
+  if (headers) options.headers = headers;
 
   return request(options);
 }
@@ -587,7 +589,7 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
 
   return request({
     method: "get",
-    url: `/files/fileops/move/full?destFolderId=${destFolderId}${paramsString}`,
+    url: `/files/fileops/move?destFolderId=${destFolderId}${paramsString}`,
   });
 }
 
@@ -793,8 +795,12 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+export function getSettingsFiles(headers = null) {
+  const options = { method: "get", url: `/files/settings` };
+
+  if (headers) options.headers = headers;
+
+  return request(options);
 }
 
 export function markAsFavorite(ids) {

@@ -30,6 +30,7 @@ namespace ASC.Data.Backup.Tasks.Modules;
 public class ModuleProvider
 {
     public List<IModuleSpecifics> AllModules { get; }
+    private IModuleSpecifics RoomLogosModule { get; }
 
     public ModuleProvider(ILogger<ModuleProvider> logger, Helpers helpers, CoreSettings coreSettings)
     {
@@ -43,12 +44,16 @@ public class ModuleProvider
                 new CoreModuleSpecifics(helpers)
             }
         .ToList();
+
+        RoomLogosModule = new RoomLogosModuleSpecifics(helpers);
     }
+
     public IModuleSpecifics GetByStorageModule(string storageModuleName, string storageDomainName = null)
     {
         return storageModuleName switch
         {
             "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
+            "room_logos" => RoomLogosModule,
             _ => null,
         };
     }

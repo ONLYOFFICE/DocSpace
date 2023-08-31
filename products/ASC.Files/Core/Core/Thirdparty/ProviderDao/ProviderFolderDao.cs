@@ -40,10 +40,10 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
         ISecurityDao<string> securityDao,
-        CrossDao crossDao,
-        GlobalFolderHelper globalFolderHelper,
-        IProviderDao providerDao,
-        IDbContextFactory<FilesDbContext> dbContextFactory,
+        CrossDao crossDao, 
+        GlobalFolderHelper globalFolderHelper, 
+        IProviderDao providerDao, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
         AuthContext authContext,
         SelectorFactory selectorFactory)
         : base(serviceProvider, tenantManager, crossDao, selectorFactory, securityDao)
@@ -121,7 +121,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return result.Distinct();
     }
 
-    public override async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId,
+    public override async IAsyncEnumerable<Folder<string>> GetFakeRoomsAsync(IEnumerable<string> parentsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, 
         string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
         var virtualRoomsFolderId = IdConverter.Convert<string>(await _globalFolderHelper.GetFolderVirtualRooms());
@@ -175,7 +175,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folders.Where(r => r != null);
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText,
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, 
         bool withSubfolders = false, bool excludeSubject = false, int offset = 0, int count = -1)
     {
         var selector = _selectorFactory.GetSelector(parentId);
@@ -331,31 +331,31 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                 : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
     }
 
-    public async Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, int to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
     {
-        return Task.FromResult((IDictionary<string, TTo>)new Dictionary<string, TTo>());
+        return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
     }
 
-    public async Task<IDictionary<string, TTo>> CanMoveOrCopyAsync<TTo>(string[] folderIds, string to)
+    public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
     {
         if (folderIds.Length == 0)
         {
-            return new Dictionary<string, TTo>();
+            return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
 
         var selector = _selectorFactory.GetSelector(to);
@@ -363,12 +363,17 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         if (matchedIds.Length == 0)
         {
-            return new Dictionary<string, TTo>();
+            return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
         }
 
+        return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
+    }
+
+    private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+    {
         var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
 
-        return await folderDao.CanMoveOrCopyAsync<TTo>(matchedIds, to);
+        return folderDao.CanMoveOrCopyAsync(matchedIds, to);
     }
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
@@ -484,7 +489,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
         return folders.Where(x => providerKey == x.ProviderKey);
     }
-
+    
     private async IAsyncEnumerable<IProviderInfo> GetProvidersAsync(IEnumerable<string> parentsIds, string virtualRoomsFolderId, string archiveFolderId)
     {
         IAsyncEnumerable<IProviderInfo> providers;
@@ -508,11 +513,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             yield return provider;
         }
     }
-
+    
     private Folder<string> ToFakeRoom(IProviderInfo providerInfo, string roomsFolderId, string archiveFolderId)
     {
         var rootId = providerInfo.RootFolderType == FolderType.VirtualRooms ? roomsFolderId : archiveFolderId;
-
+        
         var folder = _serviceProvider.GetRequiredService<Folder<string>>();
         folder.Id = providerInfo.FolderId;
         folder.ParentId = rootId;

@@ -40,6 +40,8 @@ const Header = (props) => {
     setChangePasswordVisible,
     setChangeAvatarVisible,
 
+    setDialogData,
+
     isProfileLoaded,
     profileClicked,
   } = props;
@@ -48,9 +50,14 @@ const Header = (props) => {
   const location = useLocation();
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
-
   const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
     useState(false);
+
+  const onChangePasswordClick = () => {
+    const email = profile.email;
+    setDialogData({ email });
+    setChangePasswordVisible(true);
+  };
 
   const getUserContextOptions = () => {
     const options = [
@@ -64,7 +71,7 @@ const Header = (props) => {
       {
         key: "change-password",
         label: t("PeopleTranslations:PasswordChangeButton"),
-        onClick: () => setChangePasswordVisible(true),
+        onClick: () => onChangePasswordClick(),
         disabled: false,
         icon: SecurityReactSvgUrl,
       },
@@ -166,7 +173,7 @@ export default inject(
 
     const { isVisitor, isCollaborator } = auth.userStore.user;
 
-    const { targetUserStore, filterStore } = peopleStore;
+    const { targetUserStore, filterStore, dialogStore } = peopleStore;
 
     const { filter, setFilterParams } = filterStore;
 
@@ -182,6 +189,8 @@ export default inject(
       setChangeAvatarVisible,
     } = targetUserStore;
 
+    const { setDialogData } = dialogStore;
+
     return {
       isAdmin,
       isVisitor,
@@ -195,6 +204,8 @@ export default inject(
       setChangeEmailVisible,
       setChangePasswordVisible,
       setChangeAvatarVisible,
+
+      setDialogData,
 
       isProfileLoaded,
       profileClicked,

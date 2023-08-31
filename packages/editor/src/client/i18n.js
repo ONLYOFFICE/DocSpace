@@ -33,7 +33,7 @@ newInstance
       crossDomain: false,
     },
 
-    ns: ["Editor", "Common"],
+    ns: ["Editor", "Common", "DeepLink"],
     defaultNS: "Editor",
 
     react: {

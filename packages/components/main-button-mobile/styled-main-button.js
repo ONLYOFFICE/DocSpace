@@ -114,7 +114,7 @@ const StyledDropDown = styled(DropDown)`
 
   ${isMobileOnly && mobileDropDown}
 
-  .section-scroll {
+  .section-scroll, .scroll-body {
     padding-right: 0px !important;
   }
 

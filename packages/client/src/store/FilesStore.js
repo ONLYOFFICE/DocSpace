@@ -165,6 +165,21 @@ class FilesStore {
     const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      if (opt && opt.data) {
+        const data = JSON.parse(opt.data);
+
+        const pathParts = data.folderId
+          ? `DIR-${data.folderId}`
+          : `DIR-${data.parentId}`;
+
+        if (
+          !socketSubscribersId.has(pathParts) &&
+          !socketSubscribersId.has(`DIR-${data.id}`)
+        )
+          return;
+      }
+
       console.log("[WS] s:modify-folder", opt);
 
       if (!(this.clientLoadingStore.isLoading || this.operationAction))
@@ -200,6 +215,11 @@ class FilesStore {
     });
 
     socketHelper.on("refresh-folder", (id) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      const pathParts = `DIR-${id}`;
+
+      if (!socketSubscribersId.has(pathParts)) return;
+
       if (!id || this.clientLoadingStore.isLoading) return;
 
       //console.log(
@@ -216,6 +236,11 @@ class FilesStore {
     });
 
     socketHelper.on("s:markasnew-folder", ({ folderId, count }) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      const pathParts = `DIR-${folderId}`;
+
+      if (!socketSubscribersId.has(pathParts)) return;
+
       console.log(`[WS] markasnew-folder ${folderId}:${count}`);
 
       const foundIndex =
@@ -229,6 +254,11 @@ class FilesStore {
     });
 
     socketHelper.on("s:markasnew-file", ({ fileId, count }) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      const pathParts = `FILE-${fileId}`;
+
+      if (!socketSubscribersId.has(pathParts)) return;
+
       console.log(`[WS] markasnew-file ${fileId}:${count}`);
 
       const foundIndex = fileId && this.files.findIndex((x) => x.id === fileId);
@@ -246,6 +276,11 @@ class FilesStore {
 
     //WAIT FOR RESPONSES OF EDITING FILE
     socketHelper.on("s:start-edit-file", (id) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      const pathParts = `FILE-${id}`;
+
+      if (!socketSubscribersId.has(pathParts)) return;
+
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
@@ -264,6 +299,11 @@ class FilesStore {
     });
 
     socketHelper.on("s:stop-edit-file", (id) => {
+      const { socketSubscribersId } = this.selectedFolderStore;
+      const pathParts = `FILE-${id}`;
+
+      if (!socketSubscribersId.has(pathParts)) return;
+
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
@@ -457,6 +497,10 @@ class FilesStore {
             this.bufferSelection[foundIndex] = folder;
           });
         }
+      }
+
+      if (folder.id === this.selectedFolderStore.id) {
+        this.selectedFolderStore.setSelectedFolder({ ...folder });
       }
     }
   };
@@ -811,9 +855,14 @@ class FilesStore {
 
   setFiles = (files) => {
     const { socketHelper } = this.authStore.settingsStore;
+    const { addSocketSubscribersId, deleteSocketSubscribersId } =
+      this.selectedFolderStore;
     if (files.length === 0 && this.files.length === 0) return;
 
     if (this.files?.length > 0) {
+      this.files.forEach((f) => {
+        deleteSocketSubscribersId(`FILE-${f.id}`);
+      });
       socketHelper.emit({
         command: "unsubscribe",
         data: {
@@ -826,6 +875,10 @@ class FilesStore {
     this.files = files;
 
     if (this.files?.length > 0) {
+      this.files.forEach((f) => {
+        addSocketSubscribersId(`FILE-${f.id}`);
+      });
+
       socketHelper.emit({
         command: "subscribe",
         data: {
@@ -843,33 +896,38 @@ class FilesStore {
   };
 
   setFolders = (folders) => {
+    const { addSocketSubscribersId, deleteSocketSubscribersId } =
+      this.selectedFolderStore;
     const { socketHelper } = this.authStore.settingsStore;
     if (folders.length === 0 && this.folders.length === 0) return;
 
     if (this.folders?.length > 0) {
-      this.folders.forEach((f) =>
-        socketHelper.emit({
-          command: "unsubscribe",
-          data: {
-            roomParts: `DIR-${f.id}`,
-            individual: true,
-          },
-        })
-      );
+      this.folders.forEach((f) => {
+        deleteSocketSubscribersId(`DIR-${f.id}`);
+      });
+
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
     }
 
     this.folders = folders;
 
     if (this.folders?.length > 0) {
-      this.folders.forEach((f) =>
-        socketHelper.emit({
-          command: "subscribe",
-          data: {
-            roomParts: `DIR-${f.id}`,
-            individual: true,
-          },
-        })
-      );
+      this.folders.forEach((f) => {
+        addSocketSubscribersId(`DIR-${f.id}`);
+      });
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: this.folders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
     }
   };
 
@@ -1037,25 +1095,18 @@ class FilesStore {
       const id = splitValue.slice(1, -3).join("_");
 
       if (fileType === "file") {
-        const isFound =
-          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
-
         if (this.activeFiles.findIndex((f) => f.id == id) === -1) {
-          isFound &&
-            newSelections.push(
-              this.filesList.find((f) => f.id == id && !f.isFolder)
-            );
+          newSelections.push(
+            this.filesList.find((f) => f.id == id && !f.isFolder)
+          );
         }
       } else if (this.activeFolders.findIndex((f) => f.id == id) === -1) {
-        const isFound =
-          this.selection.findIndex((f) => f.id == id && f.isFolder) === -1;
-
         const selectableFolder = this.filesList.find(
           (f) => f.id == id && f.isFolder
         );
         selectableFolder.isFolder = true;
 
-        isFound && newSelections.push(selectableFolder);
+        newSelections.push(selectableFolder);
       }
     }
 
@@ -1087,7 +1138,15 @@ class FilesStore {
       }
     }
 
-    this.setSelection(newSelections);
+    const removeDuplicate = (items) => {
+      return items.filter(
+        (x, index, self) =>
+          index ===
+          self.findIndex((i) => i.id === x.id && i.isFolder === x.isFolder)
+      );
+    };
+
+    this.setSelection(removeDuplicate(newSelections));
   };
 
   setBufferSelection = (bufferSelection) => {
@@ -1519,7 +1578,7 @@ class FilesStore {
       `UserRoomsFilter=${this.authStore.userStore.user?.id}`
     );
 
-    if ((filterStorageItem && !filter) || withFilterLocalStorage) {
+    if (filterStorageItem && (!filter || withFilterLocalStorage)) {
       const splitFilter = filterStorageItem.split(",");
 
       filterData.sortBy = splitFilter[0];

@@ -210,56 +210,27 @@ public class OperationController : ApiControllerBase
     [HttpGet("fileops/move")]
     public async IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        await foreach (var e in MoveOrCopyBatchCheckFullAsync(inDto))
-        {
-            yield return e.EntryFrom;
-        }
-    }
-
-    /// <summary>
-    /// Checks a batch of files and folders for conflicts when moving or copying them to the folder with the ID specified in the request.
-    /// This method returns the entry information about both the initial and destination files.
-    /// </summary>
-    /// <short>Check files and folders for conflicts (full information)</short>
-    /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core" name="inDto">Request parameters for checking files and folders for conflicts</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.MoveDto, ASC.Files.Core">Entry information about initial and destination files</returns>
-    /// <path>api/2.0/files/fileops/move/full</path>
-    /// <httpMethod>GET</httpMethod>
-    /// <collection>list</collection>
-    /// <visible>false</visible>
-    [HttpGet("fileops/move/full")]
-    public async IAsyncEnumerable<MoveDto> MoveOrCopyBatchCheckFullAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
-    {
-        var checkedFiles = new List<object>();
-        var conflictFiles = new List<object>();
-        var checkedFolders = new List<object>();
-        var conflictFolders = new List<object>();
+        List<object> checkedFiles;
+        List<object> checkedFolders;
 
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
-            ((checkedFiles, conflictFiles), (checkedFolders, conflictFolders)) = await _fileStorageService.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetInt32());
+            (checkedFiles, checkedFolders) = await _fileStorageService.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetInt32());
         }
         else
         {
-            ((checkedFiles, conflictFiles), (checkedFolders, conflictFolders)) = await _fileStorageService.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetString());
+            (checkedFiles, checkedFolders) = await _fileStorageService.MoveOrCopyFilesCheckAsync(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), inDto.DestFolderId.GetString());
         }
 
         var entries = await _fileStorageService.GetItemsAsync(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
+
         entries.AddRange(await _fileStorageService.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-
-        var conflictEntries = await _fileStorageService.GetItemsAsync(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
-        conflictEntries.AddRange(await _fileStorageService.GetItemsAsync(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
-
-        for (var i = 0; i < entries.Count; i++)
+        foreach (var e in entries)
         {
-            var entry = entries[i];
-            var conflictEntry = conflictEntries[i];
-            yield return new MoveDto() { EntryFrom = await GetFileEntryWrapperAsync(entry), EntryTo = await GetFileEntryWrapperAsync(conflictEntry) };
+            yield return await GetFileEntryWrapperAsync(e);
         }
     }
-
     /// <summary>
     /// Finishes all the active operations.
     /// </summary>

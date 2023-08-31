@@ -116,6 +116,7 @@ public class SettingsController : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/favorites</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("settings/favorites")]
     public bool DisplayFavorite(DisplayRequestDto inDto)
     {
@@ -131,6 +132,7 @@ public class SettingsController : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/displayRecent</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("displayRecent")]
     public bool DisplayRecent(DisplayRequestDto inDto)
     {
@@ -146,6 +148,7 @@ public class SettingsController : ApiControllerBase
     /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/templates</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("settings/templates")]
     public bool DisplayTemplates(DisplayRequestDto inDto)
     {
@@ -315,6 +318,20 @@ public class SettingsController : ApiControllerBase
     public async Task<bool> UpdateIfExistAsync(SettingsRequestDto inDto)
     {
         return await _fileStorageService.UpdateIfExistAsync(inDto.Set);
+    }
+
+    /// <summary>
+    /// Get the trash bin auto-clearing setting.
+    /// </summary>
+    /// <short>Get the trash bin auto-clearing setting</short>
+    /// <category>Settings</category>
+    /// <returns type="ASC.Files.Core.AutoCleanUpData, ASC.Files.Core">The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
+    /// <path>api/2.0/files/settings/autocleanup</path>
+    /// <httpMethod>GET</httpMethod>
+    [HttpGet("settings/autocleanup")]
+    public AutoCleanUpData GetAutomaticallyCleanUp()
+    {
+        return _fileStorageService.GetSettingsAutomaticallyCleanUp();
     }
 
     /// <summary>
