@@ -48,25 +48,37 @@ const BruteForceProtection = (props) => {
   const [isLoadingSave, setIsLoadingSave] = useState(false);
 
   const [hasErrorNumberAttempt, setHasErrorNumberAttempt] = useState(false);
+  const [hasErrorBlockingTime, setHasErrorBlockingTime] = useState(false);
   const [hasErrorCheckPeriod, setHasErrorCheckPeriod] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (currentNumberAttempt == null || currentCheckPeriod == null) return;
+    if (
+      currentNumberAttempt == null ||
+      currentCheckPeriod == null ||
+      currentBlockingTime == null
+    )
+      return;
 
     if (parseInt(currentNumberAttempt) === 0 || !currentNumberAttempt?.trim())
       setHasErrorNumberAttempt(true);
     else if (hasErrorNumberAttempt) setHasErrorNumberAttempt(false);
+
+    if (parseInt(currentBlockingTime) === 0 || !currentBlockingTime?.trim())
+      setHasErrorBlockingTime(true);
+    else if (hasErrorBlockingTime) setHasErrorBlockingTime(false);
 
     if (parseInt(currentCheckPeriod) === 0 || !currentCheckPeriod?.trim())
       setHasErrorCheckPeriod(true);
     else if (hasErrorCheckPeriod) setHasErrorCheckPeriod(false);
   }, [
     currentNumberAttempt,
+    currentBlockingTime,
     currentCheckPeriod,
     hasErrorNumberAttempt,
+    hasErrorBlockingTime,
     hasErrorCheckPeriod,
   ]);
 
@@ -92,19 +104,20 @@ const BruteForceProtection = (props) => {
       "defaultBruteForceProtection"
     );
 
-    let finishBlockingTime = currentBlockingTime;
-
-    if (
-      finishBlockingTime === "" ||
-      finishBlockingTime.replace(/^0+/, "") === ""
-    )
-      finishBlockingTime = "0";
-    else finishBlockingTime = finishBlockingTime.replace(/^0+/, "");
+    const checkNullNumberAttempt = !+currentNumberAttempt;
+    const checkNullBlockingTime = !+currentBlockingTime;
+    const checkNullCheckPeriod = !+currentCheckPeriod;
 
     const newSettings = {
-      numberAttempt: currentNumberAttempt.replace(/^0+/, ""),
-      blockingTime: finishBlockingTime,
-      checkPeriod: currentCheckPeriod.replace(/^0+/, ""),
+      numberAttempt: checkNullNumberAttempt
+        ? currentNumberAttempt
+        : currentNumberAttempt.replace(/^0+/, ""),
+      blockingTime: checkNullBlockingTime
+        ? checkNullBlockingTime
+        : currentBlockingTime.replace(/^0+/, ""),
+      checkPeriod: checkNullCheckPeriod
+        ? currentCheckPeriod
+        : currentCheckPeriod.replace(/^0+/, ""),
     };
 
     saveToSessionStorage("currentBruteForceProtection", newSettings);
@@ -127,18 +140,9 @@ const BruteForceProtection = (props) => {
       "currentBruteForceProtection"
     );
 
-    let finishBlockingTime = defaultBlockingTime;
-
-    if (
-      finishBlockingTime === "" ||
-      finishBlockingTime.replace(/^0+/, "") === ""
-    )
-      finishBlockingTime = "0";
-    else finishBlockingTime = finishBlockingTime.replace(/^0+/, "");
-
     const defaultData = {
       numberAttempt: defaultNumberAttempt.replace(/^0+/, ""),
-      blockingTime: finishBlockingTime,
+      blockingTime: defaultBlockingTime.replace(/^0+/, ""),
       checkPeriod: defaultCheckPeriod.replace(/^0+/, ""),
     };
     saveToSessionStorage("defaultBruteForceProtection", defaultData);
@@ -179,7 +183,9 @@ const BruteForceProtection = (props) => {
   const onChangeBlockingTime = (e) => {
     const inputValue = e.target.value;
 
-    onValidation(inputValue) && setCurrentBlockingTime(inputValue.trim());
+    onValidation(inputValue) &&
+      setCurrentBlockingTime(inputValue.trim()) &&
+      setShowReminder(true);
   };
 
   const onChangeCheckPeriod = (e) => {
@@ -198,18 +204,15 @@ const BruteForceProtection = (props) => {
     const numberCurrentBlockingTime = parseInt(currentBlockingTime);
     const numberCurrentCheckPeriod = parseInt(currentCheckPeriod);
 
-    let finishBlockingTime = numberCurrentBlockingTime;
-    if (currentBlockingTime === "") finishBlockingTime = 0;
-
     setBruteForceProtection(
       numberCurrentNumberAttempt,
-      finishBlockingTime,
+      numberCurrentBlockingTime,
       numberCurrentCheckPeriod
     )
       .then(() => {
         saveToSessionStorage("defaultBruteForceProtection", {
           numberAttempt: currentNumberAttempt.replace(/^0+/, ""),
-          blockingTime: finishBlockingTime.toString(),
+          blockingTime: currentBlockingTime.replace(/^0+/, ""),
           checkPeriod: currentCheckPeriod.replace(/^0+/, ""),
         });
 
@@ -291,7 +294,9 @@ const BruteForceProtection = (props) => {
           onChange={onChangeBlockingTime}
           isDisabled={isLoadingSave}
           placeholder={t("EnterTime")}
+          hasError={hasErrorBlockingTime}
         />
+        {hasErrorBlockingTime && errorNode}
       </FieldContainer>
 
       <FieldContainer
