@@ -16,6 +16,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { thirdPartyLogin } from "@docspace/common/api/user";
 import { setWithCredentialsStatus } from "@docspace/common/api/client";
 import { isMobileOnly } from "react-device-detect";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface ILoginFormProps {
   isLoading: boolean;
@@ -25,6 +26,8 @@ interface ILoginFormProps {
   match: MatchType;
   onRecoverDialogVisible: () => void;
   enableAdmMess: boolean;
+  recaptchaPublicKey: CaptchaPublicKeyType;
+  isBaseTheme: boolean;
 }
 
 const settings = {
@@ -43,7 +46,11 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   onRecoverDialogVisible,
   enableAdmMess,
   cookieSettingsEnabled,
+  recaptchaPublicKey,
+  isBaseTheme,
 }) => {
+  const captchaRef = useRef(null);
+
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [identifier, setIdentifier] = useState("");
@@ -53,9 +60,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
-    IS_ROOMS_MODE
-  );
+  const [isCaptcha, setIsCaptcha] = useState(false);
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
+    useState(IS_ROOMS_MODE);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -142,6 +149,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const onSubmit = () => {
     //errorText && setErrorText("");
+    let captchaToken = "";
+
+    if (recaptchaPublicKey && isCaptcha) {
+      captchaToken = captchaRef.current.getValue();
+    }
+
     let hasError = false;
 
     const user = identifier.trim();
@@ -173,7 +186,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     isDesktop && checkPwd();
     const session = !isChecked;
-    login(user, hash, session)
+
+    login(user, hash, session, captchaToken)
       .then((res: string | object) => {
         const isConfirm = typeof res === "string" && res.includes("confirm");
         const redirectPath = sessionStorage.getItem("referenceUrl");
@@ -196,6 +210,18 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             "";
         } else {
           errorMessage = error;
+        }
+
+        if (error?.response?.status === 403) {
+          if (isCaptcha) {
+            captchaRef.current.reset();
+          }
+
+          setIsCaptcha(true);
+        }
+
+        if (error?.response?.status === 401) {
+          isCaptcha && setIsCaptcha(false);
         }
 
         setIsEmailErrorShow(true);
@@ -355,6 +381,15 @@ const LoginForm: React.FC<ILoginFormProps> = ({
               userEmail={identifier}
               onDialogClose={onDialogClose}
             />
+          )}
+          {recaptchaPublicKey && isCaptcha && (
+            <div className="captcha-container">
+              <ReCAPTCHA
+                sitekey={recaptchaPublicKey}
+                ref={captchaRef}
+                theme={isBaseTheme ? "light" : "dark"}
+              />
+            </div>
           )}
         </>
       )}

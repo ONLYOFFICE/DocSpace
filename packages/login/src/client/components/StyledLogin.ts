@@ -52,6 +52,10 @@ export const LoginFormWrapper = styled.div`
       background-image: none;
     }
   }
+
+  .captcha-container {
+    margin: 24px 0;
+  }
 `;
 
 export const LoginContent = styled.div`
