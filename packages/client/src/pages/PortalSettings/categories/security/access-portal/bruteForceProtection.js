@@ -113,7 +113,7 @@ const BruteForceProtection = (props) => {
         ? currentNumberAttempt
         : currentNumberAttempt.replace(/^0+/, ""),
       blockingTime: checkNullBlockingTime
-        ? checkNullBlockingTime
+        ? currentBlockingTime
         : currentBlockingTime.replace(/^0+/, ""),
       checkPeriod: checkNullCheckPeriod
         ? currentCheckPeriod
