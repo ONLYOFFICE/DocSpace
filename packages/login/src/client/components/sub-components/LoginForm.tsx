@@ -212,7 +212,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           errorMessage = error;
         }
 
-        if (error?.response?.status === 403) {
+        if (recaptchaPublicKey && error?.response?.status === 403) {
           if (isCaptcha) {
             captchaRef.current.reset();
           }
@@ -220,7 +220,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
           setIsCaptcha(true);
         }
 
-        if (error?.response?.status === 401) {
+        if (recaptchaPublicKey && error?.response?.status === 401) {
           isCaptcha && setIsCaptcha(false);
         }
 
