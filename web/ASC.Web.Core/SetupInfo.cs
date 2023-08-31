@@ -179,8 +179,8 @@ public class SetupInfo
         ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
         FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
         StartProductList = GetAppSettings("web.start.product.list", "");
-        SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
-        SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");
+        SsoSamlLoginUrl = GetAppSettings("web:sso:saml:login:url", "");
+        SsoSamlLogoutUrl = GetAppSettings("web:sso:saml:logout:url", "");
 
         _hideSettings = GetAppSettings("web.hide-settings", string.Empty).Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 

@@ -351,7 +351,7 @@ public class AuthenticationController : ControllerBase
     [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
-    public async Task Logout()
+    public async Task<object> Logout()
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
@@ -379,9 +379,11 @@ public class AuthenticationController : ControllerBase
                     SessionId = user.SsoSessionId
                 });
 
-                _httpContextAccessor.HttpContext.Response.Redirect(_setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData), true);
+                return _setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData);
             }
         }
+
+        return null;
     }
 
     /// <summary>
