@@ -1180,6 +1180,7 @@ set_docspace_params() {
 	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
 	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	EXTERNAL_PORT=${EXTERNAL_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "EXTERNAL_PORT")};
 
 	ELK_SHEME=${ELK_SHEME:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_SHEME")};
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
@@ -1199,8 +1200,6 @@ set_docspace_params() {
 	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_PATH")};
 	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_KEY_PATH")};
 	DHPARAM_PATH=${DHPARAM_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "DHPARAM_PATH")};
-
-	[ -f ${PROXY_YML} ] && EXTERNAL_PORT=${EXTERNAL_PORT:-"$(grep -oP '(?<=- ).*?(?=:80$)' ${PROXY_YML})"}
 }
 
 set_installation_type_data () {
@@ -1335,6 +1334,7 @@ install_product () {
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
+	reconfigure EXTERNAL_PORT ${EXTERNAL_PORT}
 
 	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
 		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
@@ -1343,8 +1343,6 @@ install_product () {
 		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
 		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
 	fi
-
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/80:80/${EXTERNAL_PORT}:80/g" ${PROXY_YML}
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d

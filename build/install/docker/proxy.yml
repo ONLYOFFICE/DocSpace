@@ -16,7 +16,7 @@ services:
      <<: *x-healthcheck
      test: nginx -t || exit 1
     ports:
-      - 80:80
+      - ${EXTERNAL_PORT}:80
     environment:
       - ROUTER_HOST=${ROUTER_HOST}
     volumes:
