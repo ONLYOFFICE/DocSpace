@@ -447,7 +447,7 @@ change_mysql_config(){
 
 setup_openresty(){
 	echo -n "Configuring openresty... "
-
+	
 	if systemctl is-active nginx | grep -q "active"; then
 		systemctl disable nginx && systemctl stop nginx 
 	fi
@@ -460,6 +460,24 @@ setup_openresty(){
 	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${APP_PORT}'\3\4/' -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}-proxy.conf
 	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_CONF}
 	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_CONF}
+
+	# Check for old configuration files
+	if [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old" ]; then
+		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.dpkg-old"
+	elif [ -f "${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave" ]; then
+		PROXY_CONF="${NGINX_DIR}/conf.d/onlyoffice-proxy.conf.rpmsave"
+	fi
+
+	# If the configuration file is found, extract the paths to the certificate and key
+	if [ ! -z "${PROXY_CONF}" ]; then
+		CERTIFICATE_PATH=$(grep -oP 'ssl_certificate\s+\K\S+' "${PROXY_CONF}" | tr -d ';')
+		CERTIFICATE_KEY_PATH=$(grep -oP 'ssl_certificate_key\s+\K\S+' "${PROXY_CONF}" | tr -d ';')
+		
+		# If both values are found, start SSL configuration
+		if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+			/usr/bin/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+		fi
+	fi
 
 	if [ "$DIST" = "RedHat" ]; then
 		shopt -s nocasematch
