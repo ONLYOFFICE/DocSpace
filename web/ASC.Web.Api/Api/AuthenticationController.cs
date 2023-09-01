@@ -521,7 +521,7 @@ public class AuthenticationController : ControllerBase
 
                 var requestIp = MessageSettings.GetIP(Request);
 
-                (_, user) = await _bruteForceLoginManager.AttemptAsync(inDto.UserName, inDto.PasswordHash, requestIp);
+                user = await _bruteForceLoginManager.AttemptAsync(inDto.UserName, inDto.PasswordHash, requestIp, inDto.RecaptchaResponse);
             }
             else
             {
@@ -549,7 +549,12 @@ public class AuthenticationController : ControllerBase
         catch (BruteForceCredentialException)
         {
             await _messageService.SendAsync(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
-            throw new AuthenticationException("Login Fail. Too many attempts");
+            throw new BruteForceCredentialException(Resource.ErrorTooManyLoginAttempts);
+        }
+        catch (RecaptchaException)
+        {
+            await _messageService.SendAsync(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailRecaptcha);
+            throw new RecaptchaException(Resource.RecaptchaInvalid);
         }
         catch (Exception ex)
         {
