@@ -552,13 +552,13 @@ setup_docs() {
 		$JSON ${DS_CONF_DIR}/local.json -e "this.rabbitmq = { 'url': 'amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}' }" >/dev/null 2>&1
 		$JSON ${DS_CONF_DIR}/local.json -e "this.services.CoAuthoring.redis = { 'host': '$REDIS_HOST' }" >/dev/null 2>&1
 		sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
-	elif [ $1 == "EXTERNAL_DOCS_SERVER" ]
+	elif [ $1 == "EXTERNAL_DOCS_SERVER" ]; then
 		local APP_HOST=$(curl -s ifconfig.me)
 		local EXTERNAL_DOCS_FLAG="rewrite"
 	fi
 	
 	#Changing the Docs port in nginx conf
-	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf
+	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
 
 	#Save Docs address and JWT in .json
 	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "$EXTERNAL_DOCS_FLAG"
@@ -682,8 +682,10 @@ setup_rabbitmq() {
 	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Port" "${RABBITMQ_PORT}"
 	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.VirtualHost" "/"
 
-	systemctl enable rabbitmq-server >/dev/null 2>&1
-	systemctl restart rabbitmq-server
+	if [ $1 == "LOCAL_RABBITMQ_SERVER" ]; then
+		systemctl enable rabbitmq-server >/dev/null 2>&1
+		systemctl restart rabbitmq-server
+	fi
 
 	echo "OK"
 }
