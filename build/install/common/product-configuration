@@ -663,8 +663,8 @@ setup_redis() {
 	sed -i "s~\(redis_port =\).*~\1 $REDIS_PORT~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
 
 	if [ $1 == "LOCAL_REDIS_SERVER" ]; then
-		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
-		sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
+		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i ${REDIS_CONF}
+		sed -r "/^save\s[0-9]+/d" -i ${REDIS_CONF}
 
 		systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
 		systemctl restart $REDIS_PACKAGE
@@ -726,11 +726,13 @@ if command -v yum >/dev/null 2>&1; then
 	PACKAGE_MANAGER="rpm -q"
 	MYSQL_PACKAGE="mysqld"
 	REDIS_PACKAGE="redis"
+	REDIS_CONF="/etc/redis.conf"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -s"
 	MYSQL_PACKAGE="mysql"
 	REDIS_PACKAGE="redis-server"
+	REDIS_CONF="/etc/redis/redis.conf"
 fi
 
 install_json
