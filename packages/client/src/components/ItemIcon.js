@@ -16,21 +16,34 @@ const StyledIcon = styled.img`
     `}
 `;
 
-const IconTitleRoom = styled.div`
+const IconTitleRoomWrapper = styled.div`
   ${NoUserSelect}
-
-  background: ${(props) => props.color};
-
-  border-radius: 6px;
-  vertical-align: middle;
-  height: 32px;
-  width: 32px;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 32px;
+  width: 32px;
+  .room-background {
+    height: 32px;
+    width: 32px;
+    border-radius: 6px;
+    vertical-align: middle;
+    background: ${(props) => props.color};
+    position: absolute;
+    ${(props) =>
+      !props.theme.isBase &&
+      css`
+        opacity: 0.1;
+      `};
+  }
 
   .room-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+
+    position: relative;
     ${(props) =>
       !props.theme.isBase &&
       css`
@@ -124,9 +137,10 @@ const ItemIcon = ({
             src={showDefaultIcon ? defaultRoomIcon : icon}
           />
         ) : (
-          <IconTitleRoom color={color}>
+          <IconTitleRoomWrapper color={color}>
+            <div className="room-background" />
             <div className="room-title">{roomTitle}</div>
-          </IconTitleRoom>
+          </IconTitleRoomWrapper>
         )}
       </IconWrapper>
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
