@@ -340,7 +340,7 @@ Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true
 	save_undefined_param "${USER_CONF}" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
 	save_undefined_param "${APP_DIR}/apisystem.${ENVIRONMENT}.json" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
 
-	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//_/\\_}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
+	sed "s&\(\"ConnectionString\":\).*&\1 \"$(printf "%q" "${CONNECTION_STRING}")\"&" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 
 	#Enable database migration
 	save_undefined_param "${USER_CONF}" "migration.enabled" "true"

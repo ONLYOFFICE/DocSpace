@@ -60,8 +60,7 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.
 
 #add nodejs repo
 [ "$REV" = "7" ] && NODE_VERSION="16" || NODE_VERSION="18"
-curl -sL https://rpm.nodesource.com/setup_${NODE_VERSION}.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
-rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
+yum install -y https://rpm.nodesource.com/pub_${NODE_VERSION}.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
 
 #add dotnet repo
 if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
