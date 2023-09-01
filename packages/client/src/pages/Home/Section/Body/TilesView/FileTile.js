@@ -78,6 +78,8 @@ const FileTile = (props) => {
       defaultRoomIcon={
         item.isRoom && item.icon ? item.icon : item.defaultRoomIcon
       }
+      title={item.title}
+      logo={item.logo}
     />
   );
 

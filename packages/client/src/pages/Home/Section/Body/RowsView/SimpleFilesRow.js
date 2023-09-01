@@ -268,6 +268,8 @@ const SimpleFilesRow = (props) => {
       fileExst={item.fileExst}
       isRoom={item.isRoom}
       defaultRoomIcon={item.defaultRoomIcon}
+      title={item.title}
+      logo={item.logo}
     />
   );
 
