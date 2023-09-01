@@ -311,6 +311,7 @@ const BruteForceProtection = (props) => {
           hasScroll={false}
           additionalClassSaveButton="brute-force-protection-save"
           additionalClassCancelButton="brute-force-protection-cancel"
+          isSaving={isLoadingSave}
         />
       </FieldContainer>
     </StyledBruteForceProtection>
