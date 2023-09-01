@@ -58,7 +58,10 @@ const StyledRow = styled.div`
 
   .history-loader-comment,
   .history-loader-file-date {
-    margin-left: 16px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 16px;`
+        : `margin-left: 16px;`}
   }
   .history-loader-options,
   .history-loader-restore-btn,

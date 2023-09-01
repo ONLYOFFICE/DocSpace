@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "../utils/device";
+import { getCorrectFourValuesStyle } from "../utils/rtlUtils";
 
 const styledTabletView = css`
   position: fixed;
@@ -160,11 +161,16 @@ const StyledContextMenu = styled.div`
       ${(props) =>
         props.isIconExist &&
         css`
-          margin: ${(props) => props.theme.menuItem.text.margin};
+          margin: ${({ theme }) =>
+            getCorrectFourValuesStyle(
+              theme.menuItem.text.margin,
+              theme.interfaceDirection
+            )};
         `}
 
       color: ${(props) => props.theme.menuItem.text.color};
-      text-align: left;
+      text-align: ${({ theme }) =>
+        theme.interfaceDirection === "rtl" ? `right` : `left`};
       text-transform: none;
       text-decoration: none;
       user-select: none;

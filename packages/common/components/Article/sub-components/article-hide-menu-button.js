@@ -16,7 +16,14 @@ const StyledHideArticleMenuButton = styled.div`
   height: 44px;
   z-index: 209;
   bottom: 89px;
-  left: 0;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 0;
+        `
+      : css`
+          left: 0;
+        `}
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -41,10 +48,23 @@ const StyledHideArticleMenuButton = styled.div`
 
   .article-hide-menu-container {
     align-items: center;
-    margin-left: 16px;
-
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
     .article-hide-menu-text {
-      margin-left: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
       color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     }
 
@@ -75,9 +95,19 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+      `}
   }
 
   .article-hide-menu-icon_svg {
+    ${props =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+      `}
     svg {
       path {
         fill: ${({ currentColorScheme }) => currentColorScheme.main.accent};
@@ -88,7 +118,7 @@ const StyledHideArticleMenuButton = styled.div`
   .article-show-menu-icon_svg {
     svg {
       path {
-        fill: ${(props) => props.theme.article.catalogShowText};
+        fill: ${props => props.theme.article.catalogShowText};
       }
     }
   }
@@ -107,13 +137,11 @@ const HideArticleMenuButton = ({
     <StyledHideArticleMenuButton
       showText={showText}
       onClick={toggleShowText}
-      currentColorScheme={currentColorScheme}
-    >
+      currentColorScheme={currentColorScheme}>
       {showText ? (
         <div
           className="article-hide-menu-container"
-          id="document_catalog-hide-menu"
-        >
+          id="document_catalog-hide-menu">
           <ReactSVG
             className="article-hide-menu-icon_svg"
             src={ArticleHideMenuReactSvgUrl}
@@ -123,16 +151,14 @@ const HideArticleMenuButton = ({
             fontWeight={600}
             fontSize="12px"
             noSelect
-            truncate
-          >
+            truncate>
             {t("Common:HideArticleMenu")}
           </Text>
         </div>
       ) : (
         <div
           className="article-show-menu-container"
-          id="document_catalog-show-menu"
-        >
+          id="document_catalog-show-menu">
           <ReactSVG
             className="article-show-menu-icon_svg"
             src={ArticleShowMenuReactSvgUrl}

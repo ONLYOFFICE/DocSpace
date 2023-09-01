@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { Base } from "@docspace/components/themes";
@@ -23,7 +23,14 @@ const StyledTooltip = styled.div`
     align-items: center;
   }
   .tooltip-moved-obj-icon {
-    margin-right: 6px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 6px;
+          `
+        : css`
+            margin-right: 6px;
+          `}
   }
   .tooltip-moved-obj-extension {
     color: ${(props) => props.theme.filesDragTooltip.color};
@@ -45,6 +52,9 @@ const DragTooltip = (props) => {
   } = props;
   const { filesCount, operationName } = tooltipOptions;
 
+  const { interfaceDirection } = useTheme();
+  const isRtl = interfaceDirection === "rtl";
+
   useEffect(() => {
     setTooltipPosition();
   }, [tooltipPageX, tooltipPageY]);
@@ -53,7 +63,9 @@ const DragTooltip = (props) => {
     const tooltip = tooltipRef.current;
     if (tooltip) {
       const margin = 8;
-      tooltip.style.left = tooltipPageX + margin + "px";
+      tooltip.style.left =
+        (isRtl ? tooltipPageX - tooltip.offsetWidth : tooltipPageX + margin) +
+        "px";
       tooltip.style.top = tooltipPageY + margin + "px";
     }
   }, [tooltipPageX, tooltipPageY]);
