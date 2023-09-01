@@ -10,7 +10,7 @@ import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 const StyledContainer = styled.div`
   display: flex;
-  background: ${props => props.theme.client.settings.payment.backgroundColor};
+  background: ${(props) => props.theme.client.settings.payment.backgroundColor};
   min-height: 72px;
   padding: 16px;
   box-sizing: border-box;
@@ -18,7 +18,7 @@ const StyledContainer = styled.div`
   border-radius: 6px;
 
   .payer-info {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 3px;
@@ -29,7 +29,7 @@ const StyledContainer = styled.div`
   }
 
   .payer-info_avatar {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 16px;
@@ -39,7 +39,7 @@ const StyledContainer = styled.div`
           `}
   }
   .payer-info {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-left: 3px;
@@ -57,7 +57,7 @@ const StyledContainer = styled.div`
 
     .payer-info_description {
       p {
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-left: 3px;
@@ -137,7 +137,8 @@ const PayerInformationContainer = ({
             tag="a"
             themeId={ThemeType.Link}
             target="_blank"
-            className="payer-info_account-link">
+            className="payer-info_account-link"
+          >
             {t("ChooseNewPayer")}
           </ColorTheme>
         )}
@@ -155,7 +156,8 @@ const PayerInformationContainer = ({
           className="payer-info_account-link"
           tag="a"
           themeId={ThemeType.Link}
-          target="_blank">
+          target="_blank"
+        >
           {t("StripeCustomerPortal")}
         </ColorTheme>
       ) : (
@@ -163,7 +165,8 @@ const PayerInformationContainer = ({
           fontWeight={600}
           href={`mailto:${email}`}
           tag="a"
-          themeId={ThemeType.Link}>
+          themeId={ThemeType.Link}
+        >
           {email}
         </ColorTheme>
       )}
@@ -186,7 +189,8 @@ const PayerInformationContainer = ({
               as="span"
               color={theme.client.settings.payment.warningColor}
               fontWeight={600}
-              fontSize={"14px"}>
+              fontSize={"14px"}
+            >
               {{ email: emailUnfoundedUser }}
             </Text>
             is not found
@@ -201,7 +205,7 @@ const PayerInformationContainer = ({
     : {};
 
   return (
-    <StyledContainer style={style} theme={theme}>
+    <StyledContainer style={style}>
       <div className="payer-info_avatar">
         <Avatar
           size={"base"}
