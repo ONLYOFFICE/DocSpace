@@ -352,9 +352,12 @@ public class UserController : PeopleControllerBase
     [HttpPost("invite")]
     public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
+        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        
         foreach (var invite in inDto.Invitations)
         {
-            if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
+            if ((invite.Type == EmployeeType.DocSpaceAdmin && !currentUser.IsOwner(_tenantManager.GetCurrentTenant())) || 
+                !_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, invite.Type), Constants.Action_AddRemoveUser))
             {
                 continue;
             }

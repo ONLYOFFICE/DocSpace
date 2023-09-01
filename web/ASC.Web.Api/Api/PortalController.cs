@@ -186,7 +186,10 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
-        if (!_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
+        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        
+        if ((employeeType == EmployeeType.DocSpaceAdmin && !currentUser.IsOwner(_tenantManager.GetCurrentTenant())) 
+            || !_permissionContext.CheckPermissions(new UserSecurityProvider(Guid.Empty, employeeType), ASC.Core.Users.Constants.Action_AddRemoveUser))
         {
             return string.Empty;
         }
