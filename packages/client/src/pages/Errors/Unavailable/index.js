@@ -20,7 +20,7 @@ const ErrorUnavailable = ({ logoUrl }) => {
   return ready ? (
     <StyledWrapper>
       <DocspaceLogo />
-      <ErrorContainer headerText={t("ErrorUnavailableText")} />
+      <ErrorContainer headerText={t("ErrorDeactivatedText")} />
     </StyledWrapper>
   ) : (
     <></>

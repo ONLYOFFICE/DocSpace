@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "A cópia de segurança foi criada com sucesso.",
   "BackupList": "Lista de Cópias de Segurança",
   "BackupListWarningText": "Se eliminar qualquer item desta lista, os ficheiros que lhes correspondem serão também eliminados. Esta ação não pode ser anulada. Para eliminar todos os ficheiros utilize o link:",
+  "BetaLabel": "BETA",
   "Branding": "Imagem de Marca",
   "BrandingSectionDescription": "Especifique a informação da sua empresa, adicione ligações a recursos externos e endereços de correio eletrónico exibidos dentro da interface do DocSpace.",
   "BrandingSubtitle": "Utilize esta opção para fornecer uma experiência de marca aos utilizadores.",
