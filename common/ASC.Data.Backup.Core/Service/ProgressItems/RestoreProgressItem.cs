@@ -106,9 +106,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
     protected override async Task DoJob()
     {
         Tenant tenant = null;
-
-        var tempFile = PathHelper.GetTempFileName(TempFolder);
-
+        var tempFile = "";
         try
         {
             await using var scope = _serviceScopeProvider.CreateAsyncScope();
@@ -127,7 +125,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             var storage = await _backupStorageFactory.GetBackupStorageAsync(StorageType, TenantId, StorageParams);
 
-            await storage.DownloadAsync(StoragePath, tempFile);
+            tempFile = await storage.DownloadAsync(StoragePath, TempFolder);
 
             if (!_coreBaseSettings.Standalone)
             {

@@ -44,7 +44,7 @@ public class S3TarWriteOperator : IDataWriteOperator
         _store = _sessionHolder.DataStore as S3Storage;
 
         _key = _chunkedUploadSession.TempPath;
-        _domain = string.IsNullOrEmpty(_sessionHolder.TempDomain) ? _sessionHolder.Domain : _sessionHolder.TempDomain;
+        _domain = _sessionHolder.TempDomain;
     }
 
     public async Task WriteEntryAsync(string tarKey, string domain, string path, IDataStore store)

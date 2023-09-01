@@ -42,11 +42,11 @@ public static class DataOperatorFactory
 
     public static IDataReadOperator GetReadOperator(string targetFile)
     {
-        try
+        if (targetFile.EndsWith("tar.gz")) 
         {
             return new ZipReadOperator(targetFile);
         }
-        catch
+        else
         {
             return new TarReadOperator(targetFile);
         }

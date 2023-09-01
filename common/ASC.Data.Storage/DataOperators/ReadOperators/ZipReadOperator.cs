@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Data.Storage.DataOperators;
-public class ZipReadOperator : BaseReadOperator, IDataReadOperator
+public class ZipReadOperator : BaseReadOperator
 {
     public ZipReadOperator(string targetFile)
     {

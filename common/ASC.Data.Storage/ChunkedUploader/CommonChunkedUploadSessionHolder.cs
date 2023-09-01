@@ -48,7 +48,6 @@ public class CommonChunkedUploadSessionHolder
         _tempPath = tempPath;
         DataStore = dataStore;
         Domain = domain;
-        TempDomain = "";
         MaxChunkUploadSize = maxChunkUploadSize;
     }
 

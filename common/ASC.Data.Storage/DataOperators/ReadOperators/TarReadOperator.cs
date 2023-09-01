@@ -25,18 +25,16 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Data.Storage.DataOperators;
-public class TarReadOperator: BaseReadOperator, IDataReadOperator
+public class TarReadOperator: BaseReadOperator
 {
-    private readonly string tmpdir;
-
     public TarReadOperator(string targetFile)
     {
-        tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+        _tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
 
         using (var stream = File.OpenRead(targetFile))
         using (var tarOutputStream = TarArchive.CreateInputTarArchive(stream, Encoding.UTF8))
         {
-            tarOutputStream.ExtractContents(tmpdir);
+            tarOutputStream.ExtractContents(_tmpdir);
         }
 
         File.Delete(targetFile);

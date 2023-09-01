@@ -85,18 +85,16 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         return await Upload(folderId, localPath);
     }
 
-    public async Task DownloadAsync(string fileId, string targetLocalPath)
+    public async Task<string> DownloadAsync(string fileId, string targetLocalPath)
     {
         await _tenantManager.SetCurrentTenantAsync(_tenantId);
 
         if (int.TryParse(fileId, out var fId))
         {
-            await DownloadDaoAsync(fId, targetLocalPath);
-
-            return;
+            return await DownloadDaoAsync(fId, targetLocalPath);
         }
 
-        await DownloadDaoAsync(fileId, targetLocalPath);
+        return await DownloadDaoAsync(fileId, targetLocalPath);
     }
 
     public async Task DeleteAsync(string fileId)
@@ -166,7 +164,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         return file.Id;
     }
 
-    private async Task DownloadDaoAsync<T>(T fileId, string targetLocalPath)
+    private async Task<string> DownloadDaoAsync<T>(T fileId, string targetLocalPath)
     {
         await _tenantManager.SetCurrentTenantAsync(_tenantId);
         var fileDao = await GetFileDaoAsync<T>();
@@ -177,8 +175,10 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         }
 
         await using var source = await fileDao.GetFileStreamAsync(file);
-        await using var destination = File.OpenWrite(targetLocalPath);
+        var destPath = Path.Combine(targetLocalPath, file.Title);
+        await using var destination = File.OpenWrite(destPath);
         await source.CopyToAsync(destination);
+        return destPath;
     }
 
     private async Task DeleteDaoAsync<T>(T fileId)
