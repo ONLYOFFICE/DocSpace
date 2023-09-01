@@ -41,7 +41,7 @@ export const StyledCategoryWrapper = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   align-items: center;
 `;
 
@@ -57,7 +57,7 @@ export const StyledMobileCategoryWrapper = styled.div`
   .category-item-heading {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .category-item-subheader {
@@ -68,8 +68,9 @@ export const StyledMobileCategoryWrapper = styled.div`
 
   .category-item-description {
     color: ${(props) => props.theme.client.settings.security.descriptionColor};
-    font-size: 12px;
+    font-size: 13px;
     max-width: 1024px;
+    line-height: 20px;
   }
 
   .inherit-title-link {
@@ -78,7 +79,7 @@ export const StyledMobileCategoryWrapper = styled.div`
         ? `margin-left: 7px;`
         : `margin-right: 7px;`}
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .link-text {
@@ -95,9 +96,66 @@ export const LearnMoreWrapper = styled.div`
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
+    line-height: 20px;
+  }
+
+  .page-subtitle {
+    color: ${(props) =>
+      props.theme.client.settings.security.descriptionColor} !important;
   }
 
   .learn-subtitle {
     margin-bottom: 10px;
+  }
+`;
+
+export const StyledBruteForceProtection = styled.div`
+  width: 100%;
+
+  .brute-force-protection-input {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .error-text {
+    position: absolute;
+    font-size: 10px;
+    color: #f21c0e;
+  }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
+  }
+
+  .input-container {
+    margin-bottom: 8px;
+  }
+
+  .mobile-description {
+    margin-bottom: 12px;
+  }
+
+  .description {
+    max-width: 700px;
+    padding-bottom: 19px;
+
+    .page-subtitle {
+      line-height: 20px;
+      color: ${(props) =>
+        props.theme.client.settings.security.descriptionColor};
+      padding-bottom: 7px;
+    }
+
+    .link {
+      line-height: 15px;
+      font-weight: 600;
+      color: ${(props) =>
+        props.theme.client.settings.security.descriptionColor};
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      padding-bottom: 20px;
+    }
   }
 `;

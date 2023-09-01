@@ -3376,6 +3376,7 @@ __metadata:
     nodemon: ^2.0.22
     npm-run-all: ^4.1.5
     playwright: ^1.32.0
+    react-google-recaptcha: ^3.1.0
     sass: ^1.59.3
     sass-loader: ^12.6.0
     serve: 14.2.0
@@ -21060,7 +21061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.0.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.0.0, prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -21455,6 +21456,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-async-script@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "react-async-script@npm:1.2.0"
+  dependencies:
+    hoist-non-react-statics: ^3.3.0
+    prop-types: ^15.5.0
+  peerDependencies:
+    react: ">=16.4.1"
+  checksum: 303890eeaf9e18d59fca77f9c891bf3b52d2ec9ea88f0af9d19c160a1f101b447c5104ca46e2dd84c19de756d4797f1f054d041b888a3d57204d9145f4b1b532
+  languageName: node
+  linkType: hard
+
 "react-autosize-textarea@npm:^7.1.0":
   version: 7.1.0
   resolution: "react-autosize-textarea@npm:7.1.0"
@@ -21699,6 +21712,18 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 93473a6f0a249487e0f1609ccfe94312ce86265d7bca01f6825c061e15fcc13c78d6adb0555f8d9e7fa1cba3e23958f3ca4d4148c7bea828843c909feb5e10f1
+  languageName: node
+  linkType: hard
+
+"react-google-recaptcha@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "react-google-recaptcha@npm:3.1.0"
+  dependencies:
+    prop-types: ^15.5.0
+    react-async-script: ^1.2.0
+  peerDependencies:
+    react: ">=16.4.1"
+  checksum: 9dc64daf9684d979b1f66d97e00a42c9ceaa9b9fe8b29c4d02d77edf86781e2008f2ae1bef14509351ff3b2ffbcc26463f0d88dd612d7280b455b8c07101e663
   languageName: node
   linkType: hard
 

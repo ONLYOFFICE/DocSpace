@@ -7,15 +7,15 @@ import { Base } from "@docspace/components/themes";
 import { StyledCategoryWrapper, StyledTooltip } from "../StyledSecurity";
 import { useTheme } from "styled-components";
 
-const CategoryWrapper = props => {
+const CategoryWrapper = (props) => {
   const {
     t,
     title,
     tooltipTitle,
     tooltipUrl,
     theme,
-    currentColorScheme,
     classNameTooltip,
+    notTooltip,
   } = props;
   const { interfaceDirection } = useTheme();
   const dirTooltip = interfaceDirection === "rtl" ? "left" : "right";
@@ -31,7 +31,8 @@ const CategoryWrapper = props => {
           isBold
           isHovered
           href={tooltipUrl}
-          color={currentColorScheme.main.accent}>
+          color="#333333"
+        >
           {t("Common:LearnMore")}
         </Link>
       )}
@@ -43,15 +44,17 @@ const CategoryWrapper = props => {
       <Text fontSize="16px" fontWeight="700">
         {title}
       </Text>
-      <HelpButton
-        className={classNameTooltip}
-        iconName={InfoReactSvgUrl}
-        displayType="dropdown"
-        place={dirTooltip}
-        offsetRight={0}
-        getContent={tooltip}
-        tooltipColor={theme.client.settings.security.owner.tooltipColor}
-      />
+      {!notTooltip && (
+        <HelpButton
+          className={classNameTooltip}
+          iconName={InfoReactSvgUrl}
+          displayType="dropdown"
+          place={dirTooltip}
+          offsetRight={0}
+          getContent={tooltip}
+          tooltipColor={theme.client.settings.security.owner.tooltipColor}
+        />
+      )}
     </StyledCategoryWrapper>
   );
 };
