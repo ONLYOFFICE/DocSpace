@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
@@ -44,7 +44,16 @@ const StyledComponent = styled.div`
   }
 
   .checkbox {
-    margin-right: 9px;
+    width: max-content;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 9px;
+          `
+        : css`
+            margin-right: 9px;
+          `}
   }
 `;
 

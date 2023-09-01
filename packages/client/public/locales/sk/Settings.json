@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "Kópia zálohy bola úspešne vytvorená.",
   "BackupList": "Zoznam záloh",
   "BackupListWarningText": "Ak odstránite niektoré položky zo zoznamu, odstránia sa aj ich príslušné súbory. Táto akcia sa nedá vrátiť späť. Ak chcete odstrániť všetky súbory, použite odkaz:",
+  "BetaLabel": "BETA",
   "Branding": "Branding",
   "BrandingSectionDescription": "Zadajte informácie o vašej spoločnosti, pridajte odkazy na externé zdroje a e-mailové adresy zobrazené v rozhraní DocSpace.",
   "BrandingSubtitle": "Toto nastavenie použite, ak chcete používateľom poskytnúť zážitok zo značky.",

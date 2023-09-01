@@ -22,7 +22,9 @@ const StyledDropdownDesktop = styled.div`
     overflow: visible;
     z-index: 400;
     top: 0;
-    left: 0;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right: 0;` : `left: 0;`}
     box-sizing: border-box;
     width: 100%;
     position: absolute;

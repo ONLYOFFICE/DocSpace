@@ -4,14 +4,28 @@ import Base from "../../themes/base";
 export const DateItem = styled.button`
   font-family: "Open Sans";
   font-weight: 600;
-  font-size: 16px;
+  font-size: ${(props) => (props.isMobile ? "16px" : "13px")};
   border-radius: 50%;
 
   border: 2px solid;
   background-color: transparent;
 
-  width: ${(props) => (props.big ? "60px" : "40px")};
-  height: ${(props) => (props.big ? "60px" : "40px")};
+  width: ${(props) =>
+    props.big
+      ? props.isMobile
+        ? "60px"
+        : "50px"
+      : props.isMobile
+      ? "40px"
+      : "30px"};
+  height: ${(props) =>
+    props.big
+      ? props.isMobile
+        ? "60px"
+        : "50px"
+      : props.isMobile
+      ? "40px"
+      : "30px"};
 
   display: inline-flex;
   justify-content: center;

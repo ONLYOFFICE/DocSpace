@@ -95,6 +95,9 @@ public static class NotifyQueueExtension
                 .HasColumnName("creation_date")
                 .HasColumnType("datetime");
 
+            entity.HasIndex(e => e.CreationDate)
+                .HasDatabaseName("creation_date");
+
             entity.Property(e => e.Reciever)
                 .HasColumnName("reciever")
                 .HasColumnType("varchar(255)")
@@ -154,6 +157,9 @@ public static class NotifyQueueExtension
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.CreationDate).HasColumnName("creation_date");
+
+            entity.HasIndex(e => e.CreationDate)
+                    .HasDatabaseName("creation_date_notify_queue");
 
             entity.Property(e => e.Reciever)
                 .HasColumnName("reciever")

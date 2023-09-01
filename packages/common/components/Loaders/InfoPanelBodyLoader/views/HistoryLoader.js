@@ -49,7 +49,10 @@ const StyledHistoryBlockLoader = styled.div`
       gap: 6px;
     }
     .date {
-      margin-left: auto;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: auto;`
+          : `margin-left: auto;`}
     }
   }
 `;

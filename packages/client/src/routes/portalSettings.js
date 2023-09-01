@@ -64,6 +64,11 @@ const TrustedMailPage = loadable(() =>
 const IpSecurityPage = loadable(() =>
   import("../pages/PortalSettings/categories/security/access-portal/ipSecurity")
 );
+const BruteForceProtectionPage = loadable(() =>
+  import(
+    "../pages/PortalSettings/categories/security/access-portal/bruteForceProtection"
+  )
+);
 const AdminMessagePage = loadable(() =>
   import(
     "../pages/PortalSettings/categories/security/access-portal/adminMessage"
@@ -204,6 +209,10 @@ const PortalSettingsRoutes = {
     {
       path: "security/access-portal/ip",
       element: <IpSecurityPage />,
+    },
+    {
+      path: "security/access-portal/brute-force-protection",
+      element: <BruteForceProtectionPage />,
     },
     {
       path: "security/access-portal/admin-message",

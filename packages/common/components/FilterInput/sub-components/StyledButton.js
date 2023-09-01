@@ -8,7 +8,7 @@ const StyledButton = styled.div`
 
   position: relative;
 
-  border: ${(props) => props.theme.filterInput.button.border};
+  border: ${props => props.theme.filterInput.button.border};
   border-radius: 3px;
 
   box-sizing: border-box;
@@ -20,15 +20,22 @@ const StyledButton = styled.div`
   margin: 0;
   padding: 0;
 
-  margin-left: 8px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 8px;
+        `
+      : css`
+          margin-left: 8px;
+        `}
 
   cursor: pointer;
 
   &:hover {
-    border: ${(props) => props.theme.filterInput.button.hoverBorder};
+    border: ${props => props.theme.filterInput.button.hoverBorder};
     svg {
       path {
-        fill: ${(props) => props.theme.iconButton.hoverColor};
+        fill: ${props => props.theme.iconButton.hoverColor};
       }
     }
   }
@@ -37,15 +44,15 @@ const StyledButton = styled.div`
     cursor: pointer;
   }
 
-  ${(props) =>
+  ${props =>
     props.isOpen &&
     css`
-      background: ${(props) => props.theme.filterInput.button.openBackground};
+      background: ${props => props.theme.filterInput.button.openBackground};
       pointer-events: none;
 
       svg {
         path {
-          fill: ${(props) => props.theme.filterInput.button.openFill};
+          fill: ${props => props.theme.filterInput.button.openFill};
         }
       }
 

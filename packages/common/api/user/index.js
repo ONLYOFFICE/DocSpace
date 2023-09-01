@@ -1,10 +1,11 @@
 import { request, setWithCredentialsStatus } from "../client";
 
-export function login(userName, passwordHash, session) {
+export function login(userName, passwordHash, session, recaptchaResponse) {
   const data = {
     userName,
     passwordHash,
     session,
+    recaptchaResponse,
   };
 
   return request({
