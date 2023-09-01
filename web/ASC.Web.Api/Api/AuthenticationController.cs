@@ -75,6 +75,7 @@ public class AuthenticationController : ControllerBase
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
     private readonly InvitationLinkService _invitationLinkService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthenticationController(
         UserManager userManager,
@@ -112,7 +113,8 @@ public class AuthenticationController : ControllerBase
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
-        InvitationLinkService invitationLinkService)
+        InvitationLinkService invitationLinkService,
+        IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -150,6 +152,7 @@ public class AuthenticationController : ControllerBase
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
         _invitationLinkService = invitationLinkService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>
@@ -348,7 +351,7 @@ public class AuthenticationController : ControllerBase
     [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
-    public async Task LogoutAsync()
+    public async Task<object> LogoutAsync()
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
@@ -362,6 +365,25 @@ public class AuthenticationController : ControllerBase
         _cookiesManager.ClearCookies(CookiesType.SocketIO);
 
         _securityContext.Logout();
+
+
+        if (!string.IsNullOrEmpty(user.SsoNameId))
+        {
+            var settings = _settingsManager.Load<SsoSettingsV2>();
+
+            if (settings.EnableSso && !string.IsNullOrEmpty(settings.IdpSettings.SloUrl))
+            {
+                var logoutSsoUserData = _signature.Create(new LogoutSsoUserData
+                {
+                    NameId = user.SsoNameId,
+                    SessionId = user.SsoSessionId
+                });
+
+                return _setupInfo.SsoSamlLogoutUrl + "?data=" + HttpUtility.UrlEncode(logoutSsoUserData);
+    }
+        }
+
+        return null;
     }
 
     /// <summary>

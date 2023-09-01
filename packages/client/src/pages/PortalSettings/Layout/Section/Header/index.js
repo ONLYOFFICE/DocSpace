@@ -113,10 +113,6 @@ const HeaderContainer = styled.div`
       font-size: 18px;
       line-height: 59px !important;
     }
-
-    .settings-section_header {
-      padding-top: 6px;
-    }
   }
 `;
 

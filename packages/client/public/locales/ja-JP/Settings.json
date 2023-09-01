@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "バックアップ・コピーは正常に作成されました。",
   "BackupList": "バックアップリスト",
   "BackupListWarningText": "リストからアイテムを削除すると、対応するファイルも削除されます。この操作を元に戻すことができません。すべてのファイルを削除するために次のリンクをクリックしてください：",
+  "BetaLabel": "BETA",
   "Branding": "ブランディング",
   "BrandingSectionDescription": "DocSpaceのインターフェイス内に表示される企業情報、外部リソースへのリンク、メールアドレスの追加を指定してください。",
   "BrandingSubtitle": "このオプションを使用すると、ユーザーにオンブランドのエクスペリエンスを提供することができます。",

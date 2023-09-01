@@ -94,7 +94,7 @@ const MainProfile = props => {
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text as="div" fontSize="12px">
+    <Text as="div" fontSize="12px" color="#333333">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
