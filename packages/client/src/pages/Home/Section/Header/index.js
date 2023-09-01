@@ -745,7 +745,8 @@ const SectionHeaderContent = props => {
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
-        onClick: () => onClickInviteUsers(selectedFolder.id),
+        onClick: () =>
+          onClickInviteUsers(selectedFolder.id, selectedFolder.roomType),
         disabled: !isRoom || !security?.EditAccess,
       },
       {
