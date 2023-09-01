@@ -35,7 +35,11 @@ export const ConfirmContainer = styled(Box)`
     flex: 1fr;
     flex-direction: column;
     gap: 24px;
-    padding-right: 8px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 8px;`
+        : `padding-right: 8px;`}
   }
 `;
 
@@ -74,7 +78,11 @@ export const GreetingContainer = styled.div`
     .user-info {
       display: flex;
       flex-direction: column;
-      margin-left: 12px;
+
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-right: 12px;`
+          : `margin-left: 12px;`}
       justify-content: center;
     }
 

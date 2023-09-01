@@ -33,7 +33,11 @@ const StyledModalDialog = styled(ModalDialog)`
 
     svg {
       overflow: visible;
-      margin-right: 8px;
+
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 8px;`
+          : `margin-right: 8px;`}
       margin-top: 3px;
     }
 

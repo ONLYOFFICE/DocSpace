@@ -1,6 +1,6 @@
 import { mobile } from "@docspace/components/utils/device";
 import React, { forwardRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { formatTime } from "../../helpers";
 
 const PlayerDurationWrapper = styled.div`
@@ -10,10 +10,24 @@ const PlayerDurationWrapper = styled.div`
   font-size: 12px;
   font-weight: 700;
 
-  margin-left: 10px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 10px;
+        `
+      : css`
+          margin-left: 10px;
+        `}
 
   @media ${mobile} {
-    margin-left: 0;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 0;
+          `
+        : css`
+            margin-left: 0;
+          `}
   }
 `;
 

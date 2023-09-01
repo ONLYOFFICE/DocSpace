@@ -33,7 +33,14 @@ const StyledContainer = styled.div`
   .navigation-logo {
     display: flex;
     height: 24px;
-    margin-right: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+          `
+        : css`
+            margin-right: 16px;
+          `}
 
     @media ${tablet} {
       .logo-icon_svg {
@@ -43,8 +50,17 @@ const StyledContainer = styled.div`
 
     .header_separator {
       display: ${({ isRootFolder }) => (isRootFolder ? "block" : "none")};
-      border-left: 1px solid #dfe2e3;
-      margin: 0 0 0 15px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              border-right: 1px solid #dfe2e3;
+              margin: 0 15px 0 0;
+            `
+          : css`
+              border-left: 1px solid #dfe2e3;
+              margin: 0 0 0 15px;
+            `}
+
       height: 21px;
     }
 
@@ -102,6 +118,11 @@ const StyledContainer = styled.div`
     padding-top: 2px;
     width: 17px;
     min-width: 17px;
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
+    }
   }
 
   .title-container {
@@ -114,9 +135,19 @@ const StyledContainer = styled.div`
 
   .navigation-header-separator {
     display: ${isMobileOnly ? "none" : "block"};
-    padding-left: 16px;
-    border-right: ${(props) =>
-      `1px solid ${props.theme.navigation.icon.stroke}`};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 16px;
+            border-left: ${(props) =>
+              `1px solid ${props.theme.navigation.icon.stroke}`};
+          `
+        : css`
+            padding-left: 16px;
+            border-right: ${(props) =>
+              `1px solid ${props.theme.navigation.icon.stroke}`};
+          `}
+
     height: 21px;
     @media ${mobile} {
       display: none;

@@ -1,6 +1,7 @@
 import ModalDialog from "@docspace/components/modal-dialog";
 import { tablet } from "@docspace/components/utils/device";
 import styled from "styled-components";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledMoveToPublicRoomDialog = styled(ModalDialog)`
   /* .scroll-body {
@@ -13,14 +14,25 @@ const StyledMoveToPublicRoomDialog = styled(ModalDialog)`
   }
 
   .modal-dialog-aside-header {
-    margin: 0 -24px 0 -16px;
-    padding: 0 0 0 16px;
+    margin: ${({ theme }) =>
+      getCorrectFourValuesStyle(
+        "0 -24px 0 -16px",
+        theme.interfaceDirection === "rtl"
+      )};
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle(
+        "0 0 0 16px",
+        theme.interfaceDirection === "rtl"
+      )};
   }
 
   .modal-dialog-aside-footer {
     @media ${tablet} {
       width: 100%;
-      padding-right: 32px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-left: 32px;`
+          : `padding-right: 32px;`}
       display: flex;
     }
   }
