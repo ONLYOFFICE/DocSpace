@@ -7,7 +7,14 @@ const StyledLoader = styled.div`
   margin-top: -4px;
 
   .loader {
-    padding-right: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 4px;
+          `
+        : css`
+            padding-right: 4px;
+          `}
   }
 
   @media (min-width: 600px) {

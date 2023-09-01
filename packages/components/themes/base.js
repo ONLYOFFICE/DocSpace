@@ -53,6 +53,8 @@ const {
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
+
+  lightErrorStatus,
 } = globalColors;
 
 const Base = {
@@ -2784,6 +2786,11 @@ const Base = {
 
     container: {
       backgroundColor: grayLightMid,
+    },
+
+    captcha: {
+      border: `1px solid ${lightErrorStatus}`,
+      color: lightErrorStatus,
     },
   },
 

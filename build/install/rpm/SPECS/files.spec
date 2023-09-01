@@ -75,6 +75,10 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/nginx/includes/*
 %config %{_sysconfdir}/nginx/conf.d/*
+%config %{_sysconfdir}/onlyoffice/%{product}/nginx/nginx.conf.template
+%dir %{_sysconfdir}/onlyoffice/
+%dir %{_sysconfdir}/onlyoffice/%{product}/
+%dir %{_sysconfdir}/onlyoffice/%{product}/nginx/
 %{buildpath}/public/
 %{buildpath}/client/
 

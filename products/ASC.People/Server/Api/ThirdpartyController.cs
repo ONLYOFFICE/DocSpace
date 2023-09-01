@@ -248,7 +248,7 @@ public class ThirdpartyController : ApiControllerBase
 
         var user = await _userManager.GetUsersAsync(userID);
 
-        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id, MessageAction.LoginSuccess);
+        await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.TenantId, user.Id);
 
         await _studioNotifyService.UserHasJoinAsync();
 

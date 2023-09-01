@@ -34,7 +34,10 @@ const StyledContainer = styled.header`
         css`
           position: static;
 
-          margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
+          ${({ theme }) =>
+            theme.interfaceDirection === "rtl"
+              ? `margin-left: -16px;`
+              : `margin-right: -16px;`}/* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
         `
       : isMobileOnly &&

@@ -60,7 +60,14 @@ const StyledContainer = styled.div`
   min-height: 33px;
 
   .table-container_group-menu {
-    margin: 0 0 0 -20px;
+    ${props =>
+  props.theme.interfaceDirection === "rtl"
+    ? css`
+            margin: 0 -20px 0 0;
+          `
+    : css`
+            margin: 0 0 0 -20px;
+          `}
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     width: calc(100% + 40px);
@@ -68,27 +75,56 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       height: 60px;
-      margin: 0 0 0 -16px;
+      ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin: 0 -16px 0 0;
+            `
+      : css`
+              margin: 0 0 0 -16px;
+            `}
       width: calc(100% + 32px);
     }
 
     ${isMobile &&
-    css`
+css`
       height: 60px;
-      margin: 0 0 0 -16px;
+      ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin: 0 -16px 0 0;
+            `
+      : css`
+              margin: 0 0 0 -16px;
+            `}
       width: calc(100% + 32px);
     `}
 
     @media ${mobile} {
       height: 52px;
-      margin: 0 0 0 -16px;
+
+      ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin: 0 -16px 0 0;
+            `
+      : css`
+              margin: 0 0 0 -16px;
+            `}
       width: calc(100% + 32px);
     }
 
     ${isMobileOnly &&
-    css`
+css`
       height: 52px;
-      margin: 0 0 0 -16px;
+      ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+              margin: 0 -16px 0 0;
+            `
+      : css`
+              margin: 0 0 0 -16px;
+            `}
       width: calc(100% + 32px);
     `}
   }
@@ -96,9 +132,9 @@ const StyledContainer = styled.div`
   .header-container {
     min-height: 33px;
 
-    ${(props) =>
-      props.hideContextMenuInsideArchiveRoom &&
-      `.option-button {
+    ${props =>
+  props.hideContextMenuInsideArchiveRoom &&
+    `.option-button {
       display: none;}`}
 
     @media ${tablet} {
@@ -107,7 +143,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const SectionHeaderContent = (props) => {
+const SectionHeaderContent = props => {
   const {
     currentFolderId,
     setSelectFileDialogVisible,
@@ -208,7 +244,7 @@ const SectionHeaderContent = (props) => {
   const isAccountsPage = location.pathname.includes("accounts");
   const isSettingsPage = location.pathname.includes("settings");
 
-  const onCreate = (format) => {
+  const onCreate = format => {
     const event = new Event(Events.CREATE);
 
     const payload = {
@@ -250,7 +286,7 @@ const SectionHeaderContent = (props) => {
   const createFolder = () => onCreate();
 
   // TODO: add privacy room check for files
-  const onUploadAction = (type) => {
+  const onUploadAction = type => {
     const element =
       type === "file"
         ? document.getElementById("customFileInput")
@@ -316,93 +352,93 @@ const SectionHeaderContent = (props) => {
 
     const options = isRoomsFolder
       ? [
-          {
-            key: "new-room",
-            label: t("NewRoom"),
-            onClick: onCreateRoom,
-            icon: FolderLockedReactSvgUrl,
-          },
-        ]
+        {
+          key: "new-room",
+          label: t("NewRoom"),
+          onClick: onCreateRoom,
+          icon: FolderLockedReactSvgUrl,
+        },
+      ]
       : [
-          {
-            id: "personal_new-documnet",
-            key: "new-document",
-            label: t("Common:NewDocument"),
-            onClick: createDocument,
-            icon: ActionsDocumentsReactSvgUrl,
-          },
-          {
-            id: "personal_new-spreadsheet",
-            key: "new-spreadsheet",
-            label: t("Common:NewSpreadsheet"),
-            onClick: createSpreadsheet,
-            icon: SpreadsheetReactSvgUrl,
-          },
-          {
-            id: "personal_new-presentation",
-            key: "new-presentation",
-            label: t("Common:NewPresentation"),
-            onClick: createPresentation,
-            icon: ActionsPresentationReactSvgUrl,
-          },
-          {
-            id: "personal_form-template",
-            icon: FormReactSvgUrl,
-            label: t("Translations:NewForm"),
-            key: "new-form-base",
-            items: [
-              {
-                id: "personal_template_black",
-                key: "new-form",
-                label: t("Translations:SubNewForm"),
-                icon: FormBlankReactSvgUrl,
-                onClick: createForm,
-              },
-              {
-                id: "personal_template_new-form-file",
-                key: "new-form-file",
-                label: t("Translations:SubNewFormFile"),
-                icon: FormFileReactSvgUrl,
-                onClick: createFormFromFile,
-                disabled: isPrivacyFolder,
-              },
-              {
-                id: "personal_template_oforms-gallery",
-                key: "oforms-gallery",
-                label: t("Common:OFORMsGallery"),
-                icon: FormGalleryReactSvgUrl,
-                onClick: onShowGallery,
-                disabled: isPrivacyFolder || (isMobile && isTablet),
-              },
-            ],
-          },
-          {
-            id: "personal_new-folder",
-            key: "new-folder",
-            label: t("Common:NewFolder"),
-            onClick: createFolder,
-            icon: CatalogFolderReactSvgUrl,
-          },
-          { key: "separator", isSeparator: true },
-          {
-            key: "upload-files",
-            label: t("Article:UploadFiles"),
-            onClick: () => onUploadAction("file"),
-            icon: ActionsUploadReactSvgUrl,
-          },
-          {
-            key: "upload-folder",
-            label: t("Article:UploadFolder"),
-            onClick: () => onUploadAction("folder"),
-            icon: ActionsUploadReactSvgUrl,
-          },
-        ];
+        {
+          id: "personal_new-documnet",
+          key: "new-document",
+          label: t("Common:NewDocument"),
+          onClick: createDocument,
+          icon: ActionsDocumentsReactSvgUrl,
+        },
+        {
+          id: "personal_new-spreadsheet",
+          key: "new-spreadsheet",
+          label: t("Common:NewSpreadsheet"),
+          onClick: createSpreadsheet,
+          icon: SpreadsheetReactSvgUrl,
+        },
+        {
+          id: "personal_new-presentation",
+          key: "new-presentation",
+          label: t("Common:NewPresentation"),
+          onClick: createPresentation,
+          icon: ActionsPresentationReactSvgUrl,
+        },
+        {
+          id: "personal_form-template",
+          icon: FormReactSvgUrl,
+          label: t("Translations:NewForm"),
+          key: "new-form-base",
+          items: [
+            {
+              id: "personal_template_black",
+              key: "new-form",
+              label: t("Translations:SubNewForm"),
+              icon: FormBlankReactSvgUrl,
+              onClick: createForm,
+            },
+            {
+              id: "personal_template_new-form-file",
+              key: "new-form-file",
+              label: t("Translations:SubNewFormFile"),
+              icon: FormFileReactSvgUrl,
+              onClick: createFormFromFile,
+              disabled: isPrivacyFolder,
+            },
+            {
+              id: "personal_template_oforms-gallery",
+              key: "oforms-gallery",
+              label: t("Common:OFORMsGallery"),
+              icon: FormGalleryReactSvgUrl,
+              onClick: onShowGallery,
+              disabled: isPrivacyFolder || (isMobile && isTablet),
+            },
+          ],
+        },
+        {
+          id: "personal_new-folder",
+          key: "new-folder",
+          label: t("Common:NewFolder"),
+          onClick: createFolder,
+          icon: CatalogFolderReactSvgUrl,
+        },
+        { key: "separator", isSeparator: true },
+        {
+          key: "upload-files",
+          label: t("Article:UploadFiles"),
+          onClick: () => onUploadAction("file"),
+          icon: ActionsUploadReactSvgUrl,
+        },
+        {
+          key: "upload-folder",
+          label: t("Article:UploadFolder"),
+          onClick: () => onUploadAction("folder"),
+          icon: ActionsUploadReactSvgUrl,
+        },
+      ];
 
     if (enablePlugins) {
       const pluginOptions = getMainButtonItems();
 
       if (pluginOptions) {
-        pluginOptions.forEach((option) => {
+        pluginOptions.forEach(option => {
           options.splice(option.value.position, 0, {
             key: option.key,
             ...option.value,
@@ -438,7 +474,7 @@ const SectionHeaderContent = (props) => {
     setBufferSelection(currentFolderId);
     setIsFolderActions(true);
     downloadAction(t("Translations:ArchivingData"), [currentFolderId]).catch(
-      (err) => toastr.error(err)
+      err => toastr.error(err)
     );
   };
 
@@ -460,7 +496,7 @@ const SectionHeaderContent = (props) => {
     setIsFolderActions(true);
 
     if (confirmDelete || isThirdPartySelection) {
-      getFolderInfo(currentFolderId).then((data) => {
+      getFolderInfo(currentFolderId).then(data => {
         setBufferSelection(data);
         setDeleteDialogVisible(true);
       });
@@ -472,7 +508,7 @@ const SectionHeaderContent = (props) => {
         FolderRemoved: t("Files:FolderRemoved"),
       };
 
-      deleteAction(translations, [currentFolderId], true).catch((err) =>
+      deleteAction(translations, [currentFolderId], true).catch(err =>
         toastr.error(err)
       );
     }
@@ -578,10 +614,10 @@ const SectionHeaderContent = (props) => {
 
     const isDisabled = isRecycleBinFolder || isRoom;
 
-    const links = externalLinks.filter((l) => !l.sharedTo.disabled);
+    const links = externalLinks.filter(l => !l.sharedTo.disabled);
     const isMultiExternalLink = links.length > 1;
 
-    const roomLinks = links.map((link) => {
+    const roomLinks = links.map(link => {
       return {
         // id: "option_move-to",
         key: `external-link_${link.sharedTo.id}`,
@@ -598,23 +634,23 @@ const SectionHeaderContent = (props) => {
     const publicAction = links.length
       ? isMultiExternalLink
         ? {
-            id: "header_option_copy-external-link",
-            key: "copy-external-link",
-            label: t("SharingPanel:CopyExternalLink"),
-            icon: CopyToReactSvgUrl,
-            disabled: !isPublicRoomType,
-            items: roomLinks,
-          }
+          id: "header_option_copy-external-link",
+          key: "copy-external-link",
+          label: t("SharingPanel:CopyExternalLink"),
+          icon: CopyToReactSvgUrl,
+          disabled: !isPublicRoomType,
+          items: roomLinks,
+        }
         : {
-            id: "header_option_copy-external-link",
-            key: "copy-external-link",
-            label: t("SharingPanel:CopyExternalLink"),
-            icon: CopyToReactSvgUrl,
-            onClick: () => {
-              roomLinks[0]?.onClick();
-            },
-            disabled: !isPublicRoomType || roomLinks[0]?.disabled,
-          }
+          id: "header_option_copy-external-link",
+          key: "copy-external-link",
+          label: t("SharingPanel:CopyExternalLink"),
+          icon: CopyToReactSvgUrl,
+          onClick: () => {
+            roomLinks[0]?.onClick();
+          },
+          disabled: !isPublicRoomType || roomLinks[0]?.disabled,
+        }
       : {};
 
     if (isArchiveFolder) {
@@ -731,7 +767,7 @@ const SectionHeaderContent = (props) => {
         key: "archive-room",
         label: t("MoveToArchive"),
         icon: RoomArchiveSvgUrl,
-        onClick: (e) => onClickArchive(e),
+        onClick: e => onClickArchive(e),
         disabled: !isRoom || !security?.Move,
         "data-action": "archive",
         action: "archive",
@@ -785,7 +821,7 @@ const SectionHeaderContent = (props) => {
     ];
   };
 
-  const onSelect = (e) => {
+  const onSelect = e => {
     const key = e.currentTarget.dataset.key;
 
     isAccountsPage ? setAccountsSelected(key) : setSelected(key);
@@ -798,7 +834,7 @@ const SectionHeaderContent = (props) => {
   const getMenuItems = () => {
     const checkboxOptions = isAccountsPage ? (
       <>
-        {accountsCbMenuItems.map((key) => {
+        {accountsCbMenuItems.map(key => {
           const label = getAccountsCheckboxItemLabel(t, key);
           const id = getAccountsMenuItemId(key);
           return (
@@ -814,7 +850,7 @@ const SectionHeaderContent = (props) => {
       </>
     ) : (
       <>
-        {cbMenuItems.map((key) => {
+        {cbMenuItems.map(key => {
           const label = getCheckboxItemLabel(t, key);
           const id = getCheckboxItemId(key);
           return (
@@ -833,7 +869,7 @@ const SectionHeaderContent = (props) => {
     return checkboxOptions;
   };
 
-  const onChange = (checked) => {
+  const onChange = checked => {
     isAccountsPage
       ? setAccountsSelected(checked ? "all" : "none")
       : setSelected(checked ? "all" : "none");
@@ -861,7 +897,7 @@ const SectionHeaderContent = (props) => {
 
     filter.folder = id;
 
-    const itemIdx = selectedFolder.navigationPath.findIndex((v) => v.id === id);
+    const itemIdx = selectedFolder.navigationPath.findIndex(v => v.id === id);
 
     const state = {
       title: selectedFolder.navigationPath[itemIdx]?.title || "",
@@ -875,7 +911,7 @@ const SectionHeaderContent = (props) => {
     window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
-  const onInvite = (e) => {
+  const onInvite = e => {
     const type = e.item["data-type"];
 
     if (isGracePeriod) {
@@ -896,7 +932,7 @@ const SectionHeaderContent = (props) => {
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
       )
-      .catch((err) => toastr.error(err));
+      .catch(err => toastr.error(err));
   }, [resendInvitesAgain]);
 
   const headerMenu = isAccountsPage
@@ -919,7 +955,7 @@ const SectionHeaderContent = (props) => {
     tableGroupMenuVisible =
       isAccountsHeaderVisible &&
       tableGroupMenuVisible &&
-      headerMenu.some((x) => !x.disabled);
+      headerMenu.some(x => !x.disabled);
     tableGroupMenuProps.isChecked = isAccountsHeaderChecked;
     tableGroupMenuProps.isIndeterminate = isAccountsHeaderIndeterminate;
     tableGroupMenuProps.withoutInfoPanelToggler = false;
@@ -943,10 +979,10 @@ const SectionHeaderContent = (props) => {
   const currentTitle = isSettingsPage
     ? t("Common:Settings")
     : isAccountsPage
-    ? t("Common:Accounts")
-    : isLoading && stateTitle
-    ? stateTitle
-    : title;
+      ? t("Common:Accounts")
+      : isLoading && stateTitle
+        ? stateTitle
+        : title;
 
   const isCurrentRoom = isLoading && stateIsRoom ? stateIsRoom : isRoom;
 
@@ -965,11 +1001,10 @@ const SectionHeaderContent = (props) => {
 
   return (
     <Consumer key="header">
-      {(context) => (
+      {context => (
         <StyledContainer
           isRecycleBinFolder={isRecycleBinFolder}
-          hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
-        >
+          hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}>
           {tableGroupMenuVisible ? (
             <TableGroupMenu {...tableGroupMenuProps} />
           ) : (
@@ -1079,7 +1114,7 @@ export default inject(
     const { setIsSectionFilterLoading, showHeaderLoader, isLoading } =
       clientLoadingStore;
 
-    const setIsLoading = (param) => {
+    const setIsLoading = param => {
       setIsSectionFilterLoading(param);
     };
 
@@ -1126,7 +1161,8 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } = auth.settingsStore;
+    const { enablePlugins, theme, whiteLabelLogoUrls, isFrame } =
+      auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
@@ -1171,7 +1207,7 @@ export default inject(
     let folderPath = navigationPath;
 
     if (isFrame && !!pathParts) {
-      folderPath = navigationPath.filter((item) => !item.isRootRoom);
+      folderPath = navigationPath.filter(item => !item.isRootRoom);
     }
 
     const isRoot = isFrame

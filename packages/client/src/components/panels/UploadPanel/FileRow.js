@@ -16,7 +16,14 @@ import Button from "@docspace/components/button";
 const StyledFileRow = styled(Row)`
   width: calc(100% - 16px);
   box-sizing: border-box;
-  padding-left: 16px;
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          padding-right: 16px;
+        `
+      : css`
+          padding-left: 16px;
+        `}
   max-width: 484px;
 
   .row_context-menu-wrapper {
@@ -34,7 +41,7 @@ const StyledFileRow = styled(Row)`
 
   .styled-element,
   .row_content {
-    ${(props) =>
+    ${props =>
       props.showPasswordInput &&
       css`
         margin-top: ${isMobile ? "-44px" : "-48px"};
@@ -42,7 +49,14 @@ const StyledFileRow = styled(Row)`
   }
 
   .styled-element {
-    margin-right: 8px !important;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 8px !important;
+          `
+        : css`
+            margin-right: 8px !important;
+          `}
   }
 
   .upload-panel_file-name {
@@ -62,14 +76,28 @@ const StyledFileRow = styled(Row)`
   .password-input {
     position: absolute;
     top: 44px;
-    left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: 16px;
+          `
+        : css`
+            left: 16px;
+          `}
     max-width: 470px;
     width: calc(100% - 16px);
     display: flex;
   }
 
   #conversion-button {
-    margin-left: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 8px;
+          `
+        : css`
+            margin-left: 8px;
+          `}
 
     width: 100%;
     max-width: 78px;
@@ -81,8 +109,17 @@ const StyledFileRow = styled(Row)`
   }
 
   .upload_panel-icon {
-    margin-left: auto;
-    padding-left: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+            padding-right: 16px;
+          `
+        : css`
+            margin-left: auto;
+            padding-left: 16px;
+          `}
+
     line-height: 24px;
     display: flex;
     align-items: center;
@@ -94,7 +131,15 @@ const StyledFileRow = styled(Row)`
     }
 
     .enter-password {
-      margin-right: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 8px;
+            `
+          : css`
+              margin-right: 8px;
+            `}
+
       text-decoration: underline dashed;
       cursor: pointer;
     }
@@ -105,11 +150,18 @@ const StyledFileRow = styled(Row)`
   }
 
   .convert_icon {
-    padding-right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .upload-panel_file-row-link {
-    ${(props) =>
+    ${props =>
       !props.isMediaActive &&
       css`
         cursor: default;
@@ -143,7 +195,7 @@ class FileRow extends Component {
     });
   };
 
-  onCancelCurrentUpload = (e) => {
+  onCancelCurrentUpload = e => {
     //console.log("cancel upload ", e);
     const { id, action, fileId } = e.currentTarget.dataset;
     const { t, cancelCurrentUpload, cancelCurrentFileConversion } = this.props;
@@ -153,7 +205,7 @@ class FileRow extends Component {
       : cancelCurrentUpload(id, t);
   };
 
-  onMediaClick = (id) => {
+  onMediaClick = id => {
     const {
       setMediaViewerData,
       setUploadPanelVisible,
@@ -219,7 +271,7 @@ class FileRow extends Component {
     });
   }
 
-  onKeyDown = (e) => {
+  onKeyDown = e => {
     if (e.key === "Enter") {
       this.onButtonClick();
     }
@@ -261,8 +313,7 @@ class FileRow extends Component {
           }
           isMediaActive={isMediaActive}
           showPasswordInput={showPasswordInput}
-          withoutBorder
-        >
+          withoutBorder>
           <>
             {item.fileId ? (
               isMedia ? (
@@ -271,8 +322,7 @@ class FileRow extends Component {
                   fontWeight="600"
                   color={item.error && "#A3A9AE"}
                   truncate
-                  onClick={onMediaClick}
-                >
+                  onClick={onMediaClick}>
                   {name}
                   {fileExtension}
                 </Link>
@@ -283,8 +333,7 @@ class FileRow extends Component {
                     color={item.error && "#A3A9AE"}
                     truncate
                     href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                    target={downloadInCurrentTab ? "_self" : "_blank"}
-                  >
+                    target={downloadInCurrentTab ? "_self" : "_blank"}>
                     {name}
                     {fileExtension}
                   </Link>
@@ -316,8 +365,7 @@ class FileRow extends Component {
               <div
                 className="upload_panel-icon"
                 data-id={item.uniqueId}
-                onClick={this.onCancelCurrentUpload}
-              >
+                onClick={this.onCancelCurrentUpload}>
                 <LoadingButton item={item} />
               </div>
             )}
@@ -384,18 +432,15 @@ export default inject(
       files: uploadedFiles,
       clearUploadedFilesHistory,
     } = uploadDataStore;
-    const {
-      playlist,
-      setMediaViewerData,
-      setCurrentItem,
-    } = mediaViewerDataStore;
+    const { playlist, setMediaViewerData, setCurrentItem } =
+      mediaViewerDataStore;
 
     const isMedia =
       item.fileInfo?.viewAccessability?.ImageView ||
       item.fileInfo?.viewAccessability?.MediaView;
 
     const isMediaActive =
-      playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
+      playlist.findIndex(el => el.fileId === item.fileId) !== -1;
 
     const fileIcon = getIconSrc(ext, 32);
 
