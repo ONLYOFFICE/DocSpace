@@ -14,10 +14,15 @@ const StyledHeader = styled.div`
   padding: ${(props) => (props.isPersonal ? "0px 16px 12px" : "12px 16px")};
   ${(props) =>
     props.isPersonal &&
-    css`
-      margin-left: -12px;
-      margin-right: 12px;
-    `}
+    (props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: -12px;
+          margin-left: 12px;
+        `
+      : css`
+          margin-left: -12px;
+          margin-right: 12px;
+        `)}
 
   display: flex;
   align-items: center;
@@ -80,7 +85,10 @@ const StyledOwner = styled.div`
     align-items: center;
 
     svg:first-child {
-      margin-right: 12px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 12px;`
+          : `margin-right: 12px;`}
     }
   }
 `;
@@ -112,7 +120,10 @@ const StyledItem = styled.div`
     align-items: center;
 
     svg:first-child {
-      margin-right: 12px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `margin-left: 12px;`
+          : `margin-right: 12px;`}
     }
   }
 `;
@@ -129,7 +140,10 @@ const StyledButtons = styled.div`
   padding: 4px;
 
   svg:first-child {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 `;
 

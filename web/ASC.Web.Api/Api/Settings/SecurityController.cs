@@ -437,7 +437,7 @@ public class SecurityController : BaseSettingsController
         {
             throw new ArgumentOutOfRangeException(nameof(checkPeriod));
         }
-        if (blockTime < 0)
+        if (blockTime < 1)
         {
             throw new ArgumentOutOfRangeException(nameof(blockTime));
         }

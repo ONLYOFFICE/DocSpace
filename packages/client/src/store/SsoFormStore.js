@@ -287,8 +287,8 @@ class SsoFormStore {
     try {
       return await validateCerts(data);
     } catch (err) {
-      toastr.error(err);
-      console.error(err);
+      toastr.error(err?.response?.data || err);
+      console.error("validateCertificate failed", { err });
     }
   };
 

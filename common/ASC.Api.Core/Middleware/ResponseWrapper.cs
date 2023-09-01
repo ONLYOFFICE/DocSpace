@@ -63,6 +63,11 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.Forbidden;
                 message = "Access denied";
                 break;
+            case BruteForceCredentialException:
+            case RecaptchaException:
+                status = HttpStatusCode.Forbidden;
+                withStackTrace = false;
+                break;
             case AuthenticationException:
                 status = HttpStatusCode.Unauthorized;
                 withStackTrace = false;

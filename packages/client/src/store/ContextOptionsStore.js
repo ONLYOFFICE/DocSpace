@@ -620,7 +620,7 @@ class ContextOptionsStore {
     return promise;
   };
 
-  onClickInviteUsers = (e, item) => {
+  onClickInviteUsers = (e, roomType) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
 
     const { action } = data;
@@ -636,7 +636,7 @@ class ContextOptionsStore {
         roomId: action ? action : e,
         hideSelector: false,
         defaultAccess:
-          item.roomType === RoomsType.PublicRoom
+          roomType === RoomsType.PublicRoom
             ? ShareAccessRights.RoomManager
             : ShareAccessRights.ReadOnly,
       });
@@ -1038,7 +1038,7 @@ class ContextOptionsStore {
         key: "invite-users-to-room",
         label: t("Common:InviteUsers"),
         icon: PersonReactSvgUrl,
-        onClick: (e) => this.onClickInviteUsers(e, item),
+        onClick: (e) => this.onClickInviteUsers(e, item.roomType),
         disabled: false,
         action: item.id,
       },

@@ -38,7 +38,7 @@ export default function withContent(WrappedContent) {
       const { culture, item, personal } = this.props;
       const { created, updated } = item;
 
-      const locale = personal ? getCookie(LANGUAGE) : culture;
+      const locale = getCookie(LANGUAGE) || culture;
 
       const date = create ? created : updated;
 

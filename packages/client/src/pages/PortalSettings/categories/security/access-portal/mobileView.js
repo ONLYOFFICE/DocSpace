@@ -56,6 +56,12 @@ const MobileView = (props) => {
         onClickLink={onClickLink}
       />
       <MobileCategoryWrapper
+        title={t("BruteForceProtection")}
+        subtitle={t("BruteForceProtectionDescriptionMobile")}
+        url="/portal-settings/security/access-portal/brute-force-protection"
+        onClickLink={onClickLink}
+      />
+      <MobileCategoryWrapper
         title={t("AdminsMessage")}
         subtitle={
           <Trans i18nKey="AdminsMessageDescription" ns="Settings" t={t} />

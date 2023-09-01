@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 
@@ -18,7 +18,14 @@ const Header = styled.p`
   align-items: center;
 
   img {
-    margin-left: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 4px;
+          `
+        : css`
+            margin-left: 4px;
+          `}
   }
 `;
 
@@ -32,14 +39,14 @@ export const SSLVerification = ({ onChange, value }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const { t } = useTranslation(["Webhooks"]);
 
-  const handleOnChange = (e) => {
+  const handleOnChange = e => {
     onChange({
       target: { name: e.target.name, value: e.target.value === "true" },
     });
   };
 
   const toggleHint = () =>
-    setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
+    setIsHintVisible(prevIsHintVisible => !prevIsHintVisible);
   return (
     <Label
       text={
@@ -52,8 +59,7 @@ export const SSLVerification = ({ onChange, value }) => {
             onClick={toggleHint}
           />
         </Header>
-      }
-    >
+      }>
       <Hint isTooltip hidden={!isHintVisible} onClick={toggleHint}>
         {t("SSLHint")}
       </Hint>
