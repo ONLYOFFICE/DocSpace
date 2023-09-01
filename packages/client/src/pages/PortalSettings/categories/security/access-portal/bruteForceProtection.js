@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import { isMobile } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import {
-  LearnMoreWrapper,
-  StyledBruteForceProtection,
-} from "../StyledSecurity";
+import { StyledBruteForceProtection } from "../StyledSecurity";
 import isEqual from "lodash/isEqual";
 import FieldContainer from "@docspace/components/field-container";
 import toastr from "@docspace/components/toast/toastr";
@@ -44,7 +41,9 @@ const BruteForceProtection = (props) => {
     useState(defaultCheckPeriod);
 
   const [showReminder, setShowReminder] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInitLoading, setIsInitLoading] = useState(false);
+  const [isGetSettingsLoaded, setIsGetSettingsLoaded] = useState(false);
+
   const [isLoadingSave, setIsLoadingSave] = useState(false);
 
   const [hasErrorNumberAttempt, setHasErrorNumberAttempt] = useState(false);
@@ -62,43 +61,30 @@ const BruteForceProtection = (props) => {
     )
       return;
 
-    if (parseInt(currentNumberAttempt) === 0 || !currentNumberAttempt?.trim())
-      setHasErrorNumberAttempt(true);
-    else if (hasErrorNumberAttempt) setHasErrorNumberAttempt(false);
-
-    if (parseInt(currentBlockingTime) === 0 || !currentBlockingTime?.trim())
-      setHasErrorBlockingTime(true);
-    else if (hasErrorBlockingTime) setHasErrorBlockingTime(false);
-
-    if (parseInt(currentCheckPeriod) === 0 || !currentCheckPeriod?.trim())
-      setHasErrorCheckPeriod(true);
-    else if (hasErrorCheckPeriod) setHasErrorCheckPeriod(false);
-  }, [
-    currentNumberAttempt,
-    currentBlockingTime,
-    currentCheckPeriod,
-    hasErrorNumberAttempt,
-    hasErrorBlockingTime,
-    hasErrorCheckPeriod,
-  ]);
+    setHasErrorNumberAttempt(!parseInt(currentNumberAttempt));
+    setHasErrorBlockingTime(!parseInt(currentBlockingTime));
+    setHasErrorCheckPeriod(!parseInt(currentCheckPeriod));
+  }, [currentNumberAttempt, currentBlockingTime, currentCheckPeriod]);
 
   useEffect(() => {
-    if (!isInit) return;
-    getSettings();
-  }, [isLoading]);
+    if (numberAttempt && blockingTime && checkPeriod && isInitLoading) {
+      setIsInitLoading(false);
+      getSettings();
+    }
+  }, [numberAttempt, blockingTime, checkPeriod, isInitLoading]);
 
   useEffect(() => {
     checkWidth();
     window.addEventListener("resize", checkWidth);
 
-    if (!isInit) initSettings().then(() => setIsLoading(true));
-    else setIsLoading(true);
+    if (!isInit) initSettings().then(() => setIsInitLoading(true));
+    else setIsInitLoading(true);
 
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) return;
+    if (!isGetSettingsLoaded) return;
 
     const defaultSettings = getFromSessionStorage(
       "defaultBruteForceProtection"
@@ -124,10 +110,16 @@ const BruteForceProtection = (props) => {
 
     if (isEqual(defaultSettings, newSettings)) {
       setShowReminder(false);
-    } else {
-      setShowReminder(true);
+      return;
     }
-  }, [currentNumberAttempt, currentBlockingTime, currentCheckPeriod]);
+
+    setShowReminder(true);
+  }, [
+    currentNumberAttempt,
+    currentBlockingTime,
+    currentCheckPeriod,
+    isGetSettingsLoaded,
+  ]);
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
@@ -151,32 +143,35 @@ const BruteForceProtection = (props) => {
       setCurrentNumberAttempt(currentSettings.numberAttempt);
       setCurrentBlockingTime(currentSettings.blockingTime);
       setCurrentCheckPeriod(currentSettings.checkPeriod);
-    } else {
-      setCurrentNumberAttempt(defaultNumberAttempt);
-      setCurrentBlockingTime(defaultBlockingTime);
-      setCurrentCheckPeriod(defaultCheckPeriod);
+      setIsGetSettingsLoaded(true);
+      return;
     }
+
+    setCurrentNumberAttempt(defaultNumberAttempt);
+    setCurrentBlockingTime(defaultBlockingTime);
+    setCurrentCheckPeriod(defaultCheckPeriod);
+    setIsGetSettingsLoaded(true);
   };
 
   const onValidation = (inputValue) => {
     const isPositiveOrZeroNumber =
       Math.sign(inputValue) === 1 || Math.sign(inputValue) === 0;
 
-    if (
+    const isValidationPassed = !(
       !isPositiveOrZeroNumber ||
       inputValue.indexOf(".") !== -1 ||
+      inputValue.indexOf(" ") !== -1 ||
       inputValue.length > 4
-    )
-      return false;
+    );
 
-    return true;
+    return isValidationPassed;
   };
 
   const onChangeNumberAttempt = (e) => {
     const inputValue = e.target.value;
 
     onValidation(inputValue) &&
-      setCurrentNumberAttempt(inputValue.trim()) &&
+      setCurrentNumberAttempt(inputValue) &&
       setShowReminder(true);
   };
 
@@ -184,7 +179,7 @@ const BruteForceProtection = (props) => {
     const inputValue = e.target.value;
 
     onValidation(inputValue) &&
-      setCurrentBlockingTime(inputValue.trim()) &&
+      setCurrentBlockingTime(inputValue) &&
       setShowReminder(true);
   };
 
@@ -192,7 +187,7 @@ const BruteForceProtection = (props) => {
     const inputValue = e.target.value;
 
     onValidation(inputValue) &&
-      setCurrentCheckPeriod(inputValue.trim()) &&
+      setCurrentCheckPeriod(inputValue) &&
       setShowReminder(true);
   };
 
@@ -240,12 +235,7 @@ const BruteForceProtection = (props) => {
     <div className="error-text">{t("ErrorMessageBruteForceProtection")}</div>
   );
 
-  if (
-    (isMobile && !isInit && !isLoading) ||
-    (isMobile && currentNumberAttempt == null)
-  ) {
-    return <BruteForceProtectionLoader />;
-  }
+  if (isMobile && !isGetSettingsLoaded) return <BruteForceProtectionLoader />;
 
   return (
     <StyledBruteForceProtection>
