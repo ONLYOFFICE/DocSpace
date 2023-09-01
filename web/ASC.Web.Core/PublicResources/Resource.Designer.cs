@@ -1843,6 +1843,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too many login attempts. Please try again later.
+        /// </summary>
+        public static string ErrorTooManyLoginAttempts {
+            get {
+                return ResourceManager.GetString("ErrorTooManyLoginAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user could not be found.
         /// </summary>
         public static string ErrorUserNotFound {

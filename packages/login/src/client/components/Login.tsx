@@ -47,6 +47,7 @@ interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
   theme: IUserTheme;
   setTheme: (theme: IUserTheme) => void;
+  isBaseTheme: boolean;
 }
 
 const Login: React.FC<ILoginProps> = ({
@@ -59,6 +60,7 @@ const Login: React.FC<ILoginProps> = ({
   theme,
   setTheme,
   logoUrls,
+  isBaseTheme,
 }) => {
   const isRestoringPortal =
     portalSettings?.tenantStatus === TenantStatus.PortalRestore;
@@ -266,6 +268,8 @@ const Login: React.FC<ILoginProps> = ({
               </div>
             )}
             <LoginForm
+              isBaseTheme={isBaseTheme}
+              recaptchaPublicKey={portalSettings?.recaptchaPublicKey}
               isDesktop={!!isDesktopEditor}
               isLoading={isLoading}
               hashSettings={portalSettings?.passwordHash}
@@ -314,5 +318,6 @@ export default inject(({ loginStore }) => {
   return {
     theme: loginStore.theme,
     setTheme: loginStore.setTheme,
+    isBaseTheme: loginStore.theme.isBase,
   };
 })(observer(Login));
