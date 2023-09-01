@@ -459,8 +459,8 @@ change_mysql_config(){
 setup_openresty(){
 	echo -n "Configuring openresty... "
 	
-	if systemctl is-active nginx | grep -q "active"; then
-		systemctl disable nginx && systemctl stop nginx 
+	if systemctl list-units --type=service | grep -q nginx; then
+		systemctl stop nginx && systemctl disable nginx 
 	fi
 
 	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
