@@ -1,8 +1,11 @@
 import styled from "styled-components";
 
 export const RoundButton = styled.button`
-  width: 32px;
-  height: 32px;
+  width: ${(props) => (props.isMobile ? "32px" : "26px")};
+  height: ${(props) => (props.isMobile ? "32px" : "26px")};
+
+  box-sizing: border-box;
+
   border-radius: 50%;
   outline: 1px solid;
   outline-color: ${(props) => props.theme.calendar.outlineColor};
