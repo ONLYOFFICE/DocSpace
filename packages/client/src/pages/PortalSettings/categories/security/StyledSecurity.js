@@ -152,6 +152,7 @@ export const StyledBruteForceProtection = styled.div`
 
   .input-container {
     margin-bottom: 8px;
+    margin-right: 8px;
   }
 
   .mobile-description {
@@ -164,6 +165,7 @@ export const StyledBruteForceProtection = styled.div`
 
     .page-subtitle {
       line-height: 20px;
+      padding-right: 8px;
       color: ${(props) =>
         props.theme.client.settings.security.descriptionColor};
       padding-bottom: 7px;

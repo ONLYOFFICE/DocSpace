@@ -144,11 +144,11 @@ const AccessPortal = (props) => {
       <IpSecuritySection />
 
       <StyledSettingsSeparator />
-      <CategoryWrapper
-        notTooltip={true}
-        t={t}
-        title={t("BruteForceProtection")}
-      />
+
+      <Text fontSize="16px" fontWeight="700">
+        {t("BruteForceProtection")}
+      </Text>
+
       <BruteForceProtectionSection />
 
       <StyledSettingsSeparator />
