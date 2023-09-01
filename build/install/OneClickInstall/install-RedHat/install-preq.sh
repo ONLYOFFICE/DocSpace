@@ -94,10 +94,7 @@ END
 rpm --import https://openresty.org/package/pubkey.gpg
 OPENRESTY_REPO_FILE=$( [[ "$REV" -ge 9 ]] && echo "openresty2.repo" || echo "openresty.repo" )
 curl -o /etc/yum.repos.d/openresty.repo "https://openresty.org/package/centos/${OPENRESTY_REPO_FILE}"
-
-if systemctl is-active nginx | grep -q "active"; then
-	systemctl disable nginx && systemctl stop nginx
-fi
+systemctl is-active nginx | grep -q "^active" && systemctl stop nginx
 
 ${package_manager} -y install epel-release \
 			python3 \
