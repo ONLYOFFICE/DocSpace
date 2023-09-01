@@ -48,18 +48,11 @@ switch ( $env:DOCUMENT_SERVER_VERSION_CE )
   custom { $DOCUMENT_SERVER_CE_LINK = $env:DOCUMENT_SERVER_CE_CUSTOM_LINK.Replace(",", "") }
 }
 
-$nginx_version = '1.21.1'
 $psql_version = '14.0'
 
 $path_prereq = "${pwd}\build\install\win\"
 
 $prerequisites = @(
-  @{  
-    download_allways = $false; 
-    name = "nginx-${nginx_version}.zip";
-    link = "https://nginx.org/download/nginx-${nginx_version}.zip";
-  }
-
   @{  
     download_allways = $false; 
     name = "WinSW.NET4new.exe"; 

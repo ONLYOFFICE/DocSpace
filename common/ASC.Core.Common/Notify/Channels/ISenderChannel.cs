@@ -29,6 +29,6 @@ namespace ASC.Notify.Channels;
 public interface ISenderChannel
 {
     string SenderName { get; }
-    Task<SendResponse> DirectSend(INoticeMessage message);
-    Task SendAsync(INoticeMessage message);
+    Task<SendResponse> DirectSend(INoticeMessage message, IServiceScope serviceScope);
+    Task SendAsync(INoticeMessage message, IServiceScope serviceScope);
 }

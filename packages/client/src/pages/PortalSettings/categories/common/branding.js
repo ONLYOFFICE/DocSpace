@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import { isMobile, isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import Whitelabel from "./Branding/whitelabel";
 import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import styled from "styled-components";
@@ -61,6 +62,10 @@ const Branding = ({
   standalone,
 }) => {
   // const [viewDesktop, setViewDesktop] = useState(false);
+
+  useEffect(() => {
+    setDocumentTitle(t("Branding"));
+  }, []);
 
   useEffect(() => {
     return () => {

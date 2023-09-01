@@ -46,6 +46,7 @@ public class SecurityController : ControllerBase
     private readonly AuditActionMapper _auditActionMapper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ApiContext _apiContext;
+    private readonly CspSettingsHelper _cspSettingsHelper;
 
     public SecurityController(
         PermissionContext permissionContext,
@@ -58,7 +59,8 @@ public class SecurityController : ControllerBase
         SettingsManager settingsManager,
         AuditActionMapper auditActionMapper,
         CoreBaseSettings coreBaseSettings,
-        ApiContext apiContext)
+        ApiContext apiContext,
+        CspSettingsHelper cspSettingsHelper)
     {
         _permissionContext = permissionContext;
         _tenantManager = tenantManager;
@@ -71,6 +73,7 @@ public class SecurityController : ControllerBase
         _auditActionMapper = auditActionMapper;
         _coreBaseSettings = coreBaseSettings;
         _apiContext = apiContext;
+        _cspSettingsHelper = cspSettingsHelper;
     }
 
     /// <summary>
@@ -388,6 +391,30 @@ public class SecurityController : ControllerBase
         await _messageService.SendAsync(MessageAction.AuditSettingsUpdated);
 
         return inDto.Settings;
+    }
+
+    [HttpPost("csp")]
+    public async Task<CspDto> Csp(CspRequestsDto request)
+    {
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+
+        ArgumentNullException.ThrowIfNull(request);
+
+        var header = await _cspSettingsHelper.Save(request.Domains, request.SetDefaultIfEmpty);
+
+        return new CspDto { Domains = request.Domains, Header = header };
+    }
+
+    [HttpGet("csp")]
+    public async Task<CspDto> Csp()
+    {
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        var settings = _cspSettingsHelper.Load();
+        return new CspDto
+        {
+            Domains = settings.Domains,
+            Header = await _cspSettingsHelper.CreateHeaderAsync(settings.Domains, settings.SetDefaultIfEmpty)
+        };
     }
 
     private async Task DemandAuditPermissionAsync()

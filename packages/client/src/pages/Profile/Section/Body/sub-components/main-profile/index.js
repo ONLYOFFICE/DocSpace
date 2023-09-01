@@ -54,6 +54,7 @@ const MainProfile = (props) => {
     currentColorScheme,
     updateProfileCulture,
     documentationEmail,
+    setDialogData,
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
@@ -80,12 +81,18 @@ const MainProfile = (props) => {
     sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
+  const onChangePasswordClick = () => {
+    const email = profile.email;
+    setDialogData({ email });
+    setChangePasswordVisible(true);
+  };
+
   const userAvatar = profile.hasAvatar
     ? profile.avatarMax
     : DefaultUserAvatarMax;
 
   const tooltipLanguage = (
-    <Text as="div" fontSize="12px">
+    <Text as="div" fontSize="12px" color="#333333">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
@@ -273,7 +280,7 @@ const MainProfile = (props) => {
                 className="edit-button password-edit-button"
                 iconName={PencilOutlineReactSvgUrl}
                 size="12"
-                onClick={() => setChangePasswordVisible(true)}
+                onClick={onChangePasswordClick}
               />
             </div>
             <div className="language-combo-box-wrapper">
@@ -386,7 +393,7 @@ const MainProfile = (props) => {
               className="edit-button"
               iconName={PencilOutlineReactSvgUrl}
               size="12"
-              onClick={() => setChangePasswordVisible(true)}
+              onClick={onChangePasswordClick}
             />
           </div>
 
@@ -440,13 +447,8 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const {
-    theme,
-    helpLink,
-    culture,
-    currentColorScheme,
-    documentationEmail,
-  } = auth.settingsStore;
+  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
+    auth.settingsStore;
 
   const {
     targetUser: profile,
@@ -457,6 +459,8 @@ export default inject(({ auth, peopleStore }) => {
     setChangeAvatarVisible,
     updateProfileCulture,
   } = peopleStore.targetUserStore;
+
+  const { setDialogData } = peopleStore.dialogStore;
 
   return {
     theme,
@@ -474,5 +478,6 @@ export default inject(({ auth, peopleStore }) => {
     currentColorScheme,
     updateProfileCulture,
     documentationEmail,
+    setDialogData,
   };
 })(withCultureNames(observer(MainProfile)));
