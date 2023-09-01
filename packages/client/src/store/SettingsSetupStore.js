@@ -84,7 +84,6 @@ class SettingsSetupStore {
 
   initSettings = async () => {
     if (this.isInit) return;
-    this.isInit = true;
 
     if (authStore.isAuthenticated) {
       await authStore.settingsStore.getPortalPasswordSettings();
@@ -94,6 +93,8 @@ class SettingsSetupStore {
       await authStore.settingsStore.getSessionLifetime();
       await authStore.settingsStore.getBruteForceProtection();
     }
+
+    this.isInit = true;
   };
 
   setIsLoadingDownloadReport = (state) => {
