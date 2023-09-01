@@ -160,7 +160,7 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
-
+		
 		-js | --jwtsecret )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_JWT_SECRET=$2
