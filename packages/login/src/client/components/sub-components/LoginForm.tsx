@@ -222,15 +222,11 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         }
 
         if (recaptchaPublicKey && error?.response?.status === 403) {
-          if (isCaptcha) {
-            captchaRef.current.reset();
-          }
-
           setIsCaptcha(true);
         }
 
-        if (recaptchaPublicKey && error?.response?.status === 401) {
-          isCaptcha && setIsCaptcha(false);
+        if (isCaptcha) {
+          captchaRef.current.reset();
         }
 
         setIsEmailErrorShow(true);
