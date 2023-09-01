@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
 import ContextMenu from "@docspace/components/context-menu";
+import { isDesktop } from "@docspace/components/utils/device";
 
 const ContextButton = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ const ContextButton = (props) => {
         ref={menuRef}
         onHide={onHide}
         scaled={false}
-        leftOffset={150}
+        leftOffset={isDesktop() ? 150 : 0}
       />
     </div>
   );
