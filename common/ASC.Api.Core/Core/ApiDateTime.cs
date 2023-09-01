@@ -24,9 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.ComponentModel;
+
 namespace ASC.Api.Core;
 
-[System.Text.Json.Serialization.JsonConverter(typeof(ApiDateTimeConverter))]
+[TypeConverter(typeof(ApiDateTimeTypeConverter))]
+[JsonConverter(typeof(ApiDateTimeConverter))]
 public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 {
     public DateTime UtcTime { get; private set; }
@@ -345,7 +348,34 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     }
 }
 
-public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter<ApiDateTime>
+public class ApiDateTimeTypeConverter : DateTimeConverter
+{
+    public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    {
+        if (destinationType == typeof(string))
+        {
+            return value.ToString();
+        }
+
+        return base.ConvertTo(context, culture, value, destinationType);
+    }
+
+    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    {
+        if (value is string @string)
+        {
+            return ApiDateTime.Parse(@string, null, null);
+        }
+        if (value is DateTime time)
+        {
+            return new ApiDateTime(null, null, time);
+        }
+
+        return base.ConvertFrom(context, culture, value);
+    }
+}
+
+public class ApiDateTimeConverter : JsonConverter<ApiDateTime>
 {
     public override ApiDateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
