@@ -67,11 +67,8 @@ const BruteForceProtection = (props) => {
   }, [currentNumberAttempt, currentBlockingTime, currentCheckPeriod]);
 
   useEffect(() => {
-    if (numberAttempt && blockingTime && checkPeriod && isInitLoading) {
-      setIsInitLoading(false);
-      getSettings();
-    }
-  }, [numberAttempt, blockingTime, checkPeriod, isInitLoading]);
+    isInitLoading && isInit && getSettings();
+  }, [isInit, isInitLoading]);
 
   useEffect(() => {
     checkWidth();
@@ -128,6 +125,7 @@ const BruteForceProtection = (props) => {
   };
 
   const getSettings = () => {
+    setIsInitLoading(false);
     const currentSettings = getFromSessionStorage(
       "currentBruteForceProtection"
     );
@@ -157,14 +155,12 @@ const BruteForceProtection = (props) => {
     const isPositiveOrZeroNumber =
       Math.sign(inputValue) === 1 || Math.sign(inputValue) === 0;
 
-    const isValidationPassed = !(
+    return !(
       !isPositiveOrZeroNumber ||
       inputValue.indexOf(".") !== -1 ||
       inputValue.indexOf(" ") !== -1 ||
       inputValue.length > 4
     );
-
-    return isValidationPassed;
   };
 
   const onChangeNumberAttempt = (e) => {
