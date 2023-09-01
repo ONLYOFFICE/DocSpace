@@ -9,6 +9,7 @@ import TrustedMailSection from "./trustedMail";
 import IpSecuritySection from "./ipSecurity";
 import AdminMessageSection from "./adminMessage";
 import SessionLifetimeSection from "./sessionLifetime";
+import BruteForceProtectionSection from "./bruteForceProtection";
 import MobileView from "./mobileView";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 import { size } from "@docspace/components/utils/device";
@@ -141,6 +142,15 @@ const AccessPortal = (props) => {
       </div>
 
       <IpSecuritySection />
+
+      <StyledSettingsSeparator />
+      <CategoryWrapper
+        notTooltip={true}
+        t={t}
+        title={t("BruteForceProtection")}
+      />
+      <BruteForceProtectionSection />
+
       <StyledSettingsSeparator />
 
       <Text fontSize="16px" fontWeight="700">
@@ -212,4 +222,4 @@ export default inject(({ auth }) => {
     lifetimeSettingsUrl,
     ipSettingsUrl,
   };
-})(withTranslation("Settings")(observer(AccessPortal)));
+})(withTranslation(["Settings", "Profile"])(observer(AccessPortal)));
