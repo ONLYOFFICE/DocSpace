@@ -41,7 +41,6 @@ const BruteForceProtection = (props) => {
     useState(defaultCheckPeriod);
 
   const [showReminder, setShowReminder] = useState(false);
-  const [isInitLoading, setIsInitLoading] = useState(false);
   const [isGetSettingsLoaded, setIsGetSettingsLoaded] = useState(false);
 
   const [isLoadingSave, setIsLoadingSave] = useState(false);
@@ -67,15 +66,14 @@ const BruteForceProtection = (props) => {
   }, [currentNumberAttempt, currentBlockingTime, currentCheckPeriod]);
 
   useEffect(() => {
-    isInitLoading && isInit && getSettings();
-  }, [isInit, isInitLoading]);
+    isInit && getSettings();
+  }, [isInit]);
 
   useEffect(() => {
     checkWidth();
     window.addEventListener("resize", checkWidth);
 
-    if (!isInit) initSettings().then(() => setIsInitLoading(true));
-    else setIsInitLoading(true);
+    if (!isInit) initSettings();
 
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
@@ -125,7 +123,6 @@ const BruteForceProtection = (props) => {
   };
 
   const getSettings = () => {
-    setIsInitLoading(false);
     const currentSettings = getFromSessionStorage(
       "currentBruteForceProtection"
     );
