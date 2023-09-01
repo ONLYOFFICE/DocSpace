@@ -425,6 +425,10 @@ class SettingsStore {
     }
   };
 
+  get isPortalDeactivate() {
+    return this.tenantStatus === TenantStatus.PortalDeactivate;
+  }
+
   init = async () => {
     this.setIsLoading(true);
     const requests = [];
@@ -432,11 +436,14 @@ class SettingsStore {
     requests.push(
       this.getPortalSettings(),
       this.getAppearanceTheme(),
-      this.getWhiteLabelLogoUrls(),
-      this.getBuildVersionInfo()
+      this.getWhiteLabelLogoUrls()
     );
 
     await Promise.all(requests);
+
+    if (!this.isPortalDeactivate) {
+      await this.getBuildVersionInfo();
+    }
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
