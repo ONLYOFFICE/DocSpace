@@ -1,32 +1,33 @@
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
+import {
+  getCorrectBorderRadius,
+  getCorrectFourValuesStyle,
+} from "@docspace/components/utils/rtlUtils";
 
 const StyledComponent = styled.div`
   display: inline-flex;
   width: 100%;
 
   .menu {
-    width: ${props => (props.isViewTablet ? "61px" : "251px")};
+    width: ${(props) => (props.isViewTablet ? "61px" : "251px")};
     display: flex;
     flex-direction: column;
-    padding: ${props =>
+    padding: ${(props) =>
       props.isViewTablet ? "15px 0px 0px" : "21px 0px 17px"};
 
     height: 100%;
-    background: ${props =>
+    background: ${(props) =>
       props.themePreview === "Light" ? "#f8f9f9" : "#292929"};
-    ${props =>
+    ${(props) =>
       props.withBorder &&
       css`
         border-width: 1px;
         border-style: solid;
-        border-radius: ${props.theme.interfaceDirection === "rtl"
-          ? `
-          0px 16px 16px 0px;
-            `
-          : `
-            16px 0px 0px 16px;
-            `};
+        border-radius: ${getCorrectBorderRadius(
+          "16px 0px 0px 16px",
+          props.theme.interfaceDirection
+        )};
       `}
   }
 
@@ -41,7 +42,7 @@ const StyledComponent = styled.div`
   .line {
     width: 20px;
     height: 1px;
-    background: ${props =>
+    background: ${(props) =>
       props.themePreview === "Light" ? "#eceef1" : "#474747"};
     margin: 0 20px 31px 20px;
   }
@@ -49,9 +50,12 @@ const StyledComponent = styled.div`
   .tablet-category-notice {
     padding: 20px 16px 20px 16px;
 
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
+
     circle {
-      fill: ${props => props.colorPreview};
-      stroke: ${props => props.themePreview === "Dark" && "#292929"};
+      fill: ${(props) => props.colorPreview};
+      stroke: ${(props) => props.themePreview === "Dark" && "#292929"};
     }
   }
 
@@ -66,12 +70,12 @@ const StyledComponent = styled.div`
   }
 
   .section-flex-tablet {
-    display: ${props => props.isViewTablet && "flex"};
-    justify-content: ${props => props.isViewTablet && "space-between"};
+    display: ${(props) => props.isViewTablet && "flex"};
+    justify-content: ${(props) => props.isViewTablet && "space-between"};
   }
 
   .tile-half {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 16px;
@@ -88,13 +92,13 @@ const StyledComponent = styled.div`
 
   .section {
     position: relative;
-    width: ${props => (props.isViewTablet ? "100%" : "56%")};
-    ${props =>
+    width: ${(props) => (props.isViewTablet ? "100%" : "56%")};
+    ${(props) =>
       props.withBorder &&
       css`
         border-width: 1px;
         border-style: solid;
-        ${props =>
+        ${(props) =>
           props.theme.interfaceDirection === "rtl"
             ? css`
                 margin-right: 12px;
@@ -107,14 +111,14 @@ const StyledComponent = styled.div`
                 border-left-style: none;
               `}
       `}
-    background: ${props =>
+    background: ${(props) =>
       props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
   }
 
   .section-header {
     display: flex;
     align-items: flex-start;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding: 26px 20px 28px 0px;
@@ -125,7 +129,7 @@ const StyledComponent = styled.div`
   }
 
   .section-header-loader {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 17px;
@@ -140,7 +144,7 @@ const StyledComponent = styled.div`
     height: 30px;
     border-width: 1px;
     border-style: solid;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin: 0px 20px 24px 0px;
@@ -156,7 +160,7 @@ const StyledComponent = styled.div`
 
   .section-search-loader {
     padding-top: 9px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 8px;
@@ -176,25 +180,25 @@ const StyledComponent = styled.div`
 
   .main-button-preview {
     cursor: auto;
-    background-color: ${props => props.colorPreview};
+    background-color: ${(props) => props.colorPreview};
     border-radius: 3px;
 
     &:active {
-      background-color: ${props => props.colorPreview} !important;
+      background-color: ${(props) => props.colorPreview} !important;
       opacity: none !important;
       filter: none !important;
     }
   }
 
   .color-badge rect {
-    fill: ${props =>
+    fill: ${(props) =>
       props.themePreview === "Dark" && props.selectThemeId === 7
         ? "#FFFFFF"
         : props.colorPreview} !important;
   }
 
   .color-loaders rect {
-    fill: ${props =>
+    fill: ${(props) =>
       props.themePreview === "Light"
         ? `${props.colorPreview} !important`
         : `#FFFFFF !important`};
@@ -212,7 +216,7 @@ const StyledComponent = styled.div`
   }
 
   .loaders-theme {
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.themePreview === "Light" ? "#FFF" : "#858585"};
     border-radius: 3px;
   }
@@ -229,7 +233,7 @@ const StyledComponent = styled.div`
 
   .padding-right {
     height: 16px;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 8px;
@@ -245,7 +249,7 @@ const StyledComponent = styled.div`
   }
 
   .menu-badge {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-right: 93px;
@@ -260,25 +264,20 @@ const StyledComponent = styled.div`
   .select {
     padding-top: 9px;
     padding-bottom: 9px !important;
-    background: ${props =>
+    background: ${(props) =>
       props.themePreview === "Light" ? "#f0f0f0" : "#333333"};
   }
 
   .section-tile {
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            padding: ${props =>
-              props.isViewTablet ? "0 20px 0 0px " : "0 20px 0"};
-          `
-        : css`
-            padding: ${props =>
-              props.isViewTablet ? "0 0 0 20px" : "0 20px 0"};
-          `}
+    padding: ${({ isViewTablet, theme }) => {
+      const value = isViewTablet ? "0 0 0 20px" : "0 20px 0";
+
+      return getCorrectFourValuesStyle(value, theme.interfaceDirection);
+    }};
   }
 
   .border-color {
-    border-color: ${props =>
+    border-color: ${(props) =>
       props.themePreview === "Light" ? "#d0d5da" : "#474747"};
   }
 
@@ -287,11 +286,11 @@ const StyledComponent = styled.div`
     border-style: solid;
     border-radius: 12px;
     margin-bottom: 16px;
-    width: ${props => props.isViewTablet && "64%"};
+    width: ${(props) => props.isViewTablet && "64%"};
   }
 
   .background {
-    background: ${props =>
+    background: ${(props) =>
       props.themePreview === "Light" ? "#FFF" : "#292929"};
   }
 
@@ -305,12 +304,12 @@ const StyledComponent = styled.div`
 
   .tablet-tile-name {
     width: 44% !important;
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             margin-right: 16px;
             border-left: none !important;
-            border-radius: 12px 16px 16px 16px !important;
+            border-radius: 0 12px 0 16px !important;
           `
         : css`
             margin-left: 16px;
@@ -320,20 +319,13 @@ const StyledComponent = styled.div`
   }
 
   .only-tile-name {
-    width: ${props => props.isViewTablet && "66%"};
+    width: ${(props) => props.isViewTablet && "66%"};
     border-top-width: 1px;
     border-right-width: 1px;
     border-left-width: 1px;
     border-style: solid;
     border-bottom: none;
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            border-radius: 12px 0px 0px 12px;
-          `
-        : css`
-            border-radius: 12px 0px 0px 12px;
-          `}
+    border-radius: 12px 12px 0px 0px;
   }
 
   .action-button {
@@ -347,14 +339,11 @@ const StyledComponent = styled.div`
     display: flex;
     border-top-width: 1px;
     border-top-style: solid;
-    ${props =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            padding: 16px 16px 16px 0px;
-          `
-        : css`
-            padding: 16px 0px 16px 16px;
-          `}
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle(
+        `16px 0px 16px 16px`,
+        theme.interfaceDirection
+      )};
   }
 
   .tile-container {
@@ -363,7 +352,7 @@ const StyledComponent = styled.div`
   }
 
   .tile-icon {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 12px;
@@ -374,7 +363,7 @@ const StyledComponent = styled.div`
   }
 
   .section-badge {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 12px;
@@ -385,7 +374,7 @@ const StyledComponent = styled.div`
   }
 
   .pin {
-    ${props =>
+    ${(props) =>
       props.theme.interfaceDirection === "rtl"
         ? css`
             padding-left: 14px;
@@ -395,7 +384,7 @@ const StyledComponent = styled.div`
           `}
 
     path {
-      fill: ${props =>
+      fill: ${(props) =>
         props.themePreview === "Light"
           ? `${props.colorPreview} !important`
           : `#FFFFFF !important`};
@@ -413,7 +402,7 @@ const StyledComponent = styled.div`
 
 const StyledFloatingButton = styled.div`
   bottom: 24px;
-  ${props =>
+  ${(props) =>
     props.theme.interfaceDirection === "rtl"
       ? css`
           left: 24px;
@@ -424,7 +413,7 @@ const StyledFloatingButton = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: ${props => props.colorPreview};
+  background-color: ${(props) => props.colorPreview};
   text-align: center;
   position: absolute;
   display: flex;
@@ -442,7 +431,7 @@ const IconBox = styled.div`
 
   svg {
     path {
-      fill: ${props => props.colorCheckImg};
+      fill: ${(props) => props.colorCheckImg};
     }
   }
 `;
