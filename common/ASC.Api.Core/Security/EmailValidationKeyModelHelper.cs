@@ -87,6 +87,10 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("uid", out var userIdKey);
         Guid.TryParse(userIdKey, out var userId);
 
+        request.TryGetValue("module", out var module);
+        request.TryGetValue("first", out var first);
+        request.TryGetValue("sms", out var sms);
+
         return new EmailValidationKeyModel
         {
             Email = _email,
@@ -94,12 +98,15 @@ public class EmailValidationKeyModelHelper
             Key = key,
             Type = cType,
             UiD = userId,
+            Module = module,
+            First = first,
+            Sms = sms
         };
     }
 
     public async Task<ValidationResult> ValidateAsync(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type) = inDto;
+        var (key, emplType, email, uiD, type, module, first, sms) = inDto;
 
         ValidationResult checkKeyResult;
 
@@ -165,7 +172,7 @@ public class EmailValidationKeyModelHelper
             case ConfirmType.TfaActivation:
             case ConfirmType.TfaAuth:
             case ConfirmType.Auth:
-                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type, key, _provider.ValidAuthKeyInterval);
+                checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + first + module + sms, key, _provider.ValidAuthKeyInterval);
                 break;
 
             case ConfirmType.PortalContinue:
