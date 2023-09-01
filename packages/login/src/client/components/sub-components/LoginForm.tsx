@@ -17,6 +17,7 @@ import { thirdPartyLogin } from "@docspace/common/api/user";
 import { setWithCredentialsStatus } from "@docspace/common/api/client";
 import { isMobileOnly } from "react-device-detect";
 import ReCAPTCHA from "react-google-recaptcha";
+import { StyledCaptcha } from "../StyledLogin";
 
 interface ILoginFormProps {
   isLoading: boolean;
@@ -63,6 +64,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isCaptcha, setIsCaptcha] = useState(false);
   const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
     useState(IS_ROOMS_MODE);
+
+  const [isCaptchaSuccessful, setIsCaptchaSuccess] = useState(false);
+  const [isCaptchaError, setIsCaptchaError] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -152,6 +156,11 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     let captchaToken = "";
 
     if (recaptchaPublicKey && isCaptcha) {
+      if (!isCaptchaSuccessful) {
+        setIsCaptchaError(true);
+        return;
+      }
+
       captchaToken = captchaRef.current.getValue();
     }
 
@@ -277,6 +286,10 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     setIsLoading(false);
   };
 
+  const onSuccessfullyComplete = () => {
+    setIsCaptchaSuccess(true);
+  };
+
   return (
     <form className="auth-form-container">
       <FieldContainer
@@ -383,13 +396,19 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             />
           )}
           {recaptchaPublicKey && isCaptcha && (
-            <div className="captcha-container">
-              <ReCAPTCHA
-                sitekey={recaptchaPublicKey}
-                ref={captchaRef}
-                theme={isBaseTheme ? "light" : "dark"}
-              />
-            </div>
+            <StyledCaptcha isCaptchaError={isCaptchaError}>
+              <div className="captcha-wrapper">
+                <ReCAPTCHA
+                  sitekey={recaptchaPublicKey}
+                  ref={captchaRef}
+                  theme={isBaseTheme ? "light" : "dark"}
+                  onChange={onSuccessfullyComplete}
+                />
+              </div>
+              {isCaptchaError && (
+                <Text>{t("Errors:LoginWithBruteForceCaptcha")}</Text>
+              )}
+            </StyledCaptcha>
           )}
         </>
       )}
