@@ -1,3 +1,4 @@
 {
-  "jest.jestCommandLine": "yarn test"
+  "jest.jestCommandLine": "yarn test",
+  "cSpell.words": ["Responce"]
 }

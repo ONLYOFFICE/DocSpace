@@ -452,6 +452,7 @@ const LanguageAndTimeZone = (props) => {
           selectedOption={state.language}
           onSelect={onLanguageSelect}
           isDisabled={isLoading}
+          directionY="both"
           noBorder={false}
           scaled={true}
           scaledOptions={true}
@@ -470,6 +471,7 @@ const LanguageAndTimeZone = (props) => {
           tabIndex={2}
           id="comboBoxTimezone"
           options={timezones}
+          directionY="both"
           selectedOption={state.timezone}
           onSelect={onTimezoneSelect}
           isDisabled={isLoading}

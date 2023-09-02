@@ -1,6 +1,6 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import { useTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -18,14 +18,35 @@ const StyledContainer = styled.div`
   border-radius: 6px;
 
   .payer-info {
-    margin-left: 3px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 3px;
+          `
+        : css`
+            margin-left: 3px;
+          `}
   }
 
   .payer-info_avatar {
-    margin-right: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 16px;
+          `
+        : css`
+            margin-right: 16px;
+          `}
   }
   .payer-info {
-    margin-right: 3px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: 3px;
+          `
+        : css`
+            margin-right: 3px;
+          `}
   }
   .payer-info_wrapper {
     height: max-content;
@@ -36,7 +57,14 @@ const StyledContainer = styled.div`
 
     .payer-info_description {
       p {
-        margin-right: 3px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-left: 3px;
+              `
+            : css`
+                margin-right: 3px;
+              `}
       }
       div {
         display: inline-block;
@@ -177,7 +205,7 @@ const PayerInformationContainer = ({
     : {};
 
   return (
-    <StyledContainer style={style} theme={theme}>
+    <StyledContainer style={style}>
       <div className="payer-info_avatar">
         <Avatar
           size={"base"}

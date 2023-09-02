@@ -1,6 +1,6 @@
 import React from "react";
 import Loaders from "@docspace/common/components/Loaders";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const StyledLoader = styled.div`
   margin-top: 40px;
@@ -19,7 +19,14 @@ const StyledLoader = styled.div`
   }
 
   .checkbox {
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 
   .button {
@@ -27,7 +34,14 @@ const StyledLoader = styled.div`
   }
 
   .save {
-    padding-right: 8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 `;
 

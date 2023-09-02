@@ -18,7 +18,8 @@ export const getMonthElements = (
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile
 ) => {
   const onClick = (dateString) =>
     onDateClick(dateString, setObservedDate, setSelectedScene);
@@ -36,6 +37,7 @@ export const getMonthElements = (
         moment(month.key, dateFormat).endOf("month") < minDate ||
         moment(month.key, dateFormat).startOf("month") > maxDate
       }
+      isMobile={isMobile}
     >
       {month.value}
     </ColorTheme>
@@ -45,7 +47,7 @@ export const getMonthElements = (
       <ColorTheme
         className="month"
         themeId={ThemeType.DateItem}
-        isSecodary
+        isSecondary
         big
         key={months[i].key}
         onClick={() => onClick(months[i].key)}
@@ -53,6 +55,7 @@ export const getMonthElements = (
           moment(months[i].key, dateFormat).endOf("month") < minDate ||
           moment(months[i].key, dateFormat).startOf("month") > maxDate
         }
+        isMobile={isMobile}
       >
         {months[i].value}
       </ColorTheme>
@@ -78,6 +81,7 @@ export const getMonthElements = (
             moment(month.key, dateFormat).endOf("month") < minDate ||
             moment(month.key, dateFormat).startOf("month") > maxDate
           }
+          isMobile={isMobile}
         >
           {month.value}
         </ColorTheme>
@@ -95,6 +99,7 @@ export const getMonthElements = (
             moment(month.key, dateFormat).endOf("month") < minDate ||
             moment(month.key, dateFormat).startOf("month") > maxDate
           }
+          isMobile={isMobile}
         >
           {month.value}
         </ColorTheme>

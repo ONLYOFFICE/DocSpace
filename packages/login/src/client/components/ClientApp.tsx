@@ -1,5 +1,5 @@
 import React from "react";
-import { useSSR } from "react-i18next";
+import { useSSR, useTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import ErrorBoundary from "./ErrorBoundary";
 import App from "../App";
@@ -22,9 +22,15 @@ interface IClientApp extends IInitialState {
 const ThemeProviderWrapper = inject(({ auth }, props) => {
   const { currentColorScheme } = props;
   const { settingsStore } = auth;
-  const { theme, interfaceDirection } = settingsStore;
+  const { i18n } = useTranslation();
 
-  return { theme: { ...theme, interfaceDirection }, currentColorScheme };
+  return {
+    theme: {
+      ...settingsStore.theme,
+      interfaceDirection: i18n.dir(),
+    },
+    currentColorScheme,
+  };
 })(observer(ThemeProvider));
 
 const ClientApp: React.FC<IClientApp> = ({
@@ -53,7 +59,6 @@ const ClientAppWrapper: React.FC<IClientApp> = (props) => {
   };
   return (
     <ErrorBoundary onError={onError}>
-      <GlobalStyles />
       <ClientApp {...props} />
     </ErrorBoundary>
   );

@@ -1,3 +1,4 @@
+import ArSAReactSvgUrl from "PUBLIC_DIR/images/flags/ar-SA.react.svg?url";
 import AzReactSvgUrl from "PUBLIC_DIR/images/flags/az.react.svg?url";
 import BgReactSvgUrl from "PUBLIC_DIR/images/flags/bg.react.svg?url";
 import CsReactSvgUrl from "PUBLIC_DIR/images/flags/cs.react.svg?url";
@@ -594,6 +595,7 @@ export const thirdpartiesLogo = new Map([
 ]);
 
 export const flagsIcons = new Map([
+  ["ar-SA.react.svg", ArSAReactSvgUrl],
   ["az.react.svg", AzReactSvgUrl],
   ["bg.react.svg", BgReactSvgUrl],
   ["cs.react.svg", CsReactSvgUrl],

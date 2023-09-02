@@ -34,6 +34,7 @@ public interface ITenantQuotaFeatureChecker
 
 public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChecker where T : TenantQuotaFeature<T1> where T1 : IComparable<T1>
 {
+    private static readonly object _lock = new object();
     protected readonly ITenantQuotaFeatureStat<T, T1> _tenantQuotaFeatureStatistic;
     protected readonly TenantManager _tenantManager;
 
@@ -64,11 +65,14 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
 
     protected void Check(TenantQuota quota, T1 newValue)
     {
-        var val = quota.GetFeature<T>().Value;
-
-        if (newValue.CompareTo(val) > 0)
+        lock (_lock)
         {
-            throw new TenantQuotaException(string.Format(Exception, val));
+            var val = quota.GetFeature<T>().Value;
+
+            if (newValue.CompareTo(val) > 0)
+            {
+                throw new TenantQuotaException(string.Format(Exception, val));
+            }
         }
     }
 }
