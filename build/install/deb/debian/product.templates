@@ -32,15 +32,10 @@ Type: string
 Default: onlyoffice
 Description: Database name:
 
-Template: {{product}}/ds-host
+Template: {{product}}/ds-url
 Type: string
-Default: localhost
-Description: ONLYOFFICE Docs host:
-
-Template: {{product}}/ds-port
-Type: string
-Default: 8083
-Description: ONLYOFFICE Docs port:
+Default: http://localhost:8083
+Description: ONLYOFFICE Docs URL:
 
 Template: {{product}}/elasticsearch-sheme
 Type: select

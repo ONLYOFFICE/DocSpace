@@ -72,12 +72,10 @@ case "$1" in
 
 		args+=(-ess "$ELK_SHEME" -esh "$ELK_HOST" -esp "$ELK_PORT" );
 
-		db_get {{product}}/ds-host || true
-		DOCUMENT_SERVER_HOST="$RET"
-		db_get {{product}}/ds-port || true
-		DOCUMENT_SERVER_PORT="$RET"
+		db_get {{product}}/ds-url || true
+		DOCUMENT_SERVER_URL_EXTERNAL="$RET"
 
-		args+=(-dsh "$DOCUMENT_SERVER_HOST" -dsp "$DOCUMENT_SERVER_PORT" );
+		args+=(-docsurl "$DOCUMENT_SERVER_URL_EXTERNAL" );
 
 		bash /usr/bin/{{product}}-configuration "${args[@]}"
 
