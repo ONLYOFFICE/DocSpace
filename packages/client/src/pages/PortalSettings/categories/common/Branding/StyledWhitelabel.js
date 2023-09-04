@@ -32,7 +32,7 @@ const WhiteLabelWrapper = styled.div`
 
     .wl-helper-label > div {
       display: inline-flex;
-      margin-left: 4px;
+      margin: 0 4px;
     }
   }
 
