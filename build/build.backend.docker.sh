@@ -17,7 +17,7 @@ doceditor=${local_ip}:5013
 login=${local_ip}:5011
 client=${local_ip}:5001
 management=${local_ip}:5015
-portal_url="http://$local_ip:8092"
+portal_url="http://$local_ip"
 
 echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"

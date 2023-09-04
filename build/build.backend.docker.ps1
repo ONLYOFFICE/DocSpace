@@ -14,7 +14,7 @@ $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")
 $Client = ($LocalIp + ":5001")
 $Management = ($LocalIp + ":5015")
-$PortalUrl = ("http://" + $LocalIp + ":8092")
+$PortalUrl = ("http://" + $LocalIp)
 $ProxyVersion="v1.0.0"
 
 # Stop all backend services"
