@@ -42,6 +42,7 @@ global using ASC.Files.Core.EF;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Studio.Core.Backup;
 global using ASC.Web.Studio.Core.Notify;
+global using ASC.Web.Studio.Utility;
 
 global using Autofac;
 
