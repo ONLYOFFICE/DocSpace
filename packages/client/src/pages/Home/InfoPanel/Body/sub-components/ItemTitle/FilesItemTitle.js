@@ -29,7 +29,9 @@ const FilesItemTitle = ({ t, selection, isSeveralItems }) => {
             alt="thumbnail-icon"
           />
         )}
-        {showDefaultRoomIcon && <RoomIcon title={selection.title} />}
+        {showDefaultRoomIcon && (
+          <RoomIcon title={selection.title} isArchive={selection.isArchive} />
+        )}
       </div>
       <Text className="text">{selection.title}</Text>
       {selection && (

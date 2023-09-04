@@ -17,7 +17,12 @@ const StyledIcon = styled.div`
     width: ${(props) => props.size + `px`};
     border-radius: 6px;
     vertical-align: middle;
-    background: ${(props) => props.color};
+    background: ${(props) =>
+      props.isArchive
+        ? props.theme.isBase
+          ? "#A3A9AE"
+          : "#FFFFFF"
+        : props.color};
     position: absolute;
     ${(props) =>
       !props.theme.isBase &&
@@ -34,6 +39,7 @@ const StyledIcon = styled.div`
     position: relative;
     ${(props) =>
       !props.theme.isBase &&
+      !props.isArchive &&
       css`
         color: ${(props) => props.color};
       `};
@@ -42,7 +48,7 @@ const StyledIcon = styled.div`
 
 StyledIcon.defaultProps = { theme: Base };
 
-const RoomIcon = ({ title, size = 32 }) => {
+const RoomIcon = ({ title, isArchive, size = 32 }) => {
   const randomPropertyValue = (object) => {
     const keys = Object.keys(object);
     if (keys.length > 0) {
@@ -64,7 +70,7 @@ const RoomIcon = ({ title, size = 32 }) => {
   const color = randomPropertyValue(roomsIconsColors);
 
   return (
-    <StyledIcon color={color} size={size}>
+    <StyledIcon color={color} size={size} isArchive={isArchive}>
       <div className="room-background" />
       <Text className="room-title">{roomTitle}</Text>
     </StyledIcon>

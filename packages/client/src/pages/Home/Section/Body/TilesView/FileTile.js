@@ -80,6 +80,7 @@ const FileTile = (props) => {
       }
       title={item.title}
       logo={item.logo}
+      isArchive={item.isArchive}
     />
   );
 

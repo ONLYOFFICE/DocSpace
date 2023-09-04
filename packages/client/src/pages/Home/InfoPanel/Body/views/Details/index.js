@@ -102,7 +102,11 @@ const Details = ({
             />
           )}
           {showDefaultRoomIcon && (
-            <RoomIcon title={selection.title} size={96} />
+            <RoomIcon
+              title={selection.title}
+              isArchive={selection.isArchive}
+              size={96}
+            />
           )}
         </StyledNoThumbnail>
       )}
