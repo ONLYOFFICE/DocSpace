@@ -50,7 +50,8 @@ public class ProviderManager
             ProviderConstants.Yandex,
             ProviderConstants.GosUslugi,
             ProviderConstants.AppleId,
-            ProviderConstants.Microsoft
+            ProviderConstants.Microsoft,
+            ProviderConstants.Zoom
         };
 
     public static List<string> InviteExceptProviders = new List<string>
