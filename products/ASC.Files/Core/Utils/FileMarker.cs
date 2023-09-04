@@ -1006,27 +1006,16 @@ public class FileMarker
 
     private static async Task SendChangeNoticeAsync(IEnumerable<Tag> tags, SocketManager socketManager)
     {
-        await ExecMarkAsync(tags.Where(t => t.EntryType == FileEntryType.File), socketManager.ExecMarkAsNewFilesAsync);
-        await ExecMarkAsync(tags.Where(t => t.EntryType == FileEntryType.Folder), socketManager.ExecMarkAsNewFoldersAsync);
+        const int chunkSize = 1000;
         
-        return;
-
-        async Task ExecMarkAsync(IEnumerable<Tag> filteredTags, Func<IEnumerable<Tag>, Task> requestAction)
+        foreach (var chunk in tags.Where(t => t.EntryType == FileEntryType.File).Chunk(chunkSize))
         {
-            const int packSize = 1000;
-            var count = filteredTags.Count();
-            var processed = 0;
+            await socketManager.ExecMarkAsNewFilesAsync(chunk);
+        }
 
-            while (processed < count)
-            {
-                var pack = filteredTags.Skip(processed)
-                    .Take(packSize)
-                    .ToList();
-
-                processed += pack.Count;
-
-                await requestAction(pack);
-            }
+        foreach (var chunk in tags.Where(t => t.EntryType == FileEntryType.Folder).Chunk(chunkSize))
+        {
+            await socketManager.ExecMarkAsNewFoldersAsync(chunk);
         }
     }
 }
