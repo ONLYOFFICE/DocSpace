@@ -65,7 +65,8 @@ const StyledHideArticleMenuButton = styled.div`
           : css`
               margin-left: 8px;
             `}
-      color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+      color: ${({ currentColorScheme }) =>
+        currentColorScheme?.main?.accent || "initial"};
     }
 
     @media ${tablet} {
