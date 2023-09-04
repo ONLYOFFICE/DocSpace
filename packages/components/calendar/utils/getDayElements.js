@@ -13,7 +13,8 @@ export const getDayElements = (
   selectedDate,
   handleDateChange,
   minDate,
-  maxDate
+  maxDate,
+  isMobile
 ) => {
   const onClick = (newDate) => onDateClick(handleDateChange, newDate);
 
@@ -32,6 +33,7 @@ export const getDayElements = (
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
         }
+        isMobile={isMobile}
       >
         {day.value}
       </ColorTheme>
@@ -46,6 +48,7 @@ export const getDayElements = (
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
         }
+        isMobile={isMobile}
       >
         {day.value}
       </ColorTheme>
@@ -61,6 +64,7 @@ export const getDayElements = (
           moment(day.key, dateFormat) < minDate ||
           moment(day.key, dateFormat) > maxDate
         }
+        isMobile={isMobile}
       >
         {day.value}
       </ColorTheme>
@@ -85,6 +89,7 @@ export const getDayElements = (
               moment(day.key, dateFormat) < minDate ||
               moment(day.key, dateFormat) > maxDate
             }
+            isMobile={isMobile}
           >
             {day.value}
           </ColorTheme>
@@ -101,6 +106,7 @@ export const getDayElements = (
               moment(day.key, dateFormat) < minDate ||
               moment(day.key, dateFormat) > maxDate
             }
+            isMobile={isMobile}
           >
             {day.value}
           </ColorTheme>

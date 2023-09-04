@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 export const StyledPage = styled.div`
   display: flex;
@@ -15,11 +16,13 @@ export const StyledPage = styled.div`
 
   @media ${hugeMobile} {
     margin: 32px 0;
-    padding: 0 8px 0 20px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 8px 0 20px", theme.interfaceDirection)};
   }
 
   @media ${mobile} {
-    padding: 0 8px 0 16px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("0 8px 0 16px", theme.interfaceDirection)};
   }
 
   .subtitle {

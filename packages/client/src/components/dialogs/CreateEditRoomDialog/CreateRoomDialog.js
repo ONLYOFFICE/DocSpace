@@ -11,11 +11,19 @@ import RoomTypeList from "./sub-components/RoomTypeList";
 import DialogHeader from "./sub-components/DialogHeader";
 
 const StyledModalDialog = styled(ModalDialog)`
+  #modal-dialog {
+    margin-bottom: -64px !important;
+  }
   .header-with-button {
     display: flex;
     align-items: center;
     flex-direction: row;
     gap: 12px;
+  }
+
+  .sharing_panel-arrow svg {
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && `transform: scaleX(-1);`}
   }
 
   ${(props) =>

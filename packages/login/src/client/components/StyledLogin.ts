@@ -22,6 +22,11 @@ interface ILoginContentProps {
   enabledJoin?: boolean;
 }
 
+interface IStyledCaptchaProps {
+  isCaptchaError?: boolean;
+  theme?: IUserTheme;
+}
+
 export const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props: ILoginFormWrapperProps) =>
@@ -38,7 +43,7 @@ export const LoginFormWrapper = styled.div`
   }
 
   .bg-cover {
-    background-image: ${props => props.bgPattern};
+    background-image: ${(props) => props.bgPattern};
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -55,20 +60,43 @@ export const LoginFormWrapper = styled.div`
 `;
 
 export const LoginContent = styled.div`
-    min-height: ${(props: ILoginContentProps) => props.enabledJoin ? "calc(100vh - 68px)" : "100vh"};
-    flex: 1 0 auto;
-    flex-direction: column;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
+  min-height: ${(props: ILoginContentProps) =>
+    props.enabledJoin ? "calc(100vh - 68px)" : "100vh"};
+  flex: 1 0 auto;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
 
-    @media ${hugeMobile} {
-      min-height: 100%;
-      justify-content: start;
-    }
-
+  @media ${hugeMobile} {
+    min-height: 100%;
+    justify-content: start;
+  }
 `;
 
+export const StyledCaptcha = styled.div`
+  margin: 24px 0;
+
+  width: fit-content;
+  .captcha-wrapper {
+    ${(props: IStyledCaptchaProps) =>
+      props.isCaptchaError &&
+      css`
+        border: ${props.theme.login.captcha.border};
+        padding: 4px 4px 4px 2px;
+      `};
+
+    margin-bottom: 2px;
+  }
+
+  ${(props: IStyledCaptchaProps) =>
+    props.isCaptchaError &&
+    css`
+      p {
+        color: ${props.theme.login.captcha.color};
+      }
+    `}
+`;

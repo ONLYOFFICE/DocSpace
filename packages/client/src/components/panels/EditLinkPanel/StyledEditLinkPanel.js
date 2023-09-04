@@ -5,7 +5,14 @@ import Scrollbar from "@docspace/components/scrollbar";
 const StyledEditLinkPanel = styled.div`
   .edit-link-panel {
     .scroll-body {
-      padding-right: 0 !important;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-left: 0 !important;
+            `
+          : css`
+              padding-right: 0 !important;
+            `}
     }
   }
 
@@ -26,7 +33,14 @@ const StyledEditLinkPanel = styled.div`
 
       .edit-link_required-icon {
         display: inline-flex;
-        margin-left: 2px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 2px;
+              `
+            : css`
+                margin-left: 2px;
+              `}
       }
 
       .edit-link_link-input {
@@ -36,8 +50,16 @@ const StyledEditLinkPanel = styled.div`
     }
 
     .edit-link-toggle-block {
-      padding: 0px 16px 20px;
-      border-top: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding: 0 0 20px 16px;
+            `
+          : css`
+              padding: 0 16px 20px 0;
+            `}
+
+      border-top: ${props => props.theme.filesPanels.sharing.borderBottom};
 
       .edit-link-toggle-header {
         display: flex;
@@ -45,8 +67,16 @@ const StyledEditLinkPanel = styled.div`
         padding-bottom: 8px;
 
         .edit-link-toggle {
-          margin-left: auto;
-          margin-right: 28px;
+          ${props =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-right: auto;
+                  margin-left: 28px;
+                `
+              : css`
+                  margin-left: auto;
+                  margin-right: 28px;
+                `}
         }
       }
       .edit-link_password-block {
@@ -75,7 +105,14 @@ const StyledEditLinkPanel = styled.div`
       }
 
       .edit-link_generate-icon {
-        margin: 16px 0px 0px 8px;
+        ${props =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin: 16px 8px 0px 0px;
+              `
+            : css`
+                margin: 16px 0px 0px 8px;
+              `}
       }
     }
   }
@@ -88,7 +125,7 @@ const StyledEditLinkPanel = styled.div`
 
   .edit-link_header {
     padding: 0 16px;
-    border-bottom: ${(props) => props.theme.filesPanels.sharing.borderBottom};
+    border-bottom: ${props => props.theme.filesPanels.sharing.borderBottom};
 
     .edit-link_heading {
       font-weight: 700;
@@ -113,7 +150,7 @@ const StyledScrollbar = styled(Scrollbar)`
 `;
 
 const StyledButtons = styled(Box)`
-  padding: 16px 16px 16px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -121,8 +158,8 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
-  border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
+  background: ${props => props.theme.filesPanels.sharing.backgroundButtons};
+  border-top: ${props => props.theme.filesPanels.sharing.borderTop};
 `;
 
 export { StyledEditLinkPanel, StyledScrollbar, StyledButtons };

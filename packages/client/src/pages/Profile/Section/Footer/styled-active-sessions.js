@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { hugeMobile } from "@docspace/components/utils/device";
 
 export const StyledFooter = styled.div`
@@ -7,7 +7,14 @@ export const StyledFooter = styled.div`
     font-weight: 600;
   }
   .icon-button {
-    margin-left: 4px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 4px;
+          `
+        : css`
+            margin-left: 4px;
+          `}
   }
 `;
 
@@ -26,9 +33,16 @@ export const TableRow = styled.tr`
 `;
 
 export const TableHeaderCell = styled.th`
-  border-top: 1px solid ${(props) => props.theme.activeSessions.borderColor};
-  border-bottom: 1px solid ${(props) => props.theme.activeSessions.borderColor};
-  text-align: left;
+  border-top: 1px solid ${props => props.theme.activeSessions.borderColor};
+  border-bottom: 1px solid ${props => props.theme.activeSessions.borderColor};
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          text-align: right;
+        `
+      : css`
+          text-align: left;
+        `}
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
@@ -39,10 +53,17 @@ export const TableHeaderCell = styled.th`
     content: "";
     position: absolute;
     top: 17px;
-    left: -8px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            right: -8px;
+          `
+        : css`
+            left: -8px;
+          `}
     width: 1px;
     height: 10px;
-    background: ${(props) => props.theme.activeSessions.sortHeaderColor};
+    background: ${props => props.theme.activeSessions.sortHeaderColor};
   }
 `;
 
@@ -51,9 +72,16 @@ export const TableBody = styled.tbody`
 `;
 
 export const TableDataCell = styled.td`
-  border-top: 1px solid ${(props) => props.theme.activeSessions.borderColor};
-  border-bottom: 1px solid ${(props) => props.theme.activeSessions.borderColor};
-  text-align: left;
+  border-top: 1px solid ${props => props.theme.activeSessions.borderColor};
+  border-bottom: 1px solid ${props => props.theme.activeSessions.borderColor};
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          text-align: right;
+        `
+      : css`
+          text-align: left;
+        `}
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
@@ -61,7 +89,7 @@ export const TableDataCell = styled.td`
   .tick-icon {
     svg {
       path {
-        fill: ${(props) => props.theme.activeSessions.tickIconColor};
+        fill: ${props => props.theme.activeSessions.tickIconColor};
       }
     }
   }
@@ -69,7 +97,7 @@ export const TableDataCell = styled.td`
   .remove-icon {
     svg {
       path {
-        fill: ${(props) => props.theme.activeSessions.removeIconColor};
+        fill: ${props => props.theme.activeSessions.removeIconColor};
       }
     }
   }
@@ -92,10 +120,17 @@ export const TableDataCell = styled.td`
 
   :first-child {
     font-size: 13px;
-    color: ${(props) => props.theme.activeSessions.color};
+    color: ${props => props.theme.activeSessions.color};
     span {
       color: #a3a9ae;
-      margin-left: 5px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 5px;
+            `
+          : css`
+              margin-left: 5px;
+            `}
     }
   }
 
@@ -110,7 +145,7 @@ export const TableDataCell = styled.td`
       right: -8px;
       width: 1px;
       height: 12px;
-      background: ${(props) => props.theme.activeSessions.sortHeaderColor};
+      background: ${props => props.theme.activeSessions.sortHeaderColor};
     }
   }
 
