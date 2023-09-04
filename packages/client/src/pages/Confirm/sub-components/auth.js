@@ -5,14 +5,29 @@ import { loginWithConfirmKey } from "@docspace/common/api/user";
 import toastr from "@docspace/components/toast/toastr";
 
 const Auth = (props) => {
-  console.log("Auth render");
   const { linkData } = props;
+  console.log("Auth render", { linkData });
+
+  const optionalKeys = {};
+
+  if (linkData.hasOwnProperty("first")) {
+    optionalKeys.First = linkData.first === "true";
+  }
+
+  if (linkData.hasOwnProperty("sms")) {
+    optionalKeys.Sms = linkData.sms === "true";
+  }
+
+  if (linkData.hasOwnProperty("module")) {
+    optionalKeys.Module = linkData.module;
+  }
 
   useEffect(() => {
     loginWithConfirmKey({
       ConfirmData: {
         Email: linkData.email,
         Key: linkData.key,
+        ...optionalKeys,
       },
     })
       .then((res) => {
