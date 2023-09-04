@@ -2041,7 +2041,7 @@ class FilesActionStore {
   onMarkAsRead = (item) => this.markAsRead([], [`${item.id}`], item);
 
   openFileAction = (item) => {
-    const { openDocEditor, isPrivacyFolder } = this.filesStore;
+    const { openDocEditor, isPrivacyFolder, setSelection } = this.filesStore;
 
     const { isLoading } = this.clientLoadingStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
@@ -2083,6 +2083,8 @@ class FilesActionStore {
       filter.folder = id;
 
       const state = { title, isRoot: false, rootFolderType, isRoom };
+
+      setSelection([]);
 
       window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
     } else {
