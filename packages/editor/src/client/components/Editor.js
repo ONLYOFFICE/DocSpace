@@ -20,7 +20,7 @@ import {
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
-import { assign } from "@docspace/common/utils";
+import { assign, frameCallEvent } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
@@ -595,8 +595,15 @@ function Editor({
   };
 
   const onSDKRequestClose = () => {
-    const backUrl = getBackUrl();
-    window.location.replace(backUrl);
+    const search = window.location.search;
+    const editorGoBack = new URLSearchParams(search).get("editorGoBack");
+
+    if (editorGoBack === "event") {
+      frameCallEvent({ event: "onEditorCloseCallback" });
+    } else {
+      const backUrl = getBackUrl();
+      window.location.replace(backUrl);
+    }
   };
 
   const getBackUrl = () => {
@@ -623,24 +630,27 @@ function Editor({
       }
 
       let goBack;
-      const search = window.location.search;
 
       if (fileInfo) {
+        const search = window.location.search;
         const editorGoBack = new URLSearchParams(search).get("editorGoBack");
 
-        goBack =
-          editorGoBack === "false"
-            ? {}
-            : {
-                blank: window.DocSpaceConfig?.editor?.openOnNewPage ?? true,
-                requestClose:
-                  window.DocSpaceConfig?.editor?.requestClose ?? false,
-                text: t("FileLocation"),
-              };
-
-        if (!window.DocSpaceConfig?.editor?.requestClose) {
-          goBack.blank = window.DocSpaceConfig?.editor?.openOnNewPage ?? true;
-          goBack.url = getBackUrl();
+        if (editorGoBack === "false") {
+          goBack = {};
+        } else if (editorGoBack === "event") {
+          goBack = {
+            requestClose: true,
+            text: t("FileLocation"),
+          };
+        } else {
+          goBack = {
+            requestClose: window.DocSpaceConfig?.editor?.requestClose ?? false,
+            text: t("FileLocation"),
+          };
+          if (!window.DocSpaceConfig?.editor?.requestClose) {
+            goBack.blank = window.DocSpaceConfig?.editor?.openOnNewPage ?? true;
+            goBack.url = getBackUrl();
+          }
         }
       }
 
