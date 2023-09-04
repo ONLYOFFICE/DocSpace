@@ -67,7 +67,7 @@ if (!$ExistsNode -or $Force) {
 
 if (!$ExistsProxy -or $Force) {
     Write-Host "Build proxy base image from source (apply new nginx config)" -ForegroundColor Green
-    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target proxy .
+    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target router .
 } else { 
     Write-Host "SKIP build proxy base image (already exists)" -ForegroundColor Blue
 }

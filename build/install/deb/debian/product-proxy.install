@@ -1,5 +1,7 @@
 ## COPY PUBLIC ##
+../../../build/install/common/{{product}}-ssl-setup                 usr/bin
 ../../../build/install/docker/config/nginx/templates/*.template     etc/onlyoffice/{{product}}/nginx
+../../../build/install/docker/config/nginx/onlyoffice*              etc/nginx/conf.d
 ../../../config/nginx/onlyoffice*.conf                              etc/nginx/conf.d
 ../../../config/nginx/includes/onlyoffice*.conf                     etc/nginx/includes
 ../../../build/deploy/public/*                                      var/www/{{product}}/public
