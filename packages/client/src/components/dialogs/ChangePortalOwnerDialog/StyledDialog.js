@@ -10,7 +10,10 @@ const StyledOwnerInfo = styled.div`
   margin-bottom: 24px;
 
   .info {
-    padding-left: 16px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 16px;`
+        : `padding-left: 16px;`}
     display: flex;
     flex-direction: column;
 
@@ -65,7 +68,10 @@ const StyledPeopleSelector = styled.div`
 
     color: ${(props) => props.theme.text.disableColor};
 
-    margin-left: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: 8px;`
+        : `margin-left: 8px;`}
   }
 `;
 

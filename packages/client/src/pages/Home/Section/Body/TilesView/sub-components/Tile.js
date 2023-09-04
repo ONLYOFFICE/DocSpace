@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 import ContextMenu from "@docspace/components/context-menu";
 import { tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
+import { withTheme } from "styled-components";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
@@ -196,7 +197,14 @@ const StyledTile = styled.div`
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
     margin-top: 8px;
-    margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${(props) => (props.isFolder ? "8px" : "7px")};
+          `
+        : css`
+            margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
+          `}
   }
 
   .file-icon {
@@ -209,18 +217,36 @@ const StyledTile = styled.div`
   .file-icon_container {
     width: 32px;
     height: 32px;
-    margin-left: ${(props) =>
-      props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
-    margin-right: ${(props) =>
-      props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: ${(props) =>
+              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+            margin-left: ${(props) =>
+              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+          `
+        : css`
+            margin-left: ${(props) =>
+              props.isFolder ? (props.isRoom ? "16px" : "15px") : "16px"};
+            margin-right: ${(props) =>
+              props.isFolder ? (props.isRoom ? "12px" : "7px") : "8px"};
+          `}
   }
 
   .tile-folder-loader {
     padding-top: 16px;
     width: 32px;
     height: 32px;
-    margin-left: 21px;
-    margin-right: 14px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 21px;
+            margin-left: 14px;
+          `
+        : css`
+            margin-left: 21px;
+            margin-right: 14px;
+          `}
   }
 
   .file-icon_container:hover {
@@ -304,8 +330,16 @@ const StyledFileTileBottom = styled.div`
     padding-top: 16px;
     width: 32px;
     height: 32px;
-    margin-left: 23px;
-    margin-right: 14px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 23px;
+            margin-left: 14px;
+          `
+        : css`
+            margin-left: 23px;
+            margin-right: 14px;
+          `}
   }
 `;
 
@@ -344,7 +378,14 @@ const StyledContent = styled.div`
 const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
-  margin-right: ${(props) => (props.isRoom ? "8px" : "4px")};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: ${(props) => (props.isRoom ? "8px" : "4px")};
+        `
+      : css`
+          margin-right: ${(props) => (props.isRoom ? "8px" : "4px")};
+        `}
   user-select: none;
   margin-top: 3px;
 
@@ -356,14 +397,28 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding: 8px 21px 8px 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 8px 8px 8px 21px;
+          `
+        : css`
+            padding: 8px 21px 8px 8px;
+          `}
   }
 `;
 
 StyledOptionButton.defaultProps = { theme: Base };
 
 const badgesPosition = css`
-  left: 9px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 9px;
+        `
+      : css`
+          left: 9px;
+        `}
 
   .badges {
     display: grid;
@@ -387,7 +442,14 @@ const badgesPosition = css`
 `;
 
 const quickButtonsPosition = css`
-  right: 9px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 9px;
+        `
+      : css`
+          right: 9px;
+        `}
 
   .badges {
     display: grid;
@@ -570,7 +632,8 @@ class Tile extends React.PureComponent {
       }
       this.cm.current.show(e);
     };
-
+    const contextMenuDirection =
+      this.props.theme.interfaceDirection === "rtl" ? "left" : "right";
     const icon = this.getIconFile();
     const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
@@ -770,7 +833,7 @@ class Tile extends React.PureComponent {
                 {renderContext ? (
                   <ContextMenuButton
                     className="expandButton"
-                    directionX="right"
+                    directionX={contextMenuDirection}
                     getData={getOptions}
                     displayType="toggle"
                     onClick={onContextMenu}
@@ -849,7 +912,7 @@ class Tile extends React.PureComponent {
                 {renderContext ? (
                   <ContextMenuButton
                     className="expandButton"
-                    directionX="right"
+                    directionX="left"
                     getData={getOptions}
                     displayType="toggle"
                     onClick={onContextMenu}
@@ -900,4 +963,4 @@ Tile.defaultProps = {
   item: {},
 };
 
-export default Tile;
+export default withTheme(Tile);

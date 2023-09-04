@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
@@ -27,6 +27,11 @@ const StyledComponent = styled.div`
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            transform: scaleX(-1);
+          `}
       }
       .category-item_paid {
         .paid-badge {
@@ -34,6 +39,11 @@ const StyledComponent = styled.div`
         }
         display: flex;
         svg {
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl" &&
+            css`
+              transform: scaleX(-1);
+            `}
           margin-top: auto;
         }
       }
@@ -48,7 +58,14 @@ const StyledComponent = styled.div`
     }
 
     .inherit-title-link {
-      margin-right: 4px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 4px;
+            `
+          : css`
+              margin-right: 4px;
+            `}
       font-size: 16px;
       font-weight: 700;
     }

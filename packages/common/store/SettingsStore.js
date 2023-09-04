@@ -155,8 +155,6 @@ class SettingsStore {
   cspDomains = [];
   publicRoomKey = "";
 
-  interfaceDirection = localStorage.getItem("interfaceDirection") || "ltr";
-
   numberAttempt = null;
   blockingTime = null;
   checkPeriod = null;
@@ -945,11 +943,6 @@ class SettingsStore {
     } catch (e) {
       toastr.error(e);
     }
-  };
-
-  setInterfaceDirection = (direction) => {
-    this.interfaceDirection = direction;
-    localStorage.setItem("interfaceDirection", direction);
   };
 }
 
