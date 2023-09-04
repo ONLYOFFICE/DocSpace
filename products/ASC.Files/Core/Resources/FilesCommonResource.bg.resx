@@ -296,8 +296,8 @@
     <value>Създавайте, редактирайте и споделяйте документи. Сътрудничество с тях в реално време. 100% съвместимост с гарантираните формати MS Office.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Създавайте, редактирайте и споделяйте документи. Сътрудничество с тях в реално време.
-100% съвместимост с гарантираните формати MS Office.</value>
+    <value>Редактирайте, споделяйте и си сътрудничете за офис документи в реално време. Създайте и управлявайте общи документи, достъпни за целия екип.
+Най-висока съвместимост с docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Създавайте, редактирайте, запазвайте и споделяйте документи. Свържете профилите си в Google Drive, Dropbox и Box и разполагайте с всички документи на едно място.</value>
@@ -415,5 +415,8 @@
   </data>
   <data name="MessageFillFormDraftDiscard" xml:space="preserve">
     <value>Файлът вече не е чернова за попълване на формуляра.</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Външен линк</value>
   </data>
 </root>

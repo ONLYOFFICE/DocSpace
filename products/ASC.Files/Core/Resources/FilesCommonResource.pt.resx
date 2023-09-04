@@ -152,7 +152,8 @@
     <value>Criar, editar, salvar e partilhar documentos directamente no seu portal. Associe também as suas contas Google Drive, Dropbox e Box e tenha todos os documentos no mesmo lugar.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Crie, edite, guarde e partilhe documentos. Associe as suas contas Google Drive, Dropbox e Box e tenha todos os documentos num só lugar.</value>
+    <value>Edite, partilhe e colabore em documentos do Office em tempo real. Crie e gerencie documentos comuns a que toda a equipa pode aceder.
+Alta compatibilidade com docx, xlsx, pptx.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documentos</value>
@@ -255,5 +256,8 @@
   </data>
   <data name="AceStatusEnum_Restrict" xml:space="preserve">
     <value>Negar acesso</value>
+  </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>Ligação externa</value>
   </data>
 </root>
