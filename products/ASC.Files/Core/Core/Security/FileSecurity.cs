@@ -931,10 +931,7 @@ public class FileSecurity : IFileSecurity
             if (shares == null)
             {
                 subjects = await GetUserSubjectsAsync(userId);
-                shares = (await GetSharesAsync(e))
-                    .Join(subjects, r => r.Subject, s => s, (r, s) => r)
-                    .ToList();
-                // shares ordered by level
+                shares = await GetSharesAsync(e, subjects);
             }
 
             if (e.FileEntryType == FileEntryType.File)
@@ -1176,9 +1173,9 @@ public class FileSecurity : IFileSecurity
         await securityDao.SetShareAsync(r);
     }
 
-    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)
+    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry, IEnumerable<Guid> subjects = null)
     {
-        return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
+        return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry, subjects);
     }
 
     public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
@@ -1730,6 +1727,11 @@ public class FileSecurity : IFileSecurity
         var room = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(entry.ParentId)
             .Where(f => DocSpaceHelper.IsRoom(f.FolderType))
             .FirstOrDefaultAsync();
+
+        if (room == null)
+        {
+            return false;
+        }
 
         _cachedRoomOwner.TryAdd(GetCacheKey(entry.ParentId), room.CreateBy);
 

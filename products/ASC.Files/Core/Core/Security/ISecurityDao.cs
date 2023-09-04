@@ -32,7 +32,7 @@ public interface ISecurityDao<T>
     Task SetShareAsync(FileShareRecord r);
     IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds);
     IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects);
-    Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry);
+    Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry, IEnumerable<Guid> subjects = null);
     Task RemoveSubjectAsync(Guid subject);
     IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries);
     IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(FileEntry<T> entry);
