@@ -18,7 +18,8 @@ export const MonthsBody = ({
     setSelectedScene,
     selectedDate,
     minDate,
-    maxDate
+    maxDate,
+    isMobile
   );
 
   return (

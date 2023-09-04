@@ -1,0 +1,8 @@
+{
+  "ChangeUserTypeButton": "تغيير النوع",
+  "ChangeUserTypeHeader": "تغيير نوع المستخدم",
+  "ChangeUserTypeMessage": "سيتم نقل المستخدمين من النوع \"{{ firstType }}\" إلى النوع '{{ secondType }}'.",
+  "ChangeUserTypeMessageMulti": "سيتم نقل المستخدمين المحددين إلى النوع \"{{ secondType }}\".",
+  "ChangeUserTypeMessageWarning": "لا يمكنك تغيير نوع مسؤولي DocSpace ولنفسك.",
+  "SuccessChangeUserType": "تم تغيير نوع المستخدم بنجاح"
+}

@@ -27,6 +27,8 @@ const AddUsersPanel = ({
   accessOptions,
   isMultiSelect,
   theme,
+  withoutBackground,
+  withBlur,
 }) => {
   const accessRight = defaultAccess
     ? defaultAccess
@@ -110,6 +112,8 @@ const AddUsersPanel = ({
         visible={visible}
         zIndex={310}
         isAside={true}
+        withoutBackground={withoutBackground}
+        withoutBlur={!withBlur}
       />
       <Aside
         className="header_aside-panel"

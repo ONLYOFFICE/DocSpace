@@ -27,7 +27,7 @@
   "Page": "페이지 (숫자) 표시",
   "RoomOrFolder": "방 또는 폴더",
   "RoomOrFolderDescription": "디스플레이할 섹션, 방 또는 폴더를 선택할 수 있습니다",
-  "SDKDescription": "JavaScript SDK를 사용하면 ONLYOFFICE DocSpace의 방 또는 폴더를 웹 인터페이스에 iframe으로 임베드할 수 있습니다. 여기에서 샘플 iframe 생성 및 CSP 구성을 위한 설정을 찾을 수 있습니다. 컴플리트 SDK를 사용하려면 (링크: API 라이브러리)를 참조하세요.",
+  "SDKDescription": "JavaScript SDK를 사용하면 ONLYOFFICE DocSpace의 방 또는 폴더를 웹 인터페이스에 iframe으로 임베드할 수 있습니다. 여기에서 샘플 iframe 생성 및 CSP 구성을 위한 설정을 찾을 수 있습니다. 컴플리트 SDK를 사용하려면 (링크: API 라이브러리)를 참조하세요",
   "SearchTerm": "검색어",
   "SortOrder": "정렬 순서",
   "Title": "이동 및 제목 설정"
