@@ -388,8 +388,8 @@ public class FileMarker
         {
             _semaphore.Release();
         }
-        
-        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(newTags), socketManager));
+
+        await SendChangeNoticeAsync(updateTags.Concat(newTags), socketManager);
 
         return;
 
@@ -398,6 +398,7 @@ public class FileMarker
             var tagDao1 = _daoFactory.GetTagDao<T1>();
             var exist = await tagDao1.GetNewTagsAsync(userId, entries).ToListAsync();
             var update = exist.Where(t => t.EntryType == FileEntryType.Folder).ToList();
+            update.ForEach(t => t.Count++);
             updateTags.AddRange(update);
 
             entries.ForEach(entry =>
@@ -595,7 +596,9 @@ public class FileMarker
             EntryType = r.EntryType
         });
 
-        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(toRemove), socketManager));
+        await SendChangeNoticeAsync(updateTags.Concat(toRemove), socketManager);
+        
+        return;
 
         async Task UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
         {
@@ -1001,17 +1004,28 @@ public class FileMarker
         _cache.Remove(key);
     }
 
-    private IEnumerable<Task> ExecMarkAsNewRequest(IEnumerable<Tag> tags, SocketManager socketManager)
+    private static async Task SendChangeNoticeAsync(IEnumerable<Tag> tags, SocketManager socketManager)
     {
-        foreach (var t in tags)
+        await ExecMarkAsync(tags.Where(t => t.EntryType == FileEntryType.File), socketManager.ExecMarkAsNewFilesAsync);
+        await ExecMarkAsync(tags.Where(t => t.EntryType == FileEntryType.Folder), socketManager.ExecMarkAsNewFoldersAsync);
+        
+        return;
+
+        async Task ExecMarkAsync(IEnumerable<Tag> filteredTags, Func<IEnumerable<Tag>, Task> requestAction)
         {
-            if (t.EntryType == FileEntryType.File)
+            const int packSize = 1000;
+            var count = filteredTags.Count();
+            var processed = 0;
+
+            while (processed < count)
             {
-                yield return socketManager.ExecMarkAsNewFileAsync(t.EntryId, t.Count, t.Owner);
-            }
-            else if (t.EntryType == FileEntryType.Folder)
-            {
-                yield return socketManager.ExecMarkAsNewFolderAsync(t.EntryId, t.Count, t.Owner);
+                var pack = filteredTags.Skip(processed)
+                    .Take(packSize)
+                    .ToList();
+
+                processed += pack.Count;
+
+                await requestAction(pack);
             }
         }
     }
