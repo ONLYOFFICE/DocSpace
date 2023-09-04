@@ -20,7 +20,6 @@ const modernViewButton = css`
       : props.theme.comboBox.button.backgroundModernView};
 
   border: none !important;
-  padding-right: 0px;
 `;
 
 const hoverModernViewButton = css`
@@ -64,7 +63,6 @@ const StyledComboButton = styled.div`
       : props.displayArrow
       ? props.theme.comboBox.button.selectPaddingRight
       : props.theme.comboBox.button.selectPaddingRightNoArrow};
-
   ${(props) => {
     return (
       props.theme.interfaceDirection === "rtl" &&
@@ -334,15 +332,17 @@ StyledArrowIcon.defaultProps = { theme: Base };
 
 const StyledLoader = styled(Loader)`
   position: absolute;
-  margin-left: ${(props) =>
-    props.displaySize === "content" ? "-16px" : "-8px"};
+
   ${(props) =>
-    props.theme.interfaceDirection === "rtl" &&
-    css`
-      margin-right: ${(props) =>
-        props.displaySize === "content" ? "-16px" : "-8px"};
-      margin-left: 0;
-    `}
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: ${(props) =>
+            props.displaySize === "content" ? "-16px" : "-8px"};
+        `
+      : css`
+          margin-left: ${(props) =>
+            props.displaySize === "content" ? "-16px" : "-8px"};
+        `}
   margin-top: 2px;
 `;
 

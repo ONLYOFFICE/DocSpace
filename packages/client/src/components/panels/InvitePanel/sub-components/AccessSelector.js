@@ -20,6 +20,7 @@ const AccessSelector = ({
   setIsOpenItemAccess,
   className,
   standalone,
+  isMobileView,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
@@ -87,9 +88,11 @@ const AccessSelector = ({
           fixedDirection={true}
           manualWidth={"fit-content"}
           isDefaultMode={true}
-          isAside={false}
+          isAside={isMobileView}
           setIsOpenItemAccess={setIsOpenItemAccess}
           manualY={"0px"}
+          withoutBackground={isMobileView}
+          withBackground={!isMobileView}
         />
       )}
     </StyledAccessSelector>

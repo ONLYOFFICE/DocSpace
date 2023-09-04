@@ -75,7 +75,14 @@ const StyledBody = styled.div`
       margin: auto 0;
     }
     .payment-info_managers-price {
-      margin-right: 6px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-left: 6px;
+            `
+          : css`
+              margin-right: 6px;
+            `}
     }
   }
 `;
@@ -274,7 +281,6 @@ const PaymentContainer = (props) => {
     <Consumer>
       {(context) => (
         <StyledBody
-          theme={theme}
           isChangeView={
             context.sectionWidth < size.smallTablet && expandArticle
           }

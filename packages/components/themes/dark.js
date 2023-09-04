@@ -47,6 +47,8 @@ const {
   strongBlue,
   lightGrayishStrongBlue,
   darkRed,
+
+  darkErrorStatus,
 } = globalColors;
 
 const Dark = {
@@ -2790,6 +2792,11 @@ const Dark = {
 
     container: {
       backgroundColor: "#474747",
+    },
+
+    captcha: {
+      border: `1px solid ${darkErrorStatus}`,
+      color: darkErrorStatus,
     },
   },
 

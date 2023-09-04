@@ -15,14 +15,28 @@ const StyledComponent = styled.div`
       margin: auto 0;
     }
     .smtp-settings_help-button {
-      margin-left: 4px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 4px;
+            `
+          : css`
+              margin-left: 4px;
+            `}
     }
   }
   .smtp-settings_title {
     display: flex;
 
     span {
-      margin-left: 2px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 2px;
+            `
+          : css`
+              margin-left: 2px;
+            `}
     }
   }
   .smtp-settings_input {

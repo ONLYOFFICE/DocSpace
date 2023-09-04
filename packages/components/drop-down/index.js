@@ -46,7 +46,9 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY,
       manualY: props.manualY,
+      borderOffset: props.theme.isBase ? 0 : 2, // need to remove the difference in width with the parent in a dark theme
       isDropdownReady: false, // need to avoid scrollbar appearing during dropdown position calculation
+      borderOffset: props.theme.isBase ? 0 : 2, // need to remove the difference in width with the parent in a dark theme
     };
 
     this.dropDownRef = React.createRef();
@@ -124,7 +126,7 @@ class DropDown extends React.PureComponent {
       return;
     }
     const { smallSectionWidth, forwardedRef } = this.props;
-    const { manualY } = this.state;
+    const { manualY, borderOffset } = this.state;
 
     const isRtl = this.props.theme.interfaceDirection === "rtl";
     const rects = this.dropDownRef.current.getBoundingClientRect();
@@ -181,7 +183,9 @@ class DropDown extends React.PureComponent {
       directionX: x,
       directionY: y,
       manualY: mY,
-      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      width: this.dropDownRef
+        ? this.dropDownRef.current.offsetWidth - borderOffset
+        : 240,
       isDropdownReady: true,
     });
   };
@@ -193,6 +197,7 @@ class DropDown extends React.PureComponent {
       return;
     }
     const dropDown = this.dropDownRef.current;
+    const { borderOffset } = this.state;
 
     const parentRects = parent.current.getBoundingClientRect();
 
@@ -256,7 +261,9 @@ class DropDown extends React.PureComponent {
     this.setState({
       directionX: this.props.directionX,
       directionY: this.props.directionY,
-      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
+      width: this.dropDownRef
+        ? this.dropDownRef.current.offsetWidth - borderOffset
+        : 240,
       isDropdownReady: true,
     });
   };
@@ -389,8 +396,12 @@ class DropDownContainer extends React.Component {
       isAside,
       withBackground,
       eventTypes,
+      forceCloseClickOutside,
+      withoutBackground,
     } = this.props;
-    const eventTypesProp = isMobile
+    const eventTypesProp = forceCloseClickOutside
+      ? {}
+      : isMobile
       ? { eventTypes: ["click, touchend"] }
       : eventTypes
       ? { eventTypes }
@@ -406,6 +417,7 @@ class DropDownContainer extends React.Component {
             withoutBlur={!withBlur}
             isAside={isAside}
             withBackground={withBackground}
+            withoutBackground={withoutBackground}
           />
         ) : null}
         <EnhancedComponent

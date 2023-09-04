@@ -30,6 +30,7 @@ const config = {
   mode: "development",
 
   devServer: {
+    allowedHosts: "all",
     devMiddleware: {
       publicPath: homepage,
     },

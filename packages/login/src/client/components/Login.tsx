@@ -1,22 +1,14 @@
-import React, {
-  useState,
-  useCallback,
-  useEffect
-} from"react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import {
-  ButtonsWrapper,
-  LoginFormWrapper,
-  LoginContent
-} from "./StyledLogin";
+import { ButtonsWrapper, LoginFormWrapper, LoginContent } from "./StyledLogin";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
   getProviderTranslation,
   getOAuthToken,
   getLoginLink,
-  checkIsSSR
+  checkIsSSR,
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
@@ -26,23 +18,25 @@ import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
-import {
-  ColorTheme,
-  ThemeType
-} from "@docspace/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
-import { getLogoFromPath } from "@docspace/common/utils";
-import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
+import { getLogoFromPath, getSystemTheme } from "@docspace/common/utils";
 import { TenantStatus } from "@docspace/common/constants";
+
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
   theme: IUserTheme;
   setTheme: (theme: IUserTheme) => void;
+  isBaseTheme: boolean;
 }
 
 const Login: React.FC<ILoginProps> = ({
@@ -55,6 +49,7 @@ const Login: React.FC<ILoginProps> = ({
   theme,
   setTheme,
   logoUrls,
+  isBaseTheme,
 }) => {
   const isRestoringPortal =
     portalSettings?.tenantStatus === TenantStatus.PortalRestore;
@@ -82,21 +77,12 @@ const Login: React.FC<ILoginProps> = ({
   const ssoUrl = capabilities?.ssoUrl || "";
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
-  const systemTheme = typeof window !== "undefined" && useThemeDetector();
 
   useIsomorphicLayoutEffect(() => {
-    const theme =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? Dark
-        : Base;
+    const systemTheme = getSystemTheme();
+    const theme = themes[systemTheme];
     setTheme(theme);
   }, []);
-
-  useIsomorphicLayoutEffect(() => {
-    if (systemTheme === "Base") setTheme(Base);
-    else setTheme(Dark);
-  }, [systemTheme]);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -179,9 +165,8 @@ const Login: React.FC<ILoginProps> = ({
         if (!providersData[item.provider]) return;
         if (index > 1) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } =
+          providersData[item.provider];
 
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
@@ -235,7 +220,7 @@ const Login: React.FC<ILoginProps> = ({
     >
       <div className="bg-cover"></div>
       <LoginContent enabledJoin={enabledJoin}>
-        <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
+        <ColorTheme themeId={ThemeType.LinkForgotPassword}>
           <img src={logoUrl} className="logo-wrapper" />
           <Text
             fontSize="23px"
@@ -271,6 +256,8 @@ const Login: React.FC<ILoginProps> = ({
               </div>
             )}
             <LoginForm
+              isBaseTheme={isBaseTheme}
+              recaptchaPublicKey={portalSettings?.recaptchaPublicKey}
               isDesktop={!!isDesktopEditor}
               isLoading={isLoading}
               hashSettings={portalSettings?.passwordHash}
@@ -319,5 +306,6 @@ export default inject(({ loginStore }) => {
   return {
     theme: loginStore.theme,
     setTheme: loginStore.setTheme,
+    isBaseTheme: loginStore.theme.isBase,
   };
 })(observer(Login));

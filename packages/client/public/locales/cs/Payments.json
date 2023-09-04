@@ -27,7 +27,6 @@
   "PayerDescription": "Tento uživatel má přístup k platebním údajům a je jediným uživatelem, který může upravovat kvóty a provádět platby. Vlastník DocSpace, stejně jako samotný správce platby, může roli správce platby přeřadit pomocí zákaznického prostoru Stripe.",
   "PaymentOverdue": "Nelze přidávat nové uživatele.",
   "PriceCalculation": "Vypočítejte si cenu",
-  "QuotaPaidUserLimitError": "Byl dosažen limit placených uživatelů. <1>Platby</1>",
   "RenewSubscription": "Obnovit předplatné tarifu {{planName}}",
   "RoomManagerDescription": "Správa a archivace místností, pozvání a správa uživatelů. K místnosti lze přiřadit několik správců.",
   "StartupSuggestion": "Udělejte více díky tarifu {{planName}}",

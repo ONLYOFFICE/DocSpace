@@ -208,8 +208,7 @@ export default inject(
       roomsFilterTotal,
     } = filesStore;
 
-    const { showBodyLoader } = clientLoadingStore;
-
+    const { isLoading } = clientLoadingStore;
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const filesLength = filesList.length;
@@ -222,7 +221,7 @@ export default inject(
       fetchMoreFiles,
       filesLength,
       getCountTilesInRow,
-      isLoading: showBodyLoader,
+      isLoading,
     };
   }
 )(observer(InfiniteGrid));

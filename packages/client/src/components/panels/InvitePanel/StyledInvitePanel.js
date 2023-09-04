@@ -9,9 +9,11 @@ import Button from "@docspace/components/button";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
 import ToggleButton from "@docspace/components/toggle-button";
-
+import { isMobileOnly, isTablet } from "react-device-detect";
+import { hugeMobile } from "@docspace/components/utils/device";
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
+import CrossIconMobile from "PUBLIC_DIR/images/cross.react.svg";
 import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -26,14 +28,70 @@ const fillAvailableWidth = css`
 `;
 
 const StyledInvitePanel = styled.div`
+  @media ${hugeMobile} {
+    user-select: none;
+    height: auto;
+    width: auto;
+    background: ${(props) => props.theme.infoPanel.blurColor};
+    backdrop-filter: blur(3px);
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .invite_panel {
+      background-color: ${(props) => props.theme.infoPanel.backgroundColor};
+      border-left: ${(props) =>
+        `1px solid ${props.theme.infoPanel.borderColor}`};
+      position: absolute;
+      border: none;
+      right: 0;
+      bottom: 0;
+      height: calc(100% - 64px);
+      width: 100vw;
+      max-width: 100vw;
+    }
+  }
+
   .invite-panel-body {
     height: ${(props) =>
       props.hasInvitedUsers ? "calc(100% - 55px - 73px)" : "calc(100% - 55px)"};
 
     .scroll-body {
-      padding-right: 0px !important;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-left: 0px !important;
+            `
+          : css`
+              padding-right: 0px !important;
+            `}
     }
+
+    ${(props) =>
+      !props.addUsersPanelVisible &&
+      css`
+        .trackYVisible {
+          .scroller {
+            margin-right: ${isMobileOnly || isTablet
+              ? `-20px !important`
+              : `-17px !important`};
+          }
+        }
+      `}
   }
+
+  ${(props) =>
+    !props.scrollAllPanelContent &&
+    css`
+      .trackYVisible {
+        .scroller {
+          margin-right: -20px !important;
+        }
+      }
+    `}
 `;
 
 const ScrollList = styled.div`
@@ -94,7 +152,14 @@ const StyledRow = styled.div`
   gap: 8px;
 
   min-height: 41px;
-  margin-left: 16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 16px;
+        `
+      : css`
+          margin-left: 16px;
+        `}
   box-sizing: border-box;
   border-bottom: none;
 
@@ -105,16 +170,33 @@ const StyledRow = styled.div`
   }
 
   .invite-panel_access-selector {
-    margin-left: auto;
-    margin-right: 0;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: auto;
+            margin-left: 0;
+          `
+        : css`
+            margin-left: auto;
+            margin-right: 0;
+          `}
   }
 `;
 
 const StyledInviteInput = styled.div`
   ${fillAvailableWidth}
-  margin-left: 16px;
-  margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: 16px;
+          margin-left: ${(props) => (props.hideSelector ? "16px" : "8px")};
+        `
+      : css`
+          margin-left: 16px;
+          margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+        `}
+  
+  
   .input-link {
     height: 32px;
 
@@ -125,7 +207,14 @@ const StyledInviteInput = styled.div`
 `;
 
 const StyledAccessSelector = styled.div`
-  margin-right: 16px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 16px;
+        `
+      : css`
+          margin-right: 16px;
+        `}
 `;
 
 const StyledEditInput = styled(TextInput)`
@@ -133,7 +222,14 @@ const StyledEditInput = styled(TextInput)`
 `;
 
 const StyledComboBox = styled(ComboBox)`
-  margin-left: auto;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   .combo-button-label,
   .combo-button-label:hover {
@@ -145,7 +241,14 @@ const StyledComboBox = styled(ComboBox)`
   justify-content: center;
 
   .combo-buttons_arrow-icon {
-    margin-left: 2px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 2px;
+          `
+        : css`
+            margin-left: 2px;
+          `}
   }
 
   padding: 0px;
@@ -223,7 +326,14 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 const StyledDeleteIcon = styled(DeleteIcon)`
-  margin-left: auto;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   ${iconStyles}
 `;
@@ -231,11 +341,18 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 StyledDeleteIcon.defaultProps = { theme: Base };
 
 const StyledHelpButton = styled(HelpButton)`
-  margin-right: 8px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-left: 8px;
+        `
+      : css`
+          margin-right: 8px;
+        `}
 `;
 
 const StyledButtons = styled(Box)`
-  padding: 16px 16px 16px 16px;
+  padding: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -248,16 +365,54 @@ const StyledButtons = styled(Box)`
 `;
 
 const StyledLink = styled(Link)`
-  float: right;
+  float: ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `left` : `right`};
 `;
 
 StyledButtons.defaultProps = { theme: Base };
 
 const StyledToggleButton = styled(ToggleButton)`
-  right: 8px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 8px;
+        `
+      : css`
+          right: 8px;
+        `}
   margin-top: -4px;
 `;
 
+const StyledControlContainer = styled.div`
+  width: 17px;
+  height: 17px;
+  position: absolute;
+
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+  z-index: 450;
+
+  @media (max-width: 428px) {
+    display: flex;
+
+    top: -27px;
+    right: 10px;
+    left: unset;
+  }
+`;
+
+const StyledCrossIconMobile = styled(CrossIconMobile)`
+  width: 17px;
+  height: 17px;
+  z-index: 455;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 export {
   StyledBlock,
   StyledHeading,
@@ -281,4 +436,6 @@ export {
   StyledAccessSelector,
   StyledToggleButton,
   StyledDescription,
+  StyledControlContainer,
+  StyledCrossIconMobile,
 };
