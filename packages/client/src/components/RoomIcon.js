@@ -59,7 +59,8 @@ const RoomIcon = ({ title, isArchive, size = 32 }) => {
   };
 
   const titleWithoutTooManySpaces = title.replace(/\s+/g, " ").trim();
-  const indexSecondCharacterAfterSpace = titleWithoutTooManySpaces.indexOf(" ");
+  const indexSecondCharacterAfterSpace =
+    titleWithoutTooManySpaces.lastIndexOf(" ");
   const secondCharacterAfterSpace =
     indexSecondCharacterAfterSpace === -1
       ? ""
