@@ -10,6 +10,7 @@ const StyledSsoPage = styled.div`
     width: 100%;
     max-width: 700px;
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
+    padding-bottom: 18px;
   }
 
   .toggle {
@@ -35,22 +36,6 @@ const StyledSsoPage = styled.div`
         cursor: auto;
       }
     }
-  }
-
-  .tooltip-button,
-  .icon-button {
-    padding: 0 5px;
-  }
-
-  .hide-button {
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin-right: 12px;
-          `
-        : css`
-            margin-left: 12px;
-          `}
   }
 
   .field-input {
@@ -104,17 +89,6 @@ const StyledSsoPage = styled.div`
 
   .combo-button-label {
     max-width: 100%;
-  }
-
-  .checkbox-input {
-    ${(props) =>
-      props.theme.interfaceDirection === "rtl"
-        ? css`
-            margin: 10px 0 6px 8px;
-          `
-        : css`
-            margin: 10px 8px 6px 0;
-          `}
   }
 
   .upload-button {

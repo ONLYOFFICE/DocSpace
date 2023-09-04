@@ -1,13 +1,14 @@
 ﻿import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
+import copy from "copy-to-clipboard";
 
 import { Text, HelpButton, InputBlock } from "@docspace/components";
 import toastr from "@docspace/components/toast/toastr";
 
-import copy from "copy-to-clipboard";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -20,9 +21,23 @@ const StyledWrapper = styled.div`
     width: 350px;
   }
 
+  @media ${smallTablet} {
+    max-width: 100%;
+    .input {
+      width: 100%;
+    }
+  }
+
   .label > div {
     display: inline-flex;
-    margin-left: 4px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 4px;
+          `
+        : css`
+            margin-left: 4px;
+          `}
   }
 `;
 

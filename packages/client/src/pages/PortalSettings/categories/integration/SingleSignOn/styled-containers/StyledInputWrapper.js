@@ -1,8 +1,13 @@
 import styled from "styled-components";
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledInputWrapper = styled.div`
   width: 100%;
   max-width: ${(props) => props.maxWidth || "350px"};
+
+  @media ${smallTablet} {
+    max-width: 100%;
+  }
 
   .field-input {
     ::placeholder {

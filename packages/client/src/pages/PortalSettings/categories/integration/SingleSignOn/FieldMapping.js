@@ -33,6 +33,10 @@ const StyledWrapper = styled.div`
   .checkbox-input {
     margin: 10px 8px 6px 0;
   }
+
+  .icon-button {
+    padding: 0 5px;
+  }
 `;
 
 const FieldMapping = (props) => {

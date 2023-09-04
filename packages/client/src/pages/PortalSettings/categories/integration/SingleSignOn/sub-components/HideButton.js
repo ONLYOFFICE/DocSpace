@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,14 @@ const StyledWrapper = styled.div`
   margin: ${(props) => (props.isAdditionalParameters ? "0" : "24px 0")};
 
   .hide-button {
-    margin-left: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 12px;
+          `
+        : css`
+            margin-left: 12px;
+          `}
   }
 `;
 
