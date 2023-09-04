@@ -140,7 +140,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM nginx AS proxy
+FROM nginx AS router
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -160,7 +160,7 @@ COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY --from=base ${SRC_PATH}/build/install/docker/config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY --from=base ${SRC_PATH}/build/install/docker/config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
-COPY --from=base ${SRC_PATH}/build/install/docker/prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
+COPY --from=base ${SRC_PATH}/build/install/docker/prepare-nginx-router.sh /docker-entrypoint.d/prepare-nginx-router.sh
 
 # add defualt user and group for no-root run
 RUN chown nginx:nginx /etc/nginx/* -R && \
@@ -179,7 +179,9 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     if [[ -z "${SERVICE_CLIENT}" ]] ; then sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf; fi && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
+    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i '/client_body_temp_path/ i \ \ \ \ $MAP_HASH_BUCKET_SIZE' /etc/nginx/nginx.conf.template && \
+    sed -i 's/\(worker_connections\).*;/\1 $COUNT_WORKER_CONNECTIONS;/' /etc/nginx/nginx.conf.template 
 
 ## Doceditor ##
 FROM noderun as doceditor
