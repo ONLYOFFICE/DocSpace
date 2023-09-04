@@ -18,7 +18,7 @@ import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
 import Preview from "./Appearance/preview";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
-
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import DropDownItem from "@docspace/components/drop-down-item";
 import DropDownContainer from "@docspace/components/drop-down";
 
@@ -54,16 +54,19 @@ const Appearance = (props) => {
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
-  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] =
-    useState(headerEditTheme);
+  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
+    headerEditTheme
+  );
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
   const [currentColorButtons, setCurrentColorButtons] = useState(null);
 
-  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] =
-    useState(false);
-  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] =
-    useState(false);
+  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] = useState(
+    false
+  );
+  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] = useState(
+    false
+  );
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
     defaultAppliedColorAccent
@@ -72,10 +75,12 @@ const Appearance = (props) => {
     defaultAppliedColorButtons
   );
 
-  const [changeCurrentColorAccent, setChangeCurrentColorAccent] =
-    useState(false);
-  const [changeCurrentColorButtons, setChangeCurrentColorButtons] =
-    useState(false);
+  const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
+    false
+  );
+  const [changeCurrentColorButtons, setChangeCurrentColorButtons] = useState(
+    false
+  );
 
   const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
 
@@ -156,6 +161,7 @@ const Appearance = (props) => {
 
   useEffect(() => {
     getSettings();
+    setDocumentTitle(t("Appearance"));
   }, []);
 
   useEffect(() => {

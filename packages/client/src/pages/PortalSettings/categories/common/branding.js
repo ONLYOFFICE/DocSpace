@@ -6,6 +6,7 @@ import { isMobile, isDesktop } from "react-device-detect";
 
 import { useIsSmallWindow } from "@docspace/common/utils/useIsSmallWindow";
 
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import AdditionalResources from "./Branding/additionalResources";
 import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
@@ -67,6 +68,10 @@ const Branding = ({
   const init = async () => {
     await initSettings();
   };
+
+  useEffect(() => {
+    setDocumentTitle(t("Branding"));
+  }, []);
 
   useEffect(() => {
     init();

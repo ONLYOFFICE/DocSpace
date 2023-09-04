@@ -33,7 +33,8 @@ public class EmailValidationKeyProvider
     {
         Ok,
         Invalid,
-        Expired
+        Expired,
+        TariffLimit
     }
 
     public TimeSpan ValidEmailKeyInterval { get; }

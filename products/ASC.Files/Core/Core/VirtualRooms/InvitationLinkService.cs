@@ -129,7 +129,7 @@ public class InvitationLinkService
         {
             if (!await CheckQuota(linkData.LinkType, employeeType))
             {
-                linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
+                linkData.Result = EmailValidationKeyProvider.ValidationResult.TariffLimit;
             }
             
             return linkData;
@@ -151,7 +151,7 @@ public class InvitationLinkService
 
         if (!await CheckQuota(linkData.LinkType, linkData.EmployeeType))
         {
-            linkData.Result = EmailValidationKeyProvider.ValidationResult.Invalid;
+            linkData.Result = EmailValidationKeyProvider.ValidationResult.TariffLimit;
         }
 
         return linkData;

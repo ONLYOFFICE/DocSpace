@@ -2,7 +2,7 @@ import saveAs from "file-saver";
 
 export const getCrashReport = (userId, version, language, error) => {
   const currentTime = new Date();
-  const reportTime = currentTime.toTimeString();
+  const reportTime = currentTime.toUTCString();
   const lsObject = JSON.stringify(window.localStorage) || "";
 
   const report = {

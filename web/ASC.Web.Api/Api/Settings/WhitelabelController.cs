@@ -141,30 +141,13 @@ public class WhitelabelController : BaseSettingsController
             if (f.FileName.Contains("dark"))
             {
                 GetParts(f.FileName, out var logoType, out var fileExt);
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}")))
-                {
-                    continue;
-                }
-                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), true, null);
             }
             else
             {
                 GetParts(f.FileName, out var logoType, out var fileExt);
-                IFormFile darkFile;
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}.dark.")))
-                {
-                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName.Contains($"{logoType}.dark."));
-                }
-                else
-                {
-                    darkFile = null;
-                }
-                if (darkFile != null && darkFile.FileName != f.FileName)
-                {
-                    throw new InvalidOperationException("logo light and logo dark have different extention");
-                }
 
-                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), false, null);
             }
         }
 

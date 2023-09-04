@@ -62,25 +62,26 @@ module.exports = function () {
     }
 
     const ErrorMessageKey = {
+        Error: 1,
         SsoError: 17,
         SsoAuthFailed: 18,
         SsoAttributesNotFound: 19,
     };
 
     function getPortalAuthErrorUrl(req, errorKey) {
-        const url = getPortalAuthUrl(req) + "?am=" + errorKey;
+        const url = getBaseUrl(req) + "/login/error?messageKey=" + errorKey;
         logger.debug("getPortalAuthErrorUrl: " + url);
         return url;
     }
 
     function getPortalErrorUrl(req) {
-        const url = getBaseUrl(req) + "/500.aspx";
+        const url = getBaseUrl(req) + "/login/error?messageKey=" + ErrorMessageKey.Error;
         logger.debug("getPortal500Url: " + url);
         return url;
     }
 
     function getPortal404Url(req) {
-        const url = getBaseUrl(req) + "/404.aspx";
+        const url = getBaseUrl(req) + "/login/error?messageKey=" + ErrorMessageKey.SsoError;
         logger.debug("getPortal404Url: " + url);
         return url;
     }

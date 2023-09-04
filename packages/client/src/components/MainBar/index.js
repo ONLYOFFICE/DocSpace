@@ -21,7 +21,11 @@ const StyledContainer = styled.div`
       max-width: calc(100% + 8px);
     }
 
-    margin-right: -16px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: -16px;`
+        : `margin-right: -16px;`}
+
     margin-top: 48px;
 
     &:empty {
@@ -69,12 +73,8 @@ const MainBar = ({
 
 export default inject(({ auth, clientLoadingStore, filesStore }) => {
   const { currentTariffStatusStore, settingsStore } = auth;
-  const {
-    checkedMaintenance,
-    setMaintenanceExist,
-    snackbarExist,
-    isFrame,
-  } = settingsStore;
+  const { checkedMaintenance, setMaintenanceExist, snackbarExist, isFrame } =
+    settingsStore;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { firstLoad } = clientLoadingStore;
   const { isInit } = filesStore;

@@ -47,6 +47,14 @@ export const StyledAvatarWrapper = styled.div`
       display: flex;
       position: fixed;
       right: 16px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              left: 16px;
+            `
+          : css`
+              right: 16px;
+            `}
     }
   }
 `;
@@ -86,7 +94,14 @@ export const StyledInfo = styled.div`
       }
 
       .sso-badge {
-        margin-left: 18px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 18px;
+              `
+            : css`
+                margin-left: 18px;
+              `}
       }
 
       .profile-block-password {
@@ -113,7 +128,14 @@ export const StyledInfo = styled.div`
 
         .language-combo-box {
           .combo-button {
-            margin-left: -16px;
+            ${(props) =>
+              props.theme.interfaceDirection === "rtl"
+                ? css`
+                    margin-right: -16px;
+                  `
+                : css`
+                    margin-left: -16px;
+                  `}
           }
         }
       }
@@ -135,7 +157,14 @@ export const StyledInfo = styled.div`
   .email-edit-container {
     display: flex;
     align-items: center;
-    padding-right: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 16px;
+          `
+        : css`
+            padding-right: 16px;
+          `}
     line-height: 20px;
 
     .email-text-container {
@@ -149,6 +178,14 @@ export const StyledInfo = styled.div`
     .email-edit-button {
       display: block;
       padding-left: 8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              padding-right: 8px;
+            `
+          : css`
+              padding-left: 8px;
+            `}
     }
   }
 
@@ -163,6 +200,14 @@ export const StyledInfo = styled.div`
 
     .send-again-text {
       margin-left: 5px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 5px;
+            `
+          : css`
+              margin-left: 5px;
+            `}
       line-height: 15px;
       color: ${(props) => props.currentColorScheme.main.accent};
       border-bottom: 1px solid
@@ -221,7 +266,8 @@ export const StyledInfo = styled.div`
 
         .mobile-profile-field {
           display: flex;
-          align-items: baseline;
+          align-items: ${({ theme }) =>
+            theme.interfaceDirection === "rtl" ? `flex-start` : `baseline`};
           max-width: calc(100% - 28px);
           flex-direction: column;
           gap: 2px;
@@ -252,7 +298,14 @@ export const StyledInfo = styled.div`
         }
 
         .edit-button {
-          margin-left: auto;
+          ${(props) =>
+            props.theme.interfaceDirection === "rtl"
+              ? css`
+                  margin-right: auto;
+                `
+              : css`
+                  margin-left: auto;
+                `}
           min-width: 12px;
 
           svg path {

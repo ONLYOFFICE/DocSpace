@@ -16,7 +16,14 @@ const StyledHideArticleMenuButton = styled.div`
   height: 44px;
   z-index: 209;
   bottom: ${({ hideProfileBlock }) => (hideProfileBlock ? "16px" : "89px")};
-  left: 0;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: 0;
+        `
+      : css`
+          left: 0;
+        `}
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -41,11 +48,24 @@ const StyledHideArticleMenuButton = styled.div`
 
   .article-hide-menu-container {
     align-items: center;
-    margin-left: 16px;
-
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+          `
+        : css`
+            margin-left: 16px;
+          `}
     .article-hide-menu-text {
-      margin-left: 8px;
-      color: ${({ currentColorScheme }) => currentColorScheme?.main?.accent};
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
+      color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     }
 
     @media ${tablet} {
@@ -75,9 +95,19 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+      `}
   }
 
   .article-hide-menu-icon_svg {
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+      `}
     svg {
       path {
         fill: ${({ currentColorScheme }) => currentColorScheme?.main?.accent};

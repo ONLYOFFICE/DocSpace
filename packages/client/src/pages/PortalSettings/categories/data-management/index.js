@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { useTheme } from "styled-components";
 
 import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 
@@ -35,6 +36,8 @@ const DataManagementWrapper = (props) => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { interfaceDirection } = useTheme();
+  const directionTooltip = interfaceDirection === "rtl" ? "left" : "right";
   useEffect(() => {
     return () => {
       removeLocalStorage("LocalCopyStorageType");
@@ -51,7 +54,7 @@ const DataManagementWrapper = (props) => {
         <HelpButton
           size={12}
           offsetRight={5}
-          place="right"
+          place={directionTooltip}
           className={className}
           iconName={HelpReactSvgUrl}
           tooltipContent={

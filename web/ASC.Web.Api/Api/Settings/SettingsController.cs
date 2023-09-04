@@ -408,7 +408,7 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment]
     public object GetMachineName()
     {
-        return Dns.GetHostName().ToLowerInvariant();
+        return _httpContextAccessor.HttpContext.Request.Host.Value;
     }
 
     /// <summary>

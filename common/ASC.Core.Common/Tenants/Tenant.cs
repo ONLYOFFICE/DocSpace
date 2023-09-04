@@ -34,6 +34,7 @@ public class Tenant : IMapFrom<DbTenant>
     public const int DefaultTenant = -1;
 
     public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
+    public const string LocalHost = "localhost";
 
     private List<string> _domains;
 
@@ -62,6 +63,17 @@ public class Tenant : IMapFrom<DbTenant>
     {
         Id = id;
     }
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbTenant, Tenant>()
+            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled))
+            .ForMember(r => r.AffiliateId, opt => opt.MapFrom(src => src.Partner.AffiliateId))
+            .ForMember(r => r.PartnerId, opt => opt.MapFrom(src => src.Partner.PartnerId))
+            .ForMember(r => r.Campaign, opt => opt.MapFrom(src => src.Partner.Campaign));
+
+        profile.CreateMap<TenantUserSecurity, Tenant>()
+            .IncludeMembers(src => src.DbTenant);
+    }
 
     public string AffiliateId { get; set; }
     public string Alias { get; set; }
@@ -76,6 +88,7 @@ public class Tenant : IMapFrom<DbTenant>
     public string MappedDomain { get; set; }
     public string Name { get; set; }
     public Guid OwnerId { get; set; }
+    public string PartnerId { get; set; }
     public string PaymentId { get; set; }
     public bool Spam { get; set; }
     public TenantStatus Status { get; internal set; }
@@ -125,7 +138,7 @@ public class Tenant : IMapFrom<DbTenant>
         {
             //single tenant on local host
             Alias = "localhost";
-            result = HostName;
+            result = Alias;
         }
         else
         {
@@ -146,15 +159,6 @@ public class Tenant : IMapFrom<DbTenant>
         }
 
         return result;
-    }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbTenant, Tenant>()
-            .ForMember(r => r.TrustedDomainsType, opt => opt.MapFrom(src => src.TrustedDomainsEnabled));
-
-        profile.CreateMap<TenantUserSecurity, Tenant>()
-            .IncludeMembers(src => src.DbTenant);
     }
 
     public void SetStatus(TenantStatus status)

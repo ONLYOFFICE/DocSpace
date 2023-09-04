@@ -42,6 +42,8 @@ public class FeedController : ControllerBase
     private readonly TenantUtil _tenantUtil;
     private readonly SecurityContext _securityContext;
     private readonly IMapper _mapper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
 
     public FeedController(
         FeedReadedDataProvider feedReadedDataProvider,
@@ -50,7 +52,9 @@ public class FeedController : ControllerBase
         FeedAggregateDataProvider feedAggregateDataProvider,
         TenantUtil tenantUtil,
         SecurityContext securityContext,
-        IMapper mapper)
+        IMapper mapper, 
+        IDaoFactory daoFactory, 
+        FileSecurity fileSecurity)
     {
         _feedReadedDataProvider = feedReadedDataProvider;
         _apiContext = apiContext;
@@ -59,6 +63,8 @@ public class FeedController : ControllerBase
         _tenantUtil = tenantUtil;
         _securityContext = securityContext;
         _mapper = mapper;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
     }
 
     private string Key => $"newfeedscount/{_securityContext.CurrentAccount.ID}";
@@ -108,6 +114,18 @@ public class FeedController : ControllerBase
         bool? withRelated,
         ApiDateTime timeReaded)
     {
+        if (!string.IsNullOrEmpty(id))
+        {
+            if (int.TryParse(id, out var intId))
+            {
+                await CheckAccessAsync(intId);
+            }
+            else
+            {
+                await CheckAccessAsync(id);
+            }
+        }
+        
         var filter = new FeedApiFilter
         {
             Id = id,
@@ -169,6 +187,21 @@ public class FeedController : ControllerBase
             .ToList();
 
         return new { feeds, readedDate };
+
+        async Task CheckAccessAsync<T>(T roomId)
+        {
+            var room = await _daoFactory.GetFolderDao<T>().GetFolderAsync(roomId);
+
+            if (room == null)
+            {
+                throw new ItemNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
+    }
+
+            if (!await _fileSecurity.CanReadAsync(room))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
+        }
     }
 
     /// <summary>

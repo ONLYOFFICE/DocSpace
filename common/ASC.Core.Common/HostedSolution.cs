@@ -135,6 +135,7 @@ public class HostedSolution
             Language = registrationInfo.Culture.Name,
             TimeZone = registrationInfo.TimeZoneInfo.Id,
             HostedRegion = registrationInfo.HostedRegion,
+            PartnerId = registrationInfo.PartnerId,
             AffiliateId = registrationInfo.AffiliateId,
             Campaign = registrationInfo.Campaign,
             Industry = registrationInfo.Industry,

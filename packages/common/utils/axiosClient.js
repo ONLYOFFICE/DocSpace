@@ -164,6 +164,7 @@ class AxiosClient {
             }
             break;
           case 403:
+            if (options.skipLogout) return Promise.reject(error);
             const pathname = window.location.pathname;
             const isArchived = pathname.indexOf("/rooms/archived") !== -1;
 

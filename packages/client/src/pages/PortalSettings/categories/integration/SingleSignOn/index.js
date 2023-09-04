@@ -17,6 +17,7 @@ import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
+import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
 const SP_METADATA = "spMetadata";
@@ -29,6 +30,11 @@ const SingleSignOn = (props) => {
 
   useEffect(() => {
     isSSOAvailable && load();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+    setDocumentTitle(t("Settings:SingleSignOn"));
+
+    return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
   if (isSmallWindow)
