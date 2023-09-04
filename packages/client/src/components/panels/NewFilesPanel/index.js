@@ -94,11 +94,8 @@ class NewFilesPanel extends React.Component {
 
     const { id, extension: fileExst } = e.target.dataset;
 
-    const {
-      /* updateFolderBadge, */ markAsRead,
-      newFiles,
-      refreshFiles,
-    } = this.props;
+    const { /* updateFolderBadge, */ markAsRead, newFiles, refreshFiles } =
+      this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
@@ -162,7 +159,7 @@ class NewFilesPanel extends React.Component {
                 config.homepage,
                 `/doceditor?fileId=${id}`
               ),
-              "_blank"
+              window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
             )
           );
       }
@@ -332,11 +329,8 @@ export default inject(
       refreshFiles,
     } = filesStore;
     //const { updateRootBadge } = treeFoldersStore;
-    const {
-      playlist,
-      setMediaViewerData,
-      setCurrentItem,
-    } = mediaViewerDataStore;
+    const { playlist, setMediaViewerData, setCurrentItem } =
+      mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts, id: currentFolderId } = selectedFolderStore;

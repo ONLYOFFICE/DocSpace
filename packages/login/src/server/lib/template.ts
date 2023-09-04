@@ -79,6 +79,13 @@ const template: Template = (
         window.DocSpaceConfig = {
           ...config,
         };
+
+        if (window.navigator.userAgent.includes("ZoomWebKit") || window.navigator.userAgent.includes("ZoomApps")) {
+          window.DocSpaceConfig.editor = {
+            openOnNewPage: false,
+            requestClose: true
+          };
+        }
       })
       .catch((e) => {
         console.error(e);
