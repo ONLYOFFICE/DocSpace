@@ -32,7 +32,7 @@ const config = {
   devServer: {
     allowedHosts: "all",
     devMiddleware: {
-      publicPath: homepage,
+      publicPath: "/",
     },
     static: {
       directory: path.join(__dirname, "dist"),
