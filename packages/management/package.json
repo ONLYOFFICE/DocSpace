@@ -9,7 +9,7 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/management && shx cp -r dist/* ../../build/deploy/management",
     "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "ws --port 5015 --directory dist --spa index.html --rewrite '/management/(.*) -> http://localhost:5015/$1'"
+    "start-prod": "ws --port 5015 --directory dist --spa index.html"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
