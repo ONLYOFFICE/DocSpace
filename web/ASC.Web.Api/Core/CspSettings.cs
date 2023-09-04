@@ -51,6 +51,7 @@ public class CspSettingsHelper
     private readonly TenantManager _tenantManager;
     private readonly CoreSettings _coreSettings;
     private readonly GlobalStore _globalStore;
+    private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IDistributedCache _distributedCache;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IConfiguration _configuration;
@@ -61,6 +62,7 @@ public class CspSettingsHelper
         TenantManager tenantManager,
         CoreSettings coreSettings,
         GlobalStore globalStore,
+        CoreBaseSettings coreBaseSettings,
         IDistributedCache distributedCache,
         IHttpContextAccessor httpContextAccessor,
         IConfiguration configuration)
@@ -70,6 +72,7 @@ public class CspSettingsHelper
         _tenantManager = tenantManager;
         _coreSettings = coreSettings;
         _globalStore = globalStore;
+        _coreBaseSettings = coreBaseSettings;
         _distributedCache = distributedCache;
         _httpContextAccessor = httpContextAccessor;
         _configuration = configuration;
@@ -87,6 +90,13 @@ public class CspSettingsHelper
         if (domain == Tenant.LocalHost && tenant.Alias == Tenant.LocalHost)
         {
             headerKeys.Add(GetKey(Tenant.HostName));
+            var ips = Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork);
+
+            foreach (var ip in ips)
+            {
+                headerKeys.Add(GetKey(ip.ToString()));
+            }
+
             headerKeys.Add(GetKey(_httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()));
         }
 
@@ -169,6 +179,11 @@ public class CspSettingsHelper
 
         var frameBuilder = csp.AllowFraming
             .FromSelf();
+
+        if (!_coreBaseSettings.Standalone && !string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
+        {
+            def.From($"*.{_coreBaseSettings.Basedomain}");
+        }
 
         if (!string.IsNullOrEmpty(_configuration["web:zendesk-key"]))
         {

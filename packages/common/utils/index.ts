@@ -283,6 +283,8 @@ export function getProviderTranslation(provider, t, linked = false) {
       return t("Common:SignInWithTwitter");
     case "linkedin":
       return t("Common:SignInWithLinkedIn");
+    case "microsoft":
+      return t("Common:SignInWithMicrosoft");
     case "sso":
       return t("Common:SignInWithSso");
     case "zoom":

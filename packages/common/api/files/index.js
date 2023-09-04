@@ -560,6 +560,10 @@ export function uploadFile(url, data) {
   return axios.post(url, data);
 }
 
+export function uploadBackup(url, data) {
+  return axios.post(url, data);
+}
+
 export function downloadFiles(fileIds, folderIds) {
   const data = { fileIds, folderIds };
   return request({ method: "put", url: "/files/fileops/bulkdownload", data });

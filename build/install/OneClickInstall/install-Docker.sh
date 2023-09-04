@@ -867,6 +867,26 @@ read_continue_installation () {
 }
 
 domain_check () {
+	if ! command_exists dig; then
+		install_service dig dnsutils
+	fi
+
+	if ! command_exists ping; then
+		if command_exists apt-get; then
+			install_service ping iputils-ping
+		elif command_exists yum; then
+			install_service ping iputils
+		fi
+	fi
+
+	if ! command_exists ip; then
+		if command_exists apt-get; then
+			install_service ip iproute2
+		elif command_exists yum; then
+			install_service ip iproute
+		fi
+	fi
+
 	DOMAINS=$(dig +short -x $(curl -s ifconfig.me) | sed 's/\.$//')
 
 	if [[ -n "$DOMAINS" ]]; then
@@ -875,7 +895,7 @@ domain_check () {
 			if [[ -n "$IP_ADDRESS" && "$IP_ADDRESS" =~ ^(10\.|127\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.) ]]; then
 				LOCAL_RESOLVED_DOMAINS+="$DOMAIN"
 			elif [[ -n "$IP_ADDRESS" ]]; then
-				APP_URL_PORTAL=${APP_URL_PORTAL-:"http://${DOMAIN}:${EXTERNAL_PORT}"}
+				APP_URL_PORTAL=${APP_URL_PORTAL:-"http://${DOMAIN}:${EXTERNAL_PORT}"}
 			fi
 		done <<< "$DOMAINS"
 	fi
@@ -1262,6 +1282,8 @@ install_elasticsearch () {
 
 install_product () {
 	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
+	reconfigure DOCKER_TAG ${DOCKER_TAG}
+
 	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
 
 	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
@@ -1274,7 +1296,6 @@ install_product () {
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
-	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
 

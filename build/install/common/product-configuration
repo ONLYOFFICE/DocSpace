@@ -56,20 +56,6 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-dsh | --docshost )
-			if [ "$2" != "" ]; then
-				DOCUMENT_SERVER_HOST=$2
-				shift
-			fi
-		;;
-
-		-dsp | --docsport )
-			if [ "$2" != "" ]; then
-				DOCUMENT_SERVER_PORT=$2
-				shift
-			fi
-		;;
-
 		-ess | --elasticsheme )
 			if [ "$2" != "" ]; then
 				ELK_SHEME=$2
@@ -175,14 +161,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_SECRET=$2
+				shift
+			fi 
+		;;
+
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_HEADER=$2
+				shift
+			fi 
+		;;
+
+		-docsurl | --docsurl )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_URL_EXTERNAL=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration [PARAMETER] [[PARAMETER], ...]"
 			echo
 			echo "    Parameters:"
 			echo "      -ash, --appshost                    ${PRODUCT} ip"
 			echo "      -asp, --appsport                    ${PRODUCT} port (default 80)"
-			echo "      -dsh, --docshost                    document server ip"
-			echo "      -dsp, --docsport                    document server port (default 8083)"
+			echo "      -docsurl, --docsurl                 $PACKAGE_SYSNAME docs server address (example http://$PACKAGE_SYSNAME-docs-address:8083)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
 			echo "      -rdh, --redishost                 	redis ip"
@@ -195,6 +201,8 @@ while [ "$1" != "" ]; do
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
 			echo "      -mysqlp, --mysqlpassword            ${PRODUCT} database password"
+			echo "      -js, --jwtsecret                    defines the secret key to validate the JWT in the request"
+			echo "      -jh. --jwtheader                    defines the http header that will be used to send the JWT"
 			echo "      -mk, --machinekey                   setting for core.machinekey"
 			echo "      -e, --environment                   environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
@@ -309,7 +317,7 @@ establish_mysql_conn(){
 
 	command -v mysql >/dev/null 2>&1 || { echo "MySQL client not found"; exit 1; }
 
-	MYSQL="mysql -h$DB_HOST -u$DB_USER"
+	MYSQL="mysql -P$DB_PORT -h$DB_HOST -u$DB_USER"
 	if [ -n "$DB_PWD" ]; then
 		MYSQL="$MYSQL -p$DB_PWD"
 	fi
@@ -321,6 +329,10 @@ establish_mysql_conn(){
 		$MYSQL -e ";" >/dev/null 2>&1 || { echo "FAILURE"; exit 1; }
 	fi
 
+	if $PACKAGE_MANAGER mysql-server >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-server >/dev/null 2>&1; then
+		change_mysql_config
+	fi
+
     #Save db settings in .json
 	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true; \
 Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
@@ -328,8 +340,7 @@ Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true
 	save_undefined_param "${USER_CONF}" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
 	save_undefined_param "${APP_DIR}/apisystem.${ENVIRONMENT}.json" "ConnectionStrings.default.connectionString" "${CONNECTION_STRING}"
 
-	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//_/\\_}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
-	change_mysql_config
+	sed "s&\(\"ConnectionString\":\).*&\1 \"$(printf "%q" "${CONNECTION_STRING}")\"&" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 
 	#Enable database migration
 	save_undefined_param "${USER_CONF}" "migration.enabled" "true"
@@ -448,8 +459,8 @@ change_mysql_config(){
 setup_openresty(){
 	echo -n "Configuring openresty... "
 	
-	if systemctl is-active nginx | grep -q "active"; then
-		systemctl disable nginx && systemctl stop nginx 
+	if systemctl list-units --type=service | grep -q nginx; then
+		systemctl stop nginx && systemctl disable nginx 
 	fi
 
 	cp -rf ${APP_DIR}/nginx/nginx.conf.template /usr/local/openresty/nginx/conf/nginx.conf
@@ -519,25 +530,42 @@ setup_openresty(){
 	echo "OK"
 }
 
+# Function gets Document server host and port using regular expression, we need it to check connection
+parse_external_docs_url () {
+	if [[ $DOCUMENT_SERVER_URL_EXTERNAL =~ ^(https?://)?([^:/]+)(:([0-9]+))?(/.*)?$ ]]; then 
+		DOCUMENT_SERVER_PORT="${BASH_REMATCH[4]:-80}"
+		DOCUMENT_SERVER_HOST="${BASH_REMATCH[2]}"
+
+		[[ -n ${BASH_REMATCH[1]} ]] || DOCUMENT_SERVER_URL_EXTERNAL="http://$DOCUMENT_SERVER_HOST:$DOCUMENT_SERVER_PORT"
+	fi
+ }
+
 setup_docs() {
 	echo -n "Configuring docs... "
-	local DS_CONF_DIR="/etc/${PACKAGE_SYSNAME}/documentserver"
-	local DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-localhost}
-	local DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(grep -oP '(?<=:)\d+(?=\s)' ${DS_CONF_DIR}/nginx/ds.conf)}
+
+	if [ $1 == "LOCAL_DOCS_SERVER" ]; then
+		local DS_CONF_DIR="/etc/${PACKAGE_SYSNAME}/documentserver"
+		local DOCUMENT_SERVER_PORT=$(grep -oP '(?<=:)\d+(?=\s)' ${DS_CONF_DIR}/nginx/ds.conf)
+		local DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.secret.inbox.string)}
+		local DOCUMENT_SERVER_JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER:-$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.token.inbox.header)}
+
+		$JSON ${DS_CONF_DIR}/local.json -e "this.rabbitmq = { 'url': 'amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}' }" >/dev/null 2>&1
+		$JSON ${DS_CONF_DIR}/local.json -e "this.services.CoAuthoring.redis = { 'host': '$REDIS_HOST' }" >/dev/null 2>&1
+		sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
+	elif [ $1 == "EXTERNAL_DOCS_SERVER" ]; then
+		local APP_HOST=$(curl -s ifconfig.me)
+		local EXTERNAL_DOCS_FLAG="rewrite"
+	fi
 	
 	#Changing the Docs port in nginx conf
-	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf 
-	
-	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.secret.inbox.string)
-	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.token.inbox.header)
+	sed "0,/proxy_pass .*;/{s#proxy_pass .*;#proxy_pass ${DOCUMENT_SERVER_URL_EXTERNAL:-http://$APP_HOST:$DOCUMENT_SERVER_PORT};#}" -i ${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf
 
 	#Save Docs address and JWT in .json
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}"
-	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER} "
-	save_undefined_param "${USER_CONF}" "files.docservice.url.public" "/ds-vpath/"
-	save_undefined_param "${USER_CONF}" "files.docservice.url.internal" "http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}"
-	save_undefined_param "${USER_CONF}" "files.docservice.url.portal" "http://${APP_HOST}:${APP_PORT}"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.value" "${DOCUMENT_SERVER_JWT_SECRET}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.secret.header" "${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.public" "${DOCUMENT_SERVER_URL_EXTERNAL:-"/ds-vpath/"}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.internal" "${DOCUMENT_SERVER_URL_EXTERNAL:-"http://$APP_HOST:$DOCUMENT_SERVER_PORT"}" "$EXTERNAL_DOCS_FLAG"
+	save_undefined_param "${USER_CONF}" "files.docservice.url.portal" "http://${APP_HOST}:${APP_PORT}" "$EXTERNAL_DOCS_FLAG"
 	
 	echo "OK"
 }
@@ -617,10 +645,12 @@ setup_elasticsearch() {
 	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Port" "${ELK_PORT}"
 	save_undefined_param "${APP_DIR}/elastic.${ENVIRONMENT}.json" "elastic.Threads" "1"
 
-	change_elasticsearch_config
+	if [ $1 == "LOCAL_ELASTIC_SERVER" ]; then
+		change_elasticsearch_config
 	
-	systemctl enable elasticsearch >/dev/null 2>&1
-	systemctl restart elasticsearch
+		systemctl enable elasticsearch >/dev/null 2>&1
+		systemctl restart elasticsearch
+	fi
 	echo "OK"
 }
 
@@ -629,13 +659,22 @@ setup_redis() {
 
 	$JSON $APP_DIR/redis.$ENVIRONMENT.json -e "this.Redis={'Hosts': [ { Host: \"${REDIS_HOST}\", Port: \"${REDIS_PORT}\" } ] }" >/dev/null 2>&1
 
-	if [ -e /etc/redis/redis.conf ]; then
-		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
-		sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
-	fi
+	sed -i "s~\(redis_host =\).*~\1 \"$REDIS_HOST\"~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
+	sed -i "s~\(redis_port =\).*~\1 $REDIS_PORT~" "${NGINX_DIR}/conf.d/${PACKAGE_SYSNAME}.conf"
 
-	systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
-	systemctl restart $REDIS_PACKAGE
+	if [ $1 == "LOCAL_REDIS_SERVER" ]; then
+		if [ -f "/etc/redis/redis.conf" ]; then
+			REDIS_CONF="/etc/redis/redis.conf"
+		elif [ -f "/etc/redis.conf" ]; then
+			REDIS_CONF="/etc/redis.conf"
+		fi
+		
+		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i ${REDIS_CONF}
+		sed -r "/^save\s[0-9]+/d" -i ${REDIS_CONF}
+
+		systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
+		systemctl restart $REDIS_PACKAGE
+	fi
 
 	echo "OK"
 }
@@ -649,8 +688,10 @@ setup_rabbitmq() {
 	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.Port" "${RABBITMQ_PORT}"
 	save_undefined_param "${APP_DIR}/rabbitmq.${ENVIRONMENT}.json" "RabbitMQ.VirtualHost" "/"
 
-	systemctl enable rabbitmq-server >/dev/null 2>&1
-	systemctl restart rabbitmq-server
+	if [ $1 == "LOCAL_RABBITMQ_SERVER" ]; then
+		systemctl enable rabbitmq-server >/dev/null 2>&1
+		systemctl restart rabbitmq-server
+	fi
 
 	echo "OK"
 }
@@ -671,6 +712,19 @@ product_configuration(){
 	set_core_machinekey
 
 	echo "OK"
+}
+
+# Function below checks if there is a connection to the external service. 0 - OK, connection established
+check_connection_external_services() {
+	exec {FD}<> /dev/tcp/$1/$2 && exec {FD}>&-
+	HOST_RESPONCE=$?
+
+	if [[ $HOST_RESPONCE -ne 0 ]]; then
+		echo -e "Host is not responding: $1:$2"
+		return $HOST_RESPONCE
+	fi
+
+	return $HOST_RESPONCE
 }
 
 if command -v yum >/dev/null 2>&1; then
@@ -694,8 +748,12 @@ if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-commu
 fi 
 
 if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
-    setup_docs
-	setup_enterprise
+    setup_docs "LOCAL_DOCS_SERVER"
+    setup_enterprise
+elif [[ ! -z $DOCUMENT_SERVER_URL_EXTERNAL ]]; then
+    parse_external_docs_url "$DOCUMENT_SERVER_URL_EXTERNAL"
+    check_connection_external_services "$DOCUMENT_SERVER_HOST" "$DOCUMENT_SERVER_PORT" || { echo "ONLYOFFICE Docs host is not responding"; }
+    setup_docs "EXTERNAL_DOCS_SERVER"
 fi
 
 if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
@@ -703,15 +761,27 @@ if $PACKAGE_MANAGER openresty >/dev/null 2>&1; then
 fi
 
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
-    setup_elasticsearch
+    setup_elasticsearch "LOCAL_ELASTIC_SERVER"
+elif check_connection_external_services "$ELK_HOST" "$ELK_PORT"; then
+    setup_elasticsearch "EXTERNAL_ELASTIC_SERVER"
+else 
+    echo "Elasticsearch host is not responding" 
 fi
 
 if $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1 >/dev/null 2>&1; then
-    setup_redis
+    setup_redis "LOCAL_REDIS_SERVER"
+elif check_connection_external_services "$REDIS_HOST" "$REDIS_PORT"; then
+    setup_redis "EXTERNAL_REDIS_SERVER"
+else 
+    echo "Redis host is not responding" 
 fi
 
 if $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
-    setup_rabbitmq
+    setup_rabbitmq "LOCAL_RABBITMQ_SERVER"
+elif check_connection_external_services "$RABBITMQ_HOST" "$RABBITMQ_PORT"; then
+    setup_rabbitmq "EXTERNAL_RABBITMQ_SERVER"
+else 
+    echo "Rabbitmq host is not responding"
 fi
 
 restart_services

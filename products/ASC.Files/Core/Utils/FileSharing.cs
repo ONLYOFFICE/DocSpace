@@ -545,6 +545,11 @@ public class FileSharing
 
             if (isRoom && r.IsLink)
             {
+                if (!canEditAccess)
+                {
+                    continue;
+                }
+                
                 w.Link = _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
@@ -561,7 +566,7 @@ public class FileSharing
             result.Add(w);
         }
 
-        if (isRoom)
+        if (isRoom && canEditAccess)
         {
             var id = Guid.NewGuid();
 

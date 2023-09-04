@@ -476,7 +476,7 @@ public class EntryManager
                 .ToListAsync();
 
             var filesCount = count - folders.Count;
-            var filesOffset = folders.Count > 0 ? 0 : from - await allFoldersCountTask;
+            var filesOffset = Math.Max(folders.Count > 0 ? 0 : from - await allFoldersCountTask, 0);
 
             var files = await fileDao.GetFilesAsync(parent.Id, orderBy, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, excludeSubject, filesOffset, filesCount)
                 .ToListAsync();
