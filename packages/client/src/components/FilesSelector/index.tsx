@@ -33,7 +33,7 @@ import useSocketHelper from "./helpers/useSocketHelper";
 
 const FilesSelector = ({
   isPanelVisible = false,
-  withoutImmediatelyClose = false,
+  // withoutImmediatelyClose = false,
   isThirdParty = false,
   isRoomsOnly = false,
   isEditorDialog = false,
@@ -430,7 +430,7 @@ const FilesSelector = ({
       });
 
       onSelectFile && selectedFileInfo && onSelectFile(info);
-      !withoutImmediatelyClose && onCloseAction();
+      //!withoutImmediatelyClose && onCloseAction();
     }
   };
 

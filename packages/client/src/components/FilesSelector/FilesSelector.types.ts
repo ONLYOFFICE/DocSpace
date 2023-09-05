@@ -114,7 +114,7 @@ export type useFilesHelpersProps = {
 
 export type FilesSelectorProps = {
   isPanelVisible: boolean;
-  withoutImmediatelyClose: boolean;
+  // withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   rootThirdPartyId?: string;
   isRoomsOnly: boolean;
