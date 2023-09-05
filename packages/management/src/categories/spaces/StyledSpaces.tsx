@@ -44,7 +44,10 @@ const ConfigurationWrapper = styled.div`
       margin-bottom: 20px;
     }
     &-domain-text {
-      padding-right: 2px;
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-left: 2px;`
+          : `padding-right: 2px;`}
     }
     &-configuration-title {
       padding-bottom: 8px;
