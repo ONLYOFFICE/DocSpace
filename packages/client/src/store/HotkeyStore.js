@@ -3,6 +3,8 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { makeAutoObservable } from "mobx";
 import config from "PACKAGE_FILE";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import toastr from "@docspace/components/toast/toastr";
+import { RoomsType } from "@docspace/common/constants";
 import { encryptionUploadDialog } from "../helpers/desktop";
 
 class HotkeyStore {
@@ -12,8 +14,11 @@ class HotkeyStore {
   filesActionsStore;
   treeFoldersStore;
   uploadDataStore;
+  selectedFolderStore;
 
   elemOffset = 0;
+  hotkeysClipboard = [];
+  hotkeysClipboardAction = null;
 
   constructor(
     filesStore,
@@ -21,7 +26,8 @@ class HotkeyStore {
     settingsStore,
     filesActionsStore,
     treeFoldersStore,
-    uploadDataStore
+    uploadDataStore,
+    selectedFolderStore
   ) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
@@ -30,6 +36,7 @@ class HotkeyStore {
     this.filesActionsStore = filesActionsStore;
     this.treeFoldersStore = treeFoldersStore;
     this.uploadDataStore = uploadDataStore;
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   scrollToCaret = () => {
@@ -520,6 +527,89 @@ class HotkeyStore {
         const fileInput = document.getElementById("customFileInput");
         fileInput && fileInput.click();
       }
+    }
+  };
+
+  setHotkeysClipboard = (isCut) => {
+    const canCopy = this.filesStore.selection.every((s) => s.security?.Copy);
+    const canMove = this.filesStore.selection.every((s) => s.security?.Move);
+
+    if (!canCopy || (isCut && !canMove) || !this.filesStore.selection.length)
+      return;
+
+    this.hotkeysClipboard = this.filesStore.selection;
+    this.hotkeysClipboardAction = isCut ? "move" : "copy";
+  };
+
+  moveFilesFromClipboard = (t) => {
+    let fileIds = [];
+    let folderIds = [];
+
+    const { id: selectedItemId, roomType, security } = this.selectedFolderStore;
+    const { activeFiles, activeFolders } = this.filesStore;
+    const { checkFileConflicts, setSelectedItems, setConflictDialogData } =
+      this.filesActionsStore;
+    const { itemOperationToFolder, clearActiveOperations } =
+      this.uploadDataStore;
+
+    const isCopy = this.hotkeysClipboardAction === "copy";
+    const selections = isCopy
+      ? this.hotkeysClipboard
+      : this.hotkeysClipboard.filter((f) => f && !f?.isEditing);
+
+    if (!selections.length) return;
+
+    if (!security.CopyTo || !security.MoveTo) return;
+
+    const isPublic = roomType === RoomsType.PublicRoom;
+
+    for (let item of selections) {
+      if (item.fileExst || item.contentLength) {
+        const fileInAction = activeFiles.includes(item.id);
+        !fileInAction && fileIds.push(item.id);
+      } else if (item.id === selectedItemId) {
+        toastr.error(t("Translations:MoveToFolderMessage"));
+      } else {
+        const folderInAction = activeFolders.includes(item.id);
+
+        !folderInAction && folderIds.push(item.id);
+      }
+    }
+
+    if (folderIds.length || fileIds.length) {
+      const operationData = {
+        destFolderId: selectedItemId,
+        folderIds,
+        fileIds,
+        deleteAfter: false,
+        isCopy,
+        translations: {
+          copy: t("Common:CopyOperation"),
+          move: t("Translations:MoveToOperation"),
+        },
+      };
+
+      if (isPublic) {
+        this.dialogsStore.setMoveToPublicRoomVisible(true, operationData);
+        return;
+      }
+
+      setSelectedItems();
+      checkFileConflicts(selectedItemId, folderIds, fileIds)
+        .then(async (conflicts) => {
+          if (conflicts.length) {
+            setConflictDialogData(conflicts, operationData);
+          } else {
+            if (!isCopy) this.filesStore.setMovingInProgress(!isCopy);
+            await itemOperationToFolder(operationData);
+          }
+        })
+        .catch((e) => {
+          toastr.error(e);
+          clearActiveOperations(fileIds, folderIds);
+        });
+    } else {
+      toastr.error(t("Common:ErrorEmptyList"));
     }
   };
 

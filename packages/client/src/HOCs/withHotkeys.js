@@ -61,6 +61,8 @@ const withHotkeys = (Component) => {
       setInviteUsersWarningDialogVisible,
 
       security,
+      setHotkeysClipboard,
+      moveFilesFromClipboard,
     } = props;
 
     const navigate = useNavigate();
@@ -331,6 +333,10 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
+    useHotkeys("Ctrl+c", () => setHotkeysClipboard(), hotkeysFilter);
+    useHotkeys("Ctrl+x", () => setHotkeysClipboard(true), hotkeysFilter);
+    useHotkeys("Ctrl+v", () => moveFilesFromClipboard(t), hotkeysFilter);
+
     //Upload file
     useHotkeys(
       "Shift+u",
@@ -395,6 +401,8 @@ const withHotkeys = (Component) => {
         selectAll,
         activateHotkeys,
         uploadFile,
+        setHotkeysClipboard,
+        moveFilesFromClipboard,
       } = hotkeyStore;
 
       const {
@@ -481,6 +489,8 @@ const withHotkeys = (Component) => {
         setInviteUsersWarningDialogVisible,
 
         security,
+        setHotkeysClipboard,
+        moveFilesFromClipboard,
       };
     }
   )(observer(WithHotkeys));

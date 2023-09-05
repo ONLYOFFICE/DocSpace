@@ -148,7 +148,8 @@ const hotkeyStore = new HotkeyStore(
   settingsStore,
   filesActionsStore,
   treeFoldersStore,
-  uploadDataStore
+  uploadDataStore,
+  selectedFolderStore
 );
 
 const profileActionsStore = new ProfileActionsStore(
