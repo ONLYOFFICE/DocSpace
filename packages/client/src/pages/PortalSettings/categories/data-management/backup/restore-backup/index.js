@@ -171,14 +171,7 @@ const RestoreBackup = (props) => {
 
       {radioButtonState === BACKUP_ROOM && <RoomsModule />}
       {radioButtonState === DISK_SPACE && (
-        <ThirdPartyResourcesModule
-          t={t}
-          isPanelVisible={isVisibleSelectFileDialog}
-          onClose={onModalClose}
-          onClickInput={onClickInput}
-          onSelectFile={(file) => setRestoreResource(file.id)}
-          buttonSize={buttonSize}
-        />
+        <ThirdPartyResourcesModule buttonSize={buttonSize} />
       )}
       {radioButtonState === STORAGE_SPACE && (
         <ThirdPartyStoragesModule onSetStorageId={onSetStorageId} />

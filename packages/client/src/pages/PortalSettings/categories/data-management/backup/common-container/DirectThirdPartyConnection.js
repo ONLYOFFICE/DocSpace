@@ -45,6 +45,9 @@ const DirectThirdPartyConnection = (props) => {
     setConnectedThirdPartyAccount,
     buttonSize,
     isTheSameThirdPartyAccount,
+    onSelectFile,
+    filterParam,
+    descriptionText,
   } = props;
 
   const { t } = useTranslation("Translations");
@@ -312,8 +315,11 @@ const DirectThirdPartyConnection = (props) => {
         <>
           {Object.keys(folderList).length !== 0 && (
             <FilesSelectorInput
+              descriptionText={descriptionText}
+              filterParam={filterParam}
               rootThirdPartyId={selectedThirdPartyAccount.id}
               onSelectFolder={onSelectFolder}
+              onSelectFile={onSelectFile}
               id={id ? id : folderList.id}
               withoutInitPath={withoutInitPath}
               isError={isError}
