@@ -267,6 +267,7 @@ export const useFilesHelper = ({
   setSelectedTreeNode,
   filterParam,
   getRootData,
+  onSetBaseFolderPath,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -350,35 +351,28 @@ export const useFilesHelper = ({
           setSelectedTreeNode({ ...current, path: pathParts });
 
         if (isInit) {
-          if (isThirdParty) {
-            const breadCrumbs: BreadCrumb[] = [
-              { label: current.title, isRoom: false, id: current.id },
-            ];
+          const breadCrumbs: BreadCrumb[] = await Promise.all(
+            pathParts.map(async (folderId: number | string) => {
+              const folderInfo: any = await getFolderInfo(folderId);
 
-            setBreadCrumbs(breadCrumbs);
-            setIsBreadCrumbsLoading(false);
-          } else {
-            const breadCrumbs: BreadCrumb[] = await Promise.all(
-              pathParts.map(async (folderId: number | string) => {
-                const folderInfo: any = await getFolderInfo(folderId);
+              const { title, id, parentId, rootFolderType, roomType } =
+                folderInfo;
 
-                const { title, id, parentId, rootFolderType, roomType } =
-                  folderInfo;
+              return {
+                label: title,
+                id: id,
+                isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
+                roomType,
+              };
+            })
+          );
 
-                return {
-                  label: title,
-                  id: id,
-                  isRoom: parentId === 0 && rootFolderType === FolderType.Rooms,
-                  roomType,
-                };
-              })
-            );
+          !isThirdParty && breadCrumbs.unshift({ ...defaultBreadCrumb });
 
-            breadCrumbs.unshift({ ...defaultBreadCrumb });
+          onSetBaseFolderPath && onSetBaseFolderPath(breadCrumbs);
 
-            setBreadCrumbs(breadCrumbs);
-            setIsBreadCrumbsLoading(false);
-          }
+          setBreadCrumbs(breadCrumbs);
+          setIsBreadCrumbsLoading(false);
         }
 
         if (isFirstLoad || startIndex === 0) {

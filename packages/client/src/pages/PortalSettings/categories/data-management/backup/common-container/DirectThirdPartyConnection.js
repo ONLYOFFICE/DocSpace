@@ -1,10 +1,8 @@
 ﻿import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
 import AccessNoneReactSvgUrl from "PUBLIC_DIR/images/access.none.react.svg?url";
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import Button from "@docspace/components/button";
-import SelectFolderInput from "client/SelectFolderInput";
-import SelectFileInput from "client/SelectFileInput";
 import {
   getSettingsThirdParty,
   getThirdPartyCapabilities,
@@ -16,32 +14,30 @@ import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
-import { withTranslation } from "react-i18next";
 import { getOAuthToken } from "@docspace/common/utils";
-import { FilesSelectorFilterTypes } from "@docspace/common/constants";
-
+import FilesSelectorInput from "SRC_DIR/components/FilesSelectorInput";
+import { useTranslation } from "react-i18next";
 let accounts = [],
   capabilities;
+
+const initialState = {
+  folderList: {},
+  isLoading: false,
+  isInitialLoading: true,
+  isUpdatingInfo: false,
+};
 const DirectThirdPartyConnection = (props) => {
   const {
     openConnectWindow,
-    t,
     onSelectFolder,
-    onClose,
-    onClickInput,
-    onSetLoadingData,
     isDisabled,
-    isPanelVisible,
     isError,
     id,
     withoutBasicSelection,
-    onSelectFile,
-    isFileSelection = false,
     connectDialogVisible,
     setConnectDialogVisible,
     setDeleteThirdPartyDialogVisible,
     deleteThirdPartyDialogVisible,
-    tReady,
     clearLocalStorage,
     setSelectedThirdPartyAccount,
     connectedThirdPartyAccount,
@@ -51,15 +47,15 @@ const DirectThirdPartyConnection = (props) => {
     isTheSameThirdPartyAccount,
   } = props;
 
+  const { t } = useTranslation("Translations");
+
   useEffect(() => {
+    onSetInitialInfo();
+
     return () => {
       setSelectedThirdPartyAccount(null);
     };
   }, []);
-
-  useEffect(() => {
-    tReady && onSetInitialInfo();
-  }, [tReady]);
 
   const onSetInitialInfo = async () => {
     try {
@@ -77,13 +73,6 @@ const DirectThirdPartyConnection = (props) => {
       !isInitialLoading &&
       updateAccountsInfo();
   }, [selectedThirdPartyAccount === null]);
-
-  const initialState = {
-    folderList: [],
-    isLoading: false,
-    isInitialLoading: true,
-    isUpdatingInfo: false,
-  };
 
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -117,21 +106,16 @@ const DirectThirdPartyConnection = (props) => {
   const onSetThirdPartySettings = async (connectedAccount, capabilities) => {
     try {
       accounts = [];
-
       let index = 0,
         selectedAccount = {};
-
       const setAccount = (providerKey, serviceTitle) => {
         const accountIndex =
           capabilities && capabilities.findIndex((x) => x[0] === providerKey);
-
         if (accountIndex === -1) return;
-
         const isConnected =
           connectedAccount?.providerKey === "WebDav"
             ? serviceTitle === connectedAccount?.title
             : capabilities[accountIndex][0] === connectedAccount?.providerKey;
-
         accounts.push({
           key: index.toString(),
           label: serviceTitle,
@@ -143,16 +127,14 @@ const DirectThirdPartyConnection = (props) => {
           connected: isConnected,
           ...(isConnected && {
             provider_id: connectedAccount?.providerId,
+            id: connectedAccount.id,
           }),
         });
-
         if (isConnected) {
           selectedAccount = { ...accounts[index] };
         }
-
         index++;
       };
-
       setAccount("GoogleDrive", t("Translations:TypeTitleGoogle"));
       setAccount("Box", t("Translations:TypeTitleBoxNet"));
       setAccount("DropboxV2", t("Translations:TypeTitleDropBox"));
@@ -163,7 +145,6 @@ const DirectThirdPartyConnection = (props) => {
       setAccount("kDrive", t("Translations:TypeTitlekDrive"));
       setAccount("Yandex", t("Translations:TypeTitleYandex"));
       setAccount("WebDav", t("Translations:TypeTitleWebDav"));
-
       setSelectedThirdPartyAccount(
         Object.keys(selectedAccount).length !== 0
           ? selectedAccount
@@ -174,7 +155,7 @@ const DirectThirdPartyConnection = (props) => {
         isLoading: false,
         isUpdatingInfo: false,
         isInitialLoading: false,
-        folderList: connectedAccount ?? [],
+        folderList: connectedAccount ?? {},
       });
     } catch (e) {
       setState({
@@ -277,47 +258,7 @@ const DirectThirdPartyConnection = (props) => {
 
   const { isLoading, folderList, isInitialLoading, isUpdatingInfo } = state;
 
-  const fileSelection = isFileSelection ? (
-    <SelectFileInput
-      passedFoldersTree={[folderList]}
-      onClose={onClose}
-      onSelectFile={onSelectFile}
-      onClickInput={onClickInput}
-      isPanelVisible={isPanelVisible}
-      filterParam={FilesSelectorFilterTypes.GZ}
-      descriptionText={t("Settings:SelectFileInGZFormat")}
-      withoutResetFolderTree
-      isArchiveOnly
-      isDisabled={
-        isLoading ||
-        accounts.length === 0 ||
-        folderList.length === 0 ||
-        isDisabled
-      }
-      isError={isError}
-    />
-  ) : (
-    <SelectFolderInput
-      id={id}
-      onSelectFolder={onSelectFolder}
-      name={"thirdParty"}
-      isThirdParty={true}
-      onClose={onClose}
-      onClickInput={onClickInput}
-      onSetLoadingData={onSetLoadingData}
-      isDisabled={
-        isLoading ||
-        accounts.length === 0 ||
-        folderList.length === 0 ||
-        isDisabled
-      }
-      isPanelVisible={isPanelVisible}
-      isError={isError}
-      passedFoldersTree={[folderList]}
-      withoutBasicSelection={withoutBasicSelection}
-      isWaitingUpdate={isInitialLoading || isUpdatingInfo ? true : false}
-    />
-  );
+ 
 
   return (
     <StyledBackup
@@ -339,11 +280,7 @@ const DirectThirdPartyConnection = (props) => {
           tabIndex={1}
           showDisabledItems
           isDisabled={
-            !tReady ||
-            isDisabled ||
-            isInitialLoading ||
-            isLoading ||
-            accounts.length === 0
+            isDisabled || isInitialLoading || isLoading || accounts.length === 0
           }
         />
 
@@ -374,7 +311,23 @@ const DirectThirdPartyConnection = (props) => {
           size={buttonSize}
         />
       ) : (
-        fileSelection
+        <>
+          {Object.keys(folderList).length !== 0 && (
+            <FilesSelectorInput
+              onSelectFolder={onSelectFolder}
+              id={id ? id : folderList.id}
+              withoutInitPath={withoutBasicSelection}
+              isError={isError}
+              isDisabled={
+                isLoading ||
+                accounts.length === 0 ||
+                folderList.length === 0 ||
+                isDisabled
+              }
+              isThirdParty
+            />
+          )}
+        </>
       )}
       {deleteThirdPartyDialogVisible && (
         <DeleteThirdPartyDialog
@@ -418,8 +371,4 @@ export default inject(({ backup, dialogsStore, settingsStore }) => {
     connectedThirdPartyAccount,
     setConnectedThirdPartyAccount,
   };
-})(
-  withTranslation(["ConnectDialog", "Settings", "Common", "Translations"])(
-    observer(DirectThirdPartyConnection)
-  )
-);
+})(observer(DirectThirdPartyConnection));

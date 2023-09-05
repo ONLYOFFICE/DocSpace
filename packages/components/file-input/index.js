@@ -58,6 +58,8 @@ class FileInput extends Component {
       buttonLabel,
       idButton,
       isLoading,
+      fromStorage = false,
+      path,
       ...rest
     } = this.props;
 
@@ -108,20 +110,26 @@ class FileInput extends Component {
               isReadOnly
               className="text-input"
               placeholder={placeholder}
-              value={fileName}
+              value={fromStorage ? path : fileName}
               size={size}
               isDisabled={isDisabled || isLoading}
               hasError={hasError}
               hasWarning={hasWarning}
               scale={scale}
+              {...(fromStorage && {
+                isReadOnly: true,
+                onClick: rest.onClick,
+              })}
             />
-            <input
-              type="file"
-              id={id}
-              ref={this.inputRef}
-              style={{ display: "none" }}
-              {...getInputProps()}
-            />
+            {!fromStorage && (
+              <input
+                type="file"
+                id={id}
+                ref={this.inputRef}
+                style={{ display: "none" }}
+                {...getInputProps()}
+              />
+            )}
 
             {buttonLabel ? (
               <Button

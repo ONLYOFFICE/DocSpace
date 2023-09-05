@@ -98,11 +98,11 @@ export type useFilesHelpersProps = {
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
   getRootData?: () => Promise<void>;
+  onSetBaseFolderPath?: () => Promise<void>;
 };
 
 export type FilesSelectorProps = {
   isPanelVisible: boolean;
-  withoutBasicSelection: boolean;
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   isEditorDialog: boolean;

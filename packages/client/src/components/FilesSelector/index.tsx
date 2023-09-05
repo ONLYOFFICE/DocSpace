@@ -33,7 +33,6 @@ import useSocketHelper from "./helpers/useSocketHelper";
 
 const FilesSelector = ({
   isPanelVisible = false,
-  withoutBasicSelection = false,
   withoutImmediatelyClose = false,
   isThirdParty = false,
   isEditorDialog = false,
@@ -179,6 +178,7 @@ const FilesSelector = ({
     setSelectedTreeNode,
     filterParam,
     getRootData,
+    onSetBaseFolderPath,
   });
 
   const onSelectAction = (item: Item) => {
@@ -218,10 +218,6 @@ const FilesSelector = ({
   }, [selectedItemId, isRoot]);
 
   React.useEffect(() => {
-    if (!withoutBasicSelection) {
-      onSelectFolder && onSelectFolder(currentFolderId);
-      onSetBaseFolderPath && onSetBaseFolderPath(currentFolderId);
-    }
     if (!currentFolderId) {
       getRootData();
     } else {
@@ -389,9 +385,9 @@ const FilesSelector = ({
         toastr.error(t("Common:ErrorEmptyList"));
       }
     } else {
-      setIsRequestRunning(true);
-      onSetNewFolderPath && onSetNewFolderPath(selectedItemId);
-      onSelectFolder && onSelectFolder(selectedItemId);
+      //setIsRequestRunning(true);
+      //onSetNewFolderPath && onSetNewFolderPath(breadCrumbs);
+      onSelectFolder && onSelectFolder(selectedItemId, breadCrumbs);
       onSave &&
         selectedItemId &&
         onSave(null, selectedItemId, fileName, isChecked);
@@ -544,7 +540,7 @@ export default inject(
       dialogsStore,
       filesStore,
     }: any,
-    { isCopy, isRestoreAll, isMove, isPanelVisible, id, passedFoldersTree }: any
+    { isCopy, isRestoreAll, isMove, isPanelVisible, id }: any
   ) => {
     const {
       id: selectedId,
@@ -561,8 +557,6 @@ export default inject(
 
     const fromFolderId = id
       ? id
-      : passedFoldersTree?.length > 0
-      ? passedFoldersTree[0].id
       : rootFolderType === FolderType.Archive ||
         rootFolderType === FolderType.TRASH
       ? undefined

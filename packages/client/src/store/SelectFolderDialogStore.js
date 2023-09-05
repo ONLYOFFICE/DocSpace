@@ -1,82 +1,56 @@
 import { makeAutoObservable } from "mobx";
 
 class SelectFolderDialogStore {
-  resultingFolderId = null;
   roomType = null;
-  fileInfo = null;
-  folderTitle = "";
-  providerKey = null;
-  baseFolderPath = "";
-  newFolderPath = "";
-  isPathError = false;
-  isLoading = false;
-  resultingFolderTree = [];
-  securityItem = {};
+
+  newPath = "";
+  basePath = "";
 
   constructor() {
     makeAutoObservable(this);
   }
 
   toDefault = () => {
-    this.resultingFolderId = null;
-    this.roomType = null;
-    this.resultingFolderTree = [];
-    this.baseFolderPath = "";
-    this.newFolderPath = "";
-    this.folderTitle = "";
-    this.isLoading = false;
-    this.isPathError = false;
-    this.setProviderKey(null);
+    this.basePath = "";
+    this.newPath = "";
   };
 
-  setItemSecurity = (security) => {
-    this.securityItem = security;
+  convertPath = (foldersArray) => {
+    let path = "";
+
+    if (foldersArray.length > 1) {
+      for (let item of foldersArray) {
+        if (!path) {
+          path = path + `${item.label}`;
+        } else path = path + " " + "/" + " " + `${item.label}`;
+      }
+    } else {
+      for (let item of foldersArray) {
+        path = `${item.label}`;
+      }
+    }
+
+    return path;
   };
 
-  updateBaseFolderPath = () => {
-    this.baseFolderPath = this.newFolderPath;
-    this.setIsPathError(false);
+  resetNewFolderPath = () => {
+    this.newPath = this.basePath;
   };
 
-  resetNewFolderPath = (id) => {
-    this.newFolderPath = this.baseFolderPath;
-    this.setIsPathError(false);
-    this.setResultingFolderId(id);
+  setNewPath = (folders) => {
+    this.newPath = this.convertPath(folders);
   };
 
-  setBaseFolderPath = (baseFolderPath) => {
-    this.baseFolderPath = baseFolderPath;
+  setBasePath = (folders) => {
+    this.basePath = this.convertPath(folders);
   };
 
-  setIsPathError = (isPathError) => {
-    this.isPathError = isPathError;
-  };
-
-  setNewFolderPath = (newFolderPath) => {
-    this.newFolderPath = newFolderPath;
-  };
   setResultingFolderId = (id) => {
     this.resultingFolderId = id;
   };
 
   setRoomType = (type) => {
     this.roomType = type;
-  };
-
-  setFolderTitle = (title) => {
-    this.folderTitle = title;
-  };
-
-  setProviderKey = (providerKey) => {
-    this.providerKey = providerKey;
-  };
-
-  setIsLoading = (isLoading) => {
-    this.isLoading = isLoading;
-  };
-
-  setResultingFoldersTree = (tree) => {
-    this.resultingFolderTree = tree;
   };
 }
 

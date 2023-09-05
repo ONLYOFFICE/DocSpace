@@ -132,8 +132,6 @@ class ThirdPartyModule extends React.Component {
         <DirectThirdPartyConnection
           t={t}
           onSelectFolder={this.onSelectFolder}
-          onClose={this.onClose}
-          onClickInput={this.onClickInput}
           onSetLoadingData={this.onSetLoadingData}
           isDisabled={isModuleDisabled}
           isPanelVisible={isPanelVisible}
