@@ -250,4 +250,7 @@ Vymazanie osobných údajov umožnilo uvoľniť:
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Odstránenie údajov používateľa ukončené</value>
   </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE Personal</value>
+  </data>
 </root>
