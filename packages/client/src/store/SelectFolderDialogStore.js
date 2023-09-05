@@ -12,6 +12,7 @@ class SelectFolderDialogStore {
   toDefault = () => {
     this.basePath = "";
     this.newPath = "";
+    this.isErrorPath = false;
   };
 
   convertPath = (foldersArray) => {

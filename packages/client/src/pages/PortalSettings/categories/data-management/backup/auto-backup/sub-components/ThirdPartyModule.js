@@ -45,7 +45,7 @@ class ThirdPartyModule extends React.PureComponent {
             onSelectFolder={this.onSelectFolder}
             isDisabled={isLoadingData}
             isPanelVisible={isPanelVisible}
-            withoutBasicSelection={isResourcesDefault ? false : true}
+            withoutInitPath={!isResourcesDefault}
             isError={isError}
             id={passedId}
             buttonSize={buttonSize}

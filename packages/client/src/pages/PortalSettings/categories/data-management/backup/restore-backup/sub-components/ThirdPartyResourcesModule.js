@@ -5,11 +5,7 @@ import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyC
 const ThirdPartyResources = (props) => {
   return (
     <div className={"restore-backup_third-party-module"}>
-      <DirectThirdPartyConnection
-        {...props}
-        withoutBasicSelection
-        isFileSelection
-      />
+      <DirectThirdPartyConnection {...props} withoutInitPath isFileSelection />
     </div>
   );
 };

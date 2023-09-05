@@ -99,7 +99,7 @@ class ThirdPartyModule extends React.Component {
           onSelectFolder={this.onSelectFolder}
           isDisabled={isModuleDisabled}
           {...(selectedFolder && { id: selectedFolder })}
-          withoutInitPath={selectedFolder ? false : true}
+          withoutInitPath={!selectedFolder}
           isError={isError}
           buttonSize={buttonSize}
         />

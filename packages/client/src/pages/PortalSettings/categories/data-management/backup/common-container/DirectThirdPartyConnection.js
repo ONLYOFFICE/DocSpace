@@ -33,7 +33,7 @@ const DirectThirdPartyConnection = (props) => {
     isDisabled,
     isError,
     id,
-    withoutBasicSelection,
+    withoutInitPath,
     connectDialogVisible,
     setConnectDialogVisible,
     setDeleteThirdPartyDialogVisible,
@@ -315,7 +315,7 @@ const DirectThirdPartyConnection = (props) => {
               rootThirdPartyId={selectedThirdPartyAccount.id}
               onSelectFolder={onSelectFolder}
               id={id ? id : folderList.id}
-              withoutInitPath={withoutBasicSelection}
+              withoutInitPath={withoutInitPath}
               isError={isError}
               isDisabled={
                 isLoading ||
