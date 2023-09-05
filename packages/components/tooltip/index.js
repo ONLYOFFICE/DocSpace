@@ -1,10 +1,12 @@
-import React, { Component } from "react";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { isMobileOnly } from "react-device-detect";
 
 import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
+import { flip, shift, offset } from "./middlewares";
+
+const defaultOffset = 10;
 
 class Tooltip extends Component {
   constructor(props) {
@@ -16,7 +18,6 @@ class Tooltip extends Component {
       id,
       place,
       getContent,
-      offset,
       children,
       afterShow,
       afterHide,
@@ -41,13 +42,21 @@ class Tooltip extends Component {
           openOnClick
           closeOnScroll
           closeOnResize
-          offset={offset}
+          offset={this.props.offset}
           afterShow={afterShow}
           afterHide={afterHide}
-          place={isMobileOnly ? "top" : place}
+          place={place}
           anchorSelect={`div[id='${id}'] svg`}
           className="__react_component_tooltip"
           positionStrategy="fixed"
+          middlewares={[
+            offset(this.props.offset ?? defaultOffset),
+            flip({
+              crossAxis: false,
+              fallbackAxisSideDirection: place,
+            }),
+            shift(),
+          ]}
         >
           {content}
         </ReactTooltip>
@@ -74,13 +83,7 @@ Tooltip.propTypes = {
   /** A function to be called after the tooltip is shown */
   afterShow: PropTypes.func,
   /** Sets the top offset for all the tooltips on the page */
-  offsetTop: PropTypes.number,
-  /** Sets the right offset for all the tooltips on the page */
-  offsetRight: PropTypes.number,
-  /** Sets the bottom offset for all the tooltips on the page */
-  offsetBottom: PropTypes.number,
-  /** Sets the left offset for all the tooltips on the page */
-  offsetLeft: PropTypes.number,
+  offset: PropTypes.number,
   /** Child elements */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   reference: PropTypes.oneOfType([
