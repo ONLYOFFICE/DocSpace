@@ -26,7 +26,7 @@ const App = observer(() => {
 
   const { authStore } = useStore();
   const { init, settingsStore, userStore } = authStore;
-  const { theme, setTheme } = settingsStore;
+  const { theme, setTheme, currentColorScheme } = settingsStore;
 
   const userTheme = userStore?.user?.theme ? userStore?.user?.theme : "Dark";
 
@@ -51,7 +51,10 @@ const App = observer(() => {
   );
 
   return (
-    <ThemeProvider theme={{ ...theme, interfaceDirection: i18n.dir() }}>
+    <ThemeProvider
+      theme={{ ...theme, interfaceDirection: i18n.dir() }}
+      currentColorScheme={currentColorScheme}
+    >
       <Layout>
         {toast}
         <NavMenu hideProfileMenu customHeader={<SimpleHeader />} />
