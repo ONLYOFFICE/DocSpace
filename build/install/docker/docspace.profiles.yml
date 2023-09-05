@@ -223,6 +223,14 @@ services:
       - ${SERVICE_PORT}
       - "9834"
 
+  onlyoffice-telegramreports:
+    <<: [*x-service-base, *x-profiles-backend]
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-telegramreports:${DOCKER_TAG}"
+    container_name: ${TELEGRAMREPORTS_HOST}
+    expose:
+      - ${SERVICE_PORT}
+      - "5016"
+
   onlyoffice-doceditor:
     <<: [*x-service-base, *x-profiles-frontend]
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"

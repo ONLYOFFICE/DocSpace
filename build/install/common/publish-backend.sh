@@ -101,6 +101,7 @@ done
 services_name_backend_nodejs=()  
 services_name_backend_nodejs+=(ASC.Socket.IO)
 services_name_backend_nodejs+=(ASC.SsoAuth)
+services_name_backend_nodejs+=(ASC.TelegramReports)
 
 # Publish backend services (Nodejs) 
 for i in ${!services_name_backend_nodejs[@]}; do
