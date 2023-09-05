@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import FileInput from "@docspace/components/file-input";
-import FilesSelector from "../FilesSelector";
-import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-const StyledComponent = styled.div`
-  max-width: ${(props) => (props.maxWidth ? props.maxWidth : "350px")};
-`;
+import FileInput from "@docspace/components/file-input";
+
+import FilesSelector from "../FilesSelector";
+import { StyledBodyWrapper } from "./StyledComponents";
 
 const FilesSelectorInput = (props) => {
   const {
@@ -57,7 +55,7 @@ const FilesSelectorInput = (props) => {
   };
 
   return (
-    <StyledComponent maxWidth={maxWidth}>
+    <StyledBodyWrapper maxWidth={maxWidth}>
       <FileInput
         onClick={onClick}
         fromStorage
@@ -78,7 +76,7 @@ const FilesSelectorInput = (props) => {
         onSetBaseFolderPath={onSetBasePath}
         onSelectFolder={onSelectFolder}
       />
-    </StyledComponent>
+    </StyledBodyWrapper>
   );
 };
 
