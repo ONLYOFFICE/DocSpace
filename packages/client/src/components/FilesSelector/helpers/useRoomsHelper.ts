@@ -80,7 +80,12 @@ const useRoomsHelper = ({
   onSetBaseFolderPath,
 }: useRoomsHelperProps) => {
   const getRoomList = React.useCallback(
-    async (startIndex: number, isInit?: boolean, search?: string | null) => {
+    async (
+      startIndex: number,
+      isInit?: boolean,
+      search?: string | null,
+      isErrorPath?: boolean
+    ) => {
       setIsNextPageLoading(true);
 
       const filterValue = search
@@ -109,7 +114,8 @@ const useRoomsHelper = ({
 
         !isRoomsOnly && breadCrumbs.unshift({ ...defaultBreadCrumb });
 
-        onSetBaseFolderPath && onSetBaseFolderPath(breadCrumbs);
+        onSetBaseFolderPath &&
+          onSetBaseFolderPath(isErrorPath ? [] : breadCrumbs);
 
         setBreadCrumbs(breadCrumbs);
 

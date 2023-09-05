@@ -271,6 +271,8 @@ export const useFilesHelper = ({
   onSetBaseFolderPath,
   isRoomsOnly,
   rootThirdPartyId,
+  getRoomList,
+  t,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -325,6 +327,13 @@ export const useFilesHelper = ({
             folder.rootFolderType === FolderType.TRASH ||
             folder.rootFolderType === FolderType.Archive
           ) {
+            if (isRoomsOnly) {
+              await getRoomList(0, true, null, true);
+              toastr.error(
+                t("Files:ArchivedRoomAction", { name: folder.title })
+              );
+              return;
+            }
             await getRootData();
             return;
           }
@@ -403,6 +412,12 @@ export const useFilesHelper = ({
           return;
         }
 
+        if (isRoomsOnly) {
+          await getRoomList(0, true, null, true);
+
+          toastr.error(e);
+          return;
+        }
         getRootData && getRootData();
       }
     },

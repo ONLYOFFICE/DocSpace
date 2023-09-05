@@ -185,6 +185,8 @@ const FilesSelector = ({
     onSetBaseFolderPath,
     isRoomsOnly,
     rootThirdPartyId,
+    getRoomList,
+    t,
   });
 
   const onSelectAction = (item: Item) => {
