@@ -29,6 +29,7 @@ namespace ASC.Web.Core;
 [Scope]
 public class WebPluginManager
 {
+    private const string StorageSystemModuleName = "systemwebplugins";
     private const string StorageModuleName = "webplugins";
     private const string ConfigFileName = "config.json";
     private const string PluginFileName = "plugin.js";
@@ -64,16 +65,23 @@ public class WebPluginManager
         }
     }
 
-    public async Task<string> GetPluginUrlTemplate(int tenantId)
+    public async Task<IDataStore> GetPluginStorageAsync(int tenantId)
     {
-        var storage = await _storageFactory.GetStorageAsync(tenantId, StorageModuleName);
+        var storage = await _storageFactory.GetStorageAsync(tenantId, tenantId == Tenant.DefaultTenant ? StorageSystemModuleName : StorageModuleName);
+
+        return storage;
+    }
+
+    public async Task<string> GetPluginUrlTemplateAsync(int tenantId)
+    {
+        var storage = await GetPluginStorageAsync(tenantId);
 
         var uri = await storage.GetUriAsync(Path.Combine("{0}", PluginFileName));
 
         return uri?.ToString() ?? string.Empty;
     }
 
-    public async Task<DbWebPlugin> AddWebPluginFromFile(int tenantId, IFormFile file)
+    public async Task<DbWebPlugin> AddWebPluginFromFileAsync(int tenantId, IFormFile file)
     {
         DemandWebPlugins("upload");
 
@@ -87,7 +95,7 @@ public class WebPluginManager
             throw new ArgumentException("File size exceeds limit");
         }
 
-        var storage = await _storageFactory.GetStorageAsync(tenantId, StorageModuleName);
+        var storage = await GetPluginStorageAsync(tenantId);
 
         DbWebPlugin webPlugin = null;
         Uri uri = null;
@@ -125,6 +133,11 @@ public class WebPluginManager
                 var existingPlugin = await _webPluginService.GetByNameAsync(tenantId, webPlugin.Name);
                 if (existingPlugin != null)
                 {
+                    if (existingPlugin.System)
+                    {
+                        throw new SecurityException("System plugin with same name already exists");
+                    }
+
                     if (webPlugin.Version == existingPlugin.Version)
                     {
                         throw new ArgumentException("Plugin already exist");
@@ -209,7 +222,7 @@ public class WebPluginManager
 
         await _webPluginService.DeleteAsync(tenantId, plugin.Id);
 
-        var storage = await _storageFactory.GetStorageAsync(tenantId, StorageModuleName);
+        var storage = await GetPluginStorageAsync(tenantId);
 
         await storage.DeleteDirectoryAsync(string.Empty, plugin.Name);
     }
