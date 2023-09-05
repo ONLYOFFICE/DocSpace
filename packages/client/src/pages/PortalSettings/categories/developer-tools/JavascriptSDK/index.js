@@ -23,6 +23,12 @@ import Badge from "@docspace/components/badge";
 
 import CSP from "./sub-components/csp";
 
+const SDKContainer = styled(Box)`
+  @media ${tablet} {
+    width: 100%;
+  }
+`;
+
 const Controls = styled(Box)`
   min-width: 350px;
   max-width: 350px;
@@ -42,6 +48,10 @@ const CategoryHeader = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: 22px;
+
+  @media ${tablet} {
+    margin-top: 24px;
+  }
 `;
 
 const CategorySubHeader = styled.div`
@@ -51,10 +61,14 @@ const CategorySubHeader = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 16px;
+
+  @media ${tablet} {
+    margin-bottom: 0;
+  }
 `;
 
 const CategoryDescription = styled(Box)`
-  margin-top: 20px;
+  margin-top: 5px;
   max-width: 700px;
 `;
 
@@ -62,11 +76,26 @@ const ControlsGroup = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  @media ${tablet} {
+    gap: 4px;
+  }
+`;
+
+const InterfaceElements = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
 `;
 
 const Frame = styled(Box)`
   margin-top: 16px;
   position: relative;
+
+  @media ${tablet} {
+    margin-top: 4px;
+  }
 
   ${(props) =>
     props.targetId &&
@@ -74,6 +103,7 @@ const Frame = styled(Box)`
     #${props.targetId} {
       position: absolute;
       border-radius: 6px;
+      border: 1px solid #d0d5da;
       min-width: ${props.width ? props.width : "100%"};
       min-height: ${props.height ? props.height : "400px"};
     }
@@ -112,9 +142,14 @@ const ColumnContainer = styled(Box)`
 `;
 
 const Preview = styled(Box)`
+  width: 100%;
   margin-top: 24px;
   min-width: 660px;
   flex-direction: row;
+
+  @media ${tablet} {
+    margin-top: 0;
+  }
 `;
 
 const PortalIntegration = (props) => {
@@ -342,215 +377,211 @@ const PortalIntegration = (props) => {
   ];
 
   return (
-    <>
-      {isMobileOnly ? (
-        <BreakpointWarning sectionName={t("JavascriptSdk")} />
-      ) : (
-        <Box>
-          <CategoryDescription>
-            {t("SDKDescription")}
-            <Link
-              color={currentColorScheme?.main?.accent}
-              fontSize="12px"
-              fontWeight="400"
-              onClick={() => window.open(sdkLink, "_blank")}
+    <SDKContainer>
+      <CategoryDescription>
+        {t("SDKDescription")}
+        <Link
+          color={currentColorScheme?.main?.accent}
+          fontSize="12px"
+          fontWeight="400"
+          onClick={() => window.open(sdkLink, "_blank")}
+        >
+          {t("APILink")}.
+        </Link>
+        <CSP t={t} />
+      </CategoryDescription>
+      <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
+      <Container>
+        {!isMobileOnly && (
+          <Preview>
+            <TabContainer onSelect={onChangeTab} elements={dataTabs} />
+          </Preview>
+        )}
+        <Controls>
+          <CategorySubHeader>{t("CustomizingDisplay")}</CategorySubHeader>
+          <ControlsGroup>
+            <Label className="label" text={t("EmbeddingPanel:Width")} />
+            <RowContainer combo>
+              <TextInput
+                onChange={onChangeWidth}
+                placeholder={t("EnterWidth")}
+                value={width}
+                tabIndex={2}
+              />
+              <ComboBox
+                size="content"
+                scaled={false}
+                scaledOptions={true}
+                onSelect={onChangeWidthDimension}
+                options={dataDimensions}
+                selectedOption={widthDimension}
+                displaySelectedOption
+                directionY="bottom"
+              />
+            </RowContainer>
+          </ControlsGroup>
+          <ControlsGroup>
+            <Label className="label" text={t("EmbeddingPanel:Height")} />
+            <RowContainer combo>
+              <TextInput
+                onChange={onChangeHeight}
+                placeholder={t("EnterHeight")}
+                value={height}
+                tabIndex={3}
+              />
+              <ComboBox
+                size="content"
+                scaled={false}
+                scaledOptions={true}
+                onSelect={onChangeHeightDimension}
+                options={dataDimensions}
+                selectedOption={heightDimension}
+                displaySelectedOption
+                directionY="bottom"
+              />
+            </RowContainer>
+          </ControlsGroup>
+          <ControlsGroup>
+            <Label className="label" text={t("FrameId")} />
+            <TextInput
+              scale={true}
+              onChange={onChangeFrameId}
+              placeholder={t("EnterId")}
+              value={config.frameId}
+              tabIndex={4}
+            />
+          </ControlsGroup>
+          <InterfaceElements>
+            <Label className="label">{t("InterfaceElements")}</Label>
+            <Checkbox
+              label={t("Menu")}
+              onChange={onChangeShowMenu}
+              isChecked={config.showMenu}
+            />
+            <Checkbox
+              label={t("Header")}
+              onChange={onChangeShowHeader}
+              isChecked={config.showHeader}
+            />
+            <Checkbox
+              label={t("Filter")}
+              onChange={onChangeShowFilter}
+              isChecked={config.showFilter}
+            />
+            <RowContainer>
+              <Checkbox
+                label={t("Title")}
+                onChange={onChangeShowTitle}
+                isChecked={config.showTitle}
+              />
+              <Text color="gray">{`(${t("MobileOnly")})`}</Text>
+            </RowContainer>
+          </InterfaceElements>
+          <CategorySubHeader>{t("DataDisplay")}</CategorySubHeader>
+          <ControlsGroup>
+            <Box
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
             >
-              {t("APILink")}.
-            </Link>
-            <CSP t={t} />
-          </CategoryDescription>
-          <CategoryHeader>{t("CreateSampleHeader")}</CategoryHeader>
-          <Container>
-            <Preview>
-              <TabContainer onSelect={onChangeTab} elements={dataTabs} />
-            </Preview>
-            <Controls>
-              <CategorySubHeader>{t("CustomizingDisplay")}</CategorySubHeader>
-              <ControlsGroup>
-                <Label className="label" text={t("EmbeddingPanel:Width")} />
-                <RowContainer combo>
-                  <TextInput
-                    onChange={onChangeWidth}
-                    placeholder={t("EnterWidth")}
-                    value={width}
-                    tabIndex={2}
-                  />
-                  <ComboBox
-                    size="content"
-                    scaled={false}
-                    scaledOptions={true}
-                    onSelect={onChangeWidthDimension}
-                    options={dataDimensions}
-                    selectedOption={widthDimension}
-                    displaySelectedOption
-                    directionY="bottom"
-                  />
-                </RowContainer>
-              </ControlsGroup>
-              <ControlsGroup>
-                <Label className="label" text={t("EmbeddingPanel:Height")} />
-                <RowContainer combo>
-                  <TextInput
-                    onChange={onChangeHeight}
-                    placeholder={t("EnterHeight")}
-                    value={height}
-                    tabIndex={3}
-                  />
-                  <ComboBox
-                    size="content"
-                    scaled={false}
-                    scaledOptions={true}
-                    onSelect={onChangeHeightDimension}
-                    options={dataDimensions}
-                    selectedOption={heightDimension}
-                    displaySelectedOption
-                    directionY="bottom"
-                  />
-                </RowContainer>
-              </ControlsGroup>
-              <ControlsGroup>
-                <Label className="label" text={t("FrameId")} />
-                <TextInput
-                  scale={true}
-                  onChange={onChangeFrameId}
-                  placeholder={t("EnterId")}
-                  value={config.frameId}
-                  tabIndex={4}
-                />
-              </ControlsGroup>
-              <CategorySubHeader>{t("InterfaceElements")}</CategorySubHeader>
-              <Checkbox
-                label={t("Menu")}
-                onChange={onChangeShowMenu}
-                isChecked={config.showMenu}
+              <Label className="label" text={t("RoomOrFolder")} />
+              <HelpButton
+                offsetRight={0}
+                size={12}
+                tooltipContent={
+                  <Text fontSize="12px">{t("RoomOrFolderDescription")}</Text>
+                }
+              />
+            </Box>
+            <SelectFolderInput
+              onSelectFolder={onChangeFolderId}
+              onClose={onCloseFolderInput}
+              onClickInput={onClickFolderInput}
+              isPanelVisible={folderPanelVisible}
+              filteredType="exceptSortedByTags"
+            />
+          </ControlsGroup>
+          <CategorySubHeader>{t("AdvancedDisplay")}</CategorySubHeader>
+          <ControlsGroup>
+            <Label className="label" text={t("SearchTerm")} />
+            <ColumnContainer>
+              <TextInput
+                scale={true}
+                onChange={onChangeSearch}
+                placeholder={t("Common:Search")}
+                value={config.search}
+                tabIndex={5}
               />
               <Checkbox
-                label={t("Header")}
-                onChange={onChangeShowHeader}
-                isChecked={config.showHeader}
+                label={t("Files:WithSubfolders")}
+                onChange={onChangeWithSubfolders}
+                isChecked={withSubfolders}
               />
-              <Checkbox
-                label={t("Filter")}
-                onChange={onChangeShowFilter}
-                isChecked={config.showFilter}
+            </ColumnContainer>
+          </ControlsGroup>
+          <ControlsGroup>
+            <Label className="label" text={t("Common:SortBy")} />
+            <ComboBox
+              onSelect={onChangeSortBy}
+              options={dataSortBy}
+              scaled={true}
+              selectedOption={sortBy}
+              displaySelectedOption
+              directionY="top"
+            />
+          </ControlsGroup>
+          <ControlsGroup>
+            <Label className="label" text={t("SortOrder")} />
+            <ComboBox
+              onSelect={onChangeSortOrder}
+              options={dataSortOrder}
+              scaled={true}
+              selectedOption={sortOrder}
+              displaySelectedOption
+              directionY="top"
+            />
+          </ControlsGroup>
+          <ControlsGroup>
+            <Box
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <Label className="label" text={t("ItemsCount")} />
+              <HelpButton
+                offsetRight={0}
+                size={12}
+                tooltipContent={
+                  <Text fontSize="12px">{t("ItemsCountDescription")}</Text>
+                }
               />
-              <RowContainer>
-                <Checkbox
-                  label={t("Title")}
-                  onChange={onChangeShowTitle}
-                  isChecked={config.showTitle}
-                />
-                <Text color="gray">{`(${t("MobileOnly")})`}</Text>
-              </RowContainer>
-              <CategorySubHeader>{t("DataDisplay")}</CategorySubHeader>
-              <ControlsGroup>
-                <Box
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <Label className="label" text={t("RoomOrFolder")} />
-                  <HelpButton
-                    offsetRight={0}
-                    size={12}
-                    tooltipContent={
-                      <Text fontSize="12px">
-                        {t("RoomOrFolderDescription")}
-                      </Text>
-                    }
-                  />
-                </Box>
-                <SelectFolderInput
-                  onSelectFolder={onChangeFolderId}
-                  onClose={onCloseFolderInput}
-                  onClickInput={onClickFolderInput}
-                  isPanelVisible={folderPanelVisible}
-                  filteredType="exceptSortedByTags"
-                />
-              </ControlsGroup>
-              <CategorySubHeader>{t("AdvancedDisplay")}</CategorySubHeader>
-              <ControlsGroup>
-                <Label className="label" text={t("SearchTerm")} />
-                <ColumnContainer>
-                  <TextInput
-                    scale={true}
-                    onChange={onChangeSearch}
-                    placeholder={t("Common:Search")}
-                    value={config.search}
-                    tabIndex={5}
-                  />
-                  <Checkbox
-                    label={t("Files:WithSubfolders")}
-                    onChange={onChangeWithSubfolders}
-                    isChecked={withSubfolders}
-                  />
-                </ColumnContainer>
-              </ControlsGroup>
-              <ControlsGroup>
-                <Label className="label" text={t("Common:SortBy")} />
-                <ComboBox
-                  onSelect={onChangeSortBy}
-                  options={dataSortBy}
-                  scaled={true}
-                  selectedOption={sortBy}
-                  displaySelectedOption
-                  directionY="top"
-                />
-              </ControlsGroup>
-              <ControlsGroup>
-                <Label className="label" text={t("SortOrder")} />
-                <ComboBox
-                  onSelect={onChangeSortOrder}
-                  options={dataSortOrder}
-                  scaled={true}
-                  selectedOption={sortOrder}
-                  displaySelectedOption
-                  directionY="top"
-                />
-              </ControlsGroup>
-              <ControlsGroup>
-                <Box
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  <Label className="label" text={t("ItemsCount")} />
-                  <HelpButton
-                    offsetRight={0}
-                    size={12}
-                    tooltipContent={
-                      <Text fontSize="12px">{t("ItemsCountDescription")}</Text>
-                    }
-                  />
-                </Box>
-                <TextInput
-                  scale={true}
-                  onChange={onChangeCount}
-                  placeholder={t("EnterCount")}
-                  value={config.count}
-                  tabIndex={6}
-                />
-              </ControlsGroup>
-              <ControlsGroup>
-                <Label className="label" text={t("Page")} />
-                <TextInput
-                  scale={true}
-                  onChange={onChangePage}
-                  placeholder={t("EnterPage")}
-                  value={config.page}
-                  isDisabled={!config.count}
-                  tabIndex={7}
-                />
-              </ControlsGroup>
-            </Controls>
-          </Container>
-        </Box>
-      )}
-    </>
+            </Box>
+            <TextInput
+              scale={true}
+              onChange={onChangeCount}
+              placeholder={t("EnterCount")}
+              value={config.count}
+              tabIndex={6}
+            />
+          </ControlsGroup>
+          <ControlsGroup>
+            <Label className="label" text={t("Page")} />
+            <TextInput
+              scale={true}
+              onChange={onChangePage}
+              placeholder={t("EnterPage")}
+              value={config.page}
+              isDisabled={!config.count}
+              tabIndex={7}
+            />
+          </ControlsGroup>
+        </Controls>
+      </Container>
+    </SDKContainer>
   );
 };
 
