@@ -194,6 +194,12 @@ $enterprise_prerequisites = @(
     name = "postgresql-${psql_version}-1-windows-x64.exe"; 
     link = "https://get.enterprisedb.com/postgresql/postgresql-${psql_version}-1-windows-x64.exe"
   }
+
+  @{
+    download_allways = $false;
+    name = "certbot-2.6.0.exe";
+    link = "https://github.com/certbot/certbot/releases/download/v2.6.0/certbot-beta-installer-win_amd64_signed.exe"
+  }
 )
 
 DownloadComponents $prerequisites $path_prereq

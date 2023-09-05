@@ -30,7 +30,18 @@ copy build\install\win\tools\DocEditor.xml "build\install\win\Files\tools\DocEdi
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" /y
 copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
+copy "build\install\docker\config\nginx\onlyoffice-proxy.conf" "build\install\win\Files\nginx\conf\onlyoffice-proxy.conf" /y
+copy "build\install\docker\config\nginx\onlyoffice-proxy-ssl.conf" "build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl" /y
+copy "build\install\docker\config\nginx\letsencrypt.conf" "build\install\win\Files\nginx\conf\includes\letsencrypt.conf" /y
+copy "build\install\win\sbin\docspace-ssl-setup.ps1" "build\install\win\Files\sbin\docspace-ssl-setup.ps1" /y
 rmdir build\install\win\publish /s /q
+
+REM echo ######## SSL configs ########
+%sed% -i "/proxy_set_header Host $the_host;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "/proxy_set_header X-Forwarded-Host $the_host;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "/proxy_set_header X-Forwarded-Proto $the_scheme;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/#ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/" build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/#include includes\/letsencrypt.conf/include includes\/letsencrypt.conf/" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
 
 REM echo ######## Delete test and dev configs ########
 del /f /q build\install\win\Files\config\*.test.json
