@@ -1,10 +1,9 @@
 import { makeAutoObservable } from "mobx";
 
 class SelectFolderDialogStore {
-  roomType = null;
-
   newPath = "";
   basePath = "";
+  isErrorPath = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -17,6 +16,12 @@ class SelectFolderDialogStore {
 
   convertPath = (foldersArray) => {
     let path = "";
+
+    if (foldersArray.length === 0) {
+      this.setIsErrorPath(true);
+
+      return path;
+    }
 
     if (foldersArray.length > 1) {
       for (let item of foldersArray) {
@@ -43,18 +48,16 @@ class SelectFolderDialogStore {
 
   setNewPath = (folders) => {
     this.newPath = this.convertPath(folders);
+
+    this.setIsErrorPath(false);
   };
 
   setBasePath = (folders) => {
     this.basePath = this.convertPath(folders);
   };
 
-  setResultingFolderId = (id) => {
-    this.resultingFolderId = id;
-  };
-
-  setRoomType = (type) => {
-    this.roomType = type;
+  setIsErrorPath = (isErrorPath) => {
+    this.isErrorPath = isErrorPath;
   };
 }
 

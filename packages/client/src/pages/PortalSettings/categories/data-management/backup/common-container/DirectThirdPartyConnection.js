@@ -256,9 +256,7 @@ const DirectThirdPartyConnection = (props) => {
     ];
   };
 
-  const { isLoading, folderList, isInitialLoading, isUpdatingInfo } = state;
-
- 
+  const { isLoading, folderList, isInitialLoading } = state;
 
   return (
     <StyledBackup
@@ -314,6 +312,7 @@ const DirectThirdPartyConnection = (props) => {
         <>
           {Object.keys(folderList).length !== 0 && (
             <FilesSelectorInput
+              rootThirdPartyId={selectedThirdPartyAccount.id}
               onSelectFolder={onSelectFolder}
               id={id ? id : folderList.id}
               withoutInitPath={withoutBasicSelection}

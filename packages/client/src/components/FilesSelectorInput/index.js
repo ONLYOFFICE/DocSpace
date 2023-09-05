@@ -23,6 +23,8 @@ const FilesSelectorInput = (props) => {
     toDefault,
     maxWidth,
     withoutInitPath,
+    rootThirdPartyId,
+    isErrorPath,
   } = props;
 
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -54,7 +56,6 @@ const FilesSelectorInput = (props) => {
     folders && setNewPath(folders);
   };
 
-
   return (
     <StyledComponent maxWidth={maxWidth}>
       <FileInput
@@ -63,11 +64,12 @@ const FilesSelectorInput = (props) => {
         path={newPath || basePath}
         isLoading={isLoading}
         isDisabled={isDisabled || isLoading}
-        hasError={isError}
+        hasError={isError || isErrorPath}
         scale
       />
 
       <FilesSelector
+        rootThirdPartyId={rootThirdPartyId}
         isThirdParty={isThirdParty}
         isRoomsOnly={isRoomsOnly}
         id={id}
@@ -81,10 +83,11 @@ const FilesSelectorInput = (props) => {
 };
 
 export default inject(({ selectFolderDialogStore }) => {
-  const { basePath, newPath, setNewPath, setBasePath, toDefault } =
+  const { basePath, newPath, setNewPath, setBasePath, toDefault, isErrorPath } =
     selectFolderDialogStore;
 
   return {
+    isErrorPath,
     setBasePath,
     basePath,
     newPath,

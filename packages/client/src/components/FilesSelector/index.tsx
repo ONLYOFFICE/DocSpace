@@ -38,6 +38,7 @@ const FilesSelector = ({
   isRoomsOnly = false,
   isEditorDialog = false,
 
+  rootThirdPartyId,
   filterParam,
 
   onClose,
@@ -183,6 +184,7 @@ const FilesSelector = ({
     getRootData,
     onSetBaseFolderPath,
     isRoomsOnly,
+    rootThirdPartyId,
   });
 
   const onSelectAction = (item: Item) => {

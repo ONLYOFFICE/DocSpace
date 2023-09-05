@@ -21,6 +21,7 @@ import {
   FilterType,
   FolderType,
 } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const getIconUrl = (extension: string, isImage: boolean, isMedia: boolean) => {
   // if (extension !== iconPath) return iconSize32.get(iconPath);
@@ -269,6 +270,7 @@ export const useFilesHelper = ({
   getRootData,
   onSetBaseFolderPath,
   isRoomsOnly,
+  rootThirdPartyId,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -315,9 +317,9 @@ export const useFilesHelper = ({
 
       filter.folder = id.toString();
 
-      try {
+      const setSettings = async (folderId, isErrorPath = false) => {
         if (isInit && getRootData) {
-          const folder = await getFolderInfo(id);
+          const folder = await getFolderInfo(folderId);
 
           if (
             folder.rootFolderType === FolderType.TRASH ||
@@ -328,7 +330,7 @@ export const useFilesHelper = ({
           }
         }
 
-        const currentFolder = await getFolder(id, filter);
+        const currentFolder = await getFolder(folderId, filter);
 
         const { folders, files, total, count, pathParts, current } =
           currentFolder;
@@ -371,7 +373,8 @@ export const useFilesHelper = ({
             !isRoomsOnly &&
             breadCrumbs.unshift({ ...defaultBreadCrumb });
 
-          onSetBaseFolderPath && onSetBaseFolderPath(breadCrumbs);
+          onSetBaseFolderPath &&
+            onSetBaseFolderPath(isErrorPath ? [] : breadCrumbs);
 
           setBreadCrumbs(breadCrumbs);
           setIsBreadCrumbsLoading(false);
@@ -388,7 +391,18 @@ export const useFilesHelper = ({
         }
         setIsRoot(false);
         setIsNextPageLoading(false);
+      };
+
+      try {
+        await setSettings(id);
       } catch (e) {
+        if (isThirdParty) {
+          await setSettings(rootThirdPartyId, true);
+
+          toastr.error(e);
+          return;
+        }
+
         getRootData && getRootData();
       }
     },
