@@ -3146,7 +3146,7 @@ __metadata:
     react-player: ^1.15.3
     react-router: ^6.10.0
     react-router-dom: ^6.10.0
-    react-tooltip: ^4.5.1
+    react-tooltip: 5.21.1
     react-viewer: ^3.2.2
     react-virtualized-auto-sizer: ^1.0.7
     react-window: ^1.8.8
@@ -3243,7 +3243,7 @@ __metadata:
     react-svg: ^12.1.0
     react-text-mask: ^5.5.0
     react-toastify: ^7.0.4
-    react-tooltip: ^4.5.1
+    react-tooltip: ^5.21.1
     react-transition-group: ^4.4.5
     react-values: ^0.3.3
     react-virtualized: ^9.22.3
@@ -4175,7 +4175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.5.1":
+"@floating-ui/dom@npm:^1.0.0, @floating-ui/dom@npm:^1.5.1":
   version: 1.5.1
   resolution: "@floating-ui/dom@npm:1.5.1"
   dependencies:
@@ -11249,7 +11249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:2.x, classnames@npm:^2.2.1, classnames@npm:^2.2.5, classnames@npm:^2.2.6":
+"classnames@npm:2.x, classnames@npm:^2.2.1, classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.0":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -22136,16 +22136,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-tooltip@npm:^4.5.1":
-  version: 4.5.1
-  resolution: "react-tooltip@npm:4.5.1"
+"react-tooltip@npm:5.21.1, react-tooltip@npm:^5.21.1":
+  version: 5.21.1
+  resolution: "react-tooltip@npm:5.21.1"
   dependencies:
-    prop-types: ^15.8.1
-    uuid: ^7.0.3
+    "@floating-ui/dom": ^1.0.0
+    classnames: ^2.3.0
   peerDependencies:
-    react: ">=16.0.0"
-    react-dom: ">=16.0.0"
-  checksum: bb2065b6aec5d860627e1459cd193889a236093c484f32a021b7b3c8c36c2144d1077932b5d74bc0262f1e24a3e0fd8251df2107c348a913a9b236467ed2185d
+    react: ">=16.14.0"
+    react-dom: ">=16.14.0"
+  checksum: 44fbe22169eecc12b32e401460997c3b26bae96f70c527260ad41b5015c2ead37b8f713e01737be2fb748ffbb7b6ee8c461a9f46b064c36e6b39a542aab1b852
   languageName: node
   linkType: hard
 
@@ -25666,15 +25666,6 @@ __metadata:
   bin:
     uuid: ./bin/uuid
   checksum: 58de2feed61c59060b40f8203c0e4ed7fd6f99d42534a499f1741218a1dd0c129f4aa1de797bcf822c8ea5da7e4137aa3673431a96dae729047f7aca7b27866f
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "uuid@npm:7.0.3"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: f5b7b5cc28accac68d5c083fd51cca64896639ebd4cca88c6cfb363801aaa83aa439c86dfc8446ea250a7a98d17afd2ad9e88d9d4958c79a412eccb93bae29de
   languageName: node
   linkType: hard
 
