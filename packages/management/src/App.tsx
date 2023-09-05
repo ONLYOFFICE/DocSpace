@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { observer, Provider as MobxProvider } from "mobx-react";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, useTranslation } from "react-i18next";
 
 import { isMobileOnly } from "react-device-detect";
 
@@ -22,6 +22,8 @@ import NavMenu from "client/NavMenu";
 import i18n from "./i18n";
 
 const App = observer(() => {
+  const { i18n } = useTranslation();
+
   const { authStore } = useStore();
   const { init, settingsStore, userStore } = authStore;
   const { theme, setTheme } = settingsStore;
@@ -49,7 +51,7 @@ const App = observer(() => {
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={{ ...theme, interfaceDirection: i18n.dir() }}>
       <Layout>
         {toast}
         <NavMenu hideProfileMenu customHeader={<SimpleHeader />} />
