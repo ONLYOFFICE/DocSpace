@@ -65,11 +65,11 @@ public class WebPluginsController : BaseSettingsController
 
         var file = HttpContext.Request.Form.Files[0] ?? throw new ArgumentException("Input file is null");
 
-        var plugin = await _webPluginManager.AddWebPluginFromFile(Tenant.Id, file);
+        var plugin = await _webPluginManager.AddWebPluginFromFileAsync(Tenant.Id, file);
 
         var outDto = _mapper.Map<DbWebPlugin, WebPluginDto>(plugin);
 
-        var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
+        var urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(Tenant.Id);
 
         outDto.Url = string.Format(urlTemplate, outDto.Name);
 
@@ -85,11 +85,22 @@ public class WebPluginsController : BaseSettingsController
 
         if (outDto != null && outDto.Any())
         {
-            var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
+            string urlTemplate = null;
+            string systemUrlTemplate = null;
 
             foreach (var dto in outDto)
             {
-                dto.Url = string.Format(urlTemplate, dto.Name);
+                if (dto.System && systemUrlTemplate == null)
+                {
+                    systemUrlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(Tenant.DefaultTenant);
+                }
+
+                if (!dto.System && urlTemplate == null)
+                {
+                    urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(Tenant.Id);
+                }
+
+                dto.Url = string.Format(dto.System ? systemUrlTemplate : urlTemplate, dto.Name);
             }
         }
 
@@ -105,7 +116,7 @@ public class WebPluginsController : BaseSettingsController
 
         if (outDto != null)
         {
-            var urlTemplate = await _webPluginManager.GetPluginUrlTemplate(Tenant.Id);
+            var urlTemplate = await _webPluginManager.GetPluginUrlTemplateAsync(outDto.System ? Tenant.DefaultTenant : Tenant.Id);
 
             outDto.Url = string.Format(urlTemplate, outDto.Name);
         }
