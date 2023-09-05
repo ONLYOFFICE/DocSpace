@@ -4,7 +4,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
-import { flip, shift, offset } from "./middlewares";
+import { flip, shift, offset } from "@floating-ui/dom";
 
 const defaultOffset = 10;
 
