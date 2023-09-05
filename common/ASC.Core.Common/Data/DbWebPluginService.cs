@@ -93,14 +93,14 @@ static file class Queries
             (WebPluginDbContext ctx, int tenantId) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == tenantId));
+                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId));
 
     public static readonly Func<WebPluginDbContext, int, bool, IAsyncEnumerable<DbWebPlugin>>
         WebPluginsByStatusAsync = EF.CompileAsyncQuery(
             (WebPluginDbContext ctx, int tenantId, bool enabled) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .Where(r => r.Enabled == enabled));
 
     public static readonly Func<WebPluginDbContext, int, int, Task<DbWebPlugin>>
@@ -108,7 +108,7 @@ static file class Queries
             (WebPluginDbContext ctx, int tenantId, int id) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .Where(r => r.Id == id)
                     .FirstOrDefault());
 
@@ -117,7 +117,7 @@ static file class Queries
             (WebPluginDbContext ctx, int tenantId, string name) =>
                 ctx.WebPlugins
                     .AsNoTracking()
-                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.TenantId == Tenant.DefaultTenant || r.TenantId == tenantId)
                     .Where(r => r.Name == name)
                     .FirstOrDefault());
 
