@@ -110,7 +110,7 @@ const DataManagementWrapper = (props) => {
 
   const onSelect = (e) => {
     const url = isManagement
-      ? `/management/backup/${e.id}`
+      ? `/backup/${e.id}`
       : `/portal-settings/backup/${e.id}`;
     navigate(
       combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, url)
