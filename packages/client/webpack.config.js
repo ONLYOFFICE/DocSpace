@@ -300,8 +300,6 @@ module.exports = (env, argv) => {
         "./utils": "./src/helpers/filesUtils.js",
         "./SelectFileDialog":
           "./src/components/FilesSelector/FilesSelectorWrapper",
-        "./SelectFileInput":
-          "./src/components/panels/SelectFileInput/SelectFileInputWrapper",
         "./SelectFolderDialog":
           "./src/components/FilesSelector/FilesSelectorWrapper",
         "./SelectFolderInput":
