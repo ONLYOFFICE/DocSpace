@@ -101,7 +101,7 @@ exists=$(docker images | egrep "onlyoffice/4testing-docspace-proxy-runtime" | eg
 
 if [ "${exists}" = "" ] || [ "$force" = true ]; then
     echo "Build proxy base image from source (apply new nginx config)"
-    docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target proxy .
+    docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target router .
 else 
     echo "SKIP build proxy base image (already exists)"
 fi

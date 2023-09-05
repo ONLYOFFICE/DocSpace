@@ -2099,7 +2099,9 @@ class FilesActionStore {
 
       if (canWebEdit || canViewedDocs) {
         let tab =
-          !this.authStore.settingsStore.isDesktopClient && !isFolder
+          !this.authStore.settingsStore.isDesktopClient &&
+          window.DocSpaceConfig?.editor?.openOnNewPage &&
+          !isFolder
             ? window.open(
                 combineUrl(
                   window.DocSpaceConfig?.proxy?.url,
