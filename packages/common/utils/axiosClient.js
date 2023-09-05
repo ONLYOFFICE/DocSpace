@@ -161,18 +161,17 @@ class AxiosClient {
             }
             break;
           case 403:
-            if (options.skipLogout) return Promise.reject(error);
             const pathname = window.location.pathname;
             const isArchived = pathname.indexOf("/rooms/archived") !== -1;
 
             const isRooms =
               pathname.indexOf("/rooms/shared") !== -1 || isArchived;
 
-            if (!isRooms) return;
-
-            setTimeout(() => {
-              window.DocSpace.navigate(isArchived ? "/archived" : "/");
-            }, 1000);
+            if (isRooms) {
+              setTimeout(() => {
+                window.DocSpace.navigate(isArchived ? "/archived" : "/");
+              }, 1000);
+            }
 
             break;
           default:
