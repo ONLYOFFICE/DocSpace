@@ -35,6 +35,7 @@ const FilesSelector = ({
   isPanelVisible = false,
   withoutImmediatelyClose = false,
   isThirdParty = false,
+  isRoomsOnly = false,
   isEditorDialog = false,
 
   filterParam,
@@ -69,7 +70,7 @@ const FilesSelector = ({
 
   onSelectFolder,
   onSetBaseFolderPath,
-  onSetNewFolderPath,
+  //onSetNewFolderPath,
   onSelectTreeNode,
   onSave,
   onSelectFile,
@@ -158,6 +159,8 @@ const FilesSelector = ({
     isFirstLoad,
     setIsRoot,
     searchValue,
+    isRoomsOnly,
+    onSetBaseFolderPath,
   });
 
   const { getFileList } = useFilesHelper({
@@ -179,6 +182,7 @@ const FilesSelector = ({
     filterParam,
     getRootData,
     onSetBaseFolderPath,
+    isRoomsOnly,
   });
 
   const onSelectAction = (item: Item) => {
@@ -218,22 +222,36 @@ const FilesSelector = ({
   }, [selectedItemId, isRoot]);
 
   React.useEffect(() => {
+    const getRoomSettings = () => {
+      setSelectedItemType("rooms");
+      getRoomList(0, true);
+    };
+
+    const needRoomList = isRoomsOnly && !currentFolderId;
+
+    if (needRoomList) {
+      getRoomSettings();
+      return;
+    }
+
     if (!currentFolderId) {
       getRootData();
-    } else {
-      setSelectedItemId(currentFolderId);
-      if (
-        parentId === 0 &&
-        rootFolderType === FolderType.Rooms &&
-        !isThirdParty
-      ) {
-        setSelectedItemType("rooms");
-        getRoomList(0, true);
-      } else {
-        setSelectedItemType("files");
-        getFileList(0, currentFolderId, true);
-      }
+      return;
     }
+
+    setSelectedItemId(currentFolderId);
+
+    if (
+      needRoomList ||
+      (!isThirdParty && parentId === 0 && rootFolderType === FolderType.Rooms)
+    ) {
+      getRoomSettings();
+
+      return;
+    }
+
+    setSelectedItemType("files");
+    getFileList(0, currentFolderId, true);
   }, []);
 
   const onClickBreadCrumb = (item: BreadCrumb) => {

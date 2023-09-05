@@ -76,6 +76,8 @@ const useRoomsHelper = ({
   isFirstLoad,
   setIsBreadCrumbsLoading,
   searchValue,
+  isRoomsOnly,
+  onSetBaseFolderPath,
 }: useRoomsHelperProps) => {
   const getRoomList = React.useCallback(
     async (startIndex: number, isInit?: boolean, search?: string | null) => {
@@ -103,10 +105,11 @@ const useRoomsHelper = ({
       const { title, id } = current;
 
       if (isInit) {
-        const breadCrumbs: BreadCrumb[] = [
-          { ...defaultBreadCrumb },
-          { label: title, id, isRoom: true },
-        ];
+        const breadCrumbs: BreadCrumb[] = [{ label: title, id, isRoom: true }];
+
+        !isRoomsOnly && breadCrumbs.unshift({ ...defaultBreadCrumb });
+
+        onSetBaseFolderPath && onSetBaseFolderPath(breadCrumbs);
 
         setBreadCrumbs(breadCrumbs);
 

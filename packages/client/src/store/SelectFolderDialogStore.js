@@ -37,6 +37,10 @@ class SelectFolderDialogStore {
     this.newPath = this.basePath;
   };
 
+  updateBaseFolderPath = () => {
+    this.basePath = this.newPath;
+  };
+
   setNewPath = (folders) => {
     this.newPath = this.convertPath(folders);
   };

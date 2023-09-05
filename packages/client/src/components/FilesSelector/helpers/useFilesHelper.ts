@@ -268,6 +268,7 @@ export const useFilesHelper = ({
   filterParam,
   getRootData,
   onSetBaseFolderPath,
+  isRoomsOnly,
 }: useFilesHelpersProps) => {
   const getFileList = React.useCallback(
     async (
@@ -323,7 +324,6 @@ export const useFilesHelper = ({
             folder.rootFolderType === FolderType.Archive
           ) {
             await getRootData();
-
             return;
           }
         }
@@ -367,7 +367,9 @@ export const useFilesHelper = ({
             })
           );
 
-          !isThirdParty && breadCrumbs.unshift({ ...defaultBreadCrumb });
+          !isThirdParty &&
+            !isRoomsOnly &&
+            breadCrumbs.unshift({ ...defaultBreadCrumb });
 
           onSetBaseFolderPath && onSetBaseFolderPath(breadCrumbs);
 

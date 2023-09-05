@@ -12,6 +12,7 @@ const FilesSelectorInput = (props) => {
   const {
     id,
     isThirdParty,
+    isRoomsOnly,
     setNewPath,
     newPath,
     onSelectFolder: setSelectedFolder,
@@ -40,6 +41,7 @@ const FilesSelectorInput = (props) => {
   };
 
   const onSetBasePath = (folders) => {
+    console.log("onSetBasePath", withoutInitPath);
     !withoutInitPath && setBasePath(folders);
     isLoading && setIsLoading(false);
   };
@@ -52,7 +54,7 @@ const FilesSelectorInput = (props) => {
     folders && setNewPath(folders);
   };
 
-  
+
   return (
     <StyledComponent maxWidth={maxWidth}>
       <FileInput
@@ -67,6 +69,7 @@ const FilesSelectorInput = (props) => {
 
       <FilesSelector
         isThirdParty={isThirdParty}
+        isRoomsOnly={isRoomsOnly}
         id={id}
         onClose={onClose}
         isPanelVisible={isPanelVisible}
