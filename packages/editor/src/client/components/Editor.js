@@ -663,6 +663,7 @@ function Editor({
 
   const getBackUrl = () => {
     if (!fileInfo) return;
+    const search = window.location.search;
     const shareIndex = search.indexOf("share=");
     const key = search.substring(shareIndex + 6);
 
