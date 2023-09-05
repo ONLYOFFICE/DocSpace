@@ -294,15 +294,17 @@ const FilesSelector = ({
   const onCloseAction = () => {
     if (onClose) {
       onClose();
+
+      return;
+    }
+
+    if (isCopy) {
+      setCopyPanelVisible(false);
+      setIsFolderActions(false);
+    } else if (isRestoreAll) {
+      setRestoreAllPanelVisible(false);
     } else {
-      if (isCopy) {
-        setCopyPanelVisible(false);
-        setIsFolderActions(false);
-      } else if (isRestoreAll) {
-        setRestoreAllPanelVisible(false);
-      } else {
-        setMoveToPanelVisible(false);
-      }
+      setMoveToPanelVisible(false);
     }
   };
 
@@ -414,23 +416,9 @@ const FilesSelector = ({
         selectedItemId &&
         onSave(null, selectedItemId, fileName, isChecked);
       onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
-
-      const info: {
-        id: string | number;
-        title: string;
-        path?: string[];
-      } = {
-        id: selectedFileInfo?.id || "",
-        title: selectedFileInfo?.title || "",
-        path: [],
-      };
-
-      breadCrumbs.forEach((item, index) => {
-        if (index !== 0 && info.path) info.path.push(item.label);
-      });
-
-      onSelectFile && selectedFileInfo && onSelectFile(info);
-      //!withoutImmediatelyClose && onCloseAction();
+      onSelectFile && onSelectFile(selectedFileInfo, breadCrumbs);
+      onCloseAction();
+      //!withoutImmediatelyClose &&  onCloseAction();
     }
   };
 

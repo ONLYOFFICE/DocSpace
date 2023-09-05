@@ -15,7 +15,7 @@ class SelectFolderDialogStore {
     this.isErrorPath = false;
   };
 
-  convertPath = (foldersArray) => {
+  convertPath = (foldersArray, fileName) => {
     let path = "";
 
     if (foldersArray.length === 0) {
@@ -36,6 +36,8 @@ class SelectFolderDialogStore {
       }
     }
 
+    if (fileName) path = path + " " + "/" + fileName;
+
     return path;
   };
 
@@ -47,8 +49,8 @@ class SelectFolderDialogStore {
     this.basePath = this.newPath;
   };
 
-  setNewPath = (folders) => {
-    this.newPath = this.convertPath(folders);
+  setNewPath = (folders, fileName) => {
+    this.newPath = this.convertPath(folders, fileName);
 
     this.setIsErrorPath(false);
   };

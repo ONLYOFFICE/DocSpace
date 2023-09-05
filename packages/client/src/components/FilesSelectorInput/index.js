@@ -14,6 +14,7 @@ const FilesSelectorInput = (props) => {
     setNewPath,
     newPath,
     onSelectFolder: setSelectedFolder,
+    onSelectFile: setSelectedFile,
     setBasePath,
     basePath,
     isDisabled,
@@ -23,7 +24,12 @@ const FilesSelectorInput = (props) => {
     withoutInitPath,
     rootThirdPartyId,
     isErrorPath,
+
+    filterParam,
+    descriptionText,
   } = props;
+
+  const isFilesSelection = !!filterParam;
 
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(!!id && !withoutInitPath);
@@ -54,6 +60,23 @@ const FilesSelectorInput = (props) => {
     folders && setNewPath(folders);
   };
 
+  const onSelectFile = (fileInfo, folders) => {
+    console.log("onSelectFile", fileInfo, folders);
+
+    setSelectedFile && setSelectedFile(fileInfo);
+    folders && setNewPath(folders, fileInfo?.title);
+  };
+
+  const filesSelectionProps = {
+    onSelectFile: onSelectFile,
+    filterParam: filterParam,
+  };
+
+  const foldersSelectionProps = {
+    onSelectFolder: onSelectFolder,
+    onSetBaseFolderPath: onSetBasePath,
+  };
+
   return (
     <StyledBodyWrapper maxWidth={maxWidth}>
       <FileInput
@@ -67,14 +90,15 @@ const FilesSelectorInput = (props) => {
       />
 
       <FilesSelector
+        descriptionText={descriptionText}
+        filterParam={filterParam}
         rootThirdPartyId={rootThirdPartyId}
         isThirdParty={isThirdParty}
         isRoomsOnly={isRoomsOnly}
         id={id}
         onClose={onClose}
         isPanelVisible={isPanelVisible}
-        onSetBaseFolderPath={onSetBasePath}
-        onSelectFolder={onSelectFolder}
+        {...(isFilesSelection ? filesSelectionProps : foldersSelectionProps)}
       />
     </StyledBodyWrapper>
   );
