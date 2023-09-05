@@ -26,7 +26,11 @@ const MainContainerWrapper = styled.div`
 
   display: flex;
   align-self: center;
-  margin-right: auto;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl"
+      ? `margin-left: auto;`
+      : `margin-right: auto;`}
 `;
 
 const MainContainer = styled.div`

@@ -5,11 +5,11 @@ export const Weekday = styled.span`
   pointer-events: none;
   font-family: "Open Sans";
   font-weight: 400;
-  font-size: 16px;
+  font-size: ${(props) => (props.isMobile ? "16px" : "13px")};
   line-height: 16px;
 
   color: ${(props) => props.theme.calendar.weekdayColor};
-  width: 40px;
+  width: ${(props) => (props.isMobile ? "40px" : "30px")};
 
   text-align: center;
   padding: 10.7px 0;

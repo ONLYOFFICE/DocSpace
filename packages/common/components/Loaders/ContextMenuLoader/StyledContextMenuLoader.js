@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { tablet } from "@docspace/components/utils/device";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledContextMenuLoader = styled.div`
   width: 100%;
@@ -11,13 +12,22 @@ const StyledContextMenuLoader = styled.div`
   align-items: center;
 
   @media ${tablet} {
-    padding: 4px 12px 4px 16px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("4px 12px 4px 16px", theme.interfaceDirection)};
     grid-column-gap: 0px;
   }
 
   .context-menu-rectangle {
-    margin-right: auto;
-    margin-left: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? css`
+            margin-left: auto;
+            margin-right: 8px;
+          `
+        : css`
+            margin-right: auto;
+            margin-left: 8px;
+          `}
   }
 `;
 

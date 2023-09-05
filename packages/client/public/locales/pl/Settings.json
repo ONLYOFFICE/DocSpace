@@ -39,6 +39,7 @@
   "BackupCreatedSuccess": "Kopia zapasowa została pomyślnie utworzona.",
   "BackupList": "Lista kopii zapasowych",
   "BackupListWarningText": "Jeśli usuniesz wszystkie elementy z listy, odpowiadające im pliki zostaną również usunięte. Ta czynność nie może zostać cofnięta. Aby usunąć wszystkie pliki, użyj linku:",
+  "BetaLabel": "BETA",
   "Branding": "Branding",
   "BrandingSectionDescription": "Dodaj informacje o firmie, linki do zasobów zewnętrznych i adresy e-mail widoczne w interfejsie DocSpace.",
   "BrandingSubtitle": "Użyj tej opcji, aby zapewnić użytkownikom doświadczenie marki.",

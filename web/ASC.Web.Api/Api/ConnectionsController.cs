@@ -95,7 +95,7 @@ public class ConnectionsController : ControllerBase
     {
         var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var loginEvents = await _dbLoginEventsManager.GetLoginEventsAsync(user.TenantId, user.Id);
-        var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
+        var tasks = loginEvents.ConvertAll(async r => await _geolocationHelper.AddGeolocationAsync(r));
         var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
         var loginEventId = GetLoginEventIdFromCookie();
         if (loginEventId != 0)
@@ -118,7 +118,7 @@ public class ConnectionsController : ControllerBase
                 var browser = MessageSettings.GetBrowser(clientInfo);
                 var ip = MessageSettings.GetIP(request);
 
-                var baseEvent = new CustomEvent
+                var baseEvent = new BaseEvent
                 {
                     Id = 0,
                     Platform = platformAndDevice,
@@ -127,7 +127,7 @@ public class ConnectionsController : ControllerBase
                     IP = ip
                 };
 
-                listLoginEvents.Add(await ConvertAsync(baseEvent));
+                listLoginEvents.Add(await _geolocationHelper.AddGeolocationAsync(baseEvent));
             }
         }
 
@@ -279,46 +279,5 @@ public class ConnectionsController : ControllerBase
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
         return loginEventId;
-    }
-
-    private async Task<CustomEvent> ConvertAsync(BaseEvent baseEvent)
-    {
-        var location = await GetGeolocationAsync(baseEvent.IP);
-        return new CustomEvent
-        {
-            Id = baseEvent.Id,
-            IP = baseEvent.IP,
-            Platform = baseEvent.Platform,
-            Browser = baseEvent.Browser,
-            Date = baseEvent.Date,
-            Country = location[0],
-            City = location[1]
-        };
-    }
-
-    private async Task<string[]> GetGeolocationAsync(string ip)
-    {
-        try
-        {
-            var location = await _geolocationHelper.GetIPGeolocationAsync(IPAddress.Parse(ip));
-            if (string.IsNullOrEmpty(location.Key))
-            {
-                return new string[] { string.Empty, string.Empty };
-            }
-            var regionInfo = new RegionInfo(location.Key).EnglishName;
-            return new string[] { regionInfo, location.City };
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorWithException(ex);
-            return new string[] { string.Empty, string.Empty };
-        }
-    }
-
-    private class CustomEvent : BaseEvent
-    {
-        public string Country { get; set; }
-
-        public string City { get; set; }
     }
 }

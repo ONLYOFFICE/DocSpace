@@ -29,6 +29,7 @@
   "HistoryEmptyScreenText": "Activity history will be shown here",
   "ItemsSelected": "Items selected",
   "LastModifiedBy": "Last modified by",
+  "LinksToViewingIcon": "Links to Viewing",
   "PendingInvitations": "Pending invitations",
   "Properties": "Properties",
   "RoomsEmptyScreenTent": "See rooms details here",
@@ -38,6 +39,5 @@
   "SubmenuHistory": "History",
   "SystemProperties": "System properties",
   "UsersInRoom": "Users in room",
-  "Versions": "Versions",
-  "LinksToViewingIcon": "Links to Viewing"
+  "Versions": "Versions"
 }

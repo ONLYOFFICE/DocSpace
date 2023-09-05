@@ -93,7 +93,8 @@ const EditingWrapper = styled.div`
     font-weight: 600;
     margin: 0;
     font-family: "Open Sans", sans-serif, Arial;
-    text-align: left;
+    text-align: ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right` : `left`};
     color: ${(props) => props.theme.filesEditingWrapper.color};
     background: ${(props) =>
       props.theme.filesEditingWrapper.row.itemBackground} !important;
@@ -101,7 +102,14 @@ const EditingWrapper = styled.div`
     ${(props) =>
       props.viewAs === "tile" &&
       css`
-        margin-right: 2px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-left: 2px;
+              `
+            : css`
+                margin-right: 2px;
+              `}
         border: none;
         background: none;
       `};
@@ -109,7 +117,14 @@ const EditingWrapper = styled.div`
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
-        margin-left: 0;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 0;
+              `
+            : css`
+                margin-left: 0;
+              `}
         display: flex;
         align-items: center;
         background: none !important;
@@ -136,14 +151,28 @@ const EditingWrapper = styled.div`
   }
 
   .edit-button {
-    margin-left: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 8px;
+          `
+        : css`
+            margin-left: 8px;
+          `}
     height: 32px;
     padding: 0px 7px 0px 7px;
 
     ${(props) =>
       props.viewAs === "tile" &&
       css`
-        margin-left: 0px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 0;
+              `
+            : css`
+                margin-left: 0;
+              `}
         background: ${(props) =>
           props.theme.filesEditingWrapper.tile.itemBackground};
         border: ${(props) =>

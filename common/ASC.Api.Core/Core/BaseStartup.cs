@@ -119,10 +119,10 @@ public abstract class BaseStartup
 
                 string partitionKey;
 
-                partitionKey = $"fw_{userId}";
+                partitionKey = $"sw_{userId}";
 
-                return RedisRateLimitPartition.GetFixedWindowRateLimiter(partitionKey, key => new RedisFixedWindowRateLimiterOptions
-                {
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
+                { 
                     PermitLimit = permitLimit,
                     Window = TimeSpan.FromMinutes(1),
                     ConnectionMultiplexerFactory = () => connectionMultiplexer
@@ -171,7 +171,7 @@ public abstract class BaseStartup
                 var permitLimit = 5;
                 var partitionKey = $"sensitive_api_{userId}";
 
-                return RedisRateLimitPartition.GetFixedWindowRateLimiter(partitionKey, key => new RedisFixedWindowRateLimiterOptions
+                return RedisRateLimitPartition.GetSlidingWindowRateLimiter(partitionKey, key => new RedisSlidingWindowRateLimiterOptions
                 {
                     PermitLimit = permitLimit,
                     Window = TimeSpan.FromMinutes(1),
@@ -360,6 +360,9 @@ public abstract class BaseStartup
             });
 
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
+
+        services.AddBillingHttpClient();
+
 
         if (!_hostEnvironment.IsDevelopment())
         {

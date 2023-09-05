@@ -149,8 +149,6 @@ const DeliveryDatePicker = ({ filters, setFilters, isApplied, setIsApplied }) =>
     return () => document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
-  console.log(filters.deliveryDate, "delivery date picker");
-
   return (
     <>
       <Text fontWeight={600} fontSize="15px">

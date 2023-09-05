@@ -17,7 +17,7 @@ import { resetSessionStorage } from "../../utils";
 import { isMobile } from "react-device-detect";
 
 const SecurityWrapper = (props) => {
-  const { t, loadBaseInfo } = props;
+  const { t, loadBaseInfo, resetIsInit } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -47,6 +47,7 @@ const SecurityWrapper = (props) => {
 
   useEffect(() => {
     return () => {
+      resetIsInit();
       resetSessionStorage();
     };
   }, []);
@@ -89,11 +90,12 @@ const SecurityWrapper = (props) => {
 };
 
 export default inject(({ setup }) => {
-  const { initSettings } = setup;
+  const { initSettings, resetIsInit } = setup;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
+    resetIsInit,
   };
 })(withTranslation(["Settings", "Common"])(observer(SecurityWrapper)));

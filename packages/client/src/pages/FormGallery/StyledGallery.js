@@ -28,6 +28,9 @@ const StyledContainer = styled.div`
   .arrow-button {
     width: 17px;
     min-width: 17px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
   }
 
   @media ${tablet} {
@@ -54,7 +57,14 @@ const StyledContainer = styled.div`
 `;
 
 const StyledInfoPanelToggleWrapper = styled.div`
-  margin-left: auto;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          margin-right: auto;
+        `
+      : css`
+          margin-left: auto;
+        `}
 
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
   align-items: center;
@@ -77,6 +87,11 @@ const StyledInfoPanelToggleWrapper = styled.div`
       props.isInfoPanelVisible
         ? props.theme.infoPanel.sectionHeaderToggleBgActive
         : props.theme.infoPanel.sectionHeaderToggleBg};
+
+    svg {
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
+    }
 
     path {
       fill: ${(props) =>
