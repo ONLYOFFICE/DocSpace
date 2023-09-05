@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { observer, Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider, useTranslation } from "react-i18next";
+import { Outlet } from "react-router-dom";
 
 import { isMobileOnly } from "react-device-detect";
 
@@ -11,13 +12,13 @@ import Toast from "@docspace/components/toast";
 import "@docspace/common/custom.scss";
 
 import { RootStoreContext, RootStore, useStore } from "./store";
-import Client from "./categories";
 import SimpleHeader from "./SimpleHeader";
 
 import store from "client/store";
 import Layout from "client/Layout";
 import Main from "client/Main";
 import NavMenu from "client/NavMenu";
+import MainLayout from "SRC_DIR/Layout";
 
 import i18n from "./i18n";
 
@@ -60,7 +61,9 @@ const App = observer(() => {
         <NavMenu hideProfileMenu customHeader={<SimpleHeader />} />
         <Main isDesktop={false}>
           <div className="main-container">
-            <Client />
+            <MainLayout>
+              <Outlet />
+            </MainLayout>
           </div>
         </Main>
       </Layout>

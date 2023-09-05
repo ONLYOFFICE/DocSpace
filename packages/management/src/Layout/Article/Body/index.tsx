@@ -33,7 +33,7 @@ const ArticleBodyContent = () => {
   }, []);
 
   const onClickItem = (item: TSettingsTreeItem) => {
-    const path = "/management/" + item.link;
+    const path = item.link;
     setSelectedKey(item.key);
 
     if (isMobileOnly || isMobile()) {

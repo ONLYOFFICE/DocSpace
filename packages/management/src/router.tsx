@@ -9,15 +9,21 @@ import Backup from "./categories/backup";
 import Restore from "./categories/restore";
 import Payments from "./categories/payments";
 
+import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
+
 import Error404 from "client/Error404";
 
-const router = createBrowserRouter([
+const routes = [
   {
-    path: "/management",
-    element: <App />,
+    path: "/",
+    element: (
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    ),
     errorElement: <Error404 />,
     children: [
-      { index: true, element: <Navigate to="/management/spaces" replace /> },
+      { index: true, element: <Navigate to="spaces" replace /> },
       {
         path: "spaces",
         element: <Spaces />,
@@ -28,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: "backup",
-        element: <Navigate to="/management/backup/data-backup" />,
+        element: <Navigate to="data-backup" />,
       },
       {
         path: "backup/data-backup",
@@ -48,6 +54,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+const router = createBrowserRouter(routes, {
+  basename: "/management",
+});
 
 export default router;

@@ -24,7 +24,7 @@ const ArticleSettings = React.memo(() => {
   );
 });
 
-const Layout = ({ children }: TLayoutProps) => {
+const MainLayout = ({ children }: TLayoutProps) => {
   return (
     <>
       <ArticleSettings />
@@ -39,4 +39,4 @@ const Layout = ({ children }: TLayoutProps) => {
   );
 };
 
-export default observer(Layout);
+export default observer(MainLayout);
