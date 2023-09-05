@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { isMobileOnly } from "react-device-detect";
+
 import Portal from "../portal";
 import StyledTooltip from "./styled-tooltip";
 
@@ -9,30 +11,22 @@ class Tooltip extends Component {
     super(props);
   }
 
-  componentDidUpdate() {
-    ReactTooltip.rebuild();
-  }
-
   render() {
     const {
-      effect,
-      place,
       id,
+      place,
       getContent,
-      offsetTop,
-      offsetRight,
-      offsetBottom,
-      offsetLeft,
+      offset,
       children,
       afterShow,
       afterHide,
-      reference,
       className,
       style,
       color,
       maxWidth,
-      ...rest
     } = this.props;
+
+    const content = getContent ? getContent() : children;
 
     const renderTooltip = () => (
       <StyledTooltip
@@ -43,25 +37,19 @@ class Tooltip extends Component {
         maxWidth={maxWidth}
       >
         <ReactTooltip
-          theme={this.props.theme}
-          id={id}
-          ref={reference}
-          getContent={getContent}
-          effect={effect}
-          place={place}
-          offset={{
-            top: offsetTop,
-            right: offsetRight,
-            bottom: offsetBottom,
-            left: offsetLeft,
-          }}
-          wrapper="div"
+          clickable
+          openOnClick
+          closeOnScroll
+          closeOnResize
+          offset={offset}
           afterShow={afterShow}
           afterHide={afterHide}
-          isCapture={true}
-          {...rest}
+          place={isMobileOnly ? "top" : place}
+          anchorSelect={`div[id='${id}'] svg`}
+          className="__react_component_tooltip"
+          positionStrategy="fixed"
         >
-          {children}
+          {content}
         </ReactTooltip>
       </StyledTooltip>
     );
@@ -110,12 +98,7 @@ Tooltip.propTypes = {
 };
 
 Tooltip.defaultProps = {
-  effect: "float",
   place: "top",
-  offsetTop: 0,
-  offsetRight: 0,
-  offsetBottom: 0,
-  offsetLeft: 0,
 };
 
 export default Tooltip;
