@@ -749,4 +749,334 @@ A Equipa da ONLYOFFICE
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Um utilizador do DocSpace atualizou: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Aceder ao Painel de Controlo</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Aceder ao Seu Portal</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Aceder ao seu Escritório-Web</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Clique aqui para ativar o seu e-mail</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Alterar e-mail</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Alterar palavra-chave</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Alterar o número de telemóvel</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Configurar a app autenticadora</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Configurar Agora Mesmo</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Confirmar Alteração ao Endereço do Portal</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Confirmar Atualização do Proprietário do Portal</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Confirmar o encerramento da conta</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Desativar Portal</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Eliminar Portal</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Convidar Agora Mesmo</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Clique aqui para se juntar ao portal</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Deixe Feedback</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Remover perfil</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Renovar agora</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Solicitar uma chamada</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Selecionar os Planos de Preços Agora Mesmo</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Iniciar um Período de Avaliação</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Utilizar Desconto</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. Por favor, ative o seu endereço de email</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. ${__VirtualRootPath} cópia de segurança do portal criada</value>
+  </data>
+  <data name="subject_change_email_v115" xml:space="preserve">
+    <value>Confirme a alteração do seu email</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} apoio sobre palavra-passe</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Confirmar a alteração de palavra-passe</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. Pedido de alteração de telemóvel</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Notificação de segurança</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Alteração do proprietário do portal</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}. Alteração do endereço do portal</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Obtenha apps gratuitas da ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Obtenha apps gratuitas da ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Obtenha apps gratuitas da ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Várias dicas para trabalhar eficazmente nos seus docs</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Várias dicas para trabalhar eficazmente nos seus docs</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Várias dicas para trabalhar eficazmente nos seus docs</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Várias dicas para trabalhar eficazmente nos seus docs</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra a subscrição business do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra a subscrição business do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra a subscrição business do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Descubra a subscrição business do ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Juntar-se ao ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Juntar-se ao ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Juntar-se ao ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_guest_activation_v115" xml:space="preserve">
+    <value>Juntar-se ao ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Junte-se ao ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>Mensagem do utilizador para os administradores</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Solicitação por parte do departamento de vendas</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>Convite para se juntar ao portal ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Criação do caixa de correio</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Alteração da palavra-passe da caixa de correio</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. Outro erro de migração da região do portal</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}. Uma outra migração da região do portal já foi iniciada</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Outra migração da região do portal concluída com êxito</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE para uso pessoal!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Bem-vindo(a) ao ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Inicie sessão na sua conta ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Por favor, ative o seu endereço de email</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Eliminação da conta ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>Desativação do portal ${__VirtualRootPath} portal</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>Eliminação do portal ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>O ONLYOFFICE DocSpace foi desativado</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}. Alteração do endereço do portal</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>A eliminação do seu perfil do portal ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>O(a) utilizador(a) eliminou o seu perfil</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>O seu perfil no ${__VirtualRootPath} foi alterado</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. A reatribuição de dados de utilizador foi concluída</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. A Reatribuição de dados de utilizador falhou</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. A remoção de dados do utitlizador foi concluída</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. A remoção de dados do utilizador falhou</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Pedido de licença Enterprise</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>Solicitação do plano de preços SaaS</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Restauro concluído</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. Restauro iniciado</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Configuro o seu DocSpace da ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>O seu ONLYOFFICE DocSpace será eliminado</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>O Período de tolerância para o seu ONLYOFFICE DocSpace foi ativado</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>A sua subscrição para o ONLYOFFICE DocSpace está prestes a expirar</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>O Período de tolerância para o seu ONLYOFFICE DocSpace expirou</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>O Período de tolerância para o seu ONLYOFFICE DocSpace expira amanhã</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>${__VirtualRootPath} notificação de alteração de perfil no portal</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>O que há de novo no seu portal em $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>Mensagem de teste SMTP</value>
+  </data>
+  <data name="subject_storage_decryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. O processo de desencriptação falhou</value>
+  </data>
+  <data name="subject_storage_decryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. O processo de desencriptação foi iniciado</value>
+  </data>
+  <data name="subject_storage_decryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Processo de desencriptação concluído</value>
+  </data>
+  <data name="subject_storage_encryption_error" xml:space="preserve">
+    <value>${LetterLogoText}. O processo de encriptação falhou</value>
+  </data>
+  <data name="subject_storage_encryption_start" xml:space="preserve">
+    <value>${LetterLogoText}. O processo de encriptação iniciou</value>
+  </data>
+  <data name="subject_storage_encryption_success" xml:space="preserve">
+    <value>${LetterLogoText}. Processo de encriptação conclúído</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>Novo utilizador adicionado ao portal ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Foi convidado(a) para se juntar ao ${__VirtualRootPath}</value>
+  </data>
 </root>

@@ -147,4 +147,25 @@ O link é válido por 7 dias.
 
 Não quer alterar a sua palavra-passe? Simplesmente ignore esta mensagem.</value>
   </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Faça o mesmo como utilizador|Associe o Dropbox, Box e outras contas na Secção ‘comum’|Configure os direitos de acesso aos documentos e pastas na Secção ‘Comum’</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Crie e edite os seus próprios documentos, bem como os documentos partilhados, com os direitos de acesso adequados|Conceder a outros utilizadores acesso de leitura/edição aos documentos e pastas|Ligar o Dropbox, Box e outras contas na secção 'Os meus documentos'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Por favor, ative o seu endereço de e-mail</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Cancelamento da conta de ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. A eliminação dos dados do utilizador foi concluída</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Um novo portal foi registado</value>
+  </data>
 </root>
