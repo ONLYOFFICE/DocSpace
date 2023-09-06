@@ -35,6 +35,7 @@ PACKAGE_SYSNAME="onlyoffice"
 PRODUCT_NAME="DocSpace"
 PRODUCT=$(tr '[:upper:]' '[:lower:]' <<< ${PRODUCT_NAME})
 BASE_DIR="/app/$PACKAGE_SYSNAME";
+PROXY_YML="${BASE_DIR}/proxy.yml"
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="master"
@@ -100,6 +101,8 @@ DOCUMENT_SERVER_URL_EXTERNAL=""
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
 ENV_EXTENSION=""
+LETS_ENCRYPT_DOMAIN=""
+LETS_ENCRYPT_MAIL=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -433,6 +436,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-led | --letsencryptdomain )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_DOMAIN=$2
+				shift
+			fi
+		;;
+
+		-lem | --letsencryptmail )
+			if [ "$2" != "" ]; then
+				LETS_ENCRYPT_MAIL=$2
+				shift
+			fi
+		;;
+
+		-cf | --certfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_PATH=$2
+				shift
+			fi
+		;;
+
+		-ckf | --certkeyfile )
+			if [ "$2" != "" ]; then
+				CERTIFICATE_KEY_PATH=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -477,6 +508,10 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -mysqlport, --mysqlport           mysql server port number (default value 3306)"
+			echo "      -led, --letsencryptdomain         defines the domain for Let's Encrypt certificate"
+			echo "      -lem, --letsencryptmail           defines the domain administator mail address for Let's Encrypt certificate"
+			echo "      -cf, --certfile                   path to the certificate file for the domain"
+			echo "      -ckf, --certkeyfile               path to the private key file for the certificate"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -ms, --makeswap                   make swap file (true|false)"
 			echo "      -?, -h, --help                    this help"
@@ -1145,6 +1180,7 @@ set_docspace_params() {
 	ENV_EXTENSION=${ENV_EXTENSION:-$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION")};
 	APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN")};
 	APP_URL_PORTAL=${APP_URL_PORTAL:-$(get_container_env_parameter "${CONTAINER_NAME}" "APP_URL_PORTAL")};
+	EXTERNAL_PORT=${EXTERNAL_PORT:-$(get_container_env_parameter "${CONTAINER_NAME}" "EXTERNAL_PORT")};
 
 	ELK_SHEME=${ELK_SHEME:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_SHEME")};
 	ELK_HOST=${ELK_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST")};
@@ -1161,7 +1197,9 @@ set_docspace_params() {
 	RABBIT_PASSWORD=${RABBIT_PASSWORD:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_PASSWORD")};
 	RABBIT_VIRTUAL_HOST=${RABBIT_VIRTUAL_HOST:-$(get_container_env_parameter "${CONTAINER_NAME}" "RABBIT_VIRTUAL_HOST")};
 	
-	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
+	CERTIFICATE_PATH=${CERTIFICATE_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_PATH")};
+	CERTIFICATE_KEY_PATH=${CERTIFICATE_KEY_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "CERTIFICATE_KEY_PATH")};
+	DHPARAM_PATH=${DHPARAM_PATH:-$(get_container_env_parameter "${CONTAINER_NAME}" "DHPARAM_PATH")};
 }
 
 set_installation_type_data () {
@@ -1288,19 +1326,27 @@ install_product () {
 
 	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
 		docker-compose -f $BASE_DIR/build.yml pull
-		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml -f ${PROXY_YML} down
 		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
 	fi
 
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
-	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-proxy:8092"}"
+	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
+	reconfigure EXTERNAL_PORT ${EXTERNAL_PORT}
 
-	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
+	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
+	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
+	fi
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
+	docker-compose -f ${PROXY_YML} up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
