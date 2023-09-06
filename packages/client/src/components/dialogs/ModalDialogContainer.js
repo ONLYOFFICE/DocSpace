@@ -42,7 +42,11 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 
   .link-dialog {
-    margin-right: 12px;
+    
+   {${({ theme }) =>
+     theme.interfaceDirection === "rtl"
+       ? `margin-left: 12px;`
+       : `margin-right: 12px;`}
   }
 
   .error-label {
@@ -87,7 +91,11 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
 
     .convert_dialog-content {
-      padding-left: 16px;
+      
+      ${({ theme }) =>
+        theme.interfaceDirection === "rtl"
+          ? `padding-right: 16px;`
+          : `padding-left: 16px;`}
 
       @media ${tablet} {
         padding: 0;

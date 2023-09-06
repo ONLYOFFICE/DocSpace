@@ -201,7 +201,7 @@ const NewFilesPanel = (props) => {
                 config.homepage,
                 `/doceditor?fileId=${id}`
               ),
-              "_blank"
+              window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
             )
           );
       }

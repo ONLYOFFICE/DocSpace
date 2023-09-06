@@ -36,7 +36,7 @@ public class MemberRequestDto
 
     /// <summary>Specifies if this is a guest or a user</summary>
     /// <type>System.Boolean, System</type>
-    public bool IsUser { get; set; }
+    public bool? IsUser { get; set; }
 
     /// <summary>Email</summary>
     /// <type>System.String, System</type>

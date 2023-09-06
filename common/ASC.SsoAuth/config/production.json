@@ -8,8 +8,8 @@
     "logSamlData": false,
     "portal": {
       "ssoUrl": "/ssologin.ashx",
-      "authUrl": "/Auth.aspx"
-    } 
+      "authUrl": "/login"
+    }
   },
   "routes": {
     "login": "/sso/login",

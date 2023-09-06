@@ -37,13 +37,13 @@ class DispatchSink : Sink
         _senderName = senderName;
     }
 
-    public override Task<SendResponse> ProcessMessage(INoticeMessage message)
+    public override Task<SendResponse> ProcessMessage(INoticeMessage message, IServiceScope serviceScope)
     {
-        return _dispatcher.Dispatch(message, _senderName);
+        return _dispatcher.Dispatch(message, _senderName, serviceScope);
     }
 
-    public override async Task ProcessMessageAsync(INoticeMessage message)
+    public override async Task ProcessMessageAsync(INoticeMessage message, IServiceScope serviceScope)
     {
-        await _dispatcher.Dispatch(message, _senderName);
+        await _dispatcher.Dispatch(message, _senderName, serviceScope);
     }
 }

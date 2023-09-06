@@ -103,7 +103,7 @@ const EmptyFolderContainer = ({
   const onInviteUsersClick = () => {
     if (!isRoom) return;
 
-    onClickInviteUsers && onClickInviteUsers(folderId);
+    onClickInviteUsers && onClickInviteUsers(folderId, roomType);
   };
 
   const buttons = canCreateFiles ? (

@@ -1,5 +1,4 @@
 import { inject, observer } from "mobx-react";
-import React from "react";
 
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
@@ -15,7 +14,7 @@ const RoomsActionsContainer = ({
   textProps,
   textDescriptionsProps,
 }) => {
-  const onChangeBadgeSubscription = async (e) => {
+  const onChangeBadgeSubscription = async e => {
     const checked = e.currentTarget.checked;
     !checked && resetTreeItemCount();
 

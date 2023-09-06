@@ -41,7 +41,10 @@ const StyledMemberLoader = styled.div`
   }
 
   .role-selector {
-    margin-left: auto;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-right: auto;`
+        : `margin-left: auto;`}
   }
 `;
 

@@ -38,6 +38,12 @@ echo "Run MySQL"
 
 arch_name="$(uname -m)"
 
+existsnetwork=$(docker network ls | awk '{print $2;}' | { grep -x onlyoffice || true; });
+
+if [[ -z ${existsnetwork} ]]; then
+    docker network create --driver bridge onlyoffice
+fi
+
 if [ "${arch_name}" = "x86_64" ]; then
     echo "CPU Type: x86_64 -> run db.yml"
     docker compose -f $dockerDir/db.yml up -d
@@ -93,7 +99,7 @@ exists=$(docker images | egrep "onlyoffice/4testing-docspace-proxy-runtime" | eg
 
 if [ "${exists}" = "" ] || [ "$force" = true ]; then
     echo "Build proxy base image from source (apply new nginx config)"
-    docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target proxy .
+    docker build -t onlyoffice/4testing-docspace-proxy-runtime:$proxy_version  -f ./build/install/docker/Dockerfile.runtime --target router .
 else 
     echo "SKIP build proxy base image (already exists)"
 fi

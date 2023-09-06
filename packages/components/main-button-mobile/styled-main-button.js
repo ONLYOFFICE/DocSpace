@@ -114,8 +114,11 @@ const StyledDropDown = styled(DropDown)`
 
   ${isMobileOnly && mobileDropDown}
 
-  .section-scroll {
-    padding-right: 0px !important;
+  .section-scroll, .scroll-body {
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-left: 0px !important;`
+        : `padding-right: 0px !important;`}
   }
 
   .separator-wrapper {
@@ -183,7 +186,10 @@ const StyledContainerAction = styled.div`
   padding: 16px 0px;
 
   .sublevel {
-    padding-left: 48px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 48px;`
+        : `padding-left: 48px;`}
   }
 `;
 

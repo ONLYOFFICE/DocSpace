@@ -46,6 +46,7 @@
       onCloseCallback: null,
       onAppReady: null,
       onAppError: null,
+      onEditorCloseCallback: null,
     },
   };
 
@@ -124,12 +125,30 @@
         }
 
         case "editor": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${config.editorGoBack}`;
+          let goBack = config.editorGoBack;
+
+          if (
+            config.events.onEditorCloseCallback &&
+            typeof config.events.onEditorCloseCallback === "function"
+          ) {
+            goBack = "event";
+          }
+
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&editorGoBack=${goBack}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${config.editorGoBack}`;
+          let goBack = config.editorGoBack;
+
+          if (
+            config.events.onEditorCloseCallback &&
+            typeof config.events.onEditorCloseCallback === "function"
+          ) {
+            goBack = "event";
+          }
+
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view&editorGoBack=${goBack}`;
           break;
         }
 
@@ -438,4 +457,8 @@
   window.DocSpace = window.DocSpace || {};
 
   window.DocSpace.SDK = new DocSpace(config);
+
+  if (config.init) {
+    window.DocSpace.SDK.initFrame(config);
+  }
 })();

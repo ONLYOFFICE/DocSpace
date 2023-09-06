@@ -55,6 +55,33 @@ public class GeolocationHelper
         _cache = cache;
     }
 
+    public async Task<BaseEvent> AddGeolocationAsync(BaseEvent baseEvent)
+    {
+        var location = await GetGeolocationAsync(baseEvent.IP);
+        baseEvent.Country = location[0];
+        baseEvent.City = location[1];
+        return baseEvent;
+    }
+
+    public async Task<string[]> GetGeolocationAsync(string ip)
+    {
+        try
+        {
+            var location = await GetIPGeolocationAsync(IPAddress.Parse(ip));
+            if (string.IsNullOrEmpty(location.Key))
+            {
+                return new string[] { string.Empty, string.Empty };
+            }
+            var regionInfo = new RegionInfo(location.Key).EnglishName;
+            return new string[] { regionInfo, location.City };
+        }
+        catch (Exception ex)
+        {
+            _logger.ErrorWithException(ex);
+            return new string[] { string.Empty, string.Empty };
+        }
+    }
+
     public async Task<IPGeolocationInfo> GetIPGeolocationAsync(IPAddress address)
     {
         try

@@ -29,6 +29,12 @@ if ($args[0] -eq "--force") {
 
 Write-Host "FORCE BUILD BASE IMAGES: $Force" -ForegroundColor Blue
 
+$ExistsNetwork= docker network ls --format '{{.Name}}' | findstr "onlyoffice" 
+
+if (-not $ExistsNetwork) {
+    docker network create --driver bridge onlyoffice
+}
+
 Write-Host "Run MySQL" -ForegroundColor Green
 docker compose -f "$DockerDir\db.yml" up -d
 
@@ -69,7 +75,7 @@ if (!$ExistsNode -or $Force) {
 
 if (!$ExistsProxy -or $Force) {
     Write-Host "Build proxy base image from source (apply new nginx config)" -ForegroundColor Green
-    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target proxy .
+    docker build -t "onlyoffice/4testing-docspace-proxy-runtime:$ProxyVersion"  -f "$DockerDir\Dockerfile.runtime" --target router .
 } else { 
     Write-Host "SKIP build proxy base image (already exists)" -ForegroundColor Blue
 }

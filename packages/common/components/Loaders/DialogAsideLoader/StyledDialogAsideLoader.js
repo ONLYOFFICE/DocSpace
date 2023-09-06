@@ -13,13 +13,10 @@ const StyledDialogAsideLoader = styled.div`
               `1px solid ${props.theme.modalDialog.headerBorderColor}`};
 
             box-sizing: border-box;
-
-            margin-right: -16px;
           }
 
           .dialog-loader-body {
             padding: 16px;
-            margin-right: -16px;
           }
 
           .dialog-loader-footer {

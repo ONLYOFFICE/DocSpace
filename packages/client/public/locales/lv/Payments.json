@@ -27,7 +27,6 @@
   "PayerDescription": "Šim lietotājam ir piekļuve maksājuma informācijai, un tas ir vienīgais lietotājs, kas var pielāgot kvotu un veikt maksājumus. DocSpace īpašnieks, kā arī pats maksājumu pārvaldnieks var atkārtoti piešķirt maksājumu pārvaldnieka lomu, izmantojot Stripe klientu portālu.",
   "PaymentOverdue": "Nevar pievienot jaunus lietotājus.",
   "PriceCalculation": "Aprēķināt cenu",
-  "QuotaPaidUserLimitError": "Ir sasniegts maksas lietotāju ierobežojums. <1>Maksājumi</1>",
   "RenewSubscription": "Atjaunot {{planName}} plāna abonementu",
   "RoomManagerDescription": "Telpu administrēšana un arhivēšana, lietotāju uzaicināšana un pārvaldība. Telpai var piešķirt vairākus administratorus.",
   "StartupSuggestion": "Paveiciet vairāk ar {{planName}} plānu",
