@@ -115,12 +115,7 @@ const DeveloperToolsWrapper = (props) => {
 
   return (
     <Suspense fallback={loaders[currentTab] || <AppLoader />}>
-      <StyledSubmenu
-        data={data}
-        startSelect={currentTab}
-        onSelect={onSelect}
-        smallBottomLine
-      />
+      <StyledSubmenu data={data} startSelect={currentTab} onSelect={onSelect} />
     </Suspense>
   );
 };

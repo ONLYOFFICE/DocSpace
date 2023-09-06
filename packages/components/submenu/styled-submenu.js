@@ -130,7 +130,7 @@ export const SubmenuScroller = styled.div`
   overflow-y: hidden;
 
   ${(props) =>
-    props.smallBottomLine &&
+    !props.isFullLength &&
     css`
       display: grid;
       flex: 0 1 auto;
