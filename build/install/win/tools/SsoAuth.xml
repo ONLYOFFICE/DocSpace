@@ -1,7 +1,7 @@
 <service>
 	<id>ASC.SsoAuth</id>
-	<name>ASC.SsoAuth</name>
-	<description>This service runs ASC.SsoAuth</description>
+	<name>ONLYOFFICE DocSpace SsoAuth.Svc</name>
+	<description>ONLYOFFICE DocSpace ASC.SsoAuth.Svc</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
 	<onfailure action="restart" delay="10 sec"/>

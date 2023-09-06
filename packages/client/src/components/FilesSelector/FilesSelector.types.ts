@@ -27,6 +27,7 @@ export type Item = {
   isFolder: boolean;
   isDisabled?: boolean;
   security: Security;
+  roomType: number;
 };
 
 export type BreadCrumb = {
@@ -39,6 +40,22 @@ type setItems = (value: Item[] | null) => Item[];
 
 export type useLoadersHelperProps = {
   items: Item[] | null;
+};
+
+export type setItemsCallback = (value: Item[] | null) => Item[] | null;
+export type setBreadCrumbsCallback = (
+  value: BreadCrumb[] | []
+) => BreadCrumb[] | [];
+export type setTotalCallback = (value: number) => number;
+
+export type useSocketHelperProps = {
+  socketHelper: any;
+  socketSubscribersId: Set<string>;
+  setItems: (callback: setItemsCallback) => void;
+  setBreadCrumbs: (callback: setBreadCrumbsCallback) => void;
+  setTotal: (callback: setTotalCallback) => void;
+  disabledItems: string[] | number[];
+  filterParam?: string;
 };
 
 export type useRootHelperProps = {
@@ -80,6 +97,7 @@ export type useFilesHelpersProps = {
   onSelectTreeNode?: (treeNode: any) => void;
   setSelectedTreeNode: (treeNode: any) => void;
   filterParam?: string;
+  getRootData?: () => Promise<void>;
 };
 
 export type FilesSelectorProps = {
@@ -88,6 +106,7 @@ export type FilesSelectorProps = {
   withoutImmediatelyClose: boolean;
   isThirdParty: boolean;
   isEditorDialog: boolean;
+  setMoveToPublicRoomVisible: (visible: boolean, operationData: object) => void;
 
   onClose?: () => void;
 
@@ -150,4 +169,9 @@ export type FilesSelectorProps = {
 
   descriptionText?: string;
   setSelectedItems: () => void;
+
+  includeFolder?: boolean;
+
+  socketHelper: any;
+  socketSubscribersId: Set<string>;
 };

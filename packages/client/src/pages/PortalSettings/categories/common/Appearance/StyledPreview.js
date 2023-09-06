@@ -1,5 +1,9 @@
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
+import {
+  getCorrectBorderRadius,
+  getCorrectFourValuesStyle,
+} from "@docspace/components/utils/rtlUtils";
 
 const StyledComponent = styled.div`
   display: inline-flex;
@@ -20,7 +24,10 @@ const StyledComponent = styled.div`
       css`
         border-width: 1px;
         border-style: solid;
-        border-radius: 16px 0px 0px 16px;
+        border-radius: ${getCorrectBorderRadius(
+          "16px 0px 0px 16px",
+          props.theme.interfaceDirection
+        )};
       `}
   }
 
@@ -42,6 +49,9 @@ const StyledComponent = styled.div`
 
   .tablet-category-notice {
     padding: 20px 16px 20px 16px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" && "transform: scaleX(-1);"}
 
     circle {
       fill: ${(props) => props.colorPreview};
@@ -65,10 +75,19 @@ const StyledComponent = styled.div`
   }
 
   .tile-half {
-    margin-left: 16px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+            border-left: none !important;
+            border-radius: 0px 12px 12px 0 !important;
+          `
+        : css`
+            margin-left: 16px;
+            border-right: none !important;
+            border-radius: 12px 0 0 12px !important;
+          `}
     width: 44% !important;
-    border-right: none !important;
-    border-radius: 12px 0 0 12px !important;
   }
 
   .section {
@@ -79,8 +98,18 @@ const StyledComponent = styled.div`
       css`
         border-width: 1px;
         border-style: solid;
-        border-left-style: none;
-        border-radius: 0px 16px 16px 0px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl"
+            ? css`
+                margin-right: 12px;
+                border-radius: 16px 0px 0px 16px;
+                border-right-style: none;
+              `
+            : css`
+                margin-left: 12px;
+                border-radius: 0px 16px 16px 0px;
+                border-left-style: none;
+              `}
       `}
     background: ${(props) =>
       props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
@@ -89,11 +118,25 @@ const StyledComponent = styled.div`
   .section-header {
     display: flex;
     align-items: flex-start;
-    padding: 26px 0px 28px 20px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding: 26px 20px 28px 0px;
+          `
+        : css`
+            padding: 26px 0px 28px 20px;
+          `}
   }
 
   .section-header-loader {
-    padding-right: 17px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 17px;
+          `
+        : css`
+            padding-right: 17px;
+          `}
     height: 16px;
   }
 
@@ -101,14 +144,30 @@ const StyledComponent = styled.div`
     height: 30px;
     border-width: 1px;
     border-style: solid;
-    border-radius: 3px 0px 0px 3px;
-    border-right-style: none;
-    margin: 0px 0px 24px 20px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin: 0px 20px 24px 0px;
+            border-left-style: none;
+            border-radius: 0px 3px 3px 0px;
+          `
+        : css`
+            margin: 0px 0px 24px 20px;
+            border-right-style: none;
+            border-radius: 3px 0px 0px 3px;
+          `}
   }
 
   .section-search-loader {
     padding-top: 9px;
-    padding-left: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 8px;
+          `
+        : css`
+            padding-left: 8px;
+          `}
   }
 
   .loader-search {
@@ -165,7 +224,6 @@ const StyledComponent = styled.div`
   .flex {
     display: flex;
     align-items: center;
-
     padding: 10px 32px 0px;
 
     &:not(:last-child) {
@@ -175,7 +233,14 @@ const StyledComponent = styled.div`
 
   .padding-right {
     height: 16px;
-    padding-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 8px;
+          `
+        : css`
+            padding-right: 8px;
+          `}
   }
 
   .title-section {
@@ -184,7 +249,14 @@ const StyledComponent = styled.div`
   }
 
   .menu-badge {
-    padding-left: 93px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-right: 93px;
+          `
+        : css`
+            padding-left: 93px;
+          `}
     border: none;
     cursor: auto;
   }
@@ -197,7 +269,11 @@ const StyledComponent = styled.div`
   }
 
   .section-tile {
-    padding: ${(props) => (props.isViewTablet ? "0 0 0 20px" : "0 20px 0")};
+    padding: ${({ isViewTablet, theme }) => {
+      const value = isViewTablet ? "0 0 0 20px" : "0 20px 0";
+
+      return getCorrectFourValuesStyle(value, theme.interfaceDirection);
+    }};
   }
 
   .border-color {
@@ -228,9 +304,18 @@ const StyledComponent = styled.div`
 
   .tablet-tile-name {
     width: 44% !important;
-    margin-left: 16px;
-    border-right: none !important;
-    border-radius: 12px 0 16px 0 !important;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            margin-right: 16px;
+            border-left: none !important;
+            border-radius: 0 12px 0 16px !important;
+          `
+        : css`
+            margin-left: 16px;
+            border-right: none !important;
+            border-radius: 12px 0 16px 0 !important;
+          `}
   }
 
   .only-tile-name {
@@ -254,7 +339,11 @@ const StyledComponent = styled.div`
     display: flex;
     border-top-width: 1px;
     border-top-style: solid;
-    padding: 16px 0px 16px 16px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle(
+        `16px 0px 16px 16px`,
+        theme.interfaceDirection
+      )};
   }
 
   .tile-container {
@@ -263,15 +352,36 @@ const StyledComponent = styled.div`
   }
 
   .tile-icon {
-    padding-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .section-badge {
-    padding-right: 12px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 12px;
+          `
+        : css`
+            padding-right: 12px;
+          `}
   }
 
   .pin {
-    padding-right: 14px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 14px;
+          `
+        : css`
+            padding-right: 14px;
+          `}
 
     path {
       fill: ${(props) =>
@@ -292,7 +402,14 @@ const StyledComponent = styled.div`
 
 const StyledFloatingButton = styled.div`
   bottom: 24px;
-  right: 24px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          left: 24px;
+        `
+      : css`
+          right: 24px;
+        `}
   width: 48px;
   height: 48px;
   border-radius: 50%;

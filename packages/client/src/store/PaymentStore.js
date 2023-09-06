@@ -342,11 +342,11 @@ class PaymentStore {
     const { userStore, currentTariffStatusStore } = authStore;
     const { user } = userStore;
 
-    const { customerId } = currentTariffStatusStore;
+    const { payerInfo } = currentTariffStatusStore;
 
-    if (!user) return false;
+    if (!user || !payerInfo) return false;
 
-    return user.email === customerId;
+    return user.email === payerInfo.email;
   }
 
   get isStripePortalAvailable() {

@@ -4,7 +4,7 @@ import ImageReactSvgUrl from "PUBLIC_DIR/images/image.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
 import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
-import React, { useState } from "react";
+import { useState } from "react";
 import { withTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { inject, observer } from "mobx-react";
@@ -15,8 +15,6 @@ import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
 import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 
 import { StyledHeader } from "./StyledHeader";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
@@ -40,6 +38,8 @@ const Header = (props) => {
     setChangePasswordVisible,
     setChangeAvatarVisible,
 
+    setDialogData,
+
     isProfileLoaded,
     profileClicked,
   } = props;
@@ -48,9 +48,14 @@ const Header = (props) => {
   const location = useLocation();
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
-
   const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
     useState(false);
+
+  const onChangePasswordClick = () => {
+    const email = profile.email;
+    setDialogData({ email });
+    setChangePasswordVisible(true);
+  };
 
   const getUserContextOptions = () => {
     const options = [
@@ -64,7 +69,7 @@ const Header = (props) => {
       {
         key: "change-password",
         label: t("PeopleTranslations:PasswordChangeButton"),
-        onClick: () => setChangePasswordVisible(true),
+        onClick: () => onChangePasswordClick(),
         disabled: false,
         icon: SecurityReactSvgUrl,
       },
@@ -166,7 +171,7 @@ export default inject(
 
     const { isVisitor, isCollaborator } = auth.userStore.user;
 
-    const { targetUserStore, filterStore } = peopleStore;
+    const { targetUserStore, filterStore, dialogStore } = peopleStore;
 
     const { filter, setFilterParams } = filterStore;
 
@@ -182,6 +187,8 @@ export default inject(
       setChangeAvatarVisible,
     } = targetUserStore;
 
+    const { setDialogData } = dialogStore;
+
     return {
       isAdmin,
       isVisitor,
@@ -195,6 +202,8 @@ export default inject(
       setChangeEmailVisible,
       setChangePasswordVisible,
       setChangeAvatarVisible,
+
+      setDialogData,
 
       isProfileLoaded,
       profileClicked,

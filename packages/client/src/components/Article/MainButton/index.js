@@ -14,6 +14,7 @@ import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
 import React from "react";
 
+import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import MainButton from "@docspace/components/main-button";
@@ -32,6 +33,7 @@ import styled, { css } from "styled-components";
 import Button from "@docspace/components/button";
 
 import { resendInvitesAgain } from "@docspace/common/api/people";
+import { getCorrectFourValuesStyle } from "@docspace/components/utils/rtlUtils";
 
 const StyledButton = styled(Button)`
   font-weight: 700;
@@ -75,7 +77,8 @@ const StyledButton = styled(Button)`
     justify-content: space-between;
     vertical-align: middle;
     box-sizing: border-box;
-    padding: 5px 14px 5px 12px;
+    padding: ${({ theme }) =>
+      getCorrectFourValuesStyle("5px 14px 5px 12px", theme.interfaceDirection)};
     line-height: 22px;
     border-radius: 3px;
 
@@ -96,6 +99,7 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
+    selectFileDialogVisible,
     showArticleLoader,
     isFavoritesFolder,
     isRecentFolder,
@@ -115,6 +119,8 @@ const ArticleMainButtonContent = (props) => {
     setInvitePanelOptions,
 
     mainButtonMobileVisible,
+    moveToPanelVisible,
+    copyPanelVisible,
 
     security,
     isGracePeriod,
@@ -459,6 +465,15 @@ const ArticleMainButtonContent = (props) => {
 
   const isProfile = location.pathname.includes("/profile");
 
+  let mainButtonVisible = true;
+
+  if (isMobileOnly) {
+    mainButtonVisible =
+      moveToPanelVisible || copyPanelVisible || selectFileDialogVisible
+        ? false
+        : true;
+  }
+
   if (showArticleLoader)
     return isMobileArticle ? null : <Loaders.ArticleButton height="32px" />;
 
@@ -473,7 +488,9 @@ const ArticleMainButtonContent = (props) => {
               actionOptions={actions}
               buttonOptions={uploadActions}
               isRooms={isRoomsFolder}
-              mainButtonMobileVisible={mainButtonMobileVisible}
+              mainButtonMobileVisible={
+                mainButtonMobileVisible && mainButtonVisible
+              }
               onMainButtonClick={onCreateRoom}
             />
           )}
@@ -557,6 +574,9 @@ export default inject(
       setSelectFileDialogVisible,
       setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
+      copyPanelVisible,
+      moveToPanelVisible,
+      selectFileDialogVisible,
     } = dialogsStore;
 
     const { enablePlugins, currentColorScheme } = auth.settingsStore;
@@ -587,6 +607,7 @@ export default inject(
       startUpload,
 
       setSelectFileDialogVisible,
+      selectFileDialogVisible,
       setInvitePanelOptions,
 
       currentFolderId,
@@ -598,6 +619,8 @@ export default inject(
       isOwner,
 
       mainButtonMobileVisible,
+      moveToPanelVisible,
+      copyPanelVisible,
       security,
     };
   }

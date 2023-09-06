@@ -2,6 +2,7 @@
   "Error401Text": "Извините, страница недоступна.",
   "Error403Text": "Извините, доступ закрыт.",
   "Error404Text": "Извините, страница не найдена.",
+  "ErrorDeactivatedText": "Этот DocSpace деактивирован",
   "ErrorEmptyResponse": "Пустой ответ",
   "ErrorOfflineText": "Нет подключения к интернету",
   "ErrorUnavailableText": "DocSpace недоступен"

@@ -4,15 +4,15 @@ set -e
 
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
-product="docspace"
-GIT_BRANCH="master"
+product_name="DocSpace"
+product=$(tr '[:upper:]' '[:lower:]' <<< ${product_name})
 INSTALLATION_TYPE="ENTERPRISE"
 MAKESWAP="true"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
-RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product^^}.";
-RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
+RES_INSTALL_SUCCESS="Thank you for installing ONLYOFFICE ${product_name}.";
+RES_QUESTIONS="In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://forum.onlyoffice.com"
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -118,7 +118,12 @@ if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -
   apt-get install -yq curl;
 fi
 
-DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-Debian"
+if [ -z $GIT_BRANCH ]; then
+	DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/${product}/install-Debian"
+else
+	DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-Debian"
+fi
+
 if [ "${LOCAL_SCRIPTS}" == "true" ]; then
 	source install-Debian/bootstrap.sh
 else

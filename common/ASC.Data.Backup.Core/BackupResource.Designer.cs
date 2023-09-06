@@ -77,5 +77,14 @@ namespace ASC.Data.Backup.Core {
                 return ResourceManager.GetString("ButtonSetPassword", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup is larger than the total size of the portal.
+        /// </summary>
+        internal static string LargeBackup {
+            get {
+                return ResourceManager.GetString("LargeBackup", resourceCulture);
+            }
+        }
     }
 }

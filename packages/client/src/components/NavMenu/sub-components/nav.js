@@ -8,7 +8,9 @@ import { Base } from "@docspace/components/themes";
 const StyledNav = styled.nav`
   background-color: ${(props) => props.theme.nav.backgroundColor};
   height: 100%;
-  left: 0;
+
+  ${({ theme }) =>
+    theme.interfaceDirection === "rtl" ? `right: 0;` : `left: 0;`}
   overflow-x: hidden;
   overflow-y: auto;
   position: fixed;
@@ -34,7 +36,9 @@ const StyledNav = styled.nav`
     }`}
 
     bottom: 8px;
-    left: 16px;
+
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl" ? `right: 16px;` : `left: 16px;`}
 
     white-space: nowrap;
     a:focus {
@@ -51,13 +55,8 @@ const StyledScrollbar = styled(Scrollbar)`
 
 const Nav = React.memo((props) => {
   //console.log("Nav render");
-  const {
-    opened,
-    onMouseEnter,
-    onMouseLeave,
-    children,
-    numberOfModules,
-  } = props;
+  const { opened, onMouseEnter, onMouseLeave, children, numberOfModules } =
+    props;
   return (
     <StyledNav
       opened={opened}
