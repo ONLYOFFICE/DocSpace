@@ -1079,4 +1079,403 @@ A Equipa da ONLYOFFICE
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Foi convidado(a) para se juntar ao ${__VirtualRootPath}</value>
   </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1.Ative o seu email para o portal "${__VirtualRootPath}":"$InviteLink".
+
+Olá!
+
+Para começar a participar na vida do portal "${__VirtualRootPath}":"$InviteLink", tem de ativar o seu e-mail. Isto é necessário por razões de segurança
+
+$GreenButton
+
+Este link é válido apenas por 7 dias. Por favor, conclua a ativação do seu email durante esse período.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" cópia de segurança do portal criada
+
+Caro(a) $OwnerName,
+
+Foi criada uma cópia de segurança contendo os dados do seu portal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Para saber mais sobre o procedimento da criação de cópias de segurança, por favor consulte o nosso guia de utilizador para "Cópias de Segurança":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
+
+
+Se tem alguma questão ou se precisa de apoio, por favor não hesite em nos contactar através do "support.onlyoffice.com":"http://support.onlyoffice.com"
+
+Com os melhores cumprimentos,
+A Equipa de Apoio ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_backup_created_tg" xml:space="preserve">
+    <value>[${__VirtualRootPath}](${__VirtualRootPath}) cópia de segurança do portal criada
+
+Caro(a) $OwnerName,
+
+Um ficheiro contendo uma cópia de segurança do seu portal [${__VirtualRootPath}](${__VirtualRootPath}) foi criado.
+
+Para saber mais sobre o nosso procedimento de criação de cópias de segurança, por favor consulte o nosso guia do utilizador [Data backup](${__HelpLink}/tipstricks/data-backup-restore.aspx).
+
+Se tem alguma questão ou se precisar de ajuda por favor não hesite em nos contactar através do [support.onlyoffice.com](http://support.onlyoffice.com)
+
+Com os melhores cumprimentos,
+A Equipa de Apoio da ONLYOFFICE™
+[www.onlyoffice.com](http://onlyoffice.com/)</value>
+  </data>
+  <data name="pattern_change_email_v115" xml:space="preserve">
+    <value>Deseja alterar o e-mail da sua ${LetterLogoText} conta?
+
+Clique no botão abaixo e inicie sessão* na sua nuvem.
+
+$GreenButton
+
+Este link é válido por 7 dias.
+
+*Se não tem sessão iniciada no ${LetterLogoText} neste navegador, precisará de utilizar o seu e-mail antigo para confirmar. Se não se lembra dele, contacte o administrador do portal.
+
+Não quer alterar o seu email? Simplesmente ignore esta mensagem.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Solicitação de alteração do número de telemóvel
+
+Solicitou que o seu número de telemóvel para entrar no portal ${LetterLogoText} fosse alterado.
+
+Por favor, siga o link abaixo para alterar o seu número de telemóvel:
+
+$GreenButton
+
+Se não deseja alterar o seu número de telemóvel, ou se recebeu este email por engano, ignore-o ou contacte o administrador do portal para saber mais informações.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Notificação de segurança
+
+A configuração da app autenticadora que utiliza para entrar no portal ${LetterLogoText} foi redefinida.
+
+Por favor, clique no link abaixo para ir para a página de login do portal e configure a aplicação autenticadora:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1.Alteração do proprietário do portal portal "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Caro(a) $OwnerName,
+
+Houve um pedido para alterar o proprietário do portal "${__VirtualRootPath}":"${__VirtualRootPath}" para $UserName.
+
+Por favor, siga o link abaixo para confirmar a operação:
+
+$GreenButton
+
+*Nota*: este link é válido por apenas 7 dias. Por favor, complete o processo de alteração de proprietário do portal dentro desse período.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1.Alteração do endereço do portal
+
+Caro(a) $OwnerName,
+
+Houve um pedido para alterar o endereço do portal "${__VirtualRootPath}":"${__VirtualRootPath}" para "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Por favor, siga a ligação abaixo para confirmar a operação:
+
+$GreenButton
+
+*Nota*: este link é válido por apenas 7 dias. Por favor, complete a alteração de endereço do portal dentro desse período.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Foi convidado(a) para se juntar ao "${__VirtualRootPath}":"${__VirtualRootPath}" como um(a) utilizador convidado. Aceite o convite ao clicar no link:
+
+$GreenButton
+
+Este link é válido apenas por 7 dias.
+
+Obterá mais dicas sobre como utilizar o seu escritório-web. Pode cancelar as subscrições na sua página de Perfil a qualquer altura, bem como as pode reativar.</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Seja bem-vindo(a) ao DocSpace da ONLYOFFICE! O seu perfil de utilizador foi adicionado com êxito ao "${__VirtualRootPath}":"${__VirtualRootPath}". Agora pode:
+
+* Colaborar com outros utilizadores na sala para onde foi convidado: *nas salas de colaboração em tempo real com coautoria ou nas salas personalizáveis com definições flexíveis para qualquer propósito*.
+
+* *Trabalhe em ficheiros com diferentes formatos*: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+* *Colabore em documentos* com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Registe as alterações, comunique em tempo real através do chat incorporado ou faça chamadas de vídeo ou áudio.
+
+* *Associe qualquer armazenamento em nuvem* e trabalhe sem ter que alternar entre apps.
+
+$GreenButton
+
+Se necessitar de ajuda, verifique o nosso "Centro de Ajuda":"https://helpcenter.onlyoffice.com/" ou pergunte algo à nossa "equipa de apoio":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Olá, $UserName!
+
+$__AuthorName convidou-o para ser um utilizador convidado na "${__VirtualRootPath}":"${__VirtualRootPath}". Aceite o convite ao clicar no link:
+
+$GreenButton
+
+Este link é válido apenas por 7 dias.
+
+Obterá mais dicas sobre como utilizar o seu escritório-web. Pode cancelar as subscrições na sua página de perfil a qualquer altura, bem como reativá-las.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Seja bem-vindo(a) ao DocSpace da ONLYOFFICE! O seu perfil de utilizador foi adicionado ao "${__VirtualRootPath}":"${__VirtualRootPath}" com êxito. Agora pode:
+
+* Colaborar com outros utilizadores na sala para a qual foi convidado(a): *existem salas para colaboração em tempo real com coautoria, ou salas personalizadas com definições flexíveis para qualquer propósito*.
+
+* *Trabalhe com ficheiros em diferentes formatos*: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+* *Colabore em documentos* com dois modos de coautoria: em tempo real ou com bloqueio de parágrafos. Registe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio ou videochamadas.
+
+* *Ligue qualquer nuvem* e trabalhe sem ser necessário alternar entre aplicações.
+
+$GreenButton
+
+Se necessita de ajuda, consulte o nosso "Centro de Ajuda":"https://helpcenter.onlyoffice.com/" ou pergunte à nossa "equipa de suporte":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1.Mensagem do portal "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_for_admin_notify_tg" xml:space="preserve">
+    <value>Mensagem do portal [${__VirtualRootPath}](${__VirtualRootPath})
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
+    <value>Olá!
+
+Tem um convite para ser um utilizador convidado no "${__VirtualRootPath}":"${__VirtualRootPath}". Aceite o convite ao clicar no link:
+
+"$ActivateUrl":"$ActivateUrl"
+
+Este link é válido por 7 dias.
+
+Receberá mais conselhos sobre como utilizar o seu escritório-web. Pode cancelar as subscrições na sua página de Perfil a qualquer momento, bem como voltar a ativá-las.</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Seja bem-vindo(a) ao DocSpace da ONLYOFFICE ! O seu perfil de utilizador foi adicionado com êxito ao "${__VirtualRootPath}":"${__VirtualRootPath}". Agora pode:
+
+* Trabalhar com outros utilizadores na sala para a qual foi convidado(a): *salas de colaboração em tempo real ou salas personalizadas com definições flexíveis para qualquer propósito*.
+
+* *Trabalhe com ficheiros de diferentes formatos*: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+* *Colabore em documentos* com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Registe as alterações, comunique em tempo real utilizando o chat incorporado ou através de videochamadas ou chamadas de áudio.
+
+* *Ligue a qualquer armazenamento de nuvem* e trabalhe sem ter que alternar entre apps.
+
+$GreenButton
+
+Se precisar de ajuda, passe pelo nosso "Centro de Ajuda":"https://helpcenter.onlyoffice.com/" ou coloque as suas dúvidas à nossa "equipa de apoio":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
+    <value>Olá!
+
+Foi convidado para se juntar ao "${__VirtualRootPath}":"${__VirtualRootPath}" como um(a) utilizador(a) convidado(a). Aceite o convite ao clicar no link:
+
+$GreenButton
+
+Também lhe enviaremos dicas úteis e as últimas notícias do ONLYOFFICE de vez em quando. Pode cancelar as subscrições na sua página de perfil a qualquer momento, bem como voltar a ativá-las.
+
+Atenciosamente,
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Seja bem-vindo(a) ao DocSpace da ONLYOFFICE! O seu perfil de utilizador foi adicionado com êxito ao "${__VirtualRootPath}":"${__VirtualRootPath}". Agora pode:
+
+* Colabore com outros utilizadores na sala para a qual foram convidados: temos salas de colaboração para coautoria em tempo real ou salas personalizadas com definições flexíveis para qualquer propósito*.
+
+* *Trabalhe com ficheiros de formatos diferentes*: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+* *Colabore em documentos* com dois métodos de coedição: tempo real ou com bloqueio de parágrafos. Registe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio ou videochamadas. 
+
+* *Ligue qualquer armazenamento em nuvem* e trabalhe sem ter de alternar entre apps.
+
+$GreenButton
+
+Se precisar de ajuda, consulte o nosso "Centro de Ajuda":"https://helpcenter.onlyoffice.com/" ou pergunte à nossa "equipa de suporte":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Atenciosamente, 
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1.Convite para se juntar ao portal "${__VirtualRootPath}":"$InviteLink"
+
+Olá,
+
+Pediu para se juntar ao portal "${__VirtualRootPath}":"$InviteLink" no ${LetterLogoText} - uma plataforma para gerir documentos e projetos. Junte-se ao portal e comece a colaborar com os seus colegas e amigos.
+
+Para aceitar o convite por favor introduza o seu nome e palavra-chave depois de seguir este link:
+
+$GreenButton
+
+*Nota*: este link é válido apenas por 48 horas. Por favor, complete a operação dentro desse período.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>Caro(a) $UserName,
+
+      O administrador criou uma nova caixa de correio &lt;b&gt;&gt;$Address&lt;/b&gt; para si no portal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Utilize as seguintes definições para clientes de outros emails:
+      Login: &lt;b&gt;$Login&lt;/b&gt;
+      Palavra-chave: "&lt;b&gt;definir palavra-chave&lt;/b&gt;":"$MyStaffLink"
+
+     Caixa de Entrada (IMAP): 
+      Servidor: &lt;b&gt;$Server&lt;/b&gt;
+      Porta: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Enviados (SMTP): 
+      Servidor: &lt;b&gt;$Server&lt;/b&gt;
+      Porta: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Requer Autenticação: &lt;b&gt;Sim&lt;/b&gt;
+
+     Se recebeu este e-mail por engano, por favor ignore-o ou contacte o administrador do seu portal para saber mais sobre os detalhes.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>Caro(a) $UserName,
+
+      A palavra-chave para a caixa de correio &lt;b&gt;$Address&lt;/b&gt; foi alterada.
+ 
+      Se recebeu este email por engano, por favor ignore-o ou contacte o administrador do seu portal para saber mais detalhes.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Caro(a) $UserName,
+
+      O administrador criou um novo &lt;b&gt;$Address&lt;/b&gt; para a sua caixa de correio no portal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Se recebeu este email por engano, por favor ignore-o ou contacte o administrador do seu portal para saber mais detalhes.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1.Outro erro de migração da região do portal
+
+Ocorreu um erro enquanto se migrava para a região $RegionName. Por favor, tente de novo mais tarde.
+O seu portal está agora disponível no antigo endereço "$PortalUrl":"$PortalUrl"
+
+Se tiver alguma questão ou se precisar de ajuda, não hesite em nos contactar através do "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Com os melhores cumprimentos,
+A Equipa de Suporte da ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Para alterar o tipo de notificação, por favor vá às suas "definições de subscrição":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.Outro erro de migração da região do portal
+
+Ocorreu um erro enquanto se migrava para outra região. Por favor, tente de novo mais tarde.
+O seu portal está agora disponível no antigo endereço "$PortalUrl":"$PortalUrl"
+
+Se tiver alguma questão ou se precisar de ajuda, por favor não hesite em nos contactar através do "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Com os melhores cumprimentos,
+A Equipa de Suporte da ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Para alterar o tipo de notificação, por favor vá às "definições de subscrição":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1.Outra migração da região do portal já começou
+
+A migração do portal para a região $RegionName já começou. Poderá demorar algum tempo dependendo da quantidade de dados.
+
+*Nota*: o portal não estará disponível durante o processo de migração. Depois da migração ser completada, o URL do portal será alterado e todos os links para documentos partilhados ficarão inacessíveis. 
+
+Se tem alguma questão ou se precisar de ajuda, por favor não hesite em contactar-nos através do "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+Com os melhores cumprimentos,
+A Equipa de Suporte ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_migration_success_v115" xml:space="preserve">
+    <value>h1.Migração do Portal
+h1."$PortalUrl":"$PortalUrl"
+
+O seu portal foi migrado para outro domínio. Restaure o acesso ao portal ao especificar a palavra-passe que será utilizada para iniciar sessão.
+
+Por favor, siga o link abaixo para definir a palavra-passe para a conta:
+$GreenButton
+
+*Nota*: este link é válido por apenas 7 dias. Por favor, complete o processo de restauro do acesso dentro desse período.
+
+Se recebeu este email por engano, por favor ignore-o ou contacte o seu administrador do portal "$PortalUrl":"$PortalUrl" para saber mais detalhes.</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Olá, $UserName
+O seu registo no ONLYOFFICE Personal foi concluído com êxito no "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Ligue ao seu armazenamento em nuvem favorito. Dropbox, Google Drive, OneDrive, ou Box para criar um só espaço de trabalho a que pode aceder de qualquer lugar.
+
+Saiba mais sobre o ONLYOFFICE Personal no "nosso blog":"$TagBlogLink".
+
+Estamos contentes por estar aqui. Continue connosco!
+
+Atenciosamente,
+A Equipa da ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Bem-vindo(a) ao ONLYOFFICE Personal
+
+Acabou de criar o seu escritório pessoal na nuvem.
+
+h3.É um espaço virtual onde pode editar e armazenar documentos, pode também trabalhar neles através de qualquer lugar e fornecer acesso aos seus amigos e colegas.
+
+h3.Em suma, aqui está o que pode fazer no ONLYOFFICE:
+
+- Criar, ver e editar documentos de texto, folhas de cálculo, apresentações.
+
+- Trabalhar com formatos populares. Temos máxima compatibilidade com os ficheiros do MS Office.
+
+- Criar e coeditar "formulários prontos a preencher":"https://www.onlyoffice.com/form-creator.aspx".
+
+- Partilhar e trabalhar em documentos online.
+
+- Usar vários plugins para aplicar funcionalidades extra.
+
+- Aceda facilmente à sua nuvem Pessoal através da nossa "Extensão para o Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Também pode editar documentos offline com o nosso programa gratuito "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" ou obtenha uma suite de edição movel para o seu dispositivo "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" ou "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Atenciosamente,
+A Equipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email_v115" xml:space="preserve">
+    <value>Deseja alterar o e-mail da sua conta ONLYOFFICE? 
+
+Clique no botão abaixo e inicie sessão* na sua nuvem.
+
+$GreenButton
+
+O link é válido por 7 dias.
+ 
+*Se não estiver ligado ao ONLYOFFICE neste navegador, terá de utilizar o seu e-mail antigo para a confirmação. 
+
+Não quer mudar o seu e-mail? Simplesmente ignore esta mensagem.</value>
+  </data>
 </root>
