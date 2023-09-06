@@ -83,7 +83,7 @@ $GreenButton
 
 此致！
 ONLYOFFICE 团队
-"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
     <value>想更改云办公帐号的密码吗？请点击下方按钮确认。

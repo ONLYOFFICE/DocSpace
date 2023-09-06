@@ -125,7 +125,7 @@ class ContextMenu extends Component {
   position = (event) => {
     if (event) {
       const rects = this.props.containerRef?.current.getBoundingClientRect();
-      let left = rects ? rects.left - this.props.leftOffset : event.pageX + 1;
+      let left = rects ? rects.left - this.props.leftOffset - this.props.rightOffset : event.pageX + 1;
       let top = rects ? rects.top : event.pageY + 1;
       let width = this.menuRef.current.offsetParent
         ? this.menuRef.current.offsetWidth
@@ -481,6 +481,7 @@ ContextMenu.defaultProps = {
   scaled: false,
   containerRef: null,
   leftOffset: 0,
+  rightOffset: 0,
   fillIcon: true,
 };
 

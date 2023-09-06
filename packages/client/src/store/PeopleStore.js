@@ -99,7 +99,7 @@ class PeopleStore {
   };
 
   onChangeType = (e) => {
-    const action = e?.action ? e.action : e?.target?.dataset?.action;
+    const action = e?.action ? e.action : e?.currentTarget?.dataset?.action;
 
     const { getUsersToMakeEmployees } = this.selectionStore;
 
@@ -188,6 +188,7 @@ class PeopleStore {
       hasUsersToRemove,
       hasOnlyOneUserToRemove,
       hasFreeUsers,
+      userSelectionRole,
       selection,
     } = this.selectionStore;
 
@@ -209,6 +210,7 @@ class PeopleStore {
       onClick: (e) => this.onChangeType(e),
       "data-action": "admin",
       key: "administrator",
+      isActive: userSelectionRole === "admin",
     };
     const managerOption = {
       id: "menu_change-user_manager",
@@ -218,6 +220,7 @@ class PeopleStore {
       onClick: (e) => this.onChangeType(e),
       "data-action": "manager",
       key: "manager",
+      isActive: userSelectionRole === "manager",
     };
     const userOption = {
       id: "menu_change-user_user",
@@ -227,6 +230,7 @@ class PeopleStore {
       onClick: (e) => this.onChangeType(e),
       "data-action": "user",
       key: "user",
+      isActive: userSelectionRole === "user",
     };
 
     isOwner && options.push(adminOption);

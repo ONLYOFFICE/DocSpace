@@ -670,7 +670,7 @@ ONLYOFFICE 팀
   <data name="pattern_saas_room_invite" xml:space="preserve">
     <value>안녕하세요!
 
-"${__VirtualRootPath}":"${__VirtualRootPath}”에서 $Message 방에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+"${__VirtualRootPath}":"${__VirtualRootPath}"에서 $Message 방에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
 
 $GreenButton
 

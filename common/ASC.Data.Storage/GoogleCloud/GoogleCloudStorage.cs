@@ -130,7 +130,7 @@ public class GoogleCloudStorage : BaseStorage
         using var storage = GetStorage();
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
-        var preSignedURL = await FromServiceAccountData(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
+        var preSignedURL = await FromCredentialStream(stream).SignAsync(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
 
         return MakeUri(preSignedURL);
     }
@@ -331,7 +331,7 @@ public class GoogleCloudStorage : BaseStorage
         using var storage = GetStorage();
 
         var objToDel = GetObjectsAsync(domain, folderPath, true)
-                      .Where(x => x.Updated >= fromDate && x.Updated <= toDate);
+                      .Where(x => x.UpdatedDateTimeOffset >= fromDate && x.UpdatedDateTimeOffset <= toDate);
 
         await foreach (var obj in objToDel)
         {
@@ -610,7 +610,7 @@ public class GoogleCloudStorage : BaseStorage
 
         using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
         var signDuration = expires.Date == DateTime.MinValue ? expires.TimeOfDay : expires.Subtract(DateTime.UtcNow);
-        var preSignedURL = await FromServiceAccountData(mStream)
+        var preSignedURL = await FromCredentialStream(mStream)
             .SignAsync(RequestTemplate.FromBucket(_bucket).WithObjectName(MakePath(domain, path)), Options.FromDuration(signDuration));
 
         //TODO: CNAME!
@@ -835,7 +835,7 @@ public class GoogleCloudStorage : BaseStorage
         throw new NotImplementedException();
     }
 
-    private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
+    private PredefinedObjectAcl GetGoogleCloudAcl(ACL _)
     {
         return PredefinedObjectAcl.PublicRead;
         //return acl switch
@@ -866,7 +866,7 @@ public class GoogleCloudStorage : BaseStorage
 
         var obj = await storage.GetObjectAsync(_bucket, objectName);
 
-        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.Updated ?? obj.TimeCreated ?? DateTime.MinValue;
+        var lastModificationDate = obj == null ? throw new FileNotFoundException("File not found" + objectName) : obj.UpdatedDateTimeOffset ?? obj.TimeCreatedDateTimeOffset ?? DateTime.MinValue;
 
         var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 

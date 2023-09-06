@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import DesktopDetails from "../DesktopDetails";
 import ImageViewerToolbar from "../ImageViewerToolbar";
@@ -62,27 +62,47 @@ export const ErrorMessage = styled.p`
 
 export const DesktopTopBar = styled(DesktopDetails)<Panel>`
   display: flex;
-
-  left: ${(props) => (props.isPanelOpen ? "306px" : 0)};
-  width: ${(props) => (props.isPanelOpen ? "calc(100%  - 306px)" : "100%")};
+  ${props =>
+    props.theme.interfaceDirection === "rtl"
+      ? css`
+          right: ${props => (props.isPanelOpen ? "306px" : 0)};
+        `
+      : css`
+          left: ${props => (props.isPanelOpen ? "306px" : 0)};
+        `}
+  width: ${props => (props.isPanelOpen ? "calc(100%  - 306px)" : "100%")};
 
   .mediaPlayerClose {
     position: fixed;
     top: 13px;
-    right: 12px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            left: 12px;
+          `
+        : css`
+            right: 12px;
+          `}
     height: 17px;
     &:hover {
       background-color: transparent;
     }
     svg {
       path {
-        fill: ${(props) => props.theme.mediaViewer.iconColor};
+        fill: ${props => props.theme.mediaViewer.iconColor};
       }
     }
   }
 
   .title {
-    padding-right: 16px;
+    ${props =>
+      props.theme.interfaceDirection === "rtl"
+        ? css`
+            padding-left: 16px;
+          `
+        : css`
+            padding-right: 16px;
+          `}
   }
 `;
 

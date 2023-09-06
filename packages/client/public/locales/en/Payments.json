@@ -27,7 +27,6 @@
   "PayerDescription": "This user has access to payment details and is the only user who can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manager role using the Stripe customer portal.",
   "PaymentOverdue": "Cannot add new users.",
   "PriceCalculation": "Calculate your price",
-  "QuotaPaidUserLimitError": "The paid user limit has been reached. <1>Payments</1>",
   "RenewSubscription": "Renew subscription to {{planName}} plan",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
   "StartupSuggestion": "Do more with {{planName}} plan",

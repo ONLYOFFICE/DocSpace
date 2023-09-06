@@ -21,6 +21,7 @@ x-service: &x-service-base
   expose:
     - ${SERVICE_PORT}
   environment:
+    MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
     MYSQL_HOST: ${MYSQL_HOST}
     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -37,10 +38,25 @@ x-service: &x-service-base
     DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
     DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
     DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC}
-    DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL}
+    DOCUMENT_CONTAINER_NAME: ${DOCUMENT_CONTAINER_NAME}
+    DOCUMENT_SERVER_URL_EXTERNAL: ${DOCUMENT_SERVER_URL_EXTERNAL}
     KAFKA_HOST: ${KAFKA_HOST}
+    ELK_CONTAINER_NAME: ${ELK_CONTAINER_NAME}
+    ELK_SHEME: ${ELK_SHEME}
     ELK_HOST: ${ELK_HOST}
-    PROXY_HOST: ${PROXY_HOST}
+    ELK_PORT: ${ELK_PORT}
+    REDIS_CONTAINER_NAME: ${REDIS_CONTAINER_NAME}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_USER_NAME: ${REDIS_USER_NAME}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+    RABBIT_CONTAINER_NAME: ${RABBIT_CONTAINER_NAME}
+    RABBIT_HOST: ${RABBIT_HOST}
+    RABBIT_PORT: ${RABBIT_PORT}
+    RABBIT_VIRTUAL_HOST: ${RABBIT_VIRTUAL_HOST}
+    RABBIT_USER_NAME: ${RABBIT_USER_NAME}
+    RABBIT_PASSWORD: ${RABBIT_PASSWORD}
+    ROUTER_HOST: ${ROUTER_HOST}
   volumes:
     - ${ROOT_DIR}/Data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
@@ -91,7 +107,7 @@ services:
   onlyoffice-document-server:
     <<: [*x-profiles-extra-services]
     image: "${DOCUMENT_SERVER_IMAGE_NAME}"
-    container_name: ${DOCUMENT_SERVER_HOST}
+    container_name: ${DOCUMENT_CONTAINER_NAME}
     # Strings below enable the JSON Web Token validation.
     environment:
       - JWT_ENABLED=true
@@ -223,10 +239,10 @@ services:
     expose:
       - "5011"
 
-  onlyoffice-proxy:
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
+  onlyoffice-router:
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-router:${DOCKER_TAG}"
     profiles: ["prod", "backend", frontend]
-    container_name: ${PROXY_HOST}
+    container_name: ${ROUTER_HOST}
     restart: always
     healthcheck:
       <<: *x-healthcheck
@@ -253,10 +269,14 @@ services:
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
       - SERVICE_LOGIN=${SERVICE_LOGIN}
       - SERVICE_HELTHCHECKS=${SERVICE_HELTHCHECKS}
-      - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
+      - DOCUMENT_CONTAINER_NAME=${DOCUMENT_CONTAINER_NAME}
+      - DOCUMENT_SERVER_URL_EXTERNAL=${DOCUMENT_SERVER_URL_EXTERNAL}
+      - REDIS_CONTAINER_NAME=${REDIS_CONTAINER_NAME}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
-      - proxy_log:/var/log/nginx
+      - router_log:/var/log/nginx
 
   onlyoffice-migration-runner:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration-runner:${DOCKER_TAG}"
@@ -264,6 +284,7 @@ services:
     container_name: ${MIGRATION_RUNNER_HOST}
     restart: "no"
     environment:
+      MYSQL_CONTAINER_NAME: ${MYSQL_CONTAINER_NAME}
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -276,7 +297,7 @@ networks:
 
 volumes:
   es_data:
-  proxy_log:
+  router_log:
   app_data:
   files_data:
   people_data:

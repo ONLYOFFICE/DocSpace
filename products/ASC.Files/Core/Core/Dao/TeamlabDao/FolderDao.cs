@@ -320,10 +320,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var roomTypes = new List<FolderType>
         {
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom,
         };
@@ -528,6 +528,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             await Queries.DeleteBunchObjectsAsync(filesDbContext, TenantID, folderId.ToString());
 
+            await filesDbContext.SaveChangesAsync();
             await tx.CommitAsync();
             await RecalculateFoldersCountAsync(parent);
         });
@@ -694,36 +695,31 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return moved;
     }
 
-    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+    public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tId);
+            return CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return await CanMoveOrCopyAsync<TTo>(folderIds, tsId);
+            return CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
     }
 
-    public Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, string to)
+    public Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, string to)
     {
-        return Task.FromResult((IDictionary<int, TTo>)new Dictionary<int, TTo>());
+        return Task.FromResult((IDictionary<int, string>)new Dictionary<int, string>());
     }
 
-    public async Task<IDictionary<int, TTo>> CanMoveOrCopyAsync<TTo>(int[] folderIds, int to)
+    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync(int[] folderIds, int to)
     {
-        if (typeof(TTo) == typeof(string))
-        {
-            return new Dictionary<int, TTo>();
-        }
+        var result = new Dictionary<int, string>();
 
-        var result = new Dictionary<int, TTo>();
         await using var filesDbContext = _dbContextFactory.CreateDbContext();
-
         foreach (var folderId in folderIds)
         {
             var exists = await Queries.AnyTreeAsync(filesDbContext, folderId, to);
@@ -741,14 +737,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
                 await foreach (var file in files)
                 {
-                    result[file.Id] = (TTo)Convert.ChangeType(conflict, typeof(TTo));
+                    result[file.Id] = file.Title;
                 }
 
                 var childs = await Queries.ArrayAsync(filesDbContext, TenantID, folderId);
 
                 foreach (var pair in await CanMoveOrCopyAsync(childs, conflict))
                 {
-                    result.Add(pair.Key, (TTo)Convert.ChangeType(pair.Value, typeof(TTo)));
+                    result.Add(pair.Key, pair.Value);
                 }
             }
         }
@@ -1221,14 +1217,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var roomTypes = new List<FolderType>
         {
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom
         };
-        
+
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var e in GetFeedsInternalAsync(tenant, from, to, filter, null))
@@ -1300,16 +1296,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public async IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime)
     {
-        var roomTypes = new List<FolderType> 
-        { 
-            FolderType.CustomRoom, 
-            FolderType.ReviewRoom, 
-            FolderType.FillingFormsRoom, 
-            FolderType.EditingRoom, 
+        var roomTypes = new List<FolderType>
+        {
+            FolderType.CustomRoom,
+            FolderType.ReviewRoom,
+            FolderType.FillingFormsRoom,
+            FolderType.EditingRoom,
             FolderType.ReadOnlyRoom,
             FolderType.PublicRoom,
         };
-        
+
         Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
 
         await foreach (var q in GetTenantsWithFeeds(fromTime, filter, true))

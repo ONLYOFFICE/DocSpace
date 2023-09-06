@@ -135,7 +135,8 @@ export default function withContent(WrappedContent) {
   };
 
   return inject(({ auth, peopleStore }, { item }) => {
-    const { userStore } = auth;
+    const { userStore, settingsStore } = auth;
+    const { theme, standalone } = settingsStore;
 
     const { selectGroup } = peopleStore.selectedGroupStore;
     const { getTargetUser } = peopleStore.targetUserStore;
@@ -152,8 +153,8 @@ export default function withContent(WrappedContent) {
     } = selectionStore;
 
     return {
-      theme: auth.settingsStore.theme,
-
+      theme,
+      standalone,
       currentUserId: userStore.user.id,
       selectGroup,
       fetchProfile: getTargetUser,

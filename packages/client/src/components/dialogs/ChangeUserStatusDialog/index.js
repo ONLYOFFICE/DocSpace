@@ -29,9 +29,8 @@ class ChangeUserStatusDialogComponent extends React.Component {
       getPeopleListItem,
       setSelection,
       infoPanelVisible,
+      needResetUserSelection,
     } = this.props;
-
-    let usersCount = 0;
 
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(status, userIDs)
@@ -42,14 +41,12 @@ class ChangeUserStatusDialogComponent extends React.Component {
             setSelection(user);
           }
 
-          usersCount = users.length;
-
           toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            (!infoPanelVisible || usersCount !== 1) && setSelected("close");
+            needResetUserSelection && setSelected("close");
             onClose();
           });
         });
@@ -146,11 +143,13 @@ ChangeUserStatusDialog.propTypes = {
 export default inject(({ peopleStore, auth }) => {
   const setSelected = peopleStore.selectionStore.setSelected;
 
-  const { getPeopleListItem, updateUserStatus } = peopleStore.usersStore;
+  const { getPeopleListItem, updateUserStatus, needResetUserSelection } =
+    peopleStore.usersStore;
 
   const { setSelection, isVisible: infoPanelVisible } = auth.infoPanelStore;
 
   return {
+    needResetUserSelection,
     updateUserStatus,
 
     setSelected,

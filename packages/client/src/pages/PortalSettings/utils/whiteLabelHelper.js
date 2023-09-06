@@ -8,19 +8,22 @@ export const generateLogo = (
   text,
   fontSize = 18,
   fontColor = "#000",
-  isEditorLogo = false
+  alignCenter
 ) => {
   const canvas = document.createElement("canvas");
-  canvas.width = isEditorLogo ? "154" : width;
-  canvas.height = isEditorLogo ? "27" : height;
+  canvas.width = width;
+  canvas.height = height;
+
   const ctx = canvas.getContext("2d");
+  const x = alignCenter ? width / 2 : 0;
+
   ctx.fillStyle = "transparent";
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = fontColor;
-  ctx.textAlign = "start";
-  ctx.textBaseline = "top";
+  ctx.textAlign = alignCenter ? "center" : "start";
+  ctx.textBaseline = "middle";
   ctx.font = `${fontSize}px Arial`;
-  ctx.fillText(text, 0, height / 2 - fontSize / 2);
+  ctx.fillText(text, x, height - fontSize / 2);
 
   return canvas.toDataURL();
 };
@@ -28,21 +31,33 @@ export const generateLogo = (
 export const getLogoOptions = (index, text) => {
   switch (index) {
     case 0:
-      return { fontSize: 18, text: text };
+      return { fontSize: 18, text: text, width: 211, height: 24 };
     case 1:
-      return { fontSize: 44, text: text };
+      return { fontSize: 32, text: text, width: 384, height: 42 };
     case 2:
-      return { fontSize: 16, text: text.trim().charAt(0) };
+      return {
+        fontSize: 26,
+        text: text.trim().charAt(0),
+        width: 30,
+        height: 30,
+        alignCenter: true,
+      };
     case 3:
-      return { fontSize: 16, text: text, isEditorLogo: true };
+      return { fontSize: 22, text: text, width: 154, height: 27 };
     case 4:
-      return { fontSize: 16, text: text, isEditorLogo: true };
+      return { fontSize: 22, text: text, width: 154, height: 27 };
     case 5:
-      return { fontSize: 30, text: text.trim().charAt(0) };
+      return {
+        fontSize: 24,
+        text: text.trim().charAt(0),
+        width: 28,
+        height: 28,
+        alignCenter: true,
+      };
     case 6:
-      return { fontSize: 32, text: text };
+      return { fontSize: 18, text: text, width: 211, height: 24 };
     default:
-      return { fontSize: 18, text: text };
+      return { fontSize: 18, text: text, width: 211, height: 24 };
   }
 };
 

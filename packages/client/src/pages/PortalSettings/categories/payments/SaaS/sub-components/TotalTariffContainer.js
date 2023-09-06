@@ -34,11 +34,18 @@ const StyledBody = styled.div`
     .payment_price_month-text {
       margin: auto 0;
       margin-bottom: 9px;
-      margin-left: 8px;
+      ${props =>
+        props.theme.interfaceDirection === "rtl"
+          ? css`
+              margin-right: 8px;
+            `
+          : css`
+              margin-left: 8px;
+            `}
     }
     .payment_price_month-text,
     .payment_price_price-text {
-      ${(props) =>
+      ${props =>
         props.isDisabled &&
         css`
           color: ${props.theme.client.settings.payment.priceContainer
@@ -61,8 +68,6 @@ const TotalTariffContainer = ({
   isNeedRequest,
   currencySymbol,
 }) => {
-  
-
   return (
     <StyledBody isDisabled={isDisabled} theme={theme}>
       <div className="payment_price_total-price">
@@ -72,8 +77,7 @@ const TotalTariffContainer = ({
             fontSize={"14"}
             textAlign="center"
             fontWeight={600}
-            className="total-tariff_description"
-          >
+            className="total-tariff_description">
             <Trans t={t} i18nKey="BusinessRequestDescription" ns="Payments">
               {{ peopleNumber: maxAvailableManagersCount }}
             </Trans>
@@ -88,8 +92,7 @@ const TotalTariffContainer = ({
                 textAlign={"center"}
                 fontWeight={600}
                 className="payment_price_price-text"
-                noSelect
-              >
+                noSelect>
                 {{ currencySymbol }}
               </Text>
               <Text
@@ -97,8 +100,7 @@ const TotalTariffContainer = ({
                 as="span"
                 fontWeight={600}
                 className="payment_price_price-text"
-                noSelect
-              >
+                noSelect>
                 {{ price: totalPrice }}
               </Text>
               <Text
@@ -106,8 +108,7 @@ const TotalTariffContainer = ({
                 fontWeight={600}
                 fontSize="16px"
                 className="payment_price_month-text"
-                noSelect
-              >
+                noSelect>
                 /month
               </Text>
             </Trans>
@@ -121,12 +122,8 @@ const TotalTariffContainer = ({
 export default inject(({ auth, payments }) => {
   const { paymentQuotasStore } = auth;
   const { theme } = auth.settingsStore;
-  const {
-    isLoading,
-    totalPrice,
-    isNeedRequest,
-    maxAvailableManagersCount,
-  } = payments;
+  const { isLoading, totalPrice, isNeedRequest, maxAvailableManagersCount } =
+    payments;
 
   const { planCost } = paymentQuotasStore;
   return {

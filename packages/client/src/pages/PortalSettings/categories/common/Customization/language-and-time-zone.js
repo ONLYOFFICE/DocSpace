@@ -452,12 +452,14 @@ const LanguageAndTimeZone = (props) => {
           selectedOption={state.language}
           onSelect={onLanguageSelect}
           isDisabled={isLoading}
+          directionY="both"
           noBorder={false}
           scaled={true}
           scaledOptions={true}
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
       <FieldContainer
@@ -469,6 +471,7 @@ const LanguageAndTimeZone = (props) => {
           tabIndex={2}
           id="comboBoxTimezone"
           options={timezones}
+          directionY="both"
           selectedOption={state.timezone}
           onSelect={onTimezoneSelect}
           isDisabled={isLoading}
@@ -478,6 +481,7 @@ const LanguageAndTimeZone = (props) => {
           dropDownMaxHeight={300}
           className="dropdown-item-width combo-box-settings"
           showDisabledItems={true}
+          directionY="both"
         />
       </FieldContainer>
     </div>

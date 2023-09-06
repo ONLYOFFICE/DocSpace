@@ -137,11 +137,18 @@ export const StyledInfo = styled.div`
     padding-bottom: 4px;
     padding-top: 4px;
     padding-left: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 8px;`
+        : `padding-left: 8px;`}
     line-height: 20px;
   }
 
   .combo-button {
-    padding-left: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `padding-right: 8px;`
+        : `padding-left: 8px;`}
   }
 
   .combo-button-label {
@@ -166,6 +173,9 @@ export const StyledAcceptTerms = styled.div`
   padding-bottom: 24px;
 
   .wizard-checkbox svg {
-    margin-right: 8px;
+    ${({ theme }) =>
+      theme.interfaceDirection === "rtl"
+        ? `margin-left: 8px;`
+        : `margin-right: 8px;`}
   }
 `;

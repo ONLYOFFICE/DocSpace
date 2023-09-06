@@ -7,7 +7,7 @@ import Item from "./Item";
 
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
 
-const FOOTER_HEIGHT = 70;
+const FOOTER_HEIGHT = 73;
 const USER_ITEM_HEIGHT = 48;
 
 const Row = memo(({ data, index, style }) => {
@@ -21,6 +21,7 @@ const Row = memo(({ data, index, style }) => {
     isOwner,
     inputsRef,
     setIsOpenItemAccess,
+    isMobileView,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -40,6 +41,7 @@ const Row = memo(({ data, index, style }) => {
         isOwner={isOwner}
         inputsRef={inputsRef}
         setIsOpenItemAccess={setIsOpenItemAccess}
+        isMobileView={isMobileView}
       />
     </StyledRow>
   );
@@ -56,6 +58,8 @@ const ItemsList = ({
   externalLinksVisible,
   scrollAllPanelContent,
   inputsRef,
+  invitePanelBodyRef,
+  isMobileView,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
@@ -69,16 +73,25 @@ const ItemsList = ({
     const heightList = height ? height : bodyRef.current.offsetHeight;
     const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
     const listAreaHeight = heightList;
+    const heightBody = invitePanelBodyRef?.current?.clientHeight;
+    const fullHeightList = heightBody - bodyRef.current.offsetTop;
+    const heightWitchOpenItemAccess = Math.max(scrollHeight, fullHeightList);
 
     const calculatedHeight = scrollAllPanelContent
       ? Math.max(
           totalHeightItems,
           listAreaHeight,
-          isOpenItemAccess ? scrollHeight : 0
+          isOpenItemAccess ? heightWitchOpenItemAccess : 0
         )
       : heightList - FOOTER_HEIGHT;
 
-    setBodyHeight(calculatedHeight);
+    const finalHeight = scrollAllPanelContent
+      ? isOpenItemAccess
+        ? calculatedHeight
+        : totalHeightItems
+      : calculatedHeight;
+
+    setBodyHeight(finalHeight);
     setOffsetTop(bodyRef.current.offsetTop);
 
     if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
@@ -106,6 +119,9 @@ const ItemsList = ({
 
   const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
+  const willChangeStyle =
+    isMobileView && isOpenItemAccess ? "auto" : "transform";
+
   return (
     <ScrollList
       offsetTop={offsetTop}
@@ -114,7 +130,7 @@ const ItemsList = ({
       isTotalListHeight={isTotalListHeight}
     >
       <List
-        style={{ overflow: overflowStyle }}
+        style={{ overflow: overflowStyle, willChange: willChangeStyle }}
         height={bodyHeight}
         width="auto"
         itemCount={inviteItems.length}
@@ -128,6 +144,7 @@ const ItemsList = ({
           isOwner,
           inputsRef,
           setIsOpenItemAccess,
+          isMobileView,
           t,
         }}
         outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
