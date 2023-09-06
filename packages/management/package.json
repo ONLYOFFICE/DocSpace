@@ -8,7 +8,7 @@
     "build:translations": "node scripts/buildTranslations.js",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/management && shx cp -r dist/* ../../build/deploy/management",
-    "start": "yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
+    "start": "yarn build && yarn build:translations && NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
     "start-prod": "ws --port 5015 --directory dist --spa index.html"
   },
   "devDependencies": {
