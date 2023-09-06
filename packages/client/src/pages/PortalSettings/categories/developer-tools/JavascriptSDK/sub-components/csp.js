@@ -7,6 +7,7 @@ import HelpButton from "@docspace/components/help-button";
 import Text from "@docspace/components/text";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import SelectedItem from "@docspace/components/selected-item";
+import { tablet } from "@docspace/components/utils/device";
 
 const CategoryHeader = styled.div`
   margin-top: 24px;
@@ -22,6 +23,12 @@ const Container = styled.div`
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
+
+  &.input-holder {
+    @media ${tablet} {
+      margin-bottom: 8px;
+    }
+  }
 `;
 
 const ChipsContainer = styled.div`
@@ -100,7 +107,7 @@ const CSP = ({ t, cspDomains, getCSPSettings, setCSPSettings }) => {
           tooltipContent={<Text fontSize="12px">{t("CSPHelp")}</Text>}
         />
       </Container>
-      <Container>
+      <Container className="input-holder">
         <TextInput
           onChange={onChangeDomain}
           value={domain}
