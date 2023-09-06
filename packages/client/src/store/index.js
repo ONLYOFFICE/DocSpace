@@ -26,7 +26,6 @@ import filesSelectorInput from "./FilesSelectorInput";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 
-import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
@@ -209,7 +208,7 @@ const store = {
   filesSelectorInput,
   contextOptionsStore,
   hotkeyStore,
-  selectFileDialogStore,
+
   oformsStore,
   tableStore,
 
