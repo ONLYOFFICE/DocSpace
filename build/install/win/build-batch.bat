@@ -8,6 +8,7 @@ md build\install\win\OpenResty\tools
 md build\install\win\Files\tools
 md build\install\win\Files\Logs
 md build\install\win\Files\Data
+md build\install\win\Files\sbin
 md build\install\win\Files\products\ASC.Files\server\temp
 md build\install\win\Files\products\ASC.People\server\temp
 md build\install\win\Files\services\ASC.Data.Backup\service\temp
