@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.SaaS.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
@@ -4975,17 +4975,10 @@ namespace ASC.Migrations.PostgreSql.SaaS.Migrations
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified_core_user");
 
+                    b.HasIndex("TenantId");
+
                     b.HasIndex("UserName", "TenantId")
                         .HasDatabaseName("username");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "Email")
-                        .HasDatabaseName("tenant_activation_status_email");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "FirstName")
-                        .HasDatabaseName("tenant_activation_status_firstname");
-
-                    b.HasIndex("TenantId", "ActivationStatus", "LastName")
-                        .HasDatabaseName("tenant_activation_status_lastname");
 
                     b.ToTable("core_user", "onlyoffice");
 
