@@ -102,7 +102,6 @@ const Customization = (props) => {
           {t("Settings:CustomizationDescription")}
         </div>
       )}
-
       <LanguageAndTimeZone isMobileView={viewMobile} />
       <StyledSettingsSeparator />
       <WelcomePageSettings isMobileView={viewMobile} />
