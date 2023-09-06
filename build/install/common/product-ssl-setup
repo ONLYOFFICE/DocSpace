@@ -7,6 +7,7 @@ DIR="/usr/bin"
 LETSENCRYPT="/etc/letsencrypt/live";
 NGINX="/etc/nginx/conf.d"
 DHPARAM_FILE="/etc/ssl/certs/dhparam.pem"
+WEBROOT_PATH="/var/www/${PRODUCT}"
 
 if [ "$#" -ge "2" ]; then
   if [ "$1" != "-f" ]; then 
@@ -27,8 +28,8 @@ if [ "$#" -ge "2" ]; then
     echo "Generating Let's Encrypt SSL Certificates..."
 
     # Request and generate Let's Encrypt SSL certificate
-    echo certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-start.log
-    certbot certonly --expand --webroot --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-new.log
+    echo certbot certonly --expand --webroot -w ${WEBROOT_PATH} --cert-name ${PRODUCT} --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-start.log
+    certbot certonly --expand --webroot -w ${WEBROOT_PATH} --cert-name ${PRODUCT} --noninteractive --agree-tos --email ${MAIL} -d ${DOMAIN} > /var/log/le-new.log
   else
     echo "Using specified files to configure SSL..."
   
@@ -38,8 +39,8 @@ if [ "$#" -ge "2" ]; then
 
   [[ ! -f "${DHPARAM_FILE}" ]] && openssl dhparam -out ${DHPARAM_FILE} 4096
 
-  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${DOMAIN}/fullchain.pem"}"
-  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${DOMAIN}/privkey.pem"}"
+  CERTIFICATE_FILE="${CERTIFICATE_FILE:-"${LETSENCRYPT}/${PRODUCT}/fullchain.pem"}"
+  PRIVATEKEY_FILE="${PRIVATEKEY_FILE:-"${LETSENCRYPT}/${PRODUCT}/privkey.pem"}"
 
   if [ -f "${CERTIFICATE_FILE}" -a -f ${PRIVATEKEY_FILE} ]; then
     if [ -f "${NGINX}/onlyoffice-proxy-ssl.conf.template" ]; then

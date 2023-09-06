@@ -1336,19 +1336,17 @@ install_product () {
 	reconfigure APP_URL_PORTAL "${APP_URL_PORTAL:-"http://${PACKAGE_SYSNAME}-router:8092"}"
 	reconfigure EXTERNAL_PORT ${EXTERNAL_PORT}
 
-	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
-		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
-		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
-	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
-		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
-		PROXY_YML="${BASE_DIR}/proxy-ssl.yml"
-	fi
-
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f ${PROXY_YML} up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
+
+	if [ ! -z "${CERTIFICATE_PATH}" ] && [ ! -z "${CERTIFICATE_KEY_PATH}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup -f "${CERTIFICATE_PATH}" "${CERTIFICATE_KEY_PATH}"
+	elif [ ! -z "${LETS_ENCRYPT_DOMAIN}" ] && [ ! -z "${LETS_ENCRYPT_MAIL}" ]; then
+		bash $BASE_DIR/config/${PRODUCT}-ssl-setup "${LETS_ENCRYPT_MAIL}" "${LETS_ENCRYPT_DOMAIN}"
+	fi
 }
 
 make_swap () {

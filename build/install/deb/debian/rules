@@ -50,7 +50,8 @@ override_dh_auto_build:
 	sed 's_\(minlevel=\)".*"_\1"Warn"_g' -i ${SRC_PATH}/config/nlog.config
 
 	sed 's/teamlab.info/onlyoffice.com/g' -i ${SRC_PATH}/config/autofac.consumers.json
-	sed -e 's/$$router_host/127.0.0.1/g' -e '/proxy_set_header/d' -i ${SRC_PATH}/build/install/docker/config/nginx/onlyoffice-proxy*.conf
+	sed -e 's/$$router_host/127.0.0.1/g' -e '/proxy_set_header/d' -e 's|includes|/etc/nginx/includes|g' -i ${SRC_PATH}/build/install/docker/config/nginx/onlyoffice-proxy*.conf
+	sed "s|\(.*root\).*;|\1 \"/var/www/${PRODUCT}";|g" -i ${SRC_PATH}/build/install/docker/config/nginx/letsencrypt.conf
 	sed -e '/.pid/d' -e '/temp_path/d' -i ${SRC_PATH}/build/install/docker/config/nginx/templates/nginx.conf.template
 	mv -f ${SRC_PATH}/build/install/docker/config/nginx/onlyoffice-proxy-ssl.conf ${SRC_PATH}/build/install/docker/config/nginx/onlyoffice-proxy-ssl.conf.template
 
