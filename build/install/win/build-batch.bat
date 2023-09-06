@@ -37,9 +37,8 @@ copy "build\install\win\sbin\docspace-ssl-setup.ps1" "build\install\win\Files\sb
 rmdir build\install\win\publish /s /q
 
 REM echo ######## SSL configs ########
-%sed% -i "/proxy_set_header Host $the_host;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
-%sed% -i "/proxy_set_header X-Forwarded-Host $the_host;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
-%sed% -i "/proxy_set_header X-Forwarded-Proto $the_scheme;/d" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/the_host/host/g" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
+%sed% -i "s/the_scheme/scheme/g" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
 %sed% -i "s/ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/#ssl_dhparam \/etc\/ssl\/certs\/dhparam.pem;/" build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
 %sed% -i "s/#include includes\/letsencrypt.conf/include includes\/letsencrypt.conf/" build\install\win\Files\nginx\conf\onlyoffice-proxy.conf build\install\win\Files\nginx\conf\onlyoffice-proxy-ssl.conf.tmpl
 
