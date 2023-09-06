@@ -26,8 +26,6 @@ const Tooltip = (props) => {
     float,
   } = props;
 
-  console.log({ getContent, children, isOpen });
-
   const renderTooltip = () => (
     <StyledTooltip
       theme={props.theme}
