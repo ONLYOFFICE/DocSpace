@@ -22,6 +22,12 @@ export const StyledSubmenu = styled.div`
     top: 0;
     background: ${(props) => props.theme.submenu.backgroundColor};
     z-index: 1;
+    ${(props) =>
+      !props.isFullLength &&
+      !isMobileOnly &&
+      css`
+        width: fit-content;
+      `};
   }
 
   ${isMobileOnly &&
@@ -128,13 +134,6 @@ export const SubmenuScroller = styled.div`
   }
   overflow-x: auto;
   overflow-y: hidden;
-
-  ${(props) =>
-    !props.isFullLength &&
-    css`
-      display: grid;
-      flex: 0 1 auto;
-    `};
 `;
 
 export const SubmenuRoot = styled.div`

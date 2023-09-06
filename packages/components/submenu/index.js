@@ -21,7 +21,6 @@ const Submenu = (props) => {
     startSelect = 0,
     forsedActiveItemId,
     onSelect,
-    isFullLength,
     ...rest
   } = props;
   if (!data) return null;
@@ -106,7 +105,7 @@ const Submenu = (props) => {
       <div className="sticky">
         <SubmenuRoot>
           <SubmenuScrollbarSize />
-          <SubmenuScroller isFullLength={isFullLength}>
+          <SubmenuScroller>
             <StyledSubmenuItems ref={submenuItemsRef} role="list">
               {data.map((d) => {
                 const isActive =
@@ -145,12 +144,9 @@ const Submenu = (props) => {
                 );
               })}
             </StyledSubmenuItems>
-            {!isFullLength && (
-              <StyledSubmenuBottomLine className="bottom-line" />
-            )}
           </SubmenuScroller>
         </SubmenuRoot>
-        {isFullLength && <StyledSubmenuBottomLine className="bottom-line" />}
+        <StyledSubmenuBottomLine className="bottom-line" />
       </div>
       <div className="sticky-indent"></div>
 
