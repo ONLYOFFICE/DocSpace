@@ -24,9 +24,8 @@ export const StyledSubmenu = styled.div`
     z-index: 1;
     ${(props) =>
       !props.isFullLength &&
-      !isMobileOnly &&
       css`
-        width: fit-content;
+        max-width: fit-content;
       `};
   }
 
