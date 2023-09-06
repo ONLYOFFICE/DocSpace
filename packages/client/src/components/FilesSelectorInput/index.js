@@ -104,9 +104,9 @@ const FilesSelectorInput = (props) => {
   );
 };
 
-export default inject(({ selectFolderDialogStore }) => {
+export default inject(({ filesSelectorInput }) => {
   const { basePath, newPath, setNewPath, setBasePath, toDefault, isErrorPath } =
-    selectFolderDialogStore;
+    filesSelectorInput;
 
   return {
     isErrorPath,

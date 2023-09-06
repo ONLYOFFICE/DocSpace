@@ -22,7 +22,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
-import selectFolderDialogStore from "./SelectFolderDialogStore";
+import filesSelectorInput from "./FilesSelectorInput";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 
@@ -206,7 +206,7 @@ const store = {
   treeFoldersStore,
   selectedFolderStore,
   filesActionsStore,
-  selectFolderDialogStore,
+  filesSelectorInput,
   contextOptionsStore,
   hotkeyStore,
   selectFileDialogStore,
