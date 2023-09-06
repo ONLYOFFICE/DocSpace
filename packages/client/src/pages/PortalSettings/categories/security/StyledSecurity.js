@@ -33,10 +33,6 @@ export const MainContainer = styled.div`
     ${({ theme }) =>
       theme.interfaceDirection === "rtl" ? `right: 50%;` : `left: 50%;`}
   }
-
-  .security-separator {
-    max-width: 700px;
-  }
 `;
 
 MainContainer.defaultProps = { theme: Base };
