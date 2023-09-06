@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import Portal from "../portal";
@@ -7,73 +7,73 @@ import StyledTooltip from "./styled-tooltip";
 import { flip, shift, offset } from "@floating-ui/dom";
 
 const defaultOffset = 10;
+const Tooltip = (props) => {
+  const {
+    id,
+    place,
+    getContent,
+    children,
+    afterShow,
+    afterHide,
+    className,
+    style,
+    color,
+    maxWidth,
+    anchorSelect,
+    clickable,
+    openOnClick,
+    isOpen,
+    float,
+  } = props;
 
-class Tooltip extends Component {
-  constructor(props) {
-    super(props);
-  }
+  console.log({ getContent, children, isOpen });
 
-  render() {
-    const {
-      id,
-      place,
-      getContent,
-      children,
-      afterShow,
-      afterHide,
-      className,
-      style,
-      color,
-      maxWidth,
-    } = this.props;
-
-    const content = getContent ? getContent() : children;
-
-    const renderTooltip = () => (
-      <StyledTooltip
-        theme={this.props.theme}
-        className={className}
-        style={style}
-        color={color}
-        maxWidth={maxWidth}
+  const renderTooltip = () => (
+    <StyledTooltip
+      theme={props.theme}
+      className={className}
+      style={style}
+      color={color}
+      maxWidth={maxWidth}
+    >
+      <ReactTooltip
+        id={id}
+        place={place}
+        isOpen={isOpen}
+        float={float}
+        closeOnScroll
+        closeOnResize
+        render={getContent}
+        clickable={clickable}
+        afterShow={afterShow}
+        afterHide={afterHide}
+        positionStrategy="fixed"
+        openOnClick={openOnClick}
+        offset={props.offset}
+        anchorSelect={anchorSelect}
+        className="__react_component_tooltip"
+        middlewares={[
+          offset(props.offset ?? defaultOffset),
+          flip({
+            crossAxis: false,
+            fallbackAxisSideDirection: place,
+          }),
+          shift(),
+        ]}
       >
-        <ReactTooltip
-          clickable
-          openOnClick
-          closeOnScroll
-          closeOnResize
-          offset={this.props.offset}
-          afterShow={afterShow}
-          afterHide={afterHide}
-          place={place}
-          anchorSelect={`div[id='${id}'] svg`}
-          className="__react_component_tooltip"
-          positionStrategy="fixed"
-          middlewares={[
-            offset(this.props.offset ?? defaultOffset),
-            flip({
-              crossAxis: false,
-              fallbackAxisSideDirection: place,
-            }),
-            shift(),
-          ]}
-        >
-          {content}
-        </ReactTooltip>
-      </StyledTooltip>
-    );
+        {children}
+      </ReactTooltip>
+    </StyledTooltip>
+  );
 
-    const tooltip = renderTooltip();
+  const tooltip = renderTooltip();
 
-    return <Portal element={tooltip} />;
-  }
-}
+  return <Portal element={tooltip} />;
+};
 
 Tooltip.propTypes = {
   /** Used as HTML id property  */
   id: PropTypes.string,
-  /** Tooltip behavior */
-  effect: PropTypes.oneOf(["float", "solid"]),
   /** Global tooltip placement */
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
   /** Sets a callback function that generates the tip content dynamically */
@@ -86,10 +86,6 @@ Tooltip.propTypes = {
   offset: PropTypes.number,
   /** Child elements */
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  reference: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.any }),
-  ]),
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts css style */
@@ -98,6 +94,12 @@ Tooltip.propTypes = {
   color: PropTypes.string,
   /** Maximum width of the tooltip */
   maxWidth: PropTypes.string,
+
+  isOpen: PropTypes.bool,
+  clickable: PropTypes.bool,
+  openOnClick: PropTypes.bool,
+  float: PropTypes.bool,
+  anchorSelect: PropTypes.string,
 };
 
 Tooltip.defaultProps = {

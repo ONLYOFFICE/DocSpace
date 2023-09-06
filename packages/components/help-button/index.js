@@ -31,6 +31,8 @@ class HelpButton extends React.Component {
       afterHide,
     } = this.props;
 
+    const anchorSelect = `div[id='${this.id}'] svg`;
+
     return (
       <div ref={this.ref} style={style}>
         <IconButton
@@ -44,17 +46,33 @@ class HelpButton extends React.Component {
           data-for={this.id}
           dataTip={dataTip}
         />
-        <Tooltip
-          id={this.id}
-          place={place}
-          offset={offset}
-          afterShow={afterShow}
-          afterHide={afterHide}
-          maxWidth={tooltipMaxWidth}
-          getContent={getContent}
-        >
-          {tooltipContent}
-        </Tooltip>
+
+        {getContent ? (
+          <Tooltip
+            clickable
+            openOnClick
+            place={place}
+            offset={offset}
+            afterShow={afterShow}
+            afterHide={afterHide}
+            maxWidth={tooltipMaxWidth}
+            getContent={getContent}
+            anchorSelect={anchorSelect}
+          />
+        ) : (
+          <Tooltip
+            clickable
+            openOnClick
+            place={place}
+            offset={offset}
+            afterShow={afterShow}
+            afterHide={afterHide}
+            maxWidth={tooltipMaxWidth}
+            anchorSelect={anchorSelect}
+          >
+            {tooltipContent}
+          </Tooltip>
+        )}
       </div>
     );
   }

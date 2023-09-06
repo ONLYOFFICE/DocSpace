@@ -17,18 +17,16 @@ const ErrorFileUpload = ({ t, item, onTextClick, showPasswordInput }) => {
       <div className="upload_panel-icon">
         <StyledLoadErrorIcon
           size="medium"
-          data-for="errorTooltip"
-          data-tip={item.error || t("Common:UnknownError")}
+          data-tooltip-id="errorTooltip"
+          data-tooltip-content={item.error || t("Common:UnknownError")}
         />
         <Tooltip
           id="errorTooltip"
-          offsetTop={0}
-          getContent={dataTip => (
+          getContent={({ content }) => (
             <Text fontSize="13px" noSelect>
-              {dataTip}
+              {content}
             </Text>
           )}
-          effect="float"
           place={placeTooltip}
           maxWidth="320"
           color="#f8f7bf"
@@ -38,7 +36,8 @@ const ErrorFileUpload = ({ t, item, onTextClick, showPasswordInput }) => {
             className="enter-password"
             fontWeight="600"
             color="#A3A9AE"
-            onClick={onTextClick}>
+            onClick={onTextClick}
+          >
             {showPasswordInput ? t("HideInput") : t("EnterPassword")}
           </Text>
         )}
