@@ -261,6 +261,12 @@ const DirectThirdPartyConnection = (props) => {
 
   const { isLoading, folderList, isInitialLoading } = state;
 
+  const isDisabledComponent =
+    isDisabled || isInitialLoading || isLoading || accounts.length === 0;
+
+  const isDisabledSelector = isLoading || isDisabled;
+
+  console.log("folderList", folderList, selectedThirdPartyAccount);
   return (
     <StyledBackup
       isConnectedAccount={
@@ -280,9 +286,7 @@ const DirectThirdPartyConnection = (props) => {
           dropDownMaxHeight={300}
           tabIndex={1}
           showDisabledItems
-          isDisabled={
-            isDisabled || isInitialLoading || isLoading || accounts.length === 0
-          }
+          isDisabled={isDisabledComponent}
         />
 
         {connectedThirdPartyAccount?.id && isTheSameThirdPartyAccount && (
@@ -292,12 +296,7 @@ const DirectThirdPartyConnection = (props) => {
             iconName={VerticalDotsReactSvgUrl}
             size={15}
             getData={getContextOptions}
-            isDisabled={
-              isDisabled ||
-              isInitialLoading ||
-              isLoading ||
-              accounts.length === 0
-            }
+            isDisabled={isDisabledComponent}
             displayIconBorder
           />
         )}
@@ -313,7 +312,7 @@ const DirectThirdPartyConnection = (props) => {
         />
       ) : (
         <>
-          {Object.keys(folderList).length !== 0 && (
+          {folderList.id && (
             <FilesSelectorInput
               descriptionText={descriptionText}
               filterParam={filterParam}
