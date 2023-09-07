@@ -718,4 +718,10 @@
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
     <value>Χρήστες [{0}]. Έγινε ενημέρωση μικρογραφιών άβαταρ</value>
   </data>
+  <data name="CityCol" xml:space="preserve">
+    <value>Πόλη</value>
+  </data>
+  <data name="CountryCol" xml:space="preserve">
+    <value>Χώρα</value>
+  </data>
 </root>
